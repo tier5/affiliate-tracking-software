@@ -1,0 +1,2 @@
+MAILTO=kevin_revie@hotmail.com
+0 * * * * wget -O - http://www.reviewvelocity.co/admin/location/cron 2>&1 /var/www/html/velocity/testlog.log

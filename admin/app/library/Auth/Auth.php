@@ -1,0 +1,426 @@
+<?php
+namespace Vokuro\Auth;
+
+use Phalcon\Mvc\User\Component;
+use Vokuro\Models\Agency;
+use Vokuro\Models\FailedLogins;
+use Vokuro\Models\Location;
+use Vokuro\Models\RememberTokens;
+use Vokuro\Models\SuccessLogins;
+use Vokuro\Models\Users;
+
+/**
+ * Vokuro\Auth\Auth
+ * Manages Authentication/Identity Management in Vokuro
+ */
+class Auth extends Component
+{
+
+    /**
+     * Checks the user credentials
+     *
+     * @param array $credentials
+     * @return boolan
+     */
+    public function check($credentials)
+    {
+
+        // Check if the user exist
+        $user = Users::findFirstByEmail($credentials['email']);
+        if ($user == false) {
+            $this->registerUserThrottling(0);
+            throw new Exception('Wrong email/password combination');
+        }
+
+        // Check the password
+        if (!$this->security->checkHash($credentials['password'], $user->password)) {
+            $this->registerUserThrottling($user->id);
+            throw new Exception('Wrong email/password combination');
+        }
+
+        // Check if the user was flagged
+        $this->checkUserFlags($user);
+
+        // Register the successful login
+        $this->saveSuccessLogin($user);
+
+        // Check if the remember me was selected
+        if (isset($credentials['remember'])) {
+            $this->createRememberEnviroment($user);
+        }        
+
+        $this->login($user);
+    }
+
+
+    public function login($user)
+    {
+      $locs = $this->getLocationList($user); //set the location list in the identity
+      $location_id = ($locs && isset($locs[0])?$locs[0]->location_id:'');
+      $location_name = ($locs && isset($locs[0])?$locs[0]->name:'');
+      
+      $this->session->set('auth-identity', array(
+          'id' => $user->id,
+          'name' => $user->name,
+          'profile' => $user->profile->name,
+          'locations' => $locs, //set the location list in the identity,
+          'location_id' => $location_id, 
+          'location_name' => $location_name, 
+          'is_admin' => $user->is_admin, 
+          'agencytype' => $this->getAgencyType($user->agency_id)
+      ));
+    }
+
+
+    
+    public function getAgencyType($agency_id)
+    {
+      //find agency type
+      $agencytype = 'agency';
+      $conditions = "agency_id = :agency_id:";
+      $parameters = array("agency_id" => $agency_id);
+      $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+      if ($agency->agency_type_id == 2) {
+        $agencytype = 'business';
+      }
+      return $agencytype;
+    }
+
+
+
+
+    /**
+     * This function gets a list of agency locations
+     *
+     * @param Vokuro\Models\Users $user
+     */
+    public function getLocationList($user)
+    {
+      //check the user type
+      if ($user->profilesId == 1 || $user->profilesId == 4) {
+        // Query binding parameters with string placeholders
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $user->agency_id);
+        $locs = Location::find(array($conditions, "bind" => $parameters));
+
+        return $locs;
+      } else {
+        return $user->locations;
+      }
+    }
+
+    /**
+     * This function sets a list of agency locations
+     *
+     */
+    public function setLocationList()
+    {
+        $this->session->set('auth-identity', array(
+            'id' => $this->session->get('auth-identity')['id'],
+            'name' => $this->session->get('auth-identity')['name'],
+            'profile' => $this->session->get('auth-identity')['profile'],
+            'locations' => $this->getLocationList($this->getUser()), //set the location list in the identity,
+            'location_id' => $this->session->get('auth-identity')['location_id'], 
+            'location_name' => $this->session->get('auth-identity')['location_name'], 
+            'is_admin' => $this->session->get('auth-identity')['is_admin'], 
+            'agencytype' => $this->session->get('auth-identity')['agencytype'] 
+        ));
+    }
+
+    /**
+     * Creates the remember me environment settings the related cookies and generating tokens
+     *
+     * @param Vokuro\Models\Users $user
+     */
+    public function saveSuccessLogin($user)
+    {
+        $successLogin = new SuccessLogins();
+        $successLogin->usersId = $user->id;
+        $successLogin->ipAddress = $this->request->getClientAddress();
+        $successLogin->userAgent = $this->request->getUserAgent();
+        if (!$successLogin->save()) {
+            $messages = $successLogin->getMessages();
+            throw new Exception($messages[0]);
+        }
+    }
+
+    /**
+     * Implements login throttling
+     * Reduces the efectiveness of brute force attacks
+     *
+     * @param int $userId
+     */
+    public function registerUserThrottling($userId)
+    {
+        $failedLogin = new FailedLogins();
+        $failedLogin->usersId = $userId;
+        $failedLogin->ipAddress = $this->request->getClientAddress();
+        $failedLogin->attempted = time();
+        $failedLogin->save();
+
+        $attempts = FailedLogins::count(array(
+            'ipAddress = ?0 AND attempted >= ?1',
+            'bind' => array(
+                $this->request->getClientAddress(),
+                time() - 3600 * 6
+            )
+        ));
+
+        switch ($attempts) {
+            case 1:
+            case 2:
+                // no delay
+                break;
+            case 3:
+            case 4:
+                sleep(2);
+                break;
+            default:
+                sleep(4);
+                break;
+        }
+    }
+
+    /**
+     * Creates the remember me environment settings the related cookies and generating tokens
+     *
+     * @param Vokuro\Models\Users $user
+     */
+    public function createRememberEnviroment(Users $user)
+    {
+        $userAgent = $this->request->getUserAgent();
+        $token = md5($user->email . $user->password . $userAgent);
+
+        $remember = new RememberTokens();
+        $remember->usersId = $user->id;
+        $remember->token = $token;
+        $remember->userAgent = $userAgent;
+
+        if ($remember->save() != false) {
+            $expire = time() + 86400 * 8;
+            $this->cookies->set('RMU', $user->id, $expire);
+            $this->cookies->set('RMT', $token, $expire);
+        }
+    }
+
+    /**
+     * Check if the session has a remember me cookie
+     *
+     * @return boolean
+     */
+    public function hasRememberMe()
+    {
+        return $this->cookies->has('RMU');
+    }
+
+    /**
+     * Logs on using the information in the coookies
+     *
+     * @return Phalcon\Http\Response
+     */
+    public function loginWithRememberMe()
+    {
+        $userId = $this->cookies->get('RMU')->getValue();
+        $cookieToken = $this->cookies->get('RMT')->getValue();
+
+        $user = Users::findFirstById($userId);
+        if ($user) {
+
+            $userAgent = $this->request->getUserAgent();
+            $token = md5($user->email . $user->password . $userAgent);
+
+            if ($cookieToken == $token) {
+
+                $remember = RememberTokens::findFirst(array(
+                    'usersId = ?0 AND token = ?1',
+                    'bind' => array(
+                        $user->id,
+                        $token
+                    )
+                ));
+                if ($remember) {
+
+                    // Check if the cookie has not expired
+                    if ((time() - (86400 * 8)) < $remember->createdAt) {
+
+                        // Check if the user was flagged
+                        $this->checkUserFlags($user);
+
+                        $locs = $this->getLocationList($user); //set the location list in the identity
+                        $location_id = ($locs && isset($locs[0])?$locs[0]->location_id:'');
+                        $location_name = ($locs && isset($locs[0])?$locs[0]->name:'');
+                        $this->session->set('auth-identity', array(
+                            'id' => $user->id,
+                            'name' => $user->name,
+                            'profile' => $user->profile->name,
+                            'locations' => $locs, //set the location list in the identity,
+                            'location_id' => $location_id, 
+                            'location_name' => $location_name, 
+                            'is_admin' => $user->is_admin, 
+                            'agencytype' => $this->getAgencyType($user->agency_id) 
+                        ));
+
+                        // Register the successful login
+                        $this->saveSuccessLogin($user);
+
+                        return $this->response->redirect('/admin/users');
+                    }
+                }
+            }
+        }
+
+        $this->cookies->get('RMU')->delete();
+        $this->cookies->get('RMT')->delete();
+
+        return $this->response->redirect('/admin/session/login');
+    }
+
+
+    /**
+     * Sets the location
+     *
+     * @return array
+     */
+    public function setLocation($locationid)
+    {
+        $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $locationid);
+        $loc = Location::findFirst(array($conditions, "bind" => $parameters));
+
+        $iden = $this->session->get('auth-identity');
+        $this->session->set('auth-identity', array(
+                            'id' => $iden['id'],
+                            'name' => $iden['name'],
+                            'profile' => $iden['profile'],
+                            'locations' => $iden['locations'], //set the location list in the identity,
+                            'location_id' => $locationid, 
+                            'location_name' => $loc->name,
+                            'is_admin' => $iden['is_admin'], 
+                            'agencytype' => $iden['agencytype']
+                        ));
+    }
+
+    /**
+     * Checks if the user is banned/inactive/suspended
+     *
+     * @param Vokuro\Models\Users $user
+     */
+    public function checkUserFlags(Users $user)
+    {
+        //check to make sure the user matches the agency
+        //echo '<p>$this->view->agency_id:'.$this->view->agency_id.'</p>';
+        //echo '<p>$this->view->agency_id:'.$user->agency_id.'</p>';
+        if (isset($this->view->agency_id) && $this->view->agency_id > 0 && $user->agency_id != $this->view->agency_id) {
+            throw new Exception('Your account does not belong to this site.');
+        }
+
+        if ($user->active != 'Y') {
+            throw new Exception('Your account is inactive');
+        }
+
+        if ($user->banned != 'N') {
+            throw new Exception('Your account is banned');
+        }
+
+        if ($user->suspended != 'N') {
+            throw new Exception('Your account is suspended');
+        }
+
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $user->agency_id);
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+        if ($agency->subscription_valid != 'Y') {
+            throw new Exception('Your account is suspended because your subscription is not active');
+        }
+        if ($agency->status != '1') {
+            throw new Exception('Your account is not active');
+        }
+    }
+
+    /**
+     * Returns the current identity
+     *
+     * @return array
+     */
+    public function getIdentity()
+    {
+        return $this->session->get('auth-identity');
+    }
+
+    /**
+     * Returns the current identity
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        $identity = $this->session->get('auth-identity');
+        return $identity['name'];
+    }
+
+    /**
+     * Removes the user identity information from session
+     */
+    public function remove()
+    {
+        if ($this->cookies->has('RMU')) {
+            $this->cookies->get('RMU')->delete();
+        }
+        if ($this->cookies->has('RMT')) {
+            $this->cookies->get('RMT')->delete();
+        }
+
+        $this->session->remove('auth-identity');
+    }
+
+    /**
+     * Auths the user by his/her id
+     *
+     * @param int $id
+     */
+    public function authUserById($id)
+    {
+        $user = Users::findFirstById($id);
+        if ($user == false) {
+            throw new Exception('The user does not exist');
+        }
+
+        $this->checkUserFlags($user);
+
+        $locs = $this->getLocationList($user); //set the location list in the identity
+        $location_id = ($locs && isset($locs[0])?$locs[0]->location_id:'');
+        $location_name = ($locs && isset($locs[0])?$locs[0]->name:'');
+        $this->session->set('auth-identity', array(
+            'id' => $user->id,
+            'name' => $user->name,
+            'profile' => $user->profile->name,
+            'locations' => $locs, //set the location list in the identity,
+            'location_id' => $location_id, 
+            'location_name' => $location_name, 
+            'is_admin' => $user->is_admin, 
+            'agencytype' => $this->getAgencyType($user->agency_id) 
+        ));
+    }
+
+    /**
+     * Get the entity related to user in the active identity
+     *
+     * @return \Vokuro\Models\Users
+     */
+    public function getUser()
+    {
+        $identity = $this->session->get('auth-identity');
+        if (isset($identity['id'])) {
+
+            $user = Users::findFirstById($identity['id']);
+            if ($user == false) {
+                throw new Exception('The user does not exist');
+            }
+
+            return $user;
+        }
+
+        return false;
+    }
+}

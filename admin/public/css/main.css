@@ -1,0 +1,108 @@
+
+html, body { height: 100%; margin: 0; padding: 0; background-color: #f2f2f2; font-family: 'PT Sans', sans-serif; overflow-x: hidden; }
+
+.review { background-color: transparent; width: 100%; left: 0; top: 0; }
+.review .rounded-wrapper { margin-top: auto; margin-bottom: auto; padding-left: 5%; padding-right: 5%; padding-top: 10%; padding-bottom: 10%; }
+.review .rounded-wrapper.NPS { padding-top: 0; padding-bottom: 0; } 
+.review .rounded { max-width: 800px; background-color: #ffffff; height: 80%; margin-left: auto; margin-right: auto; border-radius: 5px !important; border: 1px solid #cecece;  }
+.review .rounded .question { font-size: 160%; margin-top: 5%; text-align: center; }
+.review .rounded .question2 { font-size: 160%; margin-top: 5%; text-align: center; font-weight: bold; }
+/*.review.nothanks form { height: 100%; }*/
+.review .rounded textarea { width: 85%; height: 100px; }
+.review .rounded .row { margin-top: 5%; }
+.review .rounded .last { margin-bottom: 5%; }
+.review .subtext { margin-top: 5%; font-size: 110%; }
+.review.nothanks .subtext { margin-top: 4%; font-size: 89%; }
+.review.nothanks .rounded {
+  background-color: transparent;
+  border: none;
+}
+.review .rounded .row .btn-recommend { height: 100px; line-height: 85px; font-size: 200%; background-color: #4581c8; border-color: #9ec4f0; color: #ffffff; display: inline-block; text-align: center; width: 80%; 
+  background: #4581c8; /* Old browsers */
+  background: -webkit-gradient(linear, left top, left bottom, from(#97befd), to(#4581c8));
+	background: -moz-linear-gradient(top,  #97befd,  #4581c8);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#97befd', endColorstr='#4581c8');
+}
+.review .rounded .row .btn-recommend:hover, .review .rounded .row .btn-recommend:active {
+	background: #f47c20; text-decoration: none;
+	background: -webkit-gradient(linear, left top, left bottom, from(#4581c8), to(#97befd));
+	background: -moz-linear-gradient(top,  #4581c8,  #97befd);
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#4581c8', endColorstr='#97befd');
+}
+.review .rounded .row .btn-nothanks { background-color: #cecece; border-color: #cecece; color: #6a6a6a; display: inline-block; text-align: center; }
+.review .rounded .row .btn-review { background-color: #fbfbfb; border-color: #e4e4e4; display: inline-block; text-align: center; border: 10px solid #e4e4e4; max-width: 300px; width: 80%; }
+.review .rounded .row .btn-review img { width: 80%; }
+
+.review.nothanks .rounded .row .btn-recommend {
+  height: 60px;
+  line-height: 42px;
+  width: 54%;
+}
+.review .rounded-wrapper.NPS .rounded .row .btn-recommend {
+  height: 50px;
+  line-height: 32px;
+  width: 70%;
+  font-size: 170%;
+}
+.review .rounded-wrapper.NPS .rounded .row {
+    margin-top: 2%;
+    margin-bottom: 1%;
+}
+.star-rating .caption, .star-rating .clear-rating { display: none !important; }
+
+.rating-xl {
+    font-size: 3.89em !important;
+}
+.footer {
+  position:fixed;
+   bottom:0;
+   width:100%;
+   font-size: 1.3em;
+    height: 36px;
+    line-height: 2em;
+   background:#919191;
+   color: #D3D9D9;
+   text-align: center;
+}
+.review.nothanks .rounded-wrapper { padding-top: 0%; }
+
+.page-logo { margin-top: 20px; text-align: center; font-size: 2em; }
+.page-logo img { max-width: 80%; }
+
+
+@media screen and (min-width: 25em) {
+  .rating-xl {
+      font-size: 4.89em !important;
+  }
+}
+@media screen and (min-width: 35em) {
+  .review .rounded-wrapper.star .rounded .question { font-size: 200%; }
+  .review .rounded-wrapper { padding-left: 10%; padding-right: 10%; }
+  .review.recommend .rounded-wrapper { padding-top: 50px; padding-bottom: 50px; }
+  .review.recommend .rounded .row { margin-top: 2%; }
+  .review.recommend .rounded .last { margin-bottom: 2%; }
+  .review.recommend .subtext { margin-top: 2%; }
+  .review.recommend .rounded .question { margin-top: 2%; }
+  .rating-xl {
+      font-size: 5.89em !important;
+  }
+  .review.nothanks .rounded-wrapper { padding-top: 0%; }
+}
+@media screen and (min-width: 45em) {
+  .review .rounded-wrapper.star .rounded .question { font-size: 300%; }
+  .rating-xl {
+      font-size: 6.89em !important;
+  }
+}
+@media screen and (min-width: 52em) {
+  .rating-xl {
+      font-size: 7.89em !important;
+  }
+}
+@media screen and (min-width: 60em) {
+  .review .rounded-wrapper.star .rounded .question { font-size: 360%; }
+  .rating-xl {
+      font-size: 8.89em !important;
+  }
+  .review.nothanks .rounded-wrapper { padding-top: 0%; }
+}
