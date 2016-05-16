@@ -113,11 +113,11 @@
             <label for="review_invite_type_id" class="col-md-4 control-label">Review Invite Type</label>
             <div class="col-md-8">
               <div id="image_container">
-                <img src="/admin/img/feedback_request.png" data-id="1" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 1?' class="selected"':(isset($agency->review_invite_type_id) && $agency->review_invite_type_id == 1?' class="selected"':''))?> />
-                <img src="/admin/img/stars.png" data-id="2" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 2?' class="selected"':(isset($agency->review_invite_type_id) && $agency->review_invite_type_id == 2?' class="selected"':''))?> />
-                <img src="/admin/img/nps.png" data-id="3" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 3?' class="selected"':(isset($agency->review_invite_type_id) && $agency->review_invite_type_id == 3?' class="selected"':''))?> />
+                <img src="/admin/img/feedback_request.png" data-id="1" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 1?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 1?' class="selected"':''))?> />
+                <img src="/admin/img/stars.png" data-id="2" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 2?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 2?' class="selected"':''))?> />
+                <img src="/admin/img/nps.png" data-id="3" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 3?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 3?' class="selected"':''))?> />
               </div>
-              <input id="review_invite_type_id" name="review_invite_type_id" type="hidden" value="<?=(isset($_POST['review_invite_type_id'])?$_POST["review_invite_type_id"]:(isset($agency->review_invite_type_id)?$agency->review_invite_type_id:''))?>" />
+              <input id="review_invite_type_id" name="review_invite_type_id" type="hidden" value="<?=(isset($_POST['review_invite_type_id'])?$_POST["review_invite_type_id"]:(isset($location->review_invite_type_id)?$location->review_invite_type_id:''))?>" />
             </div>
           </div>
           <div class="row">
@@ -149,7 +149,7 @@
                     <span class="review_site-buttons">
                       <?php if ($rsl->review_site_id <= 3) { ?>
                         <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/admin/img/icon-eye.gif" /> View</a> 
-                        <a class="btnLink" href="/admin/location/"><img src="/admin/img/icon-pencil.gif" /> Update Location</a>                      
+                        <a class="btnLink" href="/admin/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/admin/img/icon-pencil.gif" /> Update Location</a>                      
                       <?php } else { ?>
                         <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/admin/img/icon-eye.gif" /> View</a> 
                       <?php } ?>
@@ -474,45 +474,90 @@
       <!-- START Notification Settings  -->
       <div class="tab-pane fade in" id="tab_notification">
         <div class="form-group">
-          <div class="row">
-            <label for="notifications" class="col-md-4 control-label">Notifications
-              <i>
-               The employees who get notified of feedback and new reviews.
-              </i></label>
-            <div class="col-md-8">
-              <?php 
-              $found = false;
-              foreach($users as $data) { 
-                $found = true;
-          
-                //now check if this record should be checked
-                $checked = false;
-                foreach($agencynotifications as $an) { 
-                  if ($an->user_id == $data->id) $checked = true;
-                }
-                //check post 
-                if(!empty($_POST['users'])) {
-                  foreach($_POST['users'] as $check) {
-                    if ($check == $data->id) $checked = true;
-                  }
-                }
-                ?>
-                <div class="user-data">
-                  <input type="checkbox" name="users[]" value="<?=$data->id?>" <?=($checked?'checked="checked"':'')?> /> <?=$data->name?>
-                </div>
-                <?php
-              } 
-              if (!$found) {
-                ?>
-                No employees found
-                <?php
-              }  
-              ?>
-            </div>
+          <div class="col-md-12">
+          Notifications <i>The employees who get notified of feedback and new reviews.</i>
           </div>
-          <div class="row">
-            <div class="col-md-12">
-            </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-12">
+            <?php 
+          if ($users) {
+            ?>
+<div class="panel-default toggle panelMove panelClose panelRefresh" id="notifications">
+  <div class="customdatatable-wrapper" style="margin-top: 20px;">
+    <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+      <th>Employee</th>
+      <th>Email Alert</th>
+      <th>SMS Alert</th>
+      <th>All Reviews</th>
+      <th>Individual Reviews</th>
+    </tr>
+    </thead>
+    <tbody>
+            <?php
+            $found = false;
+            foreach($users as $data) { 
+              $found = true;
+          
+              //now check if this record should be checked
+              $checked = false;
+              $is_email_alert_on = false;
+              $is_sms_alert_on = false;
+              $is_all_reviews_on = false;
+              $is_individual_reviews_on = false;
+              foreach($agencynotifications as $an) { 
+                if ($an->user_id == $data->id) {
+                  $is_email_alert_on = ($an->email_alert==1?true:false);
+                  $is_sms_alert_on = ($an->sms_alert==1?true:false);
+                  $is_all_reviews_on = ($an->all_reviews==1?true:false);
+                  $is_individual_reviews_on = ($an->individual_reviews==1?true:false);
+                }
+              }
+                
+              ?>
+              <tr>
+                <td><?=$data->name?></td>
+                <td>
+                <span class="on-off-buttons">
+                  <a data-id="<?=$data->id?>" id="emailalerton<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=($is_email_alert_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" id="emailalertoff<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=($is_email_alert_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                </span> 
+                </td>
+                <td>
+                <span class="on-off-buttons">
+                  <a data-id="<?=$data->id?>" id="smsalerton<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=($is_sms_alert_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" id="smsalertoff<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=($is_sms_alert_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                </span> 
+                </td>
+                <td>
+                <span class="on-off-buttons">
+                  <a data-id="<?=$data->id?>" id="allreviewson<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=($is_all_reviews_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" id="allreviewsoff<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=($is_all_reviews_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                </span> 
+                </td>
+                <td>
+                <span class="on-off-buttons">
+                  <a data-id="<?=$data->id?>" id="individualreviewson<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=($is_individual_reviews_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" id="individualreviewsoff<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=($is_individual_reviews_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                </span> 
+                </td>
+              </tr>
+              <?php
+            } 
+          ?>
+      </tbody>
+    </table>
+  </div>
+</div>
+            <?php
+          } else {
+              ?>
+              No employees found
+              <?php
+            }  
+            ?>
           </div>
         </div>
       </div>

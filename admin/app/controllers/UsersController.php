@@ -35,6 +35,7 @@ class UsersController extends ControllerBase
     public function indexAction()
     {
       $this->usersFunctionality(3);
+      $this->getSMSReport();
     }
 
 
@@ -44,6 +45,7 @@ class UsersController extends ControllerBase
     public function adminAction()
     {
       $this->usersFunctionality(1);
+      $this->getSMSReport();
       echo $this->view->render('users', 'index');
     }
 

@@ -4,6 +4,8 @@ namespace Vokuro\Models;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
+use Vokuro\Models\ReviewSite;
+
 /**
  * Vokuro\Models\LocationNotifications
  */

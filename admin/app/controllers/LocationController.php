@@ -308,10 +308,6 @@ class LocationController extends ControllerBase
         'state_province' => $this->request->getPost('state_province', 'striptags'),
         'postal_code' => $this->request->getPost('postal_code', 'striptags'),
         'country' => $this->request->getPost('country', 'striptags'),
-        //'yelp_id' => $this->request->getPost('yelp_id', 'striptags'),
-        //'facebook_page_id' => $this->request->getPost('facebook_page_id', 'striptags'),
-        //'google_place_id' => $this->request->getPost('google_place_id', 'striptags'),
-        //'google_api_id' => $this->request->getPost('google_api_id', 'striptags'),
         'latitude' => $this->request->getPost('latitude', 'striptags'),
         'longitude' => $this->request->getPost('longitude', 'striptags'),
         'region_id' => $this->request->getPost('region_id', 'striptags'),
@@ -320,6 +316,106 @@ class LocationController extends ControllerBase
       if (!$loc->save()) {
         $this->flash->error($loc->getMessages());
       } else {
+        $foundagency = array();
+        
+        //look for a yelp review configuration
+        $conditions = "location_id = :location_id: AND review_site_id =  2";
+        $parameters = array("location_id" => $loc->location_id);
+        $yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+          
+        //look for a facebook review configuration
+        $conditions = "location_id = :location_id: AND review_site_id =  1";
+        $parameters = array("location_id" => $loc->location_id);
+        $facebook = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+          
+        //look for a google review configuration
+        $conditions = "location_id = :location_id: AND review_site_id =  3";
+        $parameters = array("location_id" => $loc->location_id);
+        $google = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+        //check for yelp
+        $yelp_api_id = $this->request->getPost('yelp_id', 'striptags');
+        $yelp_id = $this->yelpId($yelp_api_id);
+        //print '<pre>$yelp_api_id: ' . print_r($yelp_api_id, true) . '</pre>';
+        if ($yelp_api_id != '' && !(strpos($yelp_api_id, '>') !== false)) {
+          if (isset($yelp) && isset($yelp->location_review_site_id) && $yelp->location_review_site_id > 0) {
+            $yelp->external_id = $yelp_id;
+            $yelp->api_id = $yelp_api_id;
+            $yelp->save();
+            //find the review info
+            $this->importYelp($yelp, $loc, $foundagency);
+          } else {            
+            $lrs = new LocationReviewSite();
+            $lrs->assign(array(
+              'location_id' => $loc->location_id,
+              'review_site_id' => 2, // yelp = 2
+              'external_id' => $yelp_id,
+              'api_id' => $yelp_api_id,
+              'date_created' => date('Y-m-d H:i:s'),
+              'is_on' => 1,
+            ));          
+            //find the review info
+            $this->importYelp($lrs, $loc, $foundagency);
+          }
+        } else {
+          //else we need to delete the yelp configuration
+          if (isset($yelp) && isset($yelp->location_review_site_id) && $yelp->location_review_site_id > 0) $yelp->delete();
+        }
+        
+        //check for google
+        $google_place_id = $this->request->getPost('google_place_id', 'striptags');
+        $google_api_id = $this->request->getPost('google_api_id', 'striptags');
+        if ($google_place_id != '') {
+          if (isset($google) && isset($google->location_review_site_id) && $google->location_review_site_id > 0) {
+            $google->external_id = $google_place_id;
+            $google->api_id = $google_api_id;
+            $google->save();
+            //find the review info
+            $this->importGoogle($google, $loc, $foundagency);
+          } else {            
+            $lrs = new LocationReviewSite();
+            $lrs->assign(array(
+              'location_id' => $loc->location_id,
+              'review_site_id' => 3, // google = 3
+              'external_id' => $google_place_id,
+              'api_id' => $google_api_id,
+              'date_created' => date('Y-m-d H:i:s'),
+              'is_on' => 1,
+            ));          
+            //find the review info
+            $this->importGoogle($lrs, $loc, $foundagency);
+          }
+        } else {
+          //else we need to delete the google configuration
+          if (isset($google) && isset($google->location_review_site_id) && $google->location_review_site_id > 0) $google->delete();
+        }
+        
+        //check for facebook
+        $facebook_page_id = $this->request->getPost('facebook_page_id', 'striptags');
+        if ($facebook_page_id != '') {
+          if (isset($facebook) && isset($facebook->location_review_site_id) && $facebook->location_review_site_id > 0) {
+            $facebook->external_id = $facebook_page_id;
+            $facebook->save();
+            //find the review info
+            $this->importFacebook($facebook, $loc, $foundagency);
+          } else {            
+            $lrs = new LocationReviewSite();
+            $lrs->assign(array(
+              'location_id' => $loc->location_id,
+              'review_site_id' => 1, // facebook = 1
+              'external_id' => $facebook_page_id,
+              'date_created' => date('Y-m-d H:i:s'),
+              'is_on' => 1,
+            ));
+            //find the review info
+            $this->importFacebook($lrs, $loc, $foundagency);
+          }
+        } else {
+          //else we need to delete the facebook configuration
+          if (isset($facebook) && isset($facebook->location_review_site_id) && $facebook->location_review_site_id > 0) $facebook->delete();
+        }
+        
+
         $this->auth->setLocationList();
         $this->flash->success("The location was updated successfully");
         Tag::resetInput();
@@ -333,7 +429,22 @@ class LocationController extends ControllerBase
     // Find looking for regions
 
     $this->view->location = $loc;
-    $this->view->facebook_access_token =$this->facebook_access_token;
+    $this->view->facebook_access_token = $this->facebook_access_token;
+
+    //look for a yelp review configuration
+    $conditions = "location_id = :location_id: AND review_site_id =  2";
+    $parameters = array("location_id" => $loc->location_id);
+    $this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+          
+    //look for a facebook review configuration
+    $conditions = "location_id = :location_id: AND review_site_id =  1";
+    $parameters = array("location_id" => $loc->location_id);
+    $this->view->facebook = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+          
+    //look for a google review configuration
+    $conditions = "location_id = :location_id: AND review_site_id =  3";
+    $parameters = array("location_id" => $loc->location_id);
+    $this->view->google = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
     $this->view->form = new LocationForm($loc, array(
       'edit' => true
@@ -386,6 +497,12 @@ class LocationController extends ControllerBase
       }
     }
     //end making sure the user should be here
+
+    //first delete the location review sites
+    $conditions = "location_id = :location_id:";
+    $parameters = array("location_id" => $loc->location_id);
+    $lrs = LocationReviewSite::find(array($conditions, "bind" => $parameters));
+    $lrs->delete();
 
     if (!$loc->delete()) {
       $this->flash->error($user->getMessages());
@@ -443,6 +560,48 @@ class LocationController extends ControllerBase
       $form_data['id'] = $reg->region_id;
     }
     echo json_encode($form_data);
+  }
+
+
+
+  
+
+
+  
+
+
+  /**
+    * This is an ajax function that deletes regions
+    *
+    * @param int $id
+    */
+  public function regiondeleteAction($id)
+  {
+    //get the user id
+    $identity = $this->auth->getIdentity();
+    // If there is no identity available the user is redirected to index/index
+    if (!is_array($identity)) {
+      $this->response->redirect('/admin/session/login?return=/admin/location/');
+      $this->view->disable();
+      return;
+    }
+    // Query binding parameters with string placeholders
+    $conditions = "id = :id:";
+    $parameters = array("id" => $identity['id']);
+    $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+    //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+
+    //find the region to delete
+    $conditions = "region_id = :region_id: AND agency_id = :agency_id:";
+    $parameters = array("region_id" => $id, "agency_id" => $userObj->agency_id);
+    $reg = Region::findFirst(array($conditions, "bind" => $parameters));
+    
+    $this->view->disable();
+    if (!$reg->delete()) {
+      echo 'false';
+    } else {
+      echo 'true';
+    }    
   }
   
 
@@ -529,7 +688,11 @@ class LocationController extends ControllerBase
     if ($this->request->isPost()) {
       //the user wants to send an SMS, so first save it in the database
       if (!$_POST['phone'] || $_POST['phone'] == '') {
-        $this->flash->error('Please enter a Phone number.');
+        //$this->flash->error('Please enter a Phone number.');
+        //throw new Exception('Please enter a Phone number.', 123);
+        $this->view->disable();
+        echo 'Please enter a Phone number.';
+        return;   
       } else {
         //else we have a phone number, so send the message
         $name = $_POST['name'];
@@ -557,19 +720,25 @@ class LocationController extends ControllerBase
         ));
 
         if (!$invite->save()) {
-          $this->flash->error($invite->getMessages());
+          //$this->flash->error($invite->getMessages());
+          //throw new Exception($invite->getMessages(), 123);
+          $this->view->disable();
+          echo $invite->getMessages();
+          return;   
         } else {            
           //The message is saved, so send the SMS message now
           if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
-            $this->flash->success("The SMS was sent successfully");
-            Tag::resetInput();
+            //$this->flash->success("The SMS was sent successfully");
+            //Tag::resetInput();
           }
 
         }
       }
     }
-    $this->getTotalSMSSent($agency);
-    
+    //$this->getTotalSMSSent($agency);
+    $this->view->disable();
+    echo 'true';
+    return;   
   }
 
 
@@ -658,7 +827,7 @@ class LocationController extends ControllerBase
       //else we have no code, so redirect the user to get one
       $helper = $this->fb->getRedirectLoginHelper();
     
-      $url = $helper->getLoginUrl($this->getRedirectUrl(),  array('manage_pages'));
+      $url = $helper->getLoginUrl($this->getRedirectUrl(),  array('manage_pages')).'&auth_type=reauthenticate';
       echo '<p>'.$url.'</p>';
 
       $this->response->redirect($url);
@@ -687,7 +856,12 @@ class LocationController extends ControllerBase
     $foundagency = array();
 
     //now loop through every location in the database
-    $allLocations = Location::find();
+    //$allLocations = Location::find();
+
+    $conditions = "location_id = :location_id:";
+    $parameters = array("location_id" => 38);
+    $allLocations = Location::find(array($conditions, "bind" => $parameters));
+
     if (count($allLocations) > 0) {
       foreach ($allLocations as $location) {
         $rev_monthly = new ReviewsMonthly();

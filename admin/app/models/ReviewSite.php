@@ -5,7 +5,7 @@ use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
- * Vokuro\Models\LocationReviewSite
+ * Vokuro\Models\ReviewSite
  */
 class ReviewSite extends Model
 {

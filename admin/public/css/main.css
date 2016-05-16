@@ -30,7 +30,7 @@ html, body { height: 100%; margin: 0; padding: 0; background-color: #f2f2f2; fon
 	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#4581c8', endColorstr='#97befd');
 }
 .review .rounded .row .btn-nothanks { background-color: #cecece; border-color: #cecece; color: #6a6a6a; display: inline-block; text-align: center; }
-.review .rounded .row .btn-review { background-color: #fbfbfb; border-color: #e4e4e4; display: inline-block; text-align: center; border: 10px solid #e4e4e4; max-width: 300px; width: 80%; }
+.review .rounded .row .btn-review { background-color: #FFFFFF; border-color: #e4e4e4; display: inline-block; text-align: center; border: 10px solid #e4e4e4; max-width: 300px; width: 80%; }
 .review .rounded .row .btn-review img { width: 80%; }
 
 .review.nothanks .rounded .row .btn-recommend {

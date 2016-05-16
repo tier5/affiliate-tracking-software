@@ -24,132 +24,109 @@ class AnalyticsController extends ControllerBase
     public function indexAction()
     {
       $logged_in = is_array($this->auth->getIdentity());
-      if ($logged_in) {
-        if (isset($_POST['locationselect'])) {
-          $this->auth->setLocation($_POST['locationselect']);
-        }
-
-        $this->view->setVar('logged_in', $logged_in);
-        $this->view->setTemplateBefore('private');
-      } else {        
+      if (!$logged_in) {
         $this->response->redirect('/admin/session/login?return=/admin/analytics/');
         $this->view->disable();
         return;
       }
+      
+      $this->view->setVar('logged_in', $logged_in);
+      $this->view->setTemplateBefore('private');
 
       //get the location and calculate the review total and avg.
       if (isset($this->session->get('auth-identity')['location_id'])) {
-        $conditions = "location_id = :location_id:";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-        $loc = Location::findFirst(array($conditions, "bind" => $parameters));
-
-
-
-
-        //###  START: find review site config info ###
-        $facebook_review_count = 0;
-        $google_review_count = 0;
-        $yelp_review_count = 0;        
-        $facebook_rating = 0;
-        $google_rating = 0;
-        $yelp_rating = 0;        
-                        
-        //look for a yelp review configuration
-        $conditions = "location_id = :location_id: AND review_site_id =  2";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-        $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-        //start with Yelp reviews, if configured
-        if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
-          $this->view->yelp_id = $Obj->external_id;
-          $yelp_review_count = $Obj->review_count;
-          $yelp_rating = $Obj->rating;
-        } else {
-          $this->view->yelp_id = '';
-        }
+        //get a list of all review invites for this location
+        $invitelist = ReviewInvite::getReviewInvitesByLocation($this->session->get('auth-identity')['location_id'], true);
+        $this->view->invitelist = $invitelist;
         
-        //look for a google review configuration
-        $conditions = "location_id = :location_id: AND review_site_id =  3";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-        $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-        //start with google reviews, if configured
-        if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
-          $this->view->google_place_id = $Obj->external_id;
-          $google_review_count = $Obj->review_count;
-          $google_rating = $Obj->rating;
-        } else {
-          $this->view->google_place_id = '';
-        }
-        
-        //look for a facebook review configuration
-        $conditions = "location_id = :location_id: AND review_site_id =  1";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-        $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-        //start with Facebook reviews, if configured
-        if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
-          $this->view->facebook_page_id = $Obj->external_id;
-          $facebook_review_count = $Obj->review_count;
-          $facebook_rating = $Obj->rating;
-        } else {
-          $this->view->facebook_page_id = '';
-        }
-        //###  END: find review site config info ###
-
-
-
-
-        //calculate the total reviews
-        $total_reviews = $facebook_review_count + $google_review_count + $yelp_review_count;
-        $this->view->facebook_review_count = $facebook_review_count;
-        $this->view->google_review_count = $google_review_count;
-        $this->view->yelp_review_count = $yelp_review_count;
-        $this->view->total_reviews = $total_reviews;
-        //calculate the average rating        
-        if ($total_reviews > 0) {
-          $average_rating = (($yelp_rating * $yelp_review_count) + ($google_rating * $google_review_count) + ($facebook_rating * $facebook_review_count)) / $total_reviews;
-        } else {
-          $average_rating = 0;
+        //get a list of all review invites for this location
+        $clickreport = ReviewInvite::getReviewInviteClickReport($this->session->get('auth-identity')['location_id'], true);
+        $this->view->clickreport = $clickreport;
+        //find the total clicks to calculate percent
+        $clicktotal = 0;
+        $clicklargest = 0;
+        foreach ($clickreport as $click) {
+          $clicktotal += $click->num_clicks;
+          if ($click->num_clicks > $clicklargest) $clicklargest = $click->num_clicks;
         } 
-        $this->view->yelp_rating = $yelp_rating;
-        $this->view->google_rating = $google_rating;
-        $this->view->facebook_rating = $facebook_rating;
-        $this->view->average_rating = $average_rating;
+        $this->view->clicktotal = $clicktotal;
+        $this->view->clicklargest = $clicklargest;
 
-        $negative_total = ReviewInvite::count(
+        $this->view->sms_sent_all_time = ReviewInvite::count(
                 array(
-                    "column"     => "review_invite_id",
-                    "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND recommend = 'N'",
-                    //"group"  => "location_id",
+                  "column" => "review_invite_id",
+                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id'],
                 )
-            );
-//echo '<pre>$negative_total:'.print_r($negative_total,true).'</pre>';
-        $this->view->negative_total = $negative_total;
+              );
 
-        //calculate Revenue Retained
-        //look in settings for the "Lifetime Value of the Customer"
-        $conditions = "agency_id = :agency_id:";
-        $parameters = array("agency_id" => $loc->agency_id);
-        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        if ($agency) {
-          $this->view->revenue_retained = ($negative_total * $loc->lifetime_value_customer);
-        }
-        
+        $this->view->review_count_all_time = LocationReviewSite::sum(
+                array(
+                  "column" => "review_count",
+                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id'],
+                )
+              ) - LocationReviewSite::sum(
+                array(
+                  "column" => "original_review_count",
+                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id'],
+                )
+              );
 
-        $month_review = ReviewInvite::count(
+        //Last month!
+        $start_time = date("Y-m-d", strtotime("first day of previous month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
+        $this->view->sms_converted_last_month = ReviewInvite::count(
               array(
-                "column"     => "review_invite_id",
-                "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND MONTH(date_sent) = MONTH(NOW()) AND YEAR(date_sent) = YEAR(NOW())",
+                "column" => "review_invite_id",
+                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != ''))",
+              )
+            ); 
+
+        //This month!
+        $start_time = date("Y-m-d", strtotime("first day of this month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+        $this->view->sms_converted_this_month = ReviewInvite::count(
+              array(
+                "column" => "review_invite_id",
+                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != ''))",
               )
             );
-        $this->view->month_review = $month_review;
-        $percent_done = false;
-        if ($month_review >= $loc->review_goal) {
-          $percent_done = 100;
-        } else {
-          $percent_done = ($month_review / $loc->review_goal) * 100;
-        }
-        $this->view->review_goal = $loc->review_goal;
-        $this->view->percent_done = $percent_done;
+        $this->view->sms_converted_all_time = ReviewInvite::count(
+                array(
+                  "column" => "review_invite_id",
+                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != ''))",
+                )
+              );
+              
+        //Last month!
+        $start_time = date("Y-m-d", strtotime("first day of previous month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
+        $this->view->sms_click_last_month = ReviewInvite::count(
+              array(
+                "column" => "review_invite_id",
+                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL",
+              )
+            ); 
+
+        //This month!
+        $start_time = date("Y-m-d", strtotime("first day of this month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+        $this->view->sms_click_this_month = ReviewInvite::count(
+              array(
+                "column" => "review_invite_id",
+                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL",
+              )
+            );
+        $this->view->sms_click_all_time = ReviewInvite::count(
+                array(
+                  "column" => "review_invite_id",
+                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL",
+                )
+              );
+
       }
+      
+      $this->getSMSReport();
+
     }
 
 }

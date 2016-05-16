@@ -6,6 +6,8 @@ use Vokuro\Models\Location;
 use Vokuro\Models\LocationNotifications;
 use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\ReviewInvite;
+use Vokuro\Models\ReviewInviteReviewSite;
+use Vokuro\Models\ReviewSite;
 use Vokuro\Models\Users;
 
 use Services_Twilio;
@@ -236,6 +238,23 @@ class ReviewController extends ControllerBase
       }
 
     }
+
+
+    
+    public function trackAction()
+    {
+      $review_invite_id = $_GET['i'];
+      $review_site_id = $_GET['d'];
+
+      $rirs = new ReviewInviteReviewSite();
+      $rirs->review_invite_id = $review_invite_id;
+      $rirs->review_site_id = $review_site_id;
+      $rirs->save();
+      
+      $this->view->disable();
+      echo 'true';
+    }
+
 
 }
 

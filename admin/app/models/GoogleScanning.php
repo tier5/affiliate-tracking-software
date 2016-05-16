@@ -16,6 +16,7 @@ class GoogleScanning extends Model {
      */
     public function get_business($google_place_id) {      
       $strFindPlaceDetail = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" . $google_place_id . "&key=" . $this->googleApiKey;
+      //$strFindPlaceDetail = 'https://mybusiness.googleapis.com/v3/accounts/' . $google_place_id . '/locations/location_name/reviews?placeid=' . $google_place_id . '&key=' . $this->googleApiKey;
 //echo '<pre>$strFindPlaceDetail:'.print_r($strFindPlaceDetail,true).'</pre>';
       $resultFindPlaceDetail = file_get_contents($strFindPlaceDetail);
       $arrResultFindPlaceDetail = json_decode($resultFindPlaceDetail, true);

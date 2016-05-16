@@ -24,21 +24,21 @@
   foreach($review_site_list as $rsl) { 
     if ($rsl->review_site_id == 1) {
       ?>
-      <div class="row text-center" id="facebooklink"><a href="http://facebook.com/<?=$rsl->external_id?>" onclick="facebookClickHandler('<?=$location->facebook_page_id?>');" class="btn-lg btn-review"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
+      <div class="row text-center" id="facebooklink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="http://facebook.com/<?=$rsl->external_id?>" onclick="facebookClickHandler('<?=$rsl->external_id?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
       <?php
     } else if ($rsl->review_site_id == 2) {
       ?>
       <?php if (!(strpos($rsl->external_id, '>') !== false)) { ?>
-        <div class="row text-center" id="yelplink"><a href="http://www.yelp.com/writeareview/biz/<?=$rsl->external_id?>" onclick="yelpClickHandler('<?=$rsl->external_id?>');" class="btn-lg btn-review"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
+        <div class="row text-center" id="yelplink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="http://www.yelp.com/writeareview/biz/<?=$rsl->external_id?>" onclick="yelpClickHandler('<?=$rsl->external_id?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
       <?php } ?>
       <?php
     } else if ($rsl->review_site_id == 3) {
       ?>
-      <div class="row text-center" id="googlelink"><a href="https://www.google.com/search?q=<?=urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country)?>&ludocid=<?=$rsl->external_id?>#" onclick="googleClickHandler('<?=$rsl->external_id?>', '<?=urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country)?>');" class="btn-lg btn-review"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>  
+      <div class="row text-center" id="googlelink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="https://www.google.com/search?q=<?=urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country)?>&ludocid=<?=$rsl->external_id?>#" onclick="googleClickHandler('<?=$rsl->external_id?>', '<?=urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country)?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>  
       <?php
     } else {
       ?>
-      <div class="row text-center"><a href="<?=$rsl->url?>" class="btn-lg btn-review"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>  
+      <div class="row text-center"><a href="<?=$rsl->url?>" data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>  
       <?php
     }
   }
@@ -48,3 +48,16 @@
   <div class="subtext text-center">App Will Automatically Launch</div>
 </div>
 </div>
+
+<script type="text/javascript">
+jQuery(document).ready(function($){
+  $('.track-link').click(function(e) {
+    //e.preventDefault();
+    $.ajax({
+      async: false,
+			type: 'POST',
+			url: '/admin/review/track?d='+$(this).data("id")+'&i='+$(this).data("invite")
+		});
+  });
+});
+</script>

@@ -204,6 +204,34 @@ class Users extends Model
         $params = null;
         return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
     }
+
+
+    
+    
+    /*
+     * This function pull up a report of the top employees 
+     */
+    public static function getEmployeeListReport($agency_id, $start_time, $end_time, $location_id, $review_invite_type_id)
+    {
+      // A raw SQL statement
+      $sql   = "SELECT users.id, users.name, 
+                  (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS sms_sent_all_time,
+                  ".
+                  ($review_invite_type_id==1?"((SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id AND recommend = 'Y' ".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") / (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id AND recommend IS NOT NULL".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") * 100) AS avg_feedback":
+                  "(SELECT AVG(rating) FROM review_invite WHERE review_invite.location_id = ".$location_id."  AND review_invite.review_invite_type_id = ".$review_invite_type_id." AND rating IS NOT NULL AND rating != '' AND users.id = review_invite.sent_by_user_id AND recommend = 'Y'".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS avg_feedback")
+                  .", ".$review_invite_type_id." AS review_invite_type_id
+                FROM users 
+                WHERE users.agency_id = ".$agency_id."
+                ORDER BY (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") DESC;";
+      //echo '<p>sql:'.$sql.'</p>';
+
+      // Base model
+      $list = new Users();
+
+      // Execute the query
+      $params = null;
+      return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+    }
     
     
     /*

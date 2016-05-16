@@ -150,6 +150,7 @@ class SettingsController extends ControllerBase
       $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
 
       $this->view->agency = $agency;
+      $this->view->location = $agency;
 
       $this->view->form = new SettingsForm($agency, array(
           'edit' => true
@@ -296,6 +297,7 @@ class SettingsController extends ControllerBase
       $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
 
       $this->view->agency = $agency;
+      $this->view->location = $location;
         
       //find the location review sites
       $conditions = "location_id = :location_id:";

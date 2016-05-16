@@ -62,7 +62,7 @@
                   <th>STATUS</th>
                   <th>FEEDBACK LINK CLICKED</th>
                   <th>REVIEW LINK CLICKED</th>
-                  <th>VIEW CONTACT</th>
+                  <th style="min-width: 85px; width: 85px;">VIEW CONTACT</th>
                 </tr>
               </thead>
               <tbody>
@@ -73,12 +73,47 @@
                     <tr>
                       <td><?=$invite->name?></td>
                       <td><?=date_format(date_create($invite->date_sent),"m/d/Y")?></td>
-                      <td><?=date_format(date_create($invite->date_viewed),"m/d/Y")?></td>
+                      <td><?=($invite->date_viewed?date_format(date_create($invite->date_viewed),"m/d/Y"):'')?></td>
                       <td><?=$invite->sent_by?></td>
-                      <td><?=($invite->date_viewed?(isset($invite->comments) && $invite->comments != ''?'<span class="greenfont">Feedback Left</span>':'<span class="redfont">No feedback Left</span>'):'<span class="greenfont">In Process</span>')?></td>
-                      <td><?=($invite->date_viewed?'Yes':'No')?></td>
-                      <td></td>
-                      <td></td>
+                      <td><?php
+                      
+                      if ($invite->date_viewed) {
+                        if ($invite->review_invite_type_id == 1) {
+                          if ($invite->recommend && $invite->recommend=='N') {
+                            ?><span class="redfont">No</span><?php
+                          } else {
+                            ?><span class="greenfont">Yes</span><?php
+                          }
+                        } else if ($invite->review_invite_type_id == 2) {
+                          if ($invite->recommend && $invite->recommend=='N') {
+                            ?><input value="<?=$invite->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /><?php
+                          } else {
+                            ?><input value="<?=$invite->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /><?php
+                          }                            
+                        } else if ($invite->review_invite_type_id == 3) {
+                          if ($invite->recommend && $invite->recommend=='N') {
+                            ?><span class="review_invite_type_id_3 redfont"><?=$invite->rating?></span><?php
+                          } else {
+                            ?><span class="review_invite_type_id_3 greenfont"><?=$invite->rating?></span><?php
+                          }
+                        }
+                      } else {
+                        if ($location->message_tries>1 && $location->message_tries > $invite->times_sent) {
+                          echo '<strong>In Process</strong>';
+                        } else {
+                          echo '<strong>No Feedback</strong>';
+                        }
+                      }
+                      ?></td>
+                      <td><?=($invite->date_viewed?'<span class="greenfont">Yes</span>':'<span class="redfont">No</span>')?></td>
+                      <td><?php
+                      foreach ($invite->review_sites as $rs) {
+                        ?>
+                        <img src="<?=$rs->icon_path?>" /> 
+                        <?php
+                      }
+                      ?></td>
+                      <td style="min-width: 86px; width: 86px;"><a href="/admin/contacts/view/<?=$invite->review_invite_id?>" class="btnLink" style="display: block;white-space: nowrap;"><img src="/admin/img/icon-eye.gif"> View</a></td>
                     </tr>
                     <?php  
                   endforeach; 
@@ -136,6 +171,7 @@ jQuery(document).ready(function($){
 
   $("div.dataTables_filter input").unbind();
   
+  $('.starfield').rating({displayOnly: true, step: 0.5});
 
 });
 </script>

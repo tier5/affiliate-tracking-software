@@ -125,7 +125,7 @@
         <div class="portlet light bordered dashboard-panel">
           <div class="portlet-body">
             <div class="number">
-              <span data-value="<?=$negative_total?>" data-counter="counterup" style="color: #e94f57;"><?=$negative_total?></span>
+              <span data-value="<?=$negative_total?>" data-counter="counterup" style="color: #AF0000;"><?=$negative_total?></span>
             </div>
           </div>
           <div class="portlet-title">
@@ -398,7 +398,7 @@
                   <tr>
                     <td><?=$invite->name?></td>
                     <td><?=$invite->sent_by?></td>
-                    <td><?=date_format(date_create($invite->date_viewed),"m/d/Y")?></td>
+                    <td><?=($invite->date_viewed?date_format(date_create($invite->date_viewed),"m/d/Y"):'')?></td>
                     <td><?php 
                     if ($invite->review_invite_type_id == 1) {
                       ?>
@@ -479,7 +479,7 @@
                     <tr>
                       <td><?=$invite->name?></td>
                       <td><?=$invite->sent_by?></td>
-                      <td><?=date_format(date_create($invite->date_viewed),"m/d/Y")?></td>
+                      <td><?=($invite->date_viewed?date_format(date_create($invite->date_viewed),"m/d/Y"):'')?></td>
                       <td><?php 
                       if ($invite->review_invite_type_id == 1) {
                         ?>
@@ -594,23 +594,39 @@
                       <td><?=$invite->sent_by?></td>
                       <td><?=date_format(date_create($invite->date_sent),"m/d/Y")?></td>
                       <td><?=($invite->date_viewed?'Yes':'No')?></td>
-                      <td>
-                      <?=($invite->date_viewed?(isset($invite->comments) && $invite->comments != ''?'<span class="greenfont">Feedback Left</span>':'<span class="redfont">No feedback Left</span>'):'<span class="greenfont">In Process</span>')?>
-                      <!--<?php 
-                      if ($invite->recommend) {
-                        if ($invite->recommend=='Y') {
-                          echo 'Yes';
+                      <td><?php
+                      if ($invite->date_viewed) {
+                        if (isset($invite->comments) && $invite->comments != '') {
+                          if ($invite->review_invite_type_id == 1) {
+                            if ($invite->recommend && $invite->recommend=='N') {
+                              ?><span class="redfont">No</span><?php
+                            } else {
+                              ?><span class="greenfont">Yes</span><?php
+                            }
+                          } else if ($invite->review_invite_type_id == 2) {
+                            if ($invite->recommend && $invite->recommend=='N') {
+                              ?><input value="<?=$invite->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /><?php
+                            } else {
+                              ?><input value="<?=$invite->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /><?php
+                            }                            
+                          } else if ($invite->review_invite_type_id == 3) {
+                            if ($invite->recommend && $invite->recommend=='N') {
+                              ?><span class="review_invite_type_id_3 redfont"><?=$invite->rating?></span><?php
+                            } else {
+                              ?><span class="review_invite_type_id_3 greenfont"><?=$invite->rating?></span><?php
+                            }
+                          }
                         } else {
-                          ?>
-                          No <a id="click<?=$invite->review_invite_id?>" href="#inline<?=$invite->review_invite_id?>" onclick="" class="fancybox" style="float: right;">View Feedback</a>
-                          <div id="inline<?=$invite->review_invite_id?>" style="width:400px;display: none;">
-                          <?=nl2br($invite->comments)?>
-                          </div>
-                          <?php
+                          echo '<strong>No feedback</strong>';
+                        }
+                      } else {
+                        if ($location->message_tries>1 && $location->message_tries > $invite->times_sent) {
+                          echo '<strong>In Process</strong>';
+                        } else {
+                          echo '<strong>No Feedback</strong>';
                         }
                       }
-                        ?>-->
-                        </td>
+                      ?></td>
                     </tr>
                     <?php  
                   endforeach; 

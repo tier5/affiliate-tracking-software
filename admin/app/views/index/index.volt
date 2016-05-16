@@ -168,7 +168,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
           </div>
           <div class="portlet-body">
             <div class="number">
-              <span data-value="<?=$total_reviews_this_month?>"><?=$total_reviews_this_month?></span>
+              <span data-value="<?=$total_reviews_this_month?>" style="color: #2A3644;"><?=$total_reviews_this_month?></span>
             </div>
           </div>
         </div>
@@ -176,7 +176,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
         <div class="portlet light bordered dashboard-panel half-height">
           <div class="portlet-body">
             <div class="number">
-              <span data-value="<?=$total_reviews_location?>"><?=$total_reviews_location?></span>
+              <span data-value="<?=$total_reviews_location?>" style="color: #2A3644;"><?=$total_reviews_location?></span>
             </div>
             <div class="text">
             New Reviews Since Joining Review Velocity
@@ -410,7 +410,7 @@ jQuery(document).ready(function($){
         if ($new_reviews->count() > 6 && $count == 0) {
 
         } else {
-          $strarray = $strarray."['".date("M",mktime(0,0,0,$data->month,1,2011))."', ".($data->reviewcount - $prevmonth).", '#33c5d2'],\n";
+          $strarray = $strarray."['".date("M",mktime(0,0,0,$data->month,1,2011))."', ".($data->reviewcount - $prevmonth).", '#2A3644'],\n";
         }
         $prevmonth = $data->reviewcount;
         $count++;
@@ -454,8 +454,8 @@ jQuery(document).ready(function($){
       pieHole: 0.85,
       pieStartAngle: 270,
       slices: {
-        0: { color: '#33c5d2' },
-        1: { color: '#e94e56' },
+        0: { color: '#2A3644' },
+        1: { color: '#D5D6D8' },
         2: { color: 'transparent' }
       },
       pieSliceTextStyle: {color: 'transparent'},

@@ -42,7 +42,7 @@
     <link href="/admin/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/admin/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
     <?php 
-    if(strpos($_SERVER['REQUEST_URI'],'location/create')>0) {
+    if(strpos($_SERVER['REQUEST_URI'],'location/create')>0 || strpos($_SERVER['REQUEST_URI'],'location/edit')>0) {
       ?>
       <link href="/admin/css/signup.css" rel="stylesheet" type="text/css" />
       <?php 
@@ -57,7 +57,7 @@
     <script type="text/javascript" src="/admin/js/vendor/fancybox/jquery.fancybox.pack.js"></script>    
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <?php
-    if (isset($main_color_setting)) {
+    if (false && isset($main_color_setting)) {
       list($r, $g, $b) = sscanf($main_color_setting, "#%02x%02x%02x");
       //echo "$main_color_setting -> $r $g $b";
       ?>
@@ -111,7 +111,7 @@ li.nav-item:hover, li.nav-item a:hover,
                       if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
                       ?>
                       <li class="" id="">
-                          <a href="/admin/location/send_review_invite" class=""><img src="/admin/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
+                          <a href="#sendreviewinvite" class="fancybox"><img src="/admin/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
                       </li>
                       <?php } 
 
@@ -147,8 +147,8 @@ li.nav-item:hover, li.nav-item a:hover,
                   ?>                  
                   <li class="dropdown dropdown-user" style="margin-left: 20px;">
                       <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                          <span class="username username-hide-on-mobile" style="color: #32c5d2;"><i class="icon-user"></i> <?=$this->session->get('auth-identity')['name']?> </span>
-                          <i class="fa fa-angle-down" style="color: #32c5d2;"></i>
+                          <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> <?=$this->session->get('auth-identity')['name']?> </span>
+                          <i class="fa fa-angle-down" style="color: #484848;"></i>
                       </a>
                       <ul class="dropdown-menu dropdown-menu-default">
                           <li>
@@ -576,6 +576,163 @@ li.nav-item:hover, li.nav-item a:hover,
     <?php } ?>
     <script src="/admin/js/card-js.min.js"></script>
     <script src="/admin/js/login.js"></script>
+
+<?php 
+if (isset($haspaid) && $haspaid == false) {
+                 
+} else {       
+  if ((isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0)
+      || (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') ) {
+
+  } else {
+    if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
+    ?>
+<div id="sendreviewinvite" style="width:400px; display: none; color: #7A7A7A;"> 
+<!-- BEGIN SAMPLE FORM PORTLET-->
+  <div class="portlet light">
+    <div class="portlet-title">
+      <div class="caption">
+        <span class="caption-subject" style="text-align: left; text-transform: none; font-weight: normal; font-size: 27px !important;"> Send Review Invite </span>
+      </div>
+    </div>
+    <div class="portlet-body form">
+    <?php 
+    if ((isset($agency->twilio_api_key) && $agency->twilio_api_key != '' &&
+        isset($agency->twilio_auth_token) && $agency->twilio_auth_token != '' &&
+        ((isset($agency->twilio_auth_messaging_sid) && $agency->twilio_auth_messaging_sid != '') ||
+         (isset($agency->twilio_from_phone) && $agency->twilio_from_phone != ''))
+        ) || ((!isset($agency->parent_agency_id) || $agency->parent_agency_id == '') && $agency->agency_type_id = 2)) {
+    ?>
+
+    <?php
+    if ($num_signed_up > 0) {
+      ?>
+      <div class="row" style="margin-bottom: 10px;">
+      <div class="col-md-12">     
+      <i>You are entitled to <?=$total_sms_month?> SMS messages per month.  You have sent <?=$sms_sent_this_month_total?> total SMS messages this month.</i>
+      </div>
+      </div>
+      <?php
+    }
+    ?>
+    <?php 
+    if ($sms_sent_this_month_total < $total_sms_month) {
+    ?>
+    <form class="form-horizontal" action="/admin/location/send_review_invite" role="form" method="post" autocomplete="off" id="smsrequestform" >
+      <div class="success" id="smsrequestformsuccess" style="display: none;">The review invite was sent.</div>
+      <div class="error" id="smsrequestformerror" style="display: none;">There was a problem sending the review invite.</div>
+      <div class="form-group">
+        <div class="row">
+          <label class="col-md-3 control-label" style="text-align: left;">Location</label>
+          <div class="col-md-9" style="margin-top: 8px; margin-bottom: 8px;">
+          <?=$this->session->get('auth-identity')['location_name']?>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+          <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" /> 
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <i>This is the name that will be used in the SMS text message.</i>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+          <input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" /> 
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <i>The phone number that will recieve the SMS message.</i>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+          <textarea style="width: 100%;" class="form-control placeholder-no-fix" name="SMS_message"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'{location-name}: Hi {name}, We\'d really appreciate your feedback by clicking the link. Thanks! {link}'))?></textarea>
+            <i>{location-name} will be the name of the location sending the SMS, {name} will be replaced with the name entered when sending the message and {link} will be the link to the review.</i>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-offset-4 col-md-8">
+          <?php echo $this->tag->submitButton(array('Send', 'class' => 'btnLink', 'style' => 'float: right; height: 50px; padding: 10px 35px;')); ?>
+        </div>
+      </div>
+    </form>
+  
+    <?php 
+    } else {
+      ?>
+      You have no more SMS messages to send this month.
+      <?php 
+    } 
+    ?>
+
+    <?php 
+    } else {
+      ?>
+      You must have a Twilio SID and Auth Token to send SMS messages.  All SMS messages are sent using <a href="https://www.twilio.com/" target="_blank">Twilio</a>.  <a href="/admin/settings/">Click here</a> to enter your Twilio SID and Auth Key now.  If you don't have an API key yet, <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a> to sign up.  
+      <?php
+    }
+    ?>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+jQuery(document).ready(function($){
+
+  $('.fancybox').fancybox();
+
+  //callback handler for form submit
+  $("#smsrequestform").submit(function(e)
+  {
+      var postData = $(this).serializeArray();
+      var formURL = $(this).attr("action");
+      $.ajax(
+      {
+        url : formURL,
+        type: "POST",
+        data : postData,
+        success:function(data, textStatus, jqXHR) 
+        {
+          //data: return data from server
+          //console.log(data);
+          if (data == 'true') {
+            $('#smsrequestformsuccess').show();
+            $('#smsrequestformerror').hide();
+          } else {
+            //if fails      
+            $('#smsrequestformerror').text(data);
+            $('#smsrequestformsuccess').hide();
+            $('#smsrequestformerror').show();
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+          //if fails      
+          $('#smsrequestformsuccess').hide();
+          $('#smsrequestformerror').show();
+        }
+      });
+      e.preventDefault(); //STOP default action
+  });
+});
+</script>
+    <?php 
+    } 
+  } 
+}    
+?>
 </body>
 
 </html>

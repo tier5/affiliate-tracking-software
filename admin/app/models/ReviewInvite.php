@@ -5,6 +5,8 @@ use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
+use Vokuro\Models\ReviewSite;
+
 /**
  * Vokuro\Models\ReviewInvite
  * The review invites in the application
@@ -78,6 +80,17 @@ class ReviewInvite extends Model
 	public function initialize()
 	{
 		$this->setSource('review_invite');
+    
+    
+    $this->hasManyToMany(
+      "review_invite_id",
+      "Vokuro\Models\ReviewInviteReviewSite",
+      "review_invite_id",
+      "review_site_id",
+      "Vokuro\Models\ReviewSite",
+      "review_site_id",
+      array('alias' => 'review_sites')
+    );
 	}
     
     
@@ -206,13 +219,41 @@ class ReviewInvite extends Model
     *  Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)  
     *  Can respond to reviews by clicking the "Respond" button)
     */
-  public static function getReviewInvitesByLocation($location_id)
+  public static function getReviewInvitesByLocation($location_id, $only_site_clicked = false)
   {
       // A raw SQL statement
       $sql   = "SELECT users.name AS sent_by, review_invite.*
                 FROM review_invite 
                   INNER JOIN users ON review_invite.sent_by_user_id = users.id
                 WHERE review_invite.location_id = ".$location_id."
+                  ".($only_site_clicked?'AND (SELECT COUNT(*) FROM review_invite_review_site WHERE review_invite_review_site.review_invite_id = review_invite.review_invite_id) > 0':'')."
+                ORDER BY review_invite.date_sent DESC";
+
+      // Base model
+      $list = new ReviewInvite();
+
+      // Execute the query
+      $params = null;
+      return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+  }
+    
+    
+  /*
+    * Find the data for the report
+    * 
+    *  Review Invitations list (search bar above list) 
+    *  (invites have the following fields: 
+    *  Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)  
+    *  Can respond to reviews by clicking the "Respond" button)
+    */
+  public static function getReviewInvitesByPhone($location_id, $phone)
+  {
+      // A raw SQL statement
+      $sql   = "SELECT users.name AS sent_by, review_invite.*
+                FROM review_invite 
+                  INNER JOIN users ON review_invite.sent_by_user_id = users.id
+                WHERE review_invite.location_id = ".$location_id."
+                  AND review_invite.phone = '".$phone."'
                 ORDER BY review_invite.date_sent DESC";
 
       // Base model
@@ -223,5 +264,29 @@ class ReviewInvite extends Model
       return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
   }
   
+    
+    
+  /*
+    * Find the data for the report
+    * 
+    */
+  public static function getReviewInviteClickReport($location_id)
+  {
+      // A raw SQL statement
+      $sql   = "SELECT COUNT(rirs.review_site_id) AS num_clicks, rirs.review_site_id, rs.icon_path
+                FROM review_invite ri
+                  INNER JOIN review_invite_review_site rirs ON ri.review_invite_id = rirs.review_invite_id
+                  INNER JOIN review_site rs ON rirs.review_site_id = rs.review_site_id
+                WHERE ri.location_id = ".$location_id."
+                GROUP BY rirs.review_site_id";
+
+      // Base model
+      $list = new ReviewInvite();
+
+      // Execute the query
+      $params = null;
+      return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+  }
+
 
 }

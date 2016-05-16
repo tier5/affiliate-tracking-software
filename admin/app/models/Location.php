@@ -122,7 +122,7 @@ class Location extends Model
     public static function getLocations($agency_id)
     {
       // A raw SQL statement
-      $sql   = "SELECT location.location_id, location.name, location.state_province, location.locality,
+      $sql   = "SELECT location.*,
                 (SELECT SUM(review_count) FROM location_review_site WHERE location_id = location.location_id) AS review_count,
                 (SELECT SUM((rating * review_count)) FROM location_review_site WHERE location_id = location.location_id) AS rating
               FROM location

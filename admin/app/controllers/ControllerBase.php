@@ -129,7 +129,25 @@ class ControllerBase extends Controller
       }
       //###  END: check to see if this user has paid   #####
 
-
+      
+      if (is_array($identity)) {
+        // Query binding parameters with string placeholders
+        $conditions = "id = :id:";
+        $parameters = array("id" => $identity['id']);
+        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+        //find the agency 
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $userObj->agency_id);
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->agency = $agency;
+    
+        $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        $loc = Location::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->location = $loc;
+        $this->getShareInfo($agency);
+        $this->getTotalSMSSent($agency);
+      }
 
     }
 
@@ -294,7 +312,7 @@ class ControllerBase extends Controller
         $this->view->review_goal = $location->review_goal;
         //calculate how many sms messages we need to send to meet this goal.
         $percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
-        if ($percent_needed == 0) $percent_needed = 20;
+        if ($percent_needed <= 0) $percent_needed = 20;
         $this->view->percent_needed = $percent_needed;
         //echo '<p>$sms_sent_last_month:'.$sms_sent_last_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
         //echo '<p>percent_needed:'.$percent_needed.':review_goal:'.$location->review_goal.'</p>';
@@ -476,30 +494,46 @@ class ControllerBase extends Controller
       if ($locationid > 0) {
         //else only show the user the employees from the locations that they have access to
         $users = Users::getEmployeesByLocation($locationid);
-      } else if ($userObj->profilesId == 1 || $userObj->profilesId == 4) {
+      } else { //if ($userObj->profilesId == 1 || $userObj->profilesId == 4) {
         // Query binding parameters with string placeholders
-        $conditions = "agency_id = :agency_id: AND profilesId = ".$profilesId;
-        $parameters = array("agency_id" => $userObj->agency_id);
+        //$conditions = "agency_id = :agency_id: AND profilesId = ".$profilesId;
+        //$parameters = array("agency_id" => $userObj->agency_id);
+        
+        $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        $loc = Location::findFirst(array($conditions, "bind" => $parameters));
 
-        $users = Users::find(array($conditions, "bind" => $parameters));
-      } else {
+        //default this month
+        $now = new \DateTime('now');
+        $start_time = $now->format('Y').'-'.$now->format('m').'-01';
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+        
+        if (isset($_GET['t']) && $_GET['t'] == 'lm') {
+          $start_time = date("Y-m-d", strtotime("first day of previous month"));
+          $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
+        } else if (isset($_GET['t']) && $_GET['t'] == 'l') {
+          $start_time = false;
+          $end_time = false;
+        } else if (isset($_GET['t']) && $_GET['t'] == 'c') {
+          $start_time = $_POST['start'];
+          $end_time = $_POST['end'];
+          $start_time = date("Y-m-d H:i:s", strtotime($start_time));
+          $end_time = date("Y-m-d H:i:s", strtotime($end_time));
+        }
+
+        $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id);
+        $this->view->users_report = $users_report;
+
+        $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id);
+      //} else {
         //else only show the user the employees from the locations that they have access to
-        $users = Users::getEmployeesByUser($userObj, $profilesId);
+      //  $users = Users::getEmployeesByUser($userObj, $profilesId);
       }
       if (count($users) == 0) {
         if ($locationid <= 0) $this->flash->notice("The search did not find any ".($profilesId==3?'employees':'admin users'));
-        //return $this->dispatcher->forward(array(
-        //  "action" => "index"
-        //));
       }
-
-      $paginator = new Paginator(array(
-          "data" => $users,
-          "limit" => 1000,
-          "page" => 1
-      ));
-
-      $this->view->page = $paginator->getPaginate();
+      
+      $this->view->users = $users;
     }
 
 
@@ -518,6 +552,8 @@ class ControllerBase extends Controller
         $Obj->original_review_count = $Obj->review_count;
       }
       $Obj->save();
+
+//echo '<pre>reviews:'.print_r($google_reviews['reviews'],true).'</pre>';
           
       //now import the reviews (if not already in the database)
       //loop through reviews
@@ -800,4 +836,9 @@ class ControllerBase extends Controller
     //echo 'results:'.$results;
     return $results;
   }
+
+
+
+
+
 }

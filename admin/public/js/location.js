@@ -108,7 +108,7 @@ function initMap() {
     document.getElementById("google_api_id").value = googleid;
     
     $('#googleName').text(name);
-    $('#googleAddress').text(street_number + ' ' + route + ' ' + locality + ', ' + administrative_area_level_1 + ' ' + postal_code);
+    $('#googleAddress, .googleAddress').text(street_number + ' ' + route + ' ' + locality + ', ' + administrative_area_level_1 + ' ' + postal_code);
     $("#googleLink").attr("href", url);
 
     $('#facebookName').text(name);
