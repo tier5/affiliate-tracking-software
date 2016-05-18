@@ -45,7 +45,7 @@ class ControllerBase extends Controller
 {
     public function initialize()
     {
-      //find the settings and set them on the layout
+      //find the settings and set them on the layout.
       $foundsomething = false;
             
       //get the user id, to find the settings
