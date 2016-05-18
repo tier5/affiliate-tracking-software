@@ -253,6 +253,7 @@ class ReviewsController extends ControllerBase
           }
         }
       }
+      $this->getSMSReport();
     }
 
 
