@@ -49,7 +49,7 @@
     
     <div class="form-group">
       <label class="control-label" style="width: 100%;">Send Test Text Message:</label>
-      <input class="form-control placeholder-no-fix" type="name" autocomplete="off" placeholder="Cell Phone" name="cell_phone" id="cell_phone" value="<?=(isset($_POST['cell_phone'])?$_POST["cell_phone"]:'')?>" style="float: left; width: 40%; margin-right: 15px;" /> <a href="#" class="btnLink" id="sendsmslink" style="float: left;">Send</a>
+      <input class="form-control placeholder-no-fix" type="name" autocomplete="off" placeholder="Cell Phone" name="cell_phone" id="cell_phone" value="<?=(isset($_POST['cell_phone'])?$_POST["cell_phone"]:'')?>" style="float: left; width: 40%; margin-right: 15px;" /> <a href="#" class="btnLink" id="sendsmslink" style="float: left;line-height: 19px;">Send</a>
     </div>
 
     <div id="divSMSResults" class="form-group" style="clear: both;">

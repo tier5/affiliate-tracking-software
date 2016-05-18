@@ -40,7 +40,7 @@ $started = true;
     }
     ?>
     map: map,
-    title: '<?=$location->name?>'
+    title: '<?=str_replace("'", "", $location->name)?>'
   });
 <?php
 }
@@ -63,7 +63,7 @@ $started = true;
       <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
     </div>
   </div>
-  <div class="search-btn">{{ link_to("/admin/location/create", "Create Location", "class": "btnLink") }}</div>
+  <div class="search-btn"><a class="btnLink" href="/admin/location/create" style="width: 127px !important;">Create Location</a></div>
 </div>
 
 <!-- Start .panel -->

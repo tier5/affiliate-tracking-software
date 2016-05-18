@@ -856,10 +856,10 @@ class LocationController extends ControllerBase
     $foundagency = array();
 
     //now loop through every location in the database
-    //$allLocations = Location::find();
+    $allLocations = Location::find();
 
     $conditions = "location_id = :location_id:";
-    $parameters = array("location_id" => 38);
+    $parameters = array("location_id" => 23);
     $allLocations = Location::find(array($conditions, "bind" => $parameters));
 
     if (count($allLocations) > 0) {
@@ -931,18 +931,22 @@ class LocationController extends ControllerBase
         $rev_monthly->year = date('Y');
         $rev_monthly->save();
 
+        //loop through our found array and send notifications
+    //echo '<pre>$foundagency:'.print_r($foundagency,true).'</pre>';
+        $keys = array_keys($foundagency);
+        foreach($keys as $key){
+          $agencyobj = new Agency();
+          $agency = $agencyobj::findFirst($key);
+          //send the notification about the new review
+          $message = 'Notification: a new review has been posted for '.$foundagency[$key].': http://'.(isset($agency->custom_domain) && $agency->custom_domain != ''?$agency->custom_domain.'.':'').'reviewvelocity.co/reviews/';
+          //echo $message;
+          parent::sendFeedback($agency, $message, $location->location_id, 'Notification: New Review', false);
+        }
+        $foundagency = array();
+
       }  // go to the next location
     }  // end checking for locations
-
-    //loop through our found array and send notifications
-    $keys = array_keys($foundagency);
-    foreach($keys as $key){
-      $agencyobj = new Agency();
-      $agency = $agencyobj::findFirst($key);
-      //send the notification about the new review
-      $message = 'Notification: a new review has been posted for '.$foundagency[$key].': http://'.(isset($agency->custom_domain) && $agency->custom_domain != ''?$agency->custom_domain:'').'.reviewvelocity.co/reviews/';
-      parent::sendFeedback($agency, $message);
-    }
+       
 
     //Check if there are any invites that need to be resent
     $invitelist = ReviewInvite::getInvitesPending();

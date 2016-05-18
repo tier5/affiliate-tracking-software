@@ -46,7 +46,13 @@ class UsersController extends ControllerBase
     {
       $this->usersFunctionality(1);
       $this->getSMSReport();
-      echo $this->view->render('users', 'index');
+      try {
+        $this->view->render('users', 'index');
+        $this->view->disable();
+        return;
+      } catch (Exception $e) {
+
+      }
     }
 
     
@@ -67,7 +73,13 @@ class UsersController extends ControllerBase
     public function admincreateAction()
     {
       $this->createFunction(1);
-      echo $this->view->render('users', 'create');
+      try {
+        $this->view->render('users', 'create');
+        $this->view->disable();
+        return;
+      } catch (Exception $e) {
+
+      }
     }
     
 
@@ -219,7 +231,9 @@ class UsersController extends ControllerBase
     public function admineditAction($id)
     {
       $this->editFunction($id, 1);
-      echo $this->view->render('users', 'edit');
+      $this->view->render('users', 'edit');
+      $this->view->disable();
+      return;
     }
 
 
@@ -271,7 +285,7 @@ class UsersController extends ControllerBase
       if ($this->request->isPost()) {
         $user->assign(array(
           'name' => $this->request->getPost('name', 'striptags'),
-          'profilesId' => $profilesId,
+          //'profilesId' => $profilesId,
           'email' => $this->request->getPost('email', 'email'),
           'phone' => $this->request->getPost('phone'),
           //'banned' => $this->request->getPost('banned'),

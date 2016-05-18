@@ -211,7 +211,7 @@ class Users extends Model
     /*
      * This function pull up a report of the top employees 
      */
-    public static function getEmployeeListReport($agency_id, $start_time, $end_time, $location_id, $review_invite_type_id)
+    public static function getEmployeeListReport($agency_id, $start_time, $end_time, $location_id, $review_invite_type_id, $profilesId)
     {
       // A raw SQL statement
       $sql   = "SELECT users.id, users.name, 
@@ -222,6 +222,7 @@ class Users extends Model
                   .", ".$review_invite_type_id." AS review_invite_type_id
                 FROM users 
                 WHERE users.agency_id = ".$agency_id."
+                  ".($profilesId?($profilesId!=1?" AND users.profilesId != 1 AND users.profilesId != 4 AND users.profilesId = ".$profilesId."":" AND users.profilesId = 1"):"")."
                 ORDER BY (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") DESC;";
       //echo '<p>sql:'.$sql.'</p>';
 

@@ -253,7 +253,46 @@ class ControllerBase extends Controller
 
     
     public function getSMSReport() {
+      
+      //check if the user should get the upgrade message (Only "business" agency_types who are signed up for Free accounts,
+      //get the upgrade message)
+      $this->view->is_upgrade = false;
+      if (!(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency')) {
+        //we have a business, so check if free
+        //echo '<p>$agency->subscription_id:'.$agency->subscription_id.'</p>';
+        //echo '<p>$agency->agency_id:'.$agency->agency_id.'</p>';
+        if (isset($agency->subscription_id) && $agency->subscription_id > 0) {
+          //we have a subscription, check if free
+          $conditions = "subscription_id = :subscription_id:";
+          $parameters = array("subscription_id" => $agency->subscription_id);
+          $subscriptionobj = Subscription::findFirst(array($conditions, "bind" => $parameters));
+          if ($subscriptionobj->amount > 0) {
+            $this->view->is_upgrade = false;
+          } else {
+            $this->view->is_upgrade = true;
+          }
+        } else {
+          $this->view->is_upgrade = true;
+        }
+      }
+
       if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
+        if ($this->view->is_upgrade) {
+          $identity = $this->auth->getIdentity();
+          //find user
+          $conditions = "id = :id:";
+          $parameters = array("id" => $identity['id']);
+          $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+          //find the agency 
+          $conditions = "agency_id = :agency_id:";
+          $parameters = array("agency_id" => $userObj->agency_id);
+          $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+          //get total sent
+          $this->getTotalSMSSent($agency);
+          //get share info
+          $this->getShareInfo($agency);
+        } 
+
         //Last month!
         $start_time = date("Y-m-d", strtotime("first day of previous month"));
         $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
@@ -311,12 +350,14 @@ class ControllerBase extends Controller
         //set the agency SMS limit
         $this->view->review_goal = $location->review_goal;
         //calculate how many sms messages we need to send to meet this goal.
-        $percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
-        if ($percent_needed <= 0) $percent_needed = 20;
+        //$percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
+        //if ($percent_needed <= 0) 
+        $percent_needed = 10;
         $this->view->percent_needed = $percent_needed;
         //echo '<p>$sms_sent_last_month:'.$sms_sent_last_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
         //echo '<p>percent_needed:'.$percent_needed.':review_goal:'.$location->review_goal.'</p>';
         $this->view->total_sms_needed = round($location->review_goal / ($percent_needed / 100));
+
       } //end checking for business vs agency
     }
 
@@ -399,7 +440,7 @@ class ControllerBase extends Controller
     
 
     
-    public function sendFeedback($agency, $message, $location_id)
+    public function sendFeedback($agency, $message, $location_id, $subject, $user_id = false)
     {
 //echo '<pre>sendFeedback START !!!</pre>';
       $conditions = "location_id = :location_id:";
@@ -407,18 +448,34 @@ class ControllerBase extends Controller
       $notifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
 
       foreach($notifications as $an) { 
-        //find the user
-        $conditions = "id = :id:";
-        $parameters = array("id" => $an->user_id);
-        $user = Users::findFirst(array($conditions, "bind" => $parameters));
-        
-//echo '<pre>$user:'.print_r($user,true).'</pre>';
-        if (isset($user->phone) && $user->phone != '' && $agency->twilio_api_key != '' && $agency->twilio_auth_token != '') {
-          //we have a phone, so send the SMS
-          $this->SendSMS($this->formatTwilioPhone($user->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency);
+        //check if the user wants new reviews
+        if (($an->all_reviews == 1 || ($an->individual_reviews == 1 && $an->user_id == $user_id)) && ($an->email_alert == 1 || $an->sms_alert == 1)) {
+          //find the user
+          $conditions = "id = :id:";
+          $parameters = array("id" => $an->user_id);
+          $user = Users::findFirst(array($conditions, "bind" => $parameters));
+
+          if ($an->email_alert == 1 && isset($user->email)) {
+            //the user wants an email, so send it now
+            $this->getDI()
+              ->getMail()
+              ->send('kevin_revie@hotmail.com', $subject, '', '', $message);
+              //->send($user->email, 'Notification: New Review', '', '', $message);
+          } 
+          if ($an->sms_alert == 1 && isset($user->phone) && $user->phone != '') {
+            //the user wants a text message       
+    //echo '<pre>$user:'.print_r($user,true).'</pre>';
+            //if (isset($user->phone) && $user->phone != '' && $agency->twilio_api_key != '' && $agency->twilio_auth_token != '') {
+              //we have a phone, so send the SMS
+              $this->SendSMS($this->formatTwilioPhone($user->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency);
+            //}
+          }  
         }
       }
     }
+  
+
+
 
     
     /**
@@ -521,10 +578,10 @@ class ControllerBase extends Controller
           $end_time = date("Y-m-d H:i:s", strtotime($end_time));
         }
 
-        $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id);
+        $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false);
         $this->view->users_report = $users_report;
 
-        $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id);
+        $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId);
       //} else {
         //else only show the user the employees from the locations that they have access to
       //  $users = Users::getEmployeesByUser($userObj, $profilesId);
@@ -614,6 +671,8 @@ class ControllerBase extends Controller
           
       //now import the review (if not already in the database)
       //loop through reviews
+
+//echo '<pre>$yelpreviews->reviews:'.print_r($yelpreviews->reviews,true).'</pre>';
       foreach ($yelpreviews->reviews as $rev) {
         //check if the review is already in the db
         $conditions = "external_id = :external_id: AND rating_type_id = 1 AND location_id = ".$location->location_id;
@@ -733,7 +792,7 @@ class ControllerBase extends Controller
           $result = $this->fb->get('/'.$Obj->external_id.'/ratings?limit=10000&after='.$result['paging']['cursors']['after'], $this->facebook_access_token)->getDecodedBody();
           $reviews = array_merge($reviews, $result['data']);
         }
-  echo '<pre>$reviews:'.print_r($reviews,true).'</pre>';
+  //echo '<pre>$reviews:'.print_r($reviews,true).'</pre>';
         
         //$token = str_replace("access_token=", "", $this->facebook_access_token);
   //echo '<pre>$this->facebook_access_token:'.print_r($this->facebook_access_token,true).'</pre>';
@@ -767,7 +826,7 @@ class ControllerBase extends Controller
         //if we found a page access token, try to find reviews
         if ($page_access_token != '') {
           $reviews = $face->getBusinessReviews($Obj->external_id, $page_access_token);
-          echo '<pre>$reviews:'.print_r($reviews,true).'</pre>';
+          //echo '<pre>$reviews:'.print_r($reviews,true).'</pre>';
 
           if (isset($reviews) && $reviews != '') {
             $reviews = json_decode($reviews);

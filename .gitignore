@@ -1,2 +1,3 @@
 admin/app/config/config.php
 wp-config.php
+admin/public/phplog

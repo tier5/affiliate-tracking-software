@@ -6,11 +6,54 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
 ?>
 <header class="jumbotron subhead" id="dashboard">
 	<div class="hero-unit">
-		<!-- BEGIN PAGE TITLE-->
-    <h3 class="page-title"> Dashboard
-        <small>dashboard & statistics</small>
-    </h3>
     <!-- END PAGE TITLE-->
+    <div class="row">
+      <div class="col-md-5 col-sm-5">
+        <h3 class="page-title"> Dashboard
+            <small>dashboard & statistics</small>
+        </h3>
+      </div>    
+      <?php 
+      if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
+        if ($is_upgrade) {
+          $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
+          if ($percent > 100) $percent = 100;
+          ?>
+          <div class="col-md-7 col-sm-7">
+            <div class="sms-chart-wrapper">
+              <div class="title">SMS Messages Sent</div>
+              <div class="bar-wrapper">
+                <div class="bar-background"></div>
+                <div class="bar-filled" style="width: <?=$percent?>%;"></div>
+                <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
+                <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
+              </div>
+              <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
+            </div>
+          </div>    
+          <?php 
+        } else {
+          $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
+          if ($percent > 100) $percent = 100;
+          ?>
+          <div class="col-md-7 col-sm-7">
+            <div class="sms-chart-wrapper">
+              <div class="title">SMS Messages Sent</div>
+              <div class="bar-wrapper">
+                <div class="bar-background"></div>
+                <div class="bar-filled" style="width: <?=$percent?>%;"></div>
+                <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
+                <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
+              </div>
+              <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
+            </div>
+          </div>    
+          <?php 
+        }
+      } //end checking for business vs agency
+      ?>
+    </div>
+
 
     <?php
     //check if the user should upgrade
@@ -114,7 +157,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
               <div class="number">
                 <span data-value="<?=(isset($total_reviews_this_month)?$total_reviews_this_month:0)?>"><?=(isset($total_reviews_this_month)?$total_reviews_this_month:0)?></span>
               </div>
-              <div class="desc">Reviews Received</div>
+              <div class="desc" style="min-height: 36px;">Reviews Received</div>
               </div>
             </div>
             <div class="bottom-part">
@@ -136,6 +179,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
           <?php 
           $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):0);
           if ($percent > 100) $percent = 100;
+          //$percent = 0;
           ?>
           <div class="portlet-body circle-chart">
             <div class="left-header"><?=$percent?>%</div>
@@ -169,6 +213,9 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
           <div class="portlet-body">
             <div class="number">
               <span data-value="<?=$total_reviews_this_month?>" style="color: #2A3644;"><?=$total_reviews_this_month?></span>
+            </div>
+            <div class="text">
+            This Month
             </div>
           </div>
         </div>
@@ -220,13 +267,13 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
           <div class="portlet-title">
             <div class="caption">
               <span class="">Revenue At Risk</span>
-              <div class="number">$<span data-value="<?=($negative_total * $location->lifetime_value_customer)?>" data-counter="counterup"><?=($negative_total * $location->lifetime_value_customer)?></span></div>
+              <div class="number">$<span data-value="<?=number_format($negative_total * $location->lifetime_value_customer)?>" data-counter="counterup"><?=number_format($negative_total * $location->lifetime_value_customer)?></span></div>
             </div>
           </div>
           <div class="portlet-title last">
             <div class="caption">
               <span class="">Revenue Retained</span>
-              <div class="number green">$<span data-value="<?=$revenue_retained?>" data-counter="counterup"><?=$revenue_retained?></span></div>
+              <div class="number green">$<span data-value="<?=number_format($revenue_retained)?>" data-counter="counterup"><?=number_format($revenue_retained)?></span></div>
             </div>
           </div>
         </div>

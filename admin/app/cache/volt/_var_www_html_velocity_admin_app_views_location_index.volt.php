@@ -11,6 +11,48 @@ if ($locs) {
 ?>
 
 <div class="portlet light bordered dashboard-panel">
+  <div id="map"></div>        
+</div>        
+<script>
+
+function initMapList() {  
+<?php
+$started = false;
+foreach($locs as $location) { 
+  if (!$started) {
+    ?>
+  var myLatLng = {lat: <?=($location->latitude==''?'47.6750367':$location->latitude)?>, lng: <?=($location->longitude==''?'-122.127839':$location->longitude)?>};
+
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 4,
+    center: myLatLng
+  });
+<?php
+}
+$started = true;
+?>
+  var marker = new google.maps.Marker({
+    <?php 
+    if ($location->latitude != '' and $location->longitude != '') { 
+    ?>
+    position: {lat: <?=$location->latitude?>, lng: <?=$location->longitude?>},
+    <?php
+    }
+    ?>
+    map: map,
+    title: '<?=str_replace("'", "", $location->name)?>'
+  });
+<?php
+}
+?>
+}
+
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPisblAqZJJ7mGWcORf4FBjNMQKV20J20&signed_in=true&callback=initMapList"></script>
+        
+
+<div class="portlet light bordered dashboard-panel">
 <div class="table-header">
   <div class="title">LOCATION LIST</div>
   <div class="flexsearch">
@@ -21,7 +63,7 @@ if ($locs) {
       <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
     </div>
   </div>
-  <div class="search-btn"><?php echo $this->tag->linkTo(array('/admin/location/create', 'Create Location', 'class' => 'btnLink')); ?></div>
+  <div class="search-btn"><a class="btnLink" href="/admin/location/create" style="width: 127px !important;">Create Location</a></div>
 </div>
 
 <!-- Start .panel -->
