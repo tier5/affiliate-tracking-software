@@ -377,7 +377,42 @@ class SettingsController extends ControllerBase
     echo 'true';
   }
 
+  
 
+  public function notificationAction($id = 0, $fieldname, $value)
+  {
+    $conditions = "location_id = :location_id: AND user_id = :user_id:";
+    $parameters = array("location_id" => $this->session->get('auth-identity')['location_id'], "user_id" => $id);
+    $Obj = LocationNotifications::findFirst(array($conditions, "bind" => $parameters));
+
+    if (isset($Obj) && isset($Obj->user_id) && $Obj->user_id == $id) {
+      //lets edit the field and save the changes
+      if ($fieldname=='ea') $Obj->email_alert = $value;
+      if ($fieldname=='sa') $Obj->sms_alert = $value;
+      if ($fieldname=='ar') $Obj->all_reviews = $value;
+      if ($fieldname=='ir') $Obj->individual_reviews = $value;
+      $Obj->save();
+    } else {
+      //else we need to create a record
+      $loc = new LocationNotifications();
+      $loc->assign(array(
+        'location_id' => $this->session->get('auth-identity')['location_id'],
+        'user_id' => $id,
+        'email_alert' => 0,
+        'sms_alert' => 0,
+        'all_reviews' => 0,
+        'individual_reviews' => 0,
+      ));
+      if ($fieldname=='ea') $loc->email_alert = $value;
+      if ($fieldname=='sa') $loc->sms_alert = $value;
+      if ($fieldname=='ar') $loc->all_reviews = $value;
+      if ($fieldname=='ir') $loc->individual_reviews = $value;
+      $loc->save();
+    }
+
+    $this->view->disable();
+    echo 'true';
+  }
 
 
 

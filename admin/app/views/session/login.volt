@@ -4,7 +4,7 @@
 
 <!-- BEGIN LOGIN FORM -->
 <form class="login-form" action="/admin/session/login?return=<?=(isset($_GET['return'])?$_GET['return']:'')?>" method="post">
-    <h3>Sign In</h3>
+  <h3><?=(strpos($_SERVER['REQUEST_URI'],'admin/confirm/')>0?'Thank You For Confirming Your Email Sign In':'Sign In')?></h3>
   <p class="hint"> &nbsp; </p>
     <div class="alert alert-danger display-hide">
         <button class="close" data-close="alert"></button>
@@ -30,7 +30,6 @@
         </p>
     </div>-->
 
-		{{ form.render('csrf', ['value': security.getToken()]) }}
 </form>
 <!-- END LOGIN FORM -->
 

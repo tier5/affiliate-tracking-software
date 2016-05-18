@@ -167,26 +167,10 @@ class IndexController extends ControllerBase
           $this->view->agency = $agency;
         }
         
+        
+        $this->getSMSReport();
 
-        //check if the user should get the upgrade message (Only "business" agency_types who are signed up for Free accounts,
-        //get the upgrade message)
-        $this->view->is_upgrade = false;
-        if (!(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency')) {
-          //we have a business, so check if free
-          if (isset($agency->subscription_id) && $agency->subscription_id > 0) {
-            //we have a subscription, check if free
-            $conditions = "subscription_id = :subscription_id:";
-            $parameters = array("subscription_id" => $agency->subscription_id);
-            $subscriptionobj = Subscription::findFirst(array($conditions, "bind" => $parameters));
-            if ($subscriptionobj->amount > 0) {
-              $this->view->is_upgrade = false;
-            } else {
-              $this->view->is_upgrade = true;
-            }
-          } else {
-            $this->view->is_upgrade = true;
-          }
-        }
+
 
         //find the employee conversion report type
         $conversion_report_type = 'this_month'; //default this month
@@ -276,8 +260,9 @@ class IndexController extends ControllerBase
         //set the agency SMS limit
         $this->view->review_goal = $loc->review_goal;
         //calculate how many sms messages we need to send to meet this goal.
-        $percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
-        if ($percent_needed == 0) $percent_needed = 20;
+        //$percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
+        //if ($percent_needed == 0) 
+        $percent_needed = 10;
         $this->view->percent_needed = $percent_needed;
         //echo '<p>$sms_sent_last_month:'.$sms_sent_last_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
         //echo '<p>percent_needed:'.$percent_needed.':review_goal:'.$loc->review_goal.'</p>';

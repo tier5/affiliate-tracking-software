@@ -9,22 +9,41 @@
       </div>    
       <?php 
       if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
-        $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
-        if ($percent > 100) $percent = 100;
-        ?>
-        <div class="col-md-7 col-sm-7">
-          <div class="sms-chart-wrapper">
-            <div class="title">SMS Messages Sent</div>
-            <div class="bar-wrapper">
-              <div class="bar-background"></div>
-              <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-              <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-              <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
+        if ($is_upgrade) {
+          $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
+          if ($percent > 100) $percent = 100;
+          ?>
+          <div class="col-md-7 col-sm-7">
+            <div class="sms-chart-wrapper">
+              <div class="title">SMS Messages Sent</div>
+              <div class="bar-wrapper">
+                <div class="bar-background"></div>
+                <div class="bar-filled" style="width: <?=$percent?>%;"></div>
+                <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
+                <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
+              </div>
+              <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
             </div>
-            <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
-          </div>
-        </div>    
-        <?php 
+          </div>    
+          <?php 
+        } else {
+          $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
+          if ($percent > 100) $percent = 100;
+          ?>
+          <div class="col-md-7 col-sm-7">
+            <div class="sms-chart-wrapper">
+              <div class="title">SMS Messages Sent</div>
+              <div class="bar-wrapper">
+                <div class="bar-background"></div>
+                <div class="bar-filled" style="width: <?=$percent?>%;"></div>
+                <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
+                <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
+              </div>
+              <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
+            </div>
+          </div>    
+          <?php 
+        }
       } //end checking for business vs agency
       ?>
     </div>
@@ -521,26 +540,26 @@
                 <td><?=$data->name?></td>
                 <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" id="emailalerton<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=($is_email_alert_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" id="emailalertoff<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=($is_email_alert_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ea" data-value="0" id="eaon<?=$data->id?>" href="#" class="email_alert_on" style="<?=($is_email_alert_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ea" data-value="1" id="eaoff<?=$data->id?>" href="#" class="email_alert_off" style="<?=($is_email_alert_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
                 </span> 
                 </td>
                 <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" id="smsalerton<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=($is_sms_alert_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" id="smsalertoff<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=($is_sms_alert_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="sa" data-value="0" id="saon<?=$data->id?>" href="#" class="sms_alert_on" style="<?=($is_sms_alert_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="sa" data-value="1" id="saoff<?=$data->id?>" href="#" class="sms_alert_off" style="<?=($is_sms_alert_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
                 </span> 
                 </td>
                 <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" id="allreviewson<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=($is_all_reviews_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" id="allreviewsoff<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=($is_all_reviews_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ar" data-value="0" id="aron<?=$data->id?>" href="#" class="all_reviews_on" style="<?=($is_all_reviews_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ar" data-value="1" id="aroff<?=$data->id?>" href="#" class="all_reviews_off" style="<?=($is_all_reviews_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
                 </span> 
                 </td>
                 <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" id="individualreviewson<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=($is_individual_reviews_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" id="individualreviewsoff<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=($is_individual_reviews_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ir" data-value="0" id="iron<?=$data->id?>" href="#" class="individual_reviews_on" style="<?=($is_individual_reviews_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ir" data-value="1" id="iroff<?=$data->id?>" href="#" class="individual_reviews_off" style="<?=($is_individual_reviews_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
                 </span> 
                 </td>
               </tr>
@@ -738,6 +757,32 @@ jQuery(document).ready(function($){
 
     return false;
   }
+
+  $("#notifications .on-off-buttons a").click(function() {
+    id = $(this).attr("data-id");
+    type = $(this).attr("data-type");
+    value = $(this).attr("data-value");
+    //console.log('id:'+id);
+    $.ajax({
+      url: "/admin/settings/notification/"+id+"/"+type+"/"+value+"/",
+      cache: false,
+      success: function(html){
+        //done!
+      }
+    });
+
+    if (value == 1) {
+      //console.log('#'+type+'on'+id);
+      $('#'+type+'on'+id).show();
+      $('#'+type+'off'+id).hide();
+    } else {
+      //console.log('#'+type+'off'+id);
+      $('#'+type+'on'+id).hide();
+      $('#'+type+'off'+id).show();
+    }
+
+    return false;
+  });
 
 
   $('#main_color').minicolors();

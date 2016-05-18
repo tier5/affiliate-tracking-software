@@ -708,8 +708,9 @@ jQuery(document).ready(function($){
           //data: return data from server
           //console.log(data);
           if (data == 'true') {
-            $('#smsrequestformsuccess').show();
+            //$('#smsrequestformsuccess').show();
             $('#smsrequestformerror').hide();
+            $('.fancybox-overlay').hide();
           } else {
             //if fails      
             $('#smsrequestformerror').text(data);

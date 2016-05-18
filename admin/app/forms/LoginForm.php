@@ -55,6 +55,7 @@ class LoginForm extends Form
         $this->add($remember);
 
         // CSRF
+        /*
         $csrf = new Hidden('csrf');
 
         $csrf->addValidator(new Identical(array(
@@ -65,7 +66,7 @@ class LoginForm extends Form
         $csrf->clear();
 
         $this->add($csrf);
-
+        */
         $this->add(new Submit('go', array(
             'class' => 'btn btn-success'
         )));

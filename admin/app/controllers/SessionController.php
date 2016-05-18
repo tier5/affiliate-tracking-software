@@ -1108,9 +1108,27 @@ class SessionController extends ControllerBase
               $administrative_area_level_1 = $this->extractFromAdress(@$arrResultFindPlaceDetail['result']['address_components'], 'administrative_area_level_1');
               $postal_code = $this->extractFromAdress(@$arrResultFindPlaceDetail['result']['address_components'], 'postal_code');
               $country = $this->extractFromAdress(@$arrResultFindPlaceDetail['result']['address_components'], 'country');
+              
+              $strURL = "";
+              $strButton = "";
+
+              //check to see if this location is already in the database, by checking the place id
+              $conditions = "api_id = :api_id: AND review_site_id = 3";
+              $parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
+              $loc = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+              if (!$loc) {
+                $strURL = "onclick=\"selectLocation('".$this->encode(@$arrResultFindPlaceDetail['result']['place_id'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['url'])."', '".$this->encode($returnBusinessName)."', '".$this->encode($street_number)."', '".$this->encode($route)."', '".$this->encode($locality)."', '".$this->encode($administrative_area_level_1)."', '".$this->encode($postal_code)."', '".$this->encode($country)."', '".$this->encode(@$arrResultFindPlaceDetail['result']['formatted_phone_number'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lat'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng'])."');return false;\" href=\"javascript:void(0);\"";
+                $strButton = "<a id=\"business-name-link\" ".$strURL." style=\"float: right; height: 40px; line-height: 24px;\" class=\"btnLink\" >Choose This Listing</a>";
+              } else {
+                //the location was found, so tell the user that
+                $strURL = "href=\"javascript:void(0);\"";
+                $strButton = "<div style=\"float: right; margin-top: -10px; padding: 5px; text-align: center; width: 215px;\">Already Registered Contact Support</div>";
+              }
+
 
               $strHTML .= "<div class=\"border-box-s\">
-                  <p class=\"business-name\"><a id=\"business-name-link\" onclick=\"selectLocation('".$this->encode(@$arrResultFindPlaceDetail['result']['place_id'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['url'])."', '".$this->encode($returnBusinessName)."', '".$this->encode($street_number)."', '".$this->encode($route)."', '".$this->encode($locality)."', '".$this->encode($administrative_area_level_1)."', '".$this->encode($postal_code)."', '".$this->encode($country)."', '".$this->encode(@$arrResultFindPlaceDetail['result']['formatted_phone_number'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lat'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng'])."');return false;\" href=\"javascript:void(0);\">" . $returnBusinessName . "</a></p>
+                  <p class=\"business-name\"><a id=\"business-name-link\" ".$strURL.">" . $returnBusinessName . "</a></p>
+                  ".$strButton."
                   <ul>
                   <li>" . $returnAddress . "</li>
                   <li>" . $returnPhoneNumber . "</li>

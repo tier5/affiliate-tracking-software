@@ -34,47 +34,47 @@ Enter the email address of your friends that would benefit from trying Review Ve
 <div class="row" id="shareform">
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_1" value="<?=(isset($_POST['email_1'])?$_POST["email_1"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_1" value="<?=(isset($_POST['email_1'])?$_POST["email_1"]:'')?>" /> 
   </div>
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_2" value="<?=(isset($_POST['email_2'])?$_POST["email_2"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_2" value="<?=(isset($_POST['email_2'])?$_POST["email_2"]:'')?>" /> 
   </div>
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_3" value="<?=(isset($_POST['email_3'])?$_POST["email_3"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_3" value="<?=(isset($_POST['email_3'])?$_POST["email_3"]:'')?>" /> 
   </div>
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_4" value="<?=(isset($_POST['email_4'])?$_POST["email_4"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_4" value="<?=(isset($_POST['email_4'])?$_POST["email_4"]:'')?>" /> 
   </div>
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_5" value="<?=(isset($_POST['email_5'])?$_POST["email_5"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_5" value="<?=(isset($_POST['email_5'])?$_POST["email_5"]:'')?>" /> 
   </div>
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_6" value="<?=(isset($_POST['email_6'])?$_POST["email_6"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_6" value="<?=(isset($_POST['email_6'])?$_POST["email_6"]:'')?>" /> 
   </div>
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_7" value="<?=(isset($_POST['email_7'])?$_POST["email_7"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_7" value="<?=(isset($_POST['email_7'])?$_POST["email_7"]:'')?>" /> 
   </div>
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_8" value="<?=(isset($_POST['email_8'])?$_POST["email_8"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_8" value="<?=(isset($_POST['email_8'])?$_POST["email_8"]:'')?>" /> 
   </div>
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_9" value="<?=(isset($_POST['email_9'])?$_POST["email_9"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_9" value="<?=(isset($_POST['email_9'])?$_POST["email_9"]:'')?>" /> 
   </div>
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_10" value="<?=(isset($_POST['email_10'])?$_POST["email_10"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_10" value="<?=(isset($_POST['email_10'])?$_POST["email_10"]:'')?>" /> 
   </div>
   <div class="form-group">
     <label class="control-label">I'd like to invite:</label>
-    <input class="form-control placeholder-no-fix" type="text" placeholder="" name="email_11" value="<?=(isset($_POST['email_11'])?$_POST["email_11"]:'')?>" /> 
+    <input class="form-control placeholder-no-fix" type="text" placeholder="Email" name="email_11" value="<?=(isset($_POST['email_11'])?$_POST["email_11"]:'')?>" /> 
   </div>
 </div>
 <div class="row">

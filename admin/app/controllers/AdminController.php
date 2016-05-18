@@ -252,8 +252,11 @@ class AdminController extends ControllerBase
         }
 
         $this->flash->success('The email was successfully confirmed');
-
-        return $this->response->redirect($this->_activeLanguage.'/user/profile');
+        return $this->dispatcher->forward(array(
+                'controller' => 'user',
+                'action' => 'login'
+            ));
+        //return $this->response->redirect($this->_activeLanguage.'/user/login');
     }
 
     public function profileAction()

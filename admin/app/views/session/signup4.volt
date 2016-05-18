@@ -25,11 +25,11 @@
 
 <div class="col-md-12 employeetable">
   <div class="middle-row" style="border-bottom: 1px solid #E7ECF0;">
-    <a href="#" id="createlink" class="btnLink">Create Employee</a>
+    <a href="#" id="createlink" class="btnLink" style="height: 32px !important; line-height: 16px; padding-left: 15px; padding-right: 15px;">Create Employee</a>
     <h3>EMPLOYEE LIST</h3>
   </div>
 
-{% for user in page.items %}
+{% for user in users %}
 {% if loop.first %}
 <table cellspacing="0" width="100%" class="table table-striped table-bordered dataTable" id="basic-datatables" role="grid" aria-describedby="basic-datatables_info" style="width: 100%;">
   <thead>
