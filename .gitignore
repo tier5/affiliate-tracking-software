@@ -1,4 +1,5 @@
 admin/app/config/config.php
 wp-config.php
 admin/public/phplog
-admin/app/cache/volt/
+admin/app/cache/
+admin/app/cache/*
