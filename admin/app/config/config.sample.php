@@ -3,9 +3,9 @@ return new \Phalcon\Config(array(
     'database' => array(
       'adapter' => 'Mysql',
       'host' => 'localhost',
-      'username' => 'reviewvelocity',
-      'password' => 'GFSGBsd456#456dD',
-      'dbname' => 'reviewvelocity',
+      'username' => 'dev',
+      'password' => '_G88{XEyj:Nr',
+      'dbname' => 'dev',
       'charset' => 'utf8',
     ),
     'application' => array(
