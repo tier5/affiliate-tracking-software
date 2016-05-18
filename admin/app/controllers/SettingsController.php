@@ -421,7 +421,7 @@ class SettingsController extends ControllerBase
       // Check if the user has uploaded files
       if ($this->request->hasFiles() == true) {
         //echo '<p>hasFiles() == true!</p>';
-        $baseLocation = '/var/www/html/velocity/admin/public/img/upload/';
+        $baseLocation = '/var/www/html/'.$this->config->webpathfolder->path.'/admin/public/img/upload/';
 
 
         // Print the real file names and sizes
@@ -436,7 +436,7 @@ class SettingsController extends ControllerBase
             $image->resize(200, 30)->save($filepath);
 
             //echo '<p>$filepath: '.$filepath.'</p>';
-            $filepath = '/admin'.str_replace("/var/www/html/velocity/admin/public", "", $filepath);
+            $filepath = '/admin'.str_replace("/var/www/html".$this->config->webpathfolder->path."admin/public", "", $filepath);
             $this->view->logo_setting = $filepath;
             return $filepath;
           }

@@ -25,8 +25,8 @@ use Services_Twilio_RestException;
 
 //use Vokuro\Controllers\Facebook\Facebook;
 // Skip these two lines if you're using Composer
-define('FACEBOOK_SDK_V4_SRC_DIR', '/var/www/html/velocity/admin/vendor/facebook/php-sdk-v4/src/Facebook/');
-require '/var/www/html/velocity/admin/vendor/facebook/php-sdk-v4/autoload.php';
+define('FACEBOOK_SDK_V4_SRC_DIR', '/var/www/html/'.$this->config->webpathfolder->path.'/admin/vendor/facebook/php-sdk-v4/src/Facebook/');
+require '/var/www/html/'.$this->config->webpathfolder->path.'/admin/vendor/facebook/php-sdk-v4/autoload.php';
 
 use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
@@ -385,7 +385,7 @@ class ControllerBase extends Controller
 
     public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_auth_messaging_sid, $twilio_from_phone, $agency) {
       // this line loads the library 
-      require_once("/var/www/html/velocity/admin/vendor/twilio/sdk/Services/Twilio.php"); 
+      require_once("/var/www/html".$this->config->webpathfolder->path."admin/vendor/twilio/sdk/Services/Twilio.php"); 
 
       // set your AccountSid and AuthToken from www.twilio.com/user/account
       //new tokens
@@ -753,33 +753,33 @@ class ControllerBase extends Controller
       //if we have a facebook page token, try to import reviews
       if (isset($Obj->access_token) && $Obj->access_token != '') {
         //use the graph api to get facebook "ratings" aka reviews  
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/autoload.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Facebook.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/FacebookApp.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/FacebookClient.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/FacebookRequest.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/FacebookResponse.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Authentication/AccessToken.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Authentication/OAuth2Client.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Helpers/FacebookRedirectLoginHelper.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/PersistentData/PersistentDataInterface.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Url/UrlDetectionInterface.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Url/FacebookUrlDetectionHandler.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Url/FacebookUrlManipulator.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/HttpClients/FacebookHttpClientInterface.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/HttpClients/FacebookCurl.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/HttpClients/FacebookCurlHttpClient.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Http/RequestBodyInterface.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Http/RequestBodyUrlEncoded.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Http/GraphRawResponse.php";  
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Exceptions/FacebookSDKException.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Exceptions/FacebookAuthorizationException.php"; 
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Exceptions/FacebookAuthenticationException.php";
-        require_once "/var/www/html/velocity/admin/app/controllers/Facebook/Exceptions/FacebookResponseException.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/autoload.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Facebook.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/FacebookApp.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/FacebookClient.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/FacebookRequest.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/FacebookResponse.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Authentication/AccessToken.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Authentication/OAuth2Client.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Helpers/FacebookRedirectLoginHelper.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/PersistentData/PersistentDataInterface.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Url/UrlDetectionInterface.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Url/FacebookUrlDetectionHandler.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Url/FacebookUrlManipulator.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/HttpClients/FacebookHttpClientInterface.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/HttpClients/FacebookCurl.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/HttpClients/FacebookCurlHttpClient.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Http/RequestBodyInterface.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Http/RequestBodyUrlEncoded.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Http/GraphRawResponse.php";  
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Exceptions/FacebookSDKException.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Exceptions/FacebookAuthorizationException.php"; 
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Exceptions/FacebookAuthenticationException.php";
+        require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Exceptions/FacebookResponseException.php"; 
         
         $this->fb = new \Services\Facebook\Facebook(array(
           'app_id' => '628574057293652',
