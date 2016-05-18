@@ -25,8 +25,8 @@ use Services_Twilio_RestException;
 
 //use Vokuro\Controllers\Facebook\Facebook;
 // Skip these two lines if you're using Composer
-define('FACEBOOK_SDK_V4_SRC_DIR', '/var/www/html/'.$this->config->webpathfolder->path.'/admin/vendor/facebook/php-sdk-v4/src/Facebook/');
-require '/var/www/html/'.$this->config->webpathfolder->path.'/admin/vendor/facebook/php-sdk-v4/autoload.php';
+define('FACEBOOK_SDK_V4_SRC_DIR', '/var/www/html/velocity/admin/vendor/facebook/php-sdk-v4/src/Facebook/');
+require '/var/www/html/velocity/admin/vendor/facebook/php-sdk-v4/autoload.php';
 
 use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
