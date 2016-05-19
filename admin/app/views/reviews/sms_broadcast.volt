@@ -50,28 +50,43 @@
       ?>
     </div>
 
+    
+  <div class="row">
+    <div class="col-md-12 col-sm-12">
+      <div class="portlet light bordered dashboard-panel">
+        <div class="portlet-body" id="reportwrapperreview">
+
+        <ul class="nav nav-tabs" style="margin-bottom: 25px;">
+          <li class="active"><a style="border-top: 8px solid #283643 !important; padding: 14px 69px 53px;" href="/admin/reviews/sms_broadcast"> NEW MESSAGES </a></li>
+          <li><a style="border-top: 8px solid #F6F6F6 !important; padding: 14px 69px 53px;" href="/admin/reviews/sent_message"> SENT MESSAGE </a></li>
+        </ul>
+
+
+        
+
+
     <div class="row">
       
       <div class="col-md-12 col-sm-12">
         <div id="pnlSMSSent" class="portlet light bordered">
-          <div class="portlet-title">
+          <div class="portlet-title" style="margin-top: 13px;">
             <div class="caption">
-              <i class="icon-user font-purple"></i>
-              <span class="caption-subject font-purple bold uppercase">Search for Customers</span>
+              <img src="/admin/img/icon-user.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> Search for Customers</span>
             </div>
           </div>
-          <div class="portlet-body">
-            <div class="row">
+          <div class="row">
+            <div class="col-md-12 col-sm-12" style="padding-top: 20px;">
               <div class="col-md-4">
-                <div class="details">
+                <div class="details" style="border-right: 1px solid #e7ecf0; min-height: 200px;">
 
                   <div class="form-group">
-                    <div class="">
+                    <div style="margin-bottom: 15px;">
                       <b>Locations:</b>
                     </div>
                     <div class="row">
                       <div class="col-md-12">
                         <div id="userlocationselect">
+                        <table width="100%" colspan="5" border="0">
                         <?php 
                         $found = false;
                         foreach($locations as $data) { 
@@ -86,9 +101,10 @@
                             }
                           }
                           ?>
-                          <div class="location-data">
-                            <input type="checkbox" name="locations[]" value="<?=$data->location_id?>" <?=($checked?'checked="checked"':'')?> /> <?=$data->name?>
-                          </div>
+                          <tr>
+                            <td><div style="margin-bottom: 5px !important;"><input type="checkbox" name="locations[]" value="<?=$data->location_id?>" <?=($checked?'checked="checked"':'')?> /></div></td>
+                            <td><div style="margin-bottom: 5px !important;"><?=$data->name?></div></td>
+                          </tr>
                           <?php
                         } 
                         if (!$found) {
@@ -97,6 +113,7 @@
                           <?php
                         }  
                         ?>
+                        </table>
                         </div>
                       </div>
                     </div>
@@ -106,20 +123,27 @@
               </div>
               <div class="margin-bottom-10 visible-sm"> </div>
               <div class="col-md-4">
+                <div class="details" style="border-right: 1px solid #e7ecf0; min-height: 200px;">
 
                   <div class="form-group">
-                    <div class="">
+                    <div style="margin-bottom: 15px;">
                       <b>Review Type:</b>
                     </div>
                     <div class="row">
                       <div class="col-md-12">
                         <div id="reviewtypeselect">
-                          <div class="location-data">
-                            <input type="checkbox" name="review_type_negative" value="1" <?=(isset($_POST['review_type_negative']) && $_POST['review_type_negative'] == 1?' checked="checked"':'')?> /> Left Negative Feedback
-                          </div>
-                          <div class="location-data">
-                            <input type="checkbox" name="review_type_positive" value="1" <?=(isset($_POST['review_type_positive']) && $_POST['review_type_positive'] == 1?' checked="checked"':'')?> /> Left Positive Review
-                          </div>
+
+                        <table width="100%" colspan="5" border="0">
+                        <tr>
+                          <td><div style="margin-bottom: 5px !important;"><input type="checkbox" name="review_type_negative" value="1" <?=(isset($_POST['review_type_negative']) && $_POST['review_type_negative'] == 1?' checked="checked"':'')?> /></div></td>
+                          <td><div style="margin-bottom: 5px !important;">Left Negative Feedback</div></td>
+                        </tr>
+                        <tr>
+                          <td><div style="margin-bottom: 5px !important;"><input type="checkbox" name="review_type_positive" value="1" <?=(isset($_POST['review_type_positive']) && $_POST['review_type_positive'] == 1?' checked="checked"':'')?> /></div></td>
+                          <td><div style="margin-bottom: 5px !important;">Left Positive Review</div></td>
+                        </tr>
+                        </table>
+
                         </div>
                       </div>
                     </div>
@@ -129,10 +153,8 @@
                     <div style="display: none;" id="emailerror" class="error">
                       Invalid email.
                     </div>
-                    <div class="col-md-offset-2 col-md-10">
-                      <input type="submit" class="btn btn-big btn-success" value="Search">      
-                    </div>
                   </div>
+                </div>
 
               </div>
               <div class="margin-bottom-10 visible-sm"> </div>
@@ -140,7 +162,7 @@
                             
 
                   <div class="form-group">
-                    <div class="">
+                    <div style="margin-bottom: 15px;">
                       <b>Review Invite Date Sent Date Range:</b>
                     </div>
                     <div class="row">
@@ -148,11 +170,11 @@
                         
                         <div class="form-group">
                           <div class="col-md-12">
-                          <b>Start Date:</b>
-                            <div data-date-format="mm-dd-yyyy" class="input-group date date-picker">
-                              <input name="start_date" value="<?=(isset($_POST['start_date'])?$_POST['start_date']:'')?>" type="text" name="datepicker" readonly="" class="form-control" aria-required="true" aria-invalid="false" aria-describedby="datepicker-error">
-                              <span class="input-group-btn">
-                                <button type="button" class="btn default">
+                          <b style="display: block; margin-bottom: 6px;">Start Date:</b>
+                            <div data-date-format="mm-dd-yyyy" class="input-group date date-picker" style="width: 100%;">
+                              <input name="start_date" value="<?=(isset($_POST['start_date'])?$_POST['start_date']:'')?>" type="text" name="datepicker" readonly="" class="form-control" aria-required="true" aria-invalid="false" aria-describedby="datepicker-error" style="background-color: #FFFFFF;" />
+                              <span class="" style="position: absolute; right: 0;z-index: 9;">
+                                <button type="button" class="btn default" style="background-color: Transparent; border: transparent;">
                                   <i class="fa fa-calendar"></i>
                                 </button>
                               </span>
@@ -163,16 +185,22 @@
                         
                         <div class="form-group">
                           <div class="col-md-12">
-                          <b>End Date:</b>
-                            <div data-date-format="mm-dd-yyyy" class="input-group date date-picker">
-                              <input name="end_date" value="<?=(isset($_POST['end_date'])?$_POST['end_date']:'')?>" type="text" name="datepicker" readonly="" class="form-control" aria-required="true" aria-invalid="false" aria-describedby="datepicker-error">
-                              <span class="input-group-btn">
-                                <button type="button" class="btn default">
+                          <b style="display: block; margin-bottom: 6px;">End Date:</b>
+                            <div data-date-format="mm-dd-yyyy" class="input-group date date-picker" style="width: 100%;">
+                              <input name="end_date" value="<?=(isset($_POST['end_date'])?$_POST['end_date']:'')?>" type="text" name="datepicker" readonly="" class="form-control" aria-required="true" aria-invalid="false" aria-describedby="datepicker-error" style="background-color: #FFFFFF;" />
+                              <span class="" style="position: absolute; right: 0;z-index: 9;">
+                                <button type="button" class="btn default" style="background-color: Transparent; border: transparent;">
                                   <i class="fa fa-calendar"></i>
                                 </button>
                               </span>
                             </div><span id="datepicker-error" class="help-block help-block-error"></span>
                             <!-- /input-group -->
+                          </div>
+                        </div>
+                        
+                        <div class="form-group">
+                          <div class="col-md-12">
+                            <input type="submit" class="btnLink" value="Search" style="width: 100%; height: 43px; padding: 12px;" />      
                           </div>
                         </div>
 
@@ -194,109 +222,123 @@
     <?php if (!empty($_POST)) { 
       if ($invitelist && $invitelist->count() > 0) {
         ?>        
-        <!-- / .row -->     
-        <div class="row">
-          <div class="col-md-12 col-sm-12">
-            <div class="light ">
-              <div class="portlet-title">
-                <div class="caption caption-md">
-                  <i class="icon-bar-chart font-red"></i>
-                  <span class="caption-subject font-red bold uppercase">Review Invite Customer List</span>
-                </div>
-              </div>
-              <div class="portlet-body" id="reportwrapper">
-                <!-- col-lg-12 start here -->
-                <?php 
-                //(invites have the following fields: Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)
+    <div class="row">
+      
+      <div class="col-md-12 col-sm-12" id="reviews">
+        <div id="pnlSMSSent" class="portlet light bordered">
+          <div class="portlet-title" style="margin-top: 13px;">
+            <div class="caption">
+              <img src="/admin/img/icon-user.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> Review Invite Customer List</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 col-sm-12" style="padding-top: 20px;">
+            <?php 
+            //(invites have the following fields: Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)
+            ?>
+            <table id="" class="customdatatable table table-striped table-bordered dataTable no-footer" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th>Send</th>
+                <th>Location</th>
+                <th>Phone</th>
+                <th>Name</th>
+                <th>Date Sent</th>
+                <th>Recommended</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php                                                                
+              if($invitelist):
+                foreach($invitelist as $invite): 
+                  ?>
+                  <tr>
+                    <?php
+                    //now check if this record should be checked
+                    $checked = false;
+                    //check post 
+                    if(!empty($_POST['review_invite_ids'])) {
+                      foreach($_POST['review_invite_ids'] as $check) {
+                        if ($check == $invite->review_invite_id) $checked = true;
+                      }
+                    }
+                    ?>
+                    <td><input type="checkbox" name="review_invite_ids[]" value="<?=$invite->review_invite_id?>" <?=($checked?'checked="checked"':'')?> /></td>
+                    <td><?=$invite->location_name?></td>
+                    <td><?=$invite->phone?></td>
+                    <td><?=$invite->name?></td>
+                    <td><?=date_format(date_create($invite->date_sent),"m/d/Y")?></td>
+                    <td><?php 
+                    if ($invite->recommend) {
+                      if ($invite->recommend=='Y') {
+                        echo 'Yes';
+                      } else {
+                        echo 'No';
+                      }
+                    }
+                      ?>
+                      </td>
+                  </tr>
+                  <?php  
+                endforeach; 
+              else: 
                 ?>
-                <!-- Start .panel -->
-                <div class="panel-default toggle panelMove panelClose panelRefresh">
-                  <div class="">
-                    <table id="" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                    <thead>
-                      <tr>
-                        <th>Send</th>
-                        <th>Location</th>
-                        <th>Phone</th>
-                        <th>Name</th>
-                        <th>Date Sent</th>
-                        <th>Recommended?</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <?php                                                                
-                      if($invitelist):
-                        foreach($invitelist as $invite): 
-                          ?>
-                          <tr>
-                            <?php
-                            //now check if this record should be checked
-                            $checked = false;
-                            //check post 
-                            if(!empty($_POST['review_invite_ids'])) {
-                              foreach($_POST['review_invite_ids'] as $check) {
-                                if ($check == $invite->review_invite_id) $checked = true;
-                              }
-                            }
-                            ?>
-                            <td><input type="checkbox" name="review_invite_ids[]" value="<?=$invite->review_invite_id?>" <?=($checked?'checked="checked"':'')?> /> Yes</td>
-                            <td><?=$invite->location_name?></td>
-                            <td><?=$invite->phone?></td>
-                            <td><?=$invite->name?></td>
-                            <td><?=date_format(date_create($invite->date_sent),"m/d/Y")?></td>
-                            <td><?php 
-                            if ($invite->recommend) {
-                              if ($invite->recommend=='Y') {
-                                echo 'Yes';
-                              } else {
-                                ?>
-                                No <a id="click<?=$invite->review_invite_id?>" href="#inline<?=$invite->review_invite_id?>" onclick="" class="fancybox" style="float: right;">View Feedback</a>
-                                <div id="inline<?=$invite->review_invite_id?>" style="width:400px;display: none;">
-                                <?=nl2br($invite->comments)?>
-                                </div>
-                                <?php
-                              }
-                            }
-                              ?>
-                              </td>
-                          </tr>
-                          <?php  
-                        endforeach; 
-                      else: 
-                        ?>
-                        <tr>
-                        </tr>                                     
-                        <?php    
-                      endif;
-                      ?>                                
-                    </tbody>
-                    </table>
-                  </div>
+                <tr>
+                </tr>                                     
+                <?php    
+              endif;
+              ?>                                
+            </tbody>
+            </table>
+            
+            </div>
+          </div>
+          <div class="portlet-title" style="margin-top: 13px;">
+            <div class="caption">
+              <img src="/admin/img/icon-phone.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> SMS Message</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 col-sm-12" style="padding-top: 20px;">
+                
+            <div class="form-group">
+              <div class="">
+                <div class="col-md-12">
+                <textarea style="width: 100%;" name="SMS_message" class="form-control"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'{location-name}: Hi {name}, We\'d really appreciate your feedback by clicking the link. Thanks! {link}'))?></textarea>
+                  <i style="color: #c3c3c3; display: block; font-size: 12px; margin-top: 11px;">{location-name} will be the name of the location sending the SMS, {name} will be replaced with the name entered when sending the message and {link} will be the link to the review.</i>
                 </div>
-                <!-- End .panel -->
               </div>
             </div>
-          </div>                       
-          <!-- col-lg-12 end here -->
-        </div>
-        <!-- End .row -->
-
-        
-        <div class="form-group">
-          <div class="">
-            <div class="col-md-12">
-            <div><b>SMS Message</b></div>
-            <textarea style="width: 100%;" name="SMS_message"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'{location-name}: Hi {name}, We\'d really appreciate your feedback by clicking the link. Thanks! {link}'))?></textarea>
-              <i>{location-name} will be the name of the location sending the SMS, {name} will be replaced with the name entered when sending the message and {link} will be the link to the review.</i>
+            <div class="form-group">
+              <label class="col-md-1 control-label" for="link" style="text-align: left;">Link:</label>
+              <div class="col-md-7">
+                <input type="text" placeholder="Link" class="form-control" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" />          
+              </div>
+              <div class="col-md-4">
+                <input type="submit" class="btnLink" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-1 control-label" for="name" style="text-align: left;">Name:</label>
+              <div class="col-md-3">
+                <input type="text" placeholder="Link" class="form-control" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" name="name" id="name" />          
+              </div>
+              <label class="col-md-1 control-label" for="phone" style="text-align: left;">Phone:</label>
+              <div class="col-md-3">
+                <input type="text" placeholder="Link" class="form-control" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" />          
+              </div>
+              <div class="col-md-4">
+                <input type="submit" class="btnLink" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" />
+              </div>
+            </div>
+            
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <div class="col-md-offset-4 col-md-8">
-            {{ submit_button("Send", "class": "btn btn-big btn-success") }}
-          </div>
-        </div>
 
+        </div>
+      </div>
+
+    </div>
 
         <?php 
       } else {
@@ -309,6 +351,17 @@
     }  //end checking the post
     ?>
     <!-- End the results  -->
+
+
+
+
+
+      </div>
+    </div>
+  </div>
+</div>                      
+
+
   </form>
 	</div>
 </header>

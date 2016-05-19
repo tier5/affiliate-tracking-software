@@ -295,7 +295,8 @@ class SessionController extends ControllerBase
 
   public function noSubDomains($page, $subscription_id) {
     $sub = array_shift((explode(".",$_SERVER['HTTP_HOST'])));
-    if ($sub && $sub != '' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104') {
+    if ($sub && $sub != '' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104'
+         && $sub != 'dev' && $sub != 'stage' && $sub != 'dev2') {
       //there is a subdomain.  That is not allowed, so redirect them out of here
       $found = false;
       $querystring = '';
