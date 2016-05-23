@@ -9,6 +9,14 @@ settings:
     bootstrap: _bootstrap.php
     colors: true
     memory_limit: 1024M
+    log: true
+coverage:
+    enabled: true
+    whitelist:
+        include:
+            - app/*
+        exclude:
+            - app/cache/*
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
@@ -19,3 +27,5 @@ modules:
             user: ''
             password: ''
             dump: tests/_data/dump.sql
+
+error_level: "E_ALL | E_STRICT"
