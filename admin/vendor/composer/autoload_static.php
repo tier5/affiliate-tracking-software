@@ -7,10 +7,18 @@ namespace Composer\Autoload;
 class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
 {
     public static $files = array (
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
+        'e40631d46120a9c38ea139981f8dab26' => __DIR__ . '/..' . '/ircmaxell/password-compat/lib/password.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '023d27dca8066ef29e6739335ea73bad' => __DIR__ . '/..' . '/symfony/polyfill-php70/bootstrap.php',
+        'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
+        '6a47392539ca2329373e0d33e1dba053' => __DIR__ . '/..' . '/symfony/polyfill-intl-icu/bootstrap.php',
+        'edc6464955a37aa4d5fbf39d40fb6ee7' => __DIR__ . '/..' . '/symfony/polyfill-php55/bootstrap.php',
+        '3e2471375464aac821502deb0ac64275' => __DIR__ . '/..' . '/symfony/polyfill-php54/bootstrap.php',
+        '32dcc8afd4335739640db7d200c1971d' => __DIR__ . '/..' . '/symfony/polyfill-apcu/bootstrap.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'bccfaf6207f67190a92f35585e9a78b2' => __DIR__ . '/..' . '/twilio/sdk/Services/Twilio.php',
     );
@@ -23,19 +31,27 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Util\\' => 22,
+            'Symfony\\Polyfill\\Php70\\' => 23,
+            'Symfony\\Polyfill\\Php56\\' => 23,
+            'Symfony\\Polyfill\\Php55\\' => 23,
+            'Symfony\\Polyfill\\Php54\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
-            'Symfony\\Component\\Yaml\\' => 23,
-            'Symfony\\Component\\Finder\\' => 25,
-            'Symfony\\Component\\EventDispatcher\\' => 34,
-            'Symfony\\Component\\DomCrawler\\' => 29,
-            'Symfony\\Component\\CssSelector\\' => 30,
-            'Symfony\\Component\\Console\\' => 26,
-            'Symfony\\Component\\BrowserKit\\' => 29,
+            'Symfony\\Component\\Security\\Acl\\' => 31,
+            'Symfony\\Component\\' => 18,
+            'Symfony\\Bundle\\' => 15,
+            'Symfony\\Bridge\\Twig\\' => 20,
+            'Symfony\\Bridge\\Swiftmailer\\' => 27,
+            'Symfony\\Bridge\\ProxyManager\\' => 28,
+            'Symfony\\Bridge\\Monolog\\' => 23,
+            'Symfony\\Bridge\\Doctrine\\' => 24,
             'Stripe\\' => 7,
         ),
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
+            'Phinx\\' => 6,
+            'Phalcon\\' => 8,
         ),
         'G' => 
         array (
@@ -52,7 +68,11 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         ),
         'D' => 
         array (
+            'Dotenv\\' => 7,
             'Doctrine\\Instantiator\\' => 22,
+            'Doctrine\\DBAL\\Migrations\\' => 25,
+            'Doctrine\\Common\\Cache\\' => 22,
+            'Doctrine\\Common\\' => 16,
             'DeepCopy\\' => 9,
         ),
         'C' => 
@@ -71,37 +91,61 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-code/src',
         ),
+        'Symfony\\Polyfill\\Util\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-util',
+        ),
+        'Symfony\\Polyfill\\Php70\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php70',
+        ),
+        'Symfony\\Polyfill\\Php56\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php56',
+        ),
+        'Symfony\\Polyfill\\Php55\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php55',
+        ),
+        'Symfony\\Polyfill\\Php54\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php54',
+        ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
-        'Symfony\\Component\\Yaml\\' => 
+        'Symfony\\Component\\Security\\Acl\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/yaml',
+            0 => __DIR__ . '/..' . '/symfony/security-acl',
         ),
-        'Symfony\\Component\\Finder\\' => 
+        'Symfony\\Component\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/finder',
+            0 => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Component',
         ),
-        'Symfony\\Component\\EventDispatcher\\' => 
+        'Symfony\\Bundle\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
+            0 => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Bundle',
         ),
-        'Symfony\\Component\\DomCrawler\\' => 
+        'Symfony\\Bridge\\Twig\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/dom-crawler',
+            0 => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Bridge/Twig',
         ),
-        'Symfony\\Component\\CssSelector\\' => 
+        'Symfony\\Bridge\\Swiftmailer\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/css-selector',
+            0 => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Bridge/Swiftmailer',
         ),
-        'Symfony\\Component\\Console\\' => 
+        'Symfony\\Bridge\\ProxyManager\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/console',
+            0 => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Bridge/ProxyManager',
         ),
-        'Symfony\\Component\\BrowserKit\\' => 
+        'Symfony\\Bridge\\Monolog\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/browser-kit',
+            0 => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Bridge/Monolog',
+        ),
+        'Symfony\\Bridge\\Doctrine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Bridge/Doctrine',
         ),
         'Stripe\\' => 
         array (
@@ -110,6 +154,14 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Phinx\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/robmorgan/phinx/src/Phinx',
+        ),
+        'Phalcon\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phalcon/devtools/scripts/Phalcon',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -139,9 +191,25 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         array (
             0 => __DIR__ . '/..' . '/facebook/php-sdk-v4/src/Facebook',
         ),
+        'Dotenv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
+        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
+        ),
+        'Doctrine\\DBAL\\Migrations\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/migrations/lib/Doctrine/DBAL/Migrations',
+        ),
+        'Doctrine\\Common\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
+        ),
+        'Doctrine\\Common\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
         ),
         'DeepCopy\\' => 
         array (
@@ -165,8 +233,23 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
                 0 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             ),
         ),
+        'T' => 
+        array (
+            'Twig_' => 
+            array (
+                0 => __DIR__ . '/..' . '/twig/twig/lib',
+            ),
+        ),
         'P' => 
         array (
+            'Psr\\Log\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/psr/log',
+            ),
+            'ProxyManager\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/ocramius/proxy-manager/src',
+            ),
             'Prophecy\\' => 
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
@@ -200,6 +283,10 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         ),
         'D' => 
         array (
+            'Doctrine\\DBAL\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/dbal/lib',
+            ),
             'Doctrine\\Common\\Lexer\\' => 
             array (
                 0 => __DIR__ . '/..' . '/doctrine/lexer/lib',
@@ -207,6 +294,10 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
             'Doctrine\\Common\\Inflector\\' => 
             array (
                 0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
+            ),
+            'Doctrine\\Common\\Collections\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/collections/lib',
             ),
             'Doctrine\\Common\\Annotations\\' => 
             array (
@@ -239,7 +330,9 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         'AmazonSTS' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/sts.class.php',
         'AmazonSWF' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/swf.class.php',
         'AmazonStorageGateway' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/storagegateway.class.php',
+        'ArithmeticError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/ArithmeticError.php',
         'Array2DOM' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/dom/ArrayToDOMDocument.php',
+        'AssertionError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/AssertionError.php',
         'AuthV2Query' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/authentication/signature_v2query.class.php',
         'AuthV3JSON' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/authentication/signature_v3json.class.php',
         'AuthV3Query' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/authentication/signature_v3query.class.php',
@@ -313,11 +406,14 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         'CachePDO_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/cachecore/cachepdo.class.php',
         'CacheXCache' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/cachecore/cachexcache.class.php',
         'CacheXCache_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/cachecore/cachexcache.class.php',
+        'CallbackFilterIterator' => __DIR__ . '/..' . '/symfony/polyfill-php54/Resources/stubs/CallbackFilterIterator.php',
         'CloudFormation_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/cloudformation.class.php',
         'CloudFront_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/cloudfront.class.php',
         'CloudSearch_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/cloudsearch.class.php',
         'CloudWatch_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/cloudwatch.class.php',
+        'Collator' => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Component/Intl/Resources/stubs/Collator.php',
         'ConfigurationGenerator' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/ConfigurationGenerator.php',
+        'DivisionByZeroError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/DivisionByZeroError.php',
         'DynamoDBSessionHandler' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/extensions/dynamodbsessionhandler.class.php',
         'DynamoDB_Binary' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/dynamodb.class.php',
         'DynamoDB_BinarySet' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/dynamodb.class.php',
@@ -327,6 +423,7 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         'EMR_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/emr.class.php',
         'ElastiCache_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/elasticache.class.php',
         'ElasticBeanstalk_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/elasticbeanstalk.class.php',
+        'Error' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/Error.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
@@ -2743,7 +2840,10 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         'IAM_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/iam.class.php',
         'ICacheCore' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/cachecore/icachecore.interface.php',
         'ImportExport_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/importexport.class.php',
+        'IntlDateFormatter' => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Component/Intl/Resources/stubs/IntlDateFormatter.php',
         'JSON_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/utilities/json.class.php',
+        'Locale' => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Component/Intl/Resources/stubs/Locale.php',
+        'NumberFormatter' => __DIR__ . '/..' . '/symfony/symfony/src/Symfony/Component/Intl/Resources/stubs/NumberFormatter.php',
         'PHPUnit_Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit_Extensions_GroupTestSuite' => __DIR__ . '/..' . '/phpunit/phpunit/src/Extensions/GroupTestSuite.php',
         'PHPUnit_Extensions_PhptTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Extensions/PhptTestCase.php',
@@ -3148,8 +3248,10 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         'PHP_Token_XOR_EQUAL' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD_FROM' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'ParseError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/ParseError.php',
         'Parser_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/sdk.class.php',
         'RDS_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/rds.class.php',
+        'RecursiveCallbackFilterIterator' => __DIR__ . '/..' . '/symfony/polyfill-php54/Resources/stubs/RecursiveCallbackFilterIterator.php',
         'RequestCore' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/requestcore/requestcore.class.php',
         'RequestCore_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/requestcore/requestcore.class.php',
         'ResponseCore' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/requestcore/requestcore.class.php',
@@ -3203,11 +3305,13 @@ class ComposerStaticInitaac5372748c4b096789a07ee1a3a0a3e
         'SebastianBergmann\\RecursionContext\\InvalidArgumentException' => __DIR__ . '/..' . '/sebastian/recursion-context/src/InvalidArgumentException.php',
         'SebastianBergmann\\ResourceOperations\\ResourceOperations' => __DIR__ . '/..' . '/sebastian/resource-operations/src/ResourceOperations.php',
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
+        'SessionHandlerInterface' => __DIR__ . '/..' . '/symfony/polyfill-php54/Resources/stubs/SessionHandlerInterface.php',
         'Signable' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/authentication/signable.interface.php',
         'Signer' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/authentication/signer.abstract.php',
         'StorageGateway_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/services/storagegateway.class.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
         'Transmogrifier' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/dom/Transmogrifier.php',
+        'TypeError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/TypeError.php',
         'cURL_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/requestcore/requestcore.class.php',
         'cURL_Multi_Exception' => __DIR__ . '/..' . '/amazonwebservices/aws-sdk-for-php/lib/requestcore/requestcore.class.php',
         'net\\authorize\\api\\constants\\ANetEnvironment' => __DIR__ . '/..' . '/authorizenet/authorizenet/lib/net/authorize/api/constants/ANetEnvironment.php',
