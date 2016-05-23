@@ -48,13 +48,6 @@ class SubscriptionProfileHasParameterList extends Model
      */
     protected $deleted_at;
     
-
-    public function initialize()
-    {
-        $this->belongsTo('subscription_profile_id', "SubscriptionProfile", "id");
-        $this->belongsTo('parameter_list_id', "SubscriptionProfileParameterList", "id");
-    }
-    
     /**
      * Method to set the value of field id
      *
@@ -122,6 +115,12 @@ class SubscriptionProfileHasParameterList extends Model
     public function getParameterListId()
     {
         return $this->parameter_list_id;
+    }
+    
+    public function initialize()
+    {
+        $this->belongsTo('subscription_profile_id', "Vokuro\Models\SubscriptionProfile", "id", ['alias' => 'SubscriptionProfile']);
+        $this->belongsTo('parameter_list_id', "Vokuro\Models\SubscriptionProfileParameterList", "id", ['alias' => 'SubscriptionProfileParameterList']);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Vokuro\Models;
 
+use Phalcon\Validation\Validator\NumericalityValidator;
+
 /**
  * SubscriptionProfileParameterList
  * 
@@ -54,11 +56,6 @@ class SubscriptionProfileParameterList extends Model
      */
     protected $deleted_at;
 
-    
-    public function initialize()
-    {
-        $this->hasMany("id", "SubscriptionProfileHasParameterList", "parameter_list_id");
-    }
     
     /**
      * Method to set the value of field id
@@ -219,6 +216,26 @@ class SubscriptionProfileParameterList extends Model
     public function getDeletedAt()
     {
         return $this->deleted_at;
+    }
+    
+    public function initialize()
+    {
+        $this->hasMany("id", "Vokuro\Models\SubscriptionProfileHasParameterList", "parameter_list_id", ['alias' => 'SubscriptionProfileHasParameterList']);
+    }
+    
+    public function validation()
+    {
+        $this->validate(new NumericalityValidator(["field" => 'min_locations' ]));
+        $this->validate(new NumericalityValidator(["field" => 'max_locations']));
+        $this->validate(new NumericalityValidator(["field" => 'discount']));    
+        $this->validate(new NumericalityValidator(["field" => 'created_at']));
+        $this->validate(new NumericalityValidator(["field" => 'updated_at']));
+        $this->validate(new NumericalityValidator(["field" => 'delete_at']));
+        
+        $pass = ($this->min_locations > 0 && $this->max_locations > 0 && $this->discount > 0.00 &&
+            $this->created_at > 0 && $this->updated_at > 0 && $this->delete_at > 0);
+        
+        return $pass && $this->validationHasFailed() != true;
     }
 
     /**

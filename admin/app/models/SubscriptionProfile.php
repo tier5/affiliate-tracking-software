@@ -62,6 +62,12 @@ class SubscriptionProfile extends Model
      * @var integer
      */
     protected $max_messages_on_free_account;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $max_location_on_free_account;
 
     /**
      *
@@ -126,27 +132,40 @@ class SubscriptionProfile extends Model
     
     public function initialize()
     {        
-        $this->hasMany("id", "SubscriptionProfileHasParameterList", "subscription_profile_id");
+        $this->hasMany("id", "Vokuro\Models\SubscriptionProfileHasParameterList", "subscription_profile_id", ['alias' => 'SubscriptionProfileHasParameterList']);
     }
         
     public function validation()
     {
         $this->validate(new InclusionIn([ "field"  => "enable_free_account", "domain" => array(true, false) ]));
         $this->validate(new InclusionIn([ "field"  => "enable_discount_on_upgrade", "domain" => array(true, false) ]));
-        $this->validate(new InclusionIn([ "field"  => "enable_discount_on_upgrade", "domain" => array(true, false) ]));
         $this->validate(new NumericalityValidator(["field" => 'base_price' ]));
         $this->validate(new NumericalityValidator(["field" => 'cost_per_sms']));
-        $this->validate(new NumericalityValidator(["field" => 'trial_period']));
-        $this->validate(new NumericalityValidator(["field" => 'trial_period']));
-        $this->validate(new NumericalityValidator(["field" => 'trial_period']));
         $this->validate(new NumericalityValidator(["field" => 'max_sms_during_trial_period']));
-        $this->validate(new NumericalityValidator(["field" => 'max_messages_on_free_account']));
+        $this->validate(new NumericalityValidator(["field" => 'max_sms_messages']));
         $this->validate(new NumericalityValidator(["field" => 'updgrade_discount']));
         $this->validate(new NumericalityValidator(["field" => 'charge_per_sms']));
         $this->validate(new NumericalityValidator(["field" => 'max_sms_messages']));
         $this->validate(new NumericalityValidator(["field" => 'trial_number_of_days']));
         $this->validate(new NumericalityValidator(["field" => 'collect_credit_card_on_sign_up']));    
-        return $this->validationHasFailed() != true;
+        $this->validate(new NumericalityValidator(["field" => 'created_at']));
+        $this->validate(new NumericalityValidator(["field" => 'updated_at']));
+        $this->validate(new NumericalityValidator(["field" => 'delete_at']));
+        
+        $pass = $this->base_price > 0 &&
+            $this->cost_per_sms > 0 &&
+            $this->max_sms_during_trial_period > 0 &&
+            $this->max_sms_messages > 0 &&
+            $this->updgrade_discount > 0 &&
+            $this->charge_per_sms > 0 &&
+            $this->max_sms_messages > 0 &&
+            $this->trial_number_of_days > 0 &&
+            $this->collect_credit_card_on_sign_up > 0 &&    
+            $this->created_at > 0 &&
+            $this->updated_at > 0 &&
+            $this->delete_at > 0;
+        
+        return $pass && $this->validationHasFailed() != true;
     }
     
     /**
@@ -254,6 +273,19 @@ class SubscriptionProfile extends Model
 
         return $this;
     }
+    
+    /**
+     * Method to set the value of field max_locations_on_free_account
+     *
+     * @param integer $max_locations_on_free_account
+     * @return $this
+     */
+    public function setMaxLocationsOnFreeAccount($max_locations_on_free_account)
+    {
+        $this->max_locations_on_free_account = $max_locations_on_free_account;
+
+        return $this;
+    }
 
     /**
      * Method to set the value of field updgrade_discount
@@ -277,6 +309,19 @@ class SubscriptionProfile extends Model
     public function setChargePerSms($charge_per_sms)
     {
         $this->charge_per_sms = $charge_per_sms;
+
+        return $this;
+    }
+    
+    /**
+     * Method to set the value of field annual_plan_discount
+     *
+     * @param double $annual_plan_discount
+     * @return $this
+     */
+    public function setAnnualPlanDiscount($annual_plan_discount)
+    {
+        $this->annual_plan_discount = $annual_plan_discount;
 
         return $this;
     }
@@ -434,7 +479,17 @@ class SubscriptionProfile extends Model
     {
         return $this->cost_per_sms;
     }
-
+    
+    /**
+     * Returns the value of field annual_plan_discount
+     *
+     * @return double
+     */
+    public function getAnnualPlanDiscount()
+    {
+        return $this->annual_plan_discount;
+    }
+    
     /**
      * Returns the value of field trial_period
      *
@@ -463,6 +518,16 @@ class SubscriptionProfile extends Model
     public function getMaxMessagesOnFreeAccount()
     {
         return $this->max_messages_on_free_account;
+    }
+    
+    /**
+     * Returns the value of field max_locations_on_free_account
+     *
+     * @return integer
+     */
+    public function getMaxLocationsOnFreeAccount()
+    {
+        return $this->max_locations_on_free_account;
     }
 
     /**
@@ -611,9 +676,11 @@ class SubscriptionProfile extends Model
             'enable_discount_on_upgrade' => 'enable_discount_on_upgrade',
             'base_price' => 'base_price',
             'cost_per_sms' => 'cost_per_sms',
+            'annual_plan_discount' => 'annual_plan_discount',
             'trial_period' => 'trial_period',
             'max_sms_during_trial_period' => 'max_sms_during_trial_period',
             'max_messages_on_free_account' => 'max_messages_on_free_account',
+            'max_locations_on_free_account' => 'max_locations_on_free_account',
             'updgrade_discount' => 'updgrade_discount',
             'charge_per_sms' => 'charge_per_sms',
             'max_sms_messages' => 'max_sms_messages',
@@ -623,8 +690,7 @@ class SubscriptionProfile extends Model
             'agency_id' => 'agency_id',
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
-            'deleted_at' => 'deleted_at'
-            
+            'deleted_at' => 'deleted_at'  
         );
     }
 
