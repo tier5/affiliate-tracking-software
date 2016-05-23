@@ -22,9 +22,9 @@ class AddSubscriptionProfileTable extends AbstractMigration
             ->addColumn('collect_credit_card_on_sign_up', 'boolean', ['null' => false, 'default' => false])
             ->addColumn('pricing_details', 'text', ['null' => false, 'default' => ''])
             ->addColumn('agency_id', 'integer', ['null' => true ])
-            ->addColumn('created_at', 'datetime', ['null' => false ])
-            ->addColumn('updated_at', 'datetime', ['null' => false ])
-            ->addColumn('deleted_at', 'datetime', ['null' => false ])
+            ->addColumn('created_at', 'timestamp', [ 'null' => false, 'default' => 'CURRENT_TIMESTAMP'])
+            ->addColumn('updated_at', 'timestamp', [ 'null' => false ])
+            ->addColumn('deleted_at', 'timestamp', [ 'null' => false ])
             ->addForeignKey('agency_id', 'agency', 'agency_id', [ 'delete' => 'CASCADE', 'update' => 'CASCADE' ]) 
             ->create();
     }
