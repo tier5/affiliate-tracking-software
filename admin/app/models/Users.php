@@ -186,15 +186,15 @@ class Users extends Model
         // A raw SQL statement
         $sql   = "SELECT users.name, users.id, 
                     #find all invites sent this month
-                    (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id 
+                    (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id 
                       AND review_invite.date_sent >= DATE_FORMAT(NOW(), '%Y-%m')) AS sms_sent_this_month, 
                     #find all invites sent 
-                    (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id) AS sms_sent_all_time,
+                    (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id) AS sms_sent_all_time,
                     #find all invites positive feedback
-                    (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id AND recommend = 'Y') AS positive_feedback
+                    (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id AND recommend = 'Y') AS positive_feedback
                   FROM users 
                   WHERE users.agency_id = ".$agency_id."
-                  ORDER BY (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id 
+                  ORDER BY (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id 
                       AND review_invite.date_sent >= DATE_FORMAT(NOW(), '%Y-%m')) ".$sort_order.";";
 
         // Base model
@@ -215,15 +215,15 @@ class Users extends Model
     {
       // A raw SQL statement
       $sql   = "SELECT users.id, users.name, 
-                  (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS sms_sent_all_time,
+                  (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS sms_sent_all_time,
                   ".
-                  ($review_invite_type_id==1?"((SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id AND recommend = 'Y' ".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") / (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id AND recommend IS NOT NULL".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") * 100) AS avg_feedback":
-                  "(SELECT AVG(rating) FROM review_invite WHERE review_invite.location_id = ".$location_id."  AND review_invite.review_invite_type_id = ".$review_invite_type_id." AND rating IS NOT NULL AND rating != '' AND users.id = review_invite.sent_by_user_id AND recommend = 'Y'".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS avg_feedback")
+                  ($review_invite_type_id==1?"((SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id AND recommend = 'Y' ".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") / (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id AND recommend IS NOT NULL".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") * 100) AS avg_feedback":
+                  "(SELECT AVG(rating) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL  AND review_invite.review_invite_type_id = ".$review_invite_type_id." AND rating IS NOT NULL AND rating != '' AND users.id = review_invite.sent_by_user_id AND recommend = 'Y'".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS avg_feedback")
                   .", ".$review_invite_type_id." AS review_invite_type_id
                 FROM users 
                 WHERE users.agency_id = ".$agency_id."
                   ".($profilesId?($profilesId!=1?" AND users.profilesId != 1 AND users.profilesId != 4 AND users.profilesId = ".$profilesId."":" AND users.profilesId = 1"):"")."
-                ORDER BY (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") DESC;";
+                ORDER BY (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") DESC;";
       //echo '<p>sql:'.$sql.'</p>';
 
       // Base model
@@ -245,7 +245,7 @@ class Users extends Model
                   FROM agency 
                     INNER JOIN location ON agency.agency_id = location.agency_id
                     INNER JOIN review_invite ON location.location_id = review_invite.location_id
-                  WHERE location.location_id = ".$location_id." AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."' 
+                  WHERE location.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."' 
                     ".($conversion_report_type=='click_through'?" AND review_invite.date_viewed IS NOT NULL":"")."
                     ".($conversion_report_type=='conversion'?" AND review_invite.date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != ''))":"")."
                   GROUP BY DAY(review_invite.date_sent)                

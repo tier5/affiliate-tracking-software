@@ -7,6 +7,7 @@ use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\Review;
 use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\ReviewsMonthly;
+use Vokuro\Models\SMSBroadcast;
 use Vokuro\Models\Users;
 
 /**
@@ -120,7 +121,7 @@ class ReviewsController extends ControllerBase
         $negative_total = ReviewInvite::count(
               array(
                 "column"     => "review_invite_id",
-                "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND recommend = 'N'",
+                "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND recommend = 'N' AND sms_broadcast_id IS NULL",
               )
             );
 //echo '<pre>$negative_total:'.print_r($negative_total,true).'</pre>';
@@ -194,7 +195,7 @@ class ReviewsController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/users/');
+        $this->response->redirect('/admin/session/login?return=/admin/reviews/sms_broadcast');
         $this->view->disable();
         return;
       }
@@ -221,40 +222,156 @@ class ReviewsController extends ControllerBase
       $this->view->locations = $this->auth->getLocationList($userObj);
       
       if (!empty($_POST)) {
-        $this->view->invitelist = ReviewInvite::findCustomers($userObj->agency_id);
-//echo '<pre>$allReviewDetails:'.print_r($this->view->invitelist,true).'</pre>';
+         $this->view->invitelist = ReviewInvite::findCustomers($userObj->agency_id);
+  //echo '<pre>$allReviewDetails:'.print_r($this->view->invitelist,true).'</pre>';
 
-        //check if the user wants to send a message
-        if(!empty($_POST['review_invite_ids'])) {
-          foreach($_POST['review_invite_ids'] as $id) {
-            //get the Review Invite
-            $conditions = "review_invite_id = :review_invite_id:";
-            $parameters = array("review_invite_id" => $id);
-            $invite = ReviewInvite::findFirst(array($conditions, "bind" => $parameters));
-            
-            //find the location
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $invite->location_id);
-            $loc = Location::findFirst(array($conditions, "bind" => $parameters));
+        if (isset($_POST['formposttype']) && $_POST['formposttype'] == 'test') {
+          //find the location
+          $conditions = "location_id = :location_id:";
+          $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+          $loc = Location::findFirst(array($conditions, "bind" => $parameters));
 
-            //else we have a phone number, so send the message
-            $message = $_POST['SMS_message'];
-            //replace out the variables
-            $message = str_replace("{location-name}", $loc->name, $message);
-            $message = str_replace("{name}", $invite->name, $message);
-            $guid = $invite->api_key;
-            $message = str_replace("{link}", $this->googleShortenURL('http://'.$_SERVER['HTTP_HOST'].'/review/?a='.$guid), $message);
-          
-            //The message is saved, so send the SMS message now
-            if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
-              $this->flash->success("The SMS was sent successfully to: ".$invite->phone);
-            }
+          //else we have a phone number, so send the message
+          $message = $_POST['SMS_message'];
+          //replace out the variables
+          $message = str_replace("{location-name}", $loc->name, $message);
+          $message = str_replace("{name}", $_POST['name'], $message);
+          $message = str_replace("{link}", $this->googleShortenURL($_POST['link']), $message);
 
+          if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
+            $this->flash->success("The SMS was sent successfully to: ".$_POST['phone']);
           }
+        } else if (isset($_POST['formposttype']) && $_POST['formposttype'] == 'send') {
+
+          //check if the user wants to send a message
+          if(!empty($_POST['review_invite_ids'])) {
+            //we have messages to send, so lets first create an SMS Broadcast record
+            $smsb = new SMSBroadcast();
+            $smsb->assign(array(
+              'api_key' => $this->GUID(),
+              'sms_message' => $_POST['SMS_message'],
+              'date_sent' => date('Y-m-d H:i:s'),
+              'link' => $_POST['link'],
+              'sent_by_user_id' => $identity['id'],
+              'agency_id' => $userObj->agency_id
+            ));
+            $smsb->save();
+
+            foreach($_POST['review_invite_ids'] as $id) {
+              //get the Review Invite
+              $conditions = "review_invite_id = :review_invite_id:";
+              $parameters = array("review_invite_id" => $id);
+              $invite = ReviewInvite::findFirst(array($conditions, "bind" => $parameters));
+
+            //echo '<pre>$id:'.$id.':$invite->phone:'.$invite->phone.':</pre>';
+
+              //find the location
+              $conditions = "location_id = :location_id:";
+              $parameters = array("location_id" => $invite->location_id);
+              $loc = Location::findFirst(array($conditions, "bind" => $parameters));
+
+              //else we have a phone number, so send the message
+              $message = $_POST['SMS_message'];
+              //replace out the variables
+              $message = str_replace("{location-name}", $loc->name, $message);
+              $message = str_replace("{name}", $invite->name, $message);
+              $link = '';
+              if (isset($_POST['link']) && $_POST['link'] != '') {
+                $guid = $this->GUID();
+                $link = 'http://'.$_SERVER['HTTP_HOST'].'/admin/review/link?a='.$guid;
+                $link = $this->googleShortenURL($link);
+              } else {
+                $guid = $invite->api_key;
+                $link = $this->googleShortenURL('http://'.$_SERVER['HTTP_HOST'].'/review/?a='.$guid);
+              }
+              $message = str_replace("{link}", $link, $message);
+          
+
+              //save the message to the database before sending the message
+              $invite2 = new ReviewInvite();
+              $invite2->assign(array(
+                'name' => $invite->name,
+                'location_id' => $invite->location_id,
+                'phone' => $invite->phone,
+                'api_key' => $guid,
+                'sms_message' => $message,
+                'date_sent' => date('Y-m-d H:i:s'),
+                'link' => $_POST['link'],
+                'sms_broadcast_id' => $smsb->sms_broadcast_id
+              ));
+              $invite2->save();
+
+
+              //The message is saved, so send the SMS message now
+              if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
+                $this->flash->success("The SMS was sent successfully to: ".$invite->phone);
+              }
+
+            }
+          } //end checking for formposttype
         }
       }
       $this->getSMSReport();
     }
+    
+    
+
+    /**
+     * Sent message report
+     */
+    public function sent_messageAction()
+    {
+      //get the user id
+      $identity = $this->auth->getIdentity();
+      // If there is no identity available the user is redirected to index/index
+      if (!is_array($identity)) {
+        $this->response->redirect('/admin/session/login?return=/admin/reviews/sent_message');
+        $this->view->disable();
+        return;
+      }
+      // Query binding parameters with string placeholders
+      $conditions = "id = :id:";
+      $parameters = array("id" => $identity['id']);
+      $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+      //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+
+      $this->view->invitelist = SMSBroadcast::getReport($userObj->agency_id);
+      $this->getSMSReport();
+    }
+    
+    
+     
+    /**
+     * Sent message report
+     */
+    public function sent_message_viewAction($id = 0)
+    {
+      //get the user id
+      $identity = $this->auth->getIdentity();
+      // If there is no identity available the user is redirected to index/index
+      if (!is_array($identity)) {
+        $this->response->redirect('/admin/session/login?return=/admin/reviews/sent_message');
+        $this->view->disable();
+        return; 
+      }
+      // Query binding parameters with string placeholders
+      $conditions = "id = :id:";
+      $parameters = array("id" => $identity['id']);
+      $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+      //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+      
+      $conditions = "sms_broadcast_id = :sms_broadcast_id: AND agency_id = :agency_id:";
+      $parameters = array("sms_broadcast_id" => $id, "agency_id" => $userObj->agency_id);
+      $sms_broadcast = SMSBroadcast::findFirst(array($conditions, "bind" => $parameters));
+      $this->view->sms_broadcast = $sms_broadcast;
+
+      $conditions = "sms_broadcast_id = :sms_broadcast_id:";
+      $parameters = array("sms_broadcast_id" => $sms_broadcast->sms_broadcast_id);
+      $this->view->invitelist = ReviewInvite::find(array($conditions, "bind" => $parameters));
+
+      $this->getSMSReport();
+    }
+
 
 
 

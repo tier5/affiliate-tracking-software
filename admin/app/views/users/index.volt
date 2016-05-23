@@ -52,7 +52,11 @@
     <div class="portlet light bordered dashboard-panel">
       <div class="portlet-body">
 
+<?php
+if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
 
+} else {
+?>
 <div class="reportheader">
   <div class="table-header">
     <div class="title reporttitle"><img src="/admin/img/icon_bargraph.gif" /> REPORTING PERIOD</div>
@@ -158,7 +162,9 @@ jQuery(document).ready(function($){
 <?php }  ?>
 </div>
         
-        
+<?php
+}
+?>
 
 <?php 
 if ($users) {

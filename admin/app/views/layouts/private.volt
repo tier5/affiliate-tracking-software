@@ -232,7 +232,9 @@ li.nav-item:hover, li.nav-item a:hover,
                     {
                       $openfolder = 'stripe';
                     }
-                    else if(strpos($_SERVER['REQUEST_URI'],'reviews/sms_broadcast')>0)
+                    else if(strpos($_SERVER['REQUEST_URI'],'reviews/sms_broadcast')>0 ||
+                            strpos($_SERVER['REQUEST_URI'],'reviews/sent_message')>0 ||
+                            strpos($_SERVER['REQUEST_URI'],'reviews/sent_message_view')>0)
                     {
                       $openfolder = 'sms_broadcast';
                     }

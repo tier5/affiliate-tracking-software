@@ -661,7 +661,7 @@ class LocationController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/location/send_review_invite');
+      $this->response->redirect('/admin/session/login?return=/admin/');
       $this->view->disable();
       return;
     }
@@ -742,48 +742,36 @@ class LocationController extends ControllerBase
   }
 
 
-
-  public function GUID()
-  {
-    if (function_exists('com_create_guid') === true)
-    {
-      return trim(com_create_guid(), '{}');
-    }
-
-    return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
-  }
-
-
   
   protected $fb;
   public function getAccessTokenAction()
   {
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/autoload.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Facebook.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/FacebookApp.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/FacebookClient.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/FacebookRequest.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/FacebookResponse.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Authentication/AccessToken.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Authentication/OAuth2Client.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Helpers/FacebookRedirectLoginHelper.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/PersistentData/PersistentDataInterface.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Url/UrlDetectionInterface.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Url/FacebookUrlDetectionHandler.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Url/FacebookUrlManipulator.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/HttpClients/FacebookHttpClientInterface.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/HttpClients/FacebookCurl.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/HttpClients/FacebookCurlHttpClient.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Http/RequestBodyInterface.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Http/RequestBodyUrlEncoded.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Http/GraphRawResponse.php";  
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Exceptions/FacebookSDKException.php"; 
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Exceptions/FacebookAuthenticationException.php";
-    require_once "/var/www/html".$this->config->webpathfolder->path."admin/app/controllers/Facebook/Exceptions/FacebookResponseException.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/autoload.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Facebook.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookApp.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookClient.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookRequest.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookResponse.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Authentication/AccessToken.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Authentication/OAuth2Client.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Helpers/FacebookRedirectLoginHelper.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PersistentData/PersistentDataInterface.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Url/UrlDetectionInterface.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Url/FacebookUrlDetectionHandler.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Url/FacebookUrlManipulator.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/HttpClients/FacebookHttpClientInterface.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/HttpClients/FacebookCurl.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/HttpClients/FacebookCurlHttpClient.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Http/RequestBodyInterface.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Http/RequestBodyUrlEncoded.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Http/GraphRawResponse.php";  
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Exceptions/FacebookSDKException.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Exceptions/FacebookAuthenticationException.php";
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Exceptions/FacebookResponseException.php"; 
     $this->fb = new \Services\Facebook\Facebook(array(
       'app_id' => '628574057293652',
       'app_secret' => '95e89ebac7173ba0980c36d8aa5777e4'
@@ -995,13 +983,6 @@ class LocationController extends ControllerBase
       $conditions = "agency_id = :agency_id:";
       $parameters = array("agency_id" => $location->agency_id);
       $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
-      /*$negative_total = ReviewInvite::count(
-              array(
-                "column"     => "review_invite_id",
-                "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND recommend = 'N'",
-              )
-            );*/
 
       //find the user object to update
       $user = Users::findFirstById($sub->user_id);

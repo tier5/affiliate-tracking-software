@@ -124,7 +124,7 @@
                 </div> 
                 <div class="row border-top left-bottom">
                   <div class="col-md-12 col-sm-12">
-                    <div class="report-num"><?=$review_count_all_time?></div>
+                    <div class="report-num"><?=(isset($review_count_all_time)?$review_count_all_time:0)?></div>
                     <div class="report-title">Total</div>
                   </div>
                 </div>

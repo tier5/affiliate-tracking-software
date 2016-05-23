@@ -55,7 +55,7 @@ class AnalyticsController extends ControllerBase
         $this->view->sms_sent_all_time = ReviewInvite::count(
                 array(
                   "column" => "review_invite_id",
-                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id'],
+                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND sms_broadcast_id IS NULL ",
                 )
               );
 
@@ -77,7 +77,7 @@ class AnalyticsController extends ControllerBase
         $this->view->sms_converted_last_month = ReviewInvite::count(
               array(
                 "column" => "review_invite_id",
-                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != ''))",
+                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != '')) AND sms_broadcast_id IS NULL",
               )
             ); 
 
@@ -87,13 +87,13 @@ class AnalyticsController extends ControllerBase
         $this->view->sms_converted_this_month = ReviewInvite::count(
               array(
                 "column" => "review_invite_id",
-                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != ''))",
+                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != '')) AND sms_broadcast_id IS NULL ",
               )
             );
         $this->view->sms_converted_all_time = ReviewInvite::count(
                 array(
                   "column" => "review_invite_id",
-                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != ''))",
+                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != '')) AND sms_broadcast_id IS NULL ",
                 )
               );
               
@@ -103,7 +103,7 @@ class AnalyticsController extends ControllerBase
         $this->view->sms_click_last_month = ReviewInvite::count(
               array(
                 "column" => "review_invite_id",
-                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL",
+                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL  AND sms_broadcast_id IS NULL ",
               )
             ); 
 
@@ -113,13 +113,13 @@ class AnalyticsController extends ControllerBase
         $this->view->sms_click_this_month = ReviewInvite::count(
               array(
                 "column" => "review_invite_id",
-                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL",
+                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND sms_broadcast_id IS NULL ",
               )
             );
         $this->view->sms_click_all_time = ReviewInvite::count(
                 array(
                   "column" => "review_invite_id",
-                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL",
+                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND sms_broadcast_id IS NULL ",
                 )
               );
 

@@ -200,7 +200,7 @@
                         
                         <div class="form-group">
                           <div class="col-md-12">
-                            <input type="submit" class="btnLink" value="Search" style="width: 100%; height: 43px; padding: 12px;" />      
+                            <input type="submit" id="searchbutton" class="btnLink" value="Search" style="width: 100%; height: 43px; padding: 12px;" />      
                           </div>
                         </div>
 
@@ -224,7 +224,7 @@
         ?>        
     <div class="row">
       
-      <div class="col-md-12 col-sm-12" id="reviews">
+      <div class="col-md-12 col-sm-12" id="reviewsbottom">
         <div id="pnlSMSSent" class="portlet light bordered">
           <div class="portlet-title" style="margin-top: 13px;">
             <div class="caption">
@@ -239,7 +239,9 @@
             <table id="" class="customdatatable table table-striped table-bordered dataTable no-footer" cellspacing="0" width="100%">
             <thead>
               <tr>
-                <th>Send</th>
+                <th>Send
+                <div><input type="checkbox" value="1" name="markall" id="markall" <?=(isset($_POST['markall']) && $_POST['markall'] == 1?'checked="checked"':'')?> /> <i class="all" style="font-size: 12px; font-weight: normal;">(All)</i></div>
+                </th>
                 <th>Location</th>
                 <th>Phone</th>
                 <th>Name</th>
@@ -315,21 +317,24 @@
                 <input type="text" placeholder="Link" class="form-control" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" />          
               </div>
               <div class="col-md-4">
-                <input type="submit" class="btnLink" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" />
+                <input type="submit" class="btnLink" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" id="sendbutton" />
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-1 control-label" for="name" style="text-align: left;">Name:</label>
               <div class="col-md-3">
-                <input type="text" placeholder="Link" class="form-control" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" name="name" id="name" />          
+                <input type="text" placeholder="Name" class="form-control" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" name="name" id="name" />          
               </div>
               <label class="col-md-1 control-label" for="phone" style="text-align: left;">Phone:</label>
               <div class="col-md-3">
-                <input type="text" placeholder="Link" class="form-control" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" />          
+                <input type="text" placeholder="Phone" class="form-control" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" />          
               </div>
               <div class="col-md-4">
-                <input type="submit" class="btnLink" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" />
+                <button id="testbutton" type="submit" class="btnLink" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" >Send Test SMS Message</button>
               </div>
+            </div>
+            <div class="form-group error" id="testerror" style="display: none;">
+            Please enter a valid name and phone.
             </div>
             
             </div>
@@ -361,7 +366,7 @@
   </div>
 </div>                      
 
-
+  <input type="hidden" name="formposttype" id="formposttype" value="" />
   </form>
 	</div>
 </header>
@@ -373,5 +378,38 @@ jQuery(document).ready(function($){
   });
   
   $('.fancybox').fancybox();
+
+  $('#testbutton').click(function (e) {
+    //make sure we have name and phone, before submitting
+    if ($('#name').val() != '' && $('#name').val() != '') {
+      //we are good, go ahead and continue
+      $('#testerror').hide();  
+      $('#formposttype').val('test');
+      $('#broadcastform').submit();  
+    } else {
+      //we are missing something, tell the user to enter the fields
+      $('#testerror').show();  
+      e.preventDefault();
+      return false;
+    }
+  });
+  $('#sendbutton').click(function (e) {
+    $('#formposttype').val('send');
+  });
+  $('#searchbutton').click(function (e) {
+    $('#formposttype').val('');
+  });
+  
+  $("#markall").click(function () {
+    //console.log('testg:'+$(this).prop("checked"));
+    //$("#pnlSMSSent input[type='checkbox']").prop('checked', $(this).prop("checked"));
+    if ($(this).prop("checked")) {
+      $("#reviewsbottom input[type='checkbox']").attr('checked', "checked");
+      $("#reviewsbottom div.checker span").addClass('checked');
+    } else {
+      $("#reviewsbottom input[type='checkbox']").removeAttr('checked');
+      $("#reviewsbottom div.checker span").removeClass('checked');
+    }
+  });
 });
 </script>

@@ -1236,7 +1236,7 @@ class SessionController extends ControllerBase
           $image->resize(200, 30)->save($filepath);
 
           //echo '<p>$filepath: '.$filepath.'</p>';
-          $filepath = '/admin'.str_replace("/var/www/html".$this->config->webpathfolder->path."admin/public", "", $filepath);
+          $filepath = '/admin'.str_replace("/var/www/html/".$this->config->webpathfolder->path."/admin/public", "", $filepath);
           $this->view->logo_setting = $filepath;
           return $filepath;
         }
