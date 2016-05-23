@@ -35,6 +35,24 @@ class SubscriptionProfileParameterList extends Model
      * @var double
      */
     protected $discount;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $created_at;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $update_at;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $deleted_at;
 
     
     public function initialize()
@@ -93,6 +111,45 @@ class SubscriptionProfileParameterList extends Model
 
         return $this;
     }
+    
+    /**
+     * Method to set the value of field created_at
+     *
+     * @param integer $created_at
+     * @return $this
+     */
+    public function setCreatedAt($created_at)
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+    
+    /**
+     * Method to set the value of field updated_at
+     *
+     * @param integer $updated_at
+     * @return $this
+     */
+    public function setUpdatedAt($updated_at)
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+    
+    /**
+     * Method to set the value of field deleted_at
+     *
+     * @param integer $deleted_at
+     * @return $this
+     */
+    public function setDeletedAt($deleted_at)
+    {
+        $this->deleted_at = $deleted_at;
+
+        return $this;
+    }
 
     /**
      * Returns the value of field id
@@ -132,6 +189,36 @@ class SubscriptionProfileParameterList extends Model
     public function getDiscount()
     {
         return $this->discount;
+    }
+    
+    /**
+     * Returns the value of field created_at
+     *
+     * @return integer
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+    
+    /**
+     * Returns the value of field updated_at
+     *
+     * @return integer
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+    
+    /**
+     * Returns the value of field deleted_at
+     *
+     * @return integer
+     */
+    public function getDeletedAt()
+    {
+        return $this->deleted_at;
     }
 
     /**
@@ -178,7 +265,10 @@ class SubscriptionProfileParameterList extends Model
             'id' => 'id',
             'min_locations' => 'min_locations',
             'max_locations' => 'max_locations',
-            'discount' => 'discount'
+            'discount' => 'discount',
+            'created_at' => 'created_at',
+            'updated_at' => 'updated_at',
+            'deleted_at' => 'deleted_at'
         );
     }
 

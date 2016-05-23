@@ -29,8 +29,26 @@ class SubscriptionProfileHasParameterList extends Model
      * @var string
      */
     protected $parameter_list_id;
-
     
+    /**
+     *
+     * @var integer
+     */
+    protected $created_at;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $update_at;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $deleted_at;
+    
+
     public function initialize()
     {
         $this->belongsTo('subscription_profile_id', "SubscriptionProfile", "id");
