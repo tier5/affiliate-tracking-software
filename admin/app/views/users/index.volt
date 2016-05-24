@@ -2,7 +2,7 @@
   
 <div class="row">
   <div class="col-md-5 col-sm-5">
-    <h3 class="page-title">Employee</h3>
+    <h3 class="page-title"><?=($profilesId==3?'Employee':'Admin Users')?></h3>
   </div>    
   <?php 
   if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
@@ -181,7 +181,7 @@ if ($users) {
       <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
     </div>
   </div>
-  <div class="search-btn" style="width: 136px !important;"><a class="btnLink" style="width: 134px !important;" href="/admin/users/<?=($profilesId==3?'':'admin')?>create">Create <?=($profilesId==3?'Employee':'Admin User')?></a></div>
+  <div class="search-btn" style="width: 136px !important;"><a class="btnLink" style="width: 134px !important;text-align: center;" href="/admin/users/<?=($profilesId==3?'':'admin')?>create">Create <?=($profilesId==3?'Employee':'Admin')?></a></div>
 </div>
 
 <!-- Start .panel -->
@@ -191,9 +191,21 @@ if ($users) {
     <thead>
     <tr>
       <th>Name</th>
-      <th>Location</th>
-      <th>Feedback Sent</th>
-      <th>Average Feedback</th>
+      <?php
+      if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
+        ?>
+        <th>Email</th>
+        <th>Type</th>
+        <th>Location</th>
+        <?php
+      } else {
+        ?>
+        <th>Location</th>
+        <th>Feedback Sent</th>
+        <th>Average Feedback</th>
+      <?php
+      }
+      ?>
       <th>Edit</th>
       <th>Delete</th>
     </tr>
@@ -206,34 +218,47 @@ foreach($users as $user) {
   ?>
   <tr>
     <td><?=$user->name?></td>
-    <td>
-    <?php if ($user->profilesId == 1 || $user->profilesId == 4) { ?>
-      <div><b>All</b></div>
-    <?php } else { ?>
-      <?php foreach($user->locations as $location) { ?>
-      <div><?=$location->name?></div>
-      <?php }  ?>
-    <?php } ?>
-    </td>
-    <td><?=$user->sms_sent_all_time?></td>
-    <td>
-      <?php 
-      if ($user->review_invite_type_id == 1) {
-        ?>  
-        <?=($user->avg_feedback?round($user->avg_feedback).'% - <span class="greenfont">Yes</span>':'')?>
-        <?php 
-      } else if ($user->review_invite_type_id == 2) {
-        ?><input value="<?=$user->avg_feedback?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /> <span style="margin-left: 5px;"><?=$user->avg_feedback?></span><?php
-      } else {
-        if ($user->avg_feedback > 0) {
-        if ($user->avg_feedback <= 5) {
-          ?><span class="review_invite_type_id_3 redfont"><?=$user->avg_feedback?></span><?php
-        } else {
-          ?><span class="review_invite_type_id_3 greenfont"><?=$user->avg_feedback?></span><?php
-        }}
-      } 
+    <?php
+    if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
       ?>
-    </td>
+      <td><?=$user->email?></td>
+      <td><?=($user->is_employee==1?'Admin & Employee':'Admin')?></td>
+      <td>
+        <?=($user->is_all_locations==1?'<div>All</div>':'')?>
+        <?php foreach($user->locations as $location) { ?>
+        <div><?=$location->name?></div>
+        <?php }  ?>
+      </td>
+      <?php
+    } else {
+      ?>
+      <td>
+        <?php foreach($user->locations as $location) { ?>
+        <div><?=$location->name?></div>
+        <?php }  ?>
+      </td>
+      <td><?=$user->sms_sent_all_time?></td>
+      <td>
+        <?php 
+        if ($user->review_invite_type_id == 1) {
+          ?>  
+          <?=($user->avg_feedback?round($user->avg_feedback).'% - <span class="greenfont">Yes</span>':'')?>
+          <?php 
+        } else if ($user->review_invite_type_id == 2) {
+          ?><input value="<?=$user->avg_feedback?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /> <span style="margin-left: 5px;"><?=$user->avg_feedback?></span><?php
+        } else {
+          if ($user->avg_feedback > 0) {
+          if ($user->avg_feedback <= 5) {
+            ?><span class="review_invite_type_id_3 redfont"><?=$user->avg_feedback?></span><?php
+          } else {
+            ?><span class="review_invite_type_id_3 greenfont"><?=$user->avg_feedback?></span><?php
+          }}
+        } 
+        ?>
+      </td>
+    <?php
+    }
+    ?>
     <td><a href="/admin/users/<?=($profilesId==3?'':'admin')?>edit/<?=$user->id?>" class="btnLink"><img src="/admin/img/icon-pencil.gif" /></a></td>
     <td><a href="/admin/users/<?=($profilesId==3?'':'admin')?>delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink"><img src="/admin/img/icon-delete.gif" /></a></td>
   </tr>

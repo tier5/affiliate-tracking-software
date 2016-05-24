@@ -83,8 +83,8 @@
               </div>
               <div class="col-md-6 col-sm-6 border-panel">
                 <div class="easy-pie-chart-big">
-                  <div class="number lastmonth" data-percent="<?=round($sms_sent_this_month / $sms_sent_last_month * 100)?>">
-                    <span><?=round($sms_sent_this_month / $sms_sent_last_month * 100)?><span class="percent-sign">%</span></span>
+                  <div class="number lastmonth" data-percent="<?=($sms_sent_last_month>0?round($sms_sent_this_month / $sms_sent_last_month * 100):0)?>">
+                    <span><?=($sms_sent_last_month>0?round($sms_sent_this_month / $sms_sent_last_month * 100):0)?><span class="percent-sign">%</span></span>
                   </div>
                   <div class="report-title" style="margin-top: 34px;margin-bottom: 5px;"> % Of Last Month </div>
                 </div>

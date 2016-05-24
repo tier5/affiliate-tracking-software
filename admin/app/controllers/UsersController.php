@@ -164,10 +164,27 @@ class UsersController extends ControllerBase
           'profilesId' => $profilesId,
           'email' => $this->request->getPost('email', 'email'),
           'phone' => $this->request->getPost('phone'),
-          'agency_id' => $userObj->agency_id
+          'agency_id' => $userObj->agency_id,
+          'create_time' => date('Y-m-d H:i:s'),
         ));
 //echo '<pre>$user:'.print_r($user,true).'</pre>';
-          
+                  
+        if (isset($_POST['type']) && $_POST['type']=='1') {
+          $user->is_employee=1;
+        } else {
+          $user->is_employee=0;
+        }
+
+        $isall = false;
+        if(!empty($_POST['locations'])) {
+          foreach($_POST['locations'] as $check) {
+            if ($check == 'all') {
+              $isall = true;
+            }
+          }
+        }
+        $user->is_all_locations=($isall?1:0);
+
         if (!$user->save()) {
           $messages = array();
           foreach ($user->getMessages() as $message) {
@@ -293,6 +310,11 @@ class UsersController extends ControllerBase
           //'active' => $this->request->getPost('active')
         ));
           
+        if (isset($_POST['type']) && $_POST['type']=='1') {
+          $user->is_employee=1;
+        } else {
+          $user->is_employee=0;
+        }
 
         //delete all locations for this user
         //$conditions = "user_id = :user_id:";
@@ -308,21 +330,27 @@ class UsersController extends ControllerBase
           $locInsert->delete();
         }
 
+        $isall = false;
         if(!empty($_POST['locations'])) {
           foreach($_POST['locations'] as $check) {
-            $locInsert = new UsersLocation();
-            $locInsert->location_id = $check;
-            $locInsert->user_id = $id;
-            $locInsert->save();
+            if ($check == 'all') {
+              $isall = true;
+            } else {
+              $locInsert = new UsersLocation();
+              $locInsert->location_id = $check;
+              $locInsert->user_id = $id;
+              $locInsert->save();
+            }
           }
         }
+        $user->is_all_locations=($isall?1:0);
 
         if (!$user->save()) {
             $this->flash->error($user->getMessages());
         } else {
           $this->flash->success("The ".($profilesId==3?'employee':'admin user')." was updated successfully");
 
-          Tag::resetInput();
+          //Tag::resetInput();
         }
       }
 

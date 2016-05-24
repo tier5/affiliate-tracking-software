@@ -193,7 +193,7 @@ class Users extends Model
                     #find all invites positive feedback
                     (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id AND recommend = 'Y') AS positive_feedback
                   FROM users 
-                  WHERE users.agency_id = ".$agency_id."
+                  WHERE users.agency_id = ".$agency_id." AND (users.profilesId = 3 OR users.is_employee = 1)
                   ORDER BY (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id 
                       AND review_invite.date_sent >= DATE_FORMAT(NOW(), '%Y-%m')) ".$sort_order.";";
 
@@ -214,15 +214,15 @@ class Users extends Model
     public static function getEmployeeListReport($agency_id, $start_time, $end_time, $location_id, $review_invite_type_id, $profilesId)
     {
       // A raw SQL statement
-      $sql   = "SELECT users.id, users.name, 
+      $sql   = "SELECT users.*, 
                   (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS sms_sent_all_time,
                   ".
                   ($review_invite_type_id==1?"((SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id AND recommend = 'Y' ".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") / (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND users.id = review_invite.sent_by_user_id AND recommend IS NOT NULL".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") * 100) AS avg_feedback":
-                  "(SELECT AVG(rating) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL  AND review_invite.review_invite_type_id = ".$review_invite_type_id." AND rating IS NOT NULL AND rating != '' AND users.id = review_invite.sent_by_user_id AND recommend = 'Y'".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS avg_feedback")
-                  .", ".$review_invite_type_id." AS review_invite_type_id
+                  "(SELECT AVG(rating) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL  AND review_invite.review_invite_type_id = ".($review_invite_type_id > 0?$review_invite_type_id:1)." AND rating IS NOT NULL AND rating != '' AND users.id = review_invite.sent_by_user_id AND recommend = 'Y'".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS avg_feedback")
+                  .($review_invite_type_id > 0?", ".$review_invite_type_id." AS review_invite_type_id":", 1 AS review_invite_type_id")."
                 FROM users 
                 WHERE users.agency_id = ".$agency_id."
-                  ".($profilesId?($profilesId!=1?" AND users.profilesId != 1 AND users.profilesId != 4 AND users.profilesId = ".$profilesId."":" AND users.profilesId = 1"):"")."
+                  ".($profilesId?($profilesId!=1?" AND users.profilesId != 1 AND users.profilesId != 4 AND users.profilesId = ".$profilesId."":" AND users.profilesId = 1"):" AND (users.profilesId = 3 OR users.is_employee = 1) ")."
                 ORDER BY (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") DESC;";
       //echo '<p>sql:'.$sql.'</p>';
 
