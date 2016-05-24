@@ -2,8 +2,9 @@
 
 namespace Vokuro\Models;
 
+use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Validator\InclusionIn;
-use Phalcon\Validation\Validator\NumericalityValidator;
+use Phalcon\Mvc\Model\Validator\Numericality;
 
 /**
  * SubscriptionPlan
@@ -50,6 +51,30 @@ class SubscriptionPlan extends Model
      * @var integer
      */
     protected $user_id;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $agency_id;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $created_at;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $update_at;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $deleted_at;
     
     /**
      * Method to set the value of field id
@@ -128,6 +153,45 @@ class SubscriptionPlan extends Model
 
         return $this;
     }
+    
+    /**
+     * Method to set the value of field created_at
+     *
+     * @param integer $created_at
+     * @return $this
+     */
+    public function setCreatedAt($created_at)
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+    
+    /**
+     * Method to set the value of field updated_at
+     *
+     * @param integer $updated_at
+     * @return $this
+     */
+    public function setUpdatedAt($updated_at)
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+    
+    /**
+     * Method to set the value of field deleted_at
+     *
+     * @param integer $deleted_at
+     * @return $this
+     */
+    public function setDeletedAt($deleted_at)
+    {
+        $this->deleted_at = $deleted_at;
+
+        return $this;
+    }
 
     /**
      * Returns the value of field id
@@ -188,6 +252,36 @@ class SubscriptionPlan extends Model
     {
         return $this->user_id;
     }
+    
+    /**
+     * Returns the value of field created_at
+     *
+     * @return integer
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+    
+    /**
+     * Returns the value of field updated_at
+     *
+     * @return integer
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+    
+    /**
+     * Returns the value of field deleted_at
+     *
+     * @return integer
+     */
+    public function getDeletedAt()
+    {
+        return $this->deleted_at;
+    }
 
     /**
      * Initialize method for model.
@@ -203,11 +297,11 @@ class SubscriptionPlan extends Model
      */
     public function validation()
     {
-        $this->validate(new NumericalityValidator(["field" => 'locations' ]));
-        $this->validate(new NumericalityValidator(["field" => 'sms_messages_per_location']));
+        $this->validate(new Numericality(["field" => 'locations' ]));
+        $this->validate(new Numericality(["field" => 'sms_messages_per_location']));
         $this->validate(new InclusionIn([ "field"  => "payment_plan", "domain" => ['monthly', 'annually'] ]));
-        $this->validate(new NumericalityValidator(["field" => 'subscription_profile_id']));
-        $this->validate(new NumericalityValidator(["field" => 'user_id']));
+        $this->validate(new Numericality(["field" => 'subscription_profile_id']));
+        $this->validate(new Numericality(["field" => 'user_id']));
         
         $pass = $this->locations > 0 &&
             $this->sms_messages_per_location > 0 &&
@@ -263,7 +357,10 @@ class SubscriptionPlan extends Model
             'sms_messages_per_location' => 'sms_messages_per_location',
             'payment_plan' => 'payment_plan',
             'subscription_profile_id' => 'subscription_profile_id',
-            'user_id' => 'user_id'
+            'user_id' => 'user_id',
+            'created_at' => 'created_at',
+            'updated_at' => 'updated_at',
+            'deleted_at' => 'deleted_at' 
         );
     }
 

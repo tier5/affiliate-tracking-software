@@ -2,8 +2,10 @@
 
 namespace Vokuro\Models;
 
-use Phalcon\Validation\Validator\InclusionIn;
-use Phalcon\Validation\Validator\NumericalityValidator;
+use Phalcon\Mvc\Model;
+use Phalcon\Mvc\Model\Validator\InclusionIn;
+use Phalcon\Mvc\Model\Validator\Numericality;
+use Phalcon\Mvc\Model\Behavior\SoftDelete;
 
 /**
  * SubscriptionProfile
@@ -132,26 +134,35 @@ class SubscriptionProfile extends Model
     
     public function initialize()
     {        
+        $this->addBehavior(
+            new SoftDelete(
+                array(
+                    'field' => 'deleted_at',
+                    'value' => time()
+                )
+            )
+        );
+        
         $this->hasMany("id", "Vokuro\Models\SubscriptionProfileHasParameterList", "subscription_profile_id", ['alias' => 'SubscriptionProfileHasParameterList']);
     }
         
     public function validation()
     {
-        $this->validate(new InclusionIn([ "field"  => "enable_free_account", "domain" => array(true, false) ]));
-        $this->validate(new InclusionIn([ "field"  => "enable_discount_on_upgrade", "domain" => array(true, false) ]));
-        $this->validate(new NumericalityValidator(["field" => 'base_price' ]));
-        $this->validate(new NumericalityValidator(["field" => 'cost_per_sms']));
-        $this->validate(new NumericalityValidator(["field" => 'max_sms_during_trial_period']));
-        $this->validate(new NumericalityValidator(["field" => 'max_sms_messages']));
-        $this->validate(new NumericalityValidator(["field" => 'updgrade_discount']));
-        $this->validate(new NumericalityValidator(["field" => 'charge_per_sms']));
-        $this->validate(new NumericalityValidator(["field" => 'max_sms_messages']));
-        $this->validate(new NumericalityValidator(["field" => 'trial_number_of_days']));
-        $this->validate(new NumericalityValidator(["field" => 'collect_credit_card_on_sign_up']));    
-        $this->validate(new NumericalityValidator(["field" => 'created_at']));
-        $this->validate(new NumericalityValidator(["field" => 'updated_at']));
-        $this->validate(new NumericalityValidator(["field" => 'delete_at']));
-        
+        $this->validate(new Inclusionin(["field"  => "enable_free_account", "domain" => [true, false]]));
+        $this->validate(new Inclusionin([ "field"  => "enable_discount_on_upgrade", "domain" => [true, false] ]));
+        $this->validate(new Numericality(["field" => 'base_price' ]));
+        $this->validate(new Numericality(["field" => 'cost_per_sms']));
+        $this->validate(new Numericality(["field" => 'max_sms_during_trial_period']));
+        $this->validate(new Numericality(["field" => 'max_sms_messages']));
+        $this->validate(new Numericality(["field" => 'updgrade_discount']));
+        $this->validate(new Numericality(["field" => 'charge_per_sms']));
+        $this->validate(new Numericality(["field" => 'max_sms_messages']));
+        $this->validate(new Numericality(["field" => 'trial_number_of_days']));
+        $this->validate(new Inclusionin(["field" => 'collect_credit_card_on_sign_up', "domain" => [true, false] ]));    
+        // // $this->validate(new Numericality(["field" => 'created_at']));
+        // // $this->validate(new Numericality(["field" => 'updated_at']));
+        // // $this->validate(new Numericality(["field" => 'delete_at']));
+        // 
         $pass = $this->base_price > 0 &&
             $this->cost_per_sms > 0 &&
             $this->max_sms_during_trial_period > 0 &&
@@ -160,11 +171,14 @@ class SubscriptionProfile extends Model
             $this->charge_per_sms > 0 &&
             $this->max_sms_messages > 0 &&
             $this->trial_number_of_days > 0 &&
-            $this->collect_credit_card_on_sign_up > 0 &&    
+            $this->collect_credit_card_on_sign_up > 0;    
+            
+        /* TODO: Implement timestamp validator 
             $this->created_at > 0 &&
             $this->updated_at > 0 &&
             $this->delete_at > 0;
-        
+        */
+       
         return $pass && $this->validationHasFailed() != true;
     }
     

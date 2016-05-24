@@ -7,8 +7,8 @@ try {
     /**
      * Define some useful constants
      */
-    define('BASE_DIR', dirname(__DIR__));
-    define('APP_DIR', BASE_DIR . '/app');    
+    if (!defined('BASE_DIR')) { define('BASE_DIR', dirname(__DIR__)); }
+    if (!defined('APP_DIR')) { define('APP_DIR', BASE_DIR . '/app'); }
     
     /** 
       * Read the configuration
@@ -25,8 +25,8 @@ try {
      */
     include APP_DIR . '/config/services.php';
 
-    define('ENV_PRODUCTION', 'production');
-    define('APPLICATION_ENV', getenv('APP_ENV') ?: ENV_PRODUCTION);
+    if (!defined('ENV_PRODUCTION')) { define('ENV_PRODUCTION', 'production'); }
+    if (!defined('APPLICATION_ENV')) { define('APPLICATION_ENV', getenv('APP_ENV') ?: ENV_PRODUCTION); }
     
     /**
      * Handle the request

@@ -2,7 +2,9 @@
 
 namespace Vokuro\Models;
 
-use Phalcon\Validation\Validator\NumericalityValidator;
+use Phalcon\Mvc\Model;
+use Phalcon\Mvc\Model\Validator\Numericality;
+use Phalcon\Mvc\Model\Behavior\SoftDelete;
 
 /**
  * SubscriptionProfileParameterList
@@ -13,7 +15,6 @@ use Phalcon\Validation\Validator\NumericalityValidator;
  */
 class SubscriptionProfileParameterList extends Model
 {
-
     /**
      *
      * @var integer
@@ -48,7 +49,7 @@ class SubscriptionProfileParameterList extends Model
      *
      * @var integer
      */
-    protected $update_at;
+    protected $updated_at;
     
     /**
      *
@@ -220,20 +221,39 @@ class SubscriptionProfileParameterList extends Model
     
     public function initialize()
     {
+        $this->addBehavior(
+            new SoftDelete(
+                array(
+                    'field' => 'deleted_at',
+                    'value' => time()
+                )
+            )
+        );
+        
         $this->hasMany("id", "Vokuro\Models\SubscriptionProfileHasParameterList", "parameter_list_id", ['alias' => 'SubscriptionProfileHasParameterList']);
     }
     
     public function validation()
     {
-        $this->validate(new NumericalityValidator(["field" => 'min_locations' ]));
-        $this->validate(new NumericalityValidator(["field" => 'max_locations']));
-        $this->validate(new NumericalityValidator(["field" => 'discount']));    
-        $this->validate(new NumericalityValidator(["field" => 'created_at']));
-        $this->validate(new NumericalityValidator(["field" => 'updated_at']));
-        $this->validate(new NumericalityValidator(["field" => 'delete_at']));
+        $this->validate(new Numericality(["field" => 'min_locations' ]));
+        $this->validate(new Numericality(["field" => 'max_locations']));
+        $this->validate(new Numericality(["field" => 'discount']));
         
-        $pass = ($this->min_locations > 0 && $this->max_locations > 0 && $this->discount > 0.00 &&
-            $this->created_at > 0 && $this->updated_at > 0 && $this->delete_at > 0);
+        /* TODO: Implement timestamp validation */
+        // if ($this->created_at) 
+        // {
+        //     $this->validate(new Numericality(["field" => 'created_at']));
+        // }
+        // if ($this->updated_at)
+        // {
+        //     $this->validate(new Numericality(["field" => 'updated_at']));
+        // }
+        // if ($this->deleted_at)
+        // {
+        //     $this->validate(new Numericality(["field" => 'delete_at']));
+        // }
+        
+        $pass = ($this->min_locations > 0 && $this->max_locations > 0 && $this->discount > 0.00);
         
         return $pass && $this->validationHasFailed() != true;
     }

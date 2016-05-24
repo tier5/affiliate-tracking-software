@@ -2,6 +2,8 @@
 
 namespace Vokuro\Models;
 
+use Phalcon\Mvc\Model;
+
 /**
  * SubscriptionProfileHasParameterList
  * 

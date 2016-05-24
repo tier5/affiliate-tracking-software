@@ -13,6 +13,9 @@ class AddSubscriptionPlanTable extends AbstractMigration
             ->addColumn('payment_plan', 'string', ['null' => false, 'default' => 'none'])
             ->addColumn('subscription_profile_id', 'integer', ['null' => false, 'default' => 0])
             ->addColumn('user_id', 'integer', [ 'signed' => false, 'limit' => 10, 'null' => false, 'default' => 0])
+            ->addColumn('created_at', 'timestamp', [ 'null' => false, 'default' => 'CURRENT_TIMESTAMP'])
+            ->addColumn('updated_at', 'timestamp', [ 'null' => false ])
+            ->addColumn('deleted_at', 'timestamp', [ 'null' => false ])
             ->addForeignKey('subscription_profile_id', 'subscription_profile', 'id', [ 'delete' => 'CASCADE', 'update' => 'CASCADE' ])
             ->addForeignKey('user_id', 'users', 'id', [ 'delete' => 'CASCADE', 'update' => 'CASCADE' ])
             ->create();

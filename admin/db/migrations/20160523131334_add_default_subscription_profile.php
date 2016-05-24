@@ -92,14 +92,12 @@ class AddDefaultSubscriptionProfile extends AbstractMigration
             ]
         );
          
-        $rows = $this->fetchAll('SELECT id FROM subscription_profile_parameter_list');
+        $rows = $this->fetchAll('SELECT * FROM subscription_profile_parameter_list');
         foreach ($rows as $row) {
-            
             // Add the default subscription profile
             $joining_table->insert([ 'subscription_profile_id' => $subscriptionProfileId, 'parameter_list_id' => $row['id'] ]);
-            $joining_table->saveData();
-            
         }
+        $joining_table->saveData();
         
     }
     
