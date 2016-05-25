@@ -3,7 +3,7 @@
 
 
 <!-- BEGIN FORM -->
-<form class="register-form" id="signup3form" action="/admin/session/signup3/<?=(isset($subscription->subscription_id)?$subscription->subscription_id:'')?><?=(isset($_GET['code'])?'?code='.$_GET['code']:'')?>" method="post" style="display: block;" enctype="multipart/form-data">
+<form class="register-form" id="signup3form" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/admin/location/create2/'.$location_id:'/admin/session/signup3/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block;" enctype="multipart/form-data">
 <h3>Customize Survey</h3>
 <p class="hint">This is the survey your recent customers will see.</p>
 

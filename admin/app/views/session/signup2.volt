@@ -67,7 +67,7 @@
 
 
 <div class="form-actions col-md-12" >
-  <button type="submit" id="register-submit-btn" class="btnsignup uppercase"><?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'Save':'Next: Customize Survey')?></button>
+  <button type="submit" id="register-submit-btn" class="btnsignup uppercase">Next: Customize Survey</button>
 </div>
 <div style="clear: both;">&nbsp;</div>
 <input type="hidden" name="form" value="2" />

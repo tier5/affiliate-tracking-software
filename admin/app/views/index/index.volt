@@ -281,7 +281,6 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
 
     </div>
 
-
     <div class="row">
 
       <?php if (isset($employee_conversion_report)) { ?>

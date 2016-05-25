@@ -130,6 +130,39 @@ class UsersController extends ControllerBase
       $this->view->disable();
       return;
     }
+    
+
+    
+
+
+    /**
+     * Searches for users
+     */
+    public function createemployee2Action($location_id)
+    {
+      //$('#reviewgoal').val($('#review_goal').val());
+      //$('#lifetimevalue').val($('#lifetime_value_customer').val());
+      $reviewgoal = $this->request->getPost('reviewgoal');
+      $lifetimevalue = $this->request->getPost('lifetimevalue');
+      $querystring = '?review_goal='.$reviewgoal.'&lifetime_value_customer='.$lifetimevalue;
+      $url = '/admin/location/create3/'.($location_id > 0?$location_id:'').$querystring;
+//echo '<pre>post:'.print_r($_POST,true).'</pre>';
+
+      //get the user id, to find the settings
+      $identity = $this->auth->getIdentity();
+      // If there is no identity available the user is redirected to index/index
+      if (!is_array($identity)) {
+        $this->response->redirect('/admin/session/login?return=/admin/location/create3/'.($location_id > 0?$location_id:''));
+        $this->view->disable();
+        return;
+      }
+      $this->createFunction(3, $location_id);
+      
+      //echo $url;
+      $this->response->redirect($url);
+      $this->view->disable();
+      return;
+    }
 
 
 
@@ -137,7 +170,7 @@ class UsersController extends ControllerBase
     /**
      * Creates a User
      */
-    public function createFunction($profilesId)
+    public function createFunction($profilesId, $location_id = 0)
     {
       $this->view->profilesId = $profilesId;
 
@@ -207,6 +240,11 @@ class UsersController extends ControllerBase
               $locInsert->user_id = $user->id;
               $locInsert->save();
             }
+          } else if ($location_id > 0) {
+            $locInsert = new UsersLocation();
+            $locInsert->location_id = $location_id;
+            $locInsert->user_id = $user->id;
+            $locInsert->save();
           } else {
             $locInsert = new UsersLocation();
             $locInsert->location_id = $this->session->get('auth-identity')['location_id'];

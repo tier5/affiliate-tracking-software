@@ -15,6 +15,7 @@ use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\Review;
 use Vokuro\Models\ReviewsMonthly;
 use Vokuro\Models\Users;
+use Vokuro\Models\UsersLocation;
 use Vokuro\Models\UsersSubscription;
 use Vokuro\Models\YelpScanning;
 
@@ -243,6 +244,8 @@ class LocationController extends ControllerBase
           $this->auth->setLocation($loc->location_id);
         }
         $this->flash->success("The location was created successfully");
+        //we are done, go to the next page
+        return $this->response->redirect('/admin/location/create2/'.($loc->location_id > 0?$loc->location_id:''));
       }
     }
         
@@ -250,6 +253,195 @@ class LocationController extends ControllerBase
     $this->view->form = new LocationForm(null);
     $this->view->pick("session/signup2");
   }
+
+
+
+
+  /**
+    * Creates a Location, step 2
+    */
+  public function create2Action($location_id)
+  {
+
+    //get the user id, to find the settings
+    $identity = $this->auth->getIdentity();
+    //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
+    // If there is no identity available the user is redirected to index/index
+    if (!is_array($identity)) {
+      $this->response->redirect('/admin/session/login?return=/admin/location/');
+      $this->view->disable();
+      return;
+    }
+    // Query binding parameters with string placeholders
+    $conditions = "id = :id:";
+    $parameters = array("id" => $identity['id']);
+    $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+    //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+                        
+    //find the agency 
+    $conditions = "agency_id = :agency_id:";
+    $parameters = array("agency_id" => $userObj->agency_id);
+    $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+  
+    //find the location
+    $conditions = "location_id = :location_id: AND agency_id = :agency_id:";
+    $parameters = array("location_id" => $location_id, "agency_id" => $userObj->agency_id);
+    $location = Location::findFirst(array($conditions, "bind" => $parameters));
+
+    if ($this->request->isPost()) {
+      $location->assign(array(
+        'name' => $this->request->getPost('agency_name', 'striptags'),
+        'sms_button_color' => $this->request->getPost('sms_button_color', 'striptags'),
+        'sms_top_bar' => $this->request->getPost('sms_top_bar', 'striptags'),
+        'sms_text_message_default' => $this->request->getPost('sms_text_message_default', 'striptags'),
+      ));
+      $file_location = $this->uploadAction($agency->agency_id);
+      if ($file_location != '') $location->sms_message_logo_path = $file_location;
+      if (!$location->save()) {
+        $this->flash->error($location->getMessages());
+      } else {
+        //we are done, go to the next page
+        return $this->response->redirect('/admin/location/create3/'.($location_id > 0?$location_id:''));
+      }
+    }
+        
+    $this->view->agency = $agency;
+    $this->view->location = $location;
+    $this->view->current_step = 3;
+    $this->view->id = $agency->agency_id;
+    $this->view->location_id = $location_id;
+    $this->view->pick("session/signup3");
+  }
+
+
+
+
+  /**
+    * Creates a Location, step 3
+    */
+  public function create3Action($location_id)
+  {
+
+    //get the user id, to find the settings
+    $identity = $this->auth->getIdentity();
+    //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
+    // If there is no identity available the user is redirected to index/index
+    if (!is_array($identity)) {
+      $this->response->redirect('/admin/session/login?return=/admin/location/');
+      $this->view->disable();
+      return;
+    }
+    // Query binding parameters with string placeholders
+    $conditions = "id = :id:";
+    $parameters = array("id" => $identity['id']);
+    $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+    //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+                        
+    //find the agency 
+    $conditions = "agency_id = :agency_id:";
+    $parameters = array("agency_id" => $userObj->agency_id);
+    $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+  
+    //find the location
+    $conditions = "location_id = :location_id: AND agency_id = :agency_id:";
+    $parameters = array("location_id" => $location_id, "agency_id" => $userObj->agency_id);
+    $location = Location::findFirst(array($conditions, "bind" => $parameters));
+
+    if ($this->request->isPost()) { 
+      $location->assign(array(
+        'lifetime_value_customer' => $this->request->getPost('lifetime_value_customer', 'striptags'),
+        'review_goal' => $this->request->getPost('review_goal', 'striptags'),
+      ));
+
+      if (!$location->save()) {
+        $this->flash->error($location->getMessages());
+      } else {
+        return $this->response->redirect('/admin/location/');
+        $this->view->disable();
+        return;
+      }
+    }
+    
+    // Query binding parameters with string placeholders
+    $conditions = "agency_id = :agency_id: AND profilesId = 3";
+    $parameters = array("agency_id" => $userObj->agency_id);
+    $this->view->employees = Users::find(array($conditions, "bind" => $parameters));
+        
+    $this->usersFunctionality(3, $location_id);
+    $this->view->location = $location;
+    $this->view->current_step = 4;
+    $this->view->location_id = $location_id;
+    $this->view->pick("session/signup4");
+  }
+    
+
+    
+
+
+    /**
+     * Searches for users
+     */
+    public function selectemployeesAction($location_id)
+    {
+      //$('#reviewgoal').val($('#review_goal').val());
+      //$('#lifetimevalue').val($('#lifetime_value_customer').val());
+      $reviewgoal = $this->request->getPost('reviewgoal');
+      $lifetimevalue = $this->request->getPost('lifetimevalue');
+      $querystring = '?review_goal='.$reviewgoal.'&lifetime_value_customer='.$lifetimevalue;
+      $url = '/admin/location/create3/'.($location_id > 0?$location_id:'').$querystring;
+//echo '<pre>post:'.print_r($_POST,true).'</pre>';
+
+      //get the user id, to find the settings
+      $identity = $this->auth->getIdentity();
+      // If there is no identity available the user is redirected to index/index
+      if (!is_array($identity)) {
+        $this->response->redirect('/admin/session/login?return=/admin/location/create3/'.($location_id > 0?$location_id:''));
+        $this->view->disable();
+        return;
+      }
+      
+      // Query binding parameters with string placeholders
+      $conditions = "id = :id:";
+      $parameters = array("id" => $identity['id']);
+      $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+      //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+
+      //first remove old links
+      // Query binding parameters with string placeholders
+      $conditions = "agency_id = :agency_id: AND profilesId = 3";
+      $parameters = array("agency_id" => $userObj->agency_id);
+      $employees = Users::find(array($conditions, "bind" => $parameters));
+      if (isset($employees) && count($employees) > 0) {
+        foreach($employees as $user) { 
+          foreach($user->locations as $location) { 
+            if ($location_id == $location->location_id) {
+              //echo '<p>$user->id:'.$user->id.'</p>';
+              $locInsert = new UsersLocation();
+              $locInsert->location_id = $location->location_id;
+              $locInsert->user_id = $user->id;
+              $locInsert->delete();
+            }
+          }  
+        }
+      }
+
+      if(!empty($_POST['employees'])) {
+        foreach($_POST['employees'] as $check) {
+          //echo '<p>$check:'.$check.'</p>';
+          $locInsert = new UsersLocation();
+          $locInsert->location_id = $location_id;
+          $locInsert->user_id = $check;
+          $locInsert->save();
+        }
+      }
+      
+      //echo $url;
+      $this->response->redirect($url);
+      $this->view->disable();
+      return;
+    }
+
+
 
 
 

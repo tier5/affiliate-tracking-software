@@ -42,8 +42,9 @@
     <link href="/admin/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/admin/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
     <?php 
-    if(strpos($_SERVER['REQUEST_URI'],'location/create')>0 || strpos($_SERVER['REQUEST_URI'],'location/edit')>0) {
+    if(strpos($_SERVER['REQUEST_URI'],'location/create')>0 || strpos($_SERVER['REQUEST_URI'],'location/edit')>0 || strpos($_SERVER['REQUEST_URI'],'location/create2')>0 || strpos($_SERVER['REQUEST_URI'],'location/create3')>0) {
       ?>
+      <link href="/admin/css/main.css" rel="stylesheet" />
       <link href="/admin/css/signup.css" rel="stylesheet" type="text/css" />
       <?php 
     }
@@ -88,7 +89,7 @@ li.nav-item:hover, li.nav-item a:hover,
         <!-- BEGIN HEADER INNER -->
         <div class="page-header-inner ">
             <!-- BEGIN LOGO -->
-            <div class="page-logo">
+            <div class="page-logo" style="margin-top: 0;">
                 <a href="/admin/">
                     <img src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/admin/assets/layouts/layout/img/logo.png')?>" alt="logo" class="logo-default" /> </a>
                 <div class="menu-toggler sidebar-toggler"> </div>

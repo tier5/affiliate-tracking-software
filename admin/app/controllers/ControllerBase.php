@@ -913,6 +913,38 @@ class ControllerBase extends Controller
     return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
   }
 
+  
 
+  
+
+  public function uploadAction($agencyid)
+  {
+    // Check if the user has uploaded files
+    if ($this->request->hasFiles() == true) {
+      //echo '<p>hasFiles() == true!</p>';
+      $baseLocation = '/var/www/html/'.$this->config->webpathfolder->path.'/admin/public/img/upload/';
+
+
+      // Print the real file names and sizes
+      foreach ($this->request->getUploadedFiles() as $file) {
+        if ($file->getName() != '') {
+          //Move the file into the application
+          $filepath = $baseLocation . $agencyid . '-' . $file->getName();
+          $file->moveTo($filepath);
+
+          //resize
+          $image = new \Phalcon\Image\Adapter\GD($filepath);
+          $image->resize(200, 30)->save($filepath);
+
+          //echo '<p>$filepath: '.$filepath.'</p>';
+          $filepath = '/admin'.str_replace("/var/www/html/".$this->config->webpathfolder->path."/admin/public", "", $filepath);
+          $this->view->logo_setting = $filepath;
+          return $filepath;
+        }
+      }
+    } else {
+      //echo '<p>hasFiles() == true!</p>';
+    }
+  }
 
 }

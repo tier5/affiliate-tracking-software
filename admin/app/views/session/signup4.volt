@@ -3,7 +3,7 @@
 
 
 <!-- BEGIN FORM -->
-<form class="register-form4" action="/admin/session/signup4/<?=(isset($subscription->subscription_id)?$subscription->subscription_id:'')?><?=(isset($_GET['code'])?'?code='.$_GET['code']:'')?>" method="post" style="display: block;">
+<form class="register-form4" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/admin/location/create3/'.$location_id:'/admin/session/signup4/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block;">
 
 <h3 style="border-bottom: 1px solid #E7ECF0;">Enter Employees & Business Information</h3>
   
@@ -25,13 +25,20 @@
 
 <div class="col-md-12 employeetable">
   <div class="middle-row" style="border-bottom: 1px solid #E7ECF0;">
-    <a href="#" id="createlink" class="btnLink" style="height: 32px !important; line-height: 16px; padding-left: 15px; padding-right: 15px;">Create Employee</a>
+  <a href="#" id="createlink" class="btnLink" style="height: 32px !important; line-height: 16px; padding-left: 15px; padding-right: 15px;">Create Employee</a>
+  <?php 
+  if (strpos($_SERVER['REQUEST_URI'],'location')>0 && isset($employees) && count($employees) > 0) {
+    ?>
+    <a href="#" id="selectlink" class="btnLink" style="height: 32px !important; line-height: 16px; padding-left: 15px; padding-right: 15px; margin-right: 20px;">Select Employees</a>
+    <?php
+  }
+  ?>
     <h3>EMPLOYEE LIST</h3>
   </div>
 
 {% for user in users %}
 {% if loop.first %}
-<table cellspacing="0" width="100%" class="table table-striped table-bordered dataTable" id="basic-datatables" role="grid" aria-describedby="basic-datatables_info" style="width: 100%;">
+<table cellspacing="0" width="100%" class="table table-striped table-bordered dataTable" style="width: 100%;">
   <thead>
   <tr role="row">
     <th class="" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" style="width: 141px;" aria-sort="ascending" aria-label="Name: activate to sort column ascending">Name</th>
@@ -58,35 +65,74 @@
 
 
 <div class="form-actions">
-  <button type="submit" id="register-submit-btn" class="btnsignup uppercase">Next: Invite Friends</button>
+  <button type="submit" id="register-submit-btn" class="btnsignup uppercase"><?=(strpos($_SERVER['REQUEST_URI'],'location')>0?'Save':'Next: Invite Friends')?></button>
 </div>
 <div style="clear: both;">&nbsp;</div>
 </form>
 <!-- END FORM -->
 <div class="overlay" style="display: none;"></div>
 <div id="page-wrapper" class="create" style="display: none;">
-<form id="createemployeeform" class="register-form4" action="/admin/users/createemployee/<?=(isset($subscription->subscription_id)?$subscription->subscription_id:'')?><?=(isset($_GET['code'])?'?code='.$_GET['code']:'')?>" method="post" style="display: block;">
+<form id="createemployeeform" class="register-form4" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/admin/users/createemployee2/'.$location_id:'/admin/users/createemployee/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block; padding-top: 0;">
   <div class="closelink close"></div>
 	<div class="col-md-12">
     <div class="title"><h3>Create Employee</h3></div>    
-    <div class="row">
+    <div class="row" style="clear: both;">
       <div class="field">
-        <span class="name">Full Name:</span> <input type="text" name="name" id="name" value="" required="required" />  
-        <span class="name">Email Address:</span> <input type="email" name="email" id="email" value="" required="required" data-control="mycitycontrol" />      
-      </div>  
-    </div>
-    <div class="row">
-      <div class="field">
-        <span class="name">Cell Phone:</span> <input type="tel" name="phone" id="phone" value="" />    
+        <span class="name" style="display: inline-block; min-width: 100px;">Full Name:</span> <input type="text" name="name" id="name" value="" required="required" style="min-width: 200px;padding: 0 0 0 5px;" />       
       </div>   
     </div>
-    <div class="row">
+    <div class="row" style="clear: both;">
+      <div class="field">
+        <span class="name" style="display: inline-block; min-width: 100px;">Email Address:</span> <input type="email" name="email" id="email" value="" required="required" data-control="mycitycontrol" style="min-width: 200px;padding: 0 0 0 5px;" />      
+      </div>  
+    </div>
+    <div class="row" style="clear: both;">
+      <div class="field">
+        <span class="name" style="display: inline-block; min-width: 100px;">Cell Phone:</span> <input type="tel" name="phone" id="phone" value="" style="min-width: 200px;padding: 0 0 0 5px;" />    
+      </div>   
+    </div>
+    <div class="row" style="clear: both;">
       <div class="field"><button id="createuser" type="submit" class="btnLink">Save</button></div>   
     </div>
     <div style="clear: both;">&nbsp;</div>
   </div>
   <input type="hidden" name="reviewgoal" id="reviewgoal" value="" />
   <input type="hidden" name="lifetimevalue" id="lifetimevalue" value="" />
+</form>
+</div>
+<div id="page-wrapper2" class="create" style="display: none;">
+<form id="selectemployeeform" class="register-form4" action="/admin/location/selectemployees/<?=$location_id?>" method="post" style="display: block; padding-top: 0;">
+  <div class="closelink close"></div>
+	<div class="col-md-12">
+    <div class="title"><h3 style="margin-bottom: 0; margin-top: 0; padding-bottom: 5px;">Select Employees</h3></div> 
+    <div class="scroll-wrapper" style="height: 400px; overflow-y: scroll; overflow-x: hidden;">
+    <?php
+    if (isset($employees) && count($employees) > 0) {
+      foreach($employees as $user) { 
+        ?>
+        <div class="" style="clear: both;">
+          <div class="field" style="margin: 3px 0;">
+            <?php 
+            $checked = false;
+            foreach($user->locations as $location) { 
+              if ($location_id == $location->location_id) $checked = true;
+            }  
+            ?>
+            <span class="name" style="display: inline-block; min-width: 20px;"><input type="checkbox" name="employees[]" value="<?=$user->id?>" <?=($checked?'checked="checked"':'')?> /></span> <span style="min-width: 200px; padding: 0 0 0 5px; display: inline-block;"><?=$user->name?></span>       
+          </div>   
+        </div>
+        <?php
+      }
+    }
+    ?>
+    </div>
+    <div class="row" style="clear: both;">
+      <div class="field"><button id="selectuser" type="submit" class="btnLink">Save</button></div>   
+    </div>   
+    <div style="clear: both;">&nbsp;</div>
+  </div>
+  <input type="hidden" name="reviewgoal" id="reviewgoal2" value="" />
+  <input type="hidden" name="lifetimevalue" id="lifetimevalue2" value="" />
 </form>
 </div>
 <script type="text/javascript">
@@ -102,7 +148,16 @@ jQuery(document).ready(function($){
   $('.overlay, .closelink').on('click', function(e) {
     e.preventDefault();
     $('#page-wrapper').hide();
+    $('#page-wrapper2').hide();
     $('.overlay').hide();
+  });
+  $('#selectlink').on('click', function(e) {
+    e.preventDefault();
+    $('#page-wrapper2').show();
+    $('.overlay').show();
+    
+    $('#reviewgoal2').val($('#review_goal').val());
+    $('#lifetimevalue2').val($('#lifetime_value_customer').val());
   });
 
 

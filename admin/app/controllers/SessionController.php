@@ -1038,7 +1038,17 @@ class SessionController extends ControllerBase
 
 
 
-  
+  function curl_get_contents($url)
+  {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
+  }
 
 
 
@@ -1067,7 +1077,7 @@ class SessionController extends ControllerBase
           #get place of an business with business name and zip using Google API
           $strFindPlaceUrl = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" . $keyword . "&key=" . $googleApiKey;
           //echo '<p>$strFindPlaceUrl:'.$strFindPlaceUrl.'</p>';
-          $resultFindPlace = file_get_contents($strFindPlaceUrl);
+          $resultFindPlace = $this->curl_get_contents($strFindPlaceUrl);
           $arrResultFindPlace = json_decode($resultFindPlace, true);
 
           //echo '<pre>'.print_r($arrResultFindPlace,true).'</pre>';
@@ -1095,7 +1105,7 @@ class SessionController extends ControllerBase
               $strPlaceId = $singleResultFindPlace['place_id'];
 
               $strFindPlaceDetail = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" . $strPlaceId . "&key=" . $googleApiKey;
-              $resultFindPlaceDetail = file_get_contents($strFindPlaceDetail);
+              $resultFindPlaceDetail = $this->curl_get_contents($strFindPlaceDetail);
               $arrResultFindPlaceDetail = json_decode($resultFindPlaceDetail, true);
 
               $returnAddress = @$arrResultFindPlaceDetail['result']['formatted_address'];
@@ -1112,32 +1122,35 @@ class SessionController extends ControllerBase
               
               $strURL = "";
               $strButton = "";
+              
+              if (isset($returnBusinessName) && $returnBusinessName != '') {
 
-              //check to see if this location is already in the database, by checking the place id
-              $conditions = "api_id = :api_id: AND review_site_id = 3";
-              $parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
-              $loc = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-              if (!$loc) {
-                $strURL = "onclick=\"selectLocation('".$this->encode(@$arrResultFindPlaceDetail['result']['place_id'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['url'])."', '".$this->encode($returnBusinessName)."', '".$this->encode($street_number)."', '".$this->encode($route)."', '".$this->encode($locality)."', '".$this->encode($administrative_area_level_1)."', '".$this->encode($postal_code)."', '".$this->encode($country)."', '".$this->encode(@$arrResultFindPlaceDetail['result']['formatted_phone_number'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lat'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng'])."');return false;\" href=\"javascript:void(0);\"";
-                $strButton = "<a id=\"business-name-link\" ".$strURL." style=\"float: right; height: 40px; line-height: 24px;\" class=\"btnLink\" >Choose This Listing</a>";
-              } else {
-                //the location was found, so tell the user that
-                $strURL = "href=\"javascript:void(0);\"";
-                $strButton = "<div style=\"float: right; margin-top: -10px; padding: 5px; text-align: center; width: 215px;\">Already Registered Contact Support</div>";
+                //check to see if this location is already in the database, by checking the place id
+                $conditions = "api_id = :api_id: AND review_site_id = 3";
+                $parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
+                $loc = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                if (!$loc) {
+                  $strURL = "onclick=\"selectLocation('".$this->encode(@$arrResultFindPlaceDetail['result']['place_id'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['url'])."', '".$this->encode($returnBusinessName)."', '".$this->encode($street_number)."', '".$this->encode($route)."', '".$this->encode($locality)."', '".$this->encode($administrative_area_level_1)."', '".$this->encode($postal_code)."', '".$this->encode($country)."', '".$this->encode(@$arrResultFindPlaceDetail['result']['formatted_phone_number'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lat'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng'])."');return false;\" href=\"javascript:void(0);\"";
+                  $strButton = "<a id=\"business-name-link\" ".$strURL." style=\"float: right; height: 40px; line-height: 24px;\" class=\"btnLink\" >Choose This Listing</a>";
+                } else {
+                  //the location was found, so tell the user that
+                  $strURL = "href=\"javascript:void(0);\"";
+                  $strButton = "<div style=\"float: right; margin-top: -10px; padding: 5px; text-align: center; width: 215px;\">Already Registered Contact Support</div>";
+                }
+
+
+                $strHTML .= "<div class=\"border-box-s\" style=\"min-height: 110px;\">
+                    <p class=\"business-name\"><a id=\"business-name-link\" ".$strURL.">" . $returnBusinessName . "</a></p>
+                    ".$strButton."
+                    <ul>
+                    <li>" . $returnAddress . "</li>
+                    <li>" . $returnPhoneNumber . "</li>
+                    </ul>
+                    </div>";
+
+                #increment counter
+                $intCounter++;
               }
-
-
-              $strHTML .= "<div class=\"border-box-s\">
-                  <p class=\"business-name\"><a id=\"business-name-link\" ".$strURL.">" . $returnBusinessName . "</a></p>
-                  ".$strButton."
-                  <ul>
-                  <li>" . $returnAddress . "</li>
-                  <li>" . $returnPhoneNumber . "</li>
-                  </ul>
-                  </div>";
-
-              #increment counter
-              $intCounter++;
             }
 
             #set response
@@ -1212,38 +1225,6 @@ class SessionController extends ControllerBase
     $this->view->disable();
     echo $results;
     
-  }
-
-  
-
-  public function uploadAction($agencyid)
-  {
-    // Check if the user has uploaded files
-    if ($this->request->hasFiles() == true) {
-      //echo '<p>hasFiles() == true!</p>';
-      $baseLocation = '/var/www/html/'.$this->config->webpathfolder->path.'/admin/public/img/upload/';
-
-
-      // Print the real file names and sizes
-      foreach ($this->request->getUploadedFiles() as $file) {
-        if ($file->getName() != '') {
-          //Move the file into the application
-          $filepath = $baseLocation . $agencyid . '-' . $file->getName();
-          $file->moveTo($filepath);
-
-          //resize
-          $image = new \Phalcon\Image\Adapter\GD($filepath);
-          $image->resize(200, 30)->save($filepath);
-
-          //echo '<p>$filepath: '.$filepath.'</p>';
-          $filepath = '/admin'.str_replace("/var/www/html/".$this->config->webpathfolder->path."/admin/public", "", $filepath);
-          $this->view->logo_setting = $filepath;
-          return $filepath;
-        }
-      }
-    } else {
-      //echo '<p>hasFiles() == true!</p>';
-    }
   }
 
 

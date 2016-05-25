@@ -389,7 +389,8 @@ div#image_container img.selected, div#image_container img:hover{
   z-index: 10;
   background-color: rgba(0,0,0,0.5); /*dim the background*/
 }
-#page-wrapper {
+#page-wrapper,
+#page-wrapper2 {
   width: 440px;
   background: #FFFFFF;
   padding: 1em;
@@ -403,22 +404,26 @@ div#image_container img.selected, div#image_container img:hover{
   z-index: 11;
 }
 
-#page-wrapper h1 {
+#page-wrapper h1,
+#page-wrapper2 h1 {
   margin-top: 0;
 }
 
-#page-wrapper .field {
+#page-wrapper .field,
+#page-wrapper2 .field {
   margin: 1em 0;
 }
 
-#page-wrapper label {
+#page-wrapper label,
+#page-wrapper2 label {
   display: block;
   margin-top: 2em;
   margin-bottom: 0.5em;
   color: #999999;
 }
 
-#page-wrapper input {
+#page-wrapper input,
+#page-wrapper2 input {
   width: 100%;
   padding: 0.5em 0.5em;
   font-size: 1.2em;
@@ -426,7 +431,8 @@ div#image_container img.selected, div#image_container img:hover{
   border: 1px solid #D9D9D9;
 }
 
-#page-wrapper textarea {
+#page-wrapper textarea,
+#page-wrapper2 textarea {
   width: 100%;
   height: 200px;
   padding: 0.5em 0.5em;
@@ -435,17 +441,20 @@ div#image_container img.selected, div#image_container img:hover{
   border: 1px solid #D9D9D9;
 }
 
-#page-wrapper button:hover, #page-wrapper button:focus {
+#page-wrapper button:hover, #page-wrapper button:focus,
+#page-wrapper2 button:hover, #page-wrapper2 button:focus {
   opacity: 0.75;
   cursor: pointer;
 }
 
-#page-wrapper button:active {
+#page-wrapper button:active,
+#page-wrapper2 button:active {
   opacity: 1;
   box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) inset;
 }
 
-#page-wrapper .success {
+#page-wrapper .success,
+#page-wrapper2 .success {
   padding: 1em;
   margin-bottom: 0.75rem;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -457,7 +466,8 @@ div#image_container img.selected, div#image_container img:hover{
           border-radius: 4px;
 }
 
-#page-wrapper .error {
+#page-wrapper .error,
+#page-wrapper2 .error {
   padding: 1em;
   margin-bottom: 0.75rem;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -887,6 +897,7 @@ body { background-color: #E2E2E2; color: #484848; }
   vertical-align: middle;
 }
 
+.page-logo img { max-width: 100%;}
 
 
 
