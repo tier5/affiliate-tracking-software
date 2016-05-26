@@ -28,7 +28,7 @@
         <link href="/admin/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
         <link href="/admin/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
         <link href="/admin/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/7.0.2/css/bootstrap-slider.css" rel="stylesheet" type="text/css" />
+        <link href="/admin/public/assets/global/plugins/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="/admin/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
@@ -50,7 +50,14 @@
         }
         ?>
         <link href="/admin/css/admin.css" rel="stylesheet" type="text/css" />
-
+        <?php 
+        if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
+        ?>
+        <link href="/admin/css/slider-extended.css" rel="stylesheet" type="text/css" />
+        <?php 
+        }
+        ?>
+        
         <link rel="shortcut icon" href="favicon.ico" /> 
         <!--<script src="/admin/assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->    
         <script type="text/javascript" src="/admin/js/vendor/jquery-2.1.1.min.js"></script>
@@ -560,7 +567,7 @@
         <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
         <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
         <script src="/admin/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/7.0.2/bootstrap-slider.min.js" type="text/javascript"></script>
+        <script src="/admin/public/assets/global/plugins/seiyria-bootstrap-slider/dist/bootstrap-slider.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         <script type="text/javascript" src="/admin/js/vendor/jquery.dataTables.js"></script>
         <script type="text/javascript" src="/admin/js/vendor/dataTables.tableTools.js"></script>

@@ -936,6 +936,7 @@ body { background-color: #E2E2E2; color: #484848; }
 .subscription-panel,
 .subscription-panel .subscription-contact-us {
     background-color: #33cc33;
+    border-radius: 5px !important;
 }
 
 .subscription-parameters, 
@@ -973,17 +974,32 @@ body { background-color: #E2E2E2; color: #484848; }
     position: relative;
 }
 .active-plan .subscription-panel div > div > .subscription-parameters,
-.change-plan .subscription-panel div > div > .subscription-parameters {
+.change-plan .subscription-panel div > div > .subscription-parameters
+{
     position: absolute;
     top: 50%;
     transform: translate(0,-50%);
 }
 .active-plan .subscription-panel .subscription-parameters > div > span,
-.change-plan .subscription-panel .subscription-parameters > div > span { 
+.change-plan .subscription-panel .subscription-parameters > div > span {
     font-weight: bold; 
 }
 .active-plan .quota-panel .subscription-parameters {
     text-align: center; 
     color: #000000;
 }
+.add-locations .subscription-panel .subscription-parameters > div,
+.add-messages .subscription-panel .subscription-parameters > div {
+    text-align: center;
+}
+ 
+.portlet.light.bordered.dashboard-panel.change-plan {
+    min-height: 0;
+}
 
+.subscription .change-plan .search-btn > a {
+    background-color: #ff9c00;
+    padding: 8px 40px;
+    text-align: center;
+    text-decoration: none;
+}

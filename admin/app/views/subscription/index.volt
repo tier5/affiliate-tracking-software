@@ -184,8 +184,8 @@
             </div>
         </div>
 
-        
-        
+
+
         <div class="col-md-4 col-sm-4">
             <div class="portlet light bordered dashboard-panel">
                 <div class="portlet-title">
@@ -216,14 +216,41 @@
                     </div>
                 </div>
                 <div class="portlet-body add-locations">
-                    <input id="ex13" type="text" data-slider-ticks="[0, 100, 200, 300, 400]" data-slider-ticks-snap-bounds="30" data-slider-ticks-labels='["$0", "$100", "$200", "$300", "$400"]'/>
+                    <div class="col-sm-9 col-md-9">
+                        <input id="ex13" type="text" />
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                        <div class="panel panel-default subscription-panel">
+                            <div class="panel-body">
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="subscription-parameters">   
+                                        <div><span style="font-weight: bold;">100+</span></div>
+                                        <div><span> Location</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-md-4 col-sm-4">
-            <div class="portlet light bordered dashboard-panel">
+            <div class="portlet light bordered dashboard-panel change-plan">
                 <div class="portlet-body">
-                    <div class="portlet light bordered dashboard-panel"></div>    
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <input type="checkbox" name="my-checkbox" checked>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="growth-bar" style="margin: 10px 0; text-align: center;">   
+                                <div class="search-btn">
+                                    <a class="btnLink" href="">Change Plan</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
                 </div>
             </div>
         </div>
@@ -237,19 +264,100 @@
                         <span>HOW MANY TEXT MESSAGES DO YOU NEED PER LOCATION?</span>
                     </div>
                 </div>
-                <div class="portlet-body add-locations"></div>
+                <div class="portlet-body add-messages">
+                    <div class="col-sm-9 col-md-9">
+                        <input id="ex14" type="text" />
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                        <div class="panel panel-default subscription-panel">
+                            <div class="panel-body">
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="subscription-parameters">   
+                                        <div><span style="font-weight: bold;">250+</span></div>
+                                        <div><span> Messages</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </header>
 <script type="text/javascript">
-jQuery(document).ready(function($){
+    jQuery(document).ready(function ($) {
 
-    $("#ex13").slider({
-        ticks: [0, 100, 200, 300, 400],
-        ticks_labels: ['$0', '$100', '$200', '$300', '$400'],
-        ticks_snap_bounds: 30
+        var slider = new Slider("#ex13", {
+            tooltip: 'show',
+            min: 0,
+            max: 100,
+            step: 1,
+            ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+            ticks_labels: [
+                '<div>0</div><div class="tick-marker">|</div>',
+                '<div>10</div><div class="tick-marker">|</div>',
+                '<div>20</div><div class="tick-marker">|</div>',
+                '<div>30</div><div class="tick-marker">|</div>',
+                '<div>40</div><div class="tick-marker">|</div>',
+                '<div>50</div><div class="tick-marker">|</div>',
+                '<div>60</div><div class="tick-marker">|</div>',
+                '<div>70</div><div class="tick-marker">|</div>',
+                '<div>80</div><div class="tick-marker">|</div>',
+                '<div>90</div><div class="tick-marker">|</div>',
+                '<div>100</div><div class="tick-marker">|</div>'
+            ],
+            ticks_snap_bounds: 1
+        });
+
+        var slider = new Slider("#ex14", {
+            tooltip: 'show',
+            min: 0,
+            max: 100,
+            step: 1,
+            ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250],
+            ticks_labels: [
+                '<div>0</div><div class="tick-marker">|</div>',
+                '<div>10</div><div class="tick-marker">|</div>',
+                '<div>20</div><div class="tick-marker">|</div>',
+                '<div>30</div><div class="tick-marker">|</div>',
+                '<div>40</div><div class="tick-marker">|</div>',
+                '<div>50</div><div class="tick-marker">|</div>',
+                '<div>60</div><div class="tick-marker">|</div>',
+                '<div>70</div><div class="tick-marker">|</div>',
+                '<div>80</div><div class="tick-marker">|</div>',
+                '<div>90</div><div class="tick-marker">|</div>',
+                '<div>100</div><div class="tick-marker">|</div>',
+                '<div>110</div><div class="tick-marker">|</div>',
+                '<div>120</div><div class="tick-marker">|</div>',
+                '<div>130</div><div class="tick-marker">|</div>',
+                '<div>140</div><div class="tick-marker">|</div>',
+                '<div>150</div><div class="tick-marker">|</div>',
+                '<div>160</div><div class="tick-marker">|</div>',
+                '<div>170</div><div class="tick-marker">|</div>',
+                '<div>180</div><div class="tick-marker">|</div>',
+                '<div>190</div><div class="tick-marker">|</div>',
+                '<div>200</div><div class="tick-marker">|</div>',
+                '<div>210</div><div class="tick-marker">|</div>',
+                '<div>220</div><div class="tick-marker">|</div>',
+                '<div>230</div><div class="tick-marker">|</div>',
+                '<div>240</div><div class="tick-marker">|</div>',
+                '<div>250</div><div class="tick-marker">|</div>'
+            ],
+            ticks_snap_bounds: 1
+        });
+        
+        var options = {
+            onText: "Monthly",
+            onColor: '#ff9c00',
+            offColor: '#E8EAEF',
+            offText: "Annually",
+            animate: true,
+            labelText: '', 
+            labelWidth: 0
+        };
+        
+        $("[name='my-checkbox']").bootstrapSwitch(options);
+
     });
-  
-});
 </script>
