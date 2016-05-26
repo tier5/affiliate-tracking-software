@@ -18,10 +18,21 @@ use Vokuro\Models\SubscriptionInterval;
 class SubscriptionController extends ControllerBase {
 
     public function initialize() {
-        if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
+        
+        // TODO: Original code
+        // if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
+        //     $this->tag->setTitle('Review Velocity | Subscription');
+        //     $this->view->setTemplateBefore('private');
+        // } else {
+        //     $this->response->redirect('/admin/session/login?return=/admin/');
+        //     $this->view->disable();
+        //     return;
+        // }
+        $identity = $this->session->get('auth-identity');
+        if ($identity['profile'] != 'Employee') {
             $this->tag->setTitle('Review Velocity | Subscription');
             $this->view->setTemplateBefore('private');
-        } else {
+        } else {    
             $this->response->redirect('/admin/session/login?return=/admin/');
             $this->view->disable();
             return;
@@ -33,7 +44,9 @@ class SubscriptionController extends ControllerBase {
      * Searches for subscriptions
      */
     public function indexAction() {
-        $this->view->subscriptions = Subscription::find();
+        // TODO: Original code
+        // $this->view->subscriptions = Subscription::find();
+        $this->getSMSReport();
     }
 
     /**

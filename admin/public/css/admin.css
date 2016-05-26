@@ -908,3 +908,82 @@ body { background-color: #E2E2E2; color: #484848; }
   .share-link { margin: 5px; }
   .share-text { margin: 5px; }
 }
+
+/* Subscription styles */
+.subscription .growth-bar {
+    text-align: right;
+    background-color: transparent;
+}
+.subscription .search-btn > a {
+    background-color: #33cc33;
+    padding: 8px 40px;
+    text-align: center;
+    text-decoration: none;
+}
+.subscription .caption > span {
+    text-align: left;
+}
+.subscription .credit-card-info .portlet-body .panel {
+    border-color: transparent;
+    margin-bottom: 0px;
+}
+.subscription .credit-card-info .portlet {
+    padding: 0px 20px;
+}
+.subscription .credit-card-info .portlet-body .panel .row {
+    /* margin-bottom: 20px; */
+}
+.subscription-panel,
+.subscription-panel .subscription-contact-us {
+    background-color: #33cc33;
+}
+
+.subscription-parameters, 
+.subscription-type,
+.contact-us-header,
+.contact-us-subheader {
+    color: #FFFFFF;
+}
+.contact-us-subheader {
+    text-align: center;
+}
+
+.subscription-parameters,
+.subscription-contact-us .contact-us-subheader {
+    font-size: 1.5rem;
+}
+
+.subscription-type,
+.subscription-contact-us .contact-us-header {
+    font-size: 6rem;
+}
+
+.panel.panel-default.quota-panel,
+.pull-right.panel.panel-default.subscription-contact-us,
+.change-plan .panel.panel-default.subscription-panel {
+    margin-bottom: 0px;
+}
+.pull-right.panel.panel-default.subscription-contact-us {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.active-plan .subscription-panel div > div  {
+    position: relative;
+}
+.active-plan .subscription-panel div > div > .subscription-parameters,
+.change-plan .subscription-panel div > div > .subscription-parameters {
+    position: absolute;
+    top: 50%;
+    transform: translate(0,-50%);
+}
+.active-plan .subscription-panel .subscription-parameters > div > span,
+.change-plan .subscription-panel .subscription-parameters > div > span { 
+    font-weight: bold; 
+}
+.active-plan .quota-panel .subscription-parameters {
+    text-align: center; 
+    color: #000000;
+}
+

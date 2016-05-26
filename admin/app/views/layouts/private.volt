@@ -28,6 +28,7 @@
         <link href="/admin/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
         <link href="/admin/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
         <link href="/admin/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/7.0.2/css/bootstrap-slider.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="/admin/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
@@ -41,13 +42,13 @@
         <!-- END THEME LAYOUT STYLES -->
         <link href="/admin/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="/admin/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
-    <?php 
-    if(strpos($_SERVER['REQUEST_URI'],'location/create')>0 || strpos($_SERVER['REQUEST_URI'],'location/edit')>0) {
-      ?>
+        <?php 
+        if(strpos($_SERVER['REQUEST_URI'],'location/create')>0 || strpos($_SERVER['REQUEST_URI'],'location/edit')>0) {
+        ?>
         <link href="/admin/css/signup.css" rel="stylesheet" type="text/css" />
-      <?php 
-    }
-    ?>
+        <?php 
+        }
+        ?>
         <link href="/admin/css/admin.css" rel="stylesheet" type="text/css" />
 
         <link rel="shortcut icon" href="favicon.ico" /> 
@@ -56,11 +57,11 @@
         <link rel="stylesheet" href="/admin/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
         <script type="text/javascript" src="/admin/js/vendor/fancybox/jquery.fancybox.pack.js"></script>    
         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <?php
-    if (false && isset($main_color_setting)) {
-      list($r, $g, $b) = sscanf($main_color_setting, "#%02x%02x%02x");
-      //echo "$main_color_setting -> $r $g $b";
-      ?>
+        <?php
+        if (false && isset($main_color_setting)) {
+        list($r, $g, $b) = sscanf($smain_color_setting, "#%02x%02x%02x");
+        //echo "$main_color_setting -> $r $g $b";
+        ?>
         <style>
             .page-header.navbar { background-color: <?=$main_color_setting?>; }
             body { background-color: rgba(<?=$r?>, <?=$g?>, <?=$b?>, 0.8); }
@@ -76,9 +77,9 @@
             }
             .page-sidebar .page-sidebar-menu > li.open > a > .arrow.open::before, .page-sidebar .page-sidebar-menu > li.open > a > .arrow::before, .page-sidebar .page-sidebar-menu > li.open > a > i, .page-sidebar .page-sidebar-menu > li > a > .arrow.open::before, .page-sidebar .page-sidebar-menu > li > a > .arrow::before, .page-sidebar .page-sidebar-menu > li > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > .arrow.open::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > .arrow::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > .arrow.open::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > .arrow::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > i { color: #FFFFFF !important; }
         </style>
-      <?php
-    }
-    ?>
+        <?php
+        }
+        ?>
     </head>
     <!-- END HEAD -->
 
@@ -101,50 +102,50 @@
                 <div class="top-menu">
                     <ul class="nav navbar-nav pull-right">
                         <?php 
-                 if (isset($haspaid) && $haspaid == false) {
-                 
-                 } else {       
-                    if ((isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0)
+                        if (isset($haspaid) && $haspaid == false) {
+
+                        } else {       
+                        if ((isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0)
                         || (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') ) {
 
-                    } else {
-                      if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
-                      ?>
+                        } else {
+                        if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
+                        ?>
                         <li class="" id="">
                             <a href="#sendreviewinvite" class="fancybox"><img src="/admin/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
                         </li>
-                      <?php } 
+                        <?php } 
 
                         if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
-                           //get location list from the identity
-                           $loclist = $this->session->get('auth-identity')['locations'];
+                        //get location list from the identity
+                        $loclist = $this->session->get('auth-identity')['locations'];
 
-                           if ($loclist) {
-                            ?>
+                        if ($loclist) {
+                        ?>
                         <li class="location-header" id="">
                             <span id="locationset">
                                 Location: <?=$this->session->get('auth-identity')['location_name']?>  <?php if (count($loclist) > 1) { ?><a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a><?php } ?>
                             </span>
                             <span id="locationnotset" style="display: none;"><form action="/admin/" method="post">
                                     Location: <select name="locationselect" id="locationselect">
-                            <?php 
-                            if (count($loclist) > 1) {
-                              foreach ($loclist as $loc) {
-                                echo "<option value='$loc->location_id' ".($loc->location_id==$this->session->get('auth-identity')['location_id']?' selected="selected"':'').">$loc->name</option>\n";
-                              }
-                            }
-                            ?>
+                                        <?php 
+                                        if (count($loclist) > 1) {
+                                        foreach ($loclist as $loc) {
+                                        echo "<option value='$loc->location_id' ".($loc->location_id==$this->session->get('auth-identity')['location_id']?' selected="selected"':'').">$loc->name</option>\n";
+                                        }
+                                        }
+                                        ?>
                                     </select>
                                     <input type="submit" class="btn red" value="Change"></form>
                             </span>
                         </li>
-                            <?php 
-                          }
+                        <?php 
+                        }
                         }
                         ?>
-                    <?php 
-                  } //end looking for admin  
-                  ?>                  
+                        <?php 
+                        } //end looking for admin  
+                        ?>                  
                         <li class="dropdown dropdown-user" style="margin-left: 20px;">
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                 <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> <?=$this->session->get('auth-identity')['name']?> </span>
@@ -163,9 +164,9 @@
                                 </li>
                             </ul>
                         </li>
-                  <?php
-                }  //end checking if paid
-                    ?>
+                        <?php
+                        }  //end checking if paid
+                        ?>
                     </ul>
                 </div>
                 <!-- END TOP NAVIGATION MENU -->
@@ -218,266 +219,280 @@
                         </form>-->
                         <!-- END RESPONSIVE QUICK SEARCH FORM 
                     </li>-->
-                    <?php
-                    $openfolder = '';
-                    if(strpos($_SERVER['REQUEST_URI'],'analytics')>0)
-                    {
-                      $openfolder = 'analytics';
-                    } 
-                    else if(strpos($_SERVER['REQUEST_URI'],'subscription')>0)
-                    {
-                      $openfolder = 'subscription';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'stripe')>0)
-                    {
-                      $openfolder = 'stripe';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'reviews/sms_broadcast')>0)
-                    {
-                      $openfolder = 'sms_broadcast';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'reviews')>0)
-                    {
-                      $openfolder = 'reviews';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'users/admin')>0)
-                    {
-                      $openfolder = 'adminusers';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'users')>0)
-                    {
-                      $openfolder = 'users';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'settings')>0)
-                    {
-                      $openfolder = 'settings';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'contacts')>0)
-                    {
-                      $openfolder = 'contacts';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'location')>0)
-                    {
-                      $openfolder = 'location';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/list/2')>0 || 
-                            strpos($_SERVER['REQUEST_URI'],'admindashboard/create/2')>0 || 
-                            strpos($_SERVER['REQUEST_URI'],'admindashboard/view/2')>0)
-                    {
-                      $openfolder = 'admindashboardbusinesses';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/list/1')>0 || 
-                            strpos($_SERVER['REQUEST_URI'],'admindashboard/create/1')>0 || 
-                            strpos($_SERVER['REQUEST_URI'],'admindashboard/view/1')>0)
-                    {
-                      $openfolder = 'admindashboardagencies';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/payments')>0)
-                    {
-                      $openfolder = 'admindashboardpayments';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/settings')>0)
-                    {
-                      $openfolder = 'admindashboardsettings';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'admindashboard')>0)
-                    {
-                      $openfolder = 'admindashboard';
-                    }
-                    else 
-                    {
-                      $openfolder = 'dashboard';
-                    }
-                    ?>
-                    <?php 
-                  if (isset($haspaid) && $haspaid == false) {
-                    //the user has not paid
-                  } else {
+                        <?php
+                        $openfolder = '';
+                        if(strpos($_SERVER['REQUEST_URI'],'analytics')>0)
+                        {
+                        $openfolder = 'analytics';
+                        } 
+                        else if(strpos($_SERVER['REQUEST_URI'],'subscription')>0)
+                        {
+                        $openfolder = 'subscription';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'stripe')>0)
+                        {
+                        $openfolder = 'stripe';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'reviews/sms_broadcast')>0)
+                        {
+                        $openfolder = 'sms_broadcast';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'reviews')>0)
+                        {
+                        $openfolder = 'reviews';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'users/admin')>0)
+                        {
+                        $openfolder = 'adminusers';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'users')>0)
+                        {
+                        $openfolder = 'users';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'settings')>0)
+                        {
+                        $openfolder = 'settings';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'contacts')>0)
+                        {
+                        $openfolder = 'contacts';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'location')>0)
+                        {
+                        $openfolder = 'location';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/list/2')>0 || 
+                        strpos($_SERVER['REQUEST_URI'],'admindashboard/create/2')>0 || 
+                        strpos($_SERVER['REQUEST_URI'],'admindashboard/view/2')>0)
+                        {
+                        $openfolder = 'admindashboardbusinesses';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/list/1')>0 || 
+                        strpos($_SERVER['REQUEST_URI'],'admindashboard/create/1')>0 || 
+                        strpos($_SERVER['REQUEST_URI'],'admindashboard/view/1')>0)
+                        {
+                        $openfolder = 'admindashboardagencies';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/payments')>0)
+                        {
+                        $openfolder = 'admindashboardpayments';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/settings')>0)
+                        {
+                        $openfolder = 'admindashboardsettings';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'admindashboard')>0)
+                        {
+                        $openfolder = 'admindashboard';
+                        }
+                        else 
+                        {
+                        $openfolder = 'dashboard';
+                        }
+                        ?>
+                        <?php 
+                        if (isset($haspaid) && $haspaid == false) {
+                        //the user has not paid
+                        } else {
 
-                    if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
-                      ?>
+                        if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
+                        ?>
                         <li class="nav-item start <?=($openfolder=='admindashboard'?'active open':'')?>">
                             <a href="/admin/admindashboard/" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
                                 <span class="title">Dashboard</span>
-                              <?=($openfolder=='admindashboard'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='admindashboard'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item start <?=($openfolder=='admindashboardbusinesses'?'active open':'')?>">
                             <a href="/admin/admindashboard/list/2" class="nav-link nav-toggle">
                                 <i class="icon-pointer"></i>
                                 <span class="title">See All Businesses</span>
-                              <?=($openfolder=='admindashboardbusinesses'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='admindashboardbusinesses'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item start <?=($openfolder=='admindashboardagencies'?'active open':'')?>">
                             <a href="/admin/admindashboard/list/1" class="nav-link nav-toggle">
                                 <i class="icon-pointer"></i>
                                 <span class="title">See All Agencies</span>
-                              <?=($openfolder=='admindashboardagencies'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='admindashboardagencies'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item start <?=($openfolder=='settings'?'active open':'')?>">
                             <a href="/admin/admindashboard/settings" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
                                 <span class="title">Settings</span>
-                              <?=($openfolder=='settings'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='settings'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item <?=($openfolder=='subscription'?'active open':'')?>">
                             <a href="/admin/subscription/" class="nav-link nav-toggle">
                                 <i class="icon-wallet"></i>
                                 <span class="title">Subscriptions</span>
-                          <?=($openfolder=='subscription'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='subscription'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
 
-                      <?php 
-                    } else {
+                        <?php 
+                        } else {
 
 
-                      if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') {
+                        if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') {
                         ?>
                         <li class="nav-item start <?=($openfolder=='dashboard'?'active open':'')?>">
                             <a href="/admin/agency" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
                                 <span class="title">Manage Businesses</span>
-                              <?=($openfolder=='dashboard'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='dashboard'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <?php 
-                      } else {
+                        } else {
                         ?>
                         <li class="nav-item start <?=($openfolder=='dashboard'?'active open':'')?>">
                             <a href="/admin/" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
                                 <span class="title">Dashboard</span>
-                              <?=($openfolder=='dashboard'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='dashboard'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
-                      <?php 
-                        
-                      }
+                        <?php 
 
-                      if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
-                      ?>
+                        }
 
-                  <?php 
-                  if (!(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency')) {
-                  ?>
+                        if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
+                        ?>
+
+                        <?php 
+                        if (!(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency')) {
+                        ?>
 
                         <li class="nav-item <?=($openfolder=='reviews'?'active open':'')?>">
                             <a href="/admin/reviews/" class="nav-link nav-toggle">
                                 <i class="icon-diamond"></i>
                                 <span class="title">Reviews</span>
-                          <?=($openfolder=='reviews'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='reviews'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item <?=($openfolder=='analytics'?'active open':'')?>">
                             <a href="/admin/analytics/" class="nav-link nav-toggle">
                                 <i class="icon-bar-chart"></i>
                                 <span class="title">Analytics</span>
-                        <?=($openfolder=='analytics'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='analytics'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
-                    <?php
+                        <?php
 
-                      //only the business Admin gets access to locations
-                      if (strpos($this->session->get('auth-identity')['profile'], 'Admin') > 0) {
-                      ?>
+                        //only the business Admin gets access to locations
+                        if (strpos($this->session->get('auth-identity')['profile'], 'Admin') > 0) {
+                        ?>
                         <li class="nav-item <?=($openfolder=='sms_broadcast'?'active open':'')?>">
                             <a href="/admin/reviews/sms_broadcast" class="nav-link nav-toggle">
                                 <i class="icon-envelope"></i>
                                 <span class="title">SMS Broadcast</span>
-                              <?=($openfolder=='sms_broadcast'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='sms_broadcast'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item <?=($openfolder=='contacts'?'active open':'')?>">
                             <a href="/admin/contacts" class="nav-link nav-toggle">
                                 <i class="icon-users"></i>
                                 <span class="title">Contacts</span>
-                              <?=($openfolder=='contacts'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='contacts'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
-                      <?php 
-                      }
-                      //only the Agency Admin gets access to employees
-                      if (strpos($this->session->get('auth-identity')['profile'], 'Admin') > 0) {
-                      ?>
+                        <?php 
+                        }
+                        //only the Agency Admin gets access to employees
+                        if (strpos($this->session->get('auth-identity')['profile'], 'Admin') > 0) {
+                        ?>
                         <li class="nav-item <?=($openfolder=='users'?'active open':'')?>">
                             <a href="/admin/users/" class="nav-link nav-toggle">
                                 <i class="icon-user"></i>
                                 <span class="title">Employees</span>
-                            <?=($openfolder=='users'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='users'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
-                      <?php 
-                      }
-                    
-                    }
-                    ?>
-                    <?php
-                    ?>
-                    <?php 
-                    }
-                    ?>
-                    <?php
-                    //only the Business Admin gets access to locations
-                    if ($this->session->get('auth-identity')['profile'] == 'Agency Admin' &&
+                        <?php 
+                        }
+
+                        }
+                        ?>
+                        <?php
+                        ?>
+                        <?php 
+                        }
+                        ?>
+                        <?php
+                        //only the Business Admin gets access to locations
+                        if ($this->session->get('auth-identity')['profile'] == 'Agency Admin' &&
                         (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business')) {
-                    ?>
+                        ?>
                         <li class="nav-item <?=($openfolder=='location'?'active open':'')?>">
                             <a href="/admin/location/" class="nav-link nav-toggle">
                                 <i class="icon-pointer"></i>
                                 <span class="title">Locations</span>
-                          <?=($openfolder=='location'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='location'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
-                    <?php 
-                    }
-                    ?>
-                    <?php 
-                    //if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
-                    ?>
-                      <?php
-                      //only the Agency Admin gets access to locations
-                      if ($this->session->get('auth-identity')['profile'] != 'Employee' &&
-                          !(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business')) {
-                      ?>
+                        <?php 
+                        }
+                        ?>
+                        <?php 
+                        //if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
+                        ?>
+                        <?php
+                        //only the Agency Admin gets access to locations
+                        if ($this->session->get('auth-identity')['profile'] != 'Employee' &&
+                        !(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business')) {
+                        ?>
                         <li class="nav-item <?=($openfolder=='stripe'?'active open':'')?>">
                             <a href="/admin/stripe/" class="nav-link nav-toggle">
                                 <i class="icon-credit-card"></i>
                                 <span class="title">Subscriptions</span>
-                      <?=($openfolder=='stripe'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='stripe'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>               
-                      <?php 
-                      }
-                      //only the Agency Admin gets access to locations
-                      if ($this->session->get('auth-identity')['profile'] != 'Employee') {
-                      ?> 
+                        <?php 
+                        }
+                        //only the Agency Admin gets access to locations
+                        if ($this->session->get('auth-identity')['profile'] != 'Employee') {
+                        ?> 
                         <li class="nav-item <?=($openfolder=='settings'?'active open':'')?>">
                             <a href="/admin/settings/location/" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
                                 <span class="title">Settings</span>
-                          <?=($openfolder=='settings'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='settings'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>  
                         <li class="nav-item <?=($openfolder=='adminusers'?'active open':'')?>">
                             <a href="/admin/users/admin/" class="nav-link nav-toggle">
                                 <i class="icon-user"></i>
                                 <span class="title">Admin Users</span>
-                        <?=($openfolder=='adminusers'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='adminusers'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
-                      <?php 
-                      }
-                      ?>
-                    <?php 
-                   // }
-                  } //end checking for super admin
-                } // end checking if the user has paid
-                  ?>
+                        <?php 
+                        }
+                        ?>
+                        <?php 
+                        //only the Agency Admin gets access to locations
+                        if ($this->session->get('auth-identity')['profile'] != 'Employee') {
+                        ?> 
+                        <li class="nav-item <?=($openfolder=='subscription'?'active open':'')?>">
+                            <a href="/admin/subscription/" class="nav-link nav-toggle">
+                                <i class="icon-wallet"></i>
+                                <span class="title">Subscriptions</span>
+                                <?=($openfolder=='subscription'?'<span class="selected"></span>':'')?>
+                            </a>
+                        </li>
+                        <?php 
+                        }
+                        ?>  
+                        <?php 
+                        // }
+                        } //end checking for super admin
+                        } // end checking if the user has paid
+                        ?>
                     </ul>
                     <!-- END SIDEBAR MENU -->
                 </div>
@@ -545,6 +560,7 @@
         <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
         <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
         <script src="/admin/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/7.0.2/bootstrap-slider.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         <script type="text/javascript" src="/admin/js/vendor/jquery.dataTables.js"></script>
         <script type="text/javascript" src="/admin/js/vendor/dataTables.tableTools.js"></script>
@@ -572,21 +588,21 @@
         <script src="/admin/js/star-rating.js" type="text/javascript"></script>
 
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <?php if ($openfolder=='location') { ?>
-    <?php } ?>
+        <?php if ($openfolder=='location') { ?>
+        <?php } ?>
         <script src="/admin/js/card-js.min.js"></script>
         <script src="/admin/js/login.js"></script>
 
-<?php 
-if (isset($haspaid) && $haspaid == false) {
-                 
-} else {       
-  if ((isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0)
-      || (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') ) {
+        <?php 
+        if (isset($haspaid) && $haspaid == false) {
 
-  } else {
-    if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
-    ?>
+        } else {       
+        if ((isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0)
+        || (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') ) {
+
+        } else {
+        if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
+        ?>
         <div id="sendreviewinvite" style="width:400px; display: none; color: #7A7A7A;"> 
             <!-- BEGIN SAMPLE FORM PORTLET-->
             <div class="portlet light">
@@ -596,28 +612,28 @@ if (isset($haspaid) && $haspaid == false) {
                     </div>
                 </div>
                 <div class="portlet-body form">
-    <?php 
-    if ((isset($agency->twilio_api_key) && $agency->twilio_api_key != '' &&
-        isset($agency->twilio_auth_token) && $agency->twilio_auth_token != '' &&
-        ((isset($agency->twilio_auth_messaging_sid) && $agency->twilio_auth_messaging_sid != '') ||
-         (isset($agency->twilio_from_phone) && $agency->twilio_from_phone != ''))
-        ) || ((!isset($agency->parent_agency_id) || $agency->parent_agency_id == '') && $agency->agency_type_id = 2)) {
-    ?>
+                    <?php 
+                    if ((isset($agency->twilio_api_key) && $agency->twilio_api_key != '' &&
+                    isset($agency->twilio_auth_token) && $agency->twilio_auth_token != '' &&
+                    ((isset($agency->twilio_auth_messaging_sid) && $agency->twilio_auth_messaging_sid != '') ||
+                    (isset($agency->twilio_from_phone) && $agency->twilio_from_phone != ''))
+                    ) || ((!isset($agency->parent_agency_id) || $agency->parent_agency_id == '') && $agency->agency_type_id = 2)) {
+                    ?>
 
-    <?php
-    if ($num_signed_up > 0) {
-      ?>
+                    <?php
+                    if ($num_signed_up > 0) {
+                    ?>
                     <div class="row" style="margin-bottom: 10px;">
                         <div class="col-md-12">     
                             <i>You are entitled to <?=$total_sms_month?> SMS messages per month.  You have sent <?=$sms_sent_this_month_total?> total SMS messages this month.</i>
                         </div>
                     </div>
-      <?php
-    }
-    ?>
-    <?php 
-    if ($sms_sent_this_month_total < $total_sms_month) {
-    ?>
+                    <?php
+                    }
+                    ?>
+                    <?php 
+                    if ($sms_sent_this_month_total < $total_sms_month) {
+                    ?>
                     <form class="form-horizontal" action="/admin/location/send_review_invite" role="form" method="post" autocomplete="off" id="smsrequestform" >
                         <div class="success" id="smsrequestformsuccess" style="display: none;">The review invite was sent.</div>
                         <div class="error" id="smsrequestformerror" style="display: none;">There was a problem sending the review invite.</div>
@@ -625,7 +641,7 @@ if (isset($haspaid) && $haspaid == false) {
                             <div class="row">
                                 <label class="col-md-3 control-label" style="text-align: left;">Location</label>
                                 <div class="col-md-9" style="margin-top: 8px; margin-bottom: 8px;">
-          <?=$this->session->get('auth-identity')['location_name']?>
+                                    <?=$this->session->get('auth-identity')['location_name']?>
                                 </div>
                             </div>
                             <div class="row">
@@ -670,21 +686,21 @@ if (isset($haspaid) && $haspaid == false) {
                         </div>
                     </form>
 
-    <?php 
-    } else {
-      ?>
+                    <?php 
+                    } else {
+                    ?>
                     You have no more SMS messages to send this month.
-      <?php 
-    } 
-    ?>
+                    <?php 
+                    } 
+                    ?>
 
-    <?php 
-    } else {
-      ?>
+                    <?php 
+                    } else {
+                    ?>
                     You must have a Twilio SID and Auth Token to send SMS messages.  All SMS messages are sent using <a href="https://www.twilio.com/" target="_blank">Twilio</a>.  <a href="/admin/settings/">Click here</a> to enter your Twilio SID and Auth Key now.  If you don't have an API key yet, <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a> to sign up.  
-      <?php
-    }
-    ?>
+                    <?php
+                    }
+                    ?>
                 </div>
             </div>
         </div>
@@ -729,11 +745,11 @@ jQuery(document).ready(function ($) {
     });
 });
         </script>
-    <?php 
-    } 
-  } 
-}    
-?>
+        <?php 
+        } 
+        } 
+        }    
+        ?>
     </body>
 
 </html>
