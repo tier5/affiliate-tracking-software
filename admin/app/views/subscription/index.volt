@@ -236,21 +236,16 @@
         </div>
         <div class="col-md-4 col-sm-4">
             <div class="portlet light bordered dashboard-panel change-plan">
-                <div class="portlet-body">
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                            <input type="checkbox" name="my-checkbox" checked>
+                <div class="portlet-body">    
+                    <div class="btn-group" role="group" aria-label="Basic">
+                        <button autofocus type="button" class="btn btn-default">Monthly</button>
+                        <button type="button" class="btn btn-default">Annually</button>
+                    </div>
+                    <div class="growth-bar" style="margin: 10px 0; text-align: center;">   
+                        <div class="search-btn">
+                            <a class="btnLink" href="">Change Plan</a>
                         </div>
-                    </div> 
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                            <div class="growth-bar" style="margin: 10px 0; text-align: center;">   
-                                <div class="search-btn">
-                                    <a class="btnLink" href="">Change Plan</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>    
+                    </div>
                 </div>
             </div>
         </div>
@@ -346,18 +341,6 @@
             ],
             ticks_snap_bounds: 1
         });
-        
-        var options = {
-            onText: "Monthly",
-            onColor: '#ff9c00',
-            offColor: '#E8EAEF',
-            offText: "Annually",
-            animate: true,
-            labelText: '', 
-            labelWidth: 0
-        };
-        
-        $("[name='my-checkbox']").bootstrapSwitch(options);
 
     });
 </script>

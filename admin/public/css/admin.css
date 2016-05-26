@@ -945,9 +945,24 @@ body { background-color: #E2E2E2; color: #484848; }
 .contact-us-subheader {
     color: #FFFFFF;
 }
+.portlet.light.bordered.dashboard-panel.change-plan .portlet-body,
 .contact-us-subheader {
     text-align: center;
 }
+.portlet.light.bordered.dashboard-panel.change-plan .portlet-body button {
+    margin: 0 5px;
+    -webkit-border-radius: 5px !important;
+    -moz-border-radius: 5px !important;
+    border-radius: 5px !important;
+}
+.portlet.light.bordered.dashboard-panel.change-plan .portlet-body button:active,
+.portlet.light.bordered.dashboard-panel.change-plan .portlet-body button:focus {
+    background-color: #33cc33;
+}
+.portlet.light.bordered.dashboard-panel.change-plan .portlet-body button:hover {
+    border: solid 1px #33cc33;
+}
+
 
 .subscription-parameters,
 .subscription-contact-us .contact-us-subheader {
@@ -974,8 +989,7 @@ body { background-color: #E2E2E2; color: #484848; }
     position: relative;
 }
 .active-plan .subscription-panel div > div > .subscription-parameters,
-.change-plan .subscription-panel div > div > .subscription-parameters
-{
+.change-plan .subscription-panel div > div > .subscription-parameters {
     position: absolute;
     top: 50%;
     transform: translate(0,-50%);
