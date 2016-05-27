@@ -82,7 +82,7 @@ class FacebookScanning extends Model {
 
         //$strDetailsUrl = "https://graph.facebook.com/v2.5/" . $facebook_page_id . "/ratings?x=x&{$facebook_access_token}";
         $strDetailsUrl = "https://graph.facebook.com/v2.5/" . $facebook_page_id . "/ratings?limit=10000&access_token=".$facebook_access_token;
-        echo '<p>$strDetailsUrl:'.$strDetailsUrl.'</p>';
+        //echo '<p>$strDetailsUrl:'.$strDetailsUrl.'</p>';
         return $this->file_get_contents_curl($strDetailsUrl);
     }
     
@@ -110,7 +110,7 @@ class FacebookScanning extends Model {
     public function getBusinessDetails($facebook_page_id, $facebook_access_token) {
 
         $strDetailsUrl = "https://graph.facebook.com/v2.4/" . $facebook_page_id . "?fields=name,phone,location,general_info&{$facebook_access_token}";
-        echo '<p>$strDetailsUrl:'.$strDetailsUrl.'</p>';
+        //echo '<p>$strDetailsUrl:'.$strDetailsUrl.'</p>';
         return $this->file_get_contents_curl($strDetailsUrl);
     }
 

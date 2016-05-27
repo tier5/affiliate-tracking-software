@@ -821,7 +821,7 @@ class ControllerBase extends Controller
           foreach($pages['data'] as $page) {
             if($page['id'] == $Obj->external_id) {
               $page_access_token = $page['access_token'];
-              echo '<p><strong>$page_access_token:'.$page_access_token.'</strong></p>';
+              //echo '<p><strong>$page_access_token:'.$page_access_token.'</strong></p>';
             }
           }
         }
