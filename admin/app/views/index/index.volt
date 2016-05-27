@@ -90,14 +90,16 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                     <?php
                   }
                   ?>
+                  <div class="share-inner">
                   <a id="maillink" class="share-link" href="mailto:?&subject=<?=$share_subject?>&body=<?=$share_message?>">Send Email <img src="/admin/img/icon_sm_email.gif" /></a>
                   <a target="_blank" class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=<?=$share_link?>">Share on Facebook <img src="/admin/img/icon_sm_facebook.gif" /></a>
                   <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$share_message?>">Share on Twitter  <img src="/admin/img/icon_sm_twitter.gif" /></a>
                   <a target="_blank" class="share-link" href="https://plus.google.com/share?url=<?=$share_link?>">Share on Google+  <img src="/admin/img/icon_sm_google.gif" /></a>
+                  </div>
                 </div>
               </div>
               <div class="row">
-                <div class="referral-link">Personalized Referral Link: <?=$share_link?></div>
+                <div class="referral-link"><b>Personalized Referral Link:</b> <?=$share_link?></div>
               </div>
             </div>
           </div>
@@ -456,7 +458,7 @@ jQuery(document).ready(function($){
         if ($new_reviews->count() > 6 && $count == 0) {
 
         } else {
-          $strarray = $strarray."['".date("M",mktime(0,0,0,$data->month,1,2011))."', ".($data->reviewcount - $prevmonth).", '#2A3644'],\n";
+          $strarray = $strarray."['".date("M",mktime(0,0,0,$data->month,1,2011))."', ".($data->reviewcount - $prevmonth).", '#67cd4d'],\n";
         }
         $prevmonth = $data->reviewcount;
         $count++;
@@ -500,8 +502,8 @@ jQuery(document).ready(function($){
       pieHole: 0.85,
       pieStartAngle: 270,
       slices: {
-        0: { color: '#2A3644' },
-        1: { color: '#D5D6D8' },
+        0: { color: '#67cd4d' },
+        1: { color: '#E1F5DA' },
         2: { color: 'transparent' }
       },
       pieSliceTextStyle: {color: 'transparent'},

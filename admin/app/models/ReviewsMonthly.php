@@ -43,7 +43,7 @@ class ReviewsMonthly extends Model
                 LEFT OUTER JOIN ( 
                   SELECT COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0) AS reviewcount, month, year 
                   FROM reviews_monthly 
-                  WHERE location_id = 23 
+                  WHERE location_id = ".$location_id." 
                   ORDER BY YEAR DESC, MONTH DESC LIMIT 7
                 ) AS temp  ON temp.month = dates.monthval AND temp.year = dates.yearval
               ORDER BY year ASC, month ASC";

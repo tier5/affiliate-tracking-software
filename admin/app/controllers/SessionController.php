@@ -626,6 +626,7 @@ class SessionController extends ControllerBase
         $google_place_id = $this->request->getPost('google_place_id', 'striptags');
         $google_api_id = $this->request->getPost('google_api_id', 'striptags');
         if ($google_place_id != '') {
+          $googleScan = new GoogleScanning();
           $lrs = new LocationReviewSite();
           $lrs->assign(array(
             'location_id' => $loc->location_id,
@@ -634,6 +635,7 @@ class SessionController extends ControllerBase
             'api_id' => $google_api_id,
             'date_created' => date('Y-m-d H:i:s'),
             'is_on' => 1,
+            'lrd' => $googleScan->getLRD($google_place_id),
           ));
           
           //find the review info

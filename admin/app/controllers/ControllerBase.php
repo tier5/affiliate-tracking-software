@@ -606,7 +606,7 @@ class ControllerBase extends Controller
             
       //import data from the feed into the database, first update the location
       $Obj->rating = $google_reviews['rating'];
-      $Obj->review_count = $google_reviews['user_ratings_total'];
+      $Obj->review_count = (isset($google_reviews['user_ratings_total'])?$google_reviews['user_ratings_total']:0);
       if (!isset($Obj->original_review_count) || (!($Obj->original_review_count > 0)) || $Obj->original_review_count > $Obj->review_count) {
         $Obj->original_rating = $Obj->rating;
         $Obj->original_review_count = $Obj->review_count;

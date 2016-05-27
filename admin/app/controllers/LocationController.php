@@ -200,6 +200,9 @@ class LocationController extends ControllerBase
         $google_place_id = $this->request->getPost('google_place_id', 'striptags');
         $google_api_id = $this->request->getPost('google_api_id', 'striptags');
         if ($google_place_id != '') {
+          $googleScan = new GoogleScanning();
+          //$google_reviews = $google->getLRD('15803962018122969779');
+
           $lrs = new LocationReviewSite();
           $lrs->assign(array(
             'location_id' => $loc->location_id,
@@ -208,6 +211,7 @@ class LocationController extends ControllerBase
             'api_id' => $google_api_id,
             'date_created' => date('Y-m-d H:i:s'),
             'is_on' => 1,
+            'lrd' => $googleScan->getLRD($google_place_id),
           ));
           
           //find the review info
@@ -557,14 +561,18 @@ class LocationController extends ControllerBase
         //check for google
         $google_place_id = $this->request->getPost('google_place_id', 'striptags');
         $google_api_id = $this->request->getPost('google_api_id', 'striptags');
+        $googleScan = new GoogleScanning();
         if ($google_place_id != '') {
           if (isset($google) && isset($google->location_review_site_id) && $google->location_review_site_id > 0) {
             $google->external_id = $google_place_id;
             $google->api_id = $google_api_id;
+            $google->lrd = $googleScan->getLRD($google_place_id);
             $google->save();
             //find the review info
             $this->importGoogle($google, $loc, $foundagency);
           } else {            
+            //$google_reviews = $google->getLRD('15803962018122969779');
+
             $lrs = new LocationReviewSite();
             $lrs->assign(array(
               'location_id' => $loc->location_id,
@@ -573,6 +581,7 @@ class LocationController extends ControllerBase
               'api_id' => $google_api_id,
               'date_created' => date('Y-m-d H:i:s'),
               'is_on' => 1,
+              'lrd' => $googleScan->getLRD($google_place_id),
             ));          
             //find the review info
             $this->importGoogle($lrs, $loc, $foundagency);

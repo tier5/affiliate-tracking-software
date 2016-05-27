@@ -2,6 +2,7 @@
 namespace Vokuro\Controllers;
 
 use Vokuro\Models\Agency;
+use Vokuro\Models\GoogleScanning;
 use Vokuro\Models\Location;
 use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\Review;
@@ -314,6 +315,10 @@ class IndexController extends ControllerBase
 
 
       }
+
+      //$googleScan = new GoogleScanning();
+      //$google_reviews = $googleScan->getLRD('15803962018122969779');
+
     }
 
 

@@ -11,7 +11,7 @@ class GoogleScanning extends Model {
     
      /**
      * This finds business details
-     * ModifiedBy
+     * 
      * @return Json
      */
     public function get_business($google_place_id) {      
@@ -24,6 +24,44 @@ class GoogleScanning extends Model {
 //echo '<pre>$arrResultFindPlaceDetail[result]:'.print_r($arrResultFindPlaceDetail,true).'</pre>';
       return $arrResultFindPlaceDetail['result'];
     }
+    
+    
+    
+     /**
+     * This function finds the google lrd field which is used to find the review url.
+     * This field is not in the API, so we have to scrape it
+     *
+     * 
+     * @return Json
+     */
+    public function getLRD($cid) {    
+      $lrd = '';
+      $url = 'https://maps.google.com/?cid='.$cid;
+      $result = $this->curl_get_contents($url);
+      $start = strpos($result,'#lrd');
+      if ($start > 0) {
+        $lrd = substr($result, $start, 60);
+        //echo '<pre>$lrd:'.$lrd.'</pre>';
+        $lrd = substr($lrd, strpos($lrd,'=')+1);
+        //echo '<pre>$lrd2:'.$lrd.'</pre>';
+        $lrd = substr($lrd, 0, strpos($lrd,','));
+        //echo '<pre>$lrd3:'.$lrd.'</pre>';
+      }
+      return $lrd;
+    }
+    
+    function curl_get_contents($url)
+    {
+      $ch = curl_init($url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      $data = curl_exec($ch);
+      curl_close($ch);
+      return $data;
+    }
+    
 
      /**
      * This is Search result using Google place API.
