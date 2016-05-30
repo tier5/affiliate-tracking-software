@@ -3,4 +3,4 @@ wp-config.php
 admin/public/phplog
 admin/app/cache/
 admin/app/cache/*
-
+admin/vendor/*
