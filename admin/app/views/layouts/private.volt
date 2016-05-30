@@ -51,6 +51,13 @@
     }
     ?>
     <link href="/admin/css/admin.css" rel="stylesheet" type="text/css" />
+    <?php 
+    if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
+    ?>
+    <link href="/admin/css/slider-extended.css" rel="stylesheet" type="text/css" />
+    <?php 
+    }
+    ?>
 
     <link rel="shortcut icon" href="favicon.ico" /> 
     <!--<script src="/admin/assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->    
@@ -565,7 +572,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
         <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
         <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
         <script src="/admin/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
-        <script src="/admin/public/assets/global/plugins/seiyria-bootstrap-slider/dist/bootstrap-slider.js" type="text/javascript"></script>
+        <script src="/admin/assets/global/plugins/seiyria-bootstrap-slider/dist/bootstrap-slider.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         <script type="text/javascript" src="/admin/js/vendor/jquery.dataTables.js"></script>
         <script type="text/javascript" src="/admin/js/vendor/dataTables.tableTools.js"></script>
