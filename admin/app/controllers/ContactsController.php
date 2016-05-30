@@ -73,7 +73,7 @@ class ContactsController extends ControllerBase
     }
     
     //find review invite data
-    $conditions = "location_id = :location_id: AND review_invite_id = :review_invite_id:";
+    $conditions = "location_id = :location_id: AND review_invite_id = :review_invite_id: AND sms_broadcast_id IS NULL ";
     $parameters = array("location_id" => $this->session->get('auth-identity')['location_id'], "review_invite_id" => $review_invite_id);
     $review_invite = ReviewInvite::findFirst(array($conditions, "bind" => $parameters));
     if (!$review_invite) {

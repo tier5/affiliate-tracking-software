@@ -138,7 +138,7 @@ class ReviewInvite extends Model
       $sql = "SELECT l.name AS location_name, ri.*
               FROM review_invite ri
                 INNER JOIN location l ON ri.location_id = l.location_id
-              WHERE l.agency_id = ".$agency_id." AND ri.recommend IS NOT NULL AND ri.date_viewed IS NOT NULL
+              WHERE l.agency_id = ".$agency_id." AND ri.recommend IS NOT NULL AND ri.date_viewed IS NOT NULL AND ri.sms_broadcast_id IS NULL
                 ".($location_list != ''?' AND l.location_id IN ('.$location_list.')':'')."
                 ".($negative == 1 && $positive != 1?" AND ri.recommend = 'N'":'')."
                 ".($positive == 1 && $negative != 1?" AND ri.recommend = 'Y'":'')."
@@ -150,7 +150,7 @@ class ReviewInvite extends Model
                                                 ".($location_list != ''?' AND l2.location_id IN ('.$location_list.')':'')."
                                                 ".($negative == 1 && $positive != 1?" AND ri2.recommend = 'N'":'')."
                                                 ".($positive == 1 && $negative != 1?" AND ri2.recommend = 'Y'":'')."
-                                                AND ri2.date_sent BETWEEN '".$start." 00:00:00' AND '".$end." 23:59:59'
+                                                AND ri2.date_sent BETWEEN '".$start." 00:00:00' AND '".$end." 23:59:59' AND ri2.sms_broadcast_id IS NULL
 		                                        GROUP BY ri2.phone)
               ORDER BY ri.date_sent DESC";
 
@@ -177,7 +177,7 @@ class ReviewInvite extends Model
       $sql   = "SELECT ri.* 
               FROM review_invite ri
                 INNER JOIN location l ON ri.location_id = l.location_id
-              WHERE l.message_frequency > 0 AND l.message_tries > 0 AND ri.times_sent < l.message_tries 
+              WHERE l.message_frequency > 0 AND l.message_tries > 0 AND ri.times_sent < l.message_tries AND ri.sms_broadcast_id IS NULL 
                 #verify this isn't an old message
                 AND ri.date_last_sent IS NOT NULL AND ri.date_sent > DATE_SUB(NOW(), INTERVAL ((l.message_frequency * l.message_tries)+1) HOUR)
                 AND ri.date_last_sent < DATE_ADD(ri.date_sent, INTERVAL (l.message_frequency * ri.times_sent) HOUR)
@@ -225,7 +225,7 @@ class ReviewInvite extends Model
       $sql   = "SELECT users.name AS sent_by, review_invite.*
                 FROM review_invite 
                   INNER JOIN users ON review_invite.sent_by_user_id = users.id
-                WHERE review_invite.location_id = ".$location_id."
+                WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL
                   ".($only_site_clicked?'AND (SELECT COUNT(*) FROM review_invite_review_site WHERE review_invite_review_site.review_invite_id = review_invite.review_invite_id) > 0':'')."
                 ORDER BY review_invite.date_sent DESC";
 
@@ -252,7 +252,7 @@ class ReviewInvite extends Model
       $sql   = "SELECT users.name AS sent_by, review_invite.*
                 FROM review_invite 
                   INNER JOIN users ON review_invite.sent_by_user_id = users.id
-                WHERE review_invite.location_id = ".$location_id."
+                WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL
                   AND review_invite.phone = '".$phone."'
                 ORDER BY review_invite.date_sent DESC";
 
@@ -277,7 +277,7 @@ class ReviewInvite extends Model
                 FROM review_invite ri
                   INNER JOIN review_invite_review_site rirs ON ri.review_invite_id = rirs.review_invite_id
                   INNER JOIN review_site rs ON rirs.review_site_id = rs.review_site_id
-                WHERE ri.location_id = ".$location_id."
+                WHERE ri.location_id = ".$location_id." AND ri.sms_broadcast_id IS NULL
                 GROUP BY rirs.review_site_id";
 
       // Base model

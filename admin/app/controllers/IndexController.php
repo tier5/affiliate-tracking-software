@@ -2,6 +2,7 @@
 namespace Vokuro\Controllers;
 
 use Vokuro\Models\Agency;
+use Vokuro\Models\GoogleScanning;
 use Vokuro\Models\Location;
 use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\Review;
@@ -142,7 +143,7 @@ class IndexController extends ControllerBase
         $negative_total = ReviewInvite::count(
                 array(
                     "column"     => "review_invite_id",
-                    "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND recommend = 'N'",
+                    "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND recommend = 'N' AND sms_broadcast_id IS NULL ",
                     //"group"  => "location_id",
                 )
             );
@@ -152,7 +153,7 @@ class IndexController extends ControllerBase
         $positive_total = ReviewInvite::count(
                 array(
                     "column"     => "review_invite_id",
-                    "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND recommend = 'Y'",
+                    "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND recommend = 'Y' AND sms_broadcast_id IS NULL ",
                 )
             );
         $this->view->positive_total = $positive_total;
@@ -208,7 +209,7 @@ class IndexController extends ControllerBase
         $sms_sent_last_month = ReviewInvite::count(
               array(
                 "column" => "review_invite_id",
-                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id'],
+                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND sms_broadcast_id IS NULL AND sms_broadcast_id IS NULL ",
               )
             );
         $this->view->sms_sent_last_month = $sms_sent_last_month; 
@@ -219,7 +220,7 @@ class IndexController extends ControllerBase
         $sms_sent_this_month = ReviewInvite::count(
               array(
                 "column" => "review_invite_id",
-                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id'],
+                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND sms_broadcast_id IS NULL ",
               )
             );
         $this->view->sms_sent_this_month = $sms_sent_this_month;  
@@ -314,6 +315,10 @@ class IndexController extends ControllerBase
 
 
       }
+
+      //$googleScan = new GoogleScanning();
+      //$google_reviews = $googleScan->getLRD('15803962018122969779');
+
     }
 
 

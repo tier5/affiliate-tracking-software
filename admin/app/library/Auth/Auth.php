@@ -97,7 +97,7 @@ class Auth extends Component
     public function getLocationList($user)
     {
       //check the user type
-      if ($user->profilesId == 1 || $user->profilesId == 4) {
+      if (($user->profilesId == 1 || $user->profilesId == 4) && ($user->is_all_locations==1 || count($user->locations) <= 0)) {
         // Query binding parameters with string placeholders
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $user->agency_id);

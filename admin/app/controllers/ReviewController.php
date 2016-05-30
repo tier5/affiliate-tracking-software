@@ -254,7 +254,37 @@ class ReviewController extends ControllerBase
       $this->view->disable();
       echo 'true';
     }
+    
+    public function linkAction()
+    {
+      // Query review_invite binding parameters with string placeholders
+      $conditions = "api_key = :api_key:";
 
+      // Parameters whose keys are the same as placeholders
+      $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
+
+      // Perform the query
+      $review_invite = new ReviewInvite();
+      $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
+      
+      $ref = '';
+      //if (isset($_SERVER['HTTP_REFERER'])) $ref = $_SERVER['HTTP_REFERER'];
+      //if (strpos($ref, 'google') !== FALSE) {
+          //redirect to wherever google people should go
+      //} else {
+        if ($this->validateGoogleBotIP($_SERVER['REMOTE_ADDR'])) {
+          //echo '<p>Testg</p>';
+        } else {
+          //save when the user viewed this invite
+          $invite->date_viewed = date('Y-m-d H:i:s');
+          $invite->save();
+        }
+      //}
+
+      $this->response->redirect($invite->link);
+      $this->view->disable();
+      return;
+    }
 
 }
 

@@ -95,19 +95,19 @@ class AdmindashboardController extends ControllerBase
       $this->view->sms_sent_total = ReviewInvite::count(
             array(
               "column"     => "review_invite_id",
-              "conditions" => "review_invite_id = review_invite_id",
+              "conditions" => "review_invite_id = review_invite_id AND sms_broadcast_id IS NULL",
             )
           );
       $this->view->click_through_total = ReviewInvite::count(
             array(
               "column"     => "review_invite_id",
-              "conditions" => "date_viewed IS NOT NULL ",
+              "conditions" => "date_viewed IS NOT NULL  AND sms_broadcast_id IS NULL ",
             )
           );  
       $this->view->conversion_total = ReviewInvite::count(
             array(
               "column"     => "review_invite_id",
-              "conditions" => "date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != '')) ",
+              "conditions" => "date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != '')) AND sms_broadcast_id IS NULL ",
             )
           );
 
@@ -131,7 +131,7 @@ class AdmindashboardController extends ControllerBase
       $conversion_last_month = ReviewInvite::count(
             array(
               "column"     => "review_invite_id",
-              "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != '')) ",
+              "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != ''))  AND sms_broadcast_id IS NULL ",
             )
           );
       $this->view->conversion_last_month = $conversion_last_month;
