@@ -59,8 +59,6 @@
       </div>    
     </div>
 
-
-
     <div class="row upsidedown">
 
       <div class="col-md-4 col-sm-4">

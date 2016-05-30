@@ -38,3 +38,5 @@ class Agency extends Model
     ));
 	}
 }
+
+// vendor/bin/phalcon.php model --name=subscription_profile --schema=reviewvelocity --namespace=Vokuro\Models --get-set --extends=Model --doc --output=models --mapcolumn

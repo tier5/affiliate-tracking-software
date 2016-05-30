@@ -1,4 +1,5 @@
 admin/app/config/config.php
+admin/phinx.yml
 wp-config.php
 admin/public/phplog
 admin/app/cache/

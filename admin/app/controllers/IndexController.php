@@ -33,6 +33,8 @@ class IndexController extends ControllerBase
         if (isset($_POST['locationselect'])) {
           $this->auth->setLocation($_POST['locationselect']);
         }
+        
+        $identity = $this->session->get('auth-identity');
 
         if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
           $this->response->redirect('/admin/admindashboard/');
