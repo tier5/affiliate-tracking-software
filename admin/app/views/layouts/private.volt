@@ -452,20 +452,25 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         <?php 
                         //if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
                         ?>
+                        
                         <?php
                         //only the Agency Admin gets access to locations
-                        if ($this->session->get('auth-identity')['profile'] != 'Employee' &&
-                        !(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business')) {
+                        // if ($this->session->get('auth-identity')['profile'] != 'Employee' &&
+                        // !(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business')) {
                         ?>
-                        <li class="nav-item <?=($openfolder=='stripe'?'active open':'')?>">
+                        
+                        <!-- 
+                        <li class="nav-item #($openfolder=='stripe'?'active open':'')?>">
                             <a href="/admin/stripe/" class="nav-link nav-toggle">
                                 <i class="icon-credit-card"></i>
                                 <span class="title">Subscriptions</span>
-                                <?=($openfolder=='stripe'?'<span class="selected"></span>':'')?>
+                                # ($openfolder=='stripe'?'<span class="selected"></span>':'') ?>
                             </a>
-                        </li>               
+                        </li> -->
+                        
                         <?php 
-                        }
+                        // }
+                        
                         //only the Agency Admin gets access to locations
                         if ($this->session->get('auth-identity')['profile'] != 'Employee') {
                         ?> 
