@@ -944,7 +944,7 @@ body { background-color: #FFFFFF; color: #484848; }
     background-color: transparent;
 }
 .subscription .search-btn > a {
-    background-color: #33cc33;
+    background-color: #65CE4D;
     padding: 8px 40px;
     text-align: center;
     text-decoration: none;
@@ -964,7 +964,7 @@ body { background-color: #FFFFFF; color: #484848; }
 }
 .subscription-panel,
 .subscription-panel .subscription-contact-us {
-    background-color: #33cc33;
+    background-color: #65CE4D;
     border-radius: 5px !important;
 }
 
