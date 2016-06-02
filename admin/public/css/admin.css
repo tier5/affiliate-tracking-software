@@ -917,9 +917,6 @@ body { background-color: #FFFFFF; color: #484848; }
 
 .page-logo img { max-width: 100%;}
 
-
-
-
 @media (max-width: 1267px) {
   .upgrade-top {
     padding-top: 10px;
@@ -938,111 +935,40 @@ body { background-color: #FFFFFF; color: #484848; }
   .share-text { margin: 5px; }
 }
 
-/* Subscription styles */
-.subscription .growth-bar {
-    text-align: right;
-    background-color: transparent;
+/* Alignment */
+responsive-float {
+   float: none; 
 }
-.subscription .search-btn > a {
-    background-color: #65CE4D;
+@media (min-width: 768px) {
+  .responsive-float { float: right; }  
+}
+.row {
+    overflow: hidden; 
+}
+[class*="col-"]{
+    margin-bottom: -99999px;
+    padding-bottom: 99999px;
+}
+.fill-vertical {
+    min-height: 100%;
+    height: 100%;
+}
+/* Colors */
+.transparent {    
+    background-color: transparent !important;
+}
+.apple {
+    background-color: #65CE4D !important;
+}
+/* Buttons */
+.subscription-btn {
+    color: #FFF !important;
+    border-color: none !important;
+    font-family: "Open Sans", sans-serif;
+    font-size: 17px;
+    font-weight: bold;
     padding: 8px 40px;
-    text-align: center;
-    text-decoration: none;
-}
-.subscription .caption > span {
-    text-align: left;
-}
-.subscription .credit-card-info .portlet-body .panel {
-    border-color: transparent;
-    margin-bottom: 0px;
-}
-.subscription .credit-card-info .portlet {
-    padding: 0px 20px;
-}
-.subscription .credit-card-info .portlet-body .panel .row {
-    /* margin-bottom: 20px; */
-}
-.subscription-panel,
-.subscription-panel .subscription-contact-us {
-    background-color: #65CE4D;
-    border-radius: 5px !important;
-}
-
-.subscription-parameters, 
-.subscription-type,
-.contact-us-header,
-.contact-us-subheader {
-    color: #FFFFFF;
-}
-.portlet.light.bordered.dashboard-panel.change-plan .portlet-body,
-.contact-us-subheader {
-    text-align: center;
-}
-.portlet.light.bordered.dashboard-panel.change-plan .portlet-body button {
-    margin: 0 5px;
-    -webkit-border-radius: 5px !important;
-    -moz-border-radius: 5px !important;
-    border-radius: 5px !important;
-}
-.portlet.light.bordered.dashboard-panel.change-plan .portlet-body button:active,
-.portlet.light.bordered.dashboard-panel.change-plan .portlet-body button:focus {
-    background-color: #33cc33;
-}
-.portlet.light.bordered.dashboard-panel.change-plan .portlet-body button:hover {
-    border: solid 1px #33cc33;
 }
 
 
-.subscription-parameters,
-.subscription-contact-us .contact-us-subheader {
-    font-size: 1.5rem;
-}
 
-.subscription-type,
-.subscription-contact-us .contact-us-header {
-    font-size: 6rem;
-}
-
-.panel.panel-default.quota-panel,
-.pull-right.panel.panel-default.subscription-contact-us,
-.change-plan .panel.panel-default.subscription-panel {
-    margin-bottom: 0px;
-}
-.pull-right.panel.panel-default.subscription-contact-us {
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-}
-
-.active-plan .subscription-panel div > div  {
-    position: relative;
-}
-.active-plan .subscription-panel div > div > .subscription-parameters,
-.change-plan .subscription-panel div > div > .subscription-parameters {
-    position: absolute;
-    top: 50%;
-    transform: translate(0,-50%);
-}
-.active-plan .subscription-panel .subscription-parameters > div > span,
-.change-plan .subscription-panel .subscription-parameters > div > span {
-    font-weight: bold; 
-}
-.active-plan .quota-panel .subscription-parameters {
-    text-align: center; 
-    color: #000000;
-}
-.add-locations .subscription-panel .subscription-parameters > div,
-.add-messages .subscription-panel .subscription-parameters > div {
-    text-align: center;
-}
- 
-.portlet.light.bordered.dashboard-panel.change-plan {
-    min-height: 0;
-}
-
-.subscription .change-plan .search-btn > a {
-    background-color: #ff9c00;
-    padding: 8px 40px;
-    text-align: center;
-    text-decoration: none;
-}
