@@ -121,7 +121,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
                         ?>
                         <li class="" id="">
-                            <a href="#sendreviewinvite" class="fancybox"><img src="/admin/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
+                            <a href="#sendreviewinvite" class="fancybox"><img src="/admin/img/send_review_invitet.png" alt="Send Review Invite" /></a>
                         </li>
                         <?php } 
 
@@ -133,10 +133,10 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         ?>
                         <li class="location-header" id="">
                             <span id="locationset">
-                                Location: <?=$this->session->get('auth-identity')['location_name']?>  <?php if (count($loclist) > 1) { ?><a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a><?php } ?>
+                                <b>Location: <?=$this->session->get('auth-identity')['location_name']?></b>  <?php if (count($loclist) > 1) { ?><a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a><?php } ?>
                             </span>
                             <span id="locationnotset" style="display: none;"><form action="/admin/" method="post">
-                                    Location: <select name="locationselect" id="locationselect">
+                                    <b>Location:</b> <select name="locationselect" id="locationselect">
                                         <?php 
                                         if (count($loclist) > 1) {
                                         foreach ($loclist as $loc) {
@@ -157,7 +157,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         ?>                  
                         <li class="dropdown dropdown-user" style="margin-left: 20px;">
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> <?=$this->session->get('auth-identity')['name']?> </span>
+                                <span class="username username-hide-on-mobile" style="color: #484848;"><img src="/admin/img/top_icon.png" style="margin-top: -3px;" /> <b><?=$this->session->get('auth-identity')['name']?></b> </span>
                                 <i class="fa fa-angle-down" style="color: #484848;"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-default">
@@ -407,7 +407,8 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         </li>
                         <li class="nav-item <?=($openfolder=='contacts'?'active open':'')?>">
                             <a href="/admin/contacts" class="nav-link nav-toggle">
-                                <i class="icon-users"></i>
+                                <img src="/admin/img/contacts_white_menu.png" class="nav-on" style="<?=($openfolder=='contacts'?'':'display: none;')?>" />
+                                <img src="/admin/img/contacts_menu.png" class="nav-off" style="<?=($openfolder=='contacts'?'display: none;':'')?>" />
                                 <span class="title">Contacts</span>
                                 <?=($openfolder=='contacts'?'<span class="selected"></span>':'')?>
                             </a>
@@ -483,7 +484,8 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         </li>  
                         <li class="nav-item <?=($openfolder=='adminusers'?'active open':'')?>">
                             <a href="/admin/users/admin/" class="nav-link nav-toggle">
-                                <i class="icon-user"></i>
+                                <img src="/admin/img/admin_user_white_menu.png" class="nav-on" style="<?=($openfolder=='adminusers'?'':'display: none;')?>" />
+                                <img src="/admin/img/admin_user_menu.png" class="nav-off" style="<?=($openfolder=='adminusers'?'display: none;':'')?>" />
                                 <span class="title">Admin Users</span>
                                 <?=($openfolder=='adminusers'?'<span class="selected"></span>':'')?>
                             </a>
@@ -491,13 +493,15 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         <?php 
                         }
                         ?>
+                        <li class="nav-item"><a href="/admin/session/logout" class="nav-link nav-toggle"><i class="icon-key"></i> <span class="title">Log Out</span></a></li>
                         <?php 
                         //only the Agency Admin gets access to locations
                         if ($this->session->get('auth-identity')['profile'] != 'Employee') {
                         ?> 
                         <li class="nav-item <?=($openfolder=='subscription'?'active open':'')?>">
                             <a href="/admin/subscription/" class="nav-link nav-toggle">
-                                <i class="icon-wallet"></i>
+                                <img src="/admin/img/subscriptions_white_menu.png" class="nav-on" style="<?=($openfolder=='subscription'?'':'display: none;')?>" />
+                                <img src="/admin/img/subscriptions_menu.png" class="nav-off" style="<?=($openfolder=='subscription'?'display: none;':'')?>" />
                                 <span class="title">Subscriptions</span>
                                 <?=($openfolder=='subscription'?'<span class="selected"></span>':'')?>
                             </a>

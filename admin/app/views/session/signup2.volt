@@ -38,14 +38,14 @@
     <div class="title">GOOGLE: <span class="title-answer">Found</span></div>    
     <div class="field"><span class="name">Business Name:</span> <span id="googleName"></span></div>
     <div class="field bottom"><span class="name">Location:</span> <span id="googleAddress"></span></div>
-    <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=" target="_blank"><img src="/admin/img/icon-eye.gif" /> View</a> <a class="btnLink" href="#" onclick="changeLocation();$('#locationform1').show();return false;"><img src="/admin/img/icon-pencil.gif" /> Change Location</a></div>    
+    <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=" target="_blank"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" /> View</a> <a class="btnLink" href="#" onclick="changeLocation();$('#locationform1').show();return false;"><img src="/admin/img/edit_green_button.png" /> Change Location</a></div>    
   </div>
   
   <div class="pnlAddLocation short col-md-4">
     <div class="title">FACEBOOK: <span class="title-answer"><span class="facebooknotfound">Not </span>Found</span></div>    
     <div class="field"><span class="name">Business Name:</span> <span id="facebookName" class="facebookfound"></span><input class="facebooknotfound" id="facebooksearchfield" type="name" value="" /></div>
     <div class="field bottom"><span class="name">Location:</span> <span id="facebookLocation" class="facebookfound"></span><input id="facebooksearchfield2" type="name" value="" class="facebooknotfound" /></div>
-    <div class="buttons facebookfound"><a id="facebookLink" href="http://facebook.com/" target="_blank"><img src="/admin/img/icon-eye.gif" />  View</a> <a class="btnLink" href="#" onclick="$('.facebookfound').hide();$('.facebooknotfound').show();return false;"><img src="/admin/img/icon-pencil.gif" />  Update Location</a></div>    
+    <div class="buttons facebookfound"><a id="facebookLink" href="http://facebook.com/" target="_blank"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" />  View</a> <a class="btnLink" href="#" onclick="$('.facebookfound').hide();$('.facebooknotfound').show();return false;"><img src="/admin/img/edit_green_button.png" />  Update Location</a></div>    
     <div class="buttons facebooknotfound"><a class="btnLink" href="#" onclick="findBusiness('<?=$facebook_access_token?>');return false;"><img src="/admin/img/icon-maglass.gif" />  Search For Business</a> <a class="btnLink" href="#" id="urllink" onclick="$('#urltype').val('facebook');"><img src="/admin/img/icon-link.gif" /> Enter URL</a></div>
     <div class="facebook-results facebooknotfound">
               
@@ -57,7 +57,7 @@
     <div class="title">YELP: <span class="title-answer"><span class="yelpnotfound">Not </span>Found</span></div>    
     <div class="field"><span class="name">Business Name:</span> <span id="yelpName" class="yelpfound"></span><input id="yelpsearchfield" class="yelpnotfound" type="name" value="" /></div>
     <div class="field bottom"><span class="name">Location:</span> <span id="yelpLocation" class="yelpfound"></span><input id="yelpsearchfield2" type="name" value="" class="yelpnotfound" /></div>
-    <div class="buttons yelpfound"><a id="yelpLink" href="http://yelp.com/biz/" target="_blank"><img src="/admin/img/icon-eye.gif" />  View</a> <a class="btnLink" href="#" onclick="$('.yelpfound').hide();$('.yelpnotfound').show();return false;"><img src="/admin/img/icon-pencil.gif" />  Update Location</a></div>    
+    <div class="buttons yelpfound"><a id="yelpLink" href="http://yelp.com/biz/" target="_blank"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" />  View</a> <a class="btnLink" href="#" onclick="$('.yelpfound').hide();$('.yelpnotfound').show();return false;"><img src="/admin/img/edit_green_button.png" />  Update Location</a></div>    
     <div class="buttons yelpnotfound"><a class="btnLink" href="#" onclick="findBusinessYelp();return false;"><img src="/admin/img/icon-maglass.gif" />  Search For Business</a> <a class="btnLink" href="#" id="urllinkyelp" onclick="$('#urltype').val('yelp');"><img src="/admin/img/icon-link.gif" /> Enter URL</a></div>    
     <div class="yelp-results yelpnotfound">
               

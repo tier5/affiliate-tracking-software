@@ -525,7 +525,7 @@
                       $text = $text."...";
                       echo $text;
                       ?>
-                      <a id="click<?=$invite->review_invite_id?>" href="#inline<?=$invite->review_invite_id?>" onclick="" class="fancybox btnLink" style="float: right;"><img src="/admin/img/icon-eye.gif" /> View</a>
+                      <a id="click<?=$invite->review_invite_id?>" href="#inline<?=$invite->review_invite_id?>" onclick="" class="fancybox btnLink" style="float: right;"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" /> View</a>
                       <div id="inline<?=$invite->review_invite_id?>" style="width:400px;display: none;">
                       <?=nl2br($invite->comments)?>
                       </div>

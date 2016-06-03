@@ -167,10 +167,10 @@
                     <span class="site-wrapper"><img src="<?=$rsl->review_site->icon_path?>" class="imgicon" /> <?=$rsl->review_site->name?></span> 
                     <span class="review_site-buttons">
                       <?php if ($rsl->review_site_id <= 3) { ?>
-                        <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/admin/img/icon-eye.gif" /> View</a> 
-                        <a class="btnLink" href="/admin/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/admin/img/icon-pencil.gif" /> Update Location</a>                      
+                        <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" /> View</a> 
+                        <a class="btnLink" href="/admin/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/admin/img/edit_green_button.png" /> Update Location</a>                      
                       <?php } else { ?>
-                        <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/admin/img/icon-eye.gif" /> View</a> 
+                        <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" /> View</a> 
                       <?php } ?>
                     </span> 
                     <span class="on-off-buttons">
@@ -697,7 +697,7 @@ jQuery(document).ready(function($){
           var name = element.name;
 
           //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span> <span class="review_site-buttons"><a class="btnLink" href="'+url+'" target="_blank"><img src="/admin/img/icon-eye.gif" /> View</a></span> <span class="on-off-buttons"> <a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a> <a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a> </span> <img src="/admin/img/btn_sort.gif" class="sort-icon" /> </li>');
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span> <span class="review_site-buttons"><a class="btnLink" href="'+url+'" target="_blank"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" /> View</a></span> <span class="on-off-buttons"> <a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a> <a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a> </span> <img src="/admin/img/btn_sort.gif" class="sort-icon" /> </li>');
 
           $("a.review_site_on").click(function() { 
             return turnOn($(this).attr("data-id"));

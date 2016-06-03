@@ -114,8 +114,8 @@
                       
                       if ($invite->recommend && $invite->recommend=='N') {
                         ?>
-                        <a data-id="<?=$invite->review_invite_id?>" id="resolved<?=$invite->review_invite_id?>" href="#" onclick="" class="btnLink resolved" style="<?=(isset($invite->is_resolved) && $invite->is_resolved == 1?'':'display: none;')?> float: right;">Resolved</a>
-                        <a data-id="<?=$invite->review_invite_id?>" id="unresolved<?=$invite->review_invite_id?>" onclick="" class="btnLink unresolved" style="<?=(isset($invite->is_resolved) && $invite->is_resolved == 1?'display: none;':'')?> float: right;">Unresolved</a>
+                        <a data-id="<?=$invite->review_invite_id?>" id="resolved<?=$invite->review_invite_id?>" href="#" onclick="" class="btnLink resolved" style="<?=(isset($invite->is_resolved) && $invite->is_resolved == 1?'':'display: none;')?> float: right;height: 36px; padding: 10px 20px; width: 105px;">Resolved</a>
+                        <a data-id="<?=$invite->review_invite_id?>" id="unresolved<?=$invite->review_invite_id?>" onclick="" class="btnLink unresolved" style="<?=(isset($invite->is_resolved) && $invite->is_resolved == 1?'display: none;':'')?> float: right;height: 36px; padding: 10px 20px; width: 120px;">Unresolved</a>
                         <?php
                       }
 

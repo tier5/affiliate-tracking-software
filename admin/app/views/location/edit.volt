@@ -1,9 +1,56 @@
+<div id="reviews">
+<div class="row">
+  <div class="col-md-5 col-sm-5">
+    <h3 class="page-title">Locations</h3>
+  </div>    
+  <?php 
+  if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
+    if ($is_upgrade) {
+      $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
+      if ($percent > 100) $percent = 100;
+      ?>
+      <div class="col-md-7 col-sm-7">
+        <div class="sms-chart-wrapper">
+          <div class="title">SMS Messages Sent</div>
+          <div class="bar-wrapper">
+            <div class="bar-background"></div>
+            <div class="bar-filled" style="width: <?=$percent?>%;"></div>
+            <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
+            <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
+          </div>
+          <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
+        </div>
+      </div>    
+      <?php 
+    } else {
+      $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
+      if ($percent > 100) $percent = 100;
+      ?>
+      <div class="col-md-7 col-sm-7">
+        <div class="sms-chart-wrapper">
+          <div class="title">SMS Messages Sent</div>
+          <div class="bar-wrapper">
+            <div class="bar-background"></div>
+            <div class="bar-filled" style="width: <?=$percent?>%;"></div>
+            <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
+            <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
+          </div>
+          <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
+        </div>
+      </div>    
+      <?php 
+    }
+  } //end checking for business vs agency
+  ?>
+</div>
+</div>
+
 <!-- BEGIN SAMPLE FORM PORTLET-->
 <div class="portlet light bordered">
   <div class="portlet-title">
     <div class="">
       <a href="/admin/location" class="btnLink" style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;">Back</a>
-      <i class="icon-pencil fa-user"></i>
+      <img src="/admin/img/admin_user_edit.png" />
       <span class="caption-subject bold uppercase" style="display: inline-block; margin-left: 8px; margin-top: 11px;"> Edit </span>
     </div>
   </div>
@@ -22,7 +69,7 @@
       <label for="name" class="col-md-2 control-label">Region</label>
       <div class="col-md-10" style="padding-top: 8px;">
         <select name="region_id" id="region_id" class="col-md-8 form-control" style="width: 40%;">
-          <option value="">None</option>            
+          <option value="">Select Region</option>            
           <?php 
           foreach($regions as $data) { 
             ?>
@@ -87,14 +134,14 @@
     <div class="title">GOOGLE: <span class="title-answer">Found</span></div>    
     <div class="field"><span class="name">Business Name:</span> <span id="googleName"><?=$location->name?></span></div>
     <div class="field bottom"><span class="name">Location:</span> <span class="googleAddress" id="googleAddress"><?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?></span></div>
-    <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=<?=$google->external_id?>" target="_blank"><img src="/admin/img/icon-eye.gif" /> View</a> <a class="btnLink" href="#" onclick="$('#relevant-result-list').hide();$('#hiddenForm').hide();$('#locationform1').show();return false;"><img src="/admin/img/icon-pencil.gif" /> Change Location</a></div>    
+    <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=<?=$google->external_id?>" target="_blank"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" /> View</a> <a class="btnLink" href="#" onclick="$('#relevant-result-list').hide();$('#hiddenForm').hide();$('#locationform1').show();return false;"><img src="/admin/img/edit_green_button.png" /> Change Location</a></div>    
   </div>
   
   <div class="pnlAddLocation short col-md-4">
     <div class="title">FACEBOOK: <span class="title-answer"><span class="facebooknotfound" <?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?' style="display: none;"':'')?>>Not </span>Found</span></div>    
     <div class="field"><span class="name">Business Name:</span> <span id="facebookName" class="facebookfound" <?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?'':' style="display: none;"')?>><?=$location->name?></span><input class="facebooknotfound" <?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?' style="display: none;"':'')?> id="facebooksearchfield" type="name" value="<?=str_replace("\"","&quot;",$location->name)?>" /></div>
     <div class="field bottom"><span class="name">Location:</span> <span id="facebookLocation" class="facebookfound" <?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?'':' style="display: none;"')?>><?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?></span><input id="facebooksearchfield2" type="name" value="<?=str_replace("\"","&quot;",$location->postal_code)?>" class="facebooknotfound" <?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?' style="display: none;"':'')?> /></div>
-    <div class="buttons facebookfound" <?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?'':' style="display: none;"')?>><a id="facebookLink" href="http://facebook.com/<?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?$facebook->external_id:'')?>" target="_blank"><img src="/admin/img/icon-eye.gif" />  View</a> <a class="btnLink" href="#" onclick="$('.facebookfound').hide();$('.facebooknotfound').show();return false;"><img src="/admin/img/icon-pencil.gif" />  Update Location</a> <?php if (isset($facebook) && isset($facebook->external_id) && $facebook->external_id != '') { ?><!--<a href="/admin/location/getAccessToken" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>--><?php } ?></div>    
+    <div class="buttons facebookfound" <?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?'':' style="display: none;"')?>><a id="facebookLink" href="http://facebook.com/<?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?$facebook->external_id:'')?>" target="_blank"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" />  View</a> <a class="btnLink" href="#" onclick="$('.facebookfound').hide();$('.facebooknotfound').show();return false;"><img src="/admin/img/edit_green_button.png" />  Update Location</a> <?php if (isset($facebook) && isset($facebook->external_id) && $facebook->external_id != '') { ?><!--<a href="/admin/location/getAccessToken" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>--><?php } ?></div>    
     <div class="buttons facebooknotfound" <?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?' style="display: none;"':'')?>><a class="btnLink" href="#" onclick="findBusiness('<?=$facebook_access_token?>');return false;"><img src="/admin/img/icon-maglass.gif" />  Search For Business</a> <a class="btnLink" href="#" id="urllink" onclick="$('#urltype').val('facebook');"><img src="/admin/img/icon-link.gif" /> Enter URL</a></div>
     <div class="facebook-results facebooknotfound">
               
@@ -106,7 +153,7 @@
     <div class="title">YELP: <span class="title-answer"><span class="yelpnotfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?' style="display: none;"':'')?>>Not </span>Found</span></div>    
     <div class="field"><span class="name">Business Name:</span> <span id="yelpName" class="yelpfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?'':' style="display: none;"')?>><?=$location->name?></span><input id="yelpsearchfield" class="yelpnotfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?' style="display: none;"':'')?> type="name" value="<?=str_replace("\"","&quot;",$location->name)?>" /></div>
     <div class="field bottom"><span class="name">Location:</span> <span id="yelpLocation" class="yelpfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?'':' style="display: none;"')?>><?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?></span><input id="yelpsearchfield2" type="name" value="<?=str_replace("\"","&quot;",$location->postal_code)?>" class="yelpnotfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?' style="display: none;"':'')?> /></div>
-    <div class="buttons yelpfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?'':' style="display: none;"')?>><a id="yelpLink" href="http://yelp.com/biz/<?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?$yelp->external_id:'')?>" target="_blank"><img src="/admin/img/icon-eye.gif" />  View</a> <a class="btnLink" href="#" onclick="$('.yelpfound').hide();$('.yelpnotfound').show();return false;"><img src="/admin/img/icon-pencil.gif" />  Update Location</a></div>    
+    <div class="buttons yelpfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?'':' style="display: none;"')?>><a id="yelpLink" href="http://yelp.com/biz/<?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?$yelp->external_id:'')?>" target="_blank"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" />  View</a> <a class="btnLink" href="#" onclick="$('.yelpfound').hide();$('.yelpnotfound').show();return false;"><img src="/admin/img/edit_green_button.png" />  Update Location</a></div>    
     <div class="buttons yelpnotfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?' style="display: none;"':'')?>><a class="btnLink" href="#" onclick="findBusinessYelp();return false;"><img src="/admin/img/icon-maglass.gif" />  Search For Business</a> <a class="btnLink" href="#" id="urllinkyelp" onclick="$('#urltype').val('yelp');"><img src="/admin/img/icon-link.gif" /> Enter URL</a></div>    
     <div class="yelp-results yelpnotfound">
               

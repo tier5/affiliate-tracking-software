@@ -73,7 +73,7 @@
           //(invites have the following fields: Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)
           ?>
           <!-- Start .panel -->
-          <div class="panel-default toggle panelMove panelClose panelRefresh">
+          <div class="panel-default toggle panelMove panelClose panelRefresh" id="contactlist">
             <div class="customdatatable-wrapper">
               <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
               <thead>
@@ -136,7 +136,7 @@
                         <?php
                       }
                       ?></td>
-                      <td style="min-width: 86px; width: 86px;"><a href="/admin/contacts/view/<?=$invite->review_invite_id?>" class="btnLink" style="display: block;white-space: nowrap;"><img src="/admin/img/icon-eye.gif"> View</a></td>
+                      <td style="min-width: 86px; width: 86px;"><a href="/admin/contacts/view/<?=$invite->review_invite_id?>" class="btnLink" style="display: block;white-space: nowrap;"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;"> View</a></td>
                     </tr>
                     <?php  
                   endforeach; 
