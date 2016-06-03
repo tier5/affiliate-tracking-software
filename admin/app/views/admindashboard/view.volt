@@ -37,7 +37,7 @@
     <div class="form-group" style="clear: both;">
       <label for="name" class="col-md-4 control-label">Phone</label>
       <div class="col-md-8">
-        <?=$agency->phone?>
+        <?=preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $agency->phone)?>
       </div>
     </div>
     <div class="form-group" style="clear: both;">

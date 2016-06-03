@@ -73,7 +73,7 @@
             <div class="form-group" style="padding-top: 25px; padding-bottom: 25px;">
               <label class="col-md-5 control-label" style="font-weight: bold; text-align: right;">Cell Phone Number:</label>
               <div style="padding-top: 2px;" class="col-md-7">
-                <?=$review_invite->phone?>
+                <?=preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $review_invite->phone)?>
               </div>
             </div>
 
