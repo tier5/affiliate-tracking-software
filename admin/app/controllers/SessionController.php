@@ -1085,7 +1085,7 @@ class SessionController extends ControllerBase
           //echo '<pre>'.print_r($arrResultFindPlace,true).'</pre>';
           //die();
 
-          $admincode = '0';            +
+          $admincode = '0';            
           //echo '<pre>'.print_r($_POST,true).'</pre>';         
           if (isset($_POST['admin']) && $_POST['admin'] != '') {
             //we need to save results

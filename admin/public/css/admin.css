@@ -511,12 +511,12 @@ div#image_container img.selected, div#image_container img:hover{
 }
 .upgrade-top {
   color: #ffffff;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   padding-top: 20px;
 }
 .upgrade-bottom {
-  color: #A2A2A2;
+  color: #FFFFFF;
   padding-bottom: 10px;
 }
 .upgrade-middle {
@@ -597,7 +597,7 @@ div#image_container img.selected, div#image_container img:hover{
 }*/
 
 
-.btnLink, .btnLink:hover { background-color: #283643; border: medium none; border-radius: 5px !important; color: #ffffff; font-weight: bold; height: 33px; margin-right: 1px; padding: 8px; }
+.btnLink, .btnLink:hover { background-color: #67CD4D; border: medium none; border-radius: 5px !important; color: #ffffff; font-weight: bold; height: 33px; margin-right: 1px; padding: 8px; }
 .btn-success.btnLink { float: right; height: 45px; line-height: 16px !important; padding: 15px 40px; }
 .btnLink, .btnLink:hover, .btnLink:focus { color: #ffffff !important; }
 
@@ -784,14 +784,14 @@ div#image_container img.selected, div#image_container img:hover{
 #reviews #tab_online_reviews thead { display: none; }
 
 .review_invite_type_id_1 { color: #c21109; font-weight: bold; }
-#tab_positive_feedback .review_invite_type_id_1 { color: #6AB06A; }
+#tab_positive_feedback .review_invite_type_id_1 { color: #67CD4D; }
 
 .review_invite_type_id_3 { border-color: #c21109; border-radius: 50% !important; border-style: solid; border-width: 5px; display: block; height: 30px; text-align: center; width: 30px; }
 .review_invite_type_id_3 { color: #c21109; font-weight: bold; }
 #tab_positive_feedback .review_invite_type_id_3,
-.review_invite_type_id_3.greenfont { color: #6AB06A;  border-color: #6AB06A; }
+.review_invite_type_id_3.greenfont { color: #67CD4D;  border-color: #67CD4D; }
 
-#reviews .resolved { background-color: #6caf6a; display: block; width: 80px; }
+#reviews .resolved { background-color: #67cd4d; display: block; width: 80px; }
 #reviews .unresolved { background-color: #C01209; display: block; width: 97px; }
 
 .greenfont { color: #67CD4D; font-weight: bold; }
@@ -870,7 +870,7 @@ body { background-color: #FFFFFF; color: #484848; }
 .percent-sign { display: inline-block; font-size: 20px; margin-top: -9px; vertical-align: top; }
 #reviews .easy-pie-chart-big .number { margin-left: auto; margin-right: auto; position: relative; width: 156px; }
 
-.click-wrapper { clear: both; height: 38px; }
+.click-wrapper { clear: both; height: 38px; margin-bottom: 10px; }
 .click-wrapper .click-icon { float: left; margin-right: 8px; margin-top: 4px; }
 .click-wrapper .click-site { background-color: #31c5d1; color: #ffffff; float: left; height: 32px; width: 80%; }
 .click-wrapper .click-site .num-count { float: right; margin-right: 18px; margin-top: 5px; }
@@ -916,7 +916,14 @@ body { background-color: #FFFFFF; color: #484848; }
 }
 
 .page-logo img { max-width: 100%;}
+.fancybox-overlay { z-index: 100000 !important; }
+.fancybox-skin { border-radius: 5px !important; }
+#pnlCustomerReviewSiteClicks th { padding: 15px 9px; }
+#contactlist th {vertical-align: top;}
 
+.nav-link:hover, .nav-link:hover i { color: #FFFFFF !important; }
+.nav-link:hover img.nav-on { display: inline !important; }
+.nav-link:hover img.nav-off { display: none !important; }
 
 
 
@@ -937,6 +944,7 @@ body { background-color: #FFFFFF; color: #484848; }
   .share-link { margin: 5px; }
   .share-text { margin: 5px; }
 }
+
 
 /* Subscription styles */
 .subscription .growth-bar {

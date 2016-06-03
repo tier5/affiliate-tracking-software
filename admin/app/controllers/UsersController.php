@@ -64,6 +64,7 @@ class UsersController extends ControllerBase
     public function createAction()
     {
       $this->createFunction(3);
+      $this->getSMSReport();
     }
 
 
@@ -73,6 +74,7 @@ class UsersController extends ControllerBase
     public function admincreateAction()
     {
       $this->createFunction(1);
+      $this->getSMSReport();
       try {
         $this->view->render('users', 'create');
         $this->view->disable();
@@ -275,6 +277,7 @@ class UsersController extends ControllerBase
     public function editAction($id)
     {
       $this->editFunction($id, 3);
+      $this->getSMSReport();
     }
 
     
@@ -286,6 +289,7 @@ class UsersController extends ControllerBase
     public function admineditAction($id)
     {
       $this->editFunction($id, 1);
+      $this->getSMSReport();
       $this->view->render('users', 'edit');
       $this->view->disable();
       return;

@@ -122,6 +122,7 @@ class LocationController extends ControllerBase
 
     $locs = Location::getLocations($userObj->agency_id);
     $this->view->locs = $locs;
+    $this->getSMSReport();
   }
 
 
@@ -650,6 +651,7 @@ class LocationController extends ControllerBase
     $this->view->form = new LocationForm($loc, array(
       'edit' => true
     ));
+    $this->getSMSReport();
   }
 
 

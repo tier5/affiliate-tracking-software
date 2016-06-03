@@ -59,7 +59,7 @@ if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
 ?>
 <div class="reportheader">
   <div class="table-header">
-    <div class="title reporttitle"><img src="/admin/img/icon_bargraph.gif" /> REPORTING PERIOD</div>
+    <div class="title reporttitle"><img src="/admin/img/reporting_period.png" style="padding-top: 4px;" /> REPORTING PERIOD</div>
     <div class="header-buttons">
        <a class="btnLink <?=(!isset($_GET['t']) || (isset($_GET['t']) && $_GET['t'] == 'm')?'':'off')?>" href="/admin/<?=($profilesId==3?'':'admin')?>users?t=m">Current Month</a>
        <a class="btnLink <?=(isset($_GET['t']) && $_GET['t'] == 'lm'?'':'off')?>" href="/admin/<?=($profilesId==3?'':'admin')?>users?t=lm">Last Month</a>
@@ -172,7 +172,7 @@ if ($users) {
 
 <div class="portlet light bordered dashboard-panel">
 <div class="table-header">
-  <div class="title"><?=($profilesId==3?'Employee':'Admin User')?> List</div>
+  <div class="title"><img src="/admin/img/admin_user_user_listt.png" style="padding-bottom: 6px;" /> <?=($profilesId==3?'Employee':'Admin User')?> List</div>
   <div class="flexsearch">
     <div class="flexsearch--wrapper">
       <div class="flexsearch--input-wrapper">
@@ -259,8 +259,8 @@ foreach($users as $user) {
     <?php
     }
     ?>
-    <td><a href="/admin/users/<?=($profilesId==3?'':'admin')?>edit/<?=$user->id?>" class="btnLink"><img src="/admin/img/icon-pencil.gif" /></a></td>
-    <td><a href="/admin/users/<?=($profilesId==3?'':'admin')?>delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink"><img src="/admin/img/icon-delete.gif" /></a></td>
+    <td><a href="/admin/users/<?=($profilesId==3?'':'admin')?>edit/<?=$user->id?>" class="btnLink"><img src="/admin/img/edit_green_button.png" /></a></td>
+    <td><a href="/admin/users/<?=($profilesId==3?'':'admin')?>delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink"><img src="/admin/img/delete_green_button.png" /></a></td>
   </tr>
   <?php
 }
