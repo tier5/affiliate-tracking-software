@@ -368,7 +368,7 @@ class LocationController extends ControllerBase
     }
     
     // Query binding parameters with string placeholders
-    $conditions = "agency_id = :agency_id: AND profilesId = 3";
+    $conditions = "agency_id = :agency_id: AND (profilesId = 3 OR is_employee = 1)";
     $parameters = array("agency_id" => $userObj->agency_id);
     $this->view->employees = Users::find(array($conditions, "bind" => $parameters));
         
