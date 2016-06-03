@@ -239,7 +239,7 @@ class ReviewsController extends ControllerBase
           $message = str_replace("{link}", $this->googleShortenURL($_POST['link']), $message);
 
           if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
-            $this->flash->success("The SMS was sent successfully to: ".$_POST['phone']);
+            $this->flash->success("The SMS was sent successfully to: ".preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $_POST['phone']));
           }
         } else if (isset($_POST['formposttype']) && $_POST['formposttype'] == 'send') {
 
@@ -304,7 +304,7 @@ class ReviewsController extends ControllerBase
 
               //The message is saved, so send the SMS message now
               if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
-                $this->flash->success("The SMS was sent successfully to: ".$invite->phone);
+                $this->flash->success("The SMS was sent successfully to: ".preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $invite->phone));
               }
 
             }

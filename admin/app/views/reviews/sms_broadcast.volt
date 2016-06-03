@@ -267,7 +267,7 @@
                     ?>
                     <td><input type="checkbox" name="review_invite_ids[]" value="<?=$invite->review_invite_id?>" <?=($checked?'checked="checked"':'')?> /></td>
                     <td><?=$invite->location_name?></td>
-                    <td><?=$invite->phone?></td>
+                    <td><?=preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $invite->phone)?></td>
                     <td><?=$invite->name?></td>
                     <td><?=date_format(date_create($invite->date_sent),"m/d/Y")?></td>
                     <td><?php 

@@ -127,7 +127,7 @@
                   ?>
                   <tr>
                     <td><?=$invite->name?></td>
-                    <td><?=$invite->phone?></td>
+                    <td><?=preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $invite->phone)?></td>
                     <td><?=($invite->date_viewed?'Yes':'No')?></td>
                   </tr>
                   <?php  

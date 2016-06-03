@@ -35,9 +35,9 @@
   ?>
     <h3>EMPLOYEE LIST</h3>
   </div>
-
-{% for user in users %}
-{% if loop.first %}
+<?php
+if (isset($users) && count($users) > 0) {
+?>
 <table cellspacing="0" width="100%" class="table table-striped table-bordered dataTable" style="width: 100%;">
   <thead>
   <tr role="row">
@@ -47,19 +47,26 @@
   </tr>
   </thead>
   <tbody>
-{% endif %}
+  <?php
+  foreach($users as $user) { 
+  ?>
     <tr>
-      <td>{{ user.name }}</td>
-      <td>{{ user.email }}</td>
-      <td>{{ user.phone }}</td>
+      <td><?=$user->name?></td>
+      <td><?=$user->email?></td>
+      <td><?=preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $user->phone)?></td>
     </tr>
-{% if loop.last %}
+  <?php
+  }
+  ?>
   </tbody>
 </table>
-{% endif %}
-{% else %}
+<?php
+} else { 
+?>
     No <?=($profilesId==3?'Employees':'Admin Users')?>
-{% endfor %}
+<?php
+}
+?>
 
 </div>
 

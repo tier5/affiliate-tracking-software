@@ -425,7 +425,7 @@ class ControllerBase extends Controller
            ));
         }
       } catch (Services_Twilio_RestException $e) {
-        $this->flash->error('There was an error sending the SMS message to '.$phone.'.  Please check your Twilio configuration and try again. ');
+        $this->flash->error('There was an error sending the SMS message to '.preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $phone).'.  Please check your Twilio configuration and try again. ');
         return false;
       }
       return true;
