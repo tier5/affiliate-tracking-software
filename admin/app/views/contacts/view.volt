@@ -196,7 +196,7 @@
               foreach($note_list as $note) {
                 ?>
                 <div class="form-group" style="padding-top: 25px; clear: both;">
-                  <label class="col-md-5 control-label" style="font-weight: bold; text-align: left;">Notes</label>
+                  <label class="col-md-5 control-label" style="font-weight: bold; text-align: left;">From: <?=$note->users->name?></label>
                   <div style="padding-top: 2px; float: right;" class="col-md-7">
                     <strong style="">Date Added: </strong> <?=date_format(date_create($note->date_created),"m/d/Y")?>
                   </div>

@@ -309,7 +309,7 @@ class Users extends Model
       $sql   = "SELECT users.*
                 FROM users
                   INNER JOIN users_location ON users.id = users_location.user_id
-                WHERE users_location.location_id = ".$locationid." AND users.profilesId = 3 
+                WHERE users_location.location_id = ".$locationid." AND (users.profilesId = 3 OR users.is_employee = 1)
                 ORDER BY users.create_time ASC";
       //echo '<p>sql:'.$sql.'</p>';
       // Base model
