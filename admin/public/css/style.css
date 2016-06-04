@@ -100,8 +100,6 @@ div.main-container {
 .portlet.light.bordered.dashboard-panel.change-plan .portlet-body button:hover {
     border: solid 1px #33cc33;
 }
-
-
 .subscription-parameters,
 .subscription-contact-us .contact-us-subheader {
     font-size: 1.5rem;

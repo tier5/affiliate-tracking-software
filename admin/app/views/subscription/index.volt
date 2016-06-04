@@ -51,8 +51,8 @@
 
         <div class="row">
             <div class="col-sm-12 col-md-12">
-                <div class="growth-bar transparent responsive-float"> 
-                    <button type="button" class="btn default btn-lg apple subscription-btn">View Invoices</button>
+                <div class="growth-bar transparent pull-right"> 
+                    <button type="button" class="btn default btn-lg apple-backgound subscription-btn">View Invoices</button>
                 </div>
             </div>
         </div>
@@ -65,50 +65,42 @@
             </div>    
         </div>
 
-        <!-- <div class="row subscription"> -->
-        <div class="row">
-            <div class="col-md-8 col-sm-8">
-                <div class="portlet light bordered dashboard-panel fill-vertical">
+        <div class="row subscription-panel-group plans-and-payments-row">
+            <div class="col-md-12 col-lg-8">
+                <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">
                         <div class="caption">
                             <span>Currently Active Plan</span>
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="panel panel-default subscription-panel">
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <!-- <div class="pull-left subscription-parameters"> -->
-                                    <div class="pull-left subscription-parameters">
-                                        <div><span>1</span> Location</div>
-                                        <div><span>100</span> Text Messages</div>
-                                    </div>
-                                    <!-- <div class="pull-right subscription-type">FREE</div> -->
-                                    <div class="pull-right">FREE</div>
+                        <div class="panel panel-default apple-backgound">
+                            <div class="panel-body">
+                                <div class="responsive-float-left subscription-panel-default-caption">
+                                    <div><span class="bold">1</span> Location</div>
+                                    <div><span class="bold">100</span> Text Messages</div>
                                 </div>
+                                <div class="responsive-float-right subscription-panel-large-caption">TRIAL</div>
                             </div>
-                            <!-- <div class="panel panel-default quota-panel"> -->
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <!-- <div class="subscription-parameters"> -->
-                                    <div>
-                                        <div>25/100</div>
-                                        <div>Messages Sent</div>
-                                    </div>
+                        </div> 
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="quota-display">
+                                    <div class="subscription-panel-quota-caption midnight-text">25/100</div>
+                                    <div class="subscription-panel-quota-caption midnight-text">Messages Sent</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-4">
-                <div class="portlet light bordered dashboard-panel">
+            <div class="col-md-12 col-lg-4">  
+                <div class="portlet light bordered dashboard-panel payment-info">
                     <div class="portlet-title">
                         <div class="caption">
                             <span class="">Payment Info</span>
                         </div>
                     </div>
-                    <!-- <div class="portlet-body credit-card-info"> -->
                     <div class="portlet-body">
                         <div class="portlet light bordered">
                             <div class="portlet-title">
@@ -116,36 +108,39 @@
                                     <span class="">No Payment Details</span>
                                 </div>
                             </div>
-                            <!-- <div class="portlet-body">
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <div class="input-group">
-                                            <div class="row">
-                                                <div class="col-md-9 col-sm-9">
-                                                    <input disabled type="text" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX"/>
-                                                </div>
-                                                <div class="col-md-3 col-sm-3">
-                                                    <input disabled type="text" class="form-control" placeholder="Visa"/>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 col-sm-12">
-                                                    <div class="growth-bar" style="color: #283643; font-size: 12px;">10/2016</div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 col-sm-12">
-                                                    <div class="growth-bar" style="text-align: center;">   
-                                                        <div class="search-btn">
-                                                            <a class="btnLink" href="">Update Card</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                            <div class="panel-body credit-card-details">
+                                <div class="row large">    
+                                    <div class="col-xs-8 col-md-8">
+                                        <div class="form-group">
+                                            <input type="text" disabled class="form-control center" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="cc-exp" required="" aria-required="true">
                                         </div>
-                                    </div>   
-                                </div> -->
-                            </div>
+                                    </div>
+                                    <div class="col-xs-4 col-md-4 pull-right">
+                                        <div class="form-group">
+                                            <div><img src="/admin/img/cc/visa.png"></div>
+                                            <div><span>10/2016</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row small">    
+                                    <div class="col-xs-12 col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" disabled class="form-control center" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="cc-exp" required="" aria-required="true">
+                                        </div>
+                                        <div class="form-group">
+                                            <div><img src="/admin/img/cc/visa.png"></div>
+                                            <div><span>10/2016</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <button type="button" class="btn default btn-lg apple-backgound subscription-btn">Update Card</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>   
                         </div>
                     </div>
                 </div>
@@ -160,28 +155,20 @@
             </div>    
         </div>
 
-        <!-- <div class="row subscription"> -->
-        <div class="row">    
-            <div class="col-md-8 col-sm-8">
+        <div class="row subscription-panel-group change-plans-row">    
+            <div class="col-md-12 col-lg-8">
                 <div class="row">
-                    <div class="col-md-12 col-sm-12">
+                    <div class="col-sm-12">
                         <div class="portlet light bordered dashboard-panel">
-                            <!-- <div class="portlet-body change-plan">
-                            <div class="panel panel-default subscription-panel"> -->
                             <div class="portlet-body">
-                                <div class="panel panel-default">
+                                <div class="panel panel-default apple-backgound">
                                     <div class="panel-body">
-                                        <div class="col-sm-12 col-md-12">
-                                            <!-- <div class="pull-left subscription-parameters">   
-                                                <div><span>100+</span> Location</div>
-                                                <div><span>250+</span> Text Messages</div>
-                                            </div>
-                                            <div class="pull-right panel panel-default subscription-contact-us">
-                                                <div class="panel-body">
-                                                    <div class="contact-us-header">CONTACT US</div>
-                                                    <div class="contact-us-subheader">for Enterprise Pricing</div>
-                                                </div>
-                                            </div> -->
+                                        <div class="responsive-float-left subscription-panel-default-caption">
+                                            <div><span class="bold">100+</span> Location</div>
+                                            <div><span class="bold">250+</span> Text Messages</div>
+                                        </div>
+                                        <div class="responsive-float-right subscription-panel-large-caption">
+                                            <sup class="subscription-panel-default-caption">$</sup>17<sub class="subscription-panel-default-caption">/mo</sub>
                                         </div>
                                     </div>
                                 </div>
@@ -190,24 +177,26 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12 col-sm-12">
+                    <div class="col-sm-12">
                         <div class="portlet light bordered dashboard-panel">
-                            <!-- <div class="portlet-body change-plan">
-                            <div class="panel panel-default subscription-panel"> -->
-                            <div class="portlet-body">
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <div class="col-sm-12 col-md-12">
-                                            <!-- <div class="pull-left subscription-parameters">   
-                                                <div><span>100+</span> Location</div>
-                                                <div><span>250+</span> Text Messages</div>
-                                            </div>
-                                            <div class="pull-right panel panel-default subscription-contact-us">
-                                                <div class="panel-body">
-                                                    <div class="contact-us-header">CONTACT US</div>
-                                                    <div class="contact-us-subheader">for Enterprise Pricing</div>
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <span>HOW MANY LOCATIONS DO YOU WANT?</span>
+                                </div>
+                            </div>
+                            <div class="portlet-body add-locations">
+                                <div class="col-sm-9 col-md-10">
+                                    <input id="ex13" type="text" />
+                                </div>
+                                <div class="col-sm-3 col-md-2">
+                                    <div class="panel panel-default subscription-panel apple-backgound">
+                                        <div class="panel-body">
+                                            <div class="col-sm-12 col-md-12 slider-quota-caption">
+                                                <div>   
+                                                    <div><span class="bold">100+</span></div>
+                                                    <div>Location</div>
                                                 </div>
-                                            </div> -->
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -216,24 +205,26 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12 col-sm-12">
+                    <div class="col-sm-12">
                         <div class="portlet light bordered dashboard-panel">
-                            <!-- <div class="portlet-body change-plan">
-                            <div class="panel panel-default subscription-panel"> -->
-                            <div class="portlet-body">
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <div class="col-sm-12 col-md-12">
-                                            <!-- <div class="pull-left subscription-parameters">   
-                                                <div><span>100+</span> Location</div>
-                                                <div><span>250+</span> Text Messages</div>
-                                            </div>
-                                            <div class="pull-right panel panel-default subscription-contact-us">
-                                                <div class="panel-body">
-                                                    <div class="contact-us-header">CONTACT US</div>
-                                                    <div class="contact-us-subheader">for Enterprise Pricing</div>
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <span>HOW MANY TEXT MESSAGES DO YOU NEED PER LOCATION?</span>
+                                </div>
+                            </div>
+                            <div class="portlet-body add-messages">
+                                <div class="col-sm-9 col-md-10">
+                                    <input id="ex14" type="text" />
+                                </div>
+                                <div class="col-sm-3 col-md-2">
+                                    <div class="panel panel-default subscription-panel apple-backgound">
+                                        <div class="panel-body">
+                                            <div class="col-sm-12 col-md-12 slider-quota-caption">
+                                                <div>   
+                                                    <div><span class="bold">250+</span></div>
+                                                    <div><span> Messages</span></div>
                                                 </div>
-                                            </div> -->
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -242,7 +233,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-4">
+            <div class="col-md-12 col-lg-4">
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
                         <div class="portlet light bordered dashboard-panel">
@@ -266,151 +257,83 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
-                        <div class="portlet light bordered dashboard-panel change-plan">
-                            <div class="portlet-body">    
-                                <div class="btn-group" role="group" aria-label="Basic">
-                                    <button autofocus type="button" class="btn btn-default">Monthly</button>
-                                    <button type="button" class="btn btn-default">Annually</button>
-                                </div>
-                                <div class="growth-bar" style="margin: 10px 0; text-align: center;">   
-                                    <div class="search-btn">
-                                        <a class="btnLink" href="">Change Plan</a>
+                        <div class="portlet light bordered change-plan">
+                            <div class="portlet-body">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-12 col-sm-12">
+                                            <input type="checkbox" class="make-switch" data-on-text="Monthly" data-off-text="Annually">
+                                        </div>
                                     </div>
-                                </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="growth-bar transparent center"> 
+                                                <button class="btn btn-block subscription-btn golden-poppy-backgound ">Change Plan</button>
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</header>
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
 
-            <!-- 
-            <div class="row subscription">
-                <div class="col-md-8 col-sm-8">
-                    <div class="portlet light bordered dashboard-panel">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <span>HOW MANY LOCATIONS DO YOU WANT?</span>
-                            </div>
-                        </div>
-                        <div class="portlet-body add-locations">
-                            <div class="col-sm-9 col-md-9">
-                                <input id="ex13" type="text" />
-                            </div>
-                            <div class="col-sm-3 col-md-3">
-                                <div class="panel panel-default subscription-panel">
-                                    <div class="panel-body">
-                                        <div class="col-sm-12 col-md-12">
-                                            <div class="subscription-parameters">   
-                                                <div><span style="font-weight: bold;">100+</span></div>
-                                                <div><span> Location</span></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4">
-                    <div class="portlet light bordered dashboard-panel change-plan">
-                        <div class="portlet-body">    
-                            <div class="btn-group" role="group" aria-label="Basic">
-                                <button autofocus type="button" class="btn btn-default">Monthly</button>
-                                <button type="button" class="btn btn-default">Annually</button>
-                            </div>
-                            <div class="growth-bar" style="margin: 10px 0; text-align: center;">   
-                                <div class="search-btn">
-                                    <a class="btnLink" href="">Change Plan</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> 
-        
-            <div class="row subscription">
-                <div class="col-md-8 col-sm-8">
-                    <div class="portlet light bordered dashboard-panel">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <span>HOW MANY TEXT MESSAGES DO YOU NEED PER LOCATION?</span>
-                            </div>
-                        </div>
-                        <div class="portlet-body add-messages">
-                            <div class="col-sm-9 col-md-9">
-                                <input id="ex14" type="text" />
-                            </div>
-                            <div class="col-sm-3 col-md-3">
-                                <div class="panel panel-default subscription-panel">
-                                    <div class="panel-body">
-                                        <div class="col-sm-12 col-md-12">
-                                            <div class="subscription-parameters">   
-                                                <div><span style="font-weight: bold;">250+</span></div>
-                                                <div><span> Messages</span></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            </header>
-            <script type="text/javascript">
-                jQuery(document).ready(function ($) {
+        var slider = new Slider("#ex13", {
+            tooltip: 'show',
+            min: 0,
+            max: 100,
+            step: 1,
+            ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+            ticks_labels: [
+                '<div>0</div><div class="tick-marker">|</div>',
+                '<div>10</div><div class="tick-marker">|</div>',
+                '<div>20</div><div class="tick-marker">|</div>',
+                '<div>30</div><div class="tick-marker">|</div>',
+                '<div>40</div><div class="tick-marker">|</div>',
+                '<div>50</div><div class="tick-marker">|</div>',
+                '<div>60</div><div class="tick-marker">|</div>',
+                '<div>70</div><div class="tick-marker">|</div>',
+                '<div>80</div><div class="tick-marker">|</div>',
+                '<div>90</div><div class="tick-marker">|</div>',
+                '<div>100</div><div class="tick-marker">|</div>'
+            ],
+            ticks_snap_bounds: 1
+        });
 
-                    var slider = new Slider("#ex13", {
-                        tooltip: 'show',
-                        min: 0,
-                        max: 100,
-                        step: 1,
-                        ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-                        ticks_labels: [
-                            '<div>0</div><div class="tick-marker">|</div>',
-                            '<div>10</div><div class="tick-marker">|</div>',
-                            '<div>20</div><div class="tick-marker">|</div>',
-                            '<div>30</div><div class="tick-marker">|</div>',
-                            '<div>40</div><div class="tick-marker">|</div>',
-                            '<div>50</div><div class="tick-marker">|</div>',
-                            '<div>60</div><div class="tick-marker">|</div>',
-                            '<div>70</div><div class="tick-marker">|</div>',
-                            '<div>80</div><div class="tick-marker">|</div>',
-                            '<div>90</div><div class="tick-marker">|</div>',
-                            '<div>100</div><div class="tick-marker">|</div>'
-                        ],
-                        ticks_snap_bounds: 1
-                    });
+        var slider = new Slider("#ex14", {
+            tooltip: 'show',
+            min: 100,
+            max: 1000,
+            step: 50,
+            ticks: [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000],
+            ticks_labels: [
+                '<div>100</div><div class="tick-marker">|</div>',
+                '<div>150</div><div class="tick-marker">|</div>',
+                '<div>200</div><div class="tick-marker">|</div>',
+                '<div>250</div><div class="tick-marker">|</div>',
+                '<div>300</div><div class="tick-marker">|</div>',
+                '<div>350</div><div class="tick-marker">|</div>',
+                '<div>400</div><div class="tick-marker">|</div>',
+                '<div>450</div><div class="tick-marker">|</div>',
+                '<div>500</div><div class="tick-marker">|</div>',
+                '<div>550</div><div class="tick-marker">|</div>',
+                '<div>600</div><div class="tick-marker">|</div>',
+                '<div>650</div><div class="tick-marker">|</div>',
+                '<div>700</div><div class="tick-marker">|</div>',
+                '<div>750</div><div class="tick-marker">|</div>',
+                '<div>800</div><div class="tick-marker">|</div>',
+                '<div>850</div><div class="tick-marker">|</div>',
+                '<div>900</div><div class="tick-marker">|</div>',
+                '<div>950</div><div class="tick-marker">|</div>',
+                '<div>1000</div><div class="tick-marker">|</div>'
+            ],
+            ticks_snap_bounds: 1
+        });
 
-                    var slider = new Slider("#ex14", {
-                        tooltip: 'show',
-                        min: 100,
-                        max: 1000,
-                        step: 50,
-                        ticks: [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000],
-                        ticks_labels: [
-                            '<div>100</div><div class="tick-marker">|</div>',
-                            '<div>150</div><div class="tick-marker">|</div>',
-                            '<div>200</div><div class="tick-marker">|</div>',
-                            '<div>250</div><div class="tick-marker">|</div>',
-                            '<div>300</div><div class="tick-marker">|</div>',
-                            '<div>350</div><div class="tick-marker">|</div>',
-                            '<div>400</div><div class="tick-marker">|</div>',
-                            '<div>450</div><div class="tick-marker">|</div>',
-                            '<div>500</div><div class="tick-marker">|</div>',
-                            '<div>550</div><div class="tick-marker">|</div>',
-                            '<div>600</div><div class="tick-marker">|</div>',
-                            '<div>650</div><div class="tick-marker">|</div>',
-                            '<div>700</div><div class="tick-marker">|</div>',
-                            '<div>750</div><div class="tick-marker">|</div>',
-                            '<div>800</div><div class="tick-marker">|</div>',
-                            '<div>850</div><div class="tick-marker">|</div>',
-                            '<div>900</div><div class="tick-marker">|</div>',
-                            '<div>950</div><div class="tick-marker">|</div>',
-                            '<div>1000</div><div class="tick-marker">|</div>'
-                        ],
-                        ticks_snap_bounds: 1
-                    });
-
-                });
-            </script>
+    });
+</script>
