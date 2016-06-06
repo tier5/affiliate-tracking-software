@@ -82,6 +82,37 @@
 .credit-card-details .modal-footer .form-group {
     text-align: center;
 }
+.subscription-toggle .btn:hover,
+.subscription-toggle .btn:focus,
+.subscription-toggle .btn:active {
+    background-color: transparent !important;
+}
+.subscription-toggle .btn,
+.subscription-toggle .btn.active {
+    font-family: "Open Sans", sans-serif;
+    font-size: 15px;
+    font-weight: bold !important;
+    padding: 6px 32px;
+    color: #000 !important;
+}
+.subscription-toggle .btn,
+.btn-group.subscription-toggle {
+    border-color: #E6E6E6 !important;
+    background-color: #E6E6E6 !important;
+}
+.subscription-toggle .btn,
+.subscription-toggle .btn.active,
+.btn-group.subscription-toggle {
+    border-radius: 30px !important;
+}
+.subscription-toggle .btn.active {
+    border-color: #FFF !important;
+    background-color: #FFF !important;
+    border: 1px solid #E6E6E6 !important;
+}
+.btn-group.subscription-toggle {
+    border: 2px solid #E6E6E6 !important;
+}
 .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, 
 .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary {
     color: #FFF  !important;;

@@ -615,7 +615,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
         <?php 
         if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
         ?>
-        <script src="/admin/assets/global/plugins/card-js/card-js.min.js" type="text/javascript"></script>    
+        <script src="/admin/assets/global/plugins/card-js/card-js.min.js" type="text/javascript"></script>
         <?php 
         }
         ?>

@@ -263,7 +263,11 @@
                                 <div class="form-group">
                                     <div class="row">
                                         <div class="col-md-12 col-sm-12">
-                                            <input type="checkbox" class="make-switch" data-on-text="Monthly" data-off-text="Annually">
+                                            <!-- <input type="checkbox" class="make-switch" data-on-text="Monthly" data-off-text="Annually"> -->
+                                            <div class="btn-group btn-toggle subscription-toggle"> 
+                                                <button class="btn active btn-primary">Monthly</button>
+                                                <button class="btn btn-default">Annually</button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -389,6 +393,17 @@
             ],
             ticks_snap_bounds: 1
         });
-
+        
+        $('.subscription-toggle').click(function() {
+            $(this).find('.btn').toggleClass('active');  
+    
+            if ($(this).find('.btn-primary').size()>0) {
+                $(this).find('.btn').toggleClass('btn-primary');
+            }
+    
+            $(this).find('.btn').toggleClass('btn-default');
+       
+        });
+        
     });
 </script>
