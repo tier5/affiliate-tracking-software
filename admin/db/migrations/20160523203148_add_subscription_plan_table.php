@@ -10,7 +10,7 @@ class AddSubscriptionPlanTable extends AbstractMigration
         $table = $this->table('subscription_plan');
         $table->addColumn('locations', 'integer', ['null' => false, 'default' => 0])
             ->addColumn('sms_messages_per_location', 'integer', ['null' => false, 'default' => 0])
-            ->addColumn('payment_plan', 'string', ['null' => false, 'default' => 'none'])
+            ->addColumn('payment_plan', 'string', ['null' => false, 'default' => 'none', 'comment' => 'FR=Free plan;TR=Trial Plan;M=Monthly;Y=Yearly' ])
             ->addColumn('subscription_profile_id', 'integer', ['null' => false, 'default' => 0])
             ->addColumn('user_id', 'integer', [ 'signed' => false, 'limit' => 10, 'null' => false, 'default' => 0])
             ->addColumn('created_at', 'timestamp', [ 'null' => false, 'default' => 'CURRENT_TIMESTAMP'])
