@@ -25,11 +25,11 @@ return new \Phalcon\Config(array(
         'fromEmail' => 'no-reply@reviewvelocity.co',
         //use the SendGrid Relay server to send mail
         'smtp' => array(
-            'server' => 'smtp.sendgrid.net',
+            'server' => 'mailtrap.io',
             'port' => 587,
             'security' => 'tls',
-            'username' => 'reviewvelocity',
-            'password' => 'r9dzDOEe6a3M'
+            'username' => 'de0d513c12498d',
+            'password' => '700de902cdaa9f'
         )
     ),
     'amazon' => array(
