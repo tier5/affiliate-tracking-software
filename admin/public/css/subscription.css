@@ -1,0 +1,132 @@
+/* Subscriptions */
+.subscription-btn {
+    color: #FFF !important;
+    border-color: none !important;
+    font-family: "Open Sans", sans-serif;
+    font-size: 17px;
+    padding: 6px 24px;
+    font-weight: bold;
+}
+.subscription-panel .slider-quota-caption > div,
+.subscription-panel-default-caption div,
+.subscription-panel-large-caption,
+.subscription-panel-group .portlet-title .caption > span,
+.plans-and-payments-row .quota-display,
+.plans-and-payments-row .payment-info .credit-card-details div[class*="col-"],
+.change-plan .form-group {
+   text-align: center;
+} 
+.subscription-panel-group .panel.panel-default {
+   border-radius: 5px !important;
+}
+.subscription-panel .slider-quota-caption,
+.subscription-panel-default-caption, 
+.subscription-panel-large-caption {
+   color: #FFFFFF;  
+}
+.subscription-panel-quota-caption,
+.subscription-panel-default-caption {
+    font-size: 1.5rem;
+}
+.subscription-panel-large-caption {
+    font-size: 6rem;
+}
+.subscription-panel-large-caption > sup,
+.subscription-panel-large-caption > sub {
+    font-size: 2.0rem;
+}
+.subscription-panel-large-caption > sup {
+    top: -3.5rem;
+}
+.subscription-panel-large-caption > sub {
+    bottom: 0.1rem;
+}
+.subscription-panel .slider-quota-caption {
+    padding: 0px;
+}
+.plans-and-payments-row .payment-info .credit-card-details > div > input,
+.plans-and-payments-row .payment-info .credit-card-details > div > div {
+    display: inline-block;
+}
+.plans-and-payments-row .payment-info .credit-card-details input {
+    width: auto;
+}
+.plans-and-payments-row .payment-info .credit-card-details img {
+    height: 34px;
+}
+.credit-card-details .row.small {
+    display: block;
+}
+.credit-card-details .row.small input {
+    margin: auto;
+}
+.credit-card-details .row.large {
+    display: none;
+}
+.change-plan .growth-bar,
+.change-plan .form-group {
+    margin-bottom: 0px;   
+}
+.change-plan.modal-dialog,
+.credit-card-details.modal-dialog {
+    width: 400px;
+    margin: 30px auto !important;
+}
+.change-plan .modal-header,
+.credit-card-details .modal-header {
+    padding-bottom: 0px;
+}
+.change-plan .modal-header .caption {
+    text-align: center;
+}
+.credit-card-details .modal-footer .form-group {
+    text-align: center;
+}
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, 
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary {
+    color: #FFF  !important;;
+    font-weight: bold !important;
+    background: #65CE4D !important;
+}
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-default {
+    color: #FFF  !important;;
+    font-weight: bold !important;
+    background: #65CE4D !important;
+}
+@media (min-width: 768px) {
+  .responsive-float-left { 
+      float: left; 
+  }
+  .responsive-float-right { 
+      float: right; 
+  }
+  .subscription-panel-default-caption {
+      position: relative;
+      top: -50%;
+      transform: translateY(50%);
+      font-size: 1.5rem;
+  }
+  .subscription-panel-default-caption div {
+      text-align: left;
+  }
+}
+@media (min-width: 1190px) {
+    .subscription-panel-group.plans-and-payments-row .portlet.light.bordered.dashboard-panel {
+        height: 348px;
+    }
+    .plans-and-payments-row .payment-info .credit-card-details div[class*="col-"] {
+        text-align: center;
+    }
+    .plans-and-payments-row .payment-info .credit-card-details input {
+        width: 100%;
+    }
+    .credit-card-details .row.large {
+        display: block;
+    }
+    .credit-card-details .row.small {
+        display: none;
+    }
+    .subscription-panel-group .portlet-title .caption > span {
+        text-align: left;
+    }
+}

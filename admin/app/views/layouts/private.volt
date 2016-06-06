@@ -54,7 +54,9 @@
     <?php 
     if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
     ?>
+    <link href="/admin/css/subscription.css" rel="stylesheet" type="text/css" />
     <link href="/admin/css/slider-extended.css" rel="stylesheet" type="text/css" />
+    <link href="/admin/assets/global/plugins/card-js/card-js.min.css" type="text/javascript" />
     <?php 
     }
     ?>
@@ -609,7 +611,15 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
         <?php } ?>
         <script src="/admin/js/card-js.min.js"></script>
         <script src="/admin/js/login.js"></script>
-
+        
+        <?php 
+        if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
+        ?>
+        <script src="/admin/assets/global/plugins/card-js/card-js.min.js" type="text/javascript"></script>    
+        <?php 
+        }
+        ?>
+        
         <?php 
         if (isset($haspaid) && $haspaid == false) {
 

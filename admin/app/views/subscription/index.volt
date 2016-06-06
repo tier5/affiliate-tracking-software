@@ -7,8 +7,8 @@
                 <!-- BEGIN PAGE TITLE-->
                 <h3 class="page-title"> Subscriptions</h3>
                 <!-- END PAGE TITLE-->
-            </div>    
-            <?php 
+            </div>
+            <?php
             if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
             if ($is_upgrade) {
             $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
@@ -21,12 +21,12 @@
                         <div class="bar-background"></div>
                         <div class="bar-filled" style="width: <?=$percent?>%;"></div>
                         <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-                        <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
+                        <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
                     </div>
                     <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
                 </div>
-            </div>    
-            <?php 
+            </div>
+            <?php
             } else {
             $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
             if ($percent > 100) $percent = 100;
@@ -38,12 +38,12 @@
                         <div class="bar-background"></div>
                         <div class="bar-filled" style="width: <?=$percent?>%;"></div>
                         <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-                        <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
+                        <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
                     </div>
                     <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
                 </div>
-            </div>    
-            <?php 
+            </div>
+            <?php
             }
             } //end checking for business vs agency
             ?>
@@ -51,7 +51,7 @@
 
         <div class="row">
             <div class="col-sm-12 col-md-12">
-                <div class="growth-bar transparent pull-right"> 
+                <div class="growth-bar transparent pull-right">
                     <button type="button" class="btn default btn-lg apple-backgound subscription-btn">View Invoices</button>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                 <div class="growth-bar">
                     PLANS & PAYMENTS
                 </div>
-            </div>    
+            </div>
         </div>
 
         <div class="row subscription-panel-group plans-and-payments-row">
@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="responsive-float-right subscription-panel-large-caption">TRIAL</div>
                             </div>
-                        </div> 
+                        </div>
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="quota-display">
@@ -94,7 +94,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 col-lg-4">  
+
+            <div class="col-md-12 col-lg-4">
                 <div class="portlet light bordered dashboard-panel payment-info">
                     <div class="portlet-title">
                         <div class="caption">
@@ -109,7 +110,7 @@
                                 </div>
                             </div>
                             <div class="panel-body credit-card-details">
-                                <div class="row large">    
+                                <div class="row large">
                                     <div class="col-xs-8 col-md-8">
                                         <div class="form-group">
                                             <input type="text" disabled class="form-control center" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="cc-exp" required="" aria-required="true">
@@ -122,7 +123,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row small">    
+                                <div class="row small">
                                     <div class="col-xs-12 col-md-12">
                                         <div class="form-group">
                                             <input type="text" disabled class="form-control center" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="cc-exp" required="" aria-required="true">
@@ -136,11 +137,11 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="form-group">
-                                            <button type="button" class="btn default btn-lg apple-backgound subscription-btn">Update Card</button>
+                                            <button type="button" class="btn default btn-lg apple-backgound subscription-btn" data-toggle="modal" data-target="#updateCardModal">Update Card</button>
                                         </div>
                                     </div>
                                 </div>
-                            </div>   
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -152,10 +153,10 @@
                 <div class="growth-bar">
                     CHANGE PLAN
                 </div>
-            </div>    
+            </div>
         </div>
 
-        <div class="row subscription-panel-group change-plans-row">    
+        <div class="row subscription-panel-group change-plans-row">
             <div class="col-md-12 col-lg-8">
                 <div class="row">
                     <div class="col-sm-12">
@@ -192,7 +193,7 @@
                                     <div class="panel panel-default subscription-panel apple-backgound">
                                         <div class="panel-body">
                                             <div class="col-sm-12 col-md-12 slider-quota-caption">
-                                                <div>   
+                                                <div>
                                                     <div><span class="bold">100+</span></div>
                                                     <div>Location</div>
                                                 </div>
@@ -220,7 +221,7 @@
                                     <div class="panel panel-default subscription-panel apple-backgound">
                                         <div class="panel-body">
                                             <div class="col-sm-12 col-md-12 slider-quota-caption">
-                                                <div>   
+                                                <div>
                                                     <div><span class="bold">250+</span></div>
                                                     <div><span> Messages</span></div>
                                                 </div>
@@ -267,11 +268,12 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 col-sm-12">
-                                            <div class="growth-bar transparent center"> 
-                                                <button class="btn btn-block subscription-btn golden-poppy-backgound ">Change Plan</button>
+                                            <div class="growth-bar transparent center">
+                                                <button class="btn btn-block subscription-btn golden-poppy-backgound" data-toggle="modal" data-target="#updatePlanModal">Change Plan</button>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -279,6 +281,59 @@
             </div>
         </div>
     </div>
+
+    <!-- Update credit card pop up -->
+    <div class="modal fade" id="updateCardModal" tabindex="-1" role="dialog" aria-labelledby="updateCardModalLabel">
+        <div class="credit-card-details modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="growth-bar">
+                        <div>Update Card</div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="card-js" data-capture-name="true" data-icon-colour="#65CE4D"></div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <button type="button" class="btn default apple-backgound subscription-btn">Update</button>
+                        <button type="button" class="btn default apple-backgound subscription-btn" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Change plan pop up -->
+    <div class="modal fade" id="updatePlanModal" tabindex="-1" role="dialog" aria-labelledby="updatePlanModalLabel">
+        <div class="change-plan modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="growth-bar">
+                        <div class="caption">
+                            <span>CHANGE PLAN SUCCEEDED!!!</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default apple-backgound">
+                        <div class="panel-body">
+                            <div class="responsive-float-left subscription-panel-default-caption">
+                                <div><span class="bold">100+</span> Location</div>
+                                <div><span class="bold">250+</span> Text Messages</div>
+                            </div>
+                            <div class="responsive-float-right subscription-panel-large-caption">
+                                <sup class="subscription-panel-default-caption">$</sup>17<sub class="subscription-panel-default-caption">/mo</sub>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group">
+                            <button type="button" class="btn default golden-poppy-backgound subscription-btn" data-dismiss="modal">Finish</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 </header>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
