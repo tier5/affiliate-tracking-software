@@ -29,7 +29,7 @@ class SubscriptionController extends ControllerBase {
         //     return;
         // }
         $identity = $this->session->get('auth-identity');
-        if ($identity['profile'] != 'Employee') {
+        if ($identity && $identity['profile'] != 'Employee') {
             $this->tag->setTitle('Review Velocity | Subscription');
             $this->view->setTemplateBefore('private');
         } else {    
