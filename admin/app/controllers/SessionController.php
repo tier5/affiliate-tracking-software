@@ -309,8 +309,7 @@ class SessionController extends ControllerBase
         $querystring = $subscription_id.'/'.$querystring;
         $found = true;
       }
-      // $config->application->publicUrl
-      return $this->response->redirect('http://reviewvelocity.co/session/signup'.($page>1?$page:'').'/'.$querystring);
+      return $this->response->redirect($config->application->publicUrl .'/session/signup'.($page>1?$page:'').'/'.$querystring);
     }
   }
 
