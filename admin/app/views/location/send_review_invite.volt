@@ -31,7 +31,7 @@
   <?php 
   if ($sms_sent_this_month_total < $total_sms_month) {
   ?>
-  <form class="form-horizontal" action="/admin/location/send_review_invite" role="form" method="post" autocomplete="off">
+  <form class="form-horizontal" action="/location/send_review_invite" role="form" method="post" autocomplete="off">
     <div class="form-group">
       <div class="row">
         <label class="col-md-4 control-label">Location</label>
@@ -95,7 +95,7 @@
   <?php 
   } else {
     ?>
-    You must have a Twilio SID and Auth Token to send SMS messages.  All SMS messages are sent using <a href="https://www.twilio.com/" target="_blank">Twilio</a>.  <a href="/admin/settings/">Click here</a> to enter your Twilio SID and Auth Key now.  If you don't have an API key yet, <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a> to sign up.  
+    You must have a Twilio SID and Auth Token to send SMS messages.  All SMS messages are sent using <a href="https://www.twilio.com/" target="_blank">Twilio</a>.  <a href="/settings/">Click here</a> to enter your Twilio SID and Auth Key now.  If you don't have an API key yet, <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a> to sign up.  
     <?php
   }
   ?>

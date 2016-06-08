@@ -2,7 +2,7 @@
 
 <header class="jumbotron subhead" id="reviews">
 	<div class="hero-unit">
-    <!--<a class="btn yellow" href="/admin/reviews/sms_broadcast" style="float: right;"><i class="icon-envelope"></i>&nbsp; SMS Broadcast</a>-->
+    <!--<a class="btn yellow" href="/reviews/sms_broadcast" style="float: right;"><i class="icon-envelope"></i>&nbsp; SMS Broadcast</a>-->
 		
     <div class="row">
       <div class="col-md-5 col-sm-5">
@@ -64,7 +64,7 @@
             <div class="flexsearch--input-wrapper">
               <input class="flexsearch--input" type="search" placeholder="search">
             </div>
-            <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
+            <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
           </div>
         </div>
 
@@ -73,7 +73,7 @@
           //(invites have the following fields: Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)
           ?>
           <!-- Start .panel -->
-          <div class="panel-default toggle panelMove panelClose panelRefresh" id="contactlist">
+          <div class="panel-default toggle panelMove panelClose panelRefresh">
             <div class="customdatatable-wrapper">
               <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
               <thead>
@@ -136,7 +136,7 @@
                         <?php
                       }
                       ?></td>
-                      <td style="min-width: 86px; width: 86px;"><a href="/admin/contacts/view/<?=$invite->review_invite_id?>" class="btnLink" style="display: block;white-space: nowrap;"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;"> View</a></td>
+                      <td style="min-width: 86px; width: 86px;"><a href="/contacts/view/<?=$invite->review_invite_id?>" class="btnLink" style="display: block;white-space: nowrap;"><img src="/img/icon-eye.gif"> View</a></td>
                     </tr>
                     <?php  
                   endforeach; 

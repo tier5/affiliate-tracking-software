@@ -1,10 +1,10 @@
 {{ content() }}
 
 <div align="right">
-    {{ link_to("/admin/profiles/create", "<i class='icon-plus-sign'></i> Create Profiles", "class": "btn btn-primary") }}
+    {{ link_to("/profiles/create", "<i class='icon-plus-sign'></i> Create Profiles", "class": "btn btn-primary") }}
 </div>
 
-<form method="post" action="{{ url("/admin/profiles/search") }}" autocomplete="off">
+<form method="post" action="{{ url("/profiles/search") }}" autocomplete="off">
 
     <div class="center scaffold">
 

@@ -3,7 +3,7 @@
 
 <ul class="pager">
     <li class="previous pull-left">
-      {{ link_to("/admin/profiles", "&larr; Go Back") }}
+      {{ link_to("/profiles", "&larr; Go Back") }}
     </li>
     <li class="pull-right">
         {{ submit_button("Save", "class": "btn btn-success") }}
@@ -59,8 +59,8 @@
                                 <td>{{ user.banned == 'Y' ? 'Yes' : 'No' }}</td>
                                 <td>{{ user.suspended == 'Y' ? 'Yes' : 'No' }}</td>
                                 <td>{{ user.active == 'Y' ? 'Yes' : 'No' }}</td>
-                                <td width="12%">{{ link_to("/admin/users/edit/" ~ user.id, '<i class="icon-pencil"></i> Edit', "class": "btn") }}</td>
-                                <td width="12%">{{ link_to("/admin/users/delete/" ~ user.id, '<i class="icon-close"></i> Delete', "class": "btn") }}</td>
+                                <td width="12%">{{ link_to("/users/edit/" ~ user.id, '<i class="icon-pencil"></i> Edit', "class": "btn") }}</td>
+                                <td width="12%">{{ link_to("/users/delete/" ~ user.id, '<i class="icon-close"></i> Delete', "class": "btn") }}</td>
                             </tr>
                         {% else %}
                             <tr><td colspan="3" align="center">There are no users assigned to this profile</td></tr>

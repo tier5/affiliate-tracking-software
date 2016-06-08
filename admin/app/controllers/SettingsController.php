@@ -43,7 +43,7 @@ class SettingsController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/settings/');
+        $this->response->redirect('/session/login?return=/settings/');
         $this->view->disable();
         return;
       }
@@ -183,7 +183,7 @@ class SettingsController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/settings/location/');
+        $this->response->redirect('/session/login?return=/settings/location/');
         $this->view->disable();
         return;
       }
@@ -421,7 +421,7 @@ class SettingsController extends ControllerBase
       // Check if the user has uploaded files
       if ($this->request->hasFiles() == true) {
         //echo '<p>hasFiles() == true!</p>';
-        $baseLocation = '/var/www/html/'.$this->config->webpathfolder->path.'/admin/public/img/upload/';
+        $baseLocation = '/var/www/html/'.$this->config->webpathfolder->path.'/public/img/upload/';
 
 
         // Print the real file names and sizes
@@ -436,7 +436,7 @@ class SettingsController extends ControllerBase
             $image->resize(200, 30)->save($filepath);
 
             //echo '<p>$filepath: '.$filepath.'</p>';
-            $filepath = '/admin'.str_replace("/var/www/html/".$this->config->webpathfolder->path."/admin/public", "", $filepath);
+            $filepath = '/admin'.str_replace("/var/www/html/".$this->config->webpathfolder->path."/public", "", $filepath);
             $this->view->logo_setting = $filepath;
             return $filepath;
           }

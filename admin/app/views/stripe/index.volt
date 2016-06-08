@@ -2,7 +2,7 @@
 
 <ul class="pager">
     <li class="pull-right">
-        {{ link_to("/admin/stripe/create", "Create Stripe Subscription", "class": "btn red btn-outline") }}
+        {{ link_to("/stripe/create", "Create Stripe Subscription", "class": "btn red btn-outline") }}
     </li>
 </ul>
 <div class="portlet box red">
@@ -37,7 +37,7 @@ foreach($subscriptions as $sub) {
     <tr>
       <td><?=$sub->plan?></td>
       <td><?=$sub->amount?></td>
-      <td><a href="/admin/session/subscribe/<?=$sub->subscription_stripe_id?>" target="_blank">View Form</a></td>
+      <td><a href="/session/subscribe/<?=$sub->subscription_stripe_id?>" target="_blank">View Form</a></td>
     </tr>
 <?php
 }

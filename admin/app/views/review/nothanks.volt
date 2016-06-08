@@ -38,7 +38,7 @@ if ($this->request->isPost()) {
   <div class="question"><?=($name != ''?$name.', we':'We')?> are sorry that you had a poor experience</div>
   <div class="question2">How can we improve?</div>
   <div class="row text-center last">
-  <form action="/admin/review/nothanks?r=<?=(isset($_GET["r"])?htmlspecialchars($_GET["r"]):'')?>&a=<?=htmlspecialchars($_GET["a"])?>" class="form-horizontal" role="form" method="post">
+  <form action="/review/nothanks?r=<?=(isset($_GET["r"])?htmlspecialchars($_GET["r"]):'')?>&a=<?=htmlspecialchars($_GET["a"])?>" class="form-horizontal" role="form" method="post">
   <textarea name="comments" placeholder="Comments (please be as specific as possible)"></textarea> 
   <div class="row text-center"><input type="submit" class="btn-lg btn-recommend" value="Submit" /></div> 
   </form>

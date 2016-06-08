@@ -2,7 +2,7 @@
 
 <header class="jumbotron subhead" id="reviews">
 	<div class="hero-unit">
-    <!--<a class="btn yellow" href="/admin/reviews/sms_broadcast" style="float: right;"><i class="icon-envelope"></i>&nbsp; SMS Broadcast</a>-->
+    <!--<a class="btn yellow" href="/reviews/sms_broadcast" style="float: right;"><i class="icon-envelope"></i>&nbsp; SMS Broadcast</a>-->
 		
     <div class="row">
       <div class="col-md-5 col-sm-5">
@@ -168,7 +168,7 @@
         <div class="portlet light bordered" id="pnlSMSSent">
           <div class="portlet-title">
             <div class="caption">
-              <img src="/admin/img/icon_bargraph.gif" />
+              <img src="/img/icon_bargraph.gif" />
               <span class="caption-subject bold uppercase">Review Count By Site</span>
             </div>
           </div>
@@ -179,7 +179,7 @@
                   <div class="number transactions">
                     <span><?=($google_review_count > 0 ? number_format((float)($google_review_count), 0, '.', '') : '0' )?></span> 
                    </div>
-                  <div class="title"> <img src="/admin/img/logo/icon-google.gif" /> </div>
+                  <div class="title"> <img src="/img/logo/icon-google.gif" /> </div>
                 </div>
               </div>
               <div class="margin-bottom-10 visible-sm"> </div>
@@ -188,7 +188,7 @@
                   <div class="number transactions">
                     <span><?=($yelp_review_count > 0 ? number_format((float)($yelp_review_count), 0, '.', '') : '0' )?></span> 
                    </div>
-                  <div class="title"> <img src="/admin/img/logo/icon-yelp.gif" /> </div>
+                  <div class="title"> <img src="/img/logo/icon-yelp.gif" /> </div>
                 </div>
               </div>
               <div class="margin-bottom-10 visible-sm"> </div>
@@ -197,7 +197,7 @@
                   <div class="number transactions">
                     <span><?=($facebook_review_count > 0 ? number_format((float)($facebook_review_count), 0, '.', '') : '0' )?></span> 
                    </div>
-                  <div class="title"> <img src="/admin/img/logo/icon-facebook.gif" /> </div>
+                  <div class="title"> <img src="/img/logo/icon-facebook.gif" /> </div>
                 </div>
               </div>
             </div>
@@ -209,7 +209,7 @@
         <div class="portlet light bordered" id="pnlConversionRate">
           <div class="portlet-title">
             <div class="caption">
-              <img src="/admin/img/icon_pie.gif" />
+              <img src="/img/icon_pie.gif" />
               <span class="caption-subject bold uppercase">Review Percent By Site</span>
             </div>
           </div>
@@ -220,7 +220,7 @@
                   <div class="number lastmonth" data-percent="<?=($total_reviews > 0 ? number_format((float)($google_review_count / $total_reviews) * 100, 0, '.', '') : 0 )?>">
                     <span><?=($total_reviews > 0 ? number_format((float)($google_review_count / $total_reviews) * 100, 0, '.', '') : 0 )?></span>% 
                   </div>
-                  <div class="pie-title"> <img src="/admin/img/logo/icon-google.gif" /> </div>
+                  <div class="pie-title"> <img src="/img/logo/icon-google.gif" /> </div>
                 </div>
               </div>
               <div class="margin-bottom-10 visible-sm"> </div>
@@ -229,7 +229,7 @@
                   <div class="number thismonth" data-percent="<?=($total_reviews > 0 ? number_format((float)($yelp_review_count / $total_reviews) * 100, 0, '.', '') : 0 )?>">
                     <span><?=($total_reviews > 0 ? number_format((float)($yelp_review_count / $total_reviews) * 100, 0, '.', '') : 0 )?></span>% 
                   </div>
-                  <div class="pie-title"> <img src="/admin/img/logo/icon-yelp.gif" /> </div>
+                  <div class="pie-title"> <img src="/img/logo/icon-yelp.gif" /> </div>
                 </div>
               </div>
               <div class="margin-bottom-10 visible-sm"> </div>
@@ -238,7 +238,7 @@
                   <div class="number growth" data-percent="<?=($total_reviews > 0 ? number_format((float)($facebook_review_count / $total_reviews) * 100, 0, '.', '') : 0 )?>">
                     <span><?=($total_reviews > 0 ? number_format((float)($facebook_review_count / $total_reviews) * 100, 0, '.', '') : 0 )?></span>% 
                   </div>
-                  <div class="pie-title"> <img src="/admin/img/logo/icon-facebook.gif" /> </div>
+                  <div class="pie-title"> <img src="/img/logo/icon-facebook.gif" /> </div>
                 </div>
               </div>
             </div>
@@ -250,7 +250,7 @@
         <div class="portlet light bordered" id="pnlSMSSent">
           <div class="portlet-title">
             <div class="caption">
-              <img src="/admin/img/icon_graph.gif" />
+              <img src="/img/icon_graph.gif" />
               <span class="caption-subject bold uppercase">Ratings By Site</span>
             </div>
           </div>
@@ -261,7 +261,7 @@
                   <div class="number transactions">
                     <span><?=($google_rating > 0 ? number_format((float)($google_rating), 1, '.', '') : '0.0' )?></span> 
                    </div>
-                  <div class="title"> <img src="/admin/img/logo/icon-google.gif" /> </div>
+                  <div class="title"> <img src="/img/logo/icon-google.gif" /> </div>
                 </div>
               </div>
               <div class="margin-bottom-10 visible-sm"> </div>
@@ -270,7 +270,7 @@
                   <div class="number transactions">
                     <span><?=($yelp_rating > 0 ? number_format((float)($yelp_rating), 1, '.', '') : '0.0' )?></span> 
                    </div>
-                  <div class="title"> <img src="/admin/img/logo/icon-yelp.gif" /> </div>
+                  <div class="title"> <img src="/img/logo/icon-yelp.gif" /> </div>
                 </div>
               </div>
               <div class="margin-bottom-10 visible-sm"> </div>
@@ -279,7 +279,7 @@
                   <div class="number transactions">
                     <span><?=($facebook_rating > 0 ? number_format((float)($facebook_rating), 1, '.', '') : '0.0' )?></span> 
                    </div>
-                  <div class="title"> <img src="/admin/img/logo/icon-facebook.gif" /> </div>
+                  <div class="title"> <img src="/img/logo/icon-facebook.gif" /> </div>
                 </div>
               </div>
             </div>
@@ -292,7 +292,7 @@
     <div class="row">
       <div class="col-md-12 col-sm-12">
         <div class="growth-bar">
-        <img src="/admin/img/icon_reviews.gif" /> Reviews &amp; Feedback 
+        <img src="/img/icon_reviews.gif" /> Reviews &amp; Feedback 
         </div>
       </div>    
     </div>
@@ -321,7 +321,7 @@
               <div class="flexsearch--input-wrapper">
                 <input class="flexsearch--input" type="search" placeholder="search">
               </div>
-              <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
+              <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
             </div>
           </div>
 
@@ -348,7 +348,7 @@
                   </div>
                   <div class="rowwrapper">
                     <div class="top">
-                      <div class="logo"><a href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/admin/img/logo/icon-<?=($data->rating_type_id==1?'yelp':($data->rating_type_id==2?'facebook':'google'))?>.gif" /></a></span></div>
+                      <div class="logo"><a href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==1?'yelp':($data->rating_type_id==2?'facebook':'google'))?>.gif" /></a></span></div>
                       <div class="rating col-md-2"><input value="<?=$data->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /></div>
                       <div class="name col-md-5"><?=$data->user_name?></div>
                       <div class="date col-md-3"><?=date("m/d/Y", strtotime($data->time_created))?></div>
@@ -394,7 +394,7 @@
               <div class="flexsearch--input-wrapper">
                 <input class="flexsearch--input" type="search" placeholder="search">
               </div>
-              <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
+              <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
             </div>
           </div>
 
@@ -469,7 +469,7 @@
             <div class="flexsearch--input-wrapper">
               <input class="flexsearch--input" type="search" placeholder="search">
             </div>
-            <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
+            <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
           </div>
         </div>
 
@@ -525,7 +525,7 @@
                       $text = $text."...";
                       echo $text;
                       ?>
-                      <a id="click<?=$invite->review_invite_id?>" href="#inline<?=$invite->review_invite_id?>" onclick="" class="fancybox btnLink" style="float: right;"><img src="/admin/img/view_green_button.png" style="padding-bottom: 5px;padding-right: 3px;" /> View</a>
+                      <a id="click<?=$invite->review_invite_id?>" href="#inline<?=$invite->review_invite_id?>" onclick="" class="fancybox btnLink" style="float: right;"><img src="/img/icon-eye.gif" /> View</a>
                       <div id="inline<?=$invite->review_invite_id?>" style="width:400px;display: none;">
                       <?=nl2br($invite->comments)?>
                       </div>
@@ -567,7 +567,7 @@
   <div class="row">
     <div class="col-md-12 col-sm-12">
       <div class="growth-bar">
-      <img src="/admin/img/icon_reviews.gif" /> Review Invite List
+      <img src="/img/icon_reviews.gif" /> Review Invite List
       </div>
     </div>    
   </div>
@@ -582,7 +582,7 @@
             <div class="flexsearch--input-wrapper">
               <input class="flexsearch--input" type="search" placeholder="search">
             </div>
-            <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
+            <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
           </div>
         </div>
 
@@ -611,7 +611,7 @@
                     ?>
                     <tr>
                       <td><?=$invite->name?></td>
-                      <td><?=preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $invite->phone)?></td>
+                      <td><?=$invite->phone?></td>
                       <td><?=$invite->sent_by?></td>
                       <td><?=date_format(date_create($invite->date_sent),"m/d/Y")?></td>
                       <td><?=($invite->date_viewed?'Yes':'No')?></td>
@@ -803,7 +803,7 @@ jQuery(document).ready(function($){
     //console.log('id:'+id);
     
     $.ajax({
-      url: "/admin/reviews/resolved/"+id,
+      url: "/reviews/resolved/"+id,
       cache: false,
       success: function(html){
         //done!
@@ -822,7 +822,7 @@ jQuery(document).ready(function($){
     //console.log('id:'+id);
 
     $.ajax({
-      url: "/admin/reviews/unresolved/"+id,
+      url: "/reviews/unresolved/"+id,
       cache: false,
       success: function(html){
         //done!

@@ -1,57 +1,13 @@
-<div id="reviews">
-<div class="row">
-  <div class="col-md-5 col-sm-5">
-    <h3 class="page-title"><?=($profilesId==3?'Employee':'Admin Users')?></h3>
-  </div>    
-  <?php 
-  if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
-    if ($is_upgrade) {
-      $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
-      if ($percent > 100) $percent = 100;
-      ?>
-      <div class="col-md-7 col-sm-7">
-        <div class="sms-chart-wrapper">
-          <div class="title">SMS Messages Sent</div>
-          <div class="bar-wrapper">
-            <div class="bar-background"></div>
-            <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-            <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-            <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
-          </div>
-          <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
-        </div>
-      </div>    
-      <?php 
-    } else {
-      $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
-      if ($percent > 100) $percent = 100;
-      ?>
-      <div class="col-md-7 col-sm-7">
-        <div class="sms-chart-wrapper">
-          <div class="title">SMS Messages Sent</div>
-          <div class="bar-wrapper">
-            <div class="bar-background"></div>
-            <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-            <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-            <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>            
-          </div>
-          <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
-        </div>
-      </div>    
-      <?php 
-    }
-  } //end checking for business vs agency
-  ?>
-</div>
-</div>
+
+
 
 
 <!-- BEGIN SAMPLE FORM PORTLET-->
 <div class="portlet light bordered">
   <div class="portlet-title">
     <div class="">
-      <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink" href="/admin/users<?=($profilesId==3?'':'/admin')?>">Back</a>
-      <img src="/admin/img/admin_user_edit.png" />
+      <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink" href="/users<?=($profilesId==3?'':'/admin')?>">Back</a>
+      <i class="icon-pencil fa-user"></i>
       <span style="display: inline-block; margin-left: 8px; margin-top: 11px;" class="caption-subject bold uppercase"> Edit </span>
     </div>
   </div>
@@ -147,8 +103,8 @@
       <div class="error" id="emailerror" style="display: none;">
         Invalid email.
       </div>
-      <div class="col-md-6">
-        <input type="submit" class="btnLink" value="Save" style="height: 42px; line-height: 14px; padding: 15px 36px; float: right;" />
+      <div class="col-md-offset-2 col-md-10">
+        <input type="submit" class="btnLink" value="Save" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: right;" />
       </div>
     </div>
     {{ form.render("id") }}

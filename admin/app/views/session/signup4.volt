@@ -3,7 +3,7 @@
 
 
 <!-- BEGIN FORM -->
-<form class="register-form4" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/admin/location/create3/'.$location_id:'/admin/session/signup4/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block;">
+<form class="register-form4" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/location/create3/'.$location_id:'/session/signup4/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block;">
 
 <h3 style="border-bottom: 1px solid #E7ECF0;">Enter Employees & Business Information</h3>
   
@@ -35,9 +35,9 @@
   ?>
     <h3>EMPLOYEE LIST</h3>
   </div>
-<?php
-if (isset($users) && count($users) > 0) {
-?>
+
+{% for user in users %}
+{% if loop.first %}
 <table cellspacing="0" width="100%" class="table table-striped table-bordered dataTable" style="width: 100%;">
   <thead>
   <tr role="row">
@@ -47,26 +47,19 @@ if (isset($users) && count($users) > 0) {
   </tr>
   </thead>
   <tbody>
-  <?php
-  foreach($users as $user) { 
-  ?>
+{% endif %}
     <tr>
-      <td><?=$user->name?></td>
-      <td><?=$user->email?></td>
-      <td><?=preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $user->phone)?></td>
+      <td>{{ user.name }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.phone }}</td>
     </tr>
-  <?php
-  }
-  ?>
+{% if loop.last %}
   </tbody>
 </table>
-<?php
-} else { 
-?>
+{% endif %}
+{% else %}
     No <?=($profilesId==3?'Employees':'Admin Users')?>
-<?php
-}
-?>
+{% endfor %}
 
 </div>
 
@@ -79,7 +72,7 @@ if (isset($users) && count($users) > 0) {
 <!-- END FORM -->
 <div class="overlay" style="display: none;"></div>
 <div id="page-wrapper" class="create" style="display: none;">
-<form id="createemployeeform" class="register-form4" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/admin/users/createemployee2/'.$location_id:'/admin/users/createemployee/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block; padding-top: 0;">
+<form id="createemployeeform" class="register-form4" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/users/createemployee2/'.$location_id:'/users/createemployee/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block; padding-top: 0;">
   <div class="closelink close"></div>
 	<div class="col-md-12">
     <div class="title"><h3>Create Employee</h3></div>    
@@ -108,7 +101,7 @@ if (isset($users) && count($users) > 0) {
 </form>
 </div>
 <div id="page-wrapper2" class="create" style="display: none;">
-<form id="selectemployeeform" class="register-form4" action="/admin/location/selectemployees/<?=$location_id?>" method="post" style="display: block; padding-top: 0;">
+<form id="selectemployeeform" class="register-form4" action="/location/selectemployees/<?=$location_id?>" method="post" style="display: block; padding-top: 0;">
   <div class="closelink close"></div>
 	<div class="col-md-12">
     <div class="title"><h3 style="margin-bottom: 0; margin-top: 0; padding-bottom: 5px;">Select Employees</h3></div> 
@@ -174,7 +167,7 @@ jQuery(document).ready(function($){
       $.ajax({
         type:"POST",
         async: false,
-        url: "/admin/users/checkemail", // script to validate in server side
+        url: "/users/checkemail", // script to validate in server side
         data: {email: value},
         success: function(data) {
           result = (data == true) ? true : false;

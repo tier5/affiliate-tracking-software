@@ -263,7 +263,7 @@ class Auth extends Component
                         // Register the successful login
                         $this->saveSuccessLogin($user);
 
-                        return $this->response->redirect('/admin/users');
+                        return $this->response->redirect('/users');
                     }
                 }
             }
@@ -272,7 +272,7 @@ class Auth extends Component
         $this->cookies->get('RMU')->delete();
         $this->cookies->get('RMT')->delete();
 
-        return $this->response->redirect('/admin/session/login');
+        return $this->response->redirect('/session/login');
     }
 
 

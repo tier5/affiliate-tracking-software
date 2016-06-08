@@ -17,12 +17,12 @@ class PermissionsController extends ControllerBase
     {
     
       //disable
-      $this->response->redirect('/admin/session/logout');
+      $this->response->redirect('/session/logout');
 
       // If there is no identity available the user is redirected to index/index
       $identity = $this->auth->getIdentity();
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/permissions/');
+        $this->response->redirect('/session/login?return=/permissions/');
         $this->view->disable();
         return;
       }

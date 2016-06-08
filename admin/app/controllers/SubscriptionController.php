@@ -24,16 +24,16 @@ class SubscriptionController extends ControllerBase {
         //     $this->tag->setTitle('Review Velocity | Subscription');
         //     $this->view->setTemplateBefore('private');
         // } else {
-        //     $this->response->redirect('/admin/session/login?return=/admin/');
+        //     $this->response->redirect('/session/login?return=/');
         //     $this->view->disable();
         //     return;
         // }
         $identity = $this->session->get('auth-identity');
-        if ($identity['profile'] != 'Employee') {
+        if ($identity && $identity['profile'] != 'Employee') {
             $this->tag->setTitle('Review Velocity | Subscription');
             $this->view->setTemplateBefore('private');
         } else {    
-            $this->response->redirect('/admin/session/login?return=/admin/');
+            $this->response->redirect('/session/login?return=/');
             $this->view->disable();
             return;
         }
@@ -49,6 +49,15 @@ class SubscriptionController extends ControllerBase {
         $this->getSMSReport();
     }
 
+    /**
+     * Show invoices 
+     */
+    public function invoicesAction() {
+        if ($this->request->isGet()) {
+            
+        }
+    }
+    
     /**
      * Creates a subscriptions
      */

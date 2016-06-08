@@ -1,6 +1,6 @@
 <ul class="pager">
   <li class="previous pull-left">
-    {{ link_to("/admin/subscription", "&larr; Go Back") }}
+    {{ link_to("/subscription", "&larr; Go Back") }}
   </li>
 </ul>
 

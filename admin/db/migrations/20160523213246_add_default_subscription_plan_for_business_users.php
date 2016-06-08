@@ -16,7 +16,7 @@ class AddDefaultSubscriptionPlanForBusinessUsers extends AbstractMigration
                 [
                     'locations' => $defaultSubscriptionProfile['max_locations_on_free_account'],
                     'sms_messages_per_location' => $defaultSubscriptionProfile['max_messages_on_free_account'],
-                    'payment_plan' => 'monthly',
+                    'payment_plan' => 'TR',
                     'subscription_profile_id' => $defaultSubscriptionProfile['id'],
                     'user_id' => $user['id']
                 ]

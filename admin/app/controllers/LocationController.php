@@ -46,7 +46,7 @@ class LocationController extends ControllerBase
     } else if (strpos($_SERVER['REQUEST_URI'],'cron')>0) {
       $this->view->setTemplateBefore('public');
     } else {
-      $this->response->redirect('/admin/session/login?return=/admin/location/');
+      $this->response->redirect('/session/login?return=/location/');
       $this->view->disable();
       return;     
     }
@@ -110,7 +110,7 @@ class LocationController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/location/');
+      $this->response->redirect('/session/login?return=/location/');
       $this->view->disable();
       return;
     }
@@ -122,7 +122,6 @@ class LocationController extends ControllerBase
 
     $locs = Location::getLocations($userObj->agency_id);
     $this->view->locs = $locs;
-    $this->getSMSReport();
   }
 
 
@@ -138,7 +137,7 @@ class LocationController extends ControllerBase
     //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/location/create');
+      $this->response->redirect('/session/login?return=/location/create');
       $this->view->disable();
       return;
     }
@@ -250,7 +249,7 @@ class LocationController extends ControllerBase
         }
         $this->flash->success("The location was created successfully");
         //we are done, go to the next page
-        return $this->response->redirect('/admin/location/create2/'.($loc->location_id > 0?$loc->location_id:''));
+        return $this->response->redirect('/location/create2/'.($loc->location_id > 0?$loc->location_id:''));
       }
     }
         
@@ -273,7 +272,7 @@ class LocationController extends ControllerBase
     //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/location/');
+      $this->response->redirect('/session/login?return=/location/');
       $this->view->disable();
       return;
     }
@@ -306,7 +305,7 @@ class LocationController extends ControllerBase
         $this->flash->error($location->getMessages());
       } else {
         //we are done, go to the next page
-        return $this->response->redirect('/admin/location/create3/'.($location_id > 0?$location_id:''));
+        return $this->response->redirect('/location/create3/'.($location_id > 0?$location_id:''));
       }
     }
         
@@ -332,7 +331,7 @@ class LocationController extends ControllerBase
     //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/location/');
+      $this->response->redirect('/session/login?return=/location/');
       $this->view->disable();
       return;
     }
@@ -361,14 +360,14 @@ class LocationController extends ControllerBase
       if (!$location->save()) {
         $this->flash->error($location->getMessages());
       } else {
-        return $this->response->redirect('/admin/location/');
+        return $this->response->redirect('/location/');
         $this->view->disable();
         return;
       }
     }
     
     // Query binding parameters with string placeholders
-    $conditions = "agency_id = :agency_id: AND (profilesId = 3 OR is_employee = 1)";
+    $conditions = "agency_id = :agency_id: AND profilesId = 3";
     $parameters = array("agency_id" => $userObj->agency_id);
     $this->view->employees = Users::find(array($conditions, "bind" => $parameters));
         
@@ -393,14 +392,14 @@ class LocationController extends ControllerBase
       $reviewgoal = $this->request->getPost('reviewgoal');
       $lifetimevalue = $this->request->getPost('lifetimevalue');
       $querystring = '?review_goal='.$reviewgoal.'&lifetime_value_customer='.$lifetimevalue;
-      $url = '/admin/location/create3/'.($location_id > 0?$location_id:'').$querystring;
+      $url = '/location/create3/'.($location_id > 0?$location_id:'').$querystring;
 //echo '<pre>post:'.print_r($_POST,true).'</pre>';
 
       //get the user id, to find the settings
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/location/create3/'.($location_id > 0?$location_id:''));
+        $this->response->redirect('/session/login?return=/location/create3/'.($location_id > 0?$location_id:''));
         $this->view->disable();
         return;
       }
@@ -473,7 +472,7 @@ class LocationController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/location/');
+        $this->response->redirect('/session/login?return=/location/');
         $this->view->disable();
         return;
       }
@@ -651,7 +650,6 @@ class LocationController extends ControllerBase
     $this->view->form = new LocationForm($loc, array(
       'edit' => true
     ));
-    $this->getSMSReport();
   }
 
 
@@ -680,7 +678,7 @@ class LocationController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/location/');
+        $this->response->redirect('/session/login?return=/location/');
         $this->view->disable();
         return;
       }
@@ -735,7 +733,7 @@ class LocationController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/location/');
+      $this->response->redirect('/session/login?return=/location/');
       $this->view->disable();
       return;
     }
@@ -784,7 +782,7 @@ class LocationController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/location/');
+      $this->response->redirect('/session/login?return=/location/');
       $this->view->disable();
       return;
     }
@@ -864,7 +862,7 @@ class LocationController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/');
+      $this->response->redirect('/session/login?return=/');
       $this->view->disable();
       return;
     }
@@ -904,7 +902,7 @@ class LocationController extends ControllerBase
         $message = str_replace("{location-name}", $this->session->get('auth-identity')['location_name'], $message);
         $message = str_replace("{name}", $name, $message);
         $guid = $this->GUID();
-        $message = str_replace("{link}", $this->googleShortenURL('http://'.$_SERVER['HTTP_HOST'].'/admin/review/?a='.$guid), $message);
+        $message = str_replace("{link}", $this->googleShortenURL('http://'.$_SERVER['HTTP_HOST'].'/review/?a='.$guid), $message);
           
         $phone = $_POST['phone'];
 
@@ -949,32 +947,32 @@ class LocationController extends ControllerBase
   protected $fb;
   public function getAccessTokenAction()
   {
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/autoload.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Facebook.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookApp.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookClient.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookRequest.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookResponse.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Authentication/AccessToken.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Authentication/OAuth2Client.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Helpers/FacebookRedirectLoginHelper.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PersistentData/PersistentDataInterface.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Url/UrlDetectionInterface.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Url/FacebookUrlDetectionHandler.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Url/FacebookUrlManipulator.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/HttpClients/FacebookHttpClientInterface.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/HttpClients/FacebookCurl.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/HttpClients/FacebookCurlHttpClient.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Http/RequestBodyInterface.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Http/RequestBodyUrlEncoded.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Http/GraphRawResponse.php";  
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Exceptions/FacebookSDKException.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Exceptions/FacebookAuthenticationException.php";
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Exceptions/FacebookResponseException.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/autoload.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Facebook.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookApp.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookClient.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookRequest.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookResponse.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Authentication/AccessToken.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Authentication/OAuth2Client.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Helpers/FacebookRedirectLoginHelper.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PersistentData/PersistentDataInterface.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Url/UrlDetectionInterface.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Url/FacebookUrlDetectionHandler.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Url/FacebookUrlManipulator.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/HttpClients/FacebookHttpClientInterface.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/HttpClients/FacebookCurl.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/HttpClients/FacebookCurlHttpClient.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Http/RequestBodyInterface.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Http/RequestBodyUrlEncoded.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Http/GraphRawResponse.php";  
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Exceptions/FacebookSDKException.php"; 
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Exceptions/FacebookAuthenticationException.php";
+    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Exceptions/FacebookResponseException.php"; 
     $this->fb = new \Services\Facebook\Facebook(array(
       'app_id' => '628574057293652',
       'app_secret' => '95e89ebac7173ba0980c36d8aa5777e4'
@@ -1010,7 +1008,7 @@ class LocationController extends ControllerBase
         $this->importFacebook($Obj, $location, $foundagency);
 
         //
-        $this->response->redirect('/admin/settings/location/');
+        $this->response->redirect('/settings/location/');
       } catch (\Services\Facebook\Exceptions\FacebookSDKException $e) {
         $this->flash->error($e->getMessage());
       }
@@ -1032,7 +1030,7 @@ class LocationController extends ControllerBase
   
   protected function getRedirectUrl()
   {
-    return 'http://reviewvelocity.co/admin/location/getAccessToken';
+    return 'http://reviewvelocity.co/location/getAccessToken';
   }
 
     

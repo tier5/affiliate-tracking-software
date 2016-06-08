@@ -64,7 +64,6 @@ class UsersController extends ControllerBase
     public function createAction()
     {
       $this->createFunction(3);
-      $this->getSMSReport();
     }
 
 
@@ -74,7 +73,6 @@ class UsersController extends ControllerBase
     public function admincreateAction()
     {
       $this->createFunction(1);
-      $this->getSMSReport();
       try {
         $this->view->render('users', 'create');
         $this->view->disable();
@@ -114,14 +112,14 @@ class UsersController extends ControllerBase
       $reviewgoal = $this->request->getPost('reviewgoal');
       $lifetimevalue = $this->request->getPost('lifetimevalue');
       $querystring = '?review_goal='.$reviewgoal.'&lifetime_value_customer='.$lifetimevalue;
-      $url = '/admin/session/signup4/'.($subscription_id > 0?$subscription_id:'').$querystring;
+      $url = '/session/signup4/'.($subscription_id > 0?$subscription_id:'').$querystring;
 //echo '<pre>post:'.print_r($_POST,true).'</pre>';
 
       //get the user id, to find the settings
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/session/signup4/'.($subscription_id > 0?$subscription_id:''));
+        $this->response->redirect('/session/login?return=/session/signup4/'.($subscription_id > 0?$subscription_id:''));
         $this->view->disable();
         return;
       }
@@ -147,14 +145,14 @@ class UsersController extends ControllerBase
       $reviewgoal = $this->request->getPost('reviewgoal');
       $lifetimevalue = $this->request->getPost('lifetimevalue');
       $querystring = '?review_goal='.$reviewgoal.'&lifetime_value_customer='.$lifetimevalue;
-      $url = '/admin/location/create3/'.($location_id > 0?$location_id:'').$querystring;
+      $url = '/location/create3/'.($location_id > 0?$location_id:'').$querystring;
 //echo '<pre>post:'.print_r($_POST,true).'</pre>';
 
       //get the user id, to find the settings
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/location/create3/'.($location_id > 0?$location_id:''));
+        $this->response->redirect('/session/login?return=/location/create3/'.($location_id > 0?$location_id:''));
         $this->view->disable();
         return;
       }
@@ -180,7 +178,7 @@ class UsersController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/users/'.($profilesId==3?'':'admin'));
+        $this->response->redirect('/session/login?return=/users/'.($profilesId==3?'':'admin'));
         $this->view->disable();
         return;
       }
@@ -277,7 +275,6 @@ class UsersController extends ControllerBase
     public function editAction($id)
     {
       $this->editFunction($id, 3);
-      $this->getSMSReport();
     }
 
     
@@ -289,7 +286,6 @@ class UsersController extends ControllerBase
     public function admineditAction($id)
     {
       $this->editFunction($id, 1);
-      $this->getSMSReport();
       $this->view->render('users', 'edit');
       $this->view->disable();
       return;
@@ -307,7 +303,7 @@ class UsersController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/users/'.($profilesId==3?'':'admin'));
+        $this->response->redirect('/session/login?return=/users/'.($profilesId==3?'':'admin'));
         $this->view->disable();
         return;
       }
@@ -432,7 +428,7 @@ class UsersController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/users/'.($profilesId==3?'':'admin'));
+        $this->response->redirect('/session/login?return=/users/'.($profilesId==3?'':'admin'));
         $this->view->disable();
         return;
       }
@@ -517,7 +513,7 @@ class UsersController extends ControllerBase
                     //if ($this->session->has('auth-identity')) {
                     //  Tag::resetInput();
                     //} else {    
-                      $this->response->redirect('/admin/session/login');
+                      $this->response->redirect('/session/login');
                       $this->view->disable();
                       return;
                     //}

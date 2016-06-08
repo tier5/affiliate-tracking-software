@@ -3,7 +3,7 @@
 
 
 <!-- BEGIN FORM -->
-<form class="register-form5" action="/admin/session/signup5/<?=(isset($subscription->subscription_id)?$subscription->subscription_id:'')?><?=(isset($_GET['code'])?'?code='.$_GET['code']:'')?>" method="post" style="display: block;">
+<form class="register-form5" action="/session/signup5/<?=(isset($subscription->subscription_id)?$subscription->subscription_id:'')?><?=(isset($_GET['code'])?'?code='.$_GET['code']:'')?>" method="post" style="display: block;">
 <h3>Invite friends</h3>
   
   {{ content() }}
@@ -16,9 +16,9 @@
           <div class="row">
             <div class="col-md-12">              
               <div class="share-text"><span class="invite-intro">Receive an additional <?=$additional_allowed?> SMS messages for every referral that signs up.</span>  Use the following links to share your referral URL: </div>
-              <a target="_blank" class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=<?=$share_link?>">Share on Facebook <img src="/admin/img/icon_sm_facebook.gif" /></a>
-              <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$share_message?>">Share on Twitter  <img src="/admin/img/icon_sm_twitter.gif" /></a>
-              <a target="_blank" class="share-link" href="https://plus.google.com/share?url=<?=$share_link?>">Share on Google+  <img src="/admin/img/icon_sm_google.gif" /></a>
+              <a target="_blank" class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=<?=$share_link?>">Share on Facebook <img src="/img/icon_sm_facebook.gif" /></a>
+              <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$share_message?>">Share on Twitter  <img src="/img/icon_sm_twitter.gif" /></a>
+              <a target="_blank" class="share-link" href="https://plus.google.com/share?url=<?=$share_link?>">Share on Google+  <img src="/img/icon_sm_google.gif" /></a>
             </div>
           </div>
         </div>
@@ -81,7 +81,7 @@ Enter the email address of your friends that would benefit from trying Review Ve
    <button type="submit id="createlink" class="btnLink" style="float: right;">Send</a>
 </div>
 <div class="form-actions">
-  <a href="/admin/session/signup5/?q=s" id="signup5submitbtn" class="btnsignup uppercase">Finished: Take Me To My Dashboard</a>
+  <a href="/session/signup5/?q=s" id="signup5submitbtn" class="btnsignup uppercase">Finished: Take Me To My Dashboard</a>
 </div>
 <div style="clear: both;">&nbsp;</div>
 </form>

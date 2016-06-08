@@ -57,8 +57,8 @@
         <div class="portlet-body" id="reportwrapperreview">
 
         <ul class="nav nav-tabs" style="margin-bottom: 25px;">
-          <li class="active"><a style="border-top: 8px solid #283643 !important; padding: 14px 69px 53px;" href="/admin/reviews/sms_broadcast"> NEW MESSAGES </a></li>
-          <li><a style="border-top: 8px solid #F6F6F6 !important; padding: 14px 69px 53px;" href="/admin/reviews/sent_message"> SENT MESSAGE </a></li>
+          <li class="active"><a style="border-top: 8px solid #283643 !important; padding: 14px 69px 53px;" href="/reviews/sms_broadcast"> NEW MESSAGES </a></li>
+          <li><a style="border-top: 8px solid #F6F6F6 !important; padding: 14px 69px 53px;" href="/reviews/sent_message"> SENT MESSAGE </a></li>
         </ul>
 
 
@@ -71,7 +71,7 @@
         <div id="pnlSMSSent" class="portlet light bordered">
           <div class="portlet-title" style="margin-top: 13px;">
             <div class="caption">
-              <img src="/admin/img/icon-user.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> Search for Customers</span>
+              <img src="/img/icon-user.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> Search for Customers</span>
             </div>
           </div>
           <div class="row">
@@ -228,7 +228,7 @@
         <div id="pnlSMSSent" class="portlet light bordered">
           <div class="portlet-title" style="margin-top: 13px;">
             <div class="caption">
-              <img src="/admin/img/icon-user.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> Review Invite Customer List</span>
+              <img src="/img/icon-user.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> Review Invite Customer List</span>
             </div>
           </div>
           <div class="row">
@@ -267,7 +267,7 @@
                     ?>
                     <td><input type="checkbox" name="review_invite_ids[]" value="<?=$invite->review_invite_id?>" <?=($checked?'checked="checked"':'')?> /></td>
                     <td><?=$invite->location_name?></td>
-                    <td><?=preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $invite->phone)?></td>
+                    <td><?=$invite->phone?></td>
                     <td><?=$invite->name?></td>
                     <td><?=date_format(date_create($invite->date_sent),"m/d/Y")?></td>
                     <td><?php 
@@ -297,7 +297,7 @@
           </div>
           <div class="portlet-title" style="margin-top: 13px;">
             <div class="caption">
-              <img src="/admin/img/icon-phone.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> SMS Message</span>
+              <img src="/img/icon-phone.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> SMS Message</span>
             </div>
           </div>
           <div class="row">

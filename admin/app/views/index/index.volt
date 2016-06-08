@@ -62,8 +62,8 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
       <div class="row">
         <div class="col-md-12 col-sm-12">
           <div class="portlet dark bordered discount">            
-            <img src="/admin/img/20_offt.png" id="percentoff" alt="20% Off" />
-            <a href="#"><img src="/admin/img/upgrade_now.png" id="btnupgradenow" alt="Upgrade Now" /></a>
+            <img src="/img/20-percent-off.gif" id="percentoff" alt="20% Off" />
+            <a href="#"><img src="/img/btn-upgrade-now.gif" id="btnupgradenow" alt="Upgrade Now" /></a>
             <div class="upgrade-middle">
               <div class="upgrade-top">Hey <?=$this->session->get('auth-identity')['name']?>!  Upgrade Your Account Today To Send Unlimited Text Message</div>
               <div class="upgrade-bottom">Add unlimited text message so you can send out unlimited feedback request each month.  Save 20% today!</div>
@@ -82,7 +82,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
             <div class="">
               <div class="row">
                 <div class="col-md-12">              
-                  <div class="share-text"><b><i>Get <?=$additional_allowed?> additional SMS messages for every 3 referrals that sign up.</i></b>  Use the following links to share your referral URL: </div>
+                  <div class="share-text"><b>Get <?=$additional_allowed?> additional SMS messages for every 3 referrals that sign up.</b>  Use the following links to share your referral URL: </div>
                   <?php
                   if ($num_signed_up > 0) {
                     ?>
@@ -91,15 +91,15 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                   }
                   ?>
                   <div class="share-inner">
-                  <a id="maillink" class="share-link" href="mailto:?&subject=<?=$share_subject?>&body=<?=$share_message?>">Send Email <img src="/admin/img/icon_sm_email.gif" /></a>
-                  <a target="_blank" class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=<?=$share_link?>">Share on Facebook <img src="/admin/img/icon_sm_facebook.gif" /></a>
-                  <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$share_message?>">Share on Twitter  <img src="/admin/img/icon_sm_twitter.gif" /></a>
-                  <a target="_blank" class="share-link" href="https://plus.google.com/share?url=<?=$share_link?>">Share on Google+  <img src="/admin/img/icon_sm_google.gif" /></a>
+                  <a id="maillink" class="share-link" href="mailto:?&subject=<?=$share_subject?>&body=<?=$share_message?>">Send Email <img src="/img/icon_sm_email.gif" /></a>
+                  <a target="_blank" class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=<?=$share_link?>">Share on Facebook <img src="/img/icon_sm_facebook.gif" /></a>
+                  <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$share_message?>">Share on Twitter  <img src="/img/icon_sm_twitter.gif" /></a>
+                  <a target="_blank" class="share-link" href="https://plus.google.com/share?url=<?=$share_link?>">Share on Google+  <img src="/img/icon_sm_google.gif" /></a>
                   </div>
                 </div>
               </div>
               <div class="row">
-                <div class="referral-link"><b>Personalized Referral Link:</b> <i><?=$share_link?></i></div>
+                <div class="referral-link"><b>Personalized Referral Link:</b> <?=$share_link?></div>
               </div>
             </div>
           </div>
@@ -112,8 +112,8 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
 
       <div class="col-md-2 col-sm-2">
         <div class="portlet light bordered dashboard-panel">
-          <div class="portlet-title" style="min-height: auto;margin-bottom: 11px !important;">
-            <div class="caption" style="padding: 0;">
+          <div class="portlet-title">
+            <div class="caption">
               <span class="">Rating</span>
             </div>
           </div>
@@ -127,8 +127,8 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
 
       <div class="col-md-2 col-sm-2">
         <div class="portlet light bordered dashboard-panel">
-          <div class="portlet-title" style="min-height: auto;margin-bottom: 11px !important;">
-            <div class="caption" style="padding: 0;">
+          <div class="portlet-title">
+            <div class="caption">
               <span class="">Total Reviews</span>
             </div>
           </div>
@@ -142,8 +142,8 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
 
       <div class="col-md-4 col-sm-4">
         <div class="portlet light bordered dashboard-panel Monthly-Goal-New-Reviews">
-          <div class="portlet-title" style="min-height: auto;margin-bottom: 11px !important;">
-            <div class="caption" style="padding: 0;">
+          <div class="portlet-title">
+            <div class="caption">
               <span class="">Monthly Goal New Reviews</span>
             </div>
           </div>
@@ -164,7 +164,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
             </div>
             <div class="bottom-part">
               <span class="text-wrapper">
-              You Must Send <b><?=$total_sms_needed?></b> Feedback Requests To Reach Your Goal Of <b><?=$review_goal?></b> New Reviews
+              You Must Send <span class="fontred"><?=$total_sms_needed?></span> Feedback Requests To Reach Your Goal Of <span class="fontred"><?=$review_goal?></span> New Reviews
               </span>
             </div>
           </div>
@@ -173,8 +173,8 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
 
       <div class="col-md-4 col-sm-4">
         <div class="portlet light bordered dashboard-panel" style="overflow: hidden; height: 193px;">
-          <div class="portlet-title" style="min-height: auto;margin-bottom: 11px !important;">
-            <div class="caption" style="padding: 0;">
+          <div class="portlet-title">
+            <div class="caption">
               <span class="">Feedback Requests (This Month)</span>
             </div>
           </div>
@@ -198,7 +198,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
     <div class="row">
       <div class="col-md-12 col-sm-12">
         <div class="growth-bar">
-        <img src="/admin/img/icon-growth.gif" /> Growth
+        <img src="/img/icon-growth.gif" /> Growth
         </div>
       </div>    
     </div>
@@ -336,17 +336,16 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
             </div>
             <div class="portlet-body" id="reportwrapper">
               <?php 
-              $start = true;
               foreach($review_report as $data) { 
               ?>
-              <div class="review" style="<?=($start?'':'border-top: 1px solid #eef1f5;padding-top: 15px;')?>">
+              <div class="review">
                 <div class="top">
-                  <div class="logo"><a href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/admin/img/logo/icon-<?=($data->rating_type_id==1?'yelp':($data->rating_type_id==2?'facebook':'google'))?>.gif" /></a></span></div>
+                  <div class="logo"><a href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==1?'yelp':($data->rating_type_id==2?'facebook':'google'))?>.gif" /></a></span></div>
                   <div class="rating col-md-3"><input value="<?=$data->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /></div>
                   <div class="name col-md-5"><?=$data->user_name?></div>
                   <div class="date col-md-3"><?=date("m/d/Y", strtotime($data->time_created))?></div>
                 </div>
-                <div class="content" style="padding-bottom: 15px;">
+                <div class="content">
                 <?php 
                   $text = $data->review_text;
                   $text = $text." ";
@@ -357,9 +356,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                 ?>
                 </div>
               </div>
-              <?php 
-              $start = false;
-              } ?>
+              <?php } ?>
             </div>
           </div>
         </div>
@@ -385,7 +382,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
 
 	<div id="form-messages"></div>
 		
-	<form id="ajax-contact" method="post" action="/admin/location/send_email">
+	<form id="ajax-contact" method="post" action="/location/send_email">
 		<div class="field">
 			<label for="name">Subject:</label>
 			<input type="text" id="subject" name="subject" value="<?=$share_subject?>" required="required" />
@@ -586,7 +583,7 @@ jQuery(document).ready(function($){
     if ($this->session->get('auth-identity')['profile'] == 'Agency Admin' ||
         $this->session->get('auth-identity')['profile'] == 'Super Admin') {
         ?>
-        <div><a href="/admin/location/create">Click here</a> to set up a location to get started.</div>
+        <div><a href="/location/create">Click here</a> to set up a location to get started.</div>
     <?php 
     } else {
       ?>

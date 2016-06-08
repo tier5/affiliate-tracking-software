@@ -1,7 +1,7 @@
 {{ content() }}
 
 <!-- BEGIN Change Password FORM -->
-<form class="login-form" action="/admin/users/changePassword" method="post" autocomplete="off">
+<form class="login-form" action="/users/changePassword" method="post" autocomplete="off">
     <h3 class="form-title font-green">Change Password</h3>
     <div class="alert alert-danger display-hide">
         <button class="close" data-close="alert"></button>

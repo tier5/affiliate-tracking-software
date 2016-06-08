@@ -253,7 +253,7 @@ class SessionController extends ControllerBase
                   //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
 
                   //redirect
-                  return $this->response->redirect('/admin/session/login?n=1');
+                  return $this->response->redirect('/session/login?n=1');
                 }
               }
 
@@ -290,13 +290,11 @@ class SessionController extends ControllerBase
       }
     }
   }
-        
-
-
-  public function noSubDomains($page, $subscription_id) {
+  
+  public function noSubDomains($page, $subscription_id) {  
     $sub = array_shift((explode(".",$_SERVER['HTTP_HOST'])));
     if ($sub && $sub != '' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104'
-         && $sub != 'dev' && $sub != 'stage' && $sub != 'dev2') {
+         && $sub != 'dev' && $sub != 'stage' && $sub != 'dev2' && $sub != 'localhost') {
       //there is a subdomain.  That is not allowed, so redirect them out of here
       $found = false;
       $querystring = '';
@@ -309,7 +307,7 @@ class SessionController extends ControllerBase
         $querystring = $subscription_id.'/'.$querystring;
         $found = true;
       }
-      return $this->response->redirect('http://reviewvelocity.co/admin/session/signup'.($page>1?$page:'').'/'.$querystring);
+      return $this->response->redirect('/session/signup'.($page>1?$page:'').'/'.$querystring);
     }
   }
 
@@ -485,10 +483,10 @@ class SessionController extends ControllerBase
               //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
 
               //redirect
-              //return $this->response->redirect('/admin/session/login?n=1');
+              //return $this->response->redirect('/session/login?n=1');
               $_SESSION['name']=$this->request->getPost('name', 'striptags');
               $_SESSION['email']=$this->request->getPost('email');
-              return $this->response->redirect('/admin/session/thankyou');
+              return $this->response->redirect('/session/thankyou');
               //'signup_page' => 2, //go to the next page
               //return $this->dispatcher->forward(array(
               //  'controller' => 'index',
@@ -519,7 +517,7 @@ class SessionController extends ControllerBase
             if (!$us->save()) {
               $this->flash->error($us->getMessages());
             }
-            return $this->response->redirect('/admin/?n=1');
+            return $this->response->redirect('/?n=1');
           }
           $this->flash->error($user->getMessages());
         }
@@ -565,7 +563,7 @@ class SessionController extends ControllerBase
     //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/session/signup2/'.($subscription_id > 0?$subscription_id:''));
+      $this->response->redirect('/session/login?return=/session/signup2/'.($subscription_id > 0?$subscription_id:''));
       $this->view->disable();
       return;
     }
@@ -669,7 +667,7 @@ class SessionController extends ControllerBase
 
         $this->auth->setLocation($loc->location_id);
 
-        return $this->response->redirect('/admin/session/signup3/'.($subscription_id > 0?$subscription_id:''));
+        return $this->response->redirect('/session/signup3/'.($subscription_id > 0?$subscription_id:''));
       }
     }
 
@@ -693,7 +691,7 @@ class SessionController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/session/signup3/'.($subscription_id > 0?$subscription_id:''));
+      $this->response->redirect('/session/login?return=/session/signup3/'.($subscription_id > 0?$subscription_id:''));
       $this->view->disable();
       return;
     }
@@ -730,7 +728,7 @@ class SessionController extends ControllerBase
         $agency->signup_page = 4; //go to the next page
         $agency->save();
 
-        return $this->response->redirect('/admin/session/signup4/'.($subscription_id > 0?$subscription_id:''));
+        return $this->response->redirect('/session/signup4/'.($subscription_id > 0?$subscription_id:''));
       }
     }
 
@@ -757,7 +755,7 @@ class SessionController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/session/signup4/'.($subscription_id > 0?$subscription_id:''));
+      $this->response->redirect('/session/login?return=/session/signup4/'.($subscription_id > 0?$subscription_id:''));
       $this->view->disable();
       return;
     }
@@ -792,7 +790,7 @@ class SessionController extends ControllerBase
         $this->flash->error($location->getMessages());
       } else {
         $agency->save();
-        return $this->response->redirect('/admin/session/signup5/'.($subscription_id > 0?$subscription_id:''));
+        return $this->response->redirect('/session/signup5/'.($subscription_id > 0?$subscription_id:''));
         $this->view->disable();
         return;
       }
@@ -821,7 +819,7 @@ class SessionController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/session/signup5/'.($subscription_id > 0?$subscription_id:''));
+      $this->response->redirect('/session/login?return=/session/signup5/'.($subscription_id > 0?$subscription_id:''));
       $this->view->disable();
       return;
     }
@@ -875,7 +873,7 @@ class SessionController extends ControllerBase
       if (!$agency->save()) {
         $this->flash->error($agency->getMessages());
       } else {
-        return $this->response->redirect('/admin/');
+        return $this->response->redirect('/');
         $this->view->disable();
         return;
       }
@@ -959,8 +957,8 @@ class SessionController extends ControllerBase
             'remember' => $this->request->getPost('remember')
           ));
 
-          $return = '/admin/';
-          if (isset($_GET['return']) && strpos($_GET['return'], '/admin/') !== false) $return = $_GET['return'];
+          $return = '/';
+          if (isset($_GET['return']) && strpos($_GET['return'], '/') !== false) $return = $_GET['return'];
   
           //get the user id, to find the settings
           $identity = $this->auth->getIdentity();
@@ -977,7 +975,7 @@ class SessionController extends ControllerBase
             $parameters = array("agency_id" => $userObj->agency_id);
             $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
                         
-            if ($agency->signup_page > 0) $return = '/admin/session/signup'.$agency->signup_page.'/'.($agency->subscription_id > 0?$subscription_id:'');
+            if ($agency->signup_page > 0) $return = '/session/signup'.$agency->signup_page.'/'.($agency->subscription_id > 0?$subscription_id:'');
           }
 
           return $this->response->redirect($return);
@@ -1035,7 +1033,7 @@ class SessionController extends ControllerBase
   public function logoutAction()
   {
     $this->auth->remove();
-    return $this->response->redirect('/admin/');
+    return $this->response->redirect('/');
   }
 
 
@@ -1128,17 +1126,17 @@ class SessionController extends ControllerBase
               if (isset($returnBusinessName) && $returnBusinessName != '') {
 
                 //check to see if this location is already in the database, by checking the place id
-                //$conditions = "api_id = :api_id: AND review_site_id = 3";
-                //$parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
-                //$loc = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-                //if (!$loc) {
+                $conditions = "api_id = :api_id: AND review_site_id = 3";
+                $parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
+                $loc = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                if (!$loc) {
                   $strURL = "onclick=\"selectLocation('".$this->encode(@$arrResultFindPlaceDetail['result']['place_id'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['url'])."', '".$this->encode($returnBusinessName)."', '".$this->encode($street_number)."', '".$this->encode($route)."', '".$this->encode($locality)."', '".$this->encode($administrative_area_level_1)."', '".$this->encode($postal_code)."', '".$this->encode($country)."', '".$this->encode(@$arrResultFindPlaceDetail['result']['formatted_phone_number'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lat'])."', '".$this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng'])."');return false;\" href=\"javascript:void(0);\"";
                   $strButton = "<a id=\"business-name-link\" ".$strURL." style=\"float: right; height: 40px; line-height: 24px;\" class=\"btnLink\" >Choose This Listing</a>";
-                //} else {
-                //  //the location was found, so tell the user that
-                //  $strURL = "href=\"javascript:void(0);\"";
-                //  $strButton = "<div style=\"float: right; margin-top: -10px; padding: 5px; text-align: center; width: 215px;\">Already Registered Contact Support</div>";
-                //}
+                } else {
+                  //the location was found, so tell the user that
+                  $strURL = "href=\"javascript:void(0);\"";
+                  $strButton = "<div style=\"float: right; margin-top: -10px; padding: 5px; text-align: center; width: 215px;\">Already Registered Contact Support</div>";
+                }
 
 
                 $strHTML .= "<div class=\"border-box-s\" style=\"min-height: 110px;\">

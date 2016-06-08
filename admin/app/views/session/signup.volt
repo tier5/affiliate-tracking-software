@@ -11,13 +11,13 @@
 if ($maxlimitreached) {
   ?>
   The max signup limit has been reached for today.  Please try again tomorrow.
-  <p><a href="/admin/session/login" id="register-back-btn" class="btn btn-default" style="margin-right: 50px;">Back</a></p>
+  <p><a href="/session/login" id="register-back-btn" class="btn btn-default" style="margin-right: 50px;">Back</a></p>
   <?php 
 } else {
 ?>
 
   <!-- BEGIN REGISTRATION FORM -->
-  <form class="register-form" action="/admin/session/signup/<?=(isset($subscription->subscription_id)?$subscription->subscription_id:'')?><?=(isset($_GET['code'])?'?code='.$_GET['code']:'')?>" method="post" style="display: block;">
+  <form class="register-form" action="/session/signup/<?=(isset($subscription->subscription_id)?$subscription->subscription_id:'')?><?=(isset($_GET['code'])?'?code='.$_GET['code']:'')?>" method="post" style="display: block;">
   <?php if ($user_id > 0) { ?>
     <h3>Subscribe</h3>
     <p class="hint"> Please enter your credit card information to continue to the Web site. </p>

@@ -3,7 +3,7 @@
 
 
 <!-- BEGIN FORM -->
-<form class="register-form" id="signup3form" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/admin/location/create2/'.$location_id:'/admin/session/signup3/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block;" enctype="multipart/form-data">
+<form class="register-form" id="signup3form" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/location/create2/'.$location_id:'/session/signup3/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block;" enctype="multipart/form-data">
 <h3>Customize Survey</h3>
 <p class="hint">This is the survey your recent customers will see.</p>
 
@@ -23,7 +23,7 @@
     <div class="form-group">
       <div class="image-upload">
         <label for="sms_message_logo_path">
-          <img src="/admin/img/file-upload.gif" style="margin-left: -12px; cursor: pointer;" />
+          <img src="/img/file-upload.gif" style="margin-left: -12px; cursor: pointer;" />
         </label>
         <input type="file" id="sms_message_logo_path" name="sms_message_logo_path" style="display: none;">
         <span class="help-block" style="display: none;">PNG, JPG or GIF</span>
@@ -93,7 +93,7 @@
           <div class="phone">
             <div class="phone-content">
               <div class="">
-                <img src="/admin/img/phone-sms.png" />
+                <img src="/img/phone-sms.png" />
               </div>
               <div class="content-top">{name}, thank you for visiting <span class="business-name"></span> we'd appreciate your feedback please click the link below. Thanks! {link}</div>
             </div>
@@ -210,7 +210,7 @@ jQuery(document).ready(function($){
   $("#sendsmslink").click(function(){
     //e.preventDefault();
     var datavar = {"body": $('#sms_text_message_default').val(), "name": $('#name').val(), "cell_phone": $('#cell_phone').val(), "id": '<?=$id?>'};
-    $.ajax({url: "/admin/session/sendsms",
+    $.ajax({url: "/session/sendsms",
       data: datavar, 
       success: function(result){
         $("#divSMSResults").html(result);

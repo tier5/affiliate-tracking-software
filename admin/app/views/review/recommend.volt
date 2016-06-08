@@ -34,7 +34,7 @@
       <?php
     } else if ($rsl->review_site_id == 3) {
       ?>
-      <div class="row text-center" id="googlelink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="https://www.google.com/search?q=<?=urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country)?>&ludocid=<?=$rsl->external_id?>#lrd=<?=$rsl->lrd?>,5" onclick="googleClickHandler('<?=$rsl->external_id?>', '<?=urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country)?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>  
+      <div class="row text-center" id="googlelink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="https://www.google.com/search?q=<?=urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country)?>&ludocid=<?=$rsl->external_id?>#lrd=<?=$rsl->lrd?>,2" onclick="googleClickHandler('<?=$rsl->external_id?>', '<?=urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country)?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>  
       <?php
     } else {
       ?>
@@ -56,7 +56,7 @@ jQuery(document).ready(function($){
     $.ajax({
       async: false,
 			type: 'POST',
-			url: '/admin/review/track?d='+$(this).data("id")+'&i='+$(this).data("invite")
+			url: '/review/track?d='+$(this).data("id")+'&i='+$(this).data("invite")
 		});
   });
 });

@@ -56,8 +56,8 @@
       <div class="col-md-6 col-sm-6">
         <div class="portlet light bordered">
           <div class="portlet-title">
-            <div class="caption" style="padding: 0 0 10px;">
-              <img src="/admin/img/icon-phone.gif" />
+            <div class="caption">
+              <img src="/img/icon-phone.gif" />
               <span class="caption-subject bold uppercase">SMS SENT</span>
             </div>
           </div>
@@ -97,8 +97,8 @@
       <div class="col-md-6 col-sm-6">
         <div class="portlet light bordered">
           <div class="portlet-title">
-            <div class="caption" style="padding: 0 0 10px;">
-              <img src="/admin/img/icon-reviews.gif" />
+            <div class="caption">
+              <img src="/img/icon-reviews.gif" />
               <span class="caption-subject bold uppercase">NEW REVIEWS</span>
             </div>
           </div>
@@ -144,8 +144,8 @@
       <div class="col-md-6 col-sm-6">
         <div class="portlet light bordered">
           <div class="portlet-title">
-            <div class="caption" style="padding: 0 0 10px;">
-              <img src="/admin/img/icon-reviews.gif" />
+            <div class="caption">
+              <img src="/img/icon-reviews.gif" />
               <span class="caption-subject bold uppercase">FEEDBACK CONVERSION RATE</span>
             </div>
           </div>
@@ -159,30 +159,30 @@
             <div class="row">              
               <div class="col-md-6 col-sm-6 border-right">
                 <div class="easy-pie-chart">
-                  <div class="number lastmonth" style="line-height: 69px;" data-percent="<?=$thism?>">
-                    <span><?=$thism?></span><span class="percent-sign" style="display: inline-block !important;font-size: 12px !important;margin-top: -1px !important;vertical-align: top;">%</span> 
+                  <div class="number lastmonth" data-percent="<?=$thism?>">
+                    <span><?=$thism?></span>% 
                   </div>
                   <div class="pie-title"> This Month </div>
                 </div>
               </div>
               <div class="col-md-6 col-sm-6 border-panel" style="height: 107px;">
-                <div class="report-num <?=($thism>=$last?'greenfont':'redfont')?>" style="margin-top: 15px;"><?=($thism>=$last?'<img src="/admin/img/up_green.png" style="padding-bottom: 10px;" />':'<img src="/admin/img/down_red.png" style="padding-bottom: 10px;" />')?> <?=abs($last - $thism)?><?=($thism>=$last?'<img src="/admin/img/percent_green.png" style="padding-bottom: 16px;" />':'<img src="/admin/img/percent_red.png" style="padding-bottom: 16px;" />')?></div>
+                <div class="report-num <?=($thism>=$last?'greenfont':'redfont')?>" style="margin-top: 15px;"><?=($thism>=$last?'&and;':'&or;')?> <?=abs($last - $thism)?>%</div>
                 <div class="report-title">Previous 30 Days</div>
               </div>
             </div> 
             <div class="row border-top left-bottom">       
               <div class="col-md-6 col-sm-6 border-right">
                 <div class="easy-pie-chart">
-                  <div class="number lastmonth" style="line-height: 69px;" data-percent="<?=$last?>">
-                    <span><?=$last?></span><span class="percent-sign" style="display: inline-block !important;font-size: 12px !important;margin-top: -1px !important;vertical-align: top;">%</span>
+                  <div class="number lastmonth" data-percent="<?=$last?>">
+                    <span><?=$last?></span>% 
                   </div>
                   <div class="pie-title"> Last Month </div>
                 </div>
               </div>
               <div class="col-md-6 col-sm-6">
                 <div class="easy-pie-chart">
-                  <div class="number lastmonth" style="line-height: 69px;" data-percent="<?=$all_time?>">
-                    <span><?=$all_time?></span><span class="percent-sign" style="display: inline-block !important;font-size: 12px !important;margin-top: -1px !important;vertical-align: top;">%</span> 
+                  <div class="number lastmonth" data-percent="<?=$all_time?>">
+                    <span><?=$all_time?></span>% 
                   </div>
                   <div class="pie-title"> Overall </div>
                 </div>
@@ -196,8 +196,8 @@
       <div class="col-md-6 col-sm-6">
         <div class="portlet light bordered">
           <div class="portlet-title">
-            <div class="caption" style="padding: 0 0 10px;">
-              <img src="/admin/img/icon-arrow.gif" />
+            <div class="caption">
+              <img src="/img/icon-arrow.gif" />
               <span class="caption-subject bold uppercase">CLICK THROUGH RATE</span>
             </div>
           </div>
@@ -211,30 +211,30 @@
             <div class="row">              
               <div class="col-md-6 col-sm-6 border-right">
                 <div class="easy-pie-chart">
-                  <div class="number lastmonth" style="line-height: 69px;" data-percent="<?=$thism?>">
-                    <span><?=$thism?></span><span class="percent-sign" style="display: inline-block !important;font-size: 12px !important;margin-top: -1px !important;vertical-align: top;">%</span> 
+                  <div class="number lastmonth" data-percent="<?=$thism?>">
+                    <span><?=$thism?></span>% 
                   </div>
                   <div class="pie-title"> This Month </div>
                 </div>
               </div>
               <div class="col-md-6 col-sm-6 border-panel" style="height: 107px;">
-                <div class="report-num <?=($thism>=$last?'greenfont':'redfont')?>" style="margin-top: 15px;"><?=($thism>=$last?'<img src="/admin/img/up_green.png" style="padding-bottom: 10px;" />':'<img src="/admin/img/down_red.png" style="padding-bottom: 10px;" />')?> <?=abs($last - $thism)?><?=($thism>=$last?'<img src="/admin/img/percent_green.png" style="padding-bottom: 16px;" />':'<img src="/admin/img/percent_red.png" style="padding-bottom: 16px;" />')?></div>
+                <div class="report-num <?=($thism>=$last?'greenfont':'redfont')?>" style="margin-top: 15px;"><?=($thism>=$last?'&and;':'&or;')?> <?=abs($last - $thism)?>%</div>
                 <div class="report-title">Previous 30 Days</div>
               </div>
             </div> 
             <div class="row border-top left-bottom">       
               <div class="col-md-6 col-sm-6 border-right">
                 <div class="easy-pie-chart">
-                  <div class="number lastmonth" style="line-height: 69px;" data-percent="<?=$last?>">
-                    <span><?=$last?></span><span class="percent-sign" style="display: inline-block !important;font-size: 12px !important;margin-top: -1px !important;vertical-align: top;">%</span> 
+                  <div class="number lastmonth" data-percent="<?=$last?>">
+                    <span><?=$last?></span>% 
                   </div>
                   <div class="pie-title"> Last Month </div>
                 </div>
               </div>
               <div class="col-md-6 col-sm-6">
                 <div class="easy-pie-chart">
-                  <div class="number lastmonth" style="line-height: 69px;" data-percent="<?=$all_time?>">
-                    <span><?=$all_time?></span><span class="percent-sign" style="display: inline-block !important;font-size: 12px !important;margin-top: -1px !important;vertical-align: top;">%</span>
+                  <div class="number lastmonth" data-percent="<?=$all_time?>">
+                    <span><?=$all_time?></span>% 
                   </div>
                   <div class="pie-title"> Overall </div>
                 </div>
@@ -255,17 +255,16 @@
     <div class="row">
       
       <div class="col-md-12 col-sm-12">
-        <div class="portlet light bordered" style="padding-bottom: 0;">
+        <div class="portlet light bordered">
           <div class="portlet-title">
-            <div class="caption" style="padding: 0 0 10px;">
-              <img src="/admin/img/icon-reviews.gif" />
+            <div class="caption">
+              <img src="/img/icon-reviews.gif" />
               <span class="caption-subject bold uppercase">NUMBER OF REVIEW SITE CLICKS</span>
             </div>
           </div>
           <div class="portlet-body">
             <?php                                                                
-            if($clickreport && count($clickreport) > 0) {
-              $color = '#66CC4C';
+            if($clickreport) {
               foreach($clickreport as $click_site) { 
                 $percent = ($click_site->num_clicks / $clicktotal) * 100;
                 $largestpercent = ($clicklargest / $clicktotal) * 100;
@@ -278,20 +277,9 @@
                 }
                 if ($width < 10) $width = 10;
                 ?>
-                <div class="click-wrapper"><div class="click-icon"><img src="<?=$click_site->icon_path?>" /></div><div class="click-site" style="background-color: <?=$color?>; width: <?=$width?>%;"><span class="num-count"><?=$click_site->num_clicks?></span></div><div class="click-percent"><?=round($percent)?>%</div></div>
+                <div class="click-wrapper"><div class="click-icon"><img src="<?=$click_site->icon_path?>" /></div><div class="click-site" style="width: <?=$width?>%;"><span class="num-count"><?=$click_site->num_clicks?></span></div><div class="click-percent"><?=round($percent)?>%</div></div>
                 <?php  
-                if ($color == '#66CC4C') {                
-                  $color = '#3B5999';
-                } else if ($color == '#3B5999') {                
-                  $color = '#BF2519';
-                } else if ($color == '#BF2519') {                
-                  $color = '#556972';
-                } else {
-                  $color = '#66CC4C';
-                }
               } //endforeach; 
-            } else {
-              ?><div style="margin-bottom: 20px;">No review site clicks.</div><?php
             } // endif;
             ?>         
           </div>
@@ -304,11 +292,11 @@
   <div class="row">
     <div class="col-md-12 col-sm-12">
       <div class="growth-bar">
-      <img src="/admin/img/customer_review_site_clicks.png" /> Customer Review Site Clicks
+      <i class="icon-users"></i> Customer Review Site Clicks
       </div>
     </div>    
   </div>
-  <div class="row" id="pnlCustomerReviewSiteClicks">
+  <div class="row" id="">
     <div class="col-md-12 col-sm-12">
       <div class="portlet light bordered dashboard-panel">
         <div class="portlet-body" id="reportwrapperreview">
@@ -318,7 +306,7 @@
             <div class="flexsearch--input-wrapper">
               <input class="flexsearch--input" type="search" placeholder="search">
             </div>
-            <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
+            <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
           </div>
         </div>
 
@@ -454,9 +442,9 @@ jQuery(document).ready(function($){
 
       
       // The color of the curcular bar. You can pass either a css valid color string like rgb, rgba hex or string colors. But you can also pass a function that accepts the current percentage as a value to return a dynamically generated color.
-      barColor: '#2a3644',
+      barColor: '#2E5390',
       // The color of the track for the bar, false to disable rendering.
-      trackColor: '#66CC4C',
+      trackColor: '#D7DFED',
       // The color of the scale lines, false to disable rendering.
       scaleColor: false,
       // Defines how the ending of the bar line looks like. Possible values are: butt, round and square.
@@ -476,9 +464,9 @@ jQuery(document).ready(function($){
 
       
       // The color of the curcular bar. You can pass either a css valid color string like rgb, rgba hex or string colors. But you can also pass a function that accepts the current percentage as a value to return a dynamically generated color.
-      barColor: '#2a3644',
+      barColor: '#2E5390',
       // The color of the track for the bar, false to disable rendering.
-      trackColor: '#66CC4C',
+      trackColor: '#D7DFED',
       // The color of the scale lines, false to disable rendering.
       scaleColor: false,
       // Defines how the ending of the bar line looks like. Possible values are: butt, round and square.

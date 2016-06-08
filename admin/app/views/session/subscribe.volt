@@ -7,7 +7,7 @@ if ($maxlimitreached) {
   ?>
   The max signup limit has been reached for today.  Please try again tomorrow.
   
-  <p><a href="/admin/session/login" id="register-back-btn" class="btn btn-default" style="margin-right: 50px;">Back</a></p>
+  <p><a href="/session/login" id="register-back-btn" class="btn btn-default" style="margin-right: 50px;">Back</a></p>
   <?php 
 } else {
 ?>
@@ -18,7 +18,7 @@ if ($maxlimitreached) {
   ?>
 
   <!-- BEGIN REGISTRATION FORM -->
-  <form class="register-form" action="/admin/session/subscribe/<?=(isset($subscription->subscription_stripe_id)?$subscription->subscription_stripe_id:'')?>" method="post" style="display: block;">
+  <form class="register-form" action="/session/subscribe/<?=(isset($subscription->subscription_stripe_id)?$subscription->subscription_stripe_id:'')?>" method="post" style="display: block;">
     <h3 class="font-green">Sign Up</h3>
     <div>
     <?=$subscription->description?>
@@ -48,7 +48,7 @@ if ($maxlimitreached) {
     </div>
   
     <div class="form-actions">
-        <a href="/admin/session/login" id="register-back-btn" class="btn btn-default" style="margin-right: 50px;">Back</a>
+        <a href="/session/login" id="register-back-btn" class="btn btn-default" style="margin-right: 50px;">Back</a>
         <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
 	        data-key="<?=$agency->stripe_publishable_keys?>"
 	        data-description="<?=str_replace('"', '', $subscription->plan)?>"

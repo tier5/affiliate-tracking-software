@@ -12,16 +12,16 @@
 
   <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css' />
   <!-- Bootstrap core CSS -->
-  <link href="/admin/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/css/bootstrap.min.css" rel="stylesheet" />
 
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <link href="/admin/css/ie10-viewport-bug-workaround.css" rel="stylesheet" />
+  <link href="/css/ie10-viewport-bug-workaround.css" rel="stylesheet" />
 
   <!-- Custom styles for this template -->
-  <link href="/admin/css/main.css" rel="stylesheet" />
+  <link href="/css/main.css" rel="stylesheet" />
   
-  <link rel="stylesheet" href="/admin/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="/admin/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
@@ -50,12 +50,12 @@
   <!-- Bootstrap core JavaScript
   ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script>window.jQuery || document.write('<script src="/admin/js/vendor/jquery.min.js"><\/script>')</script>
-  <script src="/admin/js/bootstrap.min.js"></script>
+  <script>window.jQuery || document.write('<script src="/js/vendor/jquery.min.js"><\/script>')</script>
+  <script src="/js/bootstrap.min.js"></script>
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <script src="/admin/js/ie10-viewport-bug-workaround.js"></script>
-  <script src="/admin/js/star-rating.js" type="text/javascript"></script>
-  <script src="/admin/js/browser-deeplink.js"></script>
-  <script src="/admin/js/main.js"></script>
+  <script src="/js/ie10-viewport-bug-workaround.js"></script>
+  <script src="/js/star-rating.js" type="text/javascript"></script>
+  <script src="/js/browser-deeplink.js"></script>
+  <script src="/js/main.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <ul class="pager">
   <li class="previous pull-left">
-    <a href="/admin/admindashboard/list/<?=$agency_type_id?>" class="btn red btn-outline">&larr; Go Back</a>
+    <a href="/admindashboard/list/<?=$agency_type_id?>" class="btn red btn-outline">&larr; Go Back</a>
   </li>
 </ul>
 

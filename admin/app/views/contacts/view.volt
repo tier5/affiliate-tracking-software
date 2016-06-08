@@ -2,7 +2,7 @@
 
 <header class="jumbotron subhead" id="reviews">
 	<div class="hero-unit">
-    <!--<a class="btn yellow" href="/admin/reviews/sms_broadcast" style="float: right;"><i class="icon-envelope"></i>&nbsp; SMS Broadcast</a>-->
+    <!--<a class="btn yellow" href="/reviews/sms_broadcast" style="float: right;"><i class="icon-envelope"></i>&nbsp; SMS Broadcast</a>-->
 		
     <div class="row">
       <div class="col-md-5 col-sm-5">
@@ -73,7 +73,7 @@
             <div class="form-group" style="padding-top: 25px; padding-bottom: 25px;">
               <label class="col-md-5 control-label" style="font-weight: bold; text-align: right;">Cell Phone Number:</label>
               <div style="padding-top: 2px;" class="col-md-7">
-                <?=preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $review_invite->phone)?>
+                <?=$review_invite->phone?>
               </div>
             </div>
 
@@ -114,8 +114,8 @@
                       
                       if ($invite->recommend && $invite->recommend=='N') {
                         ?>
-                        <a data-id="<?=$invite->review_invite_id?>" id="resolved<?=$invite->review_invite_id?>" href="#" onclick="" class="btnLink resolved" style="<?=(isset($invite->is_resolved) && $invite->is_resolved == 1?'':'display: none;')?> float: right;height: 36px; padding: 10px 20px; width: 105px;">Resolved</a>
-                        <a data-id="<?=$invite->review_invite_id?>" id="unresolved<?=$invite->review_invite_id?>" onclick="" class="btnLink unresolved" style="<?=(isset($invite->is_resolved) && $invite->is_resolved == 1?'display: none;':'')?> float: right;height: 36px; padding: 10px 20px; width: 120px;">Unresolved</a>
+                        <a data-id="<?=$invite->review_invite_id?>" id="resolved<?=$invite->review_invite_id?>" href="#" onclick="" class="btnLink resolved" style="<?=(isset($invite->is_resolved) && $invite->is_resolved == 1?'':'display: none;')?> float: right;">Resolved</a>
+                        <a data-id="<?=$invite->review_invite_id?>" id="unresolved<?=$invite->review_invite_id?>" onclick="" class="btnLink unresolved" style="<?=(isset($invite->is_resolved) && $invite->is_resolved == 1?'display: none;':'')?> float: right;">Unresolved</a>
                         <?php
                       }
 
@@ -189,14 +189,14 @@
           </div>
           <div style="width: 50%; float: left;">
             <a style="float: right; margin-top: 25px; margin-right: 20px;" class="fancybox btnLink send-review-invite" href="#sendreviewinvite" onclick="$('#smsrequestformname').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->name))?>');$('#smsrequestformphone').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->phone))?>');">Send Review Invite</a>
-            <form action="/admin/contacts/view/<?=$review_invite->review_invite_id?>" method="Post" >
+            <form action="/contacts/view/<?=$review_invite->review_invite_id?>" method="Post" >
 
             <?php 
             if (isset($note_list)) { 
               foreach($note_list as $note) {
                 ?>
                 <div class="form-group" style="padding-top: 25px; clear: both;">
-                  <label class="col-md-5 control-label" style="font-weight: bold; text-align: left;">From: <?=$note->users->name?></label>
+                  <label class="col-md-5 control-label" style="font-weight: bold; text-align: left;">Notes</label>
                   <div style="padding-top: 2px; float: right;" class="col-md-7">
                     <strong style="">Date Added: </strong> <?=date_format(date_create($note->date_created),"m/d/Y")?>
                   </div>
@@ -251,7 +251,7 @@ jQuery(document).ready(function($){
     //console.log('id:'+id);
     
     $.ajax({
-      url: "/admin/reviews/resolved/"+id,
+      url: "/reviews/resolved/"+id,
       cache: false,
       success: function(html){
         //done!
@@ -270,7 +270,7 @@ jQuery(document).ready(function($){
     //console.log('id:'+id);
 
     $.ajax({
-      url: "/admin/reviews/unresolved/"+id,
+      url: "/reviews/unresolved/"+id,
       cache: false,
       success: function(html){
         //done!
