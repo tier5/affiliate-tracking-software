@@ -8,7 +8,7 @@
     "swiftmailer/swiftmailer" : "5.0.*",
     "amazonwebservices/aws-sdk-for-php" : "~1.0",
     "ext-curl": "*",
-    "authorizenet/authorizenet": "1.8.6.2",
+    "authorizenet/authorizenet": "1.8.8",
     "jms/serializer": "xsd2php-dev as 0.18.0",
     "stripe/stripe-php": "3.*",
     "codeception/codeception": "^2.1",

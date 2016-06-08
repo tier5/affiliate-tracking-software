@@ -290,13 +290,11 @@ class SessionController extends ControllerBase
       }
     }
   }
-        
-
-
-  public function noSubDomains($page, $subscription_id) {
+  
+  public function noSubDomains($page, $subscription_id) {  
     $sub = array_shift((explode(".",$_SERVER['HTTP_HOST'])));
     if ($sub && $sub != '' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104'
-         && $sub != 'dev' && $sub != 'stage' && $sub != 'dev2') {
+         && $sub != 'dev' && $sub != 'stage' && $sub != 'dev2' && $sub != 'localhost') {
       //there is a subdomain.  That is not allowed, so redirect them out of here
       $found = false;
       $querystring = '';
@@ -309,7 +307,7 @@ class SessionController extends ControllerBase
         $querystring = $subscription_id.'/'.$querystring;
         $found = true;
       }
-      return $this->response->redirect($config->application->publicUrl .'/session/signup'.($page>1?$page:'').'/'.$querystring);
+      return $this->response->redirect('/session/signup'.($page>1?$page:'').'/'.$querystring);
     }
   }
 
