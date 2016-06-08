@@ -62,8 +62,8 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
       <div class="row">
         <div class="col-md-12 col-sm-12">
           <div class="portlet dark bordered discount">            
-            <img src="/admin/img/20-percent-off.gif" id="percentoff" alt="20% Off" />
-            <a href="#"><img src="/admin/img/btn-upgrade-now.gif" id="btnupgradenow" alt="Upgrade Now" /></a>
+            <img src="/img/20-percent-off.gif" id="percentoff" alt="20% Off" />
+            <a href="#"><img src="/img/btn-upgrade-now.gif" id="btnupgradenow" alt="Upgrade Now" /></a>
             <div class="upgrade-middle">
               <div class="upgrade-top">Hey <?=$this->session->get('auth-identity')['name']?>!  Upgrade Your Account Today To Send Unlimited Text Message</div>
               <div class="upgrade-bottom">Add unlimited text message so you can send out unlimited feedback request each month.  Save 20% today!</div>
@@ -91,10 +91,10 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                   }
                   ?>
                   <div class="share-inner">
-                  <a id="maillink" class="share-link" href="mailto:?&subject=<?=$share_subject?>&body=<?=$share_message?>">Send Email <img src="/admin/img/icon_sm_email.gif" /></a>
-                  <a target="_blank" class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=<?=$share_link?>">Share on Facebook <img src="/admin/img/icon_sm_facebook.gif" /></a>
-                  <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$share_message?>">Share on Twitter  <img src="/admin/img/icon_sm_twitter.gif" /></a>
-                  <a target="_blank" class="share-link" href="https://plus.google.com/share?url=<?=$share_link?>">Share on Google+  <img src="/admin/img/icon_sm_google.gif" /></a>
+                  <a id="maillink" class="share-link" href="mailto:?&subject=<?=$share_subject?>&body=<?=$share_message?>">Send Email <img src="/img/icon_sm_email.gif" /></a>
+                  <a target="_blank" class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=<?=$share_link?>">Share on Facebook <img src="/img/icon_sm_facebook.gif" /></a>
+                  <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$share_message?>">Share on Twitter  <img src="/img/icon_sm_twitter.gif" /></a>
+                  <a target="_blank" class="share-link" href="https://plus.google.com/share?url=<?=$share_link?>">Share on Google+  <img src="/img/icon_sm_google.gif" /></a>
                   </div>
                 </div>
               </div>
@@ -198,7 +198,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
     <div class="row">
       <div class="col-md-12 col-sm-12">
         <div class="growth-bar">
-        <img src="/admin/img/icon-growth.gif" /> Growth
+        <img src="/img/icon-growth.gif" /> Growth
         </div>
       </div>    
     </div>
@@ -340,7 +340,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
               ?>
               <div class="review">
                 <div class="top">
-                  <div class="logo"><a href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/admin/img/logo/icon-<?=($data->rating_type_id==1?'yelp':($data->rating_type_id==2?'facebook':'google'))?>.gif" /></a></span></div>
+                  <div class="logo"><a href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==1?'yelp':($data->rating_type_id==2?'facebook':'google'))?>.gif" /></a></span></div>
                   <div class="rating col-md-3"><input value="<?=$data->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /></div>
                   <div class="name col-md-5"><?=$data->user_name?></div>
                   <div class="date col-md-3"><?=date("m/d/Y", strtotime($data->time_created))?></div>
@@ -382,7 +382,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
 
 	<div id="form-messages"></div>
 		
-	<form id="ajax-contact" method="post" action="/admin/location/send_email">
+	<form id="ajax-contact" method="post" action="/location/send_email">
 		<div class="field">
 			<label for="name">Subject:</label>
 			<input type="text" id="subject" name="subject" value="<?=$share_subject?>" required="required" />
@@ -583,7 +583,7 @@ jQuery(document).ready(function($){
     if ($this->session->get('auth-identity')['profile'] == 'Agency Admin' ||
         $this->session->get('auth-identity')['profile'] == 'Super Admin') {
         ?>
-        <div><a href="/admin/location/create">Click here</a> to set up a location to get started.</div>
+        <div><a href="/location/create">Click here</a> to set up a location to get started.</div>
     <?php 
     } else {
       ?>

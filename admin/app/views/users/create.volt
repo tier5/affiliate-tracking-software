@@ -1,7 +1,7 @@
 <div class="portlet light bordered">
   <div class="portlet-title">
     <div class="">
-      <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink" href="/admin/users<?=($profilesId==3?'':'/admin')?>">Back</a>
+      <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink" href="/users<?=($profilesId==3?'':'/admin')?>">Back</a>
       <i class="icon-pencil fa-user"></i>
       <span style="display: inline-block; margin-left: 8px; margin-top: 11px;" class="caption-subject bold uppercase"> Create </span>
     </div>

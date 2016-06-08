@@ -170,7 +170,7 @@ div#image_container img.selected, div#image_container img:hover{
 
 
 .page-header.navbar .page-logo { width: 270px; }
-.page-header.navbar .menu-toggler { background-image: url("/admin/img/sidebar_toggler_icon_white.png"); }
+.page-header.navbar .menu-toggler { background-image: url("/img/sidebar_toggler_icon_white.png"); }
 .page-footer .page-footer-inner { color: #484848; }
 
 

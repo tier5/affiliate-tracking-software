@@ -1,6 +1,6 @@
 <ul class="pager">
   <li class="previous pull-left">
-    <a href="/admin/admindashboard/list/<?=$agency_type_id?>" class="btn red btn-outline">&larr; Go Back</a>
+    <a href="/admindashboard/list/<?=$agency_type_id?>" class="btn red btn-outline">&larr; Go Back</a>
   </li>
 </ul>
 
@@ -106,9 +106,9 @@
           <a data-toggle="dropdown" href="javascript:;" class="btn btn-sm green dropdown-toggle" aria-expanded="false"> Actions <i class="fa fa-angle-down"></i></a>
           <ul class="dropdown-menu pull-right">
             <li><a class="" href="mailto:{{ user.email }}"><i class="icon-envelope-letter"></i> Email</a></li>
-            <li><a href="/admin/admindashboard/forgotPassword/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to reset this employee\'s password?');" class=""><i class="icon-user"></i> Password</a></li>
-            <li><a href="/admin/admindashboard/confirmation/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to resend this employee\'s confirmation email?');" class=""><i class="icon-envelope"></i> Resend Credentials</a></li>
-            <li><a href="/admin/admindashboard/login/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to log in as this employee?');" class=""><i class="icon-paper-plane"></i> Manage</a></li>
+            <li><a href="/admindashboard/forgotPassword/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to reset this employee\'s password?');" class=""><i class="icon-user"></i> Password</a></li>
+            <li><a href="/admindashboard/confirmation/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to resend this employee\'s confirmation email?');" class=""><i class="icon-envelope"></i> Resend Credentials</a></li>
+            <li><a href="/admindashboard/login/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to log in as this employee?');" class=""><i class="icon-paper-plane"></i> Manage</a></li>
           </ul>
         </div>
       </div>

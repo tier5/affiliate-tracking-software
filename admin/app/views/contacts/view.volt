@@ -2,7 +2,7 @@
 
 <header class="jumbotron subhead" id="reviews">
 	<div class="hero-unit">
-    <!--<a class="btn yellow" href="/admin/reviews/sms_broadcast" style="float: right;"><i class="icon-envelope"></i>&nbsp; SMS Broadcast</a>-->
+    <!--<a class="btn yellow" href="/reviews/sms_broadcast" style="float: right;"><i class="icon-envelope"></i>&nbsp; SMS Broadcast</a>-->
 		
     <div class="row">
       <div class="col-md-5 col-sm-5">
@@ -189,7 +189,7 @@
           </div>
           <div style="width: 50%; float: left;">
             <a style="float: right; margin-top: 25px; margin-right: 20px;" class="fancybox btnLink send-review-invite" href="#sendreviewinvite" onclick="$('#smsrequestformname').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->name))?>');$('#smsrequestformphone').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->phone))?>');">Send Review Invite</a>
-            <form action="/admin/contacts/view/<?=$review_invite->review_invite_id?>" method="Post" >
+            <form action="/contacts/view/<?=$review_invite->review_invite_id?>" method="Post" >
 
             <?php 
             if (isset($note_list)) { 
@@ -251,7 +251,7 @@ jQuery(document).ready(function($){
     //console.log('id:'+id);
     
     $.ajax({
-      url: "/admin/reviews/resolved/"+id,
+      url: "/reviews/resolved/"+id,
       cache: false,
       success: function(html){
         //done!
@@ -270,7 +270,7 @@ jQuery(document).ready(function($){
     //console.log('id:'+id);
 
     $.ajax({
-      url: "/admin/reviews/unresolved/"+id,
+      url: "/reviews/unresolved/"+id,
       cache: false,
       success: function(html){
         //done!

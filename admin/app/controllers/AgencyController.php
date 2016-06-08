@@ -26,7 +26,7 @@ class AgencyController extends ControllerBase
         $this->view->setVar('logged_in', $logged_in);
         $this->view->setTemplateBefore('private');
       } else {        
-        $this->response->redirect('/admin/session/login');
+        $this->response->redirect('/session/login');
         $this->view->disable();
         return;
       }

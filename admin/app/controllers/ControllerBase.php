@@ -120,7 +120,7 @@ class ControllerBase extends Controller
             $haspaid = false;
           }
           if (!$haspaid && (strpos($_SERVER['REQUEST_URI'],'session')<=0) && (strpos($_SERVER['REQUEST_URI'],'session')<=0)) {
-            $this->response->redirect('/admin/session/signup/'.$agency->subscription_id);
+            $this->response->redirect('/session/signup/'.$agency->subscription_id);
             $this->view->disable();
             return;
           }
@@ -221,7 +221,7 @@ class ControllerBase extends Controller
       $this->view->share = $share;
 
       //build share links
-      $share_link = $this->googleShortenURL('http://'.$_SERVER['HTTP_HOST'].'/admin/session/signup?code='.$share->sharecode);
+      $share_link = $this->googleShortenURL('http://'.$_SERVER['HTTP_HOST'].'/session/signup?code='.$share->sharecode);
       $this->view->share_message = 'Click this link to sign up for a great new way to get reviews: '.$share_link;
       $this->view->share_link = $share_link;
       $this->view->share_subject = 'Sign Up and Get Reviews!';
@@ -385,7 +385,7 @@ class ControllerBase extends Controller
 
     public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_auth_messaging_sid, $twilio_from_phone, $agency) {
       // this line loads the library 
-      require_once("/var/www/html/".$this->config->webpathfolder->path."/admin/vendor/twilio/sdk/Services/Twilio.php"); 
+      require_once("/var/www/html/".$this->config->webpathfolder->path."/vendor/twilio/sdk/Services/Twilio.php"); 
 
       // set your AccountSid and AuthToken from www.twilio.com/user/account
       //new tokens
@@ -538,7 +538,7 @@ class ControllerBase extends Controller
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/users/'.($profilesId==3?'':'admin'));
+        $this->response->redirect('/session/login?return=/users/'.($profilesId==3?'':'admin'));
         $this->view->disable();
         return;
       }
@@ -756,33 +756,33 @@ class ControllerBase extends Controller
       //if we have a facebook page token, try to import reviews
       if (isset($Obj->access_token) && $Obj->access_token != '') {
         //use the graph api to get facebook "ratings" aka reviews  
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/autoload.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Facebook.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookApp.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookClient.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookRequest.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/FacebookResponse.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Authentication/AccessToken.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Authentication/OAuth2Client.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Helpers/FacebookRedirectLoginHelper.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PersistentData/PersistentDataInterface.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Url/UrlDetectionInterface.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Url/FacebookUrlDetectionHandler.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Url/FacebookUrlManipulator.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/HttpClients/FacebookHttpClientInterface.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/HttpClients/FacebookCurl.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/HttpClients/FacebookCurlHttpClient.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Http/RequestBodyInterface.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Http/RequestBodyUrlEncoded.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Http/GraphRawResponse.php";  
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Exceptions/FacebookSDKException.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Exceptions/FacebookAuthorizationException.php"; 
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Exceptions/FacebookAuthenticationException.php";
-        require_once "/var/www/html/".$this->config->webpathfolder->path."/admin/app/controllers/Facebook/Exceptions/FacebookResponseException.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/autoload.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Facebook.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookApp.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookClient.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookRequest.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookResponse.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Authentication/AccessToken.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Authentication/OAuth2Client.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Helpers/FacebookRedirectLoginHelper.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PersistentData/PersistentDataInterface.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Url/UrlDetectionInterface.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Url/FacebookUrlDetectionHandler.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Url/FacebookUrlManipulator.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/HttpClients/FacebookHttpClientInterface.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/HttpClients/FacebookCurl.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/HttpClients/FacebookCurlHttpClient.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Http/RequestBodyInterface.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Http/RequestBodyUrlEncoded.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Http/GraphRawResponse.php";  
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Exceptions/FacebookSDKException.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Exceptions/FacebookAuthorizationException.php"; 
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Exceptions/FacebookAuthenticationException.php";
+        require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Exceptions/FacebookResponseException.php"; 
         
         $this->fb = new \Services\Facebook\Facebook(array(
           'app_id' => '628574057293652',
@@ -922,7 +922,7 @@ class ControllerBase extends Controller
     // Check if the user has uploaded files
     if ($this->request->hasFiles() == true) {
       //echo '<p>hasFiles() == true!</p>';
-      $baseLocation = '/var/www/html/'.$this->config->webpathfolder->path.'/admin/public/img/upload/';
+      $baseLocation = '/var/www/html/'.$this->config->webpathfolder->path.'/public/img/upload/';
 
 
       // Print the real file names and sizes
@@ -937,7 +937,7 @@ class ControllerBase extends Controller
           $image->resize(200, 30)->save($filepath);
 
           //echo '<p>$filepath: '.$filepath.'</p>';
-          $filepath = '/admin'.str_replace("/var/www/html/".$this->config->webpathfolder->path."/admin/public", "", $filepath);
+          $filepath = '/admin'.str_replace("/var/www/html/".$this->config->webpathfolder->path."/public", "", $filepath);
           $this->view->logo_setting = $filepath;
           return $filepath;
         }

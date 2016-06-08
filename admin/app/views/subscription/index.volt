@@ -52,7 +52,7 @@
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <div class="growth-bar transparent pull-right">
-                    <a href="/admin/subscription/invoices" class="btn default btn-lg apple-backgound subscription-btn">View Invoices</a>
+                    <a href="/subscription/invoices" class="btn default btn-lg apple-backgound subscription-btn">View Invoices</a>
                 </div>
             </div>
         </div>
@@ -118,7 +118,7 @@
                                     </div>
                                     <div class="col-xs-4 col-md-4 pull-right">
                                         <div class="form-group">
-                                            <div><img src="/admin/img/cc/visa.png"></div>
+                                            <div><img src="/img/cc/visa.png"></div>
                                             <div><span>10/2016</span></div>
                                         </div>
                                     </div>
@@ -129,7 +129,7 @@
                                             <input type="text" disabled class="form-control center" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="cc-exp" required="" aria-required="true">
                                         </div>
                                         <div class="form-group">
-                                            <div><img src="/admin/img/cc/visa.png"></div>
+                                            <div><img src="/img/cc/visa.png"></div>
                                             <div><span>10/2016</span></div>
                                         </div>
                                     </div>

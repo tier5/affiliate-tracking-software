@@ -78,7 +78,7 @@ class ResetPasswords extends Model
         $this->getDI()
             ->getMail()
             ->send($this->user->email, "Reset your password", 'reset', array(
-            'resetUrl' => '/admin/reset-password/' . $this->code . '/' . $this->user->email
+            'resetUrl' => '/reset-password/' . $this->code . '/' . $this->user->email
         ));
     }
 

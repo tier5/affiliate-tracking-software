@@ -24,7 +24,7 @@ class SubscriptionController extends ControllerBase {
         //     $this->tag->setTitle('Review Velocity | Subscription');
         //     $this->view->setTemplateBefore('private');
         // } else {
-        //     $this->response->redirect('/admin/session/login?return=/admin/');
+        //     $this->response->redirect('/session/login?return=/');
         //     $this->view->disable();
         //     return;
         // }
@@ -33,7 +33,7 @@ class SubscriptionController extends ControllerBase {
             $this->tag->setTitle('Review Velocity | Subscription');
             $this->view->setTemplateBefore('private');
         } else {    
-            $this->response->redirect('/admin/session/login?return=/admin/');
+            $this->response->redirect('/session/login?return=/');
             $this->view->disable();
             return;
         }

@@ -37,16 +37,16 @@ class IndexController extends ControllerBase
         $identity = $this->session->get('auth-identity');
 
         if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
-          $this->response->redirect('/admin/admindashboard/');
+          $this->response->redirect('/admindashboard/');
         } else
         if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') {
-          $this->response->redirect('/admin/agency/');
+          $this->response->redirect('/agency/');
         }
 
         $this->view->setVar('logged_in', $logged_in);
         $this->view->setTemplateBefore('private');
       } else {        
-        $this->response->redirect('/admin/session/login');
+        $this->response->redirect('/session/login');
         $this->view->disable();
         return;
       }

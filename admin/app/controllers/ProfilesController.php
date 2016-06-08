@@ -23,7 +23,7 @@ class ProfilesController extends ControllerBase
         $this->view->setTemplateBefore('private');
 
         //disable
-        $this->response->redirect('/admin/session/logout');
+        $this->response->redirect('/session/logout');
     }
 
     /**
@@ -35,7 +35,7 @@ class ProfilesController extends ControllerBase
       // If there is no identity available the user is redirected to index/index
       $identity = $this->auth->getIdentity();
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login');
+        $this->response->redirect('/session/login');
         $this->view->disable();
         return;
       }

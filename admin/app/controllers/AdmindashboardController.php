@@ -27,7 +27,7 @@ class AdmindashboardController extends ControllerBase
         $this->view->setVar('logged_in', $logged_in);
         $this->view->setTemplateBefore('private');
       } else {        
-        $this->response->redirect('/admin/session/login');
+        $this->response->redirect('/session/login');
         $this->view->disable();
         return;
       }
@@ -224,7 +224,7 @@ class AdmindashboardController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected 
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/admindashboard/list/'.$agency_type_id);
+        $this->response->redirect('/session/login?return=/admindashboard/list/'.$agency_type_id);
         $this->view->disable();
         return;
       }
@@ -261,7 +261,7 @@ class AdmindashboardController extends ControllerBase
           $this->flash->error("The ".($agency_type_id==1?'agency':'business')." status was updated.");
         }
       } 
-      $this->response->redirect('/admin/admindashboard/list/'.$agency_type_id);
+      $this->response->redirect('/admindashboard/list/'.$agency_type_id);
       $this->view->disable();
       return;
     }
@@ -443,7 +443,7 @@ class AdmindashboardController extends ControllerBase
       if (!$age) {
         $this->flash->error("The ".($agency_type_id==1?'agency':'business')." was not found");
         
-        $this->response->redirect('/admin/admindashboard/list/'.$agency_type_id);
+        $this->response->redirect('/admindashboard/list/'.$agency_type_id);
         $this->view->disable();
         return;
       }
@@ -454,7 +454,7 @@ class AdmindashboardController extends ControllerBase
         $this->flash->success("The ".($agency_type_id==1?'agency':'business')." was deleted");
       }
       
-      $this->response->redirect('/admin/admindashboard/list/'.$agency_type_id);
+      $this->response->redirect('/admindashboard/list/'.$agency_type_id);
       $this->view->disable();
       return;
     }
@@ -503,7 +503,7 @@ class AdmindashboardController extends ControllerBase
     $emailConfirmation->usersId = $user_id;
     $emailConfirmation->save();
 
-    $this->response->redirect('/admin/admindashboard/view/'.$agency_type_id.'/'.$agency_id.'?s=2');
+    $this->response->redirect('/admindashboard/view/'.$agency_type_id.'/'.$agency_id.'?s=2');
     $this->view->disable();
     return;
   }
@@ -522,7 +522,7 @@ class AdmindashboardController extends ControllerBase
     $user = Users::findFirst(array($conditions, "bind" => $parameters));
     $this->auth->login($user);
 
-    $this->response->redirect('/admin/');
+    $this->response->redirect('/');
     $this->view->disable();
     return;
   }
@@ -545,7 +545,7 @@ class AdmindashboardController extends ControllerBase
         $this->flash->error($message);
       }
     }
-    $this->response->redirect('/admin/admindashboard/view/'.$agency_type_id.'/'.$agency_id.'?s=1');
+    $this->response->redirect('/admindashboard/view/'.$agency_type_id.'/'.$agency_id.'?s=1');
     $this->view->disable();
     return;
   }

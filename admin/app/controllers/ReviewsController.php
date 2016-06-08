@@ -26,7 +26,7 @@ class ReviewsController extends ControllerBase
         $this->view->setVar('logged_in', $logged_in);
         $this->view->setTemplateBefore('private');
       } else {        
-        $this->response->redirect('/admin/session/login?return=/admin/reviews/');
+        $this->response->redirect('/session/login?return=/reviews/');
         $this->view->disable();
         return;
       }
@@ -195,7 +195,7 @@ class ReviewsController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/reviews/sms_broadcast');
+        $this->response->redirect('/session/login?return=/reviews/sms_broadcast');
         $this->view->disable();
         return;
       }
@@ -278,7 +278,7 @@ class ReviewsController extends ControllerBase
               $link = '';
               if (isset($_POST['link']) && $_POST['link'] != '') {
                 $guid = $this->GUID();
-                $link = 'http://'.$_SERVER['HTTP_HOST'].'/admin/review/link?a='.$guid;
+                $link = 'http://'.$_SERVER['HTTP_HOST'].'/review/link?a='.$guid;
                 $link = $this->googleShortenURL($link);
               } else {
                 $guid = $invite->api_key;
@@ -325,7 +325,7 @@ class ReviewsController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/reviews/sent_message');
+        $this->response->redirect('/session/login?return=/reviews/sent_message');
         $this->view->disable();
         return;
       }
@@ -350,7 +350,7 @@ class ReviewsController extends ControllerBase
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index
       if (!is_array($identity)) {
-        $this->response->redirect('/admin/session/login?return=/admin/reviews/sent_message');
+        $this->response->redirect('/session/login?return=/reviews/sent_message');
         $this->view->disable();
         return; 
       }

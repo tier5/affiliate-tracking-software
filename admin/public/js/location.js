@@ -232,7 +232,7 @@ function initMap() {
     var found = false;
     var name = document.getElementById("yelpsearchfield").value;
     var location = document.getElementById("yelpsearchfield2").value;
-    var url = "/admin/location/yelp?t=" + encodeURIComponent(name) + "&l=" + encodeURIComponent(location);
+    var url = "/location/yelp?t=" + encodeURIComponent(name) + "&l=" + encodeURIComponent(location);
     var http_request = new XMLHttpRequest();
     http_request.open("GET", url, true);
     http_request.onreadystatechange = function () {
@@ -361,7 +361,7 @@ function initMap() {
     var found = false;
     var url = document.getElementById("url").value;
     var id = getId(url);
-    var url = "/admin/location/yelpurl?i=" + encodeURIComponent(id);
+    var url = "/location/yelpurl?i=" + encodeURIComponent(id);
     var http_request = new XMLHttpRequest();
     http_request.open("GET", url, true);
     http_request.onreadystatechange = function () {

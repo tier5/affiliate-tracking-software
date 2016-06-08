@@ -253,7 +253,7 @@ class SessionController extends ControllerBase
                   //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
 
                   //redirect
-                  return $this->response->redirect('/admin/session/login?n=1');
+                  return $this->response->redirect('/session/login?n=1');
                 }
               }
 
@@ -309,7 +309,8 @@ class SessionController extends ControllerBase
         $querystring = $subscription_id.'/'.$querystring;
         $found = true;
       }
-      return $this->response->redirect('http://reviewvelocity.co/admin/session/signup'.($page>1?$page:'').'/'.$querystring);
+      // $config->application->publicUrl
+      return $this->response->redirect('http://reviewvelocity.co/session/signup'.($page>1?$page:'').'/'.$querystring);
     }
   }
 
@@ -485,10 +486,10 @@ class SessionController extends ControllerBase
               //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
 
               //redirect
-              //return $this->response->redirect('/admin/session/login?n=1');
+              //return $this->response->redirect('/session/login?n=1');
               $_SESSION['name']=$this->request->getPost('name', 'striptags');
               $_SESSION['email']=$this->request->getPost('email');
-              return $this->response->redirect('/admin/session/thankyou');
+              return $this->response->redirect('/session/thankyou');
               //'signup_page' => 2, //go to the next page
               //return $this->dispatcher->forward(array(
               //  'controller' => 'index',
@@ -519,7 +520,7 @@ class SessionController extends ControllerBase
             if (!$us->save()) {
               $this->flash->error($us->getMessages());
             }
-            return $this->response->redirect('/admin/?n=1');
+            return $this->response->redirect('/?n=1');
           }
           $this->flash->error($user->getMessages());
         }
@@ -565,7 +566,7 @@ class SessionController extends ControllerBase
     //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/session/signup2/'.($subscription_id > 0?$subscription_id:''));
+      $this->response->redirect('/session/login?return=/session/signup2/'.($subscription_id > 0?$subscription_id:''));
       $this->view->disable();
       return;
     }
@@ -669,7 +670,7 @@ class SessionController extends ControllerBase
 
         $this->auth->setLocation($loc->location_id);
 
-        return $this->response->redirect('/admin/session/signup3/'.($subscription_id > 0?$subscription_id:''));
+        return $this->response->redirect('/session/signup3/'.($subscription_id > 0?$subscription_id:''));
       }
     }
 
@@ -693,7 +694,7 @@ class SessionController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/session/signup3/'.($subscription_id > 0?$subscription_id:''));
+      $this->response->redirect('/session/login?return=/session/signup3/'.($subscription_id > 0?$subscription_id:''));
       $this->view->disable();
       return;
     }
@@ -730,7 +731,7 @@ class SessionController extends ControllerBase
         $agency->signup_page = 4; //go to the next page
         $agency->save();
 
-        return $this->response->redirect('/admin/session/signup4/'.($subscription_id > 0?$subscription_id:''));
+        return $this->response->redirect('/session/signup4/'.($subscription_id > 0?$subscription_id:''));
       }
     }
 
@@ -757,7 +758,7 @@ class SessionController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/session/signup4/'.($subscription_id > 0?$subscription_id:''));
+      $this->response->redirect('/session/login?return=/session/signup4/'.($subscription_id > 0?$subscription_id:''));
       $this->view->disable();
       return;
     }
@@ -792,7 +793,7 @@ class SessionController extends ControllerBase
         $this->flash->error($location->getMessages());
       } else {
         $agency->save();
-        return $this->response->redirect('/admin/session/signup5/'.($subscription_id > 0?$subscription_id:''));
+        return $this->response->redirect('/session/signup5/'.($subscription_id > 0?$subscription_id:''));
         $this->view->disable();
         return;
       }
@@ -821,7 +822,7 @@ class SessionController extends ControllerBase
     $identity = $this->auth->getIdentity();
     // If there is no identity available the user is redirected to index/index
     if (!is_array($identity)) {
-      $this->response->redirect('/admin/session/login?return=/admin/session/signup5/'.($subscription_id > 0?$subscription_id:''));
+      $this->response->redirect('/session/login?return=/session/signup5/'.($subscription_id > 0?$subscription_id:''));
       $this->view->disable();
       return;
     }
@@ -875,7 +876,7 @@ class SessionController extends ControllerBase
       if (!$agency->save()) {
         $this->flash->error($agency->getMessages());
       } else {
-        return $this->response->redirect('/admin/');
+        return $this->response->redirect('/');
         $this->view->disable();
         return;
       }
@@ -959,8 +960,8 @@ class SessionController extends ControllerBase
             'remember' => $this->request->getPost('remember')
           ));
 
-          $return = '/admin/';
-          if (isset($_GET['return']) && strpos($_GET['return'], '/admin/') !== false) $return = $_GET['return'];
+          $return = '/';
+          if (isset($_GET['return']) && strpos($_GET['return'], '/') !== false) $return = $_GET['return'];
   
           //get the user id, to find the settings
           $identity = $this->auth->getIdentity();
@@ -977,7 +978,7 @@ class SessionController extends ControllerBase
             $parameters = array("agency_id" => $userObj->agency_id);
             $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
                         
-            if ($agency->signup_page > 0) $return = '/admin/session/signup'.$agency->signup_page.'/'.($agency->subscription_id > 0?$subscription_id:'');
+            if ($agency->signup_page > 0) $return = '/session/signup'.$agency->signup_page.'/'.($agency->subscription_id > 0?$subscription_id:'');
           }
 
           return $this->response->redirect($return);
@@ -1035,7 +1036,7 @@ class SessionController extends ControllerBase
   public function logoutAction()
   {
     $this->auth->remove();
-    return $this->response->redirect('/admin/');
+    return $this->response->redirect('/');
   }
 
 

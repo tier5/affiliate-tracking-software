@@ -132,9 +132,9 @@
             <label for="review_invite_type_id" class="col-md-4 control-label">Review Invite Type</label>
             <div class="col-md-8">
               <div id="image_container">
-                <img src="/admin/img/feedback_request.png" data-id="1" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 1?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 1?' class="selected"':''))?> />
-                <img src="/admin/img/stars.png" data-id="2" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 2?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 2?' class="selected"':''))?> />
-                <img src="/admin/img/nps.png" data-id="3" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 3?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 3?' class="selected"':''))?> />
+                <img src="/img/feedback_request.png" data-id="1" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 1?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 1?' class="selected"':''))?> />
+                <img src="/img/stars.png" data-id="2" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 2?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 2?' class="selected"':''))?> />
+                <img src="/img/nps.png" data-id="3" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 3?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 3?' class="selected"':''))?> />
               </div>
               <input id="review_invite_type_id" name="review_invite_type_id" type="hidden" value="<?=(isset($_POST['review_invite_type_id'])?$_POST["review_invite_type_id"]:(isset($location->review_invite_type_id)?$location->review_invite_type_id:''))?>" />
             </div>
@@ -167,17 +167,17 @@
                     <span class="site-wrapper"><img src="<?=$rsl->review_site->icon_path?>" class="imgicon" /> <?=$rsl->review_site->name?></span> 
                     <span class="review_site-buttons">
                       <?php if ($rsl->review_site_id <= 3) { ?>
-                        <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/admin/img/icon-eye.gif" /> View</a> 
-                        <a class="btnLink" href="/admin/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/admin/img/icon-pencil.gif" /> Update Location</a>                      
+                        <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a> 
+                        <a class="btnLink" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/img/icon-pencil.gif" /> Update Location</a>                      
                       <?php } else { ?>
-                        <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/admin/img/icon-eye.gif" /> View</a> 
+                        <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a> 
                       <?php } ?>
                     </span> 
                     <span class="on-off-buttons">
-                      <a data-id="<?=$rsl->location_review_site_id?>" id="on<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
-                      <a data-id="<?=$rsl->location_review_site_id?>" id="off<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                      <a data-id="<?=$rsl->location_review_site_id?>" id="on<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
+                      <a data-id="<?=$rsl->location_review_site_id?>" id="off<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
                     </span> 
-                    <img src="/admin/img/btn_sort.gif" class="sort-icon" />
+                    <img src="/img/btn_sort.gif" class="sort-icon" />
                   </li>
                   <?php
                 }
@@ -201,7 +201,7 @@
             <div class="row">
               <label for="rating_threshold_star" class="col-md-4 control-label">Authenticate Facebook</label>
               <div class="col-md-8">
-                <a href="/admin/location/getAccessToken" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
+                <a href="/location/getAccessToken" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
               </div>
             </div>
             <div class="row">
@@ -540,26 +540,26 @@
                 <td><?=$data->name?></td>
                 <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" data-type="ea" data-value="0" id="eaon<?=$data->id?>" href="#" class="email_alert_on" style="<?=($is_email_alert_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" data-type="ea" data-value="1" id="eaoff<?=$data->id?>" href="#" class="email_alert_off" style="<?=($is_email_alert_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ea" data-value="0" id="eaon<?=$data->id?>" href="#" class="email_alert_on" style="<?=($is_email_alert_on?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ea" data-value="1" id="eaoff<?=$data->id?>" href="#" class="email_alert_off" style="<?=($is_email_alert_on?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
                 </span> 
                 </td>
                 <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" data-type="sa" data-value="0" id="saon<?=$data->id?>" href="#" class="sms_alert_on" style="<?=($is_sms_alert_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" data-type="sa" data-value="1" id="saoff<?=$data->id?>" href="#" class="sms_alert_off" style="<?=($is_sms_alert_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="sa" data-value="0" id="saon<?=$data->id?>" href="#" class="sms_alert_on" style="<?=($is_sms_alert_on?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="sa" data-value="1" id="saoff<?=$data->id?>" href="#" class="sms_alert_off" style="<?=($is_sms_alert_on?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
                 </span> 
                 </td>
                 <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" data-type="ar" data-value="0" id="aron<?=$data->id?>" href="#" class="all_reviews_on" style="<?=($is_all_reviews_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" data-type="ar" data-value="1" id="aroff<?=$data->id?>" href="#" class="all_reviews_off" style="<?=($is_all_reviews_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ar" data-value="0" id="aron<?=$data->id?>" href="#" class="all_reviews_on" style="<?=($is_all_reviews_on?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ar" data-value="1" id="aroff<?=$data->id?>" href="#" class="all_reviews_off" style="<?=($is_all_reviews_on?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
                 </span> 
                 </td>
                 <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" data-type="ir" data-value="0" id="iron<?=$data->id?>" href="#" class="individual_reviews_on" style="<?=($is_individual_reviews_on?'':'display: none;')?>"><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" data-type="ir" data-value="1" id="iroff<?=$data->id?>" href="#" class="individual_reviews_off" style="<?=($is_individual_reviews_on?'display: none;':'')?>"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ir" data-value="0" id="iron<?=$data->id?>" href="#" class="individual_reviews_on" style="<?=($is_individual_reviews_on?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="ir" data-value="1" id="iroff<?=$data->id?>" href="#" class="individual_reviews_off" style="<?=($is_individual_reviews_on?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
                 </span> 
                 </td>
               </tr>
@@ -609,7 +609,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 ?>
 <div class="overlay" style="display: none;"></div>
 <div id="page-wrapper" class="create createreviewsiteform" style="display: none;">
-<form id="createreviewsiteform" class="register-form4" action="/admin/settings/siteadd/<?=$this->session->get('auth-identity')['location_id']?>/" method="post" style="display: block;">
+<form id="createreviewsiteform" class="register-form4" action="/settings/siteadd/<?=$this->session->get('auth-identity')['location_id']?>/" method="post" style="display: block;">
   <div class="closelink close"></div>
 	<div class="col-md-12">
     <div class="row"><h3>Add Review Site</h3></div>    
@@ -697,7 +697,7 @@ jQuery(document).ready(function($){
           var name = element.name;
 
           //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span> <span class="review_site-buttons"><a class="btnLink" href="'+url+'" target="_blank"><img src="/admin/img/icon-eye.gif" /> View</a></span> <span class="on-off-buttons"> <a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/admin/img/btn_on.gif"  class="sort-icon" /></a> <a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/admin/img/btn_off.gif"  class="sort-icon" /></a> </span> <img src="/admin/img/btn_sort.gif" class="sort-icon" /> </li>');
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span> <span class="review_site-buttons"><a class="btnLink" href="'+url+'" target="_blank"><img src="/img/icon-eye.gif" /> View</a></span> <span class="on-off-buttons"> <a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a> <a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a> </span> <img src="/img/btn_sort.gif" class="sort-icon" /> </li>');
 
           $("a.review_site_on").click(function() { 
             return turnOn($(this).attr("data-id"));
@@ -724,7 +724,7 @@ jQuery(document).ready(function($){
     //console.log('id:'+id);
     
     $.ajax({
-      url: "/admin/settings/on/"+id,
+      url: "/settings/on/"+id,
       cache: false,
       success: function(html){
         //done!
@@ -745,7 +745,7 @@ jQuery(document).ready(function($){
     //console.log('id:'+id);
 
     $.ajax({
-      url: "/admin/settings/off/"+id,
+      url: "/settings/off/"+id,
       cache: false,
       success: function(html){
         //done!
@@ -764,7 +764,7 @@ jQuery(document).ready(function($){
     value = $(this).attr("data-value");
     //console.log('id:'+id);
     $.ajax({
-      url: "/admin/settings/notification/"+id+"/"+type+"/"+value+"/",
+      url: "/settings/notification/"+id+"/"+type+"/"+value+"/",
       cache: false,
       success: function(html){
         //done!

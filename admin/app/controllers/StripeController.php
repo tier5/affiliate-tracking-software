@@ -22,7 +22,7 @@ class StripeController extends ControllerBase
       $this->tag->setTitle('Review Velocity | Subscriptions');
       $this->view->setTemplateBefore('private');
     } else {
-      $this->response->redirect('/admin/session/login?return=/admin/stripe/');
+      $this->response->redirect('/session/login?return=/stripe/');
       $this->view->disable();
       return;      
     }

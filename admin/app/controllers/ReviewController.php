@@ -151,7 +151,7 @@ class ReviewController extends ControllerBase
 
         if ($rating && $rating < $threshold) {
           //redirect to the no thanks page
-          $this->response->redirect('/admin/review/nothanks?r='.$rating.'&a='.htmlspecialchars($_GET["a"]));
+          $this->response->redirect('/review/nothanks?r='.$rating.'&a='.htmlspecialchars($_GET["a"]));
           $this->view->disable();
           return;
         }

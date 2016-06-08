@@ -56,7 +56,7 @@ jQuery(document).ready(function($){
     $.ajax({
       async: false,
 			type: 'POST',
-			url: '/admin/review/track?d='+$(this).data("id")+'&i='+$(this).data("invite")
+			url: '/review/track?d='+$(this).data("id")+'&i='+$(this).data("invite")
 		});
   });
 });

@@ -34,7 +34,7 @@ class ContactsController extends ControllerBase
       $this->view->setVar('logged_in', $logged_in);
       $this->view->setTemplateBefore('private');
     } else {        
-      $this->response->redirect('/admin/session/login?return=/admin/contacts/');
+      $this->response->redirect('/session/login?return=/contacts/');
       $this->view->disable();
       return;
     }
@@ -67,7 +67,7 @@ class ContactsController extends ControllerBase
       $this->view->setVar('logged_in', $logged_in);
       $this->view->setTemplateBefore('private');
     } else {        
-      $this->response->redirect('/admin/session/login?return=/admin/contacts/');
+      $this->response->redirect('/session/login?return=/contacts/');
       $this->view->disable();
       return;
     }

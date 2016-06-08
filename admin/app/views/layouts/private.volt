@@ -16,57 +16,57 @@
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
     <!-- END GLOBAL MANDATORY STYLES -->
     <!-- BEGIN PAGE LEVEL PLUGINS -->
-    <link href="/admin/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/global/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/public/assets/global/plugins/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+    <link href="/public/assets/global/plugins/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css" rel="stylesheet" type="text/css" />
     <!-- END PAGE LEVEL PLUGINS -->
     <!-- BEGIN THEME GLOBAL STYLES -->
-    <link href="/admin/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
-    <link href="/admin/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+    <link href="/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
     <!-- END THEME GLOBAL STYLES -->
-    <link rel="stylesheet" href="/admin/js/vendor/minicolors/jquery.minicolors.css" />
+    <link rel="stylesheet" href="/js/vendor/minicolors/jquery.minicolors.css" />
     <!-- BEGIN THEME LAYOUT STYLES -->
-    <link href="/admin/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color" />
-    <link href="/admin/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color" />
+    <link href="/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
     <!-- END THEME LAYOUT STYLES -->
-    <link href="/admin/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="/admin/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
+    <link href="/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
     <?php 
     if(strpos($_SERVER['REQUEST_URI'],'location/create')>0 || strpos($_SERVER['REQUEST_URI'],'location/edit')>0 || strpos($_SERVER['REQUEST_URI'],'location/create2')>0 || strpos($_SERVER['REQUEST_URI'],'location/create3')>0) {
       ?>
-      <link href="/admin/css/main.css" rel="stylesheet" />
-      <link href="/admin/css/signup.css" rel="stylesheet" type="text/css" />
+      <link href="/css/main.css" rel="stylesheet" />
+      <link href="/css/signup.css" rel="stylesheet" type="text/css" />
       <?php 
     }
     ?>
-    <link href="/admin/css/admin.css" rel="stylesheet" type="text/css" />
+    <link href="/css/admin.css" rel="stylesheet" type="text/css" />
     <?php 
     if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
     ?>
-    <link href="/admin/css/subscription.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/css/invoices.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/css/slider-extended.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/assets/global/plugins/card-js/card-js.min.css" type="text/javascript" />
+    <link href="/css/subscription.css" rel="stylesheet" type="text/css" />
+    <link href="/css/invoices.css" rel="stylesheet" type="text/css" />
+    <link href="/css/slider-extended.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/card-js/card-js.min.css" type="text/javascript" />
     <?php 
     }
     ?>
 
     <link rel="shortcut icon" href="favicon.ico" /> 
-    <!--<script src="/admin/assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->    
-    <script type="text/javascript" src="/admin/js/vendor/jquery-2.1.1.min.js"></script>
-    <link rel="stylesheet" href="/admin/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
-    <script type="text/javascript" src="/admin/js/vendor/fancybox/jquery.fancybox.pack.js"></script>    
+    <!--<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->    
+    <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" href="/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="/js/vendor/fancybox/jquery.fancybox.pack.js"></script>    
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <?php
     if (false && isset($main_color_setting)) {
@@ -102,8 +102,8 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
         <div class="page-header-inner ">
             <!-- BEGIN LOGO -->
             <div class="page-logo" style="margin-top: 0;">
-                <a href="/admin/">
-                    <img src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/admin/assets/layouts/layout/img/logo.png')?>" alt="logo" class="logo-default" /> </a>
+                <a href="/">
+                    <img src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/assets/layouts/layout/img/logo.png')?>" alt="logo" class="logo-default" /> </a>
                 <div class="menu-toggler sidebar-toggler"> </div>
             </div>
             <!-- END LOGO -->
@@ -124,7 +124,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
                         ?>
                         <li class="" id="">
-                            <a href="#sendreviewinvite" class="fancybox"><img src="/admin/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
+                            <a href="#sendreviewinvite" class="fancybox"><img src="/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
                         </li>
                         <?php } 
 
@@ -138,7 +138,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                             <span id="locationset">
                                 Location: <?=$this->session->get('auth-identity')['location_name']?>  <?php if (count($loclist) > 1) { ?><a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a><?php } ?>
                             </span>
-                            <span id="locationnotset" style="display: none;"><form action="/admin/" method="post">
+                            <span id="locationnotset" style="display: none;"><form action="/" method="post">
                                     Location: <select name="locationselect" id="locationselect">
                                         <?php 
                                         if (count($loclist) > 1) {
@@ -169,7 +169,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                                         <i class="icon-user"></i> My Profile </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/session/logout">
+                                    <a href="/session/logout">
                                         <i class="icon-key"></i>
                                         <span class="title">Log Out</span>
                                     </a>
@@ -313,35 +313,35 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
                         ?>
                         <li class="nav-item start <?=($openfolder=='admindashboard'?'active open':'')?>">
-                            <a href="/admin/admindashboard/" class="nav-link nav-toggle">
+                            <a href="/admindashboard/" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
                                 <span class="title">Dashboard</span>
                                 <?=($openfolder=='admindashboard'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item start <?=($openfolder=='admindashboardbusinesses'?'active open':'')?>">
-                            <a href="/admin/admindashboard/list/2" class="nav-link nav-toggle">
+                            <a href="/admindashboard/list/2" class="nav-link nav-toggle">
                                 <i class="icon-pointer"></i>
                                 <span class="title">See All Businesses</span>
                                 <?=($openfolder=='admindashboardbusinesses'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item start <?=($openfolder=='admindashboardagencies'?'active open':'')?>">
-                            <a href="/admin/admindashboard/list/1" class="nav-link nav-toggle">
+                            <a href="/admindashboard/list/1" class="nav-link nav-toggle">
                                 <i class="icon-pointer"></i>
                                 <span class="title">See All Agencies</span>
                                 <?=($openfolder=='admindashboardagencies'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item start <?=($openfolder=='settings'?'active open':'')?>">
-                            <a href="/admin/admindashboard/settings" class="nav-link nav-toggle">
+                            <a href="/admindashboard/settings" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
                                 <span class="title">Settings</span>
                                 <?=($openfolder=='settings'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item <?=($openfolder=='subscription'?'active open':'')?>">
-                            <a href="/admin/subscription/" class="nav-link nav-toggle">
+                            <a href="/subscription/" class="nav-link nav-toggle">
                                 <i class="icon-wallet"></i>
                                 <span class="title">Subscriptions</span>
                                 <?=($openfolder=='subscription'?'<span class="selected"></span>':'')?>
@@ -355,7 +355,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') {
                         ?>
                         <li class="nav-item start <?=($openfolder=='dashboard'?'active open':'')?>">
-                            <a href="/admin/agency" class="nav-link nav-toggle">
+                            <a href="/agency" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
                                 <span class="title">Manage Businesses</span>
                                 <?=($openfolder=='dashboard'?'<span class="selected"></span>':'')?>
@@ -365,7 +365,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         } else {
                         ?>
                         <li class="nav-item start <?=($openfolder=='dashboard'?'active open':'')?>">
-                            <a href="/admin/" class="nav-link nav-toggle">
+                            <a href="/" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
                                 <span class="title">Dashboard</span>
                                 <?=($openfolder=='dashboard'?'<span class="selected"></span>':'')?>
@@ -383,14 +383,14 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         ?>
 
                         <li class="nav-item <?=($openfolder=='reviews'?'active open':'')?>">
-                            <a href="/admin/reviews/" class="nav-link nav-toggle">
+                            <a href="/reviews/" class="nav-link nav-toggle">
                                 <i class="icon-diamond"></i>
                                 <span class="title">Reviews</span>
                                 <?=($openfolder=='reviews'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item <?=($openfolder=='analytics'?'active open':'')?>">
-                            <a href="/admin/analytics/" class="nav-link nav-toggle">
+                            <a href="/analytics/" class="nav-link nav-toggle">
                                 <i class="icon-bar-chart"></i>
                                 <span class="title">Analytics</span>
                                 <?=($openfolder=='analytics'?'<span class="selected"></span>':'')?>
@@ -402,14 +402,14 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         if (strpos($this->session->get('auth-identity')['profile'], 'Admin') > 0) {
                         ?>
                         <li class="nav-item <?=($openfolder=='sms_broadcast'?'active open':'')?>">
-                            <a href="/admin/reviews/sms_broadcast" class="nav-link nav-toggle">
+                            <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
                                 <i class="icon-envelope"></i>
                                 <span class="title">SMS Broadcast</span>
                                 <?=($openfolder=='sms_broadcast'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <li class="nav-item <?=($openfolder=='contacts'?'active open':'')?>">
-                            <a href="/admin/contacts" class="nav-link nav-toggle">
+                            <a href="/contacts" class="nav-link nav-toggle">
                                 <i class="icon-users"></i>
                                 <span class="title">Contacts</span>
                                 <?=($openfolder=='contacts'?'<span class="selected"></span>':'')?>
@@ -421,7 +421,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         if (strpos($this->session->get('auth-identity')['profile'], 'Admin') > 0) {
                         ?>
                         <li class="nav-item <?=($openfolder=='users'?'active open':'')?>">
-                            <a href="/admin/users/" class="nav-link nav-toggle">
+                            <a href="/users/" class="nav-link nav-toggle">
                                 <i class="icon-user"></i>
                                 <span class="title">Employees</span>
                                 <?=($openfolder=='users'?'<span class="selected"></span>':'')?>
@@ -443,7 +443,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business')) {
                         ?>
                         <li class="nav-item <?=($openfolder=='location'?'active open':'')?>">
-                            <a href="/admin/location/" class="nav-link nav-toggle">
+                            <a href="/location/" class="nav-link nav-toggle">
                                 <i class="icon-pointer"></i>
                                 <span class="title">Locations</span>
                                 <?=($openfolder=='location'?'<span class="selected"></span>':'')?>
@@ -464,7 +464,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         
                         <!-- 
                         <li class="nav-item #($openfolder=='stripe'?'active open':'')?>">
-                            <a href="/admin/stripe/" class="nav-link nav-toggle">
+                            <a href="/stripe/" class="nav-link nav-toggle">
                                 <i class="icon-credit-card"></i>
                                 <span class="title">Subscriptions</span>
                                 # ($openfolder=='stripe'?'<span class="selected"></span>':'') ?>
@@ -478,14 +478,14 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         if ($this->session->get('auth-identity')['profile'] != 'Employee') {
                         ?> 
                         <li class="nav-item <?=($openfolder=='settings'?'active open':'')?>">
-                            <a href="/admin/settings/location/" class="nav-link nav-toggle">
+                            <a href="/settings/location/" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
                                 <span class="title">Settings</span>
                                 <?=($openfolder=='settings'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>  
                         <li class="nav-item <?=($openfolder=='adminusers'?'active open':'')?>">
-                            <a href="/admin/users/admin/" class="nav-link nav-toggle">
+                            <a href="/users/" class="nav-link nav-toggle">
                                 <i class="icon-user"></i>
                                 <span class="title">Admin Users</span>
                                 <?=($openfolder=='adminusers'?'<span class="selected"></span>':'')?>
@@ -499,7 +499,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         if ($this->session->get('auth-identity')['profile'] != 'Employee') {
                         ?> 
                         <li class="nav-item <?=($openfolder=='subscription'?'active open':'')?>">
-                            <a href="/admin/subscription/" class="nav-link nav-toggle">
+                            <a href="/subscription/" class="nav-link nav-toggle">
                                 <i class="icon-wallet"></i>
                                 <span class="title">Subscriptions</span>
                                 <?=($openfolder=='subscription'?'<span class="selected"></span>':'')?>
@@ -538,86 +538,86 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
         </div>
         <!-- END FOOTER -->
         <!--[if lt IE 9]>
-    <script src="/admin/assets/global/plugins/respond.min.js"></script>
-    <script src="/admin/assets/global/plugins/excanvas.min.js"></script> 
+    <script src="/assets/global/plugins/respond.min.js"></script>
+    <script src="/assets/global/plugins/excanvas.min.js"></script> 
     <![endif]-->
         <!-- BEGIN CORE PLUGINS -->
-        <script src="/admin/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="/admin/assets/global/plugins/moment.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/morris/morris.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/morris/raphael-min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/counterup/jquery.waypoints.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/counterup/jquery.counterup.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/amcharts/amcharts/amcharts.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/amcharts/amcharts/serial.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/amcharts/amcharts/pie.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/amcharts/amcharts/radar.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/amcharts/amcharts/themes/light.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/amcharts/amcharts/themes/patterns.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/amcharts/amcharts/themes/chalk.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/amcharts/ammap/ammap.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/amcharts/ammap/maps/js/worldLow.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/amcharts/amstockcharts/amstock.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/seiyria-bootstrap-slider/dist/bootstrap-slider.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/moment.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/morris/morris.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/morris/raphael-min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/counterup/jquery.waypoints.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/counterup/jquery.counterup.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/amcharts/amcharts/amcharts.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/amcharts/amcharts/serial.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/amcharts/amcharts/pie.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/amcharts/amcharts/radar.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/amcharts/amcharts/themes/light.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/amcharts/amcharts/themes/patterns.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/amcharts/amcharts/themes/chalk.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/amcharts/ammap/ammap.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/amcharts/ammap/maps/js/worldLow.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/amcharts/amstockcharts/amstock.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/seiyria-bootstrap-slider/dist/bootstrap-slider.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
-        <script type="text/javascript" src="/admin/js/vendor/jquery.dataTables.js"></script>
-        <script type="text/javascript" src="/admin/js/vendor/dataTables.tableTools.js"></script>
-        <script type="text/javascript" src="/admin/js/vendor/dataTables.bootstrap.js"></script>
-        <script type="text/javascript" src="/admin/js/vendor/dataTables.responsive.js"></script>
-        <script type="text/javascript" src="/admin/js/vendor/tables-data.js"></script>
-        <script type="text/javascript" src="/admin/js/vendor/buttons.js"></script>
-        <script src="/admin/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="/js/vendor/jquery.dataTables.js"></script>
+        <script type="text/javascript" src="/js/vendor/dataTables.tableTools.js"></script>
+        <script type="text/javascript" src="/js/vendor/dataTables.bootstrap.js"></script>
+        <script type="text/javascript" src="/js/vendor/dataTables.responsive.js"></script>
+        <script type="text/javascript" src="/js/vendor/tables-data.js"></script>
+        <script type="text/javascript" src="/js/vendor/buttons.js"></script>
+        <script src="/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
-        <script src="/admin/assets/global/scripts/app.min.js" type="text/javascript"></script>
+        <script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="/admin/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/pages/scripts/dashboard.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+        <script src="/assets/pages/scripts/dashboard.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
-        <script src="/admin/assets/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
-        <script src="/admin/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+        <script src="/assets/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
+        <script src="/assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
+        <script src="/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
-        <script type="text/javascript" src="/admin/js/vendor/minicolors/jquery.minicolors.js"></script>
-        <script src="/admin/js/main.js" type="text/javascript"></script>
-        <script src="/admin/js/star-rating.js" type="text/javascript"></script>
-        <script src="/admin/js/pdf-viewer.js" type="text/javascript"></script>
+        <script type="text/javascript" src="/js/vendor/minicolors/jquery.minicolors.js"></script>
+        <script src="/js/main.js" type="text/javascript"></script>
+        <script src="/js/star-rating.js" type="text/javascript"></script>
+        <script src="/js/pdf-viewer.js" type="text/javascript"></script>
 
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <?php if ($openfolder=='location') { ?>
         <?php } ?>
-        <script src="/admin/js/card-js.min.js"></script>
-        <script src="/admin/js/login.js"></script>
+        <script src="/js/card-js.min.js"></script>
+        <script src="/js/login.js"></script>
         
         <?php 
         if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
         ?>
-        <script src="/admin/assets/global/plugins/card-js/card-js.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/card-js/card-js.min.js" type="text/javascript"></script>
         <?php 
         }
         ?>
@@ -663,7 +663,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                     <?php 
                     if ($sms_sent_this_month_total < $total_sms_month) {
                     ?>
-                    <form class="form-horizontal" action="/admin/location/send_review_invite" role="form" method="post" autocomplete="off" id="smsrequestform" >
+                    <form class="form-horizontal" action="/location/send_review_invite" role="form" method="post" autocomplete="off" id="smsrequestform" >
                         <div class="success" id="smsrequestformsuccess" style="display: none;">The review invite was sent.</div>
                         <div class="error" id="smsrequestformerror" style="display: none;">There was a problem sending the review invite.</div>
                         <div class="form-group">
@@ -726,7 +726,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                     <?php 
                     } else {
                     ?>
-                    You must have a Twilio SID and Auth Token to send SMS messages.  All SMS messages are sent using <a href="https://www.twilio.com/" target="_blank">Twilio</a>.  <a href="/admin/settings/">Click here</a> to enter your Twilio SID and Auth Key now.  If you don't have an API key yet, <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a> to sign up.  
+                    You must have a Twilio SID and Auth Token to send SMS messages.  All SMS messages are sent using <a href="https://www.twilio.com/" target="_blank">Twilio</a>.  <a href="/settings/">Click here</a> to enter your Twilio SID and Auth Key now.  If you don't have an API key yet, <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a> to sign up.  
                     <?php
                     }
                     ?>

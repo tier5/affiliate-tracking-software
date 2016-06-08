@@ -57,8 +57,8 @@
         <div class="portlet-body" id="reportwrapperreview">
 
         <ul class="nav nav-tabs" style="margin-bottom: 25px;">
-          <li class="active"><a style="border-top: 8px solid #283643 !important; padding: 14px 69px 53px;" href="/admin/reviews/sms_broadcast"> NEW MESSAGES </a></li>
-          <li><a style="border-top: 8px solid #F6F6F6 !important; padding: 14px 69px 53px;" href="/admin/reviews/sent_message"> SENT MESSAGE </a></li>
+          <li class="active"><a style="border-top: 8px solid #283643 !important; padding: 14px 69px 53px;" href="/reviews/sms_broadcast"> NEW MESSAGES </a></li>
+          <li><a style="border-top: 8px solid #F6F6F6 !important; padding: 14px 69px 53px;" href="/reviews/sent_message"> SENT MESSAGE </a></li>
         </ul>
 
 
@@ -71,7 +71,7 @@
         <div id="pnlSMSSent" class="portlet light bordered">
           <div class="portlet-title" style="margin-top: 13px;">
             <div class="caption">
-              <img src="/admin/img/icon-user.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> Search for Customers</span>
+              <img src="/img/icon-user.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> Search for Customers</span>
             </div>
           </div>
           <div class="row">
@@ -228,7 +228,7 @@
         <div id="pnlSMSSent" class="portlet light bordered">
           <div class="portlet-title" style="margin-top: 13px;">
             <div class="caption">
-              <img src="/admin/img/icon-user.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> Review Invite Customer List</span>
+              <img src="/img/icon-user.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> Review Invite Customer List</span>
             </div>
           </div>
           <div class="row">
@@ -297,7 +297,7 @@
           </div>
           <div class="portlet-title" style="margin-top: 13px;">
             <div class="caption">
-              <img src="/admin/img/icon-phone.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> SMS Message</span>
+              <img src="/img/icon-phone.gif" /> <span class="caption-subject bold uppercase" style="font-size: 14px !important;"> SMS Message</span>
             </div>
           </div>
           <div class="row">

@@ -57,7 +57,7 @@
         <div class="portlet light bordered">
           <div class="portlet-title">
             <div class="caption">
-              <img src="/admin/img/icon-phone.gif" />
+              <img src="/img/icon-phone.gif" />
               <span class="caption-subject bold uppercase">SMS SENT</span>
             </div>
           </div>
@@ -98,7 +98,7 @@
         <div class="portlet light bordered">
           <div class="portlet-title">
             <div class="caption">
-              <img src="/admin/img/icon-reviews.gif" />
+              <img src="/img/icon-reviews.gif" />
               <span class="caption-subject bold uppercase">NEW REVIEWS</span>
             </div>
           </div>
@@ -145,7 +145,7 @@
         <div class="portlet light bordered">
           <div class="portlet-title">
             <div class="caption">
-              <img src="/admin/img/icon-reviews.gif" />
+              <img src="/img/icon-reviews.gif" />
               <span class="caption-subject bold uppercase">FEEDBACK CONVERSION RATE</span>
             </div>
           </div>
@@ -197,7 +197,7 @@
         <div class="portlet light bordered">
           <div class="portlet-title">
             <div class="caption">
-              <img src="/admin/img/icon-arrow.gif" />
+              <img src="/img/icon-arrow.gif" />
               <span class="caption-subject bold uppercase">CLICK THROUGH RATE</span>
             </div>
           </div>
@@ -258,7 +258,7 @@
         <div class="portlet light bordered">
           <div class="portlet-title">
             <div class="caption">
-              <img src="/admin/img/icon-reviews.gif" />
+              <img src="/img/icon-reviews.gif" />
               <span class="caption-subject bold uppercase">NUMBER OF REVIEW SITE CLICKS</span>
             </div>
           </div>
@@ -306,7 +306,7 @@
             <div class="flexsearch--input-wrapper">
               <input class="flexsearch--input" type="search" placeholder="search">
             </div>
-            <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
+            <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
           </div>
         </div>
 

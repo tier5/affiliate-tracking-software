@@ -71,7 +71,7 @@ class EmailConfirmations extends Model
         $this->getDI()
             ->getMail()
             ->send($this->user->email, "Please confirm your email", 'confirmation', array(
-            'confirmUrl' => '/admin/confirm/' . $this->code . '/' . $this->user->email
+            'confirmUrl' => '/confirm/' . $this->code . '/' . $this->user->email
         ));
       } catch (Exception $e) {
         //do nothing

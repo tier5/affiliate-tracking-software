@@ -3,7 +3,7 @@
 
 
 <!-- BEGIN LOGIN FORM -->
-<form class="login-form" action="/admin/session/login?return=<?=(isset($_GET['return'])?$_GET['return']:'')?>" method="post">
+<form class="login-form" action="/session/login?return=<?=(isset($_GET['return'])?$_GET['return']:'')?>" method="post">
   <h3><?=(strpos($_SERVER['REQUEST_URI'],'admin/confirm/')>0?'Thank You For Confirming Your Email Sign In':'Sign In')?></h3>
   <p class="hint"> &nbsp; </p>
     <div class="alert alert-danger display-hide">
@@ -21,12 +21,12 @@
         <button type="submit" class="btnLink">Log in</button>
         <label class="rememberme check">
             <input type="checkbox" name="remember" value="1" <?=(isset($_POST['remember']) && $_POST["remember"]=="1"?'checked="checked"':'')?> />Remember </label>
-        <a href="/admin/session/forgotPassword" id="forget-password" class="forget-password">Forgot Password?</a>
+        <a href="/session/forgotPassword" id="forget-password" class="forget-password">Forgot Password?</a>
     </div>
     <!--
     <div class="create-account">
         <p>
-            <a href="/admin/session/signup" id="register-btn" class="uppercase">Create an account</a>
+            <a href="/session/signup" id="register-btn" class="uppercase">Create an account</a>
         </p>
     </div>-->
 

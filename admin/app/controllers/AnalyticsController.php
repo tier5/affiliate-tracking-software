@@ -25,7 +25,7 @@ class AnalyticsController extends ControllerBase
     {
       $logged_in = is_array($this->auth->getIdentity());
       if (!$logged_in) {
-        $this->response->redirect('/admin/session/login?return=/admin/analytics/');
+        $this->response->redirect('/session/login?return=/analytics/');
         $this->view->disable();
         return;
       }

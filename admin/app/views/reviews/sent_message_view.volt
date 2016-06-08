@@ -59,7 +59,7 @@
           <div class="table-header">
             <div class="title reporttitle"><i class="icon-envelope"></i> SENT MESSAGES</div>
             <div class="header-buttons">
-               <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink" href="/admin/reviews/sent_message">Back</a>
+               <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink" href="/reviews/sent_message">Back</a>
             </div>  
           </div>
         </div>
@@ -80,7 +80,7 @@
             <div class="flexsearch--input-wrapper">
               <input class="flexsearch--input" type="search" placeholder="search">
             </div>
-            <a class="flexsearch--submit"><img src="/admin/img/icon-maglass-search.gif" /></a>
+            <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
           </div>
         </div>
         
