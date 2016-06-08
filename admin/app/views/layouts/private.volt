@@ -55,6 +55,7 @@
     if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
     ?>
     <link href="/admin/css/subscription.css" rel="stylesheet" type="text/css" />
+    <link href="/admin/css/invoices.css" rel="stylesheet" type="text/css" />
     <link href="/admin/css/slider-extended.css" rel="stylesheet" type="text/css" />
     <link href="/admin/assets/global/plugins/card-js/card-js.min.css" type="text/javascript" />
     <?php 
@@ -605,6 +606,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
         <script type="text/javascript" src="/admin/js/vendor/minicolors/jquery.minicolors.js"></script>
         <script src="/admin/js/main.js" type="text/javascript"></script>
         <script src="/admin/js/star-rating.js" type="text/javascript"></script>
+        <script src="/admin/js/pdf-viewer.js" type="text/javascript"></script>
 
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <?php if ($openfolder=='location') { ?>

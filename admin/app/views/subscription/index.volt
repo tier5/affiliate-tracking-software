@@ -52,7 +52,7 @@
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <div class="growth-bar transparent pull-right">
-                    <button type="button" class="btn default btn-lg apple-backgound subscription-btn">View Invoices</button>
+                    <a href="/admin/subscription/invoices" class="btn default btn-lg apple-backgound subscription-btn">View Invoices</a>
                 </div>
             </div>
         </div>

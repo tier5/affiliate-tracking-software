@@ -961,6 +961,9 @@ body { background-color: #FFFFFF; color: #484848; }
 .midnight-text {
     color: #283643 !important;
 }
+.midnight-background {
+    background-color: #283643 !important;
+}
 .golden-poppy-backgound {
     background-color: #FFC600 !important;
 }

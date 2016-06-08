@@ -50,6 +50,15 @@ class SubscriptionController extends ControllerBase {
     }
 
     /**
+     * Show invoices 
+     */
+    public function invoicesAction() {
+        if ($this->request->isGet()) {
+            
+        }
+    }
+    
+    /**
      * Creates a subscriptions
      */
     public function createAction() {
