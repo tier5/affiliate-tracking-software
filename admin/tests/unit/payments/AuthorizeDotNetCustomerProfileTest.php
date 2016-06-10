@@ -25,24 +25,14 @@ class AuthorizeDotNetCustomerProfileTest extends \Codeception\TestCase\Test
         
         $parameters = [];
         $parameters['environment'] = 'dev';
-	$parameters['cardNumber'] = '4111111111111111';
-	$parameters['cardExpiryDate'] = '2038-12';
-	$parameters['cardCode'] = '123';
-        $parameters['firstName'] = "John"; 
-	$parameters['lastName'] = "Smith";
-	$parameters['companyName'] = "Widgets Inc.";
-	$parameters['companyAddress'] = "555 Somewhere Rd.";
-	$parameters['city'] = "Houston";
-	$parameters['state'] = "TX";
-	$parameters['zip'] = '44628';
-	$parameters['country'] = 'USA';
-	$parameters['customerType'] = 'individual';
 	$parameters['customerProfileDescription'] = 'Test Customer';
         $parameters['email'] = 'john.smith@test.com';
         
         $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
-        self::$customerProfileId = $authorizeDotNet->createCustomerProfile($parameters);
+        $customerProfile = $authorizeDotNet->createCustomerProfile($parameters);
         
+        self::$customerProfileId = $customerProfile['customerProfileId'];
+         
         $this->assertTrue(self::$customerProfileId !== false, "Create new customer profile on authorize.net platform failed!!!");
     }
     
