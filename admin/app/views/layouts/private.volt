@@ -6,80 +6,80 @@
     <!--<![endif]-->
     <!-- BEGIN HEAD -->
 
-<head>
-    <meta charset="utf-8" />
-    {{ get_title() }}
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <meta content="" name="description" />
-    <meta content="" name="author" />
-    <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-    <!-- END GLOBAL MANDATORY STYLES -->
-    <!-- BEGIN PAGE LEVEL PLUGINS -->
-    <link href="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
-    <link href="/public/assets/global/plugins/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css" rel="stylesheet" type="text/css" />
-    <!-- END PAGE LEVEL PLUGINS -->
-    <!-- BEGIN THEME GLOBAL STYLES -->
-    <link href="/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
-    <link href="/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-    <!-- END THEME GLOBAL STYLES -->
-    <link rel="stylesheet" href="/js/vendor/minicolors/jquery.minicolors.css" />
-    <!-- BEGIN THEME LAYOUT STYLES -->
-    <link href="/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color" />
-    <link href="/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
-    <!-- END THEME LAYOUT STYLES -->
-    <link href="/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
-    <?php 
-    if(strpos($_SERVER['REQUEST_URI'],'location/create')>0 || strpos($_SERVER['REQUEST_URI'],'location/edit')>0 || strpos($_SERVER['REQUEST_URI'],'location/create2')>0 || strpos($_SERVER['REQUEST_URI'],'location/create3')>0) {
-      ?>
-      <link href="/css/main.css" rel="stylesheet" />
-      <link href="/css/signup.css" rel="stylesheet" type="text/css" />
-      <?php 
-    }
-    ?>
-    <link href="/css/admin.css" rel="stylesheet" type="text/css" />
-    <?php 
-    if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
-    ?>
-    <link href="/css/subscription.css" rel="stylesheet" type="text/css" />
-    <link href="/css/invoices.css" rel="stylesheet" type="text/css" />
-    <link href="/css/slider-extended.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/global/plugins/card-js/card-js.min.css" type="text/javascript" />
-    <?php 
-    }
-    ?>
+    <head>
+        <meta charset="utf-8" />
+        {{ get_title() }}
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta content="" name="description" />
+        <meta content="" name="author" />
+        <!-- BEGIN GLOBAL MANDATORY STYLES -->
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+        <!-- END GLOBAL MANDATORY STYLES -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <link href="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+        <link href="/public/assets/global/plugins/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css" rel="stylesheet" type="text/css" />
+        <!-- END PAGE LEVEL PLUGINS -->
+        <!-- BEGIN THEME GLOBAL STYLES -->
+        <link href="/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+        <link href="/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+        <!-- END THEME GLOBAL STYLES -->
+        <link rel="stylesheet" href="/js/vendor/minicolors/jquery.minicolors.css" />
+        <!-- BEGIN THEME LAYOUT STYLES -->
+        <link href="/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color" />
+        <link href="/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
+        <!-- END THEME LAYOUT STYLES -->
+        <link href="/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
+        <?php 
+        if(strpos($_SERVER['REQUEST_URI'],'location/create')>0 || strpos($_SERVER['REQUEST_URI'],'location/edit')>0 || strpos($_SERVER['REQUEST_URI'],'location/create2')>0 || strpos($_SERVER['REQUEST_URI'],'location/create3')>0) {
+        ?>
+        <link href="/css/main.css" rel="stylesheet" />
+        <link href="/css/signup.css" rel="stylesheet" type="text/css" />
+        <?php 
+        }
+        ?>
+        <link href="/css/admin.css" rel="stylesheet" type="text/css" />
+        <?php 
+        if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
+        ?>
+        <link href="/css/subscription.css" rel="stylesheet" type="text/css" />
+        <link href="/css/invoices.css" rel="stylesheet" type="text/css" />
+        <link href="/css/slider-extended.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/card-js/card-js.min.css" type="text/javascript" />
+        <?php 
+        }
+        ?>
 
-    <link rel="shortcut icon" href="favicon.ico" /> 
-    <!--<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->    
-    <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script>
-    <link rel="stylesheet" href="/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
-    <script type="text/javascript" src="/js/vendor/fancybox/jquery.fancybox.pack.js"></script>    
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <?php
-    if (false && isset($main_color_setting)) {
-      list($r, $g, $b) = sscanf($main_color_setting, "#%02x%02x%02x");
-      //echo "$main_color_setting -> $r $g $b";
-      ?>
-<style>
-.page-header.navbar { background-color: <?=$main_color_setting?>; }
-body { background-color: rgba(<?=$r?>, <?=$g?>, <?=$b?>, 0.8); }
-.page-sidebar .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a { border-top: <?=$main_color_setting?>; color: #FFFFFF; }
-.page-sidebar .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a { background-color: <?=$main_color_setting?>; }
-li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a { background-color: <?=$main_color_setting?> !important; }
-.minicolors-swatch-color { background-color: <?=$main_color_setting?>; }
+        <link rel="shortcut icon" href="favicon.ico" /> 
+        <!--<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->    
+        <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="/js/vendor/fancybox/jquery.fancybox.pack.js"></script>    
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <?php
+        if (false && isset($main_color_setting)) {
+        list($r, $g, $b) = sscanf($main_color_setting, "#%02x%02x%02x");
+        //echo "$main_color_setting -> $r $g $b";
+        ?>
+        <style>
+            .page-header.navbar { background-color: <?=$main_color_setting?>; }
+            body { background-color: rgba(<?=$r?>, <?=$g?>, <?=$b?>, 0.8); }
+            .page-sidebar .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a { border-top: <?=$main_color_setting?>; color: #FFFFFF; }
+            .page-sidebar .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a { background-color: <?=$main_color_setting?>; }
+            li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a { background-color: <?=$main_color_setting?> !important; }
+            .minicolors-swatch-color { background-color: <?=$main_color_setting?>; }
 
 
             li.nav-item:hover, li.nav-item a:hover,
@@ -95,24 +95,24 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
     </head>
     <!-- END HEAD -->
 
-<body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white">
-    <!-- BEGIN HEADER -->
-    <div class="page-header navbar navbar-fixed-top">
-        <!-- BEGIN HEADER INNER -->
-        <div class="page-header-inner ">
-            <!-- BEGIN LOGO -->
-            <div class="page-logo" style="margin-top: 0;">
-                <a href="/">
-                    <img src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/assets/layouts/layout/img/logo.png')?>" alt="logo" class="logo-default" /> </a>
-                <div class="menu-toggler sidebar-toggler"> </div>
-            </div>
-            <!-- END LOGO -->
-            <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-            <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
-            <!-- END RESPONSIVE MENU TOGGLER -->
-            <!-- BEGIN TOP NAVIGATION MENU -->
-            <div class="top-menu">
-                <ul class="nav navbar-nav pull-right">
+    <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white">
+        <!-- BEGIN HEADER -->
+        <div class="page-header navbar navbar-fixed-top">
+            <!-- BEGIN HEADER INNER -->
+            <div class="page-header-inner ">
+                <!-- BEGIN LOGO -->
+                <div class="page-logo" style="margin-top: 0;">
+                    <a href="/">
+                        <img src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/assets/layouts/layout/img/logo.png')?>" alt="logo" class="logo-default" /> </a>
+                    <div class="menu-toggler sidebar-toggler"> </div>
+                </div>
+                <!-- END LOGO -->
+                <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+                <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
+                <!-- END RESPONSIVE MENU TOGGLER -->
+                <!-- BEGIN TOP NAVIGATION MENU -->
+                <div class="top-menu">
+                    <ul class="nav navbar-nav pull-right">
                         <?php 
                         if (isset($haspaid) && $haspaid == false) {
 
@@ -232,83 +232,83 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         <!-- END RESPONSIVE QUICK SEARCH FORM 
                     </li>-->
 
-                    <?php
-                    $openfolder = '';
-                    if(strpos($_SERVER['REQUEST_URI'],'analytics')>0)
-                    {
-                      $openfolder = 'analytics';
-                    } 
-                    else if(strpos($_SERVER['REQUEST_URI'],'subscription')>0)
-                    {
-                      $openfolder = 'subscription';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'stripe')>0)
-                    {
-                      $openfolder = 'stripe';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'reviews/sms_broadcast')>0 ||
-                            strpos($_SERVER['REQUEST_URI'],'reviews/sent_message')>0 ||
-                            strpos($_SERVER['REQUEST_URI'],'reviews/sent_message_view')>0)
-                    {
-                      $openfolder = 'sms_broadcast';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'reviews')>0)
-                    {
-                      $openfolder = 'reviews';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'users/admin')>0)
-                    {
-                      $openfolder = 'adminusers';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'users')>0)
-                    {
-                      $openfolder = 'users';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'settings')>0)
-                    {
-                      $openfolder = 'settings';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'contacts')>0)
-                    {
-                      $openfolder = 'contacts';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'location')>0)
-                    {
-                      $openfolder = 'location';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/list/2')>0 || 
-                            strpos($_SERVER['REQUEST_URI'],'admindashboard/create/2')>0 || 
-                            strpos($_SERVER['REQUEST_URI'],'admindashboard/view/2')>0)
-                    {
-                      $openfolder = 'admindashboardbusinesses';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/list/1')>0 || 
-                            strpos($_SERVER['REQUEST_URI'],'admindashboard/create/1')>0 || 
-                            strpos($_SERVER['REQUEST_URI'],'admindashboard/view/1')>0)
-                    {
-                      $openfolder = 'admindashboardagencies';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/payments')>0)
-                    {
-                      $openfolder = 'admindashboardpayments';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/settings')>0)
-                    {
-                      $openfolder = 'admindashboardsettings';
-                    }
-                    else if(strpos($_SERVER['REQUEST_URI'],'admindashboard')>0)
-                    {
-                      $openfolder = 'admindashboard';
-                    }
-                    else 
-                    {
-                      $openfolder = 'dashboard';
-                    }
-                    ?>
-                    <?php 
-                  if (isset($haspaid) && $haspaid == false) {
-                    //the user has not paid
-                  } else {
+                        <?php
+                        $openfolder = '';
+                        if(strpos($_SERVER['REQUEST_URI'],'analytics')>0)
+                        {
+                        $openfolder = 'analytics';
+                        } 
+                        else if(strpos($_SERVER['REQUEST_URI'],'subscription')>0)
+                        {
+                        $openfolder = 'subscription';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'stripe')>0)
+                        {
+                        $openfolder = 'stripe';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'reviews/sms_broadcast')>0 ||
+                        strpos($_SERVER['REQUEST_URI'],'reviews/sent_message')>0 ||
+                        strpos($_SERVER['REQUEST_URI'],'reviews/sent_message_view')>0)
+                        {
+                        $openfolder = 'sms_broadcast';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'reviews')>0)
+                        {
+                        $openfolder = 'reviews';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'users/admin')>0)
+                        {
+                        $openfolder = 'adminusers';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'users')>0)
+                        {
+                        $openfolder = 'users';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'settings')>0)
+                        {
+                        $openfolder = 'settings';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'contacts')>0)
+                        {
+                        $openfolder = 'contacts';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'location')>0)
+                        {
+                        $openfolder = 'location';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/list/2')>0 || 
+                        strpos($_SERVER['REQUEST_URI'],'admindashboard/create/2')>0 || 
+                        strpos($_SERVER['REQUEST_URI'],'admindashboard/view/2')>0)
+                        {
+                        $openfolder = 'admindashboardbusinesses';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/list/1')>0 || 
+                        strpos($_SERVER['REQUEST_URI'],'admindashboard/create/1')>0 || 
+                        strpos($_SERVER['REQUEST_URI'],'admindashboard/view/1')>0)
+                        {
+                        $openfolder = 'admindashboardagencies';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/payments')>0)
+                        {
+                        $openfolder = 'admindashboardpayments';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'admindashboard/settings')>0)
+                        {
+                        $openfolder = 'admindashboardsettings';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'admindashboard')>0)
+                        {
+                        $openfolder = 'admindashboard';
+                        }
+                        else 
+                        {
+                        $openfolder = 'dashboard';
+                        }
+                        ?>
+                        <?php 
+                        if (isset($haspaid) && $haspaid == false) {
+                        //the user has not paid
+                        } else {
 
                         if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
                         ?>
@@ -340,18 +340,9 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                                 <?=($openfolder=='settings'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
-                        <li class="nav-item <?=($openfolder=='subscription'?'active open':'')?>">
-                            <a href="/subscription/" class="nav-link nav-toggle">
-                                <i class="icon-wallet"></i>
-                                <span class="title">Subscriptions</span>
-                                <?=($openfolder=='subscription'?'<span class="selected"></span>':'')?>
-                            </a>
-                        </li>
-
                         <?php 
                         } else {
-
-
+                        
                         if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') {
                         ?>
                         <li class="nav-item start <?=($openfolder=='dashboard'?'active open':'')?>">
@@ -455,13 +446,13 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                         <?php 
                         //if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
                         ?>
-                        
+
                         <?php
                         //only the Agency Admin gets access to locations
                         // if ($this->session->get('auth-identity')['profile'] != 'Employee' &&
                         // !(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business')) {
                         ?>
-                        
+
                         <!-- 
                         <li class="nav-item #($openfolder=='stripe'?'active open':'')?>">
                             <a href="/stripe/" class="nav-link nav-toggle">
@@ -470,10 +461,10 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                                 # ($openfolder=='stripe'?'<span class="selected"></span>':'') ?>
                             </a>
                         </li> -->
-                        
+
                         <?php 
                         // }
-                        
+
                         //only the Agency Admin gets access to locations
                         if ($this->session->get('auth-identity')['profile'] != 'Employee') {
                         ?> 
@@ -491,23 +482,21 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
                                 <?=($openfolder=='adminusers'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
-                        <?php 
-                        }
-                        ?>
-                        <?php 
-                        //only the Agency Admin gets access to locations
-                        if ($this->session->get('auth-identity')['profile'] != 'Employee') {
-                        ?> 
+                        
+                        <?php if ($this->view->internalNavParams['hasSubscriptions']) { ?>
                         <li class="nav-item <?=($openfolder=='subscription'?'active open':'')?>">
-                            <a href="/subscription/" class="nav-link nav-toggle">
+                            <a href=<?= $this->view->internalNavParams['subscriptionController']; ?> class="nav-link nav-toggle">
                                 <i class="icon-wallet"></i>
                                 <span class="title">Subscriptions</span>
                                 <?=($openfolder=='subscription'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
+                        <?php } ?>
+
                         <?php 
                         }
-                        ?>  
+                        ?>
+                         
                         <?php 
                         // }
                         } //end checking for super admin
@@ -613,7 +602,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
         <?php } ?>
         <script src="/js/card-js.min.js"></script>
         <script src="/js/login.js"></script>
-        
+
         <?php 
         if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
         ?>
@@ -621,7 +610,7 @@ li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed 
         <?php 
         }
         ?>
-        
+
         <?php 
         if (isset($haspaid) && $haspaid == false) {
 
