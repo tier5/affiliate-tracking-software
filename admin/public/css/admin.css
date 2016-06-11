@@ -967,3 +967,14 @@ body { background-color: #FFFFFF; color: #484848; }
 .golden-poppy-backgound {
     background-color: #FFC600 !important;
 }
+
+/* Admin styles */
+#subscription_pricing_plan_select {
+    width: 100%;
+}
+.free_subscription_pricing_plan {
+    display: none;
+}
+.free_subscription_pricing_plan.show {
+    display: block;
+}

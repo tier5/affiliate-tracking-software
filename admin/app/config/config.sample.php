@@ -14,6 +14,7 @@ return new \Phalcon\Config(array(
         'formsDir' => APP_DIR . '/forms/',
         'viewsDir' => APP_DIR . '/views/',
         'libraryDir' => APP_DIR . '/library/',
+        'servicesDir' => APP_DIR . '/services/',
         'pluginsDir' => APP_DIR . '/plugins/',
         'cacheDir' => APP_DIR . '/cache/',
         'baseUri' => '/',

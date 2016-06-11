@@ -13,6 +13,7 @@ use Phalcon\Flash\Direct as Flash;
 use Vokuro\Auth\Auth;
 use Vokuro\Acl\Acl;
 use Vokuro\Mail\Mail;
+use Vokuro\Services\SubscriptionManager;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -146,3 +147,9 @@ $di->set('mail', function () {
 $di->set('acl', function () {
     return new Acl();
 });
+
+/**
+ * Subscription Manager
+ */
+$subscriptionManager = new SubscriptionManager();
+$di->set('subscriptionManager', $subscriptionManager);
