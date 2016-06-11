@@ -345,13 +345,19 @@ class AdmindashboardController extends ControllerBase {
                         ));
                         if ($user->save()) {
                             $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
-                            $this->createSubscriptionPlan($user->id, $this->request);   /* REFACTOR:  This entire controller needs a rework from the top down */
+                            
                         } else {
                             $messages = array();
                             foreach ($user->getMessages() as $message) {
                                 $messages[] = $message->getMessage();
                             }
 
+                            $this->flash->error($messages);
+                        }
+                        
+                        /* REFACTOR:  This entire controller needs a rework from the top down */
+                        $result = $this->createSubscriptionPlan($user->id, $this->request);
+                        if($result !== true) {   
                             $this->flash->error($messages);
                         }
                     }
@@ -522,7 +528,7 @@ class AdmindashboardController extends ControllerBase {
     private function buildSubsriptionPricingPlanMarkUp() {
         $subscriptionPricingPlans = $this->di->get('subscriptionManager')->getSubscriptionPricingPlans();
         
-        $markup = "<select id=\"subscription_pricing_plan_select\" name=\"subscription_pricing_plan_id\">";
+        $markup = "<select id=\"subscription_pricing_plan_id\" name=\"subscription_pricing_plan_id\">";
         $markup .= "    <option value=\"Unpaid\">Unpaid</option>";  // This is default plan
         foreach($subscriptionPricingPlans as $subscriptionPricingPlan) {
             $markup .= "<option value=\""; 

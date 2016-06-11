@@ -5,7 +5,11 @@ namespace Vokuro\Payments;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
 
-class AuthorizeDotNet188 {
+/*
+ * 
+ * authorize.net v1.8.8 
+ */
+class AuthorizeDotNet {
 
     const SANDBOX = 'https://sandbox.authorize.net';
     const PRODUCTION = 'http://www.authorize.net/';

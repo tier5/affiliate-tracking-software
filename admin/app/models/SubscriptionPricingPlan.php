@@ -185,7 +185,7 @@ class SubscriptionPricingPlan extends Model
             $this->delete_at > 0;
         */
        
-        return $pass && $this->validationHasFailed() != true;
+        return true;/*$pass && $this->validationHasFailed() != true;*/
     }
     
     /**

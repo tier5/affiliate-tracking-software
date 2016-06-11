@@ -969,8 +969,9 @@ body { background-color: #FFFFFF; color: #484848; }
 }
 
 /* Admin styles */
-#subscription_pricing_plan_select {
+#subscription_pricing_plan_id {
     width: 100%;
+    height: 34px;
 }
 .free_subscription_pricing_plan {
     display: none;

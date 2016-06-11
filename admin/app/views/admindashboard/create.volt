@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="subscription_id" class="col-md-4 control-label">Subscription Pricing Plan</label>
+                <label for="subscription_pricing_plan_id" class="col-md-4 control-label">Subscription Pricing Plan</label>
                 <div class="col-md-8">
                     {{ subscriptionPricingPlans }}
                 </div>
@@ -108,8 +108,8 @@
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-        $('#subscription_pricing_plan_select').change(function () {
-            if ($(this).val() === 'free') {
+        $('#subscription_pricing_plan_id').change(function () {
+            if ($(this).val() === 'Unpaid') {
                 $(".free_subscription_pricing_plan").addClass('show');
             } else {
                 $(".free_subscription_pricing_plan").removeClass('show');

@@ -19,7 +19,7 @@ class AddDefaultSubscriptionPricingPlan extends AbstractMigration
                 'base_price' => 49.00,
                 'cost_per_sms' => 0.0075,
                 'annual_plan_discount' => 0.1,
-                'trial_period' => false,
+                'trial_period' => true,
                 'max_sms_during_trial_period' => 10,
                 'max_messages_on_free_account' => 100,
                 'max_locations_on_free_account' => 1,

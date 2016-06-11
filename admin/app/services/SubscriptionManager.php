@@ -7,6 +7,14 @@ use Vokuro\Models\SubscriptionPricingPlan;
 
 class SubscriptionManager {
     
+    static $PAYMENT_PLAN_FREE = 'FR';
+    static $PAYMENT_PLAN_TRIAL = 'TR';
+    static $PAYMENT_PLAN_MONTHLY = 'M';
+    static $PAYMENT_PLAN_YEARLY = 'Y';
+    
+    static $TRIAL_PLAN_LOCATIONS = 1;
+    static $TRIAL_PLAN_MESSAGES = 100;
+    
     public function getSubscriptionPricingPlans() {
         return $subscriptionPricingPlans = SubscriptionPricingPlan::find();
     }
@@ -22,7 +30,7 @@ class SubscriptionManager {
             $pricingPlanId = $pricingPlan->id;
             $locations = $newSubscriptionParameters['freeLocations'];
             $smsMessagesPerLocation = $newSubscriptionParameters['freeSmsMessagesPerLocation'];
-            $paymentPlan = 'FR';
+            $paymentPlan = SubscriptionManager::$PAYMENT_PLAN_FREE;
             
         } else {
             
@@ -33,14 +41,18 @@ class SubscriptionManager {
                 ->getFirst();
             $pricingPlanId = $subscriptionPricingPlan->id;   
             if ($subscriptionPricingPlan->getTrialPeriod()) {
-                $paymentPlan = 'TR';
-                $locations = 1;
-                $smsMessagesPerLocation = $subscriptionPricingPlan->getMaxSmsDuringTrialPeriod();
+                $paymentPlan = SubscriptionManager::$PAYMENT_PLAN_TRIAL;  
+                $locations = $subscriptionPricingPlan->getMaxLocationsOnFreeAccount();
+                $smsMessagesPerLocation = $subscriptionPricingPlan->getMaxMessagesOnFreeAccount();
             } else {
-                $paymentPlan = 'M';
+                $paymentPlan = SubscriptionManager::$PAYMENT_PLAN_MONTHLY;;
                 $locations = 0;
                 $smsMessagesPerLocation = 0;;
             }
+            
+            
+    static $TRIAL_PLAN_MESSAGES = 100;
+    
             
         }
         
@@ -52,15 +64,22 @@ class SubscriptionManager {
         $subscriptionPlan->setPaymentPlan($paymentPlan);
         $subscriptionPlan->setSubscriptionPricingPlanId(intval($pricingPlanId));
         if (!$subscriptionPlan->create()) {
-            foreach ($subscriptionPlan->getMessages() as $message) {
-                echo "Message: ", $message->getMessage();
-                echo "Field: ", $message->getField();
-                echo "Type: ", $message->getType();
-            }
-            return false;
+            return $subscriptionPlan->getMessages();
         }
         
         return true;
-    }    
-  
+    }
+    
+    public function getUserSubscription($userId) {
+        $subscriptionPlan = SubscriptionPlan::query()  
+            ->where("user_id = :user_id:")
+            ->bind(["user_id" => intval($userId)])
+            ->execute()
+            ->getFirst();
+        if(!$subscriptionPlan) {
+            return false;
+        }
+        return $subscriptionPlan->toArray();
+    }
+   
 }
