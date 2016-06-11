@@ -342,7 +342,7 @@
                         </li>
                         <?php 
                         } else {
-                        
+
                         if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') {
                         ?>
                         <li class="nav-item start <?=($openfolder=='dashboard'?'active open':'')?>">
@@ -482,11 +482,11 @@
                                 <?=($openfolder=='adminusers'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
-                        
+
                         <?php if ($this->view->internalNavParams['hasSubscriptions']) { ?>
                         <li class="nav-item <?=($openfolder=='subscription'?'active open':'')?>">
                             <a href=<?= $this->view->internalNavParams['subscriptionController']; ?> class="nav-link nav-toggle">
-                                <i class="icon-wallet"></i>
+                               <i class="icon-wallet"></i>
                                 <span class="title">Subscriptions</span>
                                 <?=($openfolder=='subscription'?'<span class="selected"></span>':'')?>
                             </a>
@@ -496,7 +496,7 @@
                         <?php 
                         }
                         ?>
-                         
+
                         <?php 
                         // }
                         } //end checking for super admin
@@ -595,7 +595,7 @@
         <script type="text/javascript" src="/js/vendor/minicolors/jquery.minicolors.js"></script>
         <script src="/js/main.js" type="text/javascript"></script>
         <script src="/js/star-rating.js" type="text/javascript"></script>
-        <script src="/js/pdf-viewer.js" type="text/javascript"></script>
+        <!-- <script src="/js/pdf-viewer.js" type="text/javascript"></script> -->
 
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <?php if ($openfolder=='location') { ?>

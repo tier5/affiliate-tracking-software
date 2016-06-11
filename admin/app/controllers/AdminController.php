@@ -1,44 +1,36 @@
 <?php
+
 namespace Vokuro\Controllers;
 
 error_reporting(E_ALL);
-ini_set("display_errors","on");
+ini_set("display_errors", "on");
 
 use Phalcon\UserPlugin\Models\User\User;
 use Phalcon\UserPlugin\Models\User\UserResetPasswords;
 use Phalcon\UserPlugin\Models\User\UserPasswordChanges;
-
 use Phalcon\UserPlugin\Forms\User\LoginForm;
 use Phalcon\UserPlugin\Forms\User\RegisterForm;
 use Phalcon\UserPlugin\Forms\User\ForgotPasswordForm;
 use Phalcon\UserPlugin\Forms\User\ChangePasswordForm;
-
 use Phalcon\UserPlugin\Auth\Exception as AuthException;
 use Phalcon\UserPlugin\Connectors\FacebookConnector;
-
 use Phalcon\Mvc\View;
 use Phalcon\Tag;
 
-class AdminController extends ControllerBase
-{
+class AdminController extends ControllerBase {
 
-    public function indexAction()
-    {
-      if (false === $this->auth->isUserSignedIn()) {
-        $this->response->redirect(['action' => 'login']);
-      }
+    public function indexAction() {
+        if (false === $this->auth->isUserSignedIn()) {
+            $this->response->redirect(['action' => 'login']);
+        }
     }
-
-    
 
     /**
      * Login user
      * @return \Phalcon\Http\ResponseInterface
      */
-    public function loginAction()
-    {
-        if(true === $this->auth->isUserSignedIn())
-        {
+    public function loginAction() {
+        if (true === $this->auth->isUserSignedIn()) {
             $this->response->redirect(array('action' => 'profile'));
         }
 
@@ -53,57 +45,41 @@ class AdminController extends ControllerBase
         $this->view->form = $form;
     }
 
-
     /**
      * Logout user and clear the data from session
      *
      * @return \Phalcon\Http\ResponseInterface
      */
-    public function signoutAction()
-    {
+    public function signoutAction() {
         $this->auth->remove();
         return $this->response->redirect('/', true);
     }
 
-
     /**
      * Shows the forgot password form
      */
-    public function forgotPasswordAction()
-    {
+    public function forgotPasswordAction() {
         $form = new ForgotPasswordForm();
 
-        if ($this->request->isPost())
-        {
-            if (!$form->isValid($this->request->getPost()))
-            {
-                foreach ($form->getMessages() as $message)
-                {
+        if ($this->request->isPost()) {
+            if (!$form->isValid($this->request->getPost())) {
+                foreach ($form->getMessages() as $message) {
                     $this->flash->error($message);
                 }
-            }
-            else
-            {
+            } else {
                 $email = trim(strtolower($this->request->getPost('email')));
-                $user  = User::findFirstByEmail($email);
-                if (!$user)
-                {
+                $user = User::findFirstByEmail($email);
+                if (!$user) {
                     $this->flash->error('There is no account associated with this email');
-                }
-                else
-                {
+                } else {
                     $resetPassword = new UserResetPasswords();
                     $resetPassword->setUserId($user->getId());
-                    if ($resetPassword->save())
-                    {
+                    if ($resetPassword->save()) {
                         $this->flashSession->success('Success! Please check your messages for an email reset password');
                         $this->view->disable();
-                        return $this->response->redirect($this->_activeLanguage.'/user/forgotPassword');
-                    }
-                    else
-                    {
-                        foreach ($resetPassword->getMessages() as $message)
-                        {
+                        return $this->response->redirect($this->_activeLanguage . '/user/forgotPassword');
+                    } else {
+                        foreach ($resetPassword->getMessages() as $message) {
                             $this->flash->error($message);
                         }
                     }
@@ -117,22 +93,21 @@ class AdminController extends ControllerBase
     /**
      * Reset pasword
      */
-    public function resetPasswordAction($code, $email)
-    {
+    public function resetPasswordAction($code, $email) {
         $resetPassword = UserResetPasswords::findFirstByCode($code);
 
         if (!$resetPassword) {
             $this->flash->error('Invalid or expired code');
             return $this->dispatcher->forward(array(
-                'controller' => 'index',
-                'action' => 'index'
+                        'controller' => 'index',
+                        'action' => 'index'
             ));
         }
 
         if ($resetPassword->getReset() <> 0) {
             return $this->dispatcher->forward(array(
-                'controller' => 'user',
-                'action' => 'login'
+                        'controller' => 'user',
+                        'action' => 'login'
             ));
         }
 
@@ -148,8 +123,8 @@ class AdminController extends ControllerBase
             }
 
             return $this->dispatcher->forward(array(
-                'controller' => 'index',
-                'action' => 'index'
+                        'controller' => 'index',
+                        'action' => 'index'
             ));
         }
 
@@ -161,18 +136,16 @@ class AdminController extends ControllerBase
         $this->flash->success('Please reset your password');
 
         return $this->dispatcher->forward(array(
-            'controller' => 'user',
-            'action' => 'changePassword'
+                    'controller' => 'user',
+                    'action' => 'changePassword'
         ));
-
     }
 
     /**
      * Users must use this action to change its password
      *
      */
-    public function changePasswordAction()
-    {
+    public function changePasswordAction() {
         $form = new ChangePasswordForm();
 
         if ($this->request->isPost()) {
@@ -197,7 +170,7 @@ class AdminController extends ControllerBase
 
                     $this->flashSession->success('Your password was successfully changed');
                     $this->view->disable();
-                    return $this->response->redirect($this->_activeLanguage.'/user/changePassword');
+                    return $this->response->redirect($this->_activeLanguage . '/user/changePassword');
                 }
             }
         }
@@ -208,23 +181,22 @@ class AdminController extends ControllerBase
     /**
      * Confirms an e-mail, if the user must change its password then changes it
      */
-    public function confirmEmailAction($code, $email)
-    {
+    public function confirmEmailAction($code, $email) {
         $confirmation = UserEmailConfirmations::findFirstByCode($code);
 
         if (!$confirmation) {
             $this->flash->error('Invalid or expired code');
             return $this->dispatcher->forward(array(
-                'controller' => 'index',
-                'action' => 'index'
+                        'controller' => 'index',
+                        'action' => 'index'
             ));
         }
 
         if ($confirmation->getConfirmed() <> 0) {
             $this->flash->notice('This account is already activated. You can login.');
             return $this->dispatcher->forward(array(
-                'controller' => 'user',
-                'action' => 'login'
+                        'controller' => 'user',
+                        'action' => 'login'
             ));
         }
 
@@ -238,8 +210,8 @@ class AdminController extends ControllerBase
             }
 
             return $this->dispatcher->forward(array(
-                'controller' => 'index',
-                'action' => 'index'
+                        'controller' => 'index',
+                        'action' => 'index'
             ));
         }
 
@@ -248,20 +220,19 @@ class AdminController extends ControllerBase
         if ($confirmation->user->getMustChangePassword() == 1) {
 
             $this->flash->success('The email was successfully confirmed. Now you must change your password');
-            return $this->response->redirect($this->_activeLanguage.'/user/changePassword');
+            return $this->response->redirect($this->_activeLanguage . '/user/changePassword');
         }
 
         $this->flash->success('The email was successfully confirmed');
         return $this->dispatcher->forward(array(
-                'controller' => 'user',
-                'action' => 'login'
-            ));
+                    'controller' => 'user',
+                    'action' => 'login'
+        ));
         //return $this->response->redirect($this->_activeLanguage.'/user/login');
     }
 
-    public function profileAction()
-    {
-
+    public function profileAction() {
+        
     }
-}
 
+}

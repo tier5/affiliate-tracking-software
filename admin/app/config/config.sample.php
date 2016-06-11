@@ -14,6 +14,7 @@ return new \Phalcon\Config(array(
         'formsDir' => APP_DIR . '/forms/',
         'viewsDir' => APP_DIR . '/views/',
         'libraryDir' => APP_DIR . '/library/',
+        'servicesDir' => APP_DIR . '/services/',
         'pluginsDir' => APP_DIR . '/plugins/',
         'cacheDir' => APP_DIR . '/cache/',
         'baseUri' => '/',
@@ -27,7 +28,7 @@ return new \Phalcon\Config(array(
         //use the SendGrid Relay server to send mail
         'smtp' => array(
             'server' => 'mailtrap.io',
-            'port' => 587,
+            'port' => 465,
             'security' => 'tls',
             'username' => 'de0d513c12498d',
             'password' => '700de902cdaa9f'

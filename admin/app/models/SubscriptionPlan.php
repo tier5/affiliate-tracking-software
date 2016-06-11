@@ -44,19 +44,13 @@ class SubscriptionPlan extends Model
      *
      * @var integer
      */
-    protected $subscription_profile_id;
+    protected $subscription_pricing_plan_id;
 
     /**
      *
      * @var integer
      */
     protected $user_id;
-    
-    /**
-     *
-     * @var integer
-     */
-    protected $agency_id;
     
     /**
      *
@@ -129,14 +123,14 @@ class SubscriptionPlan extends Model
     }
 
     /**
-     * Method to set the value of field subscription_profile_id
+     * Method to set the value of field subscription_pricing_plan_id
      *
-     * @param integer $subscription_profile_id
+     * @param integer $subscription_pricing_plan_id
      * @return $this
      */
-    public function setSubscriptionProfileId($subscription_profile_id)
+    public function setSubscriptionPricingPlanId($subscription_pricing_plan_id)
     {
-        $this->subscription_profile_id = $subscription_profile_id;
+        $this->subscription_pricing_plan_id = $subscription_pricing_plan_id;
 
         return $this;
     }
@@ -234,13 +228,13 @@ class SubscriptionPlan extends Model
     }
 
     /**
-     * Returns the value of field subscription_profile_id
+     * Returns the value of field subscription_pricing_plan_id
      *
      * @return integer
      */
-    public function getSubscriptionProfileId()
+    public function getSubscriptionPricingPlanId()
     {
-        return $this->subscription_profile_id;
+        return $this->subscription_pricing_plan_id;
     }
 
     /**
@@ -288,7 +282,7 @@ class SubscriptionPlan extends Model
      */
     public function initialize()
     {
-        $this->belongsTo('subscription_profile_id', 'Vokuro\Models\SubscriptionProfile', 'id', ['alias' => 'SubscriptionProfile']);
+        $this->belongsTo('subscription_pricing_plan_id', 'Vokuro\Models\SubscriptionPricingPlan', 'id', ['alias' => 'SubscriptionPricingPlan']);
         $this->belongsTo('user_id', 'Vokuro\Models\Users', 'id', ['alias' => 'Users']);
     }
     
@@ -299,16 +293,16 @@ class SubscriptionPlan extends Model
     {
         $this->validate(new Numericality(["field" => 'locations' ]));
         $this->validate(new Numericality(["field" => 'sms_messages_per_location']));
-        $this->validate(new InclusionIn([ "field"  => "payment_plan", "domain" => ['monthly', 'annually'] ]));
-        $this->validate(new Numericality(["field" => 'subscription_profile_id']));
+        $this->validate(new InclusionIn([ "field"  => "payment_plan", "domain" => ['TR', 'M', 'Y', 'FR'] ]));
+        $this->validate(new Numericality(["field" => 'subscription_pricing_plan_id']));
         $this->validate(new Numericality(["field" => 'user_id']));
         
         $pass = $this->locations > 0 &&
             $this->sms_messages_per_location > 0 &&
-            $this->subscription_profile_id > 0 &&
+            $this->subscription_pricing_plan_id > 0 &&
             $this->user_id > 0;
         
-        return $pass && $this->validationHasFailed() != true;
+        return true;//$pass && $this->validationHasFailed() != true;
     }
 
     /**
@@ -356,7 +350,7 @@ class SubscriptionPlan extends Model
             'locations' => 'locations',
             'sms_messages_per_location' => 'sms_messages_per_location',
             'payment_plan' => 'payment_plan',
-            'subscription_profile_id' => 'subscription_profile_id',
+            'subscription_pricing_plan_id' => 'subscription_pricing_plan_id',
             'user_id' => 'user_id',
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',

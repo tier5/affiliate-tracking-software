@@ -2,23 +2,24 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class AddDefaultSubscriptionProfile extends AbstractMigration
+class AddDefaultSubscriptionPricingPlan extends AbstractMigration
 {
     public function up()
     {
         // Get the joining table
-        $joining_table = $this->table('subscription_profile_has_parameter_list');
+        $joining_table = $this->table('subscription_pricing_plan_has_parameter_list');
         
-        // Add the default subscription profile
-        $table = $this->table('subscription_profile');
+        // Add the default subscription pricing_plan
+        $table = $this->table('subscription_pricing_plan');
         $table->insert(
             [ 
+                'name' => 'Review Velocity - Default',
                 'enable_free_account' => true,
                 'enable_discount_on_upgrade' => true,
                 'base_price' => 49.00,
                 'cost_per_sms' => 0.0075,
                 'annual_plan_discount' => 0.1,
-                'trial_period' => false,
+                'trial_period' => true,
                 'max_sms_during_trial_period' => 10,
                 'max_messages_on_free_account' => 100,
                 'max_locations_on_free_account' => 1,
@@ -32,12 +33,12 @@ class AddDefaultSubscriptionProfile extends AbstractMigration
         );
         $table->saveData();
         
-        // Subscription profile id
-        $subscriptionProfileId = $this->adapter->getConnection()->lastInsertId();
+        // Subscription pricing_plan id
+        $subscriptionPricingPlanId = $this->adapter->getConnection()->lastInsertId();
 
-        // Add the default subscription profile parameter collection
+        // Add the default subscription pricing_plan parameter collection
         $this->insert(
-           'subscription_profile_parameter_list', 
+           'subscription_pricing_plan_parameter_list', 
             [
                 [
                   'min_locations' => 1,
@@ -92,10 +93,10 @@ class AddDefaultSubscriptionProfile extends AbstractMigration
             ]
         );
          
-        $rows = $this->fetchAll('SELECT * FROM subscription_profile_parameter_list');
+        $rows = $this->fetchAll('SELECT * FROM subscription_pricing_plan_parameter_list');
         foreach ($rows as $row) {
-            // Add the default subscription profile
-            $joining_table->insert([ 'subscription_profile_id' => $subscriptionProfileId, 'parameter_list_id' => $row['id'] ]);
+            // Add the default subscription pricing_plan
+            $joining_table->insert([ 'subscription_pricing_plan_id' => $subscriptionPricingPlanId, 'parameter_list_id' => $row['id'] ]);
         }
         $joining_table->saveData();
         
@@ -104,9 +105,9 @@ class AddDefaultSubscriptionProfile extends AbstractMigration
     public function down() 
     {
         $this->execute('SET foreign_key_checks = 0'); 
-        $this->execute('DELETE FROM subscription_profile_parameter_list');
-        $this->execute('DELETE FROM subscription_profile_has_parameter_list');
-        $this->execute('DELETE FROM subscription_profile');
+        $this->execute('DELETE FROM subscription_pricing_plan_parameter_list');
+        $this->execute('DELETE FROM subscription_pricing_plan_has_parameter_list');
+        $this->execute('DELETE FROM subscription_pricing_plan');
         $this->execute('SET foreign_key_checks = 1');
     }
     

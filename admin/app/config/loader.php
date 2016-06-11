@@ -8,6 +8,7 @@ $loader->registerNamespaces(array(
     'Vokuro\Models' => $config->application->modelsDir,
     'Vokuro\Controllers' => $config->application->controllersDir,
     'Vokuro\Forms' => $config->application->formsDir,
+    'Vokuro\Services' => $config->application->servicesDir,
     'Vokuro' => $config->application->libraryDir
 ));
 

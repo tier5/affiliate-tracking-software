@@ -8,8 +8,6 @@
     </h3>
     <!-- END PAGE TITLE-->
 
-
-
     <div class="row">
       <div class="col-md-6 col-sm-6">
         <div class="portlet light bordered" id="pnlSMSSent">

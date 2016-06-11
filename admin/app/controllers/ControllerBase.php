@@ -19,6 +19,7 @@ use Vokuro\Models\SharingCode;
 use Vokuro\Models\Users;
 use Vokuro\Models\UsersSubscription;
 use Vokuro\Models\YelpScanning;
+use Vokuro\Services\SubscriptionManager;
 use Services_Twilio;
 use Services_Twilio_RestException;
 
@@ -67,12 +68,12 @@ class ControllerBase extends Controller {
             }
 
             //internal navigation parameters  
-            $this->configureGlobalTemplateParameters($identity);
+            $this->configureNavigation($identity);
         }
 
         //find white label info based on the url
         $sub = array_shift((explode(".", $_SERVER['HTTP_HOST'])));
-        if ($sub && $sub != '' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104') {
+        if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104') {
             //find the agency object
             $conditions = "custom_domain = :custom_domain:";
             $parameters = array("custom_domain" => $sub);
@@ -88,9 +89,7 @@ class ControllerBase extends Controller {
         if ($this->request->getPost('main_color')) {
             $this->view->main_color_setting = $this->request->getPost('main_color');
         }
-
-
-
+        
         //###  START: check to see if this user has paid   #####
         $haspaid = true;
         //get the user id
@@ -890,7 +889,7 @@ class ControllerBase extends Controller {
         }
     }
 
-    private function configureGlobalTemplateParameters($identity) {
+    private function configureNavigation($identity) {
         $internalNavParams = [];        
         
         // Identity
@@ -901,20 +900,27 @@ class ControllerBase extends Controller {
             ($identity['profile'] === 'Business Admin') && !$internalNavParams['isSuperUser']  ? true : false;
         $internalNavParams['isEmployee'] = 
             ($identity['profile'] === 'Employee') && !$internalNavParams['isSuperUser']  ? true : false;
-                
-        // Subscriptions         
-        $internalNavParams['hasSubscriptions'] = 
-            !$identity['is_admin'] && 
-            ($identity['profile'] === 'Business Admin' || 
-             $identity['profile'] === 'Agency Admin');
-        if ($internalNavParams['hasSubscriptions'] && $identity['profile'] === 'Business Admin') {
-            $internalNavParams['subscriptionController'] = '/subscription';
-        }
-        if ($internalNavParams['hasSubscriptions'] && $identity['profile'] === 'Agency Admin') {
-            $internalNavParams['subscriptionController'] = '/subscription';
+            
+        // Subscriptions
+        $userSubscription = $this->di->get('subscriptionManager')->getUserSubscription($identity['id']);
+        
+        $hasRole = ($identity['profile'] === 'Business Admin' || $identity['profile'] === 'Agency Admin');
+        $hasAdmin = $identity['is_admin']; 
+        $hasPaid = $userSubscription['payment_plan'] != SubscriptionManager::$PAYMENT_PLAN_FREE;
+        
+        $internalNavParams['hasSubscriptions'] = $hasRole && $hasPaid && !$hasAdmin; 
+        
+        if ($internalNavParams['hasSubscriptions']) {
+            
+            if($identity['profile'] === 'Agency Admin') {
+                $internalNavParams['subscriptionController'] = '/subscription';
+            }
+            
+            if ($identity['profile'] === 'Business Admin') {
+                $internalNavParams['subscriptionController'] = '/subscription';
+            }
         }
         
         $this->view->internalNavParams = $internalNavParams;
     }
-
 }
