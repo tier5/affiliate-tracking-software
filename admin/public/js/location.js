@@ -349,57 +349,42 @@ function initMap() {
     http_request.send(null);
   }
 
-
-
-
-
-
-
-
-  function findYelpByURL() {
+function findYelpByURL() {
     $('.yelp-results').html('Searching...');
-    var found = false;
     var url = document.getElementById("url").value;
     var id = getId(url);
     var url = "/location/yelpurl?i=" + encodeURIComponent(id);
     var http_request = new XMLHttpRequest();
     http_request.open("GET", url, true);
     http_request.onreadystatechange = function () {
-      var done = 4, ok = 200;
-      if (http_request.readyState == done && http_request.status == ok) {
-        //console.log('my_JSON_object:'+http_request.responseText);
-        obj = JSON.parse(http_request.responseText);
-        //displayResults(my_JSON_object);
-        //my_JSON_object.businesses.forEach(function (obj) {
-          if (!found) {
-            //console.log(obj.name); 
-            //if (obj.name == name) {
-              //we found an exact match, so set the Yelp ID
-              $("#yelpLink").attr("href", 'http://www.yelp.com/biz/' + obj.id);
-              document.getElementById("yelp_id").value = obj.id;
-              $('.yelpfound').show();
-              $('.yelpnotfound').hide();
-              //console.log('Exact match!'); 
-              found = true;
-              $('#page-wrapper').hide();
-              $('.overlay').hide();
-
-              return false; // here - will exit the each loop 
-            //}
-          }
-        //});
-        //image.parentNode.removeChild(image);
-        if (!found) {
-          //console.log('Not found...');
-          $('.yelp-results').html('No match found.');
-          $('.yelpfound').hide();
-          $('.yelpnotfound').show();
+        var done = 4, ok = 200;
+        if (http_request.readyState == done && http_request.status == ok) {
+            obj = JSON.parse(http_request.responseText);
+            if(obj.error) {
+                $('.yelp-results').html('No match found.');
+                $('.yelpfound').hide();
+                $('.yelpnotfound').show();
+            }
+            else {
+                $.ajax({
+                    url: "/admin/location/updateLocation?location_id=61&yelp_id=" + obj.id,
+                }).done(function (data) {
+                    if(data == "SUCCESS") {
+                        $("#yelpLink").attr("href", 'http://www.yelp.com/biz/' + obj.id);
+                        document.getElementById("yelp_id").value = obj.id;
+                        $('.yelpfound').show();
+                        $('.yelpnotfound').hide();
+                        $('#page-wrapper').hide();
+                        $('.overlay').hide();
+                    } else {
+                        $('.yelp-results').html('No match found.');
+                        $('.yelpfound').hide();
+                        $('.yelpnotfound').show();
+                    }
+                });
+                return true;
+            }
         }
-      } else {
-        $('.yelp-results').html('No match found.');
-        $('.yelpfound').hide();
-        $('.yelpnotfound').show();
-      }
-    };
+    }
     http_request.send(null);
-  }
+}
