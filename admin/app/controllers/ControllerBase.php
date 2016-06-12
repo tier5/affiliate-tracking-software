@@ -89,7 +89,7 @@ class ControllerBase extends Controller {
         if ($this->request->getPost('main_color')) {
             $this->view->main_color_setting = $this->request->getPost('main_color');
         }
-        
+
         //###  START: check to see if this user has paid   #####
         $haspaid = true;
         //get the user id
@@ -287,67 +287,92 @@ class ControllerBase extends Controller {
             //Last month!
             $start_time = date("Y-m-d", strtotime("first day of previous month"));
             $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
-            $sms_sent_last_month = ReviewInvite::count(
-                            array(
-                                "column" => "review_invite_id",
-                                "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
-                            )
-            );
+
+            /* REFACTOR: Fix when there is not a location yet */
+            $sms_sent_last_month = 0;
+            if ($this->session->get('auth-identity')['location_id']) {
+
+                $sms_sent_last_month = ReviewInvite::count(
+                                array(
+                                    "column" => "review_invite_id",
+                                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
+                                )
+                );
+            }
             $this->view->sms_sent_last_month = $sms_sent_last_month;
 
             //This month!
             $start_time = date("Y-m-d", strtotime("first day of this month"));
             $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
-            $sms_sent_this_month = ReviewInvite::count(
-                            array(
-                                "column" => "review_invite_id",
-                                "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
-                            )
-            );
+
+            $sms_sent_this_month = 0;
+            if ($this->session->get('auth-identity')['location_id']) {
+
+                $sms_sent_this_month = ReviewInvite::count(
+                                array(
+                                    "column" => "review_invite_id",
+                                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
+                                )
+                );
+            }
             $this->view->sms_sent_this_month = $sms_sent_this_month;
 
             //Last month!
-            $this->view->num_reviews_last_month = ReviewsMonthly::sum(
-                            array(
-                                "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                "conditions" => "month = " . date("m", strtotime("first day of previous month")) . " AND year = '" . date("Y", strtotime("first day of previous month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                            )
-            );
-            $this->view->num_reviews_two_months_ago = ReviewsMonthly::sum(
-                            array(
-                                "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                "conditions" => "month = " . date("m", strtotime("-2 months", time())) . " AND year = '" . date("Y", strtotime("-2 months", time())) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                            )
-            );
+            $this->view->num_reviews_last_month = 0;
+            $this->view->num_reviews_two_months_ago = 0;
+            if ($this->session->get('auth-identity')['location_id']) {
+
+                $this->view->num_reviews_last_month = ReviewsMonthly::sum(
+                                array(
+                                    "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
+                                    "conditions" => "month = " . date("m", strtotime("first day of previous month")) . " AND year = '" . date("Y", strtotime("first day of previous month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
+                                )
+                );
+                $this->view->num_reviews_two_months_ago = ReviewsMonthly::sum(
+                                array(
+                                    "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
+                                    "conditions" => "month = " . date("m", strtotime("-2 months", time())) . " AND year = '" . date("Y", strtotime("-2 months", time())) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
+                                )
+                );
+            }
             $this->view->total_reviews_last_month = $this->view->num_reviews_last_month - $this->view->num_reviews_two_months_ago;
 
             //This month!
-            $this->view->num_reviews_this_month = ReviewsMonthly::sum(
-                            array(
-                                "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                "conditions" => "month = " . date("m", strtotime("first day of this month")) . " AND year = '" . date("Y", strtotime("first day of this month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                            )
-            );
+            $this->view->num_reviews_this_month = 0;
+            if ($this->session->get('auth-identity')['location_id']) {
+
+                $this->view->num_reviews_this_month = ReviewsMonthly::sum(
+                                array(
+                                    "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
+                                    "conditions" => "month = " . date("m", strtotime("first day of this month")) . " AND year = '" . date("Y", strtotime("first day of this month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
+                                )
+                );
+            }
             //echo '<p>num_reviews_this_month:'.$this->view->num_reviews_this_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
             $this->view->total_reviews_this_month = $this->view->num_reviews_this_month - $this->view->total_reviews_last_month;
 
-
             //find the location
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $location = Location::findFirst(array($conditions, "bind" => $parameters));
-
-
-            //set the agency SMS limit
-            $this->view->review_goal = $location->review_goal;
-            //calculate how many sms messages we need to send to meet this goal.
-            //$percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
-            //if ($percent_needed <= 0) 
+            $this->view->review_goal = 0;
             $percent_needed = 10;
             $this->view->percent_needed = $percent_needed;
-            //echo '<p>$sms_sent_last_month:'.$sms_sent_last_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
-            //echo '<p>percent_needed:'.$percent_needed.':review_goal:'.$location->review_goal.'</p>';
-            $this->view->total_sms_needed = round($location->review_goal / ($percent_needed / 100));
+            $this->view->total_sms_needed = 0;
+            ;
+            if ($this->session->get('auth-identity')['location_id']) {
+                $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+                $location = Location::findFirst(array($conditions, "bind" => $parameters));
+
+                //set the agency SMS limit
+                $this->view->review_goal = $location->review_goal;
+                //calculate how many sms messages we need to send to meet this goal.
+                //$percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
+                //if ($percent_needed <= 0) 
+                $percent_needed = 10;
+                $this->view->percent_needed = $percent_needed;
+                //echo '<p>$sms_sent_last_month:'.$sms_sent_last_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
+                //echo '<p>percent_needed:'.$percent_needed.':review_goal:'.$location->review_goal.'</p>';
+                $this->view->total_sms_needed = round($location->review_goal / ($percent_needed / 100));
+            }
         } //end checking for business vs agency
     }
 
@@ -890,37 +915,39 @@ class ControllerBase extends Controller {
     }
 
     private function configureNavigation($identity) {
-        $internalNavParams = [];        
-        
+        $internalNavParams = [];
+
+        // Services
+        $userManager = $this->di->get('userManager');
+        $subscriptionManager = $this->di->get('subscriptionManager');
+
         // Identity
-        $internalNavParams['isSuperUser'] = $identity['is_admin'] ? true : false;
-        $internalNavParams['isAgencyAdmin'] = 
-            ($identity['profile'] === 'Agency Admin') && !$internalNavParams['isSuperUser']  ? true : false;
-        $internalNavParams['isBusinessAdmin'] = 
-            ($identity['profile'] === 'Business Admin') && !$internalNavParams['isSuperUser']  ? true : false;
-        $internalNavParams['isEmployee'] = 
-            ($identity['profile'] === 'Employee') && !$internalNavParams['isSuperUser']  ? true : false;
-            
+        $internalNavParams['isSuperUser'] = $userManager->isSuperAdmin($this->session);
+        $internalNavParams['isAgencyAdmin'] = $userManager->isAgency($this->session);
+        $internalNavParams['isBusinessAdmin'] = $userManager->isBusiness($this->session);
+        $internalNavParams['isEmployee'] = $userManager->isEmployee($this->session);
+
         // Subscriptions
-        $userSubscription = $this->di->get('subscriptionManager')->getUserSubscription($identity['id']);
+        $userSubscription = $subscriptionManager->getSubscriptionPlan($userManager->getUserId($this->session));
         
-        $hasRole = ($identity['profile'] === 'Business Admin' || $identity['profile'] === 'Agency Admin');
-        $hasAdmin = $identity['is_admin']; 
-        $hasPaid = $userSubscription['payment_plan'] != SubscriptionManager::$PAYMENT_PLAN_FREE;
-        
-        $internalNavParams['hasSubscriptions'] = $hasRole && $hasPaid && !$hasAdmin; 
-        
+        $internalNavParams['hasSubscriptions'] = 
+            !$internalNavParams['isSuperUser'] &&
+            ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) && 
+            ($userSubscription['payment_plan'] != SubscriptionManager::$PAYMENT_PLAN_FREE) && 
+             $userManager->hasLocation($this->session);
+
         if ($internalNavParams['hasSubscriptions']) {
-            
-            if($identity['profile'] === 'Agency Admin') {
-                $internalNavParams['subscriptionController'] = '/subscription';
+
+            if ($internalNavParams['isAgencyAdmin']) {
+                $internalNavParams['subscriptionController'] = '/subscription/agency';
             }
-            
-            if ($identity['profile'] === 'Business Admin') {
-                $internalNavParams['subscriptionController'] = '/subscription';
+
+            if ($internalNavParams['isBusinessAdmin']) {
+                $internalNavParams['subscriptionController'] = '/subscription/business';
             }
         }
-        
+
         $this->view->internalNavParams = $internalNavParams;
     }
+
 }

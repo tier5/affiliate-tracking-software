@@ -23,7 +23,7 @@ class SubscriptionManager {
         
         $userId = $newSubscriptionParameters['userAccountId'];
         
-        /* REFACTOR:  Need to create a subscription service accessesible through DI, MT 2016 */ 
+        /* Configure subscription parameters */
         if ($newSubscriptionParameters['pricingPlanId'] === 'Unpaid') {
             
             $pricingPlan = SubscriptionPricingPlan::findFirst();   // Default pricing plan is always first in the table
@@ -50,10 +50,6 @@ class SubscriptionManager {
                 $smsMessagesPerLocation = 0;;
             }
             
-            
-    static $TRIAL_PLAN_MESSAGES = 100;
-    
-            
         }
         
         // Subscription plan
@@ -70,7 +66,7 @@ class SubscriptionManager {
         return true;
     }
     
-    public function getUserSubscription($userId) {
+    public function getSubscriptionPlan($userId) {
         $subscriptionPlan = SubscriptionPlan::query()  
             ->where("user_id = :user_id:")
             ->bind(["user_id" => intval($userId)])
@@ -80,6 +76,18 @@ class SubscriptionManager {
             return false;
         }
         return $subscriptionPlan->toArray();
+    }
+    
+    public function getPricingPlan($pricingPlanId) {
+        $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
+            ->where("id = :id:")
+            ->bind(["id" => intval($pricingPlanId)])
+            ->execute()
+            ->getFirst();
+        if(!$subscriptionPricingPlan) {
+            return false;
+        }
+        return $subscriptionPricingPlan->toArray();
     }
    
 }

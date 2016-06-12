@@ -1,4 +1,5 @@
 <?php
+
 namespace Vokuro\Models;
 
 use Phalcon\Mvc\Model;
@@ -9,34 +10,31 @@ use Vokuro\Models\Subscription;
  * Vokuro\Models\Agency
  * The Locations
  */
-class Agency extends Model
-{
-  
+class Agency extends Model {
 
-  /**
-    * Validate that custom_domain is unique across agencies
-    */
-  public function validation()
-  {
-    if (isset($this->custom_domain) && $this->custom_domain != '') {
-      $this->validate(new Uniqueness(array(
-        "field" => "custom_domain",
-        "message" => "The Custom Domain is already used"
-      )));
+    /**
+     * Validate that custom_domain is unique across agencies
+     */
+    public function validation() {
+        if (isset($this->custom_domain) && $this->custom_domain != '') {
+            $this->validate(new Uniqueness(array(
+                "field" => "custom_domain",
+                "message" => "The Custom Domain is already used"
+            )));
+        }
+
+        return $this->validationHasFailed() != true;
     }
 
-    return $this->validationHasFailed() != true;
-  }
+    public function initialize() {
+        $this->setSource('agency');
 
-	public function initialize()
-	{
-		$this->setSource('agency');
+        $this->belongsTo('subscription_id', __NAMESPACE__ . '\Subscription', 'subscription_id', array(
+            'alias' => 'subscription',
+            'reusable' => true
+        ));
+    }
 
-    $this->belongsTo('subscription_id', __NAMESPACE__ . '\Subscription', 'subscription_id', array(
-      'alias' => 'subscription',
-      'reusable' => true
-    ));
-	}
 }
 
 // vendor/bin/phalcon.php model --name=subscription_profile --schema=reviewvelocity --namespace=Vokuro\Models --get-set --extends=Model --doc --output=models --mapcolumn

@@ -2,14 +2,7 @@
 
 namespace Vokuro\Controllers;
 
-use Phalcon\Tag;
-use Phalcon\Mvc\Model\Criteria;
-use Phalcon\Paginator\Adapter\Model as Paginator;
-use Vokuro\Forms\ChangePasswordForm;
-use Vokuro\Models\Location;
-use Vokuro\Forms\SubscriptionForm;
-use Vokuro\Models\Subscription;
-use Vokuro\Models\SubscriptionInterval;
+use Vokuro\Services\SubscriptionManager;
 
 /**
  * Vokuro\Controllers\SubscriptionController
@@ -19,15 +12,6 @@ class SubscriptionController extends ControllerBase {
 
     public function initialize() {
         
-        // TODO: Original code
-        // if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
-        //     $this->tag->setTitle('Review Velocity | Subscription');
-        //     $this->view->setTemplateBefore('private');
-        // } else {
-        //     $this->response->redirect('/session/login?return=/');
-        //     $this->view->disable();
-        //     return;
-        // }
         $identity = $this->session->get('auth-identity');
         if ($identity && $identity['profile'] != 'Employee') {
             $this->tag->setTitle('Review Velocity | Subscription');
@@ -39,6 +23,58 @@ class SubscriptionController extends ControllerBase {
         }
         parent::initialize();
     }
+    
+    public function businessAction() {   
+        
+        /* Get services */
+        $userManager = $this->di->get('userManager');
+        $subscriptionManager = $this->di->get('subscriptionManager');
+        $smsManager = $this->di->get('smsManager');
+        $paymentService = $this->di->get('paymentService');
+        
+        /* Get the role type */
+        $isBusiness = $userManager->isBusiness($this->session);
+        
+        /* Show sms quota? */
+        $this->view->showSmsQuota = $isBusiness;
+        if ($this->view->showSmsQuota) {
+            
+            /* Get sms quota parameters */
+            $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams(
+                $userManager->getLocationId($this->session)
+            ); 
+            
+            if ($smsQuotaParams['hasUpgrade']) {
+                // REFACTOR: DOESN'T SEEM TO BE GETTING CALLED
+                // $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
+                // if ($percent > 100) $percent = 100;
+            } else {
+                $this->view->showBarText = $smsQuotaParams['percent'] > 60 ? "style=\"display: none;\"" : "";
+            }
+            $this->view->smsQuotaParams = $smsQuotaParams;
+        }
+        
+        /* Get subscription paramaters */
+        $userId = $userManager->getUserId($this->session);
+        $this->view->subscriptionPlan = $subscriptionManager->getSubscriptionPlan($userId);
+        $this->view->paymentPlan = 
+            $this->view->subscriptionPlan['payment_plan'] === SubscriptionManager::$PAYMENT_PLAN_TRIAL ? 'TRIAL' : 'PAID';
+        
+        /* Get pricing plan */
+        $pricingPlanId = $this->view->subscriptionPlan['subscription_pricing_plan_id'];
+        $this->view->pricingPlan = $subscriptionManager->getPricingPlan($pricingPlanId);
+        
+        /* Payments paramaters */
+        $this->view->upgradeCreditCardStatus = 
+            !$paymentService->hasRegisteredCreditCard($userId) ? 'disabled' : '';
+            
+        /* Render template */
+        $this->view->pick("subscription/business");
+    }
+    
+    public function agencyAction() {
+        $this->view->pick("subscription/agency");
+    }
 
     /**
      * Searches for subscriptions
@@ -46,7 +82,9 @@ class SubscriptionController extends ControllerBase {
     public function indexAction() {
         // TODO: Original code
         // $this->view->subscriptions = Subscription::find();
-        $this->getSMSReport();
+        if ($this->session->get('auth-identity')['location_id']) {
+            $this->getSMSReport();
+        }
     }
 
     /**
@@ -95,6 +133,14 @@ class SubscriptionController extends ControllerBase {
 
         $this->view->subscription = new Subscription();
         $this->view->form = new SubscriptionForm(null);
+    }
+    
+    private function computePercentMessagesRemaining($smsQuotaParams) {
+        $percent = 
+           ($smsQuotaParams['totalSmsNeeded'] > 0 ? 
+            number_format((float)($smsQuotaParams['smsSentThisMonth'] / $smsQuotaParams['totalSmsNeeded']) * 100, 0, '.', '') : 
+            100);
+        return $percent > 100 ? 100 : $percent;
     }
 
 }
