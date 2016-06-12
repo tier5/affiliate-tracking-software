@@ -225,7 +225,7 @@
                                     <div class="row">
                                         <div class="col-md-12 col-sm-12">
                                             <!-- <input type="checkbox" class="make-switch" data-on-text="Monthly" data-off-text="Annually"> -->
-                                            <div class="btn-group btn-toggle subscription-toggle"> 
+                                            <div id="plan-type" class="btn-group btn-toggle subscription-toggle"> 
                                                 <button class="btn active btn-primary">Monthly</button>
                                                 <button class="btn btn-default">Annually</button>
                                             </div>
@@ -234,7 +234,8 @@
                                     <div class="row">
                                         <div class="col-md-12 col-sm-12">
                                             <div class="growth-bar transparent center">
-                                                <button class="btn btn-block subscription-btn golden-poppy-backgound" data-toggle="modal" data-target="#updatePlanModal">Change Plan</button>
+                                                <!-- data-toggle="modal" data-target="#updatePlanModal" -->
+                                                <button id="submit-change-plan-btn" class="btn btn-block subscription-btn golden-poppy-backgound">Change Plan</button>
                                             </div>
                                         </div>
                                     </div>
@@ -308,11 +309,22 @@
             var priceElem = document.getElementById("pricing-attr");
             var priceDisplay = document.getElementById("change-plan-final-price");
 
-            var price =
-                    priceElem.dataset.base + // base price
-                    ((slider14.getValue() * priceElem.dataset.cpm) * slider13.getValue()); // charges for messages across all locations
+            var locations = slider13.getValue();
+            var messages = slider14.getValue();
 
-            priceDisplay.text(price);
+            var costPerLocation = (messages * priceElem.dataset.cpm);
+            var totalCost = (costPerLocation * locations);
+            
+            var price =
+                parseFloat(priceElem.dataset.base) + // base price
+                totalCost; // charges for messages across all locations
+
+            var planType = $(document.getElementById("plan-type")).find('.btn-primary').text();
+            if (planType === 'Annually') { 
+                price = ((price * 12) * parseFloat(1 - priceElem.dataset.ad))/12;  // Apply the discount
+            }
+
+            $(priceDisplay).text(price.toFixed(2));
         };
 
         var slider13 = new Slider("#ex13", {
@@ -390,8 +402,9 @@
             }
 
             $(this).find('.btn').toggleClass('btn-default');
-
+            
+            calculatePlanValue();
         });
-
+        
     });
 </script>
