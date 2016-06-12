@@ -17,7 +17,7 @@
     /**
      * Display the default index page.
      */
-    class AdmindashboardController extends ControllerBase {
+    class AdmindashboardController extends ControllerBusinessBase {
         public function initialize() {
 
             $logged_in = is_array($this->auth->getIdentity());
@@ -375,23 +375,7 @@
             $this->tag->setTitle('Review Velocity | Settings');
 
         }
-
-    }
-    /**
-     * payments action.
-     */
-    public function paymentsAction() {
-        $this->tag->setTitle('Review Velocity | Payments');
-    }
-
-    /**
-     * settings action.
-     */
-    public function settingsAction() {
-        $this->tag->setTitle('Review Velocity | Settings');
-    }
-
-    private function buildSubsriptionPricingPlanMarkUp() {
+        private function buildSubsriptionPricingPlanMarkUp() {
         $subscriptionPricingPlans = $this->di->get('subscriptionManager')->getSubscriptionPricingPlans();
 
         $markup = "<select id=\"subscription_pricing_plan_id\" name=\"subscription_pricing_plan_id\">";
