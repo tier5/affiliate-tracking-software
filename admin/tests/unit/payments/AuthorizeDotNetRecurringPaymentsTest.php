@@ -31,7 +31,7 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
         
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
         $parameters['customerProfileId'] = self::$customerProfileId;
         $parameters['customerPaymentProfileId'] = self::$customerPaymentProfileId;
         $parameters['subscriptionName'] = "Sample Subscription";
@@ -56,7 +56,7 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
         
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
         $parameters['subscriptionId'] = self::$subscriptionId;
         
         $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
@@ -70,7 +70,7 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
         
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
         $parameters['subscriptionId'] = self::$subscriptionId;
         $parameters['subscriptionName'] = "Sample Subscription1";
         $parameters['intervalLength'] = "22";
@@ -92,7 +92,7 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
         
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
         $parameters['subscriptionId'] = self::$subscriptionId;
         
         $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
@@ -110,7 +110,7 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
 
         /* Create a working customer profile with a payment profile */
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
         $parameters['email'] = 'john.smith@test.com';
         $parameters['cardNumber'] = '4111111111111111';
         $parameters['cardExpiryDate'] = '2038-12';
@@ -142,7 +142,7 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
         
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
 	$parameters['customerProfileId'] = self::$customerProfileId;
         
         $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);

@@ -76,7 +76,7 @@
                                     <div class="col-xs-4 col-md-4 pull-right">
                                         <div class="form-group">
                                             <div><img src="/img/cc/visa.png"></div>
-                                            <div><span>10/2016</span></div>
+                                            <div><span>XX/XX</span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -126,10 +126,10 @@
                                             <div><span id="change-plan-messages" class="bold"></span> Text Messages</div>
                                         </div>
                                         <div id="pricing-attr" 
-                                            class="responsive-float-right subscription-panel-large-caption" 
-                                            data-base="<?php echo $this->view->pricingPlan['base_price']; ?>"
-                                            data-cpm="<?php echo $this->view->pricingPlan['charge_per_sms']; ?>"
-                                            data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>">
+                                             class="responsive-float-right subscription-panel-large-caption" 
+                                             data-base="<?php echo $this->view->pricingPlan['base_price']; ?>"
+                                             data-cpm="<?php echo $this->view->pricingPlan['charge_per_sms']; ?>"
+                                             data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>">
                                             <sup class="subscription-panel-default-caption">$</sup><span id="change-plan-final-price"></span><sub class="subscription-panel-default-caption">/mo</sub>
                                         </div>
                                     </div>
@@ -262,8 +262,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <button type="button" class="btn default apple-backgound subscription-btn">Update</button>
-                        <button type="button" class="btn default apple-backgound subscription-btn" data-dismiss="modal">Cancel</button>
+                        <button type="button" id="confirm-update-credit-card" class="btn default apple-backgound subscription-btn">Update</button>
+                        <button type="button" id="cancel-update-credit-card" class="btn default apple-backgound subscription-btn" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -284,11 +284,11 @@
                     <div class="panel panel-default apple-backgound">
                         <div class="panel-body">
                             <div class="responsive-float-left subscription-panel-default-caption">
-                                <div><span class="bold">100+</span> Location</div>
-                                <div><span class="bold">250+</span> Text Messages</div>
+                                <div><span id="modal-locations" class="bold"></span> Location(s)</div>
+                                <div><span id="modal-messages" class="bold"></span> Text Messages</div>
                             </div>
                             <div class="responsive-float-right subscription-panel-large-caption">
-                                <sup class="subscription-panel-default-caption">$</sup>17<sub class="subscription-panel-default-caption">/mo</sub>
+                                <sup class="subscription-panel-default-caption">$</sup><span id="modal-price"></span><sub class="subscription-panel-default-caption">/mo</sub>
                             </div>
                         </div>
                     </div>
@@ -300,6 +300,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </header>
 <script type="text/javascript">
 
@@ -308,24 +309,75 @@
         function calculatePlanValue() {
             var priceElem = document.getElementById("pricing-attr");
             var priceDisplay = document.getElementById("change-plan-final-price");
+            var modalPriceDisplay = document.getElementById("modal-price");
 
             var locations = slider13.getValue();
             var messages = slider14.getValue();
 
             var costPerLocation = (messages * priceElem.dataset.cpm);
             var totalCost = (costPerLocation * locations);
-            
+
             var price =
-                parseFloat(priceElem.dataset.base) + // base price
-                totalCost; // charges for messages across all locations
+                    parseFloat(priceElem.dataset.base) + // base price
+                    totalCost; // charges for messages across all locations
 
             var planType = $(document.getElementById("plan-type")).find('.btn-primary').text();
-            if (planType === 'Annually') { 
-                price = ((price * 12) * parseFloat(1 - priceElem.dataset.ad))/12;  // Apply the discount
+            if (planType === 'Annually') {
+                price = ((price * 12) * parseFloat(1 - priceElem.dataset.ad)) / 12;  // Apply the discount
             }
 
             $(priceDisplay).text(price.toFixed(2));
+            $(modalPriceDisplay).text(price.toFixed(2));
         };
+
+        function getSubscriptionParams() {
+            var locations = slider13.getValue();
+            var messages = slider14.getValue();
+            var planType = $(document.getElementById("plan-type")).find('.btn-primary').text();
+            var price = $(document.getElementById("change-plan-final-price")).text();
+            ;
+            return {locations: locations, messages: messages, planType: planType, price: price};
+        };
+        
+        function getCCParams() {
+            var cardNumber = $('#updateCardModal .cardNumber').val(); 
+            var cardName = $('#updateCardModal .name').val();
+            var expirationDate = $('#updateCardModal .expiry').val();
+            var csv = $('#updateCardModal .cvc').val();
+            return { 
+                cardNumber: cardNumber, 
+                cardName: cardName, 
+                expirationDate: expirationDate, 
+                csv: csv
+            };
+        };
+        
+        function changePlan() {
+            $.post('/subscription/changePlan', getSubscriptionParams())
+                .done(function (data) {
+                    if (data.status === 'Succeeded') {
+                        $('#updatePlanModal').modal('show');
+                    } else {
+                        $('#updateCardModal').data('calledFrom', "changePlan");
+                        $('#updateCardModal').modal('show'); // $('#confirm-update-credit-card').trigger( "click" );
+                    }
+                })
+                .fail(function () {})
+                .always(function () {});
+        }
+        
+        function updateCard() {
+            $.post('/subscription/updatecc', getCCParams())
+                .done(function (data) {
+                    if (data.status === 'Succeeded') {
+                        $('#updatePlanModal').modal('show');
+                    } else {
+                        alert("Card update failed!!")
+                    }
+                })
+                .fail(function () {})
+                .always(function () {});
+        }
 
         var slider13 = new Slider("#ex13", {
             tooltip: 'show',
@@ -382,11 +434,13 @@
         slider13.on('change', function () {
             $('#change-plan-locations').text(slider13.getValue());
             $('#slider-locations').text(slider13.getValue());
+            $('#modal-locations').text(slider13.getValue());
             calculatePlanValue();
         });
         slider14.on('change', function () {
             $('#change-plan-messages').text(slider14.getValue());
             $('#slider-messages').text(slider14.getValue());
+            $('#modal-messages').text(slider13.getValue());
             calculatePlanValue();
         });
 
@@ -394,6 +448,19 @@
         slider13.setValue(1, true, true);
         slider14.setValue(100, true, true);
 
+        $('#confirm-update-credit-card').click(function () {
+            
+            if($('#updateCardModal').data('calledFrom') === "changePlan") {
+                $('#updateCardModal').data('calledFrom', '');
+                changePlan();  
+            } else {
+                
+                updateCard();
+            }
+            
+            $('#updateCardModal').modal('hide');  // We can hide the modal here, we don't need any paramters
+        });
+        
         $('.subscription-toggle').click(function () {
             $(this).find('.btn').toggleClass('active');
 
@@ -402,9 +469,13 @@
             }
 
             $(this).find('.btn').toggleClass('btn-default');
-            
+
             calculatePlanValue();
         });
+        
+        $('#submit-change-plan-btn').click(function () {
+            changePlan();
+        }); 
         
     });
 </script>

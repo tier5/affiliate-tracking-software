@@ -2,7 +2,11 @@
 
 namespace Vokuro\Services;
 
-class UserManager {
+class UserManager extends BaseService {
+    
+    function __construct($config) {
+        parent::__construct($config);
+    }
     
     public function isSuperAdmin($session) {
         $identity = $session->get('auth-identity');

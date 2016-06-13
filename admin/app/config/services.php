@@ -154,20 +154,20 @@ $di->set('acl', function () {
 /**
  * User Manager
  */
-$di->set('userManager', new UserManager());
+$di->set('userManager', new UserManager($config));
 
 /**
  * Subscription Manager
  */
-$di->set('subscriptionManager', new SubscriptionManager());
+$di->set('subscriptionManager', new SubscriptionManager($config));
 
 /**
  * Sms Manager
  */
-$di->set('smsManager', new SmsManager());
+$di->set('smsManager', new SmsManager($config));
 
 /**
  * Payment Service
  */
-$di->set('paymentService', new PaymentService());
+$di->set('paymentService', new PaymentService($config));
 

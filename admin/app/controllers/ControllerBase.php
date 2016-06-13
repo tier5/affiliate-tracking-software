@@ -19,7 +19,7 @@ use Vokuro\Models\SharingCode;
 use Vokuro\Models\Users;
 use Vokuro\Models\UsersSubscription;
 use Vokuro\Models\YelpScanning;
-use Vokuro\Services\SubscriptionManager;
+use Vokuro\Services\ServicesConsts;
 use Services_Twilio;
 use Services_Twilio_RestException;
 
@@ -66,9 +66,10 @@ class ControllerBase extends Controller {
                 $this->view->logo_setting = $agency->logo_path;
                 $foundsomething = true;
             }
-
+            
             //internal navigation parameters  
             $this->configureNavigation($identity);
+
         }
 
         //find white label info based on the url
@@ -933,7 +934,7 @@ class ControllerBase extends Controller {
         $internalNavParams['hasSubscriptions'] = 
             !$internalNavParams['isSuperUser'] &&
             ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) && 
-            ($userSubscription['payment_plan'] != SubscriptionManager::$PAYMENT_PLAN_FREE) && 
+            ($userSubscription['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) && 
              $userManager->hasLocation($this->session);
 
         if ($internalNavParams['hasSubscriptions']) {

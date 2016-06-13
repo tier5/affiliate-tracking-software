@@ -10,6 +10,9 @@ class AddAuthorizeDotNetTable extends AbstractMigration
         $table = $this->table('authorize_dot_net');
         $table->addColumn('user_id', 'integer', [ 'signed' => false, 'limit' => 10, 'null' => false, 'default' => 0])
               ->addColumn('customer_profile_id', 'string', ['null' => false, 'default' => ''])
+              ->addColumn('created_at', 'timestamp', [ 'null' => false, 'default' => 'CURRENT_TIMESTAMP'])
+              ->addColumn('updated_at', 'timestamp', [ 'null' => false ])
+              ->addColumn('deleted_at', 'timestamp', [ 'null' => false ])
               ->addForeignKey('user_id', 'users', 'id', [ 'delete' => 'CASCADE', 'update' => 'CASCADE' ])
               ->create();
     }

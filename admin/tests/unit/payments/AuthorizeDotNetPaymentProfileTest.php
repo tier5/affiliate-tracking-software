@@ -17,7 +17,7 @@ class AuthorizeDotNetPaymentProfileTest extends \Codeception\TestCase\Test
         
         /* Create a working customer profile with a payment profile */
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
 	$parameters['customerType'] = 'individual';
 	$parameters['customerProfileDescription'] = 'Test Customer';
         $parameters['email'] = 'john.smith@test.com';
@@ -35,7 +35,7 @@ class AuthorizeDotNetPaymentProfileTest extends \Codeception\TestCase\Test
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
         
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
 	$parameters['customerProfileId'] = self::$customerProfileId;
         
         $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
@@ -58,7 +58,6 @@ class AuthorizeDotNetPaymentProfileTest extends \Codeception\TestCase\Test
         $this->assertTrue($paymentProfileId !== false, "Create new working payment profile for existing customer failed!!!");
         
         /* Update parameters */
-        $parameters['environment'] = 'dev';
         $parameters['customerProfileId'] = self::$customerProfileId;
 	$parameters['customerPaymentProfileId'] = $paymentProfileId;
 	$parameters['cardNumber'] = '4111111111111112';
@@ -86,7 +85,7 @@ class AuthorizeDotNetPaymentProfileTest extends \Codeception\TestCase\Test
         $this->assertTrue($paymentProfileId !== false, "Create new working payment profile for existing customer failed!!!");
         
         /* Update parameters */
-        $parameters['environment'] = 'dev';
+        
         $parameters['customerProfileId'] = self::$customerProfileId;
 	$parameters['customerPaymentProfileId'] = $paymentProfileId;
         
@@ -104,7 +103,7 @@ class AuthorizeDotNetPaymentProfileTest extends \Codeception\TestCase\Test
         $this->assertTrue($paymentProfileId !== false, "Create new working payment profile for existing customer failed!!!");
         
         /* Update parameters */
-        $parameters['environment'] = 'dev';
+        
         $parameters['customerProfileId'] = self::$customerProfileId;
 	$parameters['customerPaymentProfileId'] = $paymentProfileId;
         
@@ -122,7 +121,7 @@ class AuthorizeDotNetPaymentProfileTest extends \Codeception\TestCase\Test
         $this->assertTrue($paymentProfileId !== false, "Create new working payment profile for existing customer failed!!!");
         
         /* Update parameters */
-        $parameters['environment'] = 'dev';
+        
         $parameters['customerProfileId'] = self::$customerProfileId;
 	$parameters['customerPaymentProfileId'] = $paymentProfileId;
         
@@ -137,7 +136,7 @@ class AuthorizeDotNetPaymentProfileTest extends \Codeception\TestCase\Test
         
         /* Create a new payment profile for the customer profile */
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
         $parameters['customerProfileId'] = self::$customerProfileId;
 	$parameters['cardNumber'] = '4111111111111111';
 	$parameters['cardExpiryDate'] = '2038-12';

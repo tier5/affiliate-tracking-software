@@ -6,9 +6,13 @@ use Vokuro\Models\Location;
 use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\ReviewsMonthly;
 
-class SmsManager {  
+class SmsManager extends BaseService {  
 
     static $reviewPercentage = 10;
+    
+    function __construct($config) {
+        parent::__construct($config);
+    }
     
     public function getBusinessSmsQuotaParams($locationId) {
 

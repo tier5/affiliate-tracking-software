@@ -2,7 +2,7 @@
 
 namespace Vokuro\Controllers;
 
-use Vokuro\Services\SubscriptionManager;
+use Vokuro\Services\ServicesConsts;
 
 /**
  * Vokuro\Controllers\SubscriptionController
@@ -58,15 +58,19 @@ class SubscriptionController extends ControllerBase {
         $userId = $userManager->getUserId($this->session);
         $this->view->subscriptionPlan = $subscriptionManager->getSubscriptionPlan($userId);
         $this->view->paymentPlan = 
-            $this->view->subscriptionPlan['payment_plan'] === SubscriptionManager::$PAYMENT_PLAN_TRIAL ? 'TRIAL' : 'PAID';
+            $this->view->subscriptionPlan['payment_plan'] === ServicesConsts::$PAYMENT_PLAN_TRIAL ? 'TRIAL' : 'PAID';
         
         /* Get pricing plan */
         $pricingPlanId = $this->view->subscriptionPlan['subscription_pricing_plan_id'];
         $this->view->pricingPlan = $subscriptionManager->getPricingPlan($pricingPlanId);
         
         /* Payments paramaters */
+        $paymentParams = [
+            'userId' => $userId,
+            'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+        ];
         $this->view->upgradeCreditCardStatus = 
-            !$paymentService->hasRegisteredCreditCard($userId) ? 'disabled' : '';
+            !$paymentService->hasPaymentProfile($paymentParams) ? 'disabled' : '';
             
         /* Render template */
         $this->view->pick("subscription/business");
@@ -77,16 +81,58 @@ class SubscriptionController extends ControllerBase {
     }
 
     /**
-     * Searches for subscriptions
+     * Change subscription 
      */
-    public function indexAction() {
-        // TODO: Original code
-        // $this->view->subscriptions = Subscription::find();
-        if ($this->session->get('auth-identity')['location_id']) {
-            $this->getSMSReport();
+    public function changePlanAction() {
+        
+        $responseParameters = [];
+        if ($this->request->isPost()) {
+        
+            /* Get services */
+            $userManager = $this->di->get('userManager');
+            $paymentService = $this->di->get('paymentService');
+        
+            /* Get the user id */
+            $userId = $userManager->getUserId($this->session);
+        
+            /* Get the subscription parameters */
+            $subscriptionParameters = [
+                'userId' => $userId,
+                'locations' => $this->request->getPost('locations', 'striptags'),
+                'messages' => $this->request->getPost('messages', 'striptags'),
+                'planType' => $this->request->getPost('planType', 'striptags'),
+                'price' => $this->request->getPost('price', 'striptags'),
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+            ];
+            
+            /* 
+             * If they already have a customer profile, simply update their subscription,
+             * otherwise direct them to the credit card form.  
+             */
+            $paymentParams = [
+                'userId' => $userId,
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+            ];
+            
+            $responseParameters['status'] = 'Failed';
+            if($paymentService->hasPaymentProfile($paymentParams) && 
+               $paymentService->updateSubscription($subscriptionParameters)) {
+               $responseParameters['status'] = 'Succeeded'; 
+            }
+            
+            /* 
+             * Construct the response  
+             */
+            $this->view->disable();
+                
         }
+        
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
     }
-
+    
+    
     /**
      * Show invoices 
      */
@@ -97,50 +143,65 @@ class SubscriptionController extends ControllerBase {
     }
     
     /**
-     * Creates a subscriptions
+     * Update cc 
      */
-    public function createAction() {
+    public function updateCC() {
+        
+        $responseParameters = [];
         if ($this->request->isPost()) {
-
-            $sub = new Subscription();
-
-            $sub->assign(array(
-                'name' => $this->request->getPost('name', 'striptags'),
-                'subscription_interval_id' => $this->request->getPost('subscription_interval_id', 'int'),
-                'duration' => $this->request->getPost('duration', 'int'),
-                'amount' => $this->request->getPost('amount'),
-                'trial_amount' => $this->request->getPost('trial_amount'),
-                'trial_length' => $this->request->getPost('trial_length', 'int'),
-            ));
-
-            if (!$sub->save()) {
-                $messages = array();
-                foreach ($sub->getMessages() as $message) {
-                    $messages[] = str_replace("subscription_interval_id", "Interval", $message->getMessage());
-                }
-
-                $this->flash->error($messages);
+        
+            /* Get services */
+            $userManager = $this->di->get('userManager');
+            $paymentService = $this->di->get('paymentService');
+        
+            /* Get the user id */
+            $userId = $userManager->getUserId($this->session);
+        
+            /* Get the subscription parameters */
+            $ccParameters = [
+                'userId' => $userId,
+                'cardNumber' => $this->request->getPost('cardNumber', 'striptags'),
+                'cardName' => $this->request->getPost('cardName', 'striptags'),
+                'expirationDate' => $this->request->getPost('expirationDate', 'striptags'),
+                'csv' => $this->request->getPost('csv', 'striptags'),
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+            ];
+            
+            /* 
+             * If they have a customer profile, then update.  If not, create 
+             * a new one.  
+             */
+            $paymentParams = [
+                'userId' => $userId,
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+            ];
+            
+            $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
+            
+            if($hasPaymentProfile && $paymentService->updatePaymentProfile($ccParameters)) {
+                
+                $responseParameters['status'] = 'Succeeded';
+                
+            } else if (!$hasPaymentProfile && $paymentService->createCustomerPaymentProfile($ccParameters)){
+                
+                $responseParameters['status'] = 'Succeeded';
+                
             } else {
-                $this->flash->success("The subscription was created successfully");
-
-                Tag::resetInput();
+                
+                $responseParameters['status'] = 'Failed';
+                
             }
+            
+            /* 
+             * Construct the response  
+             */
+            $this->view->disable();
+                
         }
-
-        // find all subscription intervals for the form
-        $this->view->subscription_intervals = SubscriptionInterval::find();
-        //end finding subscription intervals        
-
-        $this->view->subscription = new Subscription();
-        $this->view->form = new SubscriptionForm(null);
+        
+        $response = new \Phalcon\Http\Response();
+        $response->setContent(json_encode($responseParameters));
+        return $response;
     }
     
-    private function computePercentMessagesRemaining($smsQuotaParams) {
-        $percent = 
-           ($smsQuotaParams['totalSmsNeeded'] > 0 ? 
-            number_format((float)($smsQuotaParams['smsSentThisMonth'] / $smsQuotaParams['totalSmsNeeded']) * 100, 0, '.', '') : 
-            100);
-        return $percent > 100 ? 100 : $percent;
-    }
-
 }
