@@ -61,6 +61,8 @@ class ReviewsController extends ControllerBase
         //look for a yelp review configuration
         $conditions = "location_id = :location_id: AND review_site_id =  2";
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+
+
         $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
         //start with Yelp reviews, if configured
         if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
@@ -74,6 +76,7 @@ class ReviewsController extends ControllerBase
         //look for a google review configuration
         $conditions = "location_id = :location_id: AND review_site_id =  3";
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+
         $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
         //start with google reviews, if configured
         if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {

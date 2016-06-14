@@ -122,9 +122,51 @@ class LocationController extends ControllerBase
 
     $locs = Location::getLocations($userObj->agency_id);
     $this->view->locs = $locs;
+    $this->getSMSReport();
   }
 
+    /**
+     * @param $objReviewLocation LocationReviewSite Object
+     */
+    protected function deleteYelpReviews($LocationID) {
+        $dbArray = Review::find("rating_type_id = 1 AND location_id = {$LocationID}");
+        foreach($dbArray as $dbRow)
+            $dbRow->delete();
+    }
+    /**
+     * Ajax request that updates yelp location and review information
+     */
+    public function updateLocationAction() {
+        $yelp_api_id = $this->request->get('yelp_id', 'striptags');
+        $location_id = $this->request->get('location_id', 'striptags');
+        if(!$yelp_api_id || !$location_id)
+            die("ERROR:  Missing location_id and/or yelp id");
 
+        $user_id = $this->session->get('auth-identity')['id'];
+        $objUser = Users::findFirst("id = {$user_id}");
+
+        // Validate user is editing correct location
+        $objLocation = Location::findFirst("location_id = {$location_id}");
+        if($objLocation->agency_id != $objUser->agency_id)
+            die("ERROR:  Invalid user ID");
+
+        $objLocationReviewSite = LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = 2");
+        if(!$objLocationReviewSite) {
+            $objLocationReviewSite = new LocationReviewSite();
+            $objLocationReviewSite->review_site_id = 2;
+        }
+
+        $objLocationReviewSite->external_id = $this->yelpId($yelp_api_id);
+        $objLocationReviewSite->api_id = $yelp_api_id;
+        $objLocationReviewSite->date_created = date("Y-m-d H:i:s");
+        $objLocationReviewSite->save();
+
+        $tFoundAgency = [];
+        $this->deleteYelpReviews($location_id);
+        $this->importYelp($objLocationReviewSite, $objLocation, $tFoundAgency);
+
+        die('SUCCESS');
+    }
 
   /**
     * Creates a Location
@@ -242,10 +284,11 @@ class LocationController extends ControllerBase
         }
 
         $this->auth->setLocation($loc->location_id);
+
         
         $this->auth->setLocationList();        
         if (!(isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0)) {
-          $this->auth->setLocation($loc->location_id);
+          $this->auth->setLocation($loc->location_id)/me ;
         }
         $this->flash->success("The location was created successfully");
         //we are done, go to the next page
@@ -947,35 +990,42 @@ class LocationController extends ControllerBase
   protected $fb;
   public function getAccessTokenAction()
   {
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/autoload.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Facebook.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookApp.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookClient.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookRequest.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/FacebookResponse.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Authentication/AccessToken.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Authentication/OAuth2Client.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Helpers/FacebookRedirectLoginHelper.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PersistentData/PersistentDataInterface.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Url/UrlDetectionInterface.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Url/FacebookUrlDetectionHandler.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Url/FacebookUrlManipulator.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/HttpClients/FacebookHttpClientInterface.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/HttpClients/FacebookCurl.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/HttpClients/FacebookCurlHttpClient.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Http/RequestBodyInterface.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Http/RequestBodyUrlEncoded.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Http/GraphRawResponse.php";  
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Exceptions/FacebookSDKException.php"; 
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Exceptions/FacebookAuthenticationException.php";
-    require_once "/var/www/html/".$this->config->webpathfolder->path."/app/controllers/Facebook/Exceptions/FacebookResponseException.php"; 
-    $this->fb = new \Services\Facebook\Facebook(array(
+    require_once __DIR__ . "/../library/Facebook/autoload.php";
+    require_once __DIR__ . "/../library/Facebook/Facebook.php";
+    require_once __DIR__ . "/../library/Facebook/FacebookApp.php";
+    require_once __DIR__ . "/../library/Facebook/FacebookClient.php";
+    require_once __DIR__ . "/../library/Facebook/FacebookRequest.php";
+    require_once __DIR__ . "/../library/Facebook/FacebookResponse.php";
+    require_once __DIR__ . "/../library/Facebook/Authentication/AccessToken.php";
+    require_once __DIR__ . "/../library/Facebook/Authentication/OAuth2Client.php";
+    require_once __DIR__ . "/../library/Facebook/Helpers/FacebookRedirectLoginHelper.php";
+    require_once __DIR__ . "/../library/Facebook/PersistentData/PersistentDataInterface.php";
+    require_once __DIR__ . "/../library/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php";
+    require_once __DIR__ . "/../library/Facebook/Url/UrlDetectionInterface.php";
+    require_once __DIR__ . "/../library/Facebook/Url/FacebookUrlDetectionHandler.php";
+    require_once __DIR__ . "/../library/Facebook/Url/FacebookUrlManipulator.php";
+    require_once __DIR__ . "/../library/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php";
+    require_once __DIR__ . "/../library/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php";
+    require_once __DIR__ . "/../library/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php";
+    require_once __DIR__ . "/../library/Facebook/PseudoRandomString/McryptPseudoRandomStringGenerator.php";
+    require_once __DIR__ . "/../library/Facebook/HttpClients/FacebookHttpClientInterface.php";
+    require_once __DIR__ . "/../library/Facebook/HttpClients/FacebookCurl.php";
+    require_once __DIR__ . "/../library/Facebook/HttpClients/FacebookCurlHttpClient.php";
+    require_once __DIR__ . "/../library/Facebook/Http/RequestBodyInterface.php";
+    require_once __DIR__ . "/../library/Facebook/Http/RequestBodyUrlEncoded.php";
+    require_once __DIR__ . "/../library/Facebook/Http/GraphRawResponse.php";
+    require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookSDKException.php";
+    require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookAuthenticationException.php";
+    require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookResponseException.php";
+
+    /*$this->fb = new \Services\Facebook\Facebook(array(
       'app_id' => '628574057293652',
       'app_secret' => '95e89ebac7173ba0980c36d8aa5777e4'
+    ));*/
+
+    $this->fb = new \Services\Facebook\Facebook(array(
+      'app_id' => '1650142038588223',
+      'app_secret' => 'b1c2cb9c1cbb774ea35eb68de725ee45'
     ));
 
     //check for a code
@@ -1030,6 +1080,8 @@ class LocationController extends ControllerBase
   
   protected function getRedirectUrl()
   {
+    // TODO:  What is with the hardcoding of URLS?!?!  Fix this
+    //return 'http://velocity.dev/location/getAccessToken';
     return 'http://reviewvelocity.co/location/getAccessToken';
   }
 
@@ -1048,24 +1100,24 @@ class LocationController extends ControllerBase
     $allLocations = Location::find();
 
     $conditions = "location_id = :location_id:";
-    $parameters = array("location_id" => 23);
+    // TODO:  Remove location restriction.  Doing this for testing purposes (it was checked in with a limitation too, so remove entirely).
+    $parameters = array("location_id" => 61);
     $allLocations = Location::find(array($conditions, "bind" => $parameters));
 
-    if (count($allLocations) > 0) {
-      foreach ($allLocations as $location) {
+    foreach ($allLocations as $location) {
         $rev_monthly = new ReviewsMonthly();
         $rev_monthly->location_id = $location->location_id;
 
-        echo '<p><b>location: '.$location->name.'</b></p>';
+        echo '<p><b>Location: '.$location->name.'</b></p>';
 
         //look for a yelp review configuration
-        $conditions = "location_id = :location_id: AND review_site_id =  2";
+        $conditions = "location_id = :location_id: AND review_site_id = 2";
         $parameters = array("location_id" => $location->location_id);
         $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
-        //start with Yelp reviews, if configured
+        // start with Yelp reviews, if configured
         if (isset($Obj) && isset($Obj->api_id) && $Obj->api_id) {
-          //import reviews
+          // import reviews
           $Obj = $this->importYelp($Obj, $location, $foundagency);
           
           $rev_monthly->yelp_rating = $Obj->rating;
@@ -1073,7 +1125,7 @@ class LocationController extends ControllerBase
         } else {
           echo '<p>Yelp api_id NOT CONFIGURED!</p>';
         }
-          
+        
         //look for a facebook review configuration
         $conditions = "location_id = :location_id: AND review_site_id =  1";
         $parameters = array("location_id" => $location->location_id);
@@ -1121,7 +1173,7 @@ class LocationController extends ControllerBase
         $rev_monthly->save();
 
         //loop through our found array and send notifications
-    //echo '<pre>$foundagency:'.print_r($foundagency,true).'</pre>';
+        //echo '<pre>$foundagency:'.print_r($foundagency,true).'</pre>';
         $keys = array_keys($foundagency);
         foreach($keys as $key){
           $agencyobj = new Agency();
@@ -1133,8 +1185,8 @@ class LocationController extends ControllerBase
         }
         $foundagency = array();
 
-      }  // go to the next location
-    }  // end checking for locations
+    }  // go to the next location
+
        
 
     //Check if there are any invites that need to be resent
