@@ -94,6 +94,12 @@ class ControllerBusinessBase extends ControllerBase {
                             $this->flash->error($messages);
                         }
                     }
+                    
+                    /* REFACTOR:  This entire controller needs a rework from the top down */
+                    $result = $this->createSubscriptionPlan($user->id, $this->request);
+                    if($result !== true) {   
+                        $this->flash->error($messages);
+                    }
 
                     $this->flash->success("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was " . ($agency_id > 0 ? 'edited' : 'created') . " successfully");
                 }
@@ -119,8 +125,8 @@ class ControllerBusinessBase extends ControllerBase {
         }
 
         // find all subscriptions for the form
-        $this->view->subscriptions = Subscription::find();
-        //end finding subscriptions
+        $markup = $this->buildSubsriptionPricingPlanMarkUp();
+        $this->view->setVar("subscriptionPricingPlans", $markup);
 
         $this->view->agency = new Agency();
         $this->view->form = $form;
