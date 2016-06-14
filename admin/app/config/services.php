@@ -13,7 +13,10 @@ use Phalcon\Flash\Direct as Flash;
 use Vokuro\Auth\Auth;
 use Vokuro\Acl\Acl;
 use Vokuro\Mail\Mail;
+use Vokuro\Services\UserManager;
 use Vokuro\Services\SubscriptionManager;
+use Vokuro\Services\SmsManager;
+use Vokuro\Services\PaymentService;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -149,7 +152,22 @@ $di->set('acl', function () {
 });
 
 /**
+ * User Manager
+ */
+$di->set('userManager', new UserManager($config));
+
+/**
  * Subscription Manager
  */
-$subscriptionManager = new SubscriptionManager();
-$di->set('subscriptionManager', $subscriptionManager);
+$di->set('subscriptionManager', new SubscriptionManager($config));
+
+/**
+ * Sms Manager
+ */
+$di->set('smsManager', new SmsManager($config));
+
+/**
+ * Payment Service
+ */
+$di->set('paymentService', new PaymentService($config));
+

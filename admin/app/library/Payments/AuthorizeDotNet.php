@@ -1,7 +1,8 @@
 <?php
 
-namespace Vokuro\Payments;
+namespace Vokuro\Payments;   
 
+use \DateTime;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
 
@@ -14,12 +15,14 @@ class AuthorizeDotNet {
     const SANDBOX = 'https://sandbox.authorize.net';
     const PRODUCTION = 'http://www.authorize.net/';
 
+    private $environment;
     private $apiLoginId;
     private $transactionKey;
 
-    function __construct($apiLoginId, $transactionKey) {
-        $this->apiLoginId = $apiLoginId;
-        $this->transactionKey = $transactionKey;
+    function __construct($config) {
+        $this->apiLoginId = $config->authorizeDotNet->apiLoginId;
+        $this->transactionKey =  $config->authorizeDotNet->transactionKey;
+        $this->environment = $config->application->environment;
     }
 
     /*
@@ -27,11 +30,10 @@ class AuthorizeDotNet {
      * Customer Profiles
      *      
      */
-
     public function createCustomerProfile($parameters) {
         /* TODO: Add parameter validation */
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        if ($parameters['environment'] === 'production') {
+        if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
 
@@ -94,7 +96,7 @@ class AuthorizeDotNet {
     public function getCustomerProfile($parameters) {
         /* TODO: Add parameter validation */
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        if ($parameters['environment'] === 'production') {
+        if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
 
@@ -126,7 +128,7 @@ class AuthorizeDotNet {
         /* TODO: Add parameter validation */
 
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        if ($parameters['environment'] === 'production') {
+        if ($this->environment === 'production') {
             return true;
         }
 
@@ -158,11 +160,11 @@ class AuthorizeDotNet {
 
     public function createPaymentProfileForCustomer($parameters) {
         /* TODO: Add parameter validation */
+        $validationMode = "liveMode";
+        
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        $validationMode = "none";
-        if ($parameters['environment'] === 'production') {
-            $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
-            $validationMode = "none";
+        if ($this->environment === 'production') {
+            $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;    
         }
 
         $merchantAuthentication = $this->createMerchantAuthenticationType();
@@ -197,11 +199,11 @@ class AuthorizeDotNet {
     }
 
     public function updatePaymentProfileForCustomer($parameters) {
-        $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
         $validationMode = "none";
-        if ($parameters['environment'] === 'production') {
+        
+        $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
+        if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
-            $validationMode = "none";
         }
 
         $merchantAuthentication = $this->createMerchantAuthenticationType();
@@ -240,7 +242,7 @@ class AuthorizeDotNet {
 
     public function getPaymentProfileForCustomer($parameters) {
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        if ($parameters['environment'] === 'production') {
+        if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
         $refId = 'ref' . time();
@@ -265,10 +267,9 @@ class AuthorizeDotNet {
     }
 
     public function validatePaymentProfileForCustomer($parameters) {
-        $validationMode = "testMode";
+        $validationMode = "liveMode";
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        if ($parameters['environment'] === 'production') {
-            $validationMode = "liveMode";
+        if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
         $refId = 'ref' . time();
@@ -293,8 +294,8 @@ class AuthorizeDotNet {
     }
 
     public function deletePaymentProfileForCustomer($parameters) {
-        $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        if ($parameters['environment'] === 'production') {
+        $environment = self::SANDBOX;  // \net\authorize\api\constants\ANetEnvironment::
+        if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
         $refId = 'ref' . time();
@@ -322,7 +323,7 @@ class AuthorizeDotNet {
 
     public function createSubscriptionForCustomer($parameters) {
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        if ($parameters['environment'] === 'production') {
+        if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
         $refId = 'ref' . time();
@@ -341,15 +342,19 @@ class AuthorizeDotNet {
         $paymentSchedule->setInterval($interval);
         $paymentSchedule->setStartDate(new \DateTime($parameters['startDate']));
         $paymentSchedule->setTotalOccurrences($parameters['totalOccurences']);
-        $paymentSchedule->setTrialOccurrences($parameters['trialOccurences']);
-
+        if (array_key_exists('trialOccurences', $parameters)) {
+            $paymentSchedule->setTrialOccurrences($parameters['trialOccurences']);
+        }
+        
         $subscription->setPaymentSchedule($paymentSchedule);
         $subscription->setAmount($parameters['amount']);
-        $subscription->setTrialAmount($parameters['trialAmount']);
-
+        if (array_key_exists('trialOccurences', $parameters)) {
+            $subscription->setTrialAmount($parameters['trialAmount']);
+        }
         $profile = new AnetAPI\CustomerProfileIdType();
         $profile->setCustomerProfileId($parameters['customerProfileId']);
         $profile->setCustomerPaymentProfileId($parameters['customerPaymentProfileId']);
+        // $profile->setCustomerAddressId($parameters['customerAddressId']);
         
         $subscription->setProfile($profile);
 
@@ -371,7 +376,7 @@ class AuthorizeDotNet {
 
     public function getSubscriptionForCustomer($parameters) {
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        if ($parameters['environment'] === 'production') {
+        if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
         $refId = 'ref' . time();
@@ -396,7 +401,7 @@ class AuthorizeDotNet {
 
     public function updateSubscriptionForCustomer($parameters) {
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        if ($parameters['environment'] === 'production') {
+        if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
         $refId = 'ref' . time();
@@ -407,7 +412,7 @@ class AuthorizeDotNet {
         $this->updateIntervalFields($parameters, $interval);
         
         $paymentSchedule = new AnetAPI\PaymentScheduleType();
-        $paymentSchedule->setInterval($interval);
+        // $paymentSchedule->setInterval($interval);
         $this->updatePaymentScheduleFields($parameters, $paymentSchedule);
 
         $subscription = new AnetAPI\ARBSubscriptionType();
@@ -432,7 +437,7 @@ class AuthorizeDotNet {
 
     public function cancelSubscriptionForCustomer($parameters) {
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
-        if ($parameters['environment'] === 'production') {
+        if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
         $refId = 'ref' . time();
@@ -572,13 +577,13 @@ class AuthorizeDotNet {
 
             switch ($parameter) {
                 case 'subscriptionName':
-                    $subscription->setName($parameters['subscriptionName']);
+                    // $subscription->setName($parameters['subscriptionName']);
                     break;
                 case 'amount':
                     $subscription->setAmount($parameters['amount']);
                     break;
                 case 'trialAmount':
-                    $subscription->setTrialAmount($parameters['trialAmount']);
+                    // $subscription->setTrialAmount($parameters['trialAmount']);
                     break;
                 default:
                     break;

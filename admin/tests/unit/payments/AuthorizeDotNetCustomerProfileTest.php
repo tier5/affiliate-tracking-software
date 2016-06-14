@@ -24,7 +24,7 @@ class AuthorizeDotNetCustomerProfileTest extends \Codeception\TestCase\Test
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
         
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
 	$parameters['customerProfileDescription'] = 'Test Customer';
         $parameters['email'] = 'john.smith@test.com';
         
@@ -41,7 +41,7 @@ class AuthorizeDotNetCustomerProfileTest extends \Codeception\TestCase\Test
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
         
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
 	$parameters['customerProfileId'] = self::$customerProfileId;
         
         $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
@@ -55,7 +55,7 @@ class AuthorizeDotNetCustomerProfileTest extends \Codeception\TestCase\Test
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
         
         $parameters = [];
-        $parameters['environment'] = 'dev';
+        
 	$parameters['customerProfileId'] = self::$customerProfileId;
         
         $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);

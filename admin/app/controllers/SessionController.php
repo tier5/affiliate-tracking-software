@@ -67,113 +67,113 @@ class SessionController extends ControllerBase {
      */
     public function subscribeAction($subscription_stripe_id = 0) {
         /*
-        $this->view->setTemplateBefore('login');
-        $this->tag->setTitle('Review Velocity | Sign up');
-        $form = new SignUpForm();
+          $this->view->setTemplateBefore('login');
+          $this->tag->setTitle('Review Velocity | Sign up');
+          $form = new SignUpForm();
 
-        $this->view->maxlimitreached = $this->isMaxLimitReached();
+          $this->view->maxlimitreached = $this->isMaxLimitReached();
 
-        //find the agency 
-        $conditions = "agency_id = :agency_id:";
-        $parameters = array("agency_id" => $this->view->agency_id);
-        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        if (!$agency) {
-            $this->flash->error("No agency found");
-        } else {
-            $this->view->agency = $agency;
+          //find the agency
+          $conditions = "agency_id = :agency_id:";
+          $parameters = array("agency_id" => $this->view->agency_id);
+          $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+          if (!$agency) {
+          $this->flash->error("No agency found");
+          } else {
+          $this->view->agency = $agency;
 
-            if ($subscription_stripe_id > 0) {
-                $conditions = "subscription_stripe_id = :subscription_stripe_id:";
-                $parameters = array("subscription_stripe_id" => $subscription_stripe_id);
-                $subscriptionobj = SubscriptionStripe::findFirst(array($conditions, "bind" => $parameters));
-                $this->view->subscription = $subscriptionobj;
+          if ($subscription_stripe_id > 0) {
+          $conditions = "subscription_stripe_id = :subscription_stripe_id:";
+          $parameters = array("subscription_stripe_id" => $subscription_stripe_id);
+          $subscriptionobj = SubscriptionStripe::findFirst(array($conditions, "bind" => $parameters));
+          $this->view->subscription = $subscriptionobj;
 
-                if ($this->request->isPost()) {
-                    try {
+          if ($this->request->isPost()) {
+          try {
 
-                        $ccformvalid = false;
-                        //check to make sure credit card values were filled out
-                        if (isset($_POST['stripeToken']) && $_POST['stripeToken'] != '' &&
-                                isset($_POST['stripeEmail']) && $_POST['stripeEmail'] != '') {
-                            //$_POST['email'] = $_POST['stripeEmail'];
-                            //we have values, assume valid
-                            $ccformvalid = true;
-                        }
-                        //check user email unuique            
-                        $user = new Users();
-                        $user->assign(array(
-                            'name' => $this->request->getPost('name', 'striptags'),
-                            'email' => $this->request->getPost('email'),
-                            'password' => $this->security->hash($this->request->getPost('password')),
-                            'profilesId' => 1, //All new users will be "Agency Admin"
-                        ));
-                        $isemailunuique = $user->validation();
+          $ccformvalid = false;
+          //check to make sure credit card values were filled out
+          if (isset($_POST['stripeToken']) && $_POST['stripeToken'] != '' &&
+          isset($_POST['stripeEmail']) && $_POST['stripeEmail'] != '') {
+          //$_POST['email'] = $_POST['stripeEmail'];
+          //we have values, assume valid
+          $ccformvalid = true;
+          }
+          //check user email unuique
+          $user = new Users();
+          $user->assign(array(
+          'name' => $this->request->getPost('name', 'striptags'),
+          'email' => $this->request->getPost('email'),
+          'password' => $this->security->hash($this->request->getPost('password')),
+          'profilesId' => 1, //All new users will be "Agency Admin"
+          ));
+          $isemailunuique = $user->validation();
 
-                        if ($form->isValid($this->request->getPost()) != false && $ccformvalid && $isemailunuique) {
-                            //create the Stripe subscription account
-                            \Stripe\Stripe::setApiKey($agency->stripe_account_secret);
-                            $customer = \Stripe\Customer::create(array(
-                                        'source' => $_POST['stripeToken'],
-                                        'email' => $_POST['stripeEmail'],
-                                        'plan' => $subscriptionobj->plan,
-                            ));
-                            //echo '<pre>$customer:'.print_r($customer,true).'</pre>';
-                            //first create an agency
-                            $agency_name = $this->request->getPost('agency_name', 'striptags');
-                            $agency2 = new Agency();
-                            $agency2->assign(array(
-                                'name' => $agency_name,
-                                'stripe_token' => $_POST['stripeToken'],
-                                'parent_agency_id' => $agency->agency_id,
-                                'stripe_customer_id' => $customer->id,
-                                'stripe_subscription_id' => $customer->subscriptions->data[0]->id,
-                                'date_created' => date('Y-m-d H:i:s'),
-                            ));
-                            if (!$agency2->save()) {
-                                $this->flash->error($agency2->getMessages());
-                            } else {
-                                $user->agency_id = $agency2->agency_id;
+          if ($form->isValid($this->request->getPost()) != false && $ccformvalid && $isemailunuique) {
+          //create the Stripe subscription account
+          \Stripe\Stripe::setApiKey($agency->stripe_account_secret);
+          $customer = \Stripe\Customer::create(array(
+          'source' => $_POST['stripeToken'],
+          'email' => $_POST['stripeEmail'],
+          'plan' => $subscriptionobj->plan,
+          ));
+          //echo '<pre>$customer:'.print_r($customer,true).'</pre>';
+          //first create an agency
+          $agency_name = $this->request->getPost('agency_name', 'striptags');
+          $agency2 = new Agency();
+          $agency2->assign(array(
+          'name' => $agency_name,
+          'stripe_token' => $_POST['stripeToken'],
+          'parent_agency_id' => $agency->agency_id,
+          'stripe_customer_id' => $customer->id,
+          'stripe_subscription_id' => $customer->subscriptions->data[0]->id,
+          'date_created' => date('Y-m-d H:i:s'),
+          ));
+          if (!$agency2->save()) {
+          $this->flash->error($agency2->getMessages());
+          } else {
+          $user->agency_id = $agency2->agency_id;
 
-                                if ($user->save()) {
-                                    //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
-                                    //redirect
-                                    return $this->response->redirect('/session/login?n=1');
-                                }
-                            }
+          if ($user->save()) {
+          //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
+          //redirect
+          return $this->response->redirect('/session/login?n=1');
+          }
+          }
 
-                            $this->flash->error($user->getMessages());
-                        } else {
-                            if (!$isemailunuique)
-                                $this->flash->error('That email address is already taken.');
-                            if (!$ccformvalid)
-                                $this->flash->error('Please enter your credit card information.');
-                        }
-                    } catch (Stripe_CardError $e) {
-                        $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-                    } catch (Stripe_InvalidRequestError $e) {
-                        // Invalid parameters were supplied to Stripe's API
-                        $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-                    } catch (Stripe_AuthenticationError $e) {
-                        // Authentication with Stripe's API failed
-                        // (maybe you changed API keys recently)
-                        $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-                    } catch (Stripe_ApiConnectionError $e) {
-                        // Network communication with Stripe failed
-                        $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-                    } catch (Stripe_Error $e) {
-                        // Display a very generic error to the user, and maybe send
-                        // yourself an email
-                        $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-                    } catch (Exception $e) {
-                        // Something else happened, completely unrelated to Stripe
-                        $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-                    } catch (\Stripe\Error\Base $e) {
-                        // Code to do something with the $e exception object when an error occurs
-                        $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-                    }
-                }
-            }
-        }
+          $this->flash->error($user->getMessages());
+          } else {
+          if (!$isemailunuique)
+          $this->flash->error('That email address is already taken.');
+          if (!$ccformvalid)
+          $this->flash->error('Please enter your credit card information.');
+          }
+          } catch (Stripe_CardError $e) {
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_InvalidRequestError $e) {
+          // Invalid parameters were supplied to Stripe's API
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_AuthenticationError $e) {
+          // Authentication with Stripe's API failed
+          // (maybe you changed API keys recently)
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_ApiConnectionError $e) {
+          // Network communication with Stripe failed
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_Error $e) {
+          // Display a very generic error to the user, and maybe send
+          // yourself an email
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Exception $e) {
+          // Something else happened, completely unrelated to Stripe
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (\Stripe\Error\Base $e) {
+          // Code to do something with the $e exception object when an error occurs
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          }
+          }
+          }
+          }
          * 
          */
     }
@@ -195,6 +195,15 @@ class SessionController extends ControllerBase {
             }
             return $this->response->redirect('/session/signup' . ($page > 1 ? $page : '') . '/' . $querystring);
         }
+    }
+    
+    /**
+     * Collect credit card info
+     */
+    public function ccAction() {
+        
+        
+        
     }
 
     /**
@@ -220,13 +229,6 @@ class SessionController extends ControllerBase {
             $this->view->maxlimitreached = $this->isMaxLimitReached();
         }
 
-        if ($subscription_id > 0) {
-            $conditions = "subscription_id = :subscription_id:";
-            $parameters = array("subscription_id" => $subscription_id);
-            $subscriptionobj = Subscription::findFirst(array($conditions, "bind" => $parameters));
-            $this->view->subscription = $subscriptionobj;
-        }
-
         //echo '<p>$subscriptionobj test:'.(isset($subscriptionobj->subscription_id) == false).'</p>';
 
         if ($this->request->isPost()) {
@@ -250,75 +252,8 @@ class SessionController extends ControllerBase {
                 $uservalid = ($form->isValid($this->request->getPost()) != false);
             }
 
-
-
             //$this->flash->error('Posted...');
             if ($uservalid && $ccformvalid && $isemailunuique) {
-
-                if (isset($subscriptionobj->subscription_id) == true && $subscriptionobj->subscription_id > 0) {
-                    //lets try to proccess the credit card now        
-                    define("AUTHORIZENET_LOG_FILE", "phplog");
-                    date_default_timezone_set('America/Los_Angeles');
-                    // Common Set Up for API Credentials
-                    $merchantAuthentication = new AnetAPI\MerchantAuthenticationType();
-                    $merchantAuthentication->setName("8BB6rbA9e");
-                    $merchantAuthentication->setTransactionKey("66svuY48XbuZ76Sc");
-
-                    $refId = 'ref' . time();
-
-                    // Subscription Type Info
-                    $subscription = new AnetAPI\ARBSubscriptionType();
-                    $subscription->setName("Review Velocity: " . $subscriptionobj->name);
-
-                    $interval = new AnetAPI\PaymentScheduleType\IntervalAType();
-                    $interval->setLength($subscriptionobj->duration);
-                    $interval->setUnit(($subscriptionobj->subscription_interval_id == 1 ? "days" : "months"));
-
-                    $paymentSchedule = new AnetAPI\PaymentScheduleType();
-                    $paymentSchedule->setInterval($interval);
-                    $paymentSchedule->setStartDate(new \DateTime());
-                    $paymentSchedule->setTotalOccurrences(9999);
-                    //use this for free trial
-                    if (isset($subscription->trial_length) && $subscription->trial_length > 0)
-                        $paymentSchedule->setTrialOccurrences($subscription->trial_length);
-
-                    $subscription->setPaymentSchedule($paymentSchedule);
-                    $subscription->setAmount($subscriptionobj->amount);
-                    //use this for free trial
-                    if (isset($subscription->trial_length) && $subscription->trial_length > 0)
-                        $subscription->setTrialAmount($subscription->trial_amount);
-
-                    $creditCard = new AnetAPI\CreditCardType();
-                    $creditCard->setCardNumber(preg_replace('/\s+/', '', $this->request->getPost('card-number')));
-                    $expirationdate = "20" . $this->request->getPost('expiry-year') . "-" . ($this->request->getPost('expiry-month') < 10 ? '0' : '') . $this->request->getPost('expiry-month');
-                    $creditCard->setExpirationDate($expirationdate);
-
-                    $payment = new AnetAPI\PaymentType();
-                    $payment->setCreditCard($creditCard);
-
-                    $subscription->setPayment($payment);
-
-                    $billTo = new AnetAPI\NameAndAddressType();
-                    if (isset($this->session->get('auth-identity')['name']) && $this->session->get('auth-identity')['name'] != '') {
-                        $parts = explode(" ", $this->session->get('auth-identity')['name']);
-                    } else {
-                        $parts = explode(" ", $this->request->getPost('name'));
-                    }
-                    $lastname = array_pop($parts);
-                    $firstname = implode(" ", $parts);
-                    $billTo->setFirstName($firstname);
-                    $billTo->setLastName($lastname);
-
-                    $subscription->setBillTo($billTo);
-
-                    $request = new AnetAPI\ARBCreateSubscriptionRequest();
-                    $request->setmerchantAuthentication($merchantAuthentication);
-                    $request->setRefId($refId);
-                    $request->setSubscription($subscription);
-                    $controller = new AnetController\ARBCreateSubscriptionController($request);
-
-                    $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
-                }
 
                 if (isset($subscriptionobj->subscription_id) == false || (($response != null) && ($response->getMessages()->getResultCode() == "Ok") )) {
                     //echo "SUCCESS: Subscription ID : " . $response->getSubscriptionId() . "\n";
@@ -342,31 +277,20 @@ class SessionController extends ControllerBase {
                         $user->agency_id = $agency->agency_id;
 
                         if ($user->save()) {
-                            if (isset($subscriptionobj->subscription_id) == true && $subscriptionobj->subscription_id > 0) {
-                                //save the credit card info            
-                                $us = new UsersSubscription();
-                                $us->assign(array(
-                                    'user_id' => $user->id,
-                                    'agency_id' => $user->agency_id,
-                                    'subscription_id' => $subscription_id,
-                                    'date_created' => date('Y-m-d H:i:s'),
-                                    'cardnumber' => preg_replace('/\s+/', '', $this->request->getPost('card-number')),
-                                    'expirymonth' => $this->request->getPost('expiry-month'),
-                                    'expiryyear' => $this->request->getPost('expiry-year'),
-                                    'cvc' => $this->request->getPost('cvc'),
-                                    'auth_subscription_id' => $response->getSubscriptionId(),
-                                ));
-
-                                //save the UsersSubscription now
-                                if (!$us->save()) {
-                                    $this->flash->error($us->getMessages());
-                                }
-                            }
+                
                             //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
                             //redirect
                             //return $this->response->redirect('/session/login?n=1');
                             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
                             $_SESSION['email'] = $this->request->getPost('email');
+
+                            /*
+                             * REFACTOR: We don't have a choice due to the fragmented registration system :(  Will remove 
+                             * this later.  MT, 2016 
+                             * 
+                             */
+                            $this->createDefaultSubscriptionPlan($user->id);
+
                             return $this->response->redirect('/session/thankyou');
                             //'signup_page' => 2, //go to the next page
                             //return $this->dispatcher->forward(array(
@@ -422,6 +346,30 @@ class SessionController extends ControllerBase {
         $this->view->form = $form;
         $this->view->ccform = $ccform;
         $this->view->current_step = 1;
+    }
+
+    private function createDefaultSubscriptionPlan($userId) {
+        $subscriptionManager = $this->di->get('subscriptionManager');
+
+        $newSubscriptionParameters = [];
+
+        $pricingPlan = $subscriptionManager->getPricingPlanByName('Review Velocity - Default');
+        if ($pricingPlan) {
+            $newSubscriptionParameters['userAccountId'] = $userId;
+            $newSubscriptionParameters['freeLocations'] = 0;
+            $newSubscriptionParameters['freeSmsMessagesPerLocation'] = 0;
+            $newSubscriptionParameters['pricingPlanId'] = $pricingPlan['id'];
+        } else {
+            $newSubscriptionParameters['userAccountId'] = $userId;
+            $newSubscriptionParameters['freeLocations'] = 1;
+            $newSubscriptionParameters['freeSmsMessagesPerLocation'] = 100;
+            $newSubscriptionParameters['pricingPlanId'] = "Unpaid";
+        }
+
+        $created = $subscriptionManager->createSubscriptionPlan($newSubscriptionParameters);
+        if (!$created) {
+            $this->flash->error('Failed to create default subscription plan');
+        }
     }
 
     /**
@@ -739,7 +687,6 @@ class SessionController extends ControllerBase {
                 return;
             }
         }
-
 
         $this->view->current_step = 5;
     }

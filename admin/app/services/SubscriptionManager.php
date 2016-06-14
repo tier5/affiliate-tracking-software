@@ -2,18 +2,15 @@
 
 namespace Vokuro\Services;
 
+use Vokuro\Services\ServicesConsts;
 use Vokuro\Models\SubscriptionPlan;
 use Vokuro\Models\SubscriptionPricingPlan;
 
-class SubscriptionManager {
+class SubscriptionManager extends BaseService {
     
-    static $PAYMENT_PLAN_FREE = 'FR';
-    static $PAYMENT_PLAN_TRIAL = 'TR';
-    static $PAYMENT_PLAN_MONTHLY = 'M';
-    static $PAYMENT_PLAN_YEARLY = 'Y';
-    
-    static $TRIAL_PLAN_LOCATIONS = 1;
-    static $TRIAL_PLAN_MESSAGES = 100;
+    function __construct($config) {
+        parent::__construct($config);
+    }
     
     public function getSubscriptionPricingPlans() {
         return $subscriptionPricingPlans = SubscriptionPricingPlan::find();
@@ -23,14 +20,14 @@ class SubscriptionManager {
         
         $userId = $newSubscriptionParameters['userAccountId'];
         
-        /* REFACTOR:  Need to create a subscription service accessesible through DI, MT 2016 */ 
+        /* Configure subscription parameters */
         if ($newSubscriptionParameters['pricingPlanId'] === 'Unpaid') {
             
             $pricingPlan = SubscriptionPricingPlan::findFirst();   // Default pricing plan is always first in the table
             $pricingPlanId = $pricingPlan->id;
             $locations = $newSubscriptionParameters['freeLocations'];
             $smsMessagesPerLocation = $newSubscriptionParameters['freeSmsMessagesPerLocation'];
-            $paymentPlan = SubscriptionManager::$PAYMENT_PLAN_FREE;
+            $paymentPlan = ServicesConsts::$PAYMENT_PLAN_FREE;
             
         } else {
             
@@ -41,18 +38,14 @@ class SubscriptionManager {
                 ->getFirst();
             $pricingPlanId = $subscriptionPricingPlan->id;   
             if ($subscriptionPricingPlan->getTrialPeriod()) {
-                $paymentPlan = SubscriptionManager::$PAYMENT_PLAN_TRIAL;  
+                $paymentPlan = ServicesConsts::$PAYMENT_PLAN_TRIAL;  
                 $locations = $subscriptionPricingPlan->getMaxLocationsOnFreeAccount();
                 $smsMessagesPerLocation = $subscriptionPricingPlan->getMaxMessagesOnFreeAccount();
             } else {
-                $paymentPlan = SubscriptionManager::$PAYMENT_PLAN_MONTHLY;;
+                $paymentPlan = ServicesConsts::$PAYMENT_PLAN_MONTHLY;;
                 $locations = 0;
                 $smsMessagesPerLocation = 0;;
             }
-            
-            
-    static $TRIAL_PLAN_MESSAGES = 100;
-    
             
         }
         
@@ -70,7 +63,7 @@ class SubscriptionManager {
         return true;
     }
     
-    public function getUserSubscription($userId) {
+    public function getSubscriptionPlan($userId) {
         $subscriptionPlan = SubscriptionPlan::query()  
             ->where("user_id = :user_id:")
             ->bind(["user_id" => intval($userId)])
@@ -80,6 +73,30 @@ class SubscriptionManager {
             return false;
         }
         return $subscriptionPlan->toArray();
+    }
+    
+    public function getPricingPlan($pricingPlanId) {
+        $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
+            ->where("id = :id:")
+            ->bind(["id" => intval($pricingPlanId)])
+            ->execute()
+            ->getFirst();
+        if(!$subscriptionPricingPlan) {
+            return false;
+        }
+        return $subscriptionPricingPlan->toArray();
+    }
+    
+    public function getPricingPlanByName($pricingPlanName) {
+        $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
+            ->where("name = :name:")
+            ->bind(["name" => $pricingPlanName])
+            ->execute()
+            ->getFirst();
+        if(!$subscriptionPricingPlan) {
+            return false;
+        }
+        return $subscriptionPricingPlan->toArray();
     }
    
 }

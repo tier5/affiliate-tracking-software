@@ -36,7 +36,11 @@ return new \Phalcon\Config(array(
     ),
     'authorizeDotNet' => array(
         'apiLoginId' => '2aD9Vxe3X',
-        'transactionKey' => '3C8c3hh8r8w6L7Dk'
+        'transactionKey' => '3C8c3hh8r8w6L7Dk',
+        'prefixKey' => 'afrYkgkBunsbMsv5__',
+        'intervalLength' => "1",
+        'unit' => "months",
+        'totalOccurences' => '9999'
     ),
     'amazon' => array(
         'AWSAccessKeyId' => '',
