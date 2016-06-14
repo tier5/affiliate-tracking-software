@@ -81,6 +81,15 @@ class SubscriptionController extends ControllerBase {
         $this->view->pick("subscription/agency");
     }
 
+    
+    /**
+     * Change subscription 
+     */
+    public function changePlanAction() {
+        
+        
+    }
+    
     /**
      * Change subscription 
      */
@@ -136,16 +145,6 @@ class SubscriptionController extends ControllerBase {
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
-    }
-    
-    
-    /**
-     * Show invoices 
-     */
-    public function invoicesAction() {
-        if ($this->request->isGet()) {
-            
-        }
     }
     
     /**
@@ -210,6 +209,16 @@ class SubscriptionController extends ControllerBase {
         $response->setContent(json_encode($responseParameters));
         return $response;
     }
+    
+    /**
+     * Show invoices 
+     */
+    public function invoicesAction() {
+        if ($this->request->isGet()) {
+            
+        }
+    }
+    
     
     private function formatCCDate($date) {
         $stripped = str_replace(' ', '', $date); // Remove whitespace
