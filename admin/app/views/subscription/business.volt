@@ -340,7 +340,7 @@
         };
         
         function getCCParams() {
-            var cardNumber = $('#updateCardModal .cardNumber').val(); 
+            var cardNumber = $('#updateCardModal .card-number').val(); 
             var cardName = $('#updateCardModal .name').val();
             var expirationDate = $('#updateCardModal .expiry').val();
             var csv = $('#updateCardModal .cvc').val();
@@ -357,6 +357,8 @@
                 .done(function (data) {
                     if (data.status === 'Succeeded') {
                         $('#updatePlanModal').modal('show');
+                    } else if (data.status === 'ChangeFailed') {
+                         alert("Change plan failed!!!")
                     } else {
                         $('#updateCardModal').data('calledFrom', "changePlan");
                         $('#updateCardModal').modal('show'); // $('#confirm-update-credit-card').trigger( "click" );
@@ -367,12 +369,14 @@
         }
         
         function updateCard() {
-            $.post('/subscription/updatecc', getCCParams())
+            $.post('/subscription/updateCC', getCCParams())
                 .done(function (data) {
-                    if (data.status === 'Succeeded') {
+                    var result = JSON.parse(data);
+                    if (result.status === 'Succeeded') {
+                        $('#updateCardModal').modal('hide');
                         $('#updatePlanModal').modal('show');
                     } else {
-                        alert("Card update failed!!")
+                        alert("Update credit card failed!!!")
                     }
                 })
                 .fail(function () {})
@@ -452,10 +456,9 @@
             
             if($('#updateCardModal').data('calledFrom') === "changePlan") {
                 $('#updateCardModal').data('calledFrom', '');
-                changePlan();  
-            } else {
-                
                 updateCard();
+            } else {
+                changePlan();
             }
             
             $('#updateCardModal').modal('hide');  // We can hide the modal here, we don't need any paramters

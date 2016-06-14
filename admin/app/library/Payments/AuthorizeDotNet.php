@@ -2,6 +2,7 @@
 
 namespace Vokuro\Payments;   
 
+use \DateTime;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
 
@@ -19,8 +20,8 @@ class AuthorizeDotNet {
     private $transactionKey;
 
     function __construct($config) {
-        $this->apiLoginId = $config->apiLoginId;
-        $this->transactionKey =  $config->transactionKey;
+        $this->apiLoginId = $config->authorizeDotNet->apiLoginId;
+        $this->transactionKey =  $config->authorizeDotNet->transactionKey;
         $this->environment = $config->application->environment;
     }
 
@@ -293,7 +294,7 @@ class AuthorizeDotNet {
     }
 
     public function deletePaymentProfileForCustomer($parameters) {
-        $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
+        $environment = self::SANDBOX;  // \net\authorize\api\constants\ANetEnvironment::
         if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
@@ -341,15 +342,19 @@ class AuthorizeDotNet {
         $paymentSchedule->setInterval($interval);
         $paymentSchedule->setStartDate(new \DateTime($parameters['startDate']));
         $paymentSchedule->setTotalOccurrences($parameters['totalOccurences']);
-        $paymentSchedule->setTrialOccurrences($parameters['trialOccurences']);
-
+        if (array_key_exists('trialOccurences', $parameters)) {
+            $paymentSchedule->setTrialOccurrences($parameters['trialOccurences']);
+        }
+        
         $subscription->setPaymentSchedule($paymentSchedule);
         $subscription->setAmount($parameters['amount']);
-        $subscription->setTrialAmount($parameters['trialAmount']);
-
+        if (array_key_exists('trialOccurences', $parameters)) {
+            $subscription->setTrialAmount($parameters['trialAmount']);
+        }
         $profile = new AnetAPI\CustomerProfileIdType();
         $profile->setCustomerProfileId($parameters['customerProfileId']);
         $profile->setCustomerPaymentProfileId($parameters['customerPaymentProfileId']);
+        // $profile->setCustomerAddressId($parameters['customerAddressId']);
         
         $subscription->setProfile($profile);
 
@@ -407,7 +412,7 @@ class AuthorizeDotNet {
         $this->updateIntervalFields($parameters, $interval);
         
         $paymentSchedule = new AnetAPI\PaymentScheduleType();
-        $paymentSchedule->setInterval($interval);
+        // $paymentSchedule->setInterval($interval);
         $this->updatePaymentScheduleFields($parameters, $paymentSchedule);
 
         $subscription = new AnetAPI\ARBSubscriptionType();
@@ -572,13 +577,13 @@ class AuthorizeDotNet {
 
             switch ($parameter) {
                 case 'subscriptionName':
-                    $subscription->setName($parameters['subscriptionName']);
+                    // $subscription->setName($parameters['subscriptionName']);
                     break;
                 case 'amount':
                     $subscription->setAmount($parameters['amount']);
                     break;
                 case 'trialAmount':
-                    $subscription->setTrialAmount($parameters['trialAmount']);
+                    // $subscription->setTrialAmount($parameters['trialAmount']);
                     break;
                 default:
                     break;

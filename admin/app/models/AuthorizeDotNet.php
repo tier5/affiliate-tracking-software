@@ -24,9 +24,15 @@ class AuthorizeDotNet extends Model
 
     /**
      *
-     * @var integer
+     * @var string
      */
     protected $customer_profile_id;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $subscription_id;
 
     /**
      *
@@ -75,12 +81,25 @@ class AuthorizeDotNet extends Model
     /**
      * Method to set the value of customer_profile_id user_id
      *
-     * @param integer $customer_profile_id user_id
+     * @param string $customer_profile_id user_id
      * @return $this
      */
     public function setCustomerProfileId($customer_profile_id)
     {
         $this->customer_profile_id = $customer_profile_id;
+
+        return $this;
+    }
+    
+    /**
+     * Method to set the value of subscription_id
+     *
+     * @param string $subscription_id
+     * @return $this
+     */
+    public function setSubscriptionId($subscription_id)
+    {
+        $this->subscription_id = $subscription_id;
 
         return $this;
     }
@@ -152,6 +171,16 @@ class AuthorizeDotNet extends Model
     public function getCustomerProfileId()
     {
         return $this->customer_profile_id;
+    }
+    
+    /**
+     * Returns the value of field subscription_id
+     *
+     * @return string
+     */
+    public function getSubscriptionId()
+    {
+        return $this->subscription_id;
     }
     
     /**
@@ -236,6 +265,7 @@ class AuthorizeDotNet extends Model
             'id' => 'id',
             'user_id' => 'user_id',
             'customer_profile_id' => 'customer_profile_id',
+            'subscription_id' => 'subscription_id',
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
             'deleted_at' => 'deleted_at' 

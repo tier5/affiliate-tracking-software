@@ -26,31 +26,39 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
 
     public function testCreateSubscriptionForCustomer()
     {
-        $this->createCustomerProfile();
+        // $this->createCustomerProfile();
         
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
         
         $parameters = [];
         
-        $parameters['customerProfileId'] = self::$customerProfileId;
-        $parameters['customerPaymentProfileId'] = self::$customerPaymentProfileId;
-        $parameters['subscriptionName'] = "Sample Subscription";
-        $parameters['intervalLength'] = "23";
-        $parameters['unit'] = "days";
-        $parameters['startDate'] = '2020-08-30';
-        $parameters['totalOccurences'] = '12';
-        $parameters['trialOccurences'] = '1';
-        $parameters['amount'] = rand(1,99999)/12.0*12;
-        $parameters['trialAmount'] = "0.00";
-
-        $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
+        //self::$customerProfileId = $customerProfile['customerProfileId'];
+        // self::$customerPaymentProfileId = $customerProfile['customerPaymentProfileId'];
+        
+        $parameters['customerProfileId'] = '1200311523';
+        $parameters['customerPaymentProfileId'] = '1200239045';
+        // $parameters['subscriptionName'] = "Sample Subscription";
+        // $parameters['intervalLength'] = "23";
+        // $parameters['unit'] = "days";
+        // $parameters['startDate'] = '2020-08-30';
+        // $parameters['totalOccurences'] = '12';
+        // $parameters['amount'] = round(rand(1,99999)/12.0*12);
+        
+        $parameters['subscriptionName'] = "Review Velocity Subscription";
+        $parameters['intervalLength'] = $config->authorizeDotNet->intervalLength;
+        $parameters['unit'] = $config->authorizeDotNet->unit;
+        $parameters['startDate'] = date("Y-m-d");
+        $parameters['totalOccurences'] = $config->authorizeDotNet->totalOccurences;
+        $parameters['amount'] = round(1000, 2);
+        
+        $authorizeDotNet = new AuthorizeDotNet($config);
         $subscriptionId = $authorizeDotNet->createSubscriptionForCustomer($parameters);
          
         $this->assertTrue($subscriptionId !== false, "Create subscription for customer on authorize.net platform failed!!!");
         
         self::$subscriptionId = $subscriptionId;
     }
-     
+    /*
     public function testGetSubscription()
     {
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
@@ -59,7 +67,7 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
         
         $parameters['subscriptionId'] = self::$subscriptionId;
         
-        $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
+        $authorizeDotNet = new AuthorizeDotNet($config);
         $subscription = $authorizeDotNet->getSubscriptionForCustomer($parameters);
          
         $this->assertTrue($subscription !== false, "Get subscription for customer on authorize.net platform failed!!!");
@@ -72,21 +80,29 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
         $parameters = [];
         
         $parameters['subscriptionId'] = self::$subscriptionId;
-        $parameters['subscriptionName'] = "Sample Subscription1";
-        $parameters['intervalLength'] = "22";
-        $parameters['unit'] = "months";
-        $parameters['startDate'] = '2020-09-30';
-        $parameters['totalOccurences'] = '11';
-        $parameters['trialOccurences'] = '2';
-        $parameters['amount'] = rand(1,99999)/12.0*11;
-        $parameters['trialAmount'] = "1.00";
+        // $parameters['subscriptionName'] = "Sample Subscription1";
+        // $parameters['intervalLength'] = "22";
+        // $parameters['unit'] = "months";
+        // $parameters['startDate'] = '2020-09-30';
+        // $parameters['totalOccurences'] = '11';
+        // $parameters['trialOccurences'] = '2';
+        // $parameters['amount'] = rand(1,99999)/12.0*11;
+        // $parameters['trialAmount'] = "1.00";
+        $parameters['subscriptionName'] = "Review Velocity Subscription";
+        $parameters['intervalLength'] = $config->authorizeDotNet->intervalLength;
+        $parameters['unit'] = $config->authorizeDotNet->unit;
+        $parameters['startDate'] = date("Y-m-d");
+        $parameters['totalOccurences'] = $config->authorizeDotNet->totalOccurences;
+        $parameters['amount'] = round(5, 2);
+            
         
-        $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
+        
+        $authorizeDotNet = new AuthorizeDotNet($config);
         $updated = $authorizeDotNet->updateSubscriptionForCustomer($parameters);
          
         $this->assertTrue($updated !== false, "Update subscription for customer on authorize.net platform failed!!!");
     }
-    
+    /*
     public function testCancelSubscription()
     {
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
@@ -95,20 +111,18 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
         
         $parameters['subscriptionId'] = self::$subscriptionId;
         
-        $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
+        $authorizeDotNet = new AuthorizeDotNet($config);
         $cancelled = $authorizeDotNet->cancelSubscriptionForCustomer($parameters);
          
         $this->assertTrue($cancelled !== false, "Cancel subscription for customer on authorize.net platform failed!!!");
         
         $this->deleteCustomerProfile();
-    }
-     
+    }*/
     
     private function createCustomerProfile() {
         
         $config = $this->getModule('Phalcon2')->getApplication()->getDi()->get('config');
 
-        /* Create a working customer profile with a payment profile */
         $parameters = [];
         
         $parameters['email'] = 'john.smith@test.com';
@@ -126,7 +140,7 @@ class AuthorizeDotNetRecurringPaymentsTest extends \Codeception\TestCase\Test
         $parameters['customerType'] = 'individual';
         $parameters['customerProfileDescription'] = 'Test Customer';
 
-        $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
+        $authorizeDotNet = new AuthorizeDotNet($config);
         $customerProfile = $authorizeDotNet->createCustomerProfile($parameters);
 
         $this->assertTrue($customerProfile !== false, "Create working customer profile for testCreateNewPaymentProfile failed!!!");
