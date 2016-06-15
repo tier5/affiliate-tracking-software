@@ -167,7 +167,7 @@ jQuery(document).ready(function($){
 ?>
 
 <?php 
-if ($users) {
+if (isset($users) && $users) {
 ?>
 
 <div class="portlet light bordered dashboard-panel">

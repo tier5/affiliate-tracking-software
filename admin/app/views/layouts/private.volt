@@ -467,9 +467,11 @@
 
                         //only the Agency Admin gets access to locations
                         if ($this->session->get('auth-identity')['profile'] != 'Employee') {
+
+                                $SettingsLocation = $this->session->get('auth-identity')['agencytype'] == 'agency' ? 'agency' : 'location';
                         ?> 
                         <li class="nav-item <?=($openfolder=='settings'?'active open':'')?>">
-                            <a href="/settings/location/" class="nav-link nav-toggle">
+                            <a href="/settings/<?=$SettingsLocation; ?>/" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
                                 <span class="title">Settings</span>
                                 <?=($openfolder=='settings'?'<span class="selected"></span>':'')?>
