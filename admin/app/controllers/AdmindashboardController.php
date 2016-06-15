@@ -257,14 +257,16 @@
 
 
         public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
-            $this->view->pick("admindashboard/create");
+
 
             $Identity = $this->auth->getIdentity();
             $UserID = $Identity['id'];
             $objLoggedInUser = Users::findFirst("id = {$UserID}");
 
             // Businesses under Review Velocity have a parent_id of -1
-            return parent::createAction(2, $agency_id, -1);
+            $Ret =  parent::createAction(2, $agency_id, -1);
+            $this->view->pick("admindashboard/create");
+            return $Ret;
         }
 
 
