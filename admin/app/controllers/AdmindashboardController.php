@@ -34,18 +34,6 @@ class AdmindashboardController extends ControllerBusinessBase {
         parent::initialize();
     }
 
-    public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
-
-
-        $Identity = $this->auth->getIdentity();
-        $UserID = $Identity['id'];
-        $objLoggedInUser = Users::findFirst("id = {$UserID}");
-
-        // Businesses under Review Velocity have a parent_id of -1
-        $Ret = parent::createAction(2, $agency_id, -1);
-        $this->view->pick("admindashboard/create");
-        return $Ret;
-    }
 
     /**
      * Default action. Set the public layout (layouts/private.volt)
@@ -76,6 +64,7 @@ class AdmindashboardController extends ControllerBusinessBase {
           => end of Oct you have 100 + 20 - 5 = 115 customers
 
           Churn Rate = 5 / 115 = 4.34%
+	
          */
         $this->view->churn_rate = $this->view->lost_businesses / $this->view->total_businesses;
 
@@ -215,6 +204,17 @@ class AdmindashboardController extends ControllerBusinessBase {
         //$this->view->sms_sent_total
         //$this->view->total_reviews
     }
+    
+    public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
+	    $Identity = $this->auth->getIdentity();
+	    $UserID = $Identity['id'];
+	    $objLoggedInUser = Users::findFirst("id = {$UserID}");
+
+	    // Businesses under Review Velocity have a parent_id of -1
+	    $Ret =  parent::createAction($agency_type_id, $agency_id, $agency_type_id == 1 ? 0 : -1);
+	    $this->view->pick("admindashboard/create");
+	    return $Ret;
+	}
 
     /**
      * This find the agencies for the agencies and businesses actions

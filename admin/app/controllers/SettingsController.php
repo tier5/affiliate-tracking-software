@@ -161,6 +161,101 @@
 
         }
 
+        // These are used in StoreSettings() because we save both an agency and location there but some fields differ.
+        protected $tLocationFields = [
+            'review_invite_type_id'         => 'int',
+            'review_goal'                   => 'int',
+            'lifetime_value_customer'       => 'replace_commas_dollars',
+            'SMS_message'                   => 'string',
+            'message_tries'                 => 'int',
+            'rating_threshold_star'         => 'int',
+            'rating_threshold_nps'          => 'int',
+            'message_frequency'             => 'int',
+            'name'                          => 'string',
+            'email'                         => 'string',
+            'address'                       => 'string',
+            'locality'                      => 'string',
+            'state_province'                => 'string',
+            'postal_code'                   => 'string',
+            'country'                       => 'string',
+            'phone'                         => 'string',
+        ];
+
+        protected $tAgencyFields = [
+            'review_invite_type_id'         => 'int',
+            'review_goal'                   => 'int',
+            'lifetime_value_customer'       => 'replace_commas_dollars',
+            'SMS_message'                   => 'string',
+            'message_tries'                 => 'int',
+            'rating_threshold_star'         => 'int',
+            'rating_threshold_nps'          => 'int',
+            'message_frequency'             => 'int',
+            'name'                          => 'string',
+            'email'                         => 'string',
+            'address'                       => 'string',
+            'locality'                      => 'string',
+            'state_province'                => 'string',
+            'postal_code'                   => 'string',
+            'country'                       => 'string',
+            'phone'                         => 'string',
+            'main_color'                    => 'string',
+            'secondary_color'               => 'string',
+        ];
+
+        protected function storeSettings($entity, $type) {
+            if ($this->request->isPost()) {
+                $form = new SettingsForm($entity);
+                $agencyform = new AgencyForm($entity);
+                $form->bind($_POST, $entity);
+                $agencyform->bind($_POST, $entity);
+
+                $formvalid = $form->isValid($_POST);
+                $agencyformvalid = $agencyform->isValid($_POST);
+
+                if (!$formvalid || !$agencyformvalid) {
+                    foreach ($agencyform->getMessages() as $message) {
+                        $this->flash->error($message);
+                    }
+                    foreach ($form->getMessages() as $message) {
+                        $this->flash->error($message);
+                    }
+                    //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
+                    // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
+                } else {
+                    $tEntityArray = [];
+                    $tFieldArray = $type == 'agency' ? 'tAgencyFields' : 'tLocationFields';
+                    foreach($this->$tFieldArray as $Field => $DataType) {
+                        switch($DataType) {
+                            case 'int':
+                                $tEntityArray[$Field] = $this->request->getPost($Field, 'int');
+                                break;
+                            case 'string':
+                                $tEntityArray[$Field] = $this->request->getPost($Field, 'striptags');
+                                break;
+                            case 'replace_comma_dollars':
+                                $tEntityArray[$Field] = $this->request->str_replace(["$", ","], ["", ""], $this->request->getPost($Field));
+                                break;
+                            default:
+                                $tEntityArray[$Field] = $this->request->getPost($Field, 'striptags');
+                                break;
+                        }
+                    }
+
+                    $entity->assign($tEntityArray);
+                    // Don't hate me for this -- GG
+                    $PrimaryID = $type == 'agency' ? 'agency_id' : 'location_id';
+                    $Prefix = $type == 'agency' ? 'a' : 'l';
+                    $file_location = $this->uploadAction($Prefix . $entity->$PrimaryID);
+                    // This works because agencies and locations have the same column.
+                    if ($file_location != '')
+                        $entity->sms_message_logo_path = $file_location;
+
+                    return $entity->save();
+                }
+            }
+            return true;
+        }
+
 
         /**
          * Updates settings for locations
@@ -188,92 +283,49 @@
                 $this->flash->error("No settings were found");
             }
 
-
             //find the location
             $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $location = Location::findFirst(array($conditions, "bind" => $parameters));
-            
+
             if(!$location)
                 $location = new Location();
 
-            if ($this->request->isPost()) {
-                $form = new SettingsForm($location);
-                $agencyform = new AgencyForm($location);
-                $form->bind($_POST, $location);
-                $agencyform->bind($_POST, $location);
 
-                $formvalid = $form->isValid($_POST);
-                $agencyformvalid = $agencyform->isValid($_POST);
+            if (!$this->storeSettings($location, 'location')) {
+                $this->flash->error($location->getMessages());
+            } else {
+                $this->flash->success("The settings were updated successfully");
+                Tag::resetInput();
+            }
 
-                if (!$formvalid || !$agencyformvalid) {
-                    foreach ($agencyform->getMessages() as $message) {
-                        $this->flash->error($message);
-                    }
-                    foreach ($form->getMessages() as $message) {
-                        $this->flash->error($message);
-                    }
-                    //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
-                    // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
-                } else {
-                    $location->assign(array(
-                        'review_invite_type_id' => $this->request->getPost('review_invite_type_id', 'int'),
-                        'review_goal' => $this->request->getPost('review_goal', 'int'),
-                        'lifetime_value_customer' => str_replace("$", "", str_replace(",", "", $this->request->getPost('lifetime_value_customer'))),
-                        'SMS_message' => $this->request->getPost('SMS_message'),
-                        'message_tries' => $this->request->getPost('message_tries'),
-                        'rating_threshold_star' => $this->request->getPost('rating_threshold_star'),
-                        'rating_threshold_nps' => $this->request->getPost('rating_threshold_nps'),
-                        'message_frequency' => $this->request->getPost('message_frequency'),
-                        'name' => $this->request->getPost('name', 'striptags'),
-                        'email' => $this->request->getPost('email', 'striptags'),
-                        'address' => $this->request->getPost('address', 'striptags'),
-                        'locality' => $this->request->getPost('locality', 'striptags'),
-                        'state_province' => $this->request->getPost('state_province', 'striptags'),
-                        'postal_code' => $this->request->getPost('postal_code', 'striptags'),
-                        'country' => $this->request->getPost('country', 'striptags'),
-                        'phone' => $this->request->getPost('phone', 'striptags'),
-                    ));
-                    $file_location = $this->uploadAction('l' . $location->location_id);
-                    if ($file_location != '') $location->sms_message_logo_path = $file_location;
 
-                    //delete all notification users for this agency
-                    $conditions = "location_id = :location_id:";
-                    $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-                    $notificationdelete = LocationNotifications::find(array($conditions, "bind" => $parameters));
-                    $notificationdelete->delete();
+            $notificationdelete = LocationNotifications::find("location_id = " . $this->session->get('auth-identity')['location_id']);
+            $notificationdelete->delete();
 
-                    if (!empty($_POST['users'])) {
-                        foreach ($_POST['users'] as $check) {
-                            $agencyInsert = new LocationNotifications();
-                            $agencyInsert->location_id = $this->session->get('auth-identity')['location_id'];
-                            $agencyInsert->user_id = $check;
-                            $agencyInsert->save();
-                        }
-                    }
-
-                    //save the sort order of the review sites
-                    if (!empty($_POST['review_order'])) {
-                        $order = 0;
-                        $pieces = explode(",", $_POST['review_order']);
-                        foreach ($pieces as $siteid) {
-                            $order++;
-                            $conditions = "location_review_site_id = :location_review_site_id:";
-                            $parameters = array("location_review_site_id" => $siteid);
-                            $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-                            $Obj->sort_order = $order;
-                            $Obj->save();
-                        }
-                    }
-
-                    if (!$location->save()) {
-                        $this->flash->error($location->getMessages());
-                    } else {
-                        $this->flash->success("The settings were updated successfully");
-                        Tag::resetInput();
-                    }
+            if (!empty($_POST['users'])) {
+                foreach ($_POST['users'] as $check) {
+                    $agencyInsert = new LocationNotifications();
+                    $agencyInsert->location_id = $this->session->get('auth-identity')['location_id'];
+                    $agencyInsert->user_id = $check;
+                    $agencyInsert->save();
                 }
             }
+
+            // Save the sort order of the review sites
+            if (!empty($_POST['review_order'])) {
+                $order = 0;
+                $pieces = explode(",", $_POST['review_order']);
+                foreach ($pieces as $siteid) {
+                    $order++;
+                    $conditions = "location_review_site_id = :location_review_site_id:";
+                    $parameters = array("location_review_site_id" => $siteid);
+                    $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                    $Obj->sort_order = $order;
+                    $Obj->save();
+                }
+            }
+
 
             // Query binding parameters with string placeholders
             $conditions = "agency_id = :agency_id:";
@@ -309,6 +361,41 @@
             $this->view->pick("settings/index");
         }
 
+        public function agencyAction() {
+            $Identity = $this->auth->getIdentity();
+            if (!is_array($Identity)) {
+                $this->response->redirect('/session/login?return=/settings/agency/');
+                $this->view->disable();
+                return;
+            }
+
+
+            $objUser = Users::findFirst("id = " . $Identity['id']);
+
+            $objAgency = Agency::findFirst("agency_id = {$objUser->agency_id}");
+            if (!$objAgency)
+                $this->flash->error("Agency not found.  Contact customer support.");
+
+            if (!$this->storeSettings($objAgency, 'agency')) {
+                $this->flash->error($objAgency->getMessages());
+            } else {
+                $this->flash->success("The settings were updated successfully");
+                Tag::resetInput();
+            }
+
+
+            $this->view->form = new SettingsForm($objAgency, array(
+                'edit' => true
+            ));
+
+
+            $this->view->agencyform = new AgencyForm($objAgency, array(
+                'edit' => true
+            ));
+
+            $this->view->objAgency = $objAgency;
+
+        }
 
         public function siteaddAction($location_id = 0, $review_site_id = 0) {
             if ($location_id > 0 && $review_site_id > 0) {
@@ -399,8 +486,7 @@
             // Check if the user has uploaded files
             if ($this->request->hasFiles() == true) {
                 //echo '<p>hasFiles() == true!</p>';
-                $baseLocation = '/var/www/html/' . $this->config->webpathfolder->path . '/public/img/upload/';
-
+                $baseLocation = __DIR__ . '/../../public/img/upload/';
 
                 // Print the real file names and sizes
                 foreach ($this->request->getUploadedFiles() as $file) {
@@ -413,8 +499,9 @@
                         $image = new \Phalcon\Image\Adapter\GD($filepath);
                         $image->resize(200, 30)->save($filepath);
 
-                        //echo '<p>$filepath: '.$filepath.'</p>';
-                        $filepath = '/admin' . str_replace("/var/www/html/" . $this->config->webpathfolder->path . "/public", "", $filepath);
+                        $tFilepath = explode('/', $filepath);
+                        $filepath = "/img/upload/" . array_pop($tFilepath);
+
                         $this->view->logo_setting = $filepath;
                         return $filepath;
                     }
@@ -424,3 +511,5 @@
             }
         }
     }
+    
+
