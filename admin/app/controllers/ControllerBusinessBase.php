@@ -4,6 +4,7 @@
     use Vokuro\Forms\AgencyForm;
     use Vokuro\Models\Subscription;
     use Vokuro\Models\Agency;
+    use Vokuro\Models\Users;
 
 class ControllerBusinessBase extends ControllerBase {
     /**
@@ -167,6 +168,32 @@ class ControllerBusinessBase extends ControllerBase {
 
     }
 
+    private function buildSubsriptionPricingPlanMarkUp() {
+        $subscriptionPricingPlans = $this->di->get('subscriptionManager')->getSubscriptionPricingPlans();
+
+        $markup = "<select id=\"subscription_pricing_plan_id\" name=\"subscription_pricing_plan_id\">";
+        $markup .= "    <option value=\"Unpaid\">Unpaid</option>";  // This is default plan
+        foreach($subscriptionPricingPlans as $subscriptionPricingPlan) {
+            $markup .= "<option value=\"";
+            $markup .= $subscriptionPricingPlan->id;
+            $markup .= '">';
+            $markup .= $subscriptionPricingPlan->name;
+            $markup .= "</option>";
+        }
+        $markup .= "</select>";
+        return $markup;
+    }
+
+    private function createSubscriptionPlan($userAccountId, $request) {
+        $newSubscriptionParameters = [
+            'userAccountId' => $userAccountId,
+            'freeLocations' => $request->getPost('free_locations', 'striptags'),
+            'freeSmsMessagesPerLocation' => $request->getPost('sms_messages', 'striptags'),
+            'pricingPlanId' => $request->getPost('subscription_pricing_plan_id', 'striptags')
+        ];
+        return $this->di->get('subscriptionManager')->createSubscriptionPlan($newSubscriptionParameters);
+    }
+    
     /**
      * END BUSINESS COMMON FUNCTIONS
      */

@@ -35,4 +35,13 @@ class Agency extends Model {
         ));
     }
 
+    /**
+     * Creates (or updates if exists) business.
+     * @param $tData array Form fields for business
+     */
+    public function createOrUpdateBusiness($tData) {
+        $this->assign($tData);
+        return $this->save();
+    }
+
 }
