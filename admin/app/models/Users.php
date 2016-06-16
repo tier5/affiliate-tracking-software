@@ -13,67 +13,20 @@ use Vokuro\Models\UsersLocation;
 class Users extends Model
 {
 
-    /**
-     *
-     * @var integer
-     */
+
     public $id;
-
-    /**
-     *
-     * @var string
-     */
     public $name;
-
-    /**
-     *
-     * @var string
-     */
     public $email;
-
-    /**
-     *
-     * @var string
-     */
     public $password;
-
-    /**
-     *
-     * @var string
-     */
     public $mustChangePassword;
-
-    /**
-     *
-     * @var string
-     */
     public $profilesId;
-
-    /**
-     *
-     * @var string
-     */
     public $banned;
-
-    /**
-     *
-     * @var string
-     */
     public $suspended;
-
-    /**
-     *
-     * @var string
-     */
     public $active;
-    
-    /**
-     *
-     * @var integer
-     */
     public $agency_id;
-
     public $sent_by_user_id;
+    public $is_admin;
+    public $subscription_valid;
     public $phone;
 
 
