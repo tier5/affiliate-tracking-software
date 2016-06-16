@@ -226,8 +226,8 @@
                                         <div class="col-md-12 col-sm-12">
                                             <!-- <input type="checkbox" class="make-switch" data-on-text="Monthly" data-off-text="Annually"> -->
                                             <div id="plan-type" class="btn-group btn-toggle subscription-toggle"> 
-                                                <button class="btn active btn-primary">Monthly</button>
-                                                <button class="btn btn-default">Annually</button>
+                                                <button class="btn active btn-primary" data-subscription='M'>Monthly</button>
+                                                <button class="btn btn-default" data-subscription='Y'>Annually</button>
                                             </div>
                                         </div>
                                     </div>
@@ -333,7 +333,7 @@
         function getSubscriptionParams() {
             var locations = slider13.getValue();
             var messages = slider14.getValue();
-            var planType = $(document.getElementById("plan-type")).find('.btn-primary').text();
+            var planType = $(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
             var price = $(document.getElementById("change-plan-final-price")).text();
             ;
             return {locations: locations, messages: messages, planType: planType, price: price};
@@ -352,16 +352,41 @@
             };
         };
         
-        function changePlan() {
+        function pingPaymentProfile() {
+            $.post('/subscription/hasPaymentProfile', getCCParams())
+                .done(function (data) {
+                    if (data.status === true) {
+                        changePlan()
+                    } else {
+                        $('#updateCardModal').data('paymentProfile', "new");
+                        $('#updateCardModal').modal('show');
+                    }
+                })
+                .fail(function () {})
+                .always(function () {});
+        }
+        
+        function addPlanWithPaymentProfile() {
+            var allParams = $.extend({}, getCCParams(), getSubscriptionParams());
+            $.post('/subscription/addPlanWithPaymentProfile', allParams)
+                .done(function (data) {
+                    if (data.status === true) {
+                        $('#updatePlanModal').modal('show');
+                    } else {
+                        alert("Change plan failed!!!");
+                    }
+                })
+                .fail(function () {})
+                .always(function () {});
+        }
+        
+        function changePlan() {  
             $.post('/subscription/changePlan', getSubscriptionParams())
                 .done(function (data) {
-                    if (data.status === 'Succeeded') {
+                    if (data.status === true) {
                         $('#updatePlanModal').modal('show');
-                    } else if (data.status === 'ChangeFailed') {
-                         alert("Change plan failed!!!")
                     } else {
-                        $('#updateCardModal').data('calledFrom', "changePlan");
-                        $('#updateCardModal').modal('show'); // $('#confirm-update-credit-card').trigger( "click" );
+                        alert("Change plan failed!!!");
                     }
                 })
                 .fail(function () {})
@@ -369,15 +394,11 @@
         }
         
         function updateCard() {
-            $.post('/subscription/updateCC', getCCParams())
+            $.post('/subscription/updatePaymentProfile', getCCParams())
                 .done(function (data) {
-                    var result = JSON.parse(data);
-                    if (result.status === 'Succeeded') {
-                        $('#updateCardModal').modal('hide');
-                        $('#updatePlanModal').modal('show');
-                    } else {
-                        alert("Update credit card failed!!!")
-                    }
+                    if (data.status === true) {
+                        alert("Update card failed!!!")
+                    } 
                 })
                 .fail(function () {})
                 .always(function () {});
@@ -453,15 +474,12 @@
         slider14.setValue(100, true, true);
 
         $('#confirm-update-credit-card').click(function () {
-            
-            if($('#updateCardModal').data('calledFrom') === "changePlan") {
-                $('#updateCardModal').data('calledFrom', '');
-                updateCard();
+            if ($('#updateCardModal').data('paymentProfile') === "new") {
+                addPlanWithPaymentProfile();
             } else {
-                changePlan();
+                updateCard();
             }
-            
-            $('#updateCardModal').modal('hide');  // We can hide the modal here, we don't need any paramters
+            $('#updateCardModal').modal('hide');  // We can hide the modal here, we don't need any paramters    
         });
         
         $('.subscription-toggle').click(function () {
@@ -477,7 +495,7 @@
         });
         
         $('#submit-change-plan-btn').click(function () {
-            changePlan();
+            pingPaymentProfile();
         }); 
         
     });

@@ -28,7 +28,7 @@ class AuthorizeDotNetCustomerProfileTest extends \Codeception\TestCase\Test
 	$parameters['customerProfileDescription'] = 'Test Customer';
         $parameters['email'] = 'john.smith@test.com';
         
-        $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
+        $authorizeDotNet = new AuthorizeDotNet($config);
         $customerProfile = $authorizeDotNet->createCustomerProfile($parameters);
         
         self::$customerProfileId = $customerProfile['customerProfileId'];
@@ -44,7 +44,7 @@ class AuthorizeDotNetCustomerProfileTest extends \Codeception\TestCase\Test
         
 	$parameters['customerProfileId'] = self::$customerProfileId;
         
-        $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
+        $authorizeDotNet = new AuthorizeDotNet($config);
         $customerProfile = $authorizeDotNet->getCustomerProfile($parameters);
         
         $this->assertTrue($customerProfile != false, "Get existing customer profile on authorize.net platform failed!!!");
@@ -58,7 +58,7 @@ class AuthorizeDotNetCustomerProfileTest extends \Codeception\TestCase\Test
         
 	$parameters['customerProfileId'] = self::$customerProfileId;
         
-        $authorizeDotNet = new AuthorizeDotNet($config->authorizeDotNet->apiLoginId, $config->authorizeDotNet->transactionKey);
+        $authorizeDotNet = new AuthorizeDotNet($config);
         $deleted = $authorizeDotNet->deleteCustomerProfile($parameters);
         
         $this->assertTrue($deleted, "Delete existing customer profile on authorize.net platform failed!!!");
