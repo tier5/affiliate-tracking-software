@@ -1,6 +1,6 @@
 <?php
 
-namespace Vokuro\Payments;   
+namespace Vokuro\Payments;
 
 use \DateTime;
 use net\authorize\api\contract\v1 as AnetAPI;
@@ -10,6 +10,7 @@ use net\authorize\api\controller as AnetController;
  * 
  * authorize.net v1.8.8 
  */
+
 class AuthorizeDotNet {
 
     const SANDBOX = 'https://sandbox.authorize.net';
@@ -21,7 +22,7 @@ class AuthorizeDotNet {
 
     function __construct($config) {
         $this->apiLoginId = $config->authorizeDotNet->apiLoginId;
-        $this->transactionKey =  $config->authorizeDotNet->transactionKey;
+        $this->transactionKey = $config->authorizeDotNet->transactionKey;
         $this->environment = $config->application->environment;
     }
 
@@ -30,14 +31,13 @@ class AuthorizeDotNet {
      * Customer Profiles
      *      
      */
+
     public function createCustomerProfile($parameters) {
         /* TODO: Add parameter validation */
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
         if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
-
-        $refId = 'ref' . time();
 
         // Create the merchant authentication type
         $merchantAuthentication = $this->createMerchantAuthenticationType();
@@ -46,7 +46,7 @@ class AuthorizeDotNet {
         $hasPaymentProfileParameters = $this->hasPaymentProfileParameters($parameters);
         if ($hasPaymentProfileParameters) {
             $paymentCreditCard = $this->createCreditCardPayment($parameters);
-            $billto = $this->createCustomerAddress($parameters);
+            $customerAddress = $this->createCustomerAddress($parameters);
         }
 
         // Create a Customer Profile Request
@@ -57,7 +57,7 @@ class AuthorizeDotNet {
         if ($hasPaymentProfileParameters) {
             $paymentProfile = new AnetAPI\CustomerPaymentProfileType();
             $paymentProfile->setCustomerType($parameters['customerType']);
-            $paymentProfile->setBillTo($billto);
+            $paymentProfile->setBillTo($customerAddress['billTo']);
             $paymentProfile->setPayment($paymentCreditCard);
             $paymentProfiles[] = $paymentProfile;
         }
@@ -66,15 +66,15 @@ class AuthorizeDotNet {
         $customerProfile->setDescription($parameters['customerProfileDescription']);
         $customerProfile->setMerchantCustomerId('M_' . $refId);
         $customerProfile->setEmail($parameters['email']);
+        $customerProfile->addToShipToList($customerAddress['customerShippingAddress']);   
         if ($hasPaymentProfileParameters) {
             $customerProfile->setPaymentProfiles($paymentProfiles);
         }
 
         $request = new AnetAPI\CreateCustomerProfileRequest();
         $request->setMerchantAuthentication($merchantAuthentication);
-        $request->setRefId($refId);
+        $request->setRefId('ref' . time());
         $request->setProfile($customerProfile);
-
         $controller = new AnetController\CreateCustomerProfileController($request);
         $response = $controller->executeWithApiResponse($environment);
         if ($response && $response->getMessages()->getResultCode() == "Ok") {
@@ -89,7 +89,7 @@ class AuthorizeDotNet {
         } else {
             $errorMessages = $response->getMessages()->getMessage();
         }
-
+        
         return false;
     }
 
@@ -112,7 +112,7 @@ class AuthorizeDotNet {
             $customerProfile = [];
             $customerProfile['customerProfile'] = $response->getProfile();
             $customerProfile['paymentProfiles'] = $response->getProfile()->getPaymentProfiles();
-            $customerProfile['subscriptionIds'] = [];
+            $customerProfile['shippingAddresses'] = $response->getProfile()->getShipToList();
             if (method_exists($response, 'getSubscriptionIds')) {
                 $customerProfile['subscriptionIds'] = $response->getSubscriptionIds();
             }
@@ -161,10 +161,10 @@ class AuthorizeDotNet {
     public function createPaymentProfileForCustomer($parameters) {
         /* TODO: Add parameter validation */
         $validationMode = "liveMode";
-        
+
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
         if ($this->environment === 'production') {
-            $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;    
+            $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
         }
 
         $merchantAuthentication = $this->createMerchantAuthenticationType();
@@ -175,11 +175,11 @@ class AuthorizeDotNet {
         }
 
         $paymentCreditCard = $this->createCreditCardPayment($parameters);
-        $billto = $this->createCustomerAddress($parameters);
+        $customerAddress = $this->createCustomerAddress($parameters);
 
         $paymentProfile = new AnetAPI\CustomerPaymentProfileType();
         $paymentProfile->setCustomerType($parameters['customerType']);
-        $paymentProfile->setBillTo($billto);
+        $paymentProfile->setBillTo($customerAddress['billto']);
         $paymentProfile->setPayment($paymentCreditCard);
 
         $paymentProfileRequest = new AnetAPI\CreateCustomerPaymentProfileRequest();
@@ -200,7 +200,7 @@ class AuthorizeDotNet {
 
     public function updatePaymentProfileForCustomer($parameters) {
         $validationMode = "none";
-        
+
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
         if ($this->environment === 'production') {
             $environment = \net\authorize\api\constants\ANetEnvironment::PRODUCTION;
@@ -223,7 +223,7 @@ class AuthorizeDotNet {
         // Create the Customer Payment Profile object
         $paymentProfile = new AnetAPI\CustomerPaymentProfileExType();
         $paymentProfile->setCustomerPaymentProfileId($parameters['customerPaymentProfileId']);
-        $paymentProfile->setBillTo($customerAddress);
+        $paymentProfile->setBillTo($customerAddress['billTo']);
         $paymentProfile->setPayment($creditCardPayment);
 
         // Submit a UpdatePaymentProfileRequest
@@ -330,10 +330,21 @@ class AuthorizeDotNet {
 
         $merchantAuthentication = $this->createMerchantAuthenticationType();
 
+        $billto = new AnetAPI\CustomerAddressType();
+        $billto->setFirstName($parameters['billTo']->getFirstName());
+        $billto->setLastName($parameters['billTo']->getLastName());
+        $billto->setCompany($parameters['billTo']->getCompany());
+        $billto->setAddress($parameters['billTo']->getAddress());
+        $billto->setCity($parameters['billTo']->getCity());
+        $billto->setState($parameters['billTo']->getState());
+        $billto->setZip($parameters['billTo']->getZip());
+        $billto->setCountry($parameters['billTo']->getCountry());
+
         // Subscription
         $subscription = new AnetAPI\ARBSubscriptionType();
         $subscription->setName($parameters['subscriptionName']);
-
+        $subscription->setBillTo($billto);
+        
         $interval = new AnetAPI\PaymentScheduleType\IntervalAType();
         $interval->setLength($parameters['intervalLength']);
         $interval->setUnit($parameters['unit']);
@@ -345,7 +356,7 @@ class AuthorizeDotNet {
         if (array_key_exists('trialOccurences', $parameters)) {
             $paymentSchedule->setTrialOccurrences($parameters['trialOccurences']);
         }
-        
+
         $subscription->setPaymentSchedule($paymentSchedule);
         $subscription->setAmount($parameters['amount']);
         if (array_key_exists('trialOccurences', $parameters)) {
@@ -354,8 +365,8 @@ class AuthorizeDotNet {
         $profile = new AnetAPI\CustomerProfileIdType();
         $profile->setCustomerProfileId($parameters['customerProfileId']);
         $profile->setCustomerPaymentProfileId($parameters['customerPaymentProfileId']);
-        // $profile->setCustomerAddressId($parameters['customerAddressId']);
-        
+        $profile->setCustomerAddressId($parameters['customerAddressId']);
+
         $subscription->setProfile($profile);
 
         /* Send the request */
@@ -410,7 +421,7 @@ class AuthorizeDotNet {
 
         $interval = new AnetAPI\PaymentScheduleType\IntervalAType();
         $this->updateIntervalFields($parameters, $interval);
-        
+
         $paymentSchedule = new AnetAPI\PaymentScheduleType();
         // $paymentSchedule->setInterval($interval);
         $this->updatePaymentScheduleFields($parameters, $paymentSchedule);
@@ -418,7 +429,7 @@ class AuthorizeDotNet {
         $subscription = new AnetAPI\ARBSubscriptionType();
         $subscription->setPaymentSchedule($paymentSchedule);
         $this->updateSubscriptionFields($parameters, $subscription);
-        
+
         $request = new AnetAPI\ARBUpdateSubscriptionRequest();
         $request->setMerchantAuthentication($merchantAuthentication);
         $request->setRefId($refId);
@@ -492,7 +503,24 @@ class AuthorizeDotNet {
         $billto->setState($parameters['state']);
         $billto->setZip($parameters['zip']);
         $billto->setCountry($parameters['country']);
-        return $billto;
+
+        // Create the customer shipping address
+        $customerShippingAddress = new AnetAPI\CustomerAddressType();
+        $customerShippingAddress->setFirstName($parameters['firstName']);
+        $customerShippingAddress->setLastName($parameters['lastName']);
+        $customerShippingAddress->setCompany($parameters['companyName']);
+        $customerShippingAddress->setAddress($parameters['companyAddress']);
+        $customerShippingAddress->setCity($parameters['city']);
+        $customerShippingAddress->setState($parameters['state']);
+        $customerShippingAddress->setZip($parameters['zip']);
+        $customerShippingAddress->setCountry($parameters['country']);
+        $customerShippingAddress->setPhoneNumber("XXX-XXX-XXXX");
+        $customerShippingAddress->setFaxNumber("XXX-XXX-XXXX");
+
+        return [
+            'billTo' => $billto,
+            'customerShippingAddress' => $customerShippingAddress
+        ];
     }
 
     private function hasCreditCardParameters($parameters) {
@@ -570,7 +598,7 @@ class AuthorizeDotNet {
             }
         }
     }
-    
+
     private function updateSubscriptionFields($parameters, &$subscription) {
 
         foreach ($parameters as $parameter => $value) {
@@ -588,17 +616,16 @@ class AuthorizeDotNet {
                 default:
                     break;
             }
-            
         }
     }
-            
+
     private function updateIntervalFields($parameters, &$interval) {
         foreach ($parameters as $parameter => $value) {
             switch ($parameter) {
                 case 'intervalLength':
-                    $interval->setLength($parameters['intervalLength']); 
+                    $interval->setLength($parameters['intervalLength']);
                     break;
-                case 'unit': 
+                case 'unit':
                     $interval->setUnit($parameters['unit']);
                     break;
                 default:
@@ -607,17 +634,17 @@ class AuthorizeDotNet {
         }
         return $interval;
     }
-    
+
     private function updatePaymentScheduleFields($parameters, &$paymentSchedule) {
         foreach ($parameters as $parameter => $value) {
             switch ($parameter) {
                 case 'startDate':
-                    $paymentSchedule->setStartDate(new \DateTime($parameters['startDate'])); 
+                    $paymentSchedule->setStartDate(new \DateTime($parameters['startDate']));
                     break;
-                case 'totalOccurences': 
+                case 'totalOccurences':
                     $paymentSchedule->setTotalOccurrences($parameters['totalOccurences']);
                     break;
-                case 'trialOccurences': 
+                case 'trialOccurences':
                     $paymentSchedule->setTrialOccurrences($parameters['trialOccurences']);
                     break;
                 default:
@@ -626,4 +653,5 @@ class AuthorizeDotNet {
         }
         return $paymentSchedule;
     }
+
 }
