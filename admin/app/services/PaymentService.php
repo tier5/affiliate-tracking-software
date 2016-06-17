@@ -235,7 +235,7 @@ class PaymentService extends BaseService {
             
         } else {
             
-            $parameters['subscriptionId'] = $subscriptionParameters['price'];
+            $parameters['subscriptionId'] = $subscriptionId;
             $parameters['amount'] = $subscriptionParameters['price'];
             $status = $authorizeDotNetPayment->updateSubscriptionForCustomer($parameters);
         

@@ -33,6 +33,7 @@ class AuthorizeDotNet {
      */
 
     public function createCustomerProfile($parameters) {
+
         /* TODO: Add parameter validation */
         $environment = \net\authorize\api\constants\ANetEnvironment::SANDBOX;
         if ($this->environment === 'production') {
@@ -61,7 +62,7 @@ class AuthorizeDotNet {
             $paymentProfile->setPayment($paymentCreditCard);
             $paymentProfiles[] = $paymentProfile;
         }
-
+        $refId = 'ref' . time();
         $customerProfile = new AnetAPI\CustomerProfileType();
         $customerProfile->setDescription($parameters['customerProfileDescription']);
         $customerProfile->setMerchantCustomerId('M_' . $refId);
@@ -73,7 +74,7 @@ class AuthorizeDotNet {
 
         $request = new AnetAPI\CreateCustomerProfileRequest();
         $request->setMerchantAuthentication($merchantAuthentication);
-        $request->setRefId('ref' . time());
+        $request->setRefId($refId);
         $request->setProfile($customerProfile);
         $controller = new AnetController\CreateCustomerProfileController($request);
         $response = $controller->executeWithApiResponse($environment);
@@ -87,7 +88,9 @@ class AuthorizeDotNet {
                 'shippingAddressId' => $shippingAddresses[0]
             ];
         } else {
+
             $errorMessages = $response->getMessages()->getMessage();
+
         }
         
         return false;
@@ -119,6 +122,8 @@ class AuthorizeDotNet {
             return $customerProfile;
         } else {
             $errorMessages = $response->getMessages()->getMessage();
+            print_r($errorMessages->getMessages()->getMessage());
+            die;
         }
 
         return false;
@@ -330,20 +335,10 @@ class AuthorizeDotNet {
 
         $merchantAuthentication = $this->createMerchantAuthenticationType();
 
-        $billto = new AnetAPI\CustomerAddressType();
-        $billto->setFirstName($parameters['billTo']->getFirstName());
-        $billto->setLastName($parameters['billTo']->getLastName());
-        $billto->setCompany($parameters['billTo']->getCompany());
-        $billto->setAddress($parameters['billTo']->getAddress());
-        $billto->setCity($parameters['billTo']->getCity());
-        $billto->setState($parameters['billTo']->getState());
-        $billto->setZip($parameters['billTo']->getZip());
-        $billto->setCountry($parameters['billTo']->getCountry());
 
         // Subscription
         $subscription = new AnetAPI\ARBSubscriptionType();
         $subscription->setName($parameters['subscriptionName']);
-        $subscription->setBillTo($billto);
         
         $interval = new AnetAPI\PaymentScheduleType\IntervalAType();
         $interval->setLength($parameters['intervalLength']);
@@ -378,8 +373,13 @@ class AuthorizeDotNet {
         $response = $controller->executeWithApiResponse($environment);
         if ($response && ($response->getMessages()->getResultCode() == "Ok")) {
             return $response->getSubscriptionId();
+            print_r($response);
+            die;
         } else {
+
             $errorMessages = $response->getMessages()->getMessage();
+            print_r($errorMessages);
+            die;
         }
 
         return false;
@@ -429,7 +429,6 @@ class AuthorizeDotNet {
         $subscription = new AnetAPI\ARBSubscriptionType();
         $subscription->setPaymentSchedule($paymentSchedule);
         $this->updateSubscriptionFields($parameters, $subscription);
-
         $request = new AnetAPI\ARBUpdateSubscriptionRequest();
         $request->setMerchantAuthentication($merchantAuthentication);
         $request->setRefId($refId);
@@ -441,6 +440,8 @@ class AuthorizeDotNet {
             return true;
         } else {
             $errorMessages = $response->getMessages()->getMessage();
+            print_r($errorMessages);
+            die;
         }
 
         return false;
@@ -466,6 +467,7 @@ class AuthorizeDotNet {
             return true;
         } else {
             $errorMessages = $response->getMessages()->getMessage();
+            print_r($errorMessages);
         }
 
         return false;
