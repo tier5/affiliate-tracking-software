@@ -33,9 +33,11 @@
                     <div class="portlet-body">
                         <div class="panel panel-default apple-backgound">
                             <div class="panel-body">
-                                <div class="responsive-float-left subscription-panel-default-caption">
-                                    <div><span class="bold"><?php echo $this->view->subscriptionPlan['locations']; ?></span> Location(s)</div>
-                                    <div><span class="bold"><?php echo $this->view->subscriptionPlan['sms_messages_per_location']; ?></span> Text Messages</div>
+                                <div id="current-plan" class="responsive-float-left subscription-panel-default-caption"
+                                    data-locations="<?php echo $this->view->subscriptionPlan['locations']; ?>"
+                                    data-messages="<?php echo $this->view->subscriptionPlan['sms_messages_per_location']; ?>">
+                                    <div><span id="current-locations" class="bold"></span> Location(s)</div>
+                                    <div><span id="current-messages" class="bold"></span> Text Messages</div>
                                 </div>
                                 <div class="responsive-float-right subscription-panel-large-caption"><?php echo $this->view->paymentPlan; ?></div>
                             </div>
@@ -307,17 +309,34 @@
     jQuery(document).ready(function ($) {
 
         function initSubscriptionParameters() {
-            /* Message and locations init */
+            var currentPlanLocations = 
+               parseInt($(document.getElementById("current-plan"))[0].dataset.locations);
+            var currentPlanMessages =
+               parseInt($(document.getElementById("current-plan"))[0].dataset.messages);
+            
+            /* Slider initializations */
+            slider13.setValue(currentPlanLocations, true, true);
+            slider14.setValue(currentPlanMessages, true, true);
+            
+            /* Message init */
+            $('#current-locations').text(slider13.getValue());
             $('#change-plan-locations').text(slider13.getValue());
             $('#slider-locations').text(slider13.getValue());
             $('#modal-locations').text(slider13.getValue());
+            
+            /* Locations init */
+            $('#current-messages').text(slider14.getValue());
             $('#change-plan-messages').text(slider14.getValue());
             $('#slider-messages').text(slider14.getValue());
             $('#modal-messages').text(slider13.getValue());
             
-            /* Slider initializations */
-            slider13.setValue(1, true, true);
-            slider14.setValue(100, true, true);
+            /* Lock the plan type selector if yearly plan */
+            var planType = 
+                $(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
+            if (planType === 'Y') {  // (TODO: Add expiration function)
+                // $('.subscription-toggle').click();  // Toggle to yearly
+                // $(document.getElementById("plan-type")).prop('disabled', true);
+            }
             
             /* Calculate the initial plan value */
             calculatePlanValue();
