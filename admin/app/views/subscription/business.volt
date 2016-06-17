@@ -413,7 +413,7 @@
         function updateCard() {
             $.post('/subscription/updatePaymentProfile', getCCParams())
                 .done(function (data) {
-                    if (data.status === true) {
+                    if (data.status !== true) {
                         alert("Update card failed!!!")
                     } 
                 })
