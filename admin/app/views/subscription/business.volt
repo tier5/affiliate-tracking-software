@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <div class="growth-bar transparent pull-right">
-                    <a href="/subscription/invoices" class="btn default btn-lg apple-backgound subscription-btn">View Invoices</a>
+                    <a href="/subscription/invoices" disabled class="btn default btn-lg apple-backgound subscription-btn">View Invoices</a>
                 </div>
             </div>
         </div>
@@ -306,6 +306,23 @@
 
     jQuery(document).ready(function ($) {
 
+        function initSubscriptionParameters() {
+            /* Message and locations init */
+            $('#change-plan-locations').text(slider13.getValue());
+            $('#slider-locations').text(slider13.getValue());
+            $('#modal-locations').text(slider13.getValue());
+            $('#change-plan-messages').text(slider14.getValue());
+            $('#slider-messages').text(slider14.getValue());
+            $('#modal-messages').text(slider13.getValue());
+            
+            /* Slider initializations */
+            slider13.setValue(1, true, true);
+            slider14.setValue(100, true, true);
+            
+            /* Calculate the initial plan value */
+            calculatePlanValue();
+        }
+
         function calculatePlanValue() {
             var priceElem = document.getElementById("pricing-attr");
             var priceDisplay = document.getElementById("change-plan-final-price");
@@ -455,7 +472,7 @@
             ],
             ticks_snap_bounds: 1
         });
-
+        
         slider13.on('change', function () {
             $('#change-plan-locations').text(slider13.getValue());
             $('#slider-locations').text(slider13.getValue());
@@ -468,10 +485,6 @@
             $('#modal-messages').text(slider13.getValue());
             calculatePlanValue();
         });
-
-        /* Slider initializations */
-        slider13.setValue(1, true, true);
-        slider14.setValue(100, true, true);
 
         $('#confirm-update-credit-card').click(function () {
             if ($('#updateCardModal').data('paymentProfile') === "new") {
@@ -496,7 +509,9 @@
         
         $('#submit-change-plan-btn').click(function () {
             pingPaymentProfile();
-        }); 
+        });
+        
+        initSubscriptionParameters();
         
     });
 </script>
