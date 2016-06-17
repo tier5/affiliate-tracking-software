@@ -392,7 +392,7 @@
                 .fail(function () {})
                 .always(function () {});
         }
-        
+
         function updateCard() {
             $.post('/subscription/updatePaymentProfile', getCCParams())
                 .done(function (data) {
