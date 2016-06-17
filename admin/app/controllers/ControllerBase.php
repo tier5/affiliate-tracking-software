@@ -940,7 +940,7 @@ class ControllerBase extends Controller {
             ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) && 
             ($userSubscription['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) && 
              $userManager->hasLocation($this->session);
-
+        $internalNavParams['hasSubscriptions'] = true;
         if ($internalNavParams['hasSubscriptions']) {
 
             if ($internalNavParams['isAgencyAdmin']) {

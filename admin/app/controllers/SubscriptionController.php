@@ -207,11 +207,11 @@ class SubscriptionController extends ControllerBase {
             
         $responseParameters['status'] = false;
         try {
-            
+
             if (!$this->request->isPost()) {
                 throw new \Exception();
             }
-        
+
             /* Get services */
             $userManager = $this->di->get('userManager');
             $paymentService = $this->di->get('paymentService');
@@ -222,7 +222,7 @@ class SubscriptionController extends ControllerBase {
         
             /* Format the date accordingly  */
             $date = Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags'));
-            
+
             /* Get the subscription parameters */
             $ccParameters = [
                 'userId' => $userId,
@@ -254,7 +254,10 @@ class SubscriptionController extends ControllerBase {
             /* 
              * Create the payment profile 
              */
+            print_r($ccParameters);
+
             $status = $paymentService->createPaymentProfile($ccParameters);
+
             if (!$status) {
                 throw new \Exception();
             }
