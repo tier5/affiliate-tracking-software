@@ -357,4 +357,8 @@ class SubscriptionController extends ControllerBase {
         }
     }
     
+    public function showPricingPlanListAction() {
+        
+    }
+    
 }
