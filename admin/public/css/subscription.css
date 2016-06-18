@@ -221,6 +221,16 @@
 .pricing-plans .portlet-title > .caption.subscription-name > span > span {
     font-weight: normal;
 }
+.pricing-plans .control-label {
+    font-size: 1.3rem;
+}
+.pricing-plans select.form-control {
+    width: 100% !important;
+    margin: 0px;
+}
+.pricing-plans .portlet-title .caption > span.price-includes {
+    text-align: left;
+}
 
 /* 
 Reformat the table for devices smaller that 890px

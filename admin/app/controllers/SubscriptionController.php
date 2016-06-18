@@ -362,7 +362,8 @@ class SubscriptionController extends ControllerBase {
     }
     
     public function createPricingPlanAction() {
-        
+        /* Render template */
+        $this->view->pick("subscription/pricingPlan");
     }
     
 }

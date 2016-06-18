@@ -945,10 +945,10 @@ class ControllerBase extends Controller {
             $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];
         
         
-        if ($internalNavParams['hasSubscriptions'] || $internalNavParams['isBusinessAdmin']) {
+        if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isBusinessAdmin']) {
             $internalNavParams['subscriptionController'] = '/subscription/business';
         }    
-        if ($internalNavParams['hasSubscriptions'] || $internalNavParams['isAgencyAdmin']) {
+        if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isAgencyAdmin']) {
             $internalNavParams['subscriptionController'] = '/subscription/agency';
         }
         
