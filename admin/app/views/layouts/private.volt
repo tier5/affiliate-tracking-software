@@ -55,7 +55,6 @@
         if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
         ?>
         <link href="/css/subscription.css" rel="stylesheet" type="text/css" />
-        <link href="/css/invoices.css" rel="stylesheet" type="text/css" />
         <link href="/css/slider-extended.css" rel="stylesheet" type="text/css" />
         <link href="/assets/global/plugins/card-js/card-js.min.css" type="text/javascript" />
         <?php 
@@ -333,6 +332,17 @@
                                 <?=($openfolder=='admindashboardagencies'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
+                        
+                        <?php if ($this->view->internalNavParams['hasPricingPlans']) { ?>
+                        <li class="nav-item <?=($openfolder=='pricingPlan'?'active open':'')?>">
+                            <a href='/subscription/showPricingPlanList' class="nav-link nav-toggle">
+                               <i class="icon-list"></i>
+                                <span class="title">Business Subscriptions</span>
+                                <?=($openfolder=='pricingPlan'?'<span class="selected"></span>':'')?>
+                            </a>
+                        </li>
+                        <?php } ?>
+                        
                         <li class="nav-item start <?=($openfolder=='settings'?'active open':'')?>">
                             <a href="/admindashboard/settings" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>

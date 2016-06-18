@@ -128,7 +128,7 @@ class PaymentService extends BaseService {
 	$parameters['cardExpiryDate'] = $ccParameters['expirationDate'];
 	$parameters['cardCode'] = $ccParameters['csv'];
         $parameters['firstName'] = $user->name;
-	$parameters['lastName'] = "";
+	$parameters['lastName'] = "Required";
 	$parameters['companyName'] = $agency->name;
 	$parameters['companyAddress'] = $agency->address;
 	$parameters['city'] = "Los Angeles";
@@ -176,7 +176,7 @@ class PaymentService extends BaseService {
 	$parameters['cardExpiryDate'] = $ccParameters['expirationDate'];
 	$parameters['cardCode'] = $ccParameters['csv'];
         $parameters['firstName'] = $user->name;
-	$parameters['lastName'] = "";
+	$parameters['lastName'] = "Required";
 	$parameters['companyName'] = $agency->name;
 	$parameters['companyAddress'] = $agency->address;
 	$parameters['city'] = "Los Angeles";
@@ -231,16 +231,28 @@ class PaymentService extends BaseService {
             $parameters['totalOccurences'] = $this->config->authorizeDotNet->totalOccurences;
             $parameters['amount'] = round($subscriptionParameters['price'], 2);
             
-            $status = $authorizeDotNetPayment->createSubscriptionForCustomer($parameters);
+            $subscriptionId = $authorizeDotNetPayment->createSubscriptionForCustomer($parameters);
+            if (!$subscriptionId) {
+                return false;
+            }
+            
+            $authorizeDotNetModel->subscription_id = $subscriptionId;
+            if(!$authorizeDotNetModel->update()) {
+                return false;
+            }
             
         } else {
             
             $parameters['subscriptionId'] = $subscriptionId;
             $parameters['amount'] = $subscriptionParameters['price'];
+            
             $status = $authorizeDotNetPayment->updateSubscriptionForCustomer($parameters);
-        
+            if(!$status) {
+                return false;
+            }
+            
         }
         
-        return $status;
+        return true;
     }
 }

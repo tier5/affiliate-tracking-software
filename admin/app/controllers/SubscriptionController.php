@@ -193,10 +193,10 @@ class SubscriptionController extends ControllerBase {
         
         /* 
          * Construct the response  
-         */   
-        $response = new \Phalcon\Http\Response();
-        $response->setContent(json_encode($responseParameters));
-        return $response;
+         */  
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
     }
     
     /**
@@ -280,15 +280,16 @@ class SubscriptionController extends ControllerBase {
         /* 
          * Construct the response  
          */
-        $response = new \Phalcon\Http\Response();
-        $response->setContent(json_encode($responseParameters));
-        return $response;
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
     }
     
     /**
      * Change plan 
      */
     public function changePlanAction() {
+        $this->view->disable();
         
         $responseParameters['status'] = false;
         
@@ -339,17 +340,12 @@ class SubscriptionController extends ControllerBase {
              * Success!!! 
              */
             $responseParameters['status'] = true;
-            
-            /* 
-             * Construct the response  
-             */
-            $this->view->disable();
                
         }  catch(Exception $e) {}
         
-        $response = new \Phalcon\Http\Response();
-        $response->setContent(json_encode($responseParameters));
-        return $response;
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
     }
     
     /**
@@ -359,6 +355,15 @@ class SubscriptionController extends ControllerBase {
         if ($this->request->isGet()) {
             
         }
+    }
+    
+    public function showPricingPlanListAction() {
+        
+    }
+    
+    public function createPricingPlanAction() {
+        /* Render template */
+        $this->view->pick("subscription/pricingPlan");
     }
     
 }
