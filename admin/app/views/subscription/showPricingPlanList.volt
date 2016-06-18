@@ -22,7 +22,7 @@
                             <span class="caption-subject bold uppercase">Subscriptions</span>
                         </div>
                         <div class="tools">
-                            <a href="" class="btn default btn-lg apple-backgound subscription-btn">Create Subscription</a>
+                            <a href="/subscription/createPricingPlan" class="btn default btn-lg apple-backgound subscription-btn">Create Subscription</a>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -103,26 +103,10 @@
                 </div>
             </div>
         </div>
+    </div>
 </header>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-
-        /*
-        * Here is how you use it
-        */
-        $(function(){    
-            $('.view-pdf').on('click',function(){
-                var pdf_link = $(this).attr('href');
-                var iframe = '<div class="iframe-container"><iframe src="'+pdf_link+'"></iframe></div>'
-                $.createModal({
-                    title:'My Title',
-                    message: iframe,
-                    closeButton:true,
-                    scrollable:false
-                });
-                return false;        
-            });    
-        })
 
     });
 </script>

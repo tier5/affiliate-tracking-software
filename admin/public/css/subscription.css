@@ -211,6 +211,17 @@
     margin-top: -75px;
 }
 
+.pricing-plans .portlet-title > .caption.subscription-caption,
+.pricing-plans .portlet-title > .caption.subscription-name {
+    width: 50%;
+}
+.pricing-plans .portlet-title > .caption.subscription-name > .caption-subject {
+    text-align: right !important;
+}
+.pricing-plans .portlet-title > .caption.subscription-name > span > span {
+    font-weight: normal;
+}
+
 /* 
 Reformat the table for devices smaller that 890px
 
