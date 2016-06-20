@@ -113,7 +113,7 @@
                                         <label class="control-label">Max SMS Messages</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="number" value="1" step="50" min="0" class="form-control" placeholder="1">
+                                        <input id="selector-messages" type="number" value="1" step="50" min="0" class="form-control" placeholder="1">
                                     </div>
                                 </div>
                             </div>
