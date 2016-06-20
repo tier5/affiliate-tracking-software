@@ -231,6 +231,28 @@
 .pricing-plans .portlet-title .caption > span.price-includes {
     text-align: left;
 }
+.pricing-plans.editor {
+    margin-top: 20px;
+}
+.pricing-plans .row {
+    min-height: 50px;
+}
+.pricing-plans .form .form-bordered .form-group > div {
+    border: none;
+}
+.pricing-plans .progression th {
+    font-size: 14px;
+}
+.pricing-plans .progression .input-xsmall {
+    width: 70px !important;
+}
+.pricing-plans .progression-controls {
+    margin-top: 20px;
+}
+.pricing-plans .progression-controls a {
+    float: right;
+    margin: 5px;
+}
 
 /* 
 Reformat the table for devices smaller that 890px
