@@ -29,6 +29,7 @@
         <link href="/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
         <link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
         <link href="/public/assets/global/plugins/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
@@ -67,6 +68,7 @@
         <link rel="stylesheet" href="/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
         <script type="text/javascript" src="/js/vendor/fancybox/jquery.fancybox.pack.js"></script>    
         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <script src="/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
         <?php
         if (false && isset($main_color_setting)) {
         list($r, $g, $b) = sscanf($main_color_setting, "#%02x%02x%02x");

@@ -2,13 +2,9 @@
 
 namespace Vokuro\Controllers;
 
-use DateTime;
 use Exception;
 use Vokuro\Utils;
 use Vokuro\Services\ServicesConsts;
-
-use net\authorize\api\contract\v1 as AnetAPI;
-use net\authorize\api\controller as AnetController;
 
 /**
  * Vokuro\Controllers\SubscriptionController
@@ -254,7 +250,7 @@ class SubscriptionController extends ControllerBase {
             /* 
              * Create the payment profile 
              */
-            print_r($ccParameters);
+            // print_r($ccParameters);
 
             $status = $paymentService->createPaymentProfile($ccParameters);
 
@@ -362,6 +358,7 @@ class SubscriptionController extends ControllerBase {
     }
     
     public function createPricingPlanAction() {
+        
         /* Render template */
         $this->view->pick("subscription/pricingPlan");
     }

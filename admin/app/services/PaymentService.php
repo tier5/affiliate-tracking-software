@@ -179,7 +179,7 @@ class PaymentService extends BaseService {
 	$parameters['lastName'] = "Required";
 	$parameters['companyName'] = $agency->name;
 	$parameters['companyAddress'] = $agency->address;
-	$parameters['city'] = "Los Angeles";
+	$parameters['city'] = "City";
 	$parameters['state'] = $agency->state_province;
 	$parameters['zip'] = $agency->postal_code;
 	$parameters['country'] = $agency->country;
