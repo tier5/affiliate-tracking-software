@@ -44,75 +44,65 @@ ini_set("display_errors", "on");
 class ControllerBase extends Controller {
 
     public function initialize() {
-        //find the settings and set them on the layout.
-        $foundsomething = false;
-
-        //get the user id, to find the settings
+    //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
-        //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
-        // If there is no identity available the user is redirected to index/index
+
+    // If there is no identity available the user is redirected to index/index
+    //KT WHERE?
+
         if (is_array($identity)) {
-            // Query binding parameters with string placeholders
             $conditions = "id = :id:";
-            $parameters = array("id" => $identity['id']);
-            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-            //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-            //find the agency 
+
+            $parameters = array(
+                "id" => $identity['id']
+            );
+
+            $userObj = Users::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+
+    //find the agency
             $conditions = "agency_id = :agency_id:";
-            $parameters = array("agency_id" => $userObj->agency_id);
-            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+            $parameters = array(
+                "agency_id" => $userObj->agency_id
+            );
+
+            $agency = Agency::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+
             if ($agency) {
-                $this->view->main_color_setting = $agency->main_color;
-                $this->view->logo_setting = $agency->logo_path;
-                $foundsomething = true;
+                $this->view->setVars([
+                    'main_color_setting' => $agency->main_color,
+                    'logo_setting'       => $agency->logo_path
+                ]);
             }
             
-            //internal navigation parameters  
+    //internal navigation parameters
             $this->configureNavigation($identity);
 
-        }
+    //###  START: check to see if this user has paid   #####
+            $haspaid = true;
 
-        //find white label info based on the url
-        $sub = array_shift((explode(".", $_SERVER['HTTP_HOST'])));
-        if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104') {
-            //find the agency object
-            $conditions = "custom_domain = :custom_domain:";
-            $parameters = array("custom_domain" => $sub);
-            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-            if ($agency) {
-                $this->view->agency_id = $agency->agency_id;
-                $this->view->main_color_setting = $agency->main_color;
-                $this->view->logo_setting = $agency->logo_path;
-                $foundsomething = true;
-            }
-        }
-
-        if ($this->request->getPost('main_color')) {
-            $this->view->main_color_setting = $this->request->getPost('main_color');
-        }
-
-        //###  START: check to see if this user has paid   #####
-        $haspaid = true;
-        //get the user id
-        $identity = $this->auth->getIdentity();
-        // If there is no identity available the user is redirected to index/index
-        if (is_array($identity)) {
-            // Query binding parameters with string placeholders
-            $conditions = "id = :id:";
-            $parameters = array("id" => $identity['id']);
-            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-            //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-
-            $conditions = "agency_id = :agency_id:";
-            $parameters = array("agency_id" => $userObj->agency_id);
-            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
-            //echo '<pre>$agency->subscription_id:'.print_r($agency->subscription_id,true).'</pre>';
             if ($agency->subscription_id > 0) {
-                //check to see if the user has paid
                 $conditions = "agency_id = :agency_id:";
-                $parameters = array("agency_id" => $userObj->agency_id);
-                $subs = UsersSubscription::findFirst(array($conditions, "bind" => $parameters));
+
+                $parameters = array(
+                    "agency_id" => $userObj->agency_id
+                );
+
+                $subs = UsersSubscription::findFirst(
+                    array(
+                        $conditions,
+                        "bind" => $parameters)
+                );
 
                 if (isset($subs) && isset($subs->users_subscription_id) && $subs->users_subscription_id > 0) {
                     $haspaid = true;
@@ -125,29 +115,65 @@ class ControllerBase extends Controller {
                     return;
                 }
             }
+
             $this->view->haspaid = $haspaid;
-        }
-        //###  END: check to see if this user has paid   #####
-
-
-        if (is_array($identity)) {
-            // Query binding parameters with string placeholders
-            $conditions = "id = :id:";
-            $parameters = array("id" => $identity['id']);
-            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-            //find the agency 
-            $conditions = "agency_id = :agency_id:";
-            $parameters = array("agency_id" => $userObj->agency_id);
-            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-            $this->view->agency = $agency;
+    //###  END: check to see if this user has paid   #####
 
             $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $loc = Location::findFirst(array($conditions, "bind" => $parameters));
-            $this->view->location = $loc;
+
+            $parameters = array(
+                "location_id" => $this->session->get('auth-identity')['location_id']
+            );
+
+            $loc = Location::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters)
+            );
+
+            $this->view->setVars([
+                'agency'                => $agency,
+                'location'              => $loc
+            ]);
+
             $this->getShareInfo($agency);
             $this->getTotalSMSSent($agency);
+
         }
+
+    //find white label info based on the url
+        $sub = array_shift((explode(".", $_SERVER['HTTP_HOST'])));
+        if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104') {
+            //find the agency object
+            $conditions = "custom_domain = :custom_domain:";
+
+            $parameters = array(
+                "custom_domain" => $sub
+            );
+
+            $agency = Agency::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+
+            if ($agency) {
+
+                $this->view->setVars([
+                    'agency_id'             => $agency->agency_id,
+                    'main_color_setting'    => $agency->main_color,
+                    'logo_setting'          => $agency->logo_path
+                ]);
+
+            }
+
+        }
+
+        if ($this->request->getPost('main_color')) {
+            $this->view->main_color_setting = $this->request->getPost('main_color');
+        }
+
     }
 
     /**
@@ -217,9 +243,13 @@ class ControllerBase extends Controller {
 
         //build share links
         $share_link = $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/session/signup?code=' . $share->sharecode);
-        $this->view->share_message = 'Click this link to sign up for a great new way to get reviews: ' . $share_link;
-        $this->view->share_link = $share_link;
-        $this->view->share_subject = 'Sign Up and Get Reviews!';
+
+        $this->view->setVars([
+            'share_message'         => 'Click this link to sign up for a great new way to get reviews: ' . $share_link,
+            'share_link'            => $share_link,
+            'share_subject'         => 'Sign Up and Get Reviews!'
+        ]);
+
 
         //calculate how many sms messages sent and how many are remaining
         //$sms_sent_this_month
@@ -235,11 +265,14 @@ class ControllerBase extends Controller {
         $num_discount = (int) ($num_signed_up / 3); //find how many three
         $total_sms_month = $base_sms_allowed + ($num_discount * $additional_allowed);
         //echo '<p>$total_sms_month:'.$total_sms_month.':$num_discount:'.$num_discount.':$num_signed_up:'.$num_signed_up.':$share->sharecode:'.$share->sharecode.'</p>';
-        $this->view->total_sms_month = $total_sms_month;
-        $this->view->num_discount = $num_discount;
-        $this->view->num_signed_up = $num_signed_up;
-        $this->view->base_sms_allowed = $base_sms_allowed;
-        $this->view->additional_allowed = $additional_allowed;
+        $this->view->setVars([
+            'total_sms_month'       => $total_sms_month,
+            'num_discount'          => $num_discount,
+            'num_signed_up'         => $num_signed_up,
+            'base_sms_allowed'      => $base_sms_allowed,
+            'additional_allowed'    => $additional_allowed
+        ]);
+
         //end calculating how many sent and how many allowed
         //end getting the sharing code
     }
@@ -248,7 +281,7 @@ class ControllerBase extends Controller {
 
         //check if the user should get the upgrade message (Only "business" agency_types who are signed up for Free accounts,
         //get the upgrade message)
-        $this->view->is_upgrade = false;
+        $is_upgrade = false;
         if (!(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency')) {
             //we have a business, so check if free
             //echo '<p>$agency->subscription_id:'.$agency->subscription_id.'</p>';
@@ -259,17 +292,18 @@ class ControllerBase extends Controller {
                 $parameters = array("subscription_id" => $agency->subscription_id);
                 $subscriptionobj = Subscription::findFirst(array($conditions, "bind" => $parameters));
                 if ($subscriptionobj->amount > 0) {
-                    $this->view->is_upgrade = false;
+                    $is_upgrade = false;
                 } else {
-                    $this->view->is_upgrade = true;
+                    $is_upgrade = true;
                 }
             } else {
-                $this->view->is_upgrade = true;
+                $is_upgrade = true;
             }
         }
+        $this->view->is_upgrade = $is_upgrade;
 
         if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
-            if ($this->view->is_upgrade) {
+            if ($is_upgrade) {
                 $identity = $this->auth->getIdentity();
                 //find user
                 $conditions = "id = :id:";
