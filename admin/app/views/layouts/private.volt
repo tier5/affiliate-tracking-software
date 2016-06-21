@@ -29,7 +29,6 @@
         <link href="/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
         <link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
         <link href="/public/assets/global/plugins/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css" rel="stylesheet" type="text/css" />
-        <link href="/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
@@ -43,6 +42,7 @@
         <!-- END THEME LAYOUT STYLES -->
         <link href="/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
         <?php 
         if(strpos($_SERVER['REQUEST_URI'],'location/create')>0 || strpos($_SERVER['REQUEST_URI'],'location/edit')>0 || strpos($_SERVER['REQUEST_URI'],'location/create2')>0 || strpos($_SERVER['REQUEST_URI'],'location/create3')>0) {
         ?>
@@ -55,6 +55,7 @@
         <?php 
         if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
         ?>
+        <link href="/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
         <link href="/css/subscription.css" rel="stylesheet" type="text/css" />
         <link href="/css/slider-extended.css" rel="stylesheet" type="text/css" />
         <link href="/assets/global/plugins/card-js/card-js.min.css" type="text/javascript" />
@@ -64,11 +65,10 @@
 
         <link rel="shortcut icon" href="favicon.ico" /> 
         <!--<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->    
-        <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script> 
         <link rel="stylesheet" href="/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
         <script type="text/javascript" src="/js/vendor/fancybox/jquery.fancybox.pack.js"></script>    
         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-        <script src="/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
         <?php
         if (false && isset($main_color_setting)) {
         list($r, $g, $b) = sscanf($main_color_setting, "#%02x%02x%02x");
@@ -620,6 +620,7 @@
         <?php 
         if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
         ?>
+        <script src="/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
         <script src="/assets/global/plugins/card-js/card-js.min.js" type="text/javascript"></script>
         <?php 
         }

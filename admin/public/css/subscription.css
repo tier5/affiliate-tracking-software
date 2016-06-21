@@ -258,6 +258,22 @@
 .pricing-plans.editor {
     margin-top: 20px;
 }
+.pricing-plans.editor .note-editor.panel.panel-default {
+    border: none !important;
+}
+.pricing-plans.editor .note-editor.panel.panel-default .note-editing-area {
+    border: 1px solid #C2CAD8;
+    border-radius: 4px !important;
+}
+.pricing-plans.editor .note-editor.panel.panel-default .note-toolbar.panel-heading {
+    background-color: #FFF;
+    border: none !important;
+    padding-bottom: 20px;
+    padding-left: 0px !important;
+}
+.pricing-plans.editor .note-editor.panel.panel-default .note-font.btn-group button {
+    margin: 0px 2px;
+}
 .pricing-plans .row {
     min-height: 50px;
 }
