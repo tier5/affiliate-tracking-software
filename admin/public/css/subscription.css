@@ -10,6 +10,7 @@
 .subscription-panel .slider-quota-caption > div,
 .subscription-panel-default-caption div,
 .subscription-panel-large-caption,
+.subscription-panel-contact-us,
 .subscription-panel-group .portlet-title .caption > span,
 .plans-and-payments-row .quota-display,
 .plans-and-payments-row .payment-info .credit-card-details div[class*="col-"],
@@ -21,7 +22,8 @@
 }
 .subscription-panel .slider-quota-caption,
 .subscription-panel-default-caption, 
-.subscription-panel-large-caption {
+.subscription-panel-large-caption,
+.subscription-panel-contact-us {
    color: #FFFFFF;  
 }
 .subscription-panel-quota-caption,
@@ -29,7 +31,22 @@
     font-size: 1.5rem;
 }
 .subscription-panel-large-caption {
-    font-size: 6rem;
+    font-size: 5rem;
+}
+.subscription-panel-contact-us > div {
+    border-radius: 5px !important;
+    border: 1px solid #FFF;
+}
+.subscription-panel-contact-us > div > div {
+    line-height: 1;
+}
+.subscription-panel-contact-us > div > div:nth-child(1) {
+    padding: 10px 30px 0;
+    font-size: 5rem;
+}
+.subscription-panel-contact-us > div > div:nth-child(2) {
+    padding: 0px 30px 10px;
+    font-size: 2rem;
 }
 .subscription-panel-large-caption > sup,
 .subscription-panel-large-caption > sub {
@@ -43,6 +60,13 @@
 }
 .subscription-panel .slider-quota-caption {
     padding: 0px;
+}
+#paid-annually-caption {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+#annual-cost {
+    margin: 0 5px; 
 }
 .plans-and-payments-row .payment-info .credit-card-details > div > input,
 .plans-and-payments-row .payment-info .credit-card-details > div > div {
@@ -233,6 +257,22 @@
 }
 .pricing-plans.editor {
     margin-top: 20px;
+}
+.pricing-plans.editor .note-editor.panel.panel-default {
+    border: none !important;
+}
+.pricing-plans.editor .note-editor.panel.panel-default .note-editing-area {
+    border: 1px solid #C2CAD8;
+    border-radius: 4px !important;
+}
+.pricing-plans.editor .note-editor.panel.panel-default .note-toolbar.panel-heading {
+    background-color: #FFF;
+    border: none !important;
+    padding-bottom: 20px;
+    padding-left: 0px !important;
+}
+.pricing-plans.editor .note-editor.panel.panel-default .note-font.btn-group button {
+    margin: 0px 2px;
 }
 .pricing-plans .row {
     min-height: 50px;
