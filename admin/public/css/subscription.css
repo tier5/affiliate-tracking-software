@@ -61,6 +61,13 @@
 .subscription-panel .slider-quota-caption {
     padding: 0px;
 }
+#paid-annually-caption {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+#annual-cost {
+    margin: 0 5px; 
+}
 .plans-and-payments-row .payment-info .credit-card-details > div > input,
 .plans-and-payments-row .payment-info .credit-card-details > div > div {
     display: inline-block;

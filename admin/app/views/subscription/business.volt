@@ -133,6 +133,9 @@
                                              data-cpm="<?php echo $this->view->pricingPlan['charge_per_sms']; ?>"
                                              data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>">
                                             <sup class="subscription-panel-default-caption">$</sup><span id="change-plan-final-price"></span><sub class="subscription-panel-default-caption">/mo</sub>
+                                            <div id="paid-annually-caption">
+                                                <span id="annual-cost"></span><span>Paid Annually</span>
+                                            </div>
                                         </div>
                                         <div id="contact-us" class="responsive-float-right subscription-panel-contact-us">
                                             <div>
@@ -360,13 +363,16 @@
             var costPerLocation = (messages * priceElem.dataset.cpm);
             var totalCost = (costPerLocation * locations);
 
-            var price =
-                    parseFloat(priceElem.dataset.base) + // base price
-                    totalCost; // charges for messages across all locations
-
+            var price = Math.round(parseFloat(priceElem.dataset.base) + totalCost);
+            
             var planType = $(document.getElementById("plan-type")).find('.btn-primary').text();
             if (planType === 'Annually') {
-                price = ((price * 12) * parseFloat(1 - priceElem.dataset.ad)) / 12;  // Apply the discount
+                price = Math.round(((price * 12) * parseFloat(1 - priceElem.dataset.ad))); // Apply the discount 
+                $('#annual-cost').text('$' + price.toFixed(2));
+                $('#paid-annually-caption').show();
+                price = Math.round(price/12);  
+            } else {
+                $('#paid-annually-caption').hide();
             }
 
             $(priceDisplay).text(price.toFixed(2));
@@ -377,7 +383,11 @@
             var locations = smsLocationSlider.getValue();
             var messages = smsMessagesSlider.getValue();
             var planType = $(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
+            
             var price = $(document.getElementById("change-plan-final-price")).text();
+            if (planType === 'Annually') {
+                price = $('#annual-cost').text('$' + price.toFixed(2)).substring(1); // Strip the leading dollar sign
+            }
             ;
             return {locations: locations, messages: messages, planType: planType, price: price};
         };
