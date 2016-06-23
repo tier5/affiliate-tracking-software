@@ -1,0 +1,35 @@
+<form action="step5" method="post">
+    <div class="row small-vertical-margins">
+        <div class="col-xs-12">
+            <h2 class="section-header">Stripe</h2>
+        </div>
+    </div>
+
+    <div class="row small-vertical-margins">
+        <div class="col-xs-12">
+            <span class="sub-section-header">Stripe Integration</span>
+        </div>
+    </div>
+    <hr>
+
+    <div class="row form-group small-vertical-margins">
+        <div class="col-xs-6">
+            <label>Stripe Secret Key</label><input class="form-control" type="text" name="StripeSecretKey" value="{{ StripeSecretKey }}" />
+        </div>
+        <div class="col-xs-6">
+            <label>Stripe Publishable Key</label><input class="form-control" type="text" name="StripePublishableKey" value="{{ StripePublishableKey }}" />
+        </div>
+    </div>
+
+    <div class="row medium-vertical-margins form-group">
+        <div class="col-xs-6"></div>
+        <div class="col-xs-6">
+            <div class="col-xs-6">
+                <a href="step3"><button class="btn btn-primary" type="button" style="width: 100%">Back</button></a>
+            </div>
+            <div class="col-xs-6">
+                <button class="btn btn-primary" style="width: 100%">Next Step</button>
+            </div>
+        </div>
+    </div>
+</form>
