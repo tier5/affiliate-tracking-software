@@ -289,7 +289,7 @@
 .pricing-plans .progression-controls {
     margin-top: 20px;
 }
-.pricing-plans .progression-controls a {
+.pricing-plans .progression-controls button {
     float: right;
     margin: 5px;
 }
