@@ -226,6 +226,10 @@
 .pricing-plans .caption .caption-subject {
     margin-top: 1px;
 }
+.pricing-plans span.subscription-name-caption {
+    display: inline;
+    padding-right: 10px;
+}
 .portlet.light.pricing-plans > .portlet-title > .tools {
     margin-top: 0px;
     padding: 0px;
@@ -234,14 +238,18 @@
     height: auto;
     margin-top: -75px;
 }
-
 .pricing-plans .portlet-title > .caption.subscription-caption,
 .pricing-plans .portlet-title > .caption.subscription-name {
     width: 50%;
 }
-.pricing-plans .portlet-title > .caption.subscription-name > .caption-subject {
-    text-align: right !important;
+.pricing-plans .portlet-title > .caption.subscription-name {
+    text-align: right;
 }
+/*
+.pricing-plans .portlet-title > .caption.subscription-name > .caption-subject {
+    text-align: left !important;
+}
+*/
 .pricing-plans .portlet-title > .caption.subscription-name > span > span {
     font-weight: normal;
 }

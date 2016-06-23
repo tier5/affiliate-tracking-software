@@ -15,210 +15,20 @@ use Phalcon\Mvc\Model\Behavior\SoftDelete;
  */
 class SubscriptionPricingPlanParameterList extends Model
 {
-    /**
-     *
-     * @var integer
-     */
-    protected $id;
+    public $id;
+    public $subscription_pricing_plan_id;
+    public $min_locations;
+    public $max_locations;
+    public $location_discount_percentage;
+    public $base_price;
+    public $sms_charge;
+    public $total_price;
+    public $location_discount;
+    public $upgrade_discount;
+    public $sms_messages;
+    public $sms_cost;
+    public $profit_per_location;
 
-    /**
-     *
-     * @var integer
-     */
-    protected $min_locations;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $max_locations;
-
-    /**
-     *
-     * @var double
-     */
-    protected $discount;
-    
-    /**
-     *
-     * @var integer
-     */
-    protected $created_at;
-    
-    /**
-     *
-     * @var integer
-     */
-    protected $updated_at;
-    
-    /**
-     *
-     * @var integer
-     */
-    protected $deleted_at;
-
-    
-    /**
-     * Method to set the value of field id
-     *
-     * @param integer $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field min_locations
-     *
-     * @param integer $min_locations
-     * @return $this
-     */
-    public function setMinLocations($min_locations)
-    {
-        $this->min_locations = $min_locations;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field max_locations
-     *
-     * @param integer $max_locations
-     * @return $this
-     */
-    public function setMaxLocations($max_locations)
-    {
-        $this->max_locations = $max_locations;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field discount
-     *
-     * @param double $discount
-     * @return $this
-     */
-    public function setDiscount($discount)
-    {
-        $this->discount = $discount;
-
-        return $this;
-    }
-    
-    /**
-     * Method to set the value of field created_at
-     *
-     * @param integer $created_at
-     * @return $this
-     */
-    public function setCreatedAt($created_at)
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-    
-    /**
-     * Method to set the value of field updated_at
-     *
-     * @param integer $updated_at
-     * @return $this
-     */
-    public function setUpdatedAt($updated_at)
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
-    
-    /**
-     * Method to set the value of field deleted_at
-     *
-     * @param integer $deleted_at
-     * @return $this
-     */
-    public function setDeletedAt($deleted_at)
-    {
-        $this->deleted_at = $deleted_at;
-
-        return $this;
-    }
-
-    /**
-     * Returns the value of field id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Returns the value of field min_locations
-     *
-     * @return integer
-     */
-    public function getMinLocations()
-    {
-        return $this->min_locations;
-    }
-
-    /**
-     * Returns the value of field max_locations
-     *
-     * @return integer
-     */
-    public function getMaxLocations()
-    {
-        return $this->max_locations;
-    }
-
-    /**
-     * Returns the value of field discount
-     *
-     * @return double
-     */
-    public function getDiscount()
-    {
-        return $this->discount;
-    }
-    
-    /**
-     * Returns the value of field created_at
-     *
-     * @return integer
-     */
-    public function getCreatedAt()
-    {
-        return $this->created_at;
-    }
-    
-    /**
-     * Returns the value of field updated_at
-     *
-     * @return integer
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updated_at;
-    }
-    
-    /**
-     * Returns the value of field deleted_at
-     *
-     * @return integer
-     */
-    public function getDeletedAt()
-    {
-        return $this->deleted_at;
-    }
-    
     public function initialize()
     {
         $this->addBehavior(
@@ -230,32 +40,12 @@ class SubscriptionPricingPlanParameterList extends Model
             )
         );
         
-        $this->hasMany("id", "Vokuro\Models\SubscriptionPricingPlanHasParameterList", "parameter_list_id", ['alias' => 'SubscriptionPricingPlanHasParameterList']);
+        $this->belongsTo("subscription_pricing_plan_id", "Vokuro\Models\SubscriptionPricingPlan", "id", ['alias' => 'SubscriptionPricingPlan']);
     }
     
     public function validation()
     {
-        $this->validate(new Numericality(["field" => 'min_locations' ]));
-        $this->validate(new Numericality(["field" => 'max_locations']));
-        $this->validate(new Numericality(["field" => 'discount']));
-        
-        /* TODO: Implement timestamp validation */
-        // if ($this->created_at) 
-        // {
-        //     $this->validate(new Numericality(["field" => 'created_at']));
-        // }
-        // if ($this->updated_at)
-        // {
-        //     $this->validate(new Numericality(["field" => 'updated_at']));
-        // }
-        // if ($this->deleted_at)
-        // {
-        //     $this->validate(new Numericality(["field" => 'delete_at']));
-        // }
-        
-        $pass = ($this->min_locations > 0 && $this->max_locations > 0 && $this->discount > 0.00);
-        
-        return $pass && $this->validationHasFailed() != true;
+        return true;
     }
 
     /**
@@ -300,12 +90,18 @@ class SubscriptionPricingPlanParameterList extends Model
     {
         return array(
             'id' => 'id',
+            'subscription_pricing_plan_id' => 'subscription_pricing_plan_id', 
             'min_locations' => 'min_locations',
             'max_locations' => 'max_locations',
-            'discount' => 'discount',
-            'created_at' => 'created_at',
-            'updated_at' => 'updated_at',
-            'deleted_at' => 'deleted_at'
+            'location_discount_percentage' => 'location_discount_percentage',
+            'base_price' => 'base_price',
+            'sms_charge' => 'sms_charge',
+            'total_price' => 'total_price',
+            'location_discount' => 'location_discount',
+            'upgrade_discount' => 'upgrade_discount',
+            'sms_messages' => 'sms_messages',
+            'sms_cost' => 'sms_cost',
+            'profit_per_location' => 'profit_per_location'
         );
     }
 

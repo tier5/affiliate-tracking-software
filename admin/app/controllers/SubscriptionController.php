@@ -3,6 +3,7 @@
 namespace Vokuro\Controllers;
 
 use Exception;
+use Phalcon\Filter;
 use Vokuro\Utils;
 use Vokuro\Services\ServicesConsts;
 
@@ -353,14 +354,148 @@ class SubscriptionController extends ControllerBase {
         }
     }
     
-    public function showPricingPlanListAction() {
-        
-    }
+    public function showPricingPlanListAction() {}
     
     public function createPricingPlanAction() {
         
         /* Render template */
         $this->view->pick("subscription/pricingPlan");
+    }
+    
+    public function savePricingPlanAction() {
+        $this->view->disable();
+        
+        $responseParameters['status'] = false;
+        
+        try {
+        
+            if (!$this->request->isPost()) {
+                throw new \Exception('POST request required!!!');
+            }
+            
+            /* Format the request body to an array */
+            $validatedParams = $this->validatePricingPlanInput($this->request);
+            if (!$validatedParams) {
+                throw new \Exception('One or more request parameters are not valid!!!');
+            }
+        
+            /* Get services */
+            $userManager = $this->di->get('userManager');
+            $subscriptionManager = $this->di->get('subscriptionManager');
+        
+            /* Get the user id */
+            $validatedParams['userId'] = $userManager->getUserId($this->session);;
+            
+            /* Save the profile */
+            $this->db->begin();
+            if(!$subscriptionManager->savePricingProfile($validatedParams)) {
+                throw new \Exception('Unable to save pricing profile!!!');
+            }
+            $this->db->commit();
+            
+            /* 
+             * Success!!! 
+             */
+            $responseParameters['status'] = true;
+            
+        }  catch(Exception $e) {
+            
+            /* 
+             * Failure :( 
+             */
+            $this->db->rollback();
+            $responseParameters['message'] = $e->getMessage();
+                    
+        }
+        
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
+    }
+    
+    private function validatePricingPlanInput($request) {
+        
+        $validated = [];
+        
+        $filter = new Filter();
+        
+        /* Get raw json body */ 
+        $rawJsonBody = $this->request->getJsonRawBody();
+        if (!$rawJsonBody) {
+            return false;
+        }
+        
+        /* Format the json into an array */ 
+        $params = Utils::objectToArray($rawJsonBody);
+        
+        /* Check the correct parameter values are supplied */
+        $suppliedKeys = array_keys($params);
+        $referenceValueKeys = [
+            "name",
+            "enableTrialAccount",
+            "enableDiscountOnUpgrade",
+            "basePrice",
+            "costPerSms",
+            "maxMessagesOnTrialAccount",
+            "upgradeDiscount",
+            "chargePerSms",
+            "maxSmsMessages",
+            "enableAnnualDiscount",     
+            "annualDiscount",
+            "pricingDetails"
+        ];
+        /* All value parameters found */
+        $keysFound = array_intersect($suppliedKeys, $referenceValueKeys);
+        if (count($keysFound) !== count($referenceValueKeys)) {
+            return false;
+        }
+        
+        /* Sanitize */
+        foreach($params as $key => $value){
+            if (!array_key_exists($validated, $key)) {
+                $validated[$key] = [];
+            }
+            $validated[$key] = $filter->sanitize($value, "string");
+        }
+        
+        /* Minimum segments found */
+        $referenceProgressionKeys = [
+            "minLocations",
+            "maxLocations",
+            "locationDiscountPercentage",
+            "basePrice",
+            "smsCharge",
+            "totalPrice",
+            "locationDiscount",
+            "upgradeDiscount",
+            "smsMessages",
+            "smsCost",
+            "profitPerLocation"
+        ];
+        foreach($params as $key => $segment){
+            
+            if(substr($key,0,7) !== "segment") {
+                continue;
+            }
+            
+            /* Check segment keys */
+            $progressionKeys = array_keys($segment);
+            $keysFound = array_intersect($progressionKeys, $referenceProgressionKeys);
+            if (count($keysFound) !== count($progressionKeys)) {
+                return false;
+            }
+            
+            /* Sanitize */
+            if (!array_key_exists($validated, $key)) {
+                $validated[$key] = [];
+            }
+            foreach($segment as $segmentKey => $value) {
+                $validated[$key][$segmentKey] = $filter->sanitize($value, "string");
+            }
+            
+        }
+        
+        return $validated;
     }
     
 }
