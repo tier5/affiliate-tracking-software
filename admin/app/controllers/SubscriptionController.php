@@ -87,14 +87,6 @@ class SubscriptionController extends ControllerBase {
      */
     public function changePlanAction() {
         
-        
-    }
-    
-    /**
-     * Change subscription 
-     */
-    public function changePlanAction() {
-        
         $responseParameters = [];
         if ($this->request->isPost()) {
         
