@@ -61,7 +61,7 @@ class SubscriptionPricingPlan extends Model
      */
     public function getSource()
     {
-        return 'subscription_pricing_plan';
+        return 'business_subscription_pricing_plan';
     }
     
     /**
