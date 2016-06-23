@@ -17,125 +17,26 @@ use Phalcon\Mvc\Model\Behavior\SoftDelete;
 class SubscriptionPricingPlan extends Model
 {
 
-    /**
-     *
-     * @var integer
-     */
-    protected $id;
-
-    /**
-     *
-     * @var string
-     */
-    protected $name;
-    
-    /**
-     *
-     * @var integer
-     */
-    protected $enable_free_account;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $enable_discount_on_upgrade;
-
-    /**
-     *
-     * @var double
-     */
-    protected $base_price;
-
-    /**
-     *
-     * @var double
-     */
-    protected $cost_per_sms;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $trial_period;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $max_sms_during_trial_period;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $max_messages_on_free_account;
-    
-    /**
-     *
-     * @var integer
-     */
-    protected $max_location_on_free_account;
-
-    /**
-     *
-     * @var double
-     */
-    protected $updgrade_discount;
-
-    /**
-     *
-     * @var double
-     */
-    protected $charge_per_sms;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $max_sms_messages;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $trial_number_of_days;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $collect_credit_card_on_sign_up;
-
-    /**
-     *
-     * @var string
-     */
-    protected $pricing_details;
-
-    /**
-     *
-     * @var integer
-     */
-    protected $agency_id;
-    
-    /**
-     *
-     * @var integer
-     */
-    protected $created_at;
-    
-    /**
-     *
-     * @var integer
-     */
-    protected $update_at;
-    
-    /**
-     *
-     * @var integer
-     */
-    protected $deleted_at;
+    public $id;
+    public $name;
+    public $enable_free_account;
+    public $enable_discount_on_upgrade;
+    public $base_price;
+    public $cost_per_sms;
+    public $trial_period;
+    public $max_sms_during_trial_period;
+    public $max_messages_on_free_account;
+    public $max_location_on_free_account;
+    public $updgrade_discount;
+    public $charge_per_sms;
+    public $max_sms_messages;
+    public $trial_number_of_days;
+    public $collect_credit_card_on_sign_up;
+    public $pricing_details;
+    public $agency_id;
+    public $created_at;
+    public $update_at;
+    public $deleted_at;
 
     
     public function initialize()

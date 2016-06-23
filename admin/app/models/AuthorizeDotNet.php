@@ -14,43 +14,43 @@ class AuthorizeDotNet extends Model
      *
      * @var integer
      */
-    protected $id;
+    public $id;
 
     /**
      *
      * @var integer
      */
-    protected $user_id;
+    public $user_id;
 
     /**
      *
      * @var string
      */
-    protected $customer_profile_id;
+    public $customer_profile_id;
     
     /**
      *
      * @var string
      */
-    protected $subscription_id;
+    public $subscription_id;
 
     /**
      *
      * @var integer
      */
-    protected $created_at;
+    public $created_at;
     
     /**
      *
      * @var integer
      */
-    protected $update_at;
+    public $update_at;
     
     /**
      *
      * @var integer
      */
-    protected $deleted_at;
+    public $deleted_at;
     
     /**
      * Method to set the value of field id

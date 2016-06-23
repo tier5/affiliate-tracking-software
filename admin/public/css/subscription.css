@@ -10,6 +10,7 @@
 .subscription-panel .slider-quota-caption > div,
 .subscription-panel-default-caption div,
 .subscription-panel-large-caption,
+.subscription-panel-contact-us,
 .subscription-panel-group .portlet-title .caption > span,
 .plans-and-payments-row .quota-display,
 .plans-and-payments-row .payment-info .credit-card-details div[class*="col-"],
@@ -21,7 +22,8 @@
 }
 .subscription-panel .slider-quota-caption,
 .subscription-panel-default-caption, 
-.subscription-panel-large-caption {
+.subscription-panel-large-caption,
+.subscription-panel-contact-us {
    color: #FFFFFF;  
 }
 .subscription-panel-quota-caption,
@@ -29,7 +31,22 @@
     font-size: 1.5rem;
 }
 .subscription-panel-large-caption {
-    font-size: 6rem;
+    font-size: 5rem;
+}
+.subscription-panel-contact-us > div {
+    border-radius: 5px !important;
+    border: 1px solid #FFF;
+}
+.subscription-panel-contact-us > div > div {
+    line-height: 1;
+}
+.subscription-panel-contact-us > div > div:nth-child(1) {
+    padding: 10px 30px 0;
+    font-size: 5rem;
+}
+.subscription-panel-contact-us > div > div:nth-child(2) {
+    padding: 0px 30px 10px;
+    font-size: 2rem;
 }
 .subscription-panel-large-caption > sup,
 .subscription-panel-large-caption > sub {
@@ -43,6 +60,13 @@
 }
 .subscription-panel .slider-quota-caption {
     padding: 0px;
+}
+#paid-annually-caption {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+#annual-cost {
+    margin: 0 5px; 
 }
 .plans-and-payments-row .payment-info .credit-card-details > div > input,
 .plans-and-payments-row .payment-info .credit-card-details > div > div {
@@ -124,6 +148,11 @@
     font-weight: bold !important;
     background: #65CE4D !important;
 }
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-info, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-info {
+    color: #FFF;
+    background: #C01209 none repeat scroll 0% 0%;
+}
+
 @media (min-width: 768px) {
   .responsive-float-left { 
       float: left; 
@@ -161,3 +190,150 @@
         text-align: left;
     }
 }
+
+
+/* Invoices */
+.pricing-plans .table-scrollable,
+.invoices .table-scrollable {
+    border: none;
+}
+.pricing-plans select,
+.invoices select {
+    margin: 10px 0px;
+    height: 26px;
+    border-radius: 0px !important;
+    width: 34px !important;
+    padding: 0px !important;
+}
+.pricing-plans .numberSelect,
+.invoices .numberSelect,
+.pricing-plans .dataTables_paginate.paging_bootstrap_number,
+.invoices .dataTables_paginate.paging_bootstrap_number {
+    text-align: center;
+}
+@media (min-width: 768px) {
+    .pricing-plans .numberSelect,
+    .invoices .numberSelect {
+        float: right;
+    }
+    .pricing-plans .numberSelect
+    .invoices .numberSelect,
+    .pricing-plans .dataTables_paginate.paging_bootstrap_number,
+    .invoices .dataTables_paginate.paging_bootstrap_number {
+        text-align: left;
+    }
+}
+.pricing-plans .caption .caption-subject {
+    margin-top: 1px;
+}
+.portlet.light.pricing-plans > .portlet-title > .tools {
+    margin-top: 0px;
+    padding: 0px;
+}
+.portlet.light.pricing-plans > .portlet-title > .tools > .btn {
+    height: auto;
+    margin-top: -75px;
+}
+
+.pricing-plans .portlet-title > .caption.subscription-caption,
+.pricing-plans .portlet-title > .caption.subscription-name {
+    width: 50%;
+}
+.pricing-plans .portlet-title > .caption.subscription-name > .caption-subject {
+    text-align: right !important;
+}
+.pricing-plans .portlet-title > .caption.subscription-name > span > span {
+    font-weight: normal;
+}
+.pricing-plans .control-label {
+    font-size: 1.3rem;
+}
+.pricing-plans select.form-control {
+    width: 100% !important;
+    margin: 0px;
+}
+.pricing-plans .portlet-title .caption > span.price-includes {
+    text-align: left;
+}
+.pricing-plans.editor {
+    margin-top: 20px;
+}
+.pricing-plans.editor .note-editor.panel.panel-default {
+    border: none !important;
+}
+.pricing-plans.editor .note-editor.panel.panel-default .note-editing-area {
+    border: 1px solid #C2CAD8;
+    border-radius: 4px !important;
+}
+.pricing-plans.editor .note-editor.panel.panel-default .note-toolbar.panel-heading {
+    background-color: #FFF;
+    border: none !important;
+    padding-bottom: 20px;
+    padding-left: 0px !important;
+}
+.pricing-plans.editor .note-editor.panel.panel-default .note-font.btn-group button {
+    margin: 0px 2px;
+}
+.pricing-plans .row {
+    min-height: 50px;
+}
+.pricing-plans .form .form-bordered .form-group > div {
+    border: none;
+}
+.pricing-plans .progression th {
+    font-size: 14px;
+}
+.pricing-plans .progression .input-xsmall {
+    width: 70px !important;
+}
+.pricing-plans .progression-controls {
+    margin-top: 20px;
+}
+.pricing-plans .progression-controls button {
+    float: right;
+    margin: 5px;
+}
+
+/* 
+Reformat the table for devices smaller that 890px
+
+@media (max-width: 1024px) {
+    table, thead, tbody, th, td, tr { 
+        display: block; 
+    }
+    /* Hide table headers (but not display: none;, for accessibility)
+    thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    tr { 
+        border: 1px solid #ccc; 
+        margin: 2px 0;
+    }
+    td {
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 50%; 
+    }
+    td:before { 
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 45%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+    }
+
+    /* Label the data
+    td:nth-of-type(1):before { content: "Type"; }
+    /*td:nth-of-type(2):before { content: "Date"; }
+    td:nth-of-type(3):before { content: "Subscription Id"; }
+    td:nth-of-type(4):before { content: "Term/Status"; }
+    td:nth-of-type(5):before { content: "Plan"; }
+    td:nth-of-type(6):before { content: "Amount"; }
+    td:nth-of-type(7):before { content: "Invoice"; }
+    
+}*/
+ 

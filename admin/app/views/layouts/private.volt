@@ -42,6 +42,7 @@
         <!-- END THEME LAYOUT STYLES -->
         <link href="/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
         <?php 
         if(strpos($_SERVER['REQUEST_URI'],'location/create')>0 || strpos($_SERVER['REQUEST_URI'],'location/edit')>0 || strpos($_SERVER['REQUEST_URI'],'location/create2')>0 || strpos($_SERVER['REQUEST_URI'],'location/create3')>0) {
         ?>
@@ -54,8 +55,8 @@
         <?php 
         if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
         ?>
+        <link href="/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
         <link href="/css/subscription.css" rel="stylesheet" type="text/css" />
-        <link href="/css/invoices.css" rel="stylesheet" type="text/css" />
         <link href="/css/slider-extended.css" rel="stylesheet" type="text/css" />
         <link href="/assets/global/plugins/card-js/card-js.min.css" type="text/javascript" />
         <?php 
@@ -64,7 +65,7 @@
 
         <link rel="shortcut icon" href="favicon.ico" /> 
         <!--<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->    
-        <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script> 
         <link rel="stylesheet" href="/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
         <script type="text/javascript" src="/js/vendor/fancybox/jquery.fancybox.pack.js"></script>    
         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -333,6 +334,17 @@
                                 <?=($openfolder=='admindashboardagencies'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
+                        
+                        <?php if ($this->view->internalNavParams['hasPricingPlans']) { ?>
+                        <li class="nav-item <?=($openfolder=='pricingPlan'?'active open':'')?>">
+                            <a href='/subscription/showPricingPlanList' class="nav-link nav-toggle">
+                               <i class="icon-list"></i>
+                                <span class="title">Business Subscriptions</span>
+                                <?=($openfolder=='pricingPlan'?'<span class="selected"></span>':'')?>
+                            </a>
+                        </li>
+                        <?php } ?>
+                        
                         <li class="nav-item start <?=($openfolder=='settings'?'active open':'')?>">
                             <a href="/admindashboard/settings" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
@@ -608,6 +620,7 @@
         <?php 
         if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
         ?>
+        <script src="/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
         <script src="/assets/global/plugins/card-js/card-js.min.js" type="text/javascript"></script>
         <?php 
         }

@@ -5,6 +5,7 @@ namespace Vokuro\Services;
 use Vokuro\Models\Users;
 use Vokuro\Models\Agency;
 use Vokuro\Services\ServicesConsts;
+use Vokuro\Models\SubscriptionPlan;
 use Vokuro\Models\AuthorizeDotNet as AuthorizeDotNetModel;
 use Vokuro\Payments\AuthorizeDotNet as AuthorizeDotNetPayment;
 
@@ -74,6 +75,20 @@ class PaymentService extends BaseService {
                 break;
         }
         
+        if ($status) {
+            $subscriptionPlan = SubscriptionPlan::query()
+                ->where("user_id = :userId:")
+                ->bind(["userId" => $subscriptionParameters['userId']])
+                ->execute()
+                ->getFirst();
+            $subscriptionPlan->setLocations($subscriptionParameters['locations']);
+            $subscriptionPlan->setSmsMessagesPerLocation($subscriptionParameters['messages']);
+            $subscriptionPlan->setPaymentPlan($subscriptionParameters['planType']);
+            if (!$subscriptionPlan->save()) {
+                $status = false;
+            }
+        }
+        
         return $status;
     }
     
@@ -113,7 +128,7 @@ class PaymentService extends BaseService {
 	$parameters['cardExpiryDate'] = $ccParameters['expirationDate'];
 	$parameters['cardCode'] = $ccParameters['csv'];
         $parameters['firstName'] = $user->name;
-	$parameters['lastName'] = "";
+	$parameters['lastName'] = "Required";
 	$parameters['companyName'] = $agency->name;
 	$parameters['companyAddress'] = $agency->address;
 	$parameters['city'] = "Los Angeles";
@@ -134,7 +149,6 @@ class PaymentService extends BaseService {
         }
         
         return true;
-           
     }
     
     private function updateAuthorizeDotNetPaymentProfile($ccParameters) {
@@ -162,10 +176,10 @@ class PaymentService extends BaseService {
 	$parameters['cardExpiryDate'] = $ccParameters['expirationDate'];
 	$parameters['cardCode'] = $ccParameters['csv'];
         $parameters['firstName'] = $user->name;
-	$parameters['lastName'] = "";
+	$parameters['lastName'] = "Required";
 	$parameters['companyName'] = $agency->name;
 	$parameters['companyAddress'] = $agency->address;
-	$parameters['city'] = "Los Angeles";
+	$parameters['city'] = "City";
 	$parameters['state'] = $agency->state_province;
 	$parameters['zip'] = $agency->postal_code;
 	$parameters['country'] = $agency->country;
@@ -203,33 +217,42 @@ class PaymentService extends BaseService {
                 return false;
             }
             
+            // Get customer billing info
             $customerPaymentProfile = $customerProfile['paymentProfiles'][0];
+            $shippingAddresses = $customerProfile['shippingAddresses'][0];
             
+            $parameters['billTo'] = $customerPaymentProfile->getBillTo();
             $parameters['customerPaymentProfileId'] = $customerPaymentProfile->getCustomerPaymentProfileId();
-            // $parameters['subscriptionName'] = "Review Velocity Subscription";
-            // $parameters['intervalLength'] = $this->config->authorizeDotNet->intervalLength;
-            // $parameters['unit'] = $this->config->authorizeDotNet->unit;
-            // $parameters['startDate'] = date("Y-m-d");
-            // $parameters['totalOccurences'] = $this->config->authorizeDotNet->totalOccurences;
-            // $parameters['amount'] = round($subscriptionParameters['price'], 2);
-            
+            $parameters['customerAddressId'] = $shippingAddresses->getCustomerAddressId();
             $parameters['subscriptionName'] = "Review Velocity Subscription";
             $parameters['intervalLength'] = $this->config->authorizeDotNet->intervalLength;
             $parameters['unit'] = $this->config->authorizeDotNet->unit;
             $parameters['startDate'] = date("Y-m-d");
             $parameters['totalOccurences'] = $this->config->authorizeDotNet->totalOccurences;
-            $parameters['amount'] = round(1000, 2);
-        
-            $status = $authorizeDotNetPayment->createSubscriptionForCustomer($parameters);
+            $parameters['amount'] = round($subscriptionParameters['price'], 2);
+            
+            $subscriptionId = $authorizeDotNetPayment->createSubscriptionForCustomer($parameters);
+            if (!$subscriptionId) {
+                return false;
+            }
+            
+            $authorizeDotNetModel->subscription_id = $subscriptionId;
+            if(!$authorizeDotNetModel->update()) {
+                return false;
+            }
             
         } else {
             
-            $parameters['subscriptionId'] = $subscriptionParameters['price'];
+            $parameters['subscriptionId'] = $subscriptionId;
             $parameters['amount'] = $subscriptionParameters['price'];
+            
             $status = $authorizeDotNetPayment->updateSubscriptionForCustomer($parameters);
-        
+            if(!$status) {
+                return false;
+            }
+            
         }
         
-        return $status;
+        return true;
     }
 }

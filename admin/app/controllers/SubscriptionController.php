@@ -2,7 +2,8 @@
 
 namespace Vokuro\Controllers;
 
-use DateTime;
+use Exception;
+use Vokuro\Utils;
 use Vokuro\Services\ServicesConsts;
 
 /**
@@ -81,71 +82,61 @@ class SubscriptionController extends ControllerBase {
         $this->view->pick("subscription/agency");
     }
 
-    
     /**
-     * Change subscription 
+     * Check whether a customer profile exists for the current user 
      */
-    public function changePlanAction() {
+    public function hasPaymentProfileAction() {
+        $this->view->disable();
         
-        $responseParameters = [];
-        if ($this->request->isPost()) {
+        $responseParameters['status'] = false;
         
-            /* Get services */
+        try {
+        
+            if (!$this->request->isPost()) {
+                throw new \Exception();
+            }
+            
+             /* Get services */
             $userManager = $this->di->get('userManager');
             $paymentService = $this->di->get('paymentService');
         
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
-        
-            /* Get the subscription parameters */
-            $subscriptionParameters = [
-                'userId' => $userId,
-                'locations' => $this->request->getPost('locations', 'striptags'),
-                'messages' => $this->request->getPost('messages', 'striptags'),
-                'planType' => $this->request->getPost('planType', 'striptags'),
-                'price' => $this->request->getPost('price', 'striptags'),
-                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
-            ];
             
-            /* 
-             * If they already have a customer profile, simply update their subscription,
-             * otherwise direct them to the credit card form.  
-             */
             $paymentParams = [
                 'userId' => $userId,
                 'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
             ];
             
-            $changePlanSucceeded = false;
-            $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
-            if (!$hasPaymentProfile)  {
-                $responseParameters['status'] = 'Failed';    
-            } else {
-                $changePlanSucceeded = $paymentService->changeSubscription($subscriptionParameters);
-                if(!$changePlanSucceeded) {
-                    $responseParameters['status'] = 'ChangeFailed';
-                }
-            } 
+            $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);    
             
-            /* 
-             * Construct the response  
-             */
-            $this->view->disable();
-                
-        }
+            if (!$hasPaymentProfile) {
+                throw new \Exception();
+            }
+            
+            $responseParameters['status'] = true;    
+            
+        } catch(Exception $e) {}
         
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
+        
     }
     
     /**
-     * Update cc 
+     * Update credit card 
      */
-    public function updateCCAction() {
+    public function updatePaymentProfileAction() {
+        $this->view->disable();
         
-        $responseParameters = [];
-        if ($this->request->isPost()) {
+        $responseParameters['status'] = false;
+        
+        try {
+        
+            if (!$this->request->isPost()) {
+                throw new \Exception();
+            }
         
             /* Get services */
             $userManager = $this->di->get('userManager');
@@ -154,10 +145,8 @@ class SubscriptionController extends ControllerBase {
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
         
-            /*
-             * REFACTOR - Move to utils class 
-             */
-            $date = $this->formatCCDate($this->request->getPost('expirationDate', 'striptags'));
+            /* Format the date accordingly  */
+            $date = Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags'));
             
             /* Get the subscription parameters */
             $ccParameters = [
@@ -168,38 +157,191 @@ class SubscriptionController extends ControllerBase {
                 'csv' => $this->request->getPost('csv', 'striptags'),
                 'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
             ];
-                   
+            
             /* 
-             * If they have a customer profile, then update.  If not, create 
-             * a new one.  
+             * If they don't have a customer profile, then create one (they shouldn't have one if calling this action,
+             * but check just to be safe) 
              */
             $paymentParams = [
                 'userId' => $userId,
                 'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
             ];
             
-            $responseParameters['status'] = 'Succeeded';
             $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
-            if($hasPaymentProfile) {
-                $status = $paymentService->updatePaymentProfile($ccParameters);
-            } else {
-                $status = $paymentService->createPaymentProfile($ccParameters);    
+            if(!$hasPaymentProfile) {
+                throw new \Exception();
             }
             
             /* 
-             * Construct the response  
+             * Create the payment 
              */
-            $this->view->disable();
-            
+            $status = $paymentService->createPaymentProfile($ccParameters);
             if (!$status) {
-                $responseParameters['status'] = 'Failed';
-            }
+                throw new \Exception();
+            }   
+            
+            /* 
+             * Success!!! 
+             */
+            $responseParameters['status'] = true;
                
-        }
+        }  catch(Exception $e) {}
         
-        $response = new \Phalcon\Http\Response();
-        $response->setContent(json_encode($responseParameters));
-        return $response;
+        /* 
+         * Construct the response  
+         */  
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
+    }
+    
+    /**
+     * Add plan with payment profile 
+     */
+    public function addPlanWithPaymentProfileAction() {
+        $this->view->disable();
+            
+        $responseParameters['status'] = false;
+        try {
+
+            if (!$this->request->isPost()) {
+                throw new \Exception();
+            }
+
+            /* Get services */
+            $userManager = $this->di->get('userManager');
+            $paymentService = $this->di->get('paymentService');
+            
+            
+            /* Get the user id */
+            $userId = $userManager->getUserId($this->session);
+        
+            /* Format the date accordingly  */
+            $date = Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags'));
+
+            /* Get the subscription parameters */
+            $ccParameters = [
+                'userId' => $userId,
+                'cardNumber' => $this->request->getPost('cardNumber', 'striptags'),
+                'cardName' => $this->request->getPost('cardName', 'striptags'),
+                'expirationDate' => $date,
+                'csv' => $this->request->getPost('csv', 'striptags'),
+                'locations' => $this->request->getPost('locations', 'striptags'),
+                'messages' => $this->request->getPost('messages', 'striptags'),
+                'planType' => $this->request->getPost('planType', 'striptags'),
+                'price' => $this->request->getPost('price', 'striptags'),
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+            ];
+            
+            /* 
+             * If they don't have a customer profile, then create one (they shouldn't have one if calling this action,
+             * but check just to be safe) 
+             */
+            $paymentParams = [
+                'userId' => $userId,
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+            ];
+            
+            $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
+            if($hasPaymentProfile) {
+                throw new \Exception();
+            }
+            
+            /* 
+             * Create the payment profile 
+             */
+            // print_r($ccParameters);
+
+            $status = $paymentService->createPaymentProfile($ccParameters);
+
+            if (!$status) {
+                throw new \Exception();
+            }
+            
+            /* 
+             * Add the plan 
+             */
+            $changePlanSucceeded = $paymentService->changeSubscription($ccParameters);
+            if(!$changePlanSucceeded) {
+                $responseParameters['status'] = false;
+            }   
+            
+            /* 
+             * Success!!! 
+             */
+            $responseParameters['status'] = true;
+               
+        }  catch(Exception $e) {}
+        
+        /* 
+         * Construct the response  
+         */
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
+    }
+    
+    /**
+     * Change plan 
+     */
+    public function changePlanAction() {
+        $this->view->disable();
+        
+        $responseParameters['status'] = false;
+        
+        try {
+        
+            if (!$this->request->isPost()) {
+                throw new \Exception();
+            }
+        
+            /* Get services */
+            $userManager = $this->di->get('userManager');
+            $paymentService = $this->di->get('paymentService');
+        
+            /* Get the user id */
+            $userId = $userManager->getUserId($this->session);
+        
+            /* 
+             * If they don't have a customer profile, then create one (they shouldn't have one if calling this action,
+             * but check just to be safe) 
+             */
+            $paymentParams = [
+                'userId' => $userId,
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+            ];
+            
+            $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
+            if(!$hasPaymentProfile) {
+                throw new \Exception();
+            }
+            
+            /* 
+             * Create the subscription 
+             */
+            $subscriptionParameters = [
+                'userId' => $userId,
+                'locations' => $this->request->getPost('locations', 'striptags'),
+                'messages' => $this->request->getPost('messages', 'striptags'),
+                'planType' => $this->request->getPost('planType', 'striptags'),
+                'price' => $this->request->getPost('price', 'striptags'),
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+            ];
+            $changePlanSucceeded = $paymentService->changeSubscription($subscriptionParameters);
+            if(!$changePlanSucceeded) {
+                throw new \Exception();
+            }   
+            
+            /* 
+             * Success!!! 
+             */
+            $responseParameters['status'] = true;
+               
+        }  catch(Exception $e) {}
+        
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
     }
     
     /**
@@ -211,11 +353,14 @@ class SubscriptionController extends ControllerBase {
         }
     }
     
+    public function showPricingPlanListAction() {
+        
+    }
     
-    private function formatCCDate($date) {
-        $stripped = str_replace(' ', '', $date); // Remove whitespace
-        $date = DateTime::createFromFormat('m/y', $stripped);
-        return $date->format('Y-m');
+    public function createPricingPlanAction() {
+        
+        /* Render template */
+        $this->view->pick("subscription/pricingPlan");
     }
     
 }
