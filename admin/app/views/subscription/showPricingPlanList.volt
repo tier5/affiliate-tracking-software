@@ -10,7 +10,7 @@
                 </h3>
                 <!-- END PAGE TITLE-->
             </div>
-         
+
         </div>
 
         <div class="row">
@@ -39,39 +39,31 @@
                                             <th>Edit</th>
                                             <th>Delete</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>    
-                                        <tr role="row" class="odd">
-                                            <td>Zach's Subscription</td>
-                                            <td>Paid</td>
-                                            <td><input type="checkbox" class="make-switch" checked="" data-on-color="primary" data-off-color="info"></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></a></td>
-                                        </tr>
-                                        <tr role="row" class="odd">
-                                            <td>Zach's Subscription</td>
-                                            <td>Paid</td>
-                                            <td><input type="checkbox" class="make-switch" checked="" data-on-color="primary" data-off-color="info"></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></a></td>
-                                        </tr>
-                                        <tr role="row" class="odd">
-                                            <td>Zach's Subscription</td>
-                                            <td>Paid</td>
-                                            <td><input type="checkbox" class="make-switch" checked="" data-on-color="primary" data-off-color="info"></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
-                                            <td><a href="" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></a></td>
-                                        </tr>
+                                    </thead>  
+                                    <tbody>
+                                        {% for pricingProfile in pricingProfiles %}
+                                            <tr id="{{ pricingProfile.id }}" role="row">
+                                                <td>{{ pricingProfile.name }}</td>
+                                                {% if pricingProfile.enable_trial_account == true %}
+                                                    <td>Trial</td>
+                                                {% else %}
+                                                    <td>Paid</td>
+                                                {% endif %}
+                                                {% if pricingProfile.enabled == true %}
+                                                    <td><input id="update-enable-pricing-plan-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info"></td>
+                                                {% else %}
+                                                    <td><input id="update-enable-pricing-plan-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info"></td>
+                                                {% endif %}
+                                                <td><button class="btn default btn-lg apple-backgound subscription-btn">View Page</button></td>
+                                                <td><button class="btn default btn-lg apple-backgound subscription-btn">View Page</button></td>
+                                                <td><a href="/subscription/editPricingPlan" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
+                                                <td><button id="delete-pricing-plan-control" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></button></td>
+                                           </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="row midnight-background">
+                            <!-- <div class="row midnight-background">
                                 <div class="col-md-6 col-sm-6">
                                     <div class="dataTables_paginate paging_bootstrap_number" id="sample_1_paginate">
                                         <ul class="pagination" style="visibility: visible;">
@@ -97,7 +89,7 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -107,6 +99,52 @@
 </header>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
+
+        $('#delete-pricing-plan-control').click(function (event) {
+            
+            if(confirm("About to delete pricing profile! Are you sure?")) {
+                
+                var id = $(event.currentTarget).closest('tr').attr('id');
+                
+                $.ajax({
+                    url: "/subscription/deletePricingPlan/" + $(this).closest('tr').attr('id'),
+                    type: 'DELETE',
+                    success: function(data) {
+                        if(data.status === true) {
+                            $(event.currentTarget).closest('tr').remove();
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                        alert("Unable to delete pricing profile!"); 
+                    }
+                });
+            
+            }
+            
+        });
+        
+        
+        $('input[id="update-enable-pricing-plan-control"]').on('switchChange.bootstrapSwitch', function (event, state) {
+                
+            var id = $(event.currentTarget).closest('tr').attr('id');
+            
+            $.ajax({
+                url: "/subscription/updateEnablePricingPlan/" + id + "/" + state,
+                type: 'PUT',
+                success: function(data) {
+                    if(data.status !== true) {
+                        $(event.currentTarget).setState(!state);
+                        alert(data.message);
+                    } 
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                    alert("Unable to delete pricing profile!"); 
+                }
+            });
+            
+        });
 
     });
 </script>

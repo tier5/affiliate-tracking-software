@@ -16,7 +16,8 @@ class SubscriptionPricingPlan extends Model
 {
     public $id;
     public $user_id;
-    public $name;                               
+    public $name;
+    public $enabled;
     public $enable_trial_account;
     public $enable_discount_on_upgrade;
     public $base_price;
@@ -43,9 +44,10 @@ class SubscriptionPricingPlan extends Model
             )
         );
         
-        $this->skipAttributesOnCreate(array('updated_at'));
-   
-        $this->hasMany("id", "Vokuro\Models\SubscriptionPricingPlanParameterList", "subscription_pricing_plan_id", ['alias' => 'SubscriptionPricingPlanParameterList']);
+        $this->skipAttributesOnCreate(['updated_at']);
+        $this->allowEmptyStringValues(['pricing_details']);
+        
+        $this->hasMany("id", "\Vokuro\Models\SubscriptionPricingPlanParameterList", "subscription_pricing_plan_id", ['alias' => 'SubscriptionPricingPlanParameterList']);
     }
         
     public function validation()
@@ -97,7 +99,8 @@ class SubscriptionPricingPlan extends Model
         return array(
             'id' => 'id',
             'user_id' => 'user_id',
-            'name' => 'name',                            
+            'name' => 'name',
+            'enabled' => 'enabled',
             'enable_trial_account' => 'enable_trial_account',
             'enable_discount_on_upgrade' => 'enable_discount_on_upgrade',
             'base_price' => 'base_price',

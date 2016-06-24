@@ -27,7 +27,7 @@ class AddSubscriptionPricingPlanTable extends AbstractMigration {
             ->addForeignKey('user_id', 'users', 'id', [ 'delete' => 'NO_ACTION', 'update' => 'NO_ACTION' ])
             ->create();
     }
-
+    
     public function down() {
         $this->dropTable('subscription_pricing_plan');
     }

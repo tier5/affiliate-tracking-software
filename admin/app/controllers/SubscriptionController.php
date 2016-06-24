@@ -122,7 +122,6 @@ class SubscriptionController extends ControllerBase {
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
-        
     }
     
     /**
@@ -354,11 +353,37 @@ class SubscriptionController extends ControllerBase {
         }
     }
     
-    public function showPricingPlanListAction() {}
-    
-    public function createPricingPlanAction() {
+    public function showPricingPlanListAction() {
         
-        /* Render template */
+        $responseParameters['status'] = false;
+        
+        try {
+        
+            if (!$this->request->isGet()) {
+                throw new \Exception('GET request required!!!');
+            }
+            
+            /* Get services */
+            $userManager = $this->di->get('userManager');
+            $subscriptionManager = $this->di->get('subscriptionManager');
+        
+            /* Get the user id */
+            $userId = $userManager->getUserId($this->session);
+            
+            /* Get pricing profiles */
+            $pricingProfiles = $subscriptionManager->getAllPricingPlansByUserId($userId);        
+            
+            $this->view->pricingProfiles = $pricingProfiles;
+            
+        }  catch(Exception $e) {
+            
+            $responseParameters['message'] = $e->getMessage();
+                    
+        }
+        
+    }
+    
+    public function createPricingPlanAction() {    
         $this->view->pick("subscription/pricingPlan");
     }
     
@@ -384,7 +409,12 @@ class SubscriptionController extends ControllerBase {
             $subscriptionManager = $this->di->get('subscriptionManager');
         
             /* Get the user id */
-            $validatedParams['userId'] = $userManager->getUserId($this->session);;
+            $validatedParams['userId'] = $userManager->getUserId($this->session);
+            
+            /* Ensure the name of the pricing profile is unique for this user */
+            if($subscriptionManager->getPricingPlanByName($validatedParams['userId'], $validatedParams['name'])) {
+                throw new \Exception('Another pricing profile with that name already exists! Please choose a unique name and try again.');
+            }
             
             /* Save the profile */
             $this->db->begin();
@@ -403,7 +433,10 @@ class SubscriptionController extends ControllerBase {
             /* 
              * Failure :( 
              */
-            $this->db->rollback();
+            if ($this->db->isUnderTransaction()) {
+                $this->db->rollback();
+            }
+            
             $responseParameters['message'] = $e->getMessage();
                     
         }
@@ -411,6 +444,86 @@ class SubscriptionController extends ControllerBase {
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
+    }
+    
+    public function updateEnablePricingPlanAction($pricingPlanId, $enable) {
+        $this->view->disable();
+        
+        $responseParameters['status'] = false;
+    
+        try {
+        
+            if (!$this->request->isPut()) {
+                throw new \Exception('PUT request required!!!');
+            }
+            
+            /* Get services */
+            $subscriptionManager = $this->di->get('subscriptionManager');
+        
+            /* Ensure the name of the pricing profile is unique for this user */
+            if(!$subscriptionManager->enablePricingPlanById($pricingPlanId, $enable)) {
+                throw new \Exception('Failed to enable/disable pricing plan.');
+            }
+            
+            /* 
+             * Success!!! 
+             */
+            $responseParameters['status'] = true;
+            
+        }  catch(Exception $e) {
+            
+            $responseParameters['message'] = $e->getMessage();
+                    
+        }
+        
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
+        
+    }
+    
+    public function deletePricingPlanAction($pricingPlanId) {
+        $this->view->disable();
+        
+        $responseParameters['status'] = false;
+    
+        try {
+        
+            if (!$this->request->isDelete()) {
+                throw new \Exception('DELETE request required!!!');
+            }
+            
+            /* Get services */
+            // $subscriptionManager = $this->di->get('subscriptionManager');
+        
+            /* Ensure the name of the pricing profile is unique for this user */
+            
+            /* REFACTOR - Temporary raw sql.  Soft deletes don't appear to be working via Phalcon */
+            $sql = "UPDATE subscription_pricing_plan SET deleted_at='" . date('Y-m-h h:m:s') . "' WHERE id=" . $pricingPlanId;
+            $result = $this->db->query($sql); // Working now
+            if (!$result) {
+                return false;
+            }
+            /*
+            if(!$subscriptionManager->deletePricingPlanById($pricingPlanId)) {
+                throw new \Exception('Failed to delete pricing plan.');
+            }*/
+            
+            /* 
+             * Success!!! 
+             */
+            $responseParameters['status'] = true;
+            
+        }  catch(Exception $e) {
+            
+            $responseParameters['message'] = $e->getMessage();
+                    
+        }
+        
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
+        
     }
     
     private function validatePricingPlanInput($request) {

@@ -316,14 +316,11 @@
             $.post("/subscription/savePricingPlan", 
                 JSON.stringify(parameters),
                 function(data) {
-                    if(data.status === true) {
-                        window.location.href = "/susbcription/showPricingPlanList";
+                    if (data.status === true) {
+                        window.location.href = "/subscription/showPricingPlanList";
                     } else {
-                        alert('Save failed!');
+                        alert(data.message);
                     }
-                },
-                function(data) {
-                    alert('Save failed!');
                 }
             );
         }

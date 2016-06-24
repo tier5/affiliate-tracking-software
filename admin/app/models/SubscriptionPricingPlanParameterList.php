@@ -44,7 +44,7 @@ class SubscriptionPricingPlanParameterList extends Model
         
         $this->skipAttributesOnCreate(array('updated_at'));
         
-        $this->belongsTo("subscription_pricing_plan_id", "Vokuro\Models\SubscriptionPricingPlan", "id", ['alias' => 'SubscriptionPricingPlan']);
+        $this->belongsTo("subscription_pricing_plan_id", "\Vokuro\Models\SubscriptionPricingPlan", "id", ['alias' => 'SubscriptionPricingPlan']);
     }
     
     public function validation()

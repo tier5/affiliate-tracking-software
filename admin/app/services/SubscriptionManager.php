@@ -88,10 +88,11 @@ class SubscriptionManager extends BaseService {
         return $subscriptionPricingPlan->toArray();
     }
     
-    public function getPricingPlanByName($pricingPlanName) {
+    public function getPricingPlanByName($userId, $pricingPlanName) {
         $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
-            ->where("name = :name:")
-            ->bind(["name" => $pricingPlanName])
+            ->where("user_id = :userId:")
+            ->andWhere("name = :pricingPlanName:")
+            ->bind(["userId" => $userId, "pricingPlanName" => $pricingPlanName])
             ->execute()
             ->getFirst();
         if(!$subscriptionPricingPlan) {
@@ -123,11 +124,59 @@ class SubscriptionManager extends BaseService {
         
     }
     
+    public function getAllPricingPlansByUserId($userId) {
+        $subscriptionPricingPlans = SubscriptionPricingPlan::query()  
+            ->where("user_id = :userId:")
+            ->andWhere("deleted_at = '0000-00-00 00:00:00'")
+            ->bind(["userId" => $userId])
+            ->execute();
+        return $subscriptionPricingPlans;
+    }
+    
+    public function enablePricingPlanById($pricingPlanId, $enable) {  // Second param is a dirty filthy hack :(, See comment below for details
+        $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
+            ->where("id = :id:")
+            ->bind(["id" => $pricingPlanId])
+            ->execute()
+            ->getFirst();
+        if (!$subscriptionPricingPlan) {
+            return false;
+        }
+        
+        $subscriptionPricingPlan->enabled = $enable === 'true' ? 1 : 0;
+        $subscriptionPricingPlan->updated_at = time();
+        if (!$subscriptionPricingPlan->update()) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    public function deletePricingPlanById($pricingPlanId) {
+        $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
+            ->where("id = :id:")
+            ->bind(["id" => $pricingPlanId])
+            ->execute()
+            ->getFirst(); 
+        if (!$subscriptionPricingPlan) {
+            return false;
+        }
+        
+        $subscriptionPricingPlan->deleted_at = time();
+        // $result = $db->query("DELETE FROM subscription_pricing_plan WHERE id=" . $subscriptionPricingPlan->id ); // Working now
+        if (!$subscriptionPricingPlan->update()) {
+            return false;
+        }
+        
+        return true;
+    }
+    
     private function createSubscriptionPricingPlan($parameters) {
         
         $subscriptionPricingPlan = new SubscriptionPricingPlan();
         $subscriptionPricingPlan->user_id = $parameters["userId"];
         $subscriptionPricingPlan->name = $parameters["name"];                               
+        $subscriptionPricingPlan->enabled = true;
         $subscriptionPricingPlan->enable_trial_account = $parameters["enableTrialAccount"];
         $subscriptionPricingPlan->enable_discount_on_upgrade = $parameters["enableDiscountOnUpgrade"];
         $subscriptionPricingPlan->base_price = $parameters["basePrice"];
@@ -180,9 +229,6 @@ class SubscriptionManager extends BaseService {
         $subscriptionPricingPlanParameterList->sms_cost = floatval($parameters['smsCost']);
         $subscriptionPricingPlanParameterList->profit_per_location = floatval($parameters['profitPerLocation']);
         if(!$subscriptionPricingPlanParameterList->create()) {
-            
-            $messages = $subscriptionPricingPlanParameterList->getMessages();
-            
             return false;
         }
         
