@@ -6,6 +6,13 @@ header .logo {  float: left;width: 220px; margin-left: 20px; margin-top: 20px; }
     border-radius: 0px !important;
 }
 
+.website-url {
+    background-image: url('/img/agencysignup/mobilereviews_text.png');
+    background-repeat: no-repeat;
+    background-position-x: 290px;
+    background-position-y: 2px;
+}
+
 .main-container {
     width: 1200px;
     margin-left: auto;

@@ -109,46 +109,29 @@ class PaymentService extends BaseService {
     
     private function createAuthorizeDotNetPaymentProfile($ccParameters) {
         $authorizeDotNet = new AuthorizeDotNetPayment($this->config);
-        
-        $user = Users::query()
-            ->where("id = :id:")
-            ->bind(["id" => $ccParameters['userId']])
-            ->execute()
-            ->getFirst();
-        $agency = Agency::query()
-            ->where("agency_id = :agency_id:")
-            ->bind(["agency_id" => $user->agency_id])
-            ->execute()
-            ->getFirst();
-        
-        $parameters['customerType'] = 'individual';
-	$parameters['customerProfileDescription'] = 'Empty';
-        $parameters['email'] = $user->email;
-	$parameters['cardNumber'] = $ccParameters['cardNumber'];
-	$parameters['cardExpiryDate'] = $ccParameters['expirationDate'];
-	$parameters['cardCode'] = $ccParameters['csv'];
-        $parameters['firstName'] = $user->name;
-	$parameters['lastName'] = "Required";
-	$parameters['companyName'] = $agency->name;
-	$parameters['companyAddress'] = $agency->address;
-	$parameters['city'] = "Los Angeles";
-	$parameters['state'] = $agency->state_province;
-	$parameters['zip'] = $agency->postal_code;
-	$parameters['country'] = $agency->country;
+
+        $parameters['customerType']                 = 'individual';
+        $parameters['customerProfileDescription']   = 'Empty';
+        $parameters['email']                        = isset($ccParameters['userEmail'])             ? $ccParameters['userEmail']            : '';
+        $parameters['cardNumber']                   = $ccParameters['cardNumber'];
+        $parameters['cardExpiryDate']               = $ccParameters['expirationDate'];
+        $parameters['cardCode']                     = $ccParameters['csv'];
+        $parameters['firstName']                    = isset($ccParameters['userName'])              ? $ccParameters['userName']             : '';
+        $parameters['lastName']                     = isset($ccParameters['lastName'])              ? $ccParameters['lastName']             : "";
+        $parameters['companyName']                  = isset($ccParameters['agencyName'])            ? $ccParameters['agencyName']           : '';
+        $parameters['companyAddress']               = isset($ccParameters['agencyAddress'])         ? $ccParameters['agencyAddress']        : '';
+        $parameters['city']                         = isset($ccParameters['agencyCity'])            ? $ccParameters['agencyCity']           : '';
+        $parameters['state']                        = isset($ccParameters['agencyStateProvince'])   ? $ccParameters['agencyStateProvince']  : '';
+        $parameters['zip']                          = isset($ccParameters['agencyPostalCode'])      ? $ccParameters['agencyPostalCode']     : '';
+        $parameters['country']                      = isset($ccParameters['agencyCountry'])         ? $ccParameters['agencyCountry']        : '';
         
         $profile = $authorizeDotNet->createCustomerProfile($parameters);
+
         if (!$profile) {
             return false;
         }
         
-        $authorizeDotNetModel = new AuthorizeDotNetModel();
-        $authorizeDotNetModel->setUserId($ccParameters['userId']);
-        $authorizeDotNetModel->setCustomerProfileId($profile['customerProfileId']);
-        if(!$authorizeDotNetModel->create()) {
-            return false;
-        }
-        
-        return true;
+        return $profile;
     }
     
     private function updateAuthorizeDotNetPaymentProfile($ccParameters) {
@@ -170,19 +153,19 @@ class PaymentService extends BaseService {
             ->getFirst();
         
         $parameters['customerType'] = 'individual';
-	$parameters['customerProfileDescription'] = 'Empty';
+        $parameters['customerProfileDescription'] = 'Empty';
         $parameters['email'] = $user->email;
-	$parameters['cardNumber'] = $ccParameters['cardNumber'];
-	$parameters['cardExpiryDate'] = $ccParameters['expirationDate'];
-	$parameters['cardCode'] = $ccParameters['csv'];
+        $parameters['cardNumber'] = $ccParameters['cardNumber'];
+        $parameters['cardExpiryDate'] = $ccParameters['expirationDate'];
+        $parameters['cardCode'] = $ccParameters['csv'];
         $parameters['firstName'] = $user->name;
-	$parameters['lastName'] = "Required";
-	$parameters['companyName'] = $agency->name;
-	$parameters['companyAddress'] = $agency->address;
-	$parameters['city'] = "City";
-	$parameters['state'] = $agency->state_province;
-	$parameters['zip'] = $agency->postal_code;
-	$parameters['country'] = $agency->country;
+        $parameters['lastName'] = "Required";
+        $parameters['companyName'] = $agency->name;
+        $parameters['companyAddress'] = $agency->address;
+        $parameters['city'] = "City";
+        $parameters['state'] = $agency->state_province;
+        $parameters['zip'] = $agency->postal_code;
+        $parameters['country'] = $agency->country;
         
         return $authorizeDotNet->updatePaymentProfileForCustomer($parameters);
     }
