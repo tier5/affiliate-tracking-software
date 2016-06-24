@@ -3,8 +3,6 @@
 namespace Vokuro\Models;
 
 use Phalcon\Mvc\Model;
-use Phalcon\Mvc\Model\Validator\InclusionIn;
-use Phalcon\Mvc\Model\Validator\Numericality;
 use Phalcon\Mvc\Model\Behavior\SoftDelete;
 
 /**
@@ -31,7 +29,7 @@ class SubscriptionPricingPlan extends Model
     public $annual_discount;
     public $pricing_details;
     public $created_at;
-    public $update_at;
+    public $updated_at;
     public $deleted_at;
     
     public function initialize()
@@ -44,6 +42,8 @@ class SubscriptionPricingPlan extends Model
                 )
             )
         );
+        
+        $this->skipAttributesOnCreate(array('updated_at'));
    
         $this->hasMany("id", "Vokuro\Models\SubscriptionPricingPlanParameterList", "subscription_pricing_plan_id", ['alias' => 'SubscriptionPricingPlanParameterList']);
     }
@@ -61,7 +61,7 @@ class SubscriptionPricingPlan extends Model
      */
     public function getSource()
     {
-        return 'business_subscription_pricing_plan';
+        return 'subscription_pricing_plan';
     }
     
     /**
@@ -110,7 +110,7 @@ class SubscriptionPricingPlan extends Model
             'annual_discount' => 'annual_discount',
             'pricing_details' => 'pricing_details',
             'created_at' => 'created_at',
-            'update_at' => 'update_at',
+            'updated_at' => 'updated_at',
             'deleted_at' => 'deleted_at'
         );
     }

@@ -277,7 +277,7 @@
                 costPerSms: $('input[id="cost-per-sms-control"]').val(),
                 maxMessagesOnTrialAccount: $('select[id="free-sms-messages-control"]').val(),
                 upgradeDiscount: $('select[id="upgrade-discount-control"]').val(),
-                chargePerSms: $valueParameters["chargePerSms"],
+                chargePerSms: $('input[id="charge-per-sms-control"]').val(), 
                 maxSmsMessages: $('input[id="max-sms-messages-control"]').val(),
                 enableAnnualDiscount: $('input[id="enable-annual-discount-control"]').val() === "on" ? true : false,     
                 annualDiscount: $('select[id="annual-discount-control"]').val(),

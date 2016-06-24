@@ -388,7 +388,7 @@ class SubscriptionController extends ControllerBase {
             
             /* Save the profile */
             $this->db->begin();
-            if(!$subscriptionManager->savePricingProfile($validatedParams)) {
+            if(!$subscriptionManager->createPricingProfile($validatedParams)) {
                 throw new \Exception('Unable to save pricing profile!!!');
             }
             $this->db->commit();
@@ -452,7 +452,7 @@ class SubscriptionController extends ControllerBase {
         
         /* Sanitize */
         foreach($params as $key => $value){
-            if (!array_key_exists($validated, $key)) {
+            if (!array_key_exists($key, $validated)) {
                 $validated[$key] = [];
             }
             $validated[$key] = $filter->sanitize($value, "string");
@@ -486,7 +486,7 @@ class SubscriptionController extends ControllerBase {
             }
             
             /* Sanitize */
-            if (!array_key_exists($validated, $key)) {
+            if (!array_key_exists($key, $validated)) {
                 $validated[$key] = [];
             }
             foreach($segment as $segmentKey => $value) {

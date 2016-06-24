@@ -5,7 +5,7 @@ namespace Vokuro\Services;
 use Vokuro\Models\Users;
 use Vokuro\Models\Agency;
 use Vokuro\Services\ServicesConsts;
-use Vokuro\Models\SubscriptionPlan;
+use Vokuro\Models\BusinessSubscriptionPlan;
 use Vokuro\Models\AuthorizeDotNet as AuthorizeDotNetModel;
 use Vokuro\Payments\AuthorizeDotNet as AuthorizeDotNetPayment;
 
@@ -76,7 +76,7 @@ class PaymentService extends BaseService {
         }
         
         if ($status) {
-            $subscriptionPlan = SubscriptionPlan::query()
+            $subscriptionPlan = BusinessSubscriptionPlan::query()
                 ->where("user_id = :userId:")
                 ->bind(["userId" => $subscriptionParameters['userId']])
                 ->execute()

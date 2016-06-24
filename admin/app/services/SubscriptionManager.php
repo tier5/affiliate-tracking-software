@@ -3,10 +3,9 @@
 namespace Vokuro\Services;
 
 use Vokuro\Services\ServicesConsts;
-use Vokuro\Models\SubscriptionPlan;
+use Vokuro\Models\BusinessSubscriptionPlan;
 use Vokuro\Models\SubscriptionPricingPlan;
-use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
-use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
+use Vokuro\Models\SubscriptionPricingPlanParameterList;
     
 class SubscriptionManager extends BaseService {
     
@@ -52,21 +51,21 @@ class SubscriptionManager extends BaseService {
         }
         
         // Subscription plan
-        $subscriptionPlan = new SubscriptionPlan();
+        $subscriptionPlan = new BusinessSubscriptionPlan();
         $subscriptionPlan->setUserId(intval($userId));
         $subscriptionPlan->setLocations(intval($locations));
         $subscriptionPlan->setSmsMessagesPerLocation(intval($smsMessagesPerLocation));
         $subscriptionPlan->setPaymentPlan($paymentPlan);
         $subscriptionPlan->setSubscriptionPricingPlanId(intval($pricingPlanId));
         if (!$subscriptionPlan->create()) {
-            return $subscriptionPlan->getMessages();
+            return false;
         }
         
         return true;
     }
     
     public function getSubscriptionPlan($userId) {
-        $subscriptionPlan = SubscriptionPlan::query()  
+        $subscriptionPlan = BusinessSubscriptionPlan::query()  
             ->where("user_id = :user_id:")
             ->bind(["user_id" => intval($userId)])
             ->execute()
@@ -107,7 +106,7 @@ class SubscriptionManager extends BaseService {
         
         try {
                 
-            $id = $this->createSubscriptionPricingProfile($parameters);
+            $id = $this->createSubscriptionPricingPlan($parameters);
             if (!$id) {
                 throw new \Exception();
             }
@@ -124,27 +123,27 @@ class SubscriptionManager extends BaseService {
         
     }
     
-    private function createSubscriptionPricingProfile($parameters) {
+    private function createSubscriptionPricingPlan($parameters) {
         
-        $subscriptionPricingProfile = new SubscriptionPricingProfile();
-        $subscriptionPricingProfile->user_id = $parameters["userId"];
-        $subscriptionPricingProfile->name = $parameters["name"];                               
-        $subscriptionPricingProfile->enable_trial_account = $parameters["enableTrialAccount"];
-        $subscriptionPricingProfile->enable_discount_on_upgrade = $parameters["enableDiscountOnUpgrade"];
-        $subscriptionPricingProfile->base_price = $parameters["basePrice"];
-        $subscriptionPricingProfile->cost_per_sms = $parameters["costPerSms"];
-        $subscriptionPricingProfile->max_messages_on_trial_account = $parameters["maxMessagesOnTrialAccount"];
-        $subscriptionPricingProfile->updgrade_discount = $parameters["upgradeDiscount"];
-        $subscriptionPricingProfile->charge_per_sms = $parameters["chargePerSms"];
-        $subscriptionPricingProfile->max_sms_messages = $parameters["maxSmsMessages"];
-        $subscriptionPricingProfile->enable_annual_discount = $parameters["enableAnnualDiscount"];
-        $subscriptionPricingProfile->annual_discount = $parameters["annualDiscount"];
-        $subscriptionPricingProfile->pricing_details = $parameters["pricingDetails"];
-        if (!$subscriptionPricingProfile->create()) {
+        $subscriptionPricingPlan = new SubscriptionPricingPlan();
+        $subscriptionPricingPlan->user_id = $parameters["userId"];
+        $subscriptionPricingPlan->name = $parameters["name"];                               
+        $subscriptionPricingPlan->enable_trial_account = $parameters["enableTrialAccount"];
+        $subscriptionPricingPlan->enable_discount_on_upgrade = $parameters["enableDiscountOnUpgrade"];
+        $subscriptionPricingPlan->base_price = $parameters["basePrice"];
+        $subscriptionPricingPlan->cost_per_sms = $parameters["costPerSms"];
+        $subscriptionPricingPlan->max_messages_on_trial_account = $parameters["maxMessagesOnTrialAccount"];
+        $subscriptionPricingPlan->updgrade_discount = $parameters["upgradeDiscount"];
+        $subscriptionPricingPlan->charge_per_sms = $parameters["chargePerSms"];
+        $subscriptionPricingPlan->max_sms_messages = $parameters["maxSmsMessages"];
+        $subscriptionPricingPlan->enable_annual_discount = $parameters["enableAnnualDiscount"];
+        $subscriptionPricingPlan->annual_discount = $parameters["annualDiscount"];
+        $subscriptionPricingPlan->pricing_details = $parameters["pricingDetails"] ? : new \Phalcon\Db\RawValue('default');
+        if (!$subscriptionPricingPlan->create()) {
             return false;
         }
         
-        return true;
+        return $subscriptionPricingPlan->id;
     }
         
     private function appendPricingParameterLists($id, $parameters) {
@@ -155,32 +154,35 @@ class SubscriptionManager extends BaseService {
                 continue;
             }
             
-            $pricingParameterList = $this->createPricingParameterList($params);
+            $pricingParameterList = $this->createPricingParameterList($id, $params);
             if(!$pricingParameterList) {
                 return false;
             }
             
         }
         
-        return false;
+        return true;
     }
     
     private function createPricingParameterList($id, $parameters) {
-        
+         
         $subscriptionPricingPlanParameterList = new SubscriptionPricingPlanParameterList();
-        $subscriptionPricingPlanParameterList->subscription_pricing_plan_id = $id;
-        $subscriptionPricingPlanParameterList->min_locations = $parameters['minLocations'];
-        $subscriptionPricingPlanParameterList->max_locations = $parameters['maxLocations'];
-        $subscriptionPricingPlanParameterList->location_discount_percentage = $parameters['locationDiscountPercentage'];
-        $subscriptionPricingPlanParameterList->base_price = $parameters['basePrice'];
-        $subscriptionPricingPlanParameterList->sms_charge = $parameters['smsCharge'];
-        $subscriptionPricingPlanParameterList->total_price = $parameters['totalPrice'];
-        $subscriptionPricingPlanParameterList->location_discount = $parameters['locationDiscount'];
-        $subscriptionPricingPlanParameterList->upgrade_discount = $parameters['upgradeDiscount'];
-        $subscriptionPricingPlanParameterList->sms_messages = $parameters['smsMessages'];
-        $subscriptionPricingPlanParameterList->sms_cost = $parameters['smsCost'];
-        $subscriptionPricingPlanParameterList->profit_per_location = $parameters['profitPerLocation'];
-        if($subscriptionPricingPlanParameterList->create()) {
+        $subscriptionPricingPlanParameterList->subscription_pricing_plan_id = intval($id);
+        $subscriptionPricingPlanParameterList->min_locations = intval($parameters['minLocations']);
+        $subscriptionPricingPlanParameterList->max_locations = intval($parameters['maxLocations']);
+        $subscriptionPricingPlanParameterList->location_discount_percentage = floatval($parameters['locationDiscountPercentage']);
+        $subscriptionPricingPlanParameterList->base_price = floatval($parameters['basePrice']);
+        $subscriptionPricingPlanParameterList->sms_charge = floatval($parameters['smsCharge']);
+        $subscriptionPricingPlanParameterList->total_price = floatval($parameters['totalPrice']);
+        $subscriptionPricingPlanParameterList->location_discount = floatval($parameters['locationDiscount']);
+        $subscriptionPricingPlanParameterList->upgrade_discount = floatval($parameters['upgradeDiscount']);
+        $subscriptionPricingPlanParameterList->sms_messages = intval($parameters['smsMessages']);
+        $subscriptionPricingPlanParameterList->sms_cost = floatval($parameters['smsCost']);
+        $subscriptionPricingPlanParameterList->profit_per_location = floatval($parameters['profitPerLocation']);
+        if(!$subscriptionPricingPlanParameterList->create()) {
+            
+            $messages = $subscriptionPricingPlanParameterList->getMessages();
+            
             return false;
         }
         

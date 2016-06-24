@@ -235,7 +235,7 @@ class AuthorizeDotNet extends Model
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return SubscriptionPlan[]
+     * @return BusinessSubscriptionPlan[]
      */
     public static function find($parameters = null)
     {
@@ -246,7 +246,7 @@ class AuthorizeDotNet extends Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return SubscriptionPlan
+     * @return BusinessSubscriptionPlan
      */
     public static function findFirst($parameters = null)
     {

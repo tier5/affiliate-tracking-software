@@ -3,7 +3,6 @@
 namespace Vokuro\Models;
 
 use Phalcon\Mvc\Model;
-use Phalcon\Mvc\Model\Validator\Numericality;
 use Phalcon\Mvc\Model\Behavior\SoftDelete;
 
 /**
@@ -28,6 +27,9 @@ class SubscriptionPricingPlanParameterList extends Model
     public $sms_messages;
     public $sms_cost;
     public $profit_per_location;
+    public $created_at;
+    public $updated_at;
+    public $deleted_at;
 
     public function initialize()
     {
@@ -39,6 +41,8 @@ class SubscriptionPricingPlanParameterList extends Model
                 )
             )
         );
+        
+        $this->skipAttributesOnCreate(array('updated_at'));
         
         $this->belongsTo("subscription_pricing_plan_id", "Vokuro\Models\SubscriptionPricingPlan", "id", ['alias' => 'SubscriptionPricingPlan']);
     }
@@ -101,7 +105,10 @@ class SubscriptionPricingPlanParameterList extends Model
             'upgrade_discount' => 'upgrade_discount',
             'sms_messages' => 'sms_messages',
             'sms_cost' => 'sms_cost',
-            'profit_per_location' => 'profit_per_location'
+            'profit_per_location' => 'profit_per_location',
+            'created_at' => 'created_at',
+            'updated_at' => 'updated_at',
+            'deleted_at' => 'deleted_at'
         );
     }
 
