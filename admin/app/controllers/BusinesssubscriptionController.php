@@ -202,8 +202,6 @@ class BusinessSubscriptionController extends ControllerBase {
                 return false;
             }
 
-            die('made it here');
-            
             /* 
              * Success!!! 
              */
