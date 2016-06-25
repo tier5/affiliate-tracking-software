@@ -233,10 +233,12 @@
                                             <div class="row progression-controls">
                                                 <div class="col-md-6 col-sm-6"></div>
                                                 <div class="col-md-6 col-sm-6">
-                                                    <button id="remove-segment-btn" class="btn default btn-lg apple-backgound subscription-btn">Remove Last</button>  
-                                                    <button id="add-segment-btn" class="btn default btn-lg apple-backgound subscription-btn">Add New</button>
-                                                    <button id="save-progression-btn" class="btn default btn-lg apple-backgound subscription-btn">Save</button>
-                                                    <button id="start-over-btn" class="btn default btn-lg apple-backgound subscription-btn">Start Over</button>
+                                                    {% if canEdit %}
+                                                        <button id="remove-segment-btn" class="btn default btn-lg apple-backgound subscription-btn">Remove Last</button>  
+                                                        <button id="add-segment-btn" class="btn default btn-lg apple-backgound subscription-btn">Add New</button>
+                                                        <button id="save-progression-btn" class="btn default btn-lg apple-backgound subscription-btn">Save</button>
+                                                        <button id="start-over-btn" class="btn default btn-lg apple-backgound subscription-btn">Start Over</button>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>

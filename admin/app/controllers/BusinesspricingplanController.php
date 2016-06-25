@@ -70,6 +70,7 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->enableAnnualDiscount = true;
         $this->view->annualDiscount = "1";
         $this->view->pricingDetails = "";
+        $this->view->canEdit = false;
         
         $this->view->pick("businessPricingPlan/pricingPlan");
     }
@@ -87,6 +88,7 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->enableAnnualDiscount = true;
         $this->view->annualDiscount = "1";
         $this->view->pricingDetails = "";
+        $this->view->canEdit = true;
         
         $this->view->pick("businessPricingPlan/pricingPlan");
     }
