@@ -27,7 +27,7 @@ class BusinessSubscriptionController extends ControllerBase {
         parent::initialize();
     }
     
-    public function businessAction() {   
+    public function indexAction() {   
         
         /* Get services */
         $userManager = $this->di->get('userManager');
