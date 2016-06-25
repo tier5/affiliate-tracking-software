@@ -20,7 +20,7 @@
                         </div>
                         <div class="caption font-dark subscription-name">
                             <span class="caption-subject bold uppercase subscription-name-caption">Subscription Name:    </span>
-                            <input id="name-control" type="text" value="My New Subscription" class="caption-subject" placeholder="Subscription Name">
+                            <input id="name-control" type="text" value="{{ name }}" class="caption-subject" placeholder="Subscription Name">
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -31,7 +31,11 @@
                                         <label class="control-label">Enable Trial Account</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="enable-trial-account-control" type="checkbox" class="make-switch" checked="" data-on-color="primary" data-off-color="info">
+                                        {% if enableTrialAccount %}
+                                            <input id="enable-trial-account-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info">
+                                        {% else  %}
+                                            <input id="enable-trial-account-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info">
+                                        {% endif  %}
                                     </div>
                                 </div>
                             </div>
@@ -41,17 +45,17 @@
                                         <label class="control-label">Free SMS Messages on Trial Account</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <select id="free-sms-messages-control" class="form-control input-small">
-                                            <option>10</option>
-                                            <option>20</option>
-                                            <option>30</option>
-                                            <option>40</option>
-                                            <option>50</option>
-                                            <option>60</option>
-                                            <option>70</option>
-                                            <option>80</option>
-                                            <option>90</option>
-                                            <option>100</option>
+                                        <select id="free-sms-messages-control" class="form-control input-small" value="{{ maxMessagesOnTrialAccount }}">
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="30">30</option>
+                                            <option value="40">40</option>
+                                            <option value="50">50</option>
+                                            <option value="60">60</option>
+                                            <option value="70">70</option>
+                                            <option value="80">80</option>
+                                            <option value="90">90</option>
+                                            <option value="100">100</option>
                                         </select>
                                     </div>
                                 </div>   
@@ -62,7 +66,7 @@
                                         <label class="control-label">Base Price $</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="base-price-control" type="number" value="0.00" step="0.01" min="0.00" class="form-control" placeholder="0.00">
+                                        <input id="base-price-control" type="number" value="{{ basePrice }}" step="0.01" min="0.00" class="form-control" placeholder="0.00">
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +76,7 @@
                                         <label class="control-label">Charge Per SMS $</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="charge-per-sms-control" type="number" value="0.00" step="0.01" min="0" class="form-control" placeholder="0.00">
+                                        <input id="charge-per-sms-control" type="number" value="{{ chargePerSms }}" step="0.01" min="0" class="form-control" placeholder="0.00">
                                     </div>  
                                 </div>     
                             </div>
@@ -84,7 +88,11 @@
                                         <label class="control-label">Enable Discount On Upgrade</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="enable-discount-on-upgrade-control" type="checkbox" class="make-switch" checked="" data-on-color="primary" data-off-color="info">
+                                        {% if enableDiscountOnUpgrade %}
+                                            <input id="enable-discount-on-upgrade-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info">
+                                        {% else  %} 
+                                            <input id="enable-discount-on-upgrade-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info">
+                                        {% endif  %}
                                     </div>    
                                 </div>
                             </div>
@@ -94,7 +102,7 @@
                                         <label class="control-label">Upgrade Discount %</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <select id="upgrade-discount-control" class="form-control input-small"></select>
+                                        <select id="upgrade-discount-control" class="form-control input-small" value="{{ updgradeDiscount }}"></select>
                                     </div>     
                                 </div>
                             </div>
@@ -104,7 +112,7 @@
                                         <label class="control-label">My Cost Per SMS $</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="cost-per-sms-control" type="number" value="0.00" step="0.01" min="0" class="form-control" placeholder="0.00">
+                                        <input id="cost-per-sms-control" type="number" value="{{ costPerSms }}" step="0.01" min="0" class="form-control" placeholder="0.00">
                                     </div>   
                                 </div>  
                             </div>
@@ -114,7 +122,7 @@
                                         <label class="control-label">Max SMS Messages</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="max-sms-messages-control" type="number" value="1" step="50" min="0" class="form-control" placeholder="1">
+                                        <input id="max-sms-messages-control" type="number" value="{{ maxSmsMessages }}" step="50" min="0" class="form-control" placeholder="1">
                                     </div>   
                                 </div>
                             </div>
@@ -126,7 +134,11 @@
                                         <label class="control-label">Enable Annual Discount</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="enable-annual-discount-control" type="checkbox" class="make-switch" checked="" data-on-color="primary" data-off-color="info">
+                                        {% if enableAnnualDiscount %}
+                                            <input id="enable-annual-discount-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info">
+                                        {% else  %}
+                                            <input id="enable-annual-discount-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info">
+                                        {% endif  %}
                                     </div>  
                                 </div>
                             </div>
@@ -136,7 +148,7 @@
                                         <label class="control-label">Annual Discount %</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <select id="annual-discount-control" class="form-control input-small"></select>
+                                        <select id="annual-discount-control" class="form-control input-small" value="{{ annualDiscount }}"></select>
                                     </div>
                                 </div>
                             </div>
@@ -156,7 +168,7 @@
                                             <div class="form-body">
                                                 <div class="form-group last">
                                                     <div class="col-md-12">
-                                                        <div name="summernote" id="summernote_1"></div>
+                                                        <div name="summernote" id="summernote_1">{{ pricingDetails }}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -313,11 +325,11 @@
             var parameters = {};
             $.extend(parameters, getValueParameters(), getProgressionDetails());
 
-            $.post("/subscription/savePricingPlan", 
+            $.post("/businessPricingPlan/savePricingPlan", 
                 JSON.stringify(parameters),
                 function(data) {
                     if (data.status === true) {
-                        window.location.href = "/subscription/showPricingPlanList";
+                        window.location.href = "/businessPricingPlan";
                     } else {
                         alert(data.message);
                     }

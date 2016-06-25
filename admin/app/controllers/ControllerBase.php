@@ -980,10 +980,10 @@ class ControllerBase extends Controller {
         
         
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isBusinessAdmin']) {
-            $internalNavParams['subscriptionController'] = '/subscription/business';
+            $internalNavParams['subscriptionController'] = '/businessSubscription/business';
         }    
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isAgencyAdmin']) {
-            $internalNavParams['subscriptionController'] = '/subscription/agency';
+            $internalNavParams['subscriptionController'] = '';
         }
         
         $this->view->internalNavParams = $internalNavParams;

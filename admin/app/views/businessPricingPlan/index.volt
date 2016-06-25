@@ -22,7 +22,7 @@
                             <span class="caption-subject bold uppercase">Subscriptions</span>
                         </div>
                         <div class="tools">
-                            <a href="/subscription/createPricingPlan" class="btn default btn-lg apple-backgound subscription-btn">Create Subscription</a>
+                            <a href="/businessPricingPlan/createPricingPlan" class="btn default btn-lg apple-backgound subscription-btn">Create Subscription</a>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -54,9 +54,9 @@
                                                 {% else %}
                                                     <td><input id="update-enable-pricing-plan-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info"></td>
                                                 {% endif %}
-                                                <td><button class="btn default btn-lg apple-backgound subscription-btn">View Page</button></td>
-                                                <td><button class="btn default btn-lg apple-backgound subscription-btn">View Page</button></td>
-                                                <td><a href="/subscription/editPricingPlan" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
+                                                <td><button class="btn default btn-lg apple-backgound subscription-btn" disabled>View Page</button></td>
+                                                <td><button class="btn default btn-lg apple-backgound subscription-btn" disabled>View Page</button></td>
+                                                <td><a href="/businessPricingPlan/editPricingPlan/{{ pricingProfile.id }}" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
                                                 <td><button id="delete-pricing-plan-control" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></button></td>
                                            </tr>
                                         {% endfor %}
@@ -100,51 +100,63 @@
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
 
-        $('#delete-pricing-plan-control').click(function (event) {
-            
-            if(confirm("About to delete pricing profile! Are you sure?")) {
-                
-                var id = $(event.currentTarget).closest('tr').attr('id');
-                
-                $.ajax({
-                    url: "/subscription/deletePricingPlan/" + $(this).closest('tr').attr('id'),
-                    type: 'DELETE',
-                    success: function(data) {
-                        if(data.status === true) {
-                            $(event.currentTarget).closest('tr').remove();
-                        } else {
-                            alert(data.message);
+        
+
+        function refreshDeleteHandlers() {
+        
+            $('tr').delegate('#delete-pricing-plan-control', 'click', function(event) {
+        
+                if(confirm("About to delete pricing profile! Are you sure?")) {
+
+                    var id = $(event.currentTarget).closest('tr').attr('id');
+
+                    $.ajax({
+                        url: "/businessPricingPlan/deletePricingPlan/" + $(this).closest('tr').attr('id'),
+                        type: 'DELETE',
+                        success: function(data) {
+                            if(data.status === true) {
+                                $(event.currentTarget).closest('tr').remove();;
+                            } else {
+                                alert(data.message);
+                            }
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                            alert("Unable to delete pricing profile!"); 
                         }
+                    });
+
+                }
+    
+            });
+        
+        }
+        
+        function refreshSwitchHandlers() {
+        
+            $('input[id="update-enable-pricing-plan-control"]').on('switchChange.bootstrapSwitch', function (event, state) {
+
+                var id = $(event.currentTarget).closest('tr').attr('id');
+
+                $.ajax({
+                    url: "/businessPricingPlan/updateEnablePricingPlan/" + id + "/" + state,
+                    type: 'PUT',
+                    success: function(data) {
+                        if(data.status !== true) {
+                            $(event.currentTarget).setState(!state);
+                            alert(data.message);
+                        } 
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) { 
                         alert("Unable to delete pricing profile!"); 
                     }
                 });
-            
-            }
-            
-        });
-        
-        
-        $('input[id="update-enable-pricing-plan-control"]').on('switchChange.bootstrapSwitch', function (event, state) {
-                
-            var id = $(event.currentTarget).closest('tr').attr('id');
-            
-            $.ajax({
-                url: "/subscription/updateEnablePricingPlan/" + id + "/" + state,
-                type: 'PUT',
-                success: function(data) {
-                    if(data.status !== true) {
-                        $(event.currentTarget).setState(!state);
-                        alert(data.message);
-                    } 
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) { 
-                    alert("Unable to delete pricing profile!"); 
-                }
+
             });
             
-        });
-
+        }
+        
+        refreshDeleteHandlers();
+        refreshSwitchHandlers();
+        
     });
 </script>

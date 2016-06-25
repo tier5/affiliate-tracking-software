@@ -14,7 +14,10 @@ class SubscriptionManager extends BaseService {
     }
     
     public function getSubscriptionPricingPlans() {
-        return $subscriptionPricingPlans = SubscriptionPricingPlan::find();
+        return $subscriptionPricingPlans = SubscriptionPricingPlan::query()  
+            ->where("enabled = true")
+            ->andWhere("deleted_at = '0000-00-00 00:00:00'")
+            ->execute();
     }
     
     public function createSubscriptionPlan($newSubscriptionParameters) {
@@ -190,7 +193,8 @@ class SubscriptionManager extends BaseService {
         $subscriptionPricingPlan->pricing_details = $parameters["pricingDetails"] ? : new \Phalcon\Db\RawValue('default');
         if (!$subscriptionPricingPlan->create()) {
             return false;
-        }
+        } 
+        
         
         return $subscriptionPricingPlan->id;
     }

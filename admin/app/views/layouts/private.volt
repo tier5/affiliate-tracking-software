@@ -53,7 +53,7 @@
         ?>
         <link href="/css/admin.css" rel="stylesheet" type="text/css" />
         <?php 
-        if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
+        if(strpos($_SERVER['REQUEST_URI'],'businessPricingPlan')>0 || strpos($_SERVER['REQUEST_URI'],'businessSubscription')>0) {
         ?>
         <link href="/assets/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css" />
         <link href="/css/subscription.css" rel="stylesheet" type="text/css" />
@@ -239,9 +239,13 @@
                         {
                         $openfolder = 'analytics';
                         } 
-                        else if(strpos($_SERVER['REQUEST_URI'],'subscription')>0)
+                        else if(strpos($_SERVER['REQUEST_URI'],'businessPricingPlan')>0)  
                         {
-                        $openfolder = 'subscription';
+                        $openfolder = 'businessPricingPlan';
+                        }
+                        else if(strpos($_SERVER['REQUEST_URI'],'businessSubscription')>0)
+                        {
+                        $openfolder = 'businessSubscription';
                         }
                         else if(strpos($_SERVER['REQUEST_URI'],'stripe')>0)
                         {
@@ -336,11 +340,11 @@
                         </li>
                         
                         <?php if ($this->view->internalNavParams['hasPricingPlans']) { ?>
-                        <li class="nav-item <?=($openfolder=='pricingPlan'?'active open':'')?>">
-                            <a href='/subscription/showPricingPlanList' class="nav-link nav-toggle">
+                        <li class="nav-item <?=($openfolder=='businessPricingPlan'?'active open':'')?>">
+                            <a href='/businessPricingPlan' class="nav-link nav-toggle">
                                <i class="icon-list"></i>
                                 <span class="title">Business Subscriptions</span>
-                                <?=($openfolder=='pricingPlan'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='businessPricingPlan'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <?php } ?>
@@ -498,11 +502,11 @@
                         </li>
 
                         <?php if ($this->view->internalNavParams['hasSubscriptions']) { ?>
-                        <li class="nav-item <?=($openfolder=='subscription'?'active open':'')?>">
+                        <li class="nav-item <?=($openfolder=='businessSubscription'?'active open':'')?>">
                             <a href=<?= $this->view->internalNavParams['subscriptionController']; ?> class="nav-link nav-toggle">
                                <i class="icon-wallet"></i>
                                 <span class="title">Subscriptions</span>
-                                <?=($openfolder=='subscription'?'<span class="selected"></span>':'')?>
+                                <?=($openfolder=='businessSubscription'?'<span class="selected"></span>':'')?>
                             </a>
                         </li>
                         <?php } ?>
@@ -618,7 +622,7 @@
         <script src="/js/login.js"></script>
 
         <?php 
-        if(strpos($_SERVER['REQUEST_URI'],'subscription')>0 || strpos($_SERVER['REQUEST_URI'],'subscription')>0) {
+        if(strpos($_SERVER['REQUEST_URI'],'businessPricingPlan')>0 || strpos($_SERVER['REQUEST_URI'],'businessSubscription')>0) {
         ?>
         <script src="/assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
         <script src="/assets/global/plugins/card-js/card-js.min.js" type="text/javascript"></script>
