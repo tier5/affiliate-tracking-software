@@ -138,6 +138,19 @@ class BusinessSubscriptionController extends ControllerBase {
         
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
+
+            $user = Users::query()
+            ->where("id = :id:")
+            ->bind(["id" => $userId])
+            ->execute()
+            ->getFirst();
+
+            $agency = Agency::query()
+            ->where("agency_id = :agency_id:")
+            ->bind(["agency_id" => $user->agency_id])
+            ->execute()
+            ->getFirst();
+
         
             /* Format the date accordingly  */
             $date = Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags'));
@@ -149,7 +162,15 @@ class BusinessSubscriptionController extends ControllerBase {
                 'cardName' => $this->request->getPost('cardName', 'striptags'),
                 'expirationDate' => $date,
                 'csv' => $this->request->getPost('csv', 'striptags'),
-                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET,
+                'userEmail'             => $user->email,
+                'userName'              => $user->name,
+                'agencyName'            => $agency->name,
+                'agencyAddress'         => $agency->address,
+                'agencyCity'            => '', //$agency->city,  This field doesn't exist yet.  Will add later  TODO:  Fix this!
+                'agencyStateProvince'   => $agency->state_province,
+                'agencyPostalCode'      => $agency->postal_code,
+                'agencyCountry'         => $agency->country,
             ];
             
             /* 
@@ -169,10 +190,19 @@ class BusinessSubscriptionController extends ControllerBase {
             /* 
              * Create the payment 
              */
-            $status = $paymentService->createPaymentProfile($ccParameters);
-            if (!$status) {
+            $profile = $paymentService->createPaymentProfile($ccParameters);
+            if (!$profile) {
                 throw new \Exception();
-            }   
+            }
+
+            $authorizeDotNetModel = new AuthorizeDotNetModel();
+            $authorizeDotNetModel->setUserId($userId);
+            $authorizeDotNetModel->setCustomerProfileId($profile['customerProfileId']);
+            if(!$authorizeDotNetModel->create()) {
+                return false;
+            }
+
+            die('made it here');
             
             /* 
              * Success!!! 
@@ -208,22 +238,42 @@ class BusinessSubscriptionController extends ControllerBase {
             
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
+
+            $user = Users::query()
+            ->where("id = :id:")
+            ->bind(["id" => $userId])
+            ->execute()
+            ->getFirst();
+            
+            $agency = Agency::query()
+            ->where("agency_id = :agency_id:")
+            ->bind(["agency_id" => $user->agency_id])
+            ->execute()
+            ->getFirst();
         
             /* Format the date accordingly  */
             $date = Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags'));
 
             /* Get the subscription parameters */
             $ccParameters = [
-                'userId' => $userId,
-                'cardNumber' => $this->request->getPost('cardNumber', 'striptags'),
-                'cardName' => $this->request->getPost('cardName', 'striptags'),
-                'expirationDate' => $date,
-                'csv' => $this->request->getPost('csv', 'striptags'),
-                'locations' => $this->request->getPost('locations', 'striptags'),
-                'messages' => $this->request->getPost('messages', 'striptags'),
-                'planType' => $this->request->getPost('planType', 'striptags'),
-                'price' => $this->request->getPost('price', 'striptags'),
-                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+                'userId'                => $userId,
+                'cardNumber'            => $this->request->getPost('cardNumber', 'striptags'),
+                'cardName'              => $this->request->getPost('cardName', 'striptags'),
+                'expirationDate'        => $date,
+                'csv'                   => $this->request->getPost('csv', 'striptags'),
+                'locations'             => $this->request->getPost('locations', 'striptags'),
+                'messages'              => $this->request->getPost('messages', 'striptags'),
+                'planType'              => $this->request->getPost('planType', 'striptags'),
+                'price'                 => $this->request->getPost('price', 'striptags'),
+                'provider'              => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET,
+                'userEmail'             => $user->email,
+                'userName'              => $user->name,
+                'agencyName'            => $agency->name,
+                'agencyAddress'         => $agency->address,
+                'agencyCity'            => '', //$agency->city,  This field doesn't exist yet.  Will add later  TODO:  Fix this!
+                'agencyStateProvince'   => $agency->state_province,
+                'agencyPostalCode'      => $agency->postal_code,
+                'agencyCountry'         => $agency->country,
             ];
             
             /* 
@@ -246,6 +296,13 @@ class BusinessSubscriptionController extends ControllerBase {
             $status = $paymentService->createPaymentProfile($ccParameters);
             if (!$status) {
                 throw new \Exception();
+            }
+
+            $authorizeDotNetModel = new AuthorizeDotNetModel();
+            $authorizeDotNetModel->setUserId($userId);
+            $authorizeDotNetModel->setCustomerProfileId($profile['customerProfileId']);
+            if(!$authorizeDotNetModel->create()) {
+                return false;
             }
             
             /* 

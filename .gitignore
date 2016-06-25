@@ -6,3 +6,4 @@ admin/app/cache/
 admin/app/cache/*
 admin/vendor/*
 /nbproject/private/
+.idea
