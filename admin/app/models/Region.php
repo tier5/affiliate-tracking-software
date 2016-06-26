@@ -1,17 +1,17 @@
 <?php
-namespace Vokuro\Models;
+	namespace Vokuro\Models;
 
-use Phalcon\Mvc\Model;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+	use Phalcon\Mvc\Model;
+	use Phalcon\Mvc\Model\Validator\Uniqueness;
 
-/**
- * Vokuro\Models\Region
- * The regions
- */
-class Region extends Model
-{
-	public function initialize()
+	/**
+	 * Vokuro\Models\Region
+	 * The regions
+	 */
+	class Region extends Model
 	{
-		$this->setSource('region');
+		public function initialize()
+		{
+			$this->setSource('region');
+		}
 	}
-}

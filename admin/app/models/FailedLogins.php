@@ -1,43 +1,26 @@
 <?php
-namespace Vokuro\Models;
+    namespace Vokuro\Models;
 
-use Phalcon\Mvc\Model;
-
-/**
- * FailedLogins
- * This model registers unsuccessfull logins registered and non-registered users have made
- */
-class FailedLogins extends Model
-{
+    use Phalcon\Mvc\Model;
 
     /**
-     *
-     * @var integer
+     * FailedLogins
+     * This model registers unsuccessfull logins registered and non-registered users have made
      */
-    public $id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $usersId;
-
-    /**
-     *
-     * @var string
-     */
-    public $ipAddress;
-
-    /**
-     *
-     * @var integer
-     */
-    public $attempted;
-
-    public function initialize()
+    class FailedLogins extends Model
     {
-        $this->belongsTo('usersId', __NAMESPACE__ . '\Users', 'id', array(
-            'alias' => 'user'
-        ));
+
+
+        public $id;
+        public $usersId;
+        public $ipAddress;
+        public $attempted;
+
+
+        public function initialize()
+        {
+            $this->belongsTo('usersId', __NAMESPACE__ . '\Users', 'id', array(
+                'alias' => 'user'
+            ));
+        }
     }
-}

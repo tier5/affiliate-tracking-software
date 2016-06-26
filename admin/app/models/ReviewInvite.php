@@ -7,70 +7,19 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 use Vokuro\Models\ReviewSite;
 
-/**
- * Vokuro\Models\ReviewInvite
- * The review invites in the application
- */
+
 class ReviewInvite extends Model
 {
-  /**
-    *
-    * @var integer
-    */
+
   public $review_invite_id;
-
-  /**
-    *
-    * @var datetime
-    */
   public $date_sent;
-
-  /**
-    *
-    * @var string
-    */
   public $phone;
-
-  /**
-    *
-    * @var string
-    */
   public $name;
-
-  /**
-    *
-    * @var integer
-    */
   public $followed_link;
-
-  /**
-    *
-    * @var string
-    */
   public $api_key;
-
-  /**
-    *
-    * @var integer
-    */
   public $location_id;
-
-  /**
-    *
-    * @var datetime
-    */
   public $date_viewed;
-
-  /**
-    *
-    * @var integer
-    */
   public $review_invite_type_id;
-
-  /**
-    *
-    * @var string
-    */
   public $rating;
   public $recommend;
   public $date_last_sent;

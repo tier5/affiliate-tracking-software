@@ -10,48 +10,17 @@ use Phalcon\Mvc\Model;
 class AuthorizeDotNet extends Model
 {
 
-    /**
-     *
-     * @var integer
-     */
+
     public $id;
-
-    /**
-     *
-     * @var integer
-     */
     public $user_id;
-
-    /**
-     *
-     * @var string
-     */
     public $customer_profile_id;
-    
-    /**
-     *
-     * @var string
-     */
     public $subscription_id;
-
-    /**
-     *
-     * @var integer
-     */
     public $created_at;
-    
-    /**
-     *
-     * @var integer
-     */
     public $update_at;
-    
-    /**
-     *
-     * @var integer
-     */
     public $deleted_at;
-    
+
+
+
     /**
      * Method to set the value of field id
      *

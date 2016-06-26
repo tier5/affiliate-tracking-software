@@ -1,17 +1,17 @@
 <?php
-namespace Vokuro\Models;
+	namespace Vokuro\Models;
 
-use Phalcon\Mvc\Model;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+	use Phalcon\Mvc\Model;
+	use Phalcon\Mvc\Model\Validator\Uniqueness;
 
-/**
- * Vokuro\Models\Agency
- * The Locations
- */
-class ReviewInviteType extends Model
-{
-	public function initialize()
+	/**
+	 * Vokuro\Models\Agency
+	 * The Locations
+	 */
+	class ReviewInviteType extends Model
 	{
-		$this->setSource('review_invite_type');
+		public function initialize()
+		{
+			$this->setSource('review_invite_type');
+		}
 	}
-}

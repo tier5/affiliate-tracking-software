@@ -16,58 +16,15 @@ use Phalcon\Mvc\Model\Validator\Numericality;
 class BusinessSubscriptionPlan extends Model
 {
 
-    /**
-     *
-     * @var integer
-     */
+
     protected $id;
-
-    /**
-     *
-     * @var integer
-     */
     protected $locations;
-
-    /**
-     *
-     * @var integer
-     */
     protected $sms_messages_per_location;
-
-    /**
-     *
-     * @var string
-     */
     protected $payment_plan;
-
-    /**
-     *
-     * @var integer
-     */
     protected $subscription_pricing_plan_id;
-
-    /**
-     *
-     * @var integer
-     */
     protected $user_id;
-    
-    /**
-     *
-     * @var integer
-     */
     protected $created_at;
-    
-    /**
-     *
-     * @var integer
-     */
     protected $update_at;
-    
-    /**
-     *
-     * @var integer
-     */
     protected $deleted_at;
     
     /**

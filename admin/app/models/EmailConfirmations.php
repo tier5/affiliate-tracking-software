@@ -10,33 +10,15 @@ use Phalcon\Mvc\Model;
 class EmailConfirmations extends Model
 {
 
-    /**
-     *
-     * @var integer
-     */
+
     public $id;
-
-    /**
-     *
-     * @var integer
-     */
     public $usersId;
-
     public $code;
-
-    /**
-     *
-     * @var integer
-     */
     public $createdAt;
-
-    /**
-     *
-     * @var integer
-     */
     public $modifiedAt;
-
     public $confirmed;
+
+
 
     /**
      * Before create the user assign a password

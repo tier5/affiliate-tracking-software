@@ -1,43 +1,25 @@
 <?php
-namespace Vokuro\Models;
+    namespace Vokuro\Models;
 
-use Phalcon\Mvc\Model;
-
-/**
- * SuccessLogins
- * This model registers successfull logins registered users have made
- */
-class SuccessLogins extends Model
-{
+    use Phalcon\Mvc\Model;
 
     /**
-     *
-     * @var integer
+     * SuccessLogins
+     * This model registers successfull logins registered users have made
      */
-    public $id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $usersId;
-
-    /**
-     *
-     * @var string
-     */
-    public $ipAddress;
-
-    /**
-     *
-     * @var string
-     */
-    public $userAgent;
-
-    public function initialize()
+    class SuccessLogins extends Model
     {
-        $this->belongsTo('usersId', __NAMESPACE__ . '\Users', 'id', array(
-            'alias' => 'user'
-        ));
+
+
+        public $id;
+        public $usersId;
+        public $ipAddress;
+        public $userAgent;
+
+        public function initialize()
+        {
+            $this->belongsTo('usersId', __NAMESPACE__ . '\Users', 'id', array(
+                'alias' => 'user'
+            ));
+        }
     }
-}

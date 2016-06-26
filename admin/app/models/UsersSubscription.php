@@ -1,17 +1,17 @@
 <?php
-namespace Vokuro\Models;
+	namespace Vokuro\Models;
 
-use Phalcon\Mvc\Model;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+	use Phalcon\Mvc\Model;
+	use Phalcon\Mvc\Model\Validator\Uniqueness;
 
-/**
- * Vokuro\Models\UsersSubscription
- * The regions
- */
-class UsersSubscription extends Model
-{
-	public function initialize()
+	/**
+	 * Vokuro\Models\UsersSubscription
+	 * The regions
+	 */
+	class UsersSubscription extends Model
 	{
-		$this->setSource('users_subscription');
+		public function initialize()
+		{
+			$this->setSource('users_subscription');
+		}
 	}
-}

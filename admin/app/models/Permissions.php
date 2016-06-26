@@ -1,43 +1,25 @@
 <?php
-namespace Vokuro\Models;
+    namespace Vokuro\Models;
 
-use Phalcon\Mvc\Model;
-
-/**
- * Permissions
- * Stores the permissions by profile
- */
-class Permissions extends Model
-{
+    use Phalcon\Mvc\Model;
 
     /**
-     *
-     * @var integer
+     * Permissions
+     * Stores the permissions by profile
      */
-    public $id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $profilesId;
-
-    /**
-     *
-     * @var string
-     */
-    public $resource;
-
-    /**
-     *
-     * @var string
-     */
-    public $action;
-
-    public function initialize()
+    class Permissions extends Model
     {
-        $this->belongsTo('profilesId', __NAMESPACE__ . '\Profiles', 'id', array(
-            'alias' => 'profile'
-        ));
+
+
+        public $id;
+        public $profilesId;
+        public $resource;
+        public $action;
+
+        public function initialize()
+        {
+            $this->belongsTo('profilesId', __NAMESPACE__ . '\Profiles', 'id', array(
+                'alias' => 'profile'
+            ));
+        }
     }
-}
