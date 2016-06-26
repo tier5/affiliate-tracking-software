@@ -30,9 +30,9 @@
             <div class="bar-number" style="margin-left: <?=$this->view->smsQuotaParams['percent']?>%;">
                 <div class="ball"><?=$this->view->smsQuotaParams['smsSentThisMonth']?></div>
                 <div class="bar-text" <?=$this->view->showBarText?>>This Month</div>
-            </div>
         </div>
-        <div class="end-title"><?=$this->view->smsQuotaParams['totalSmsNeeded']?><br /><span class="goal">Goal</span></div>
     </div>
+    <div class="end-title"><?=$this->view->smsQuotaParams['totalSmsNeeded']?><br /><span class="goal">Goal</span></div>
+</div>
 </div>
 <?php } }?>

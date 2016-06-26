@@ -58,7 +58,7 @@
                                             <option value="100">100</option>
                                         </select>
                                     </div>
-                                </div>   
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="row">
@@ -77,8 +77,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <input id="charge-per-sms-control" type="number" value="{{ chargePerSms }}" step="0.01" min="0" class="form-control" placeholder="0.00">
-                                    </div>  
-                                </div>     
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -90,10 +90,10 @@
                                     <div class="col-md-6">
                                         {% if enableDiscountOnUpgrade %}
                                             <input id="enable-discount-on-upgrade-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info">
-                                        {% else  %} 
+                                        {% else  %}
                                             <input id="enable-discount-on-upgrade-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info">
                                         {% endif  %}
-                                    </div>    
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <select id="upgrade-discount-control" class="form-control input-small" value="{{ updgradeDiscount }}"></select>
-                                    </div>     
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -113,8 +113,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <input id="cost-per-sms-control" type="number" value="{{ costPerSms }}" step="0.01" min="0" class="form-control" placeholder="0.00">
-                                    </div>   
-                                </div>  
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="row">
@@ -123,7 +123,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <input id="max-sms-messages-control" type="number" value="{{ maxSmsMessages }}" step="50" min="0" class="form-control" placeholder="1">
-                                    </div>   
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +139,7 @@
                                         {% else  %}
                                             <input id="enable-annual-discount-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info">
                                         {% endif  %}
-                                    </div>  
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -208,24 +208,24 @@
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
                                 <div class="portlet light bordered pricing-plans">
-                                    <div class="portlet-body progression">  
+                                    <div class="portlet-body progression">
                                         <div id="sample_1_wrapper" class="dataTables_wrapper no-footer">
                                             <div class="table-scrollable">
                                                 <table class="table table-striped table-bordered table-hover dataTable no-footer collapsed" width="100%" id="sample_1" role="grid" aria-describedby="sample_1_info" style="width: 100%;">
                                                     <thead>
-                                                        <tr role="row">
-                                                            <th>Locations</th>
-                                                            <th>Discount %</th> 
-                                                            <th>Base Price $</th>
-                                                            <th>SMS Charge $</th>
-                                                            <th>Total Price $</th>
-                                                            <th>Location Discount $</th>
-                                                            <th>Upgrade Discount $</th>
-                                                            <th>Discount Price $</th>
-                                                            <th>SMS Messages</th>
-                                                            <th>SMS Cost $</th>
-                                                            <th>Profit Per Location</th>
-                                                        </tr>
+                                                    <tr role="row">
+                                                        <th>Locations</th>
+                                                        <th>Discount %</th>
+                                                        <th>Base Price $</th>
+                                                        <th>SMS Charge $</th>
+                                                        <th>Total Price $</th>
+                                                        <th>Location Discount $</th>
+                                                        <th>Upgrade Discount $</th>
+                                                        <th>Discount Price $</th>
+                                                        <th>SMS Messages</th>
+                                                        <th>SMS Cost $</th>
+                                                        <th>Profit Per Location</th>
+                                                    </tr>
                                                     </thead>
                                                     <tbody id="progression-table-rows"></tbody>
                                                 </table>
@@ -234,7 +234,7 @@
                                                 <div class="col-md-6 col-sm-6"></div>
                                                 <div class="col-md-6 col-sm-6">
                                                     {% if canEdit %}
-                                                        <button id="remove-segment-btn" class="btn default btn-lg apple-backgound subscription-btn">Remove Last</button>  
+                                                        <button id="remove-segment-btn" class="btn default btn-lg apple-backgound subscription-btn">Remove Last</button>
                                                         <button id="add-segment-btn" class="btn default btn-lg apple-backgound subscription-btn">Add New</button>
                                                         <button id="save-progression-btn" class="btn default btn-lg apple-backgound subscription-btn">Save</button>
                                                         <button id="start-over-btn" class="btn default btn-lg apple-backgound subscription-btn">Start Over</button>
@@ -256,7 +256,7 @@
     jQuery(document).ready(function ($) {
 
         var maxProgressionSegments = 10;
-    
+
         function generatePercentageOptions() {
             var options = "";
             for (var i = 1; i <= 100; i++) {
@@ -268,21 +268,21 @@
         function findLocationRange() {
             var min = 1;
             var max = 10;
-            
+
             var last = $('#progression-table-rows').find('tr').last();
             if (last.length > 0) {
                 min = parseInt($(last.find('td input')[1]).val()) + 1;
                 max = parseInt($(last.find('td input')[1]).val()) + maxProgressionSegments;
             }
-            
+
             return {
-                min: min, 
+                min: min,
                 max: max
             };
         }
-        
+
         function getValueParameters() {
-            
+
             return {
                 name: $('input[id="name-control"]').val(),
                 enableTrialAccount: $('input[id="enable-trial-account-control"]').val() === "on" ? true : false,
@@ -291,17 +291,17 @@
                 costPerSms: $('input[id="cost-per-sms-control"]').val(),
                 maxMessagesOnTrialAccount: $('select[id="free-sms-messages-control"]').val(),
                 upgradeDiscount: $('select[id="upgrade-discount-control"]').val(),
-                chargePerSms: $('input[id="charge-per-sms-control"]').val(), 
+                chargePerSms: $('input[id="charge-per-sms-control"]').val(),
                 maxSmsMessages: $('input[id="max-sms-messages-control"]').val(),
-                enableAnnualDiscount: $('input[id="enable-annual-discount-control"]').val() === "on" ? true : false,     
+                enableAnnualDiscount: $('input[id="enable-annual-discount-control"]').val() === "on" ? true : false,
                 annualDiscount: $('select[id="annual-discount-control"]').val(),
                 pricingDetails: $('#summernote_1').code()
             };
-            
+
         }
-        
+
         function getProgressionDetails() {
-            
+
             var progressionDetails = {};
             $('#progression-table-rows').find('tr').each(function(index) {
                 progressionDetails['segment' + index] = {
@@ -318,27 +318,27 @@
                     profitPerLocation: $(this).find('td.profit-per-location-column').first().text()
                 };
             });
-        
+
             return progressionDetails;
-            
+
         }
-        
+
         function savePricingProfile() {
             var parameters = {};
             $.extend(parameters, getValueParameters(), getProgressionDetails());
 
-            $.post("/businessPricingPlan/savePricingPlan", 
-                JSON.stringify(parameters),
-                function(data) {
-                    if (data.status === true) {
-                        window.location.href = "/businessPricingPlan";
-                    } else {
-                        alert(data.message);
+            $.post("/businessPricingPlan/savePricingPlan",
+                    JSON.stringify(parameters),
+                    function(data) {
+                        if (data.status === true) {
+                            window.location.href = "/businessPricingPlan";
+                        } else {
+                            alert(data.message);
+                        }
                     }
-                }
             );
         }
-        
+
         function initSwitchToggleBindings(options) {
 
             $('input[id="enable-trial-account-control"]').on('switchChange.bootstrapSwitch', function (event, state) {
@@ -370,31 +370,31 @@
                     $(this).text($(event.currentTarget).val()); // Update the cell value
                 });
             });
-            
+
             $('input[id="charge-per-sms-control"]').on('change', function (event) {
                 $('#progression-table-rows').find('tr td.sms-charge-column').each(function (index) {
-                    $(this).text($(event.currentTarget).val()); // Update the cell value    
+                    $(this).text($(event.currentTarget).val()); // Update the cell value
                 });
             });
-            
+
             $('select[id="upgrade-discount-control"]').on('change', function (event) {
                 $('#progression-table-rows').find('tr td.upgrade-discount-column').each(function (index) {
-                    $(this).text($(event.currentTarget).val()); // Update the cell value    
+                    $(this).text($(event.currentTarget).val()); // Update the cell value
                 });
             });
-            
+
             $('input[id="cost-per-sms-control"]').on('change', function (event) {
                 $('#progression-table-rows').find('tr td.sms-cost-column').each(function (index) {
-                    $(this).text($(event.currentTarget).val()); // Update the cell value    
+                    $(this).text($(event.currentTarget).val()); // Update the cell value
                 });
             });
-            
+
             $('input[id="max-sms-messages-control"]').on('change', function (event) {
                 $('#progression-table-rows').find('tr td.sms-messages-column').each(function (index) {
-                    $(this).text($(event.currentTarget).val()); // Update the cell value    
+                    $(this).text($(event.currentTarget).val()); // Update the cell value
                 });
             });
-            
+
         }
 
         function initSmsSlider() {
@@ -477,7 +477,7 @@
 
             $('#progression-table-rows').append(row);
             $('#progression-table-rows').find('tr td > select.location-discount-control').last().append(options);
-                
+
         }
 
         function removeSegment() {
@@ -486,7 +486,7 @@
                 segment.remove();
             }
         }
-        
+
         function syncPricingPlan() {
             $('input[id="base-price-control"]').trigger("change");
             $('input[id="charge-per-sms-control"]').trigger("change");
@@ -494,11 +494,11 @@
             $('input[id="cost-per-sms-control"]').trigger("change");
             $('input[id="max-sms-messages-control"]').trigger("change");
         }
-        
+
         function rebuildProgression(options) {
             /* Init progression */
             $('#progression-table-rows').empty();
-            
+
             for (var i = 0; i < maxProgressionSegments; i++) {
                 var min = (i * maxProgressionSegments) + 1;
                 var max = ((i + 1) * maxProgressionSegments);
@@ -507,7 +507,7 @@
 
             /* Synchronize pricing plan values to columns */
             syncPricingPlan();
-            
+
         }
 
         function initPricingPlanControls(options) {

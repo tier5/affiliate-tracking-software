@@ -69,32 +69,32 @@
             <?php } else { ?>
             <div class="free_subscription_pricing_plan show">
                 <hr/>
-                <h4>Free Subscription Plan</h4>      
+                <h4>Free Subscription Plan</h4>
                 <div class="form-group">
                     <label for="locations" class="col-md-4 control-label">Locations</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="number" placeholder="Number of locations" name="free_locations" /> 
+                        <input class="form-control" type="number" placeholder="Number of locations" name="free_locations" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="sms_messages" class="col-md-4 control-label">Sms Messages</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="number" placeholder="Number of messages" name="sms_messages" /> 
+                        <input class="form-control" type="number" placeholder="Number of messages" name="sms_messages" />
                     </div>
                 </div>
             </div>
             <hr />
-            <h4>Create Administrator</h4>      
+            <h4>Create Administrator</h4>
             <div class="form-group">
                 <label for="admin_name" class="col-md-4 control-label">Admin Full Name</label>
                 <div class="col-md-8">
-                    <input class="form-control" type="text" placeholder="Admin Full Name" name="admin_name" value="<?=(isset($_POST['admin_name'])?$_POST["admin_name"]:'')?>" /> 
+                    <input class="form-control" type="text" placeholder="Admin Full Name" name="admin_name" value="<?=(isset($_POST['admin_name'])?$_POST["admin_name"]:'')?>" />
                 </div>
             </div>
             <div class="form-group">
                 <label for="admin_email" class="col-md-4 control-label">Admin Email</label>
                 <div class="col-md-8">
-                    <input class="form-control" type="text" placeholder="Admin Email" name="admin_email" value="<?=(isset($_POST['admin_email'])?$_POST["admin_email"]:'')?>" /> 
+                    <input class="form-control" type="text" placeholder="Admin Email" name="admin_email" value="<?=(isset($_POST['admin_email'])?$_POST["admin_email"]:'')?>" />
                 </div>
             </div>
             <?php } ?>

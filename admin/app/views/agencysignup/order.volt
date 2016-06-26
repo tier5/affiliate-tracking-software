@@ -101,9 +101,9 @@
                             <div class="col-xs-9">
                                 <select name="CardType" class="form-control">
                                     <option value="0">Please select card type</option>
-                                {% for Card in tCardTypes %}
-                                    <option value="{{ Card }}">{{ Card }}</option>
-                                {% endfor %}
+                                    {% for Card in tCardTypes %}
+                                        <option value="{{ Card }}">{{ Card }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -111,16 +111,16 @@
                             <div class="col-xs-3"><label>Expiration Date</label><span class="required">*</span></div>
                             <div class="col-xs-5">
                                 <select name="MonthExpiration" class="form-control">
-                                {% for NumMonth, Month in tMonths %}
-                                    <option value="{{ NumMonth }}">{{ Month }}</option>
-                                {% endfor %}
+                                    {% for NumMonth, Month in tMonths %}
+                                        <option value="{{ NumMonth }}">{{ Month }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-xs-4">
                                 <select name="YearExpiration" class="form-control">
-                                {% for Year in tYears %}
-                                    <option value="{{ Year }}">{{ Year }}</option>
-                                {% endfor %}
+                                    {% for Year in tYears %}
+                                        <option value="{{ Year }}">{{ Year }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>

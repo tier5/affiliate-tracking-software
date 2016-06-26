@@ -14,25 +14,25 @@
   <div class="portlet-body form">
     {{ content() }}
     <form class="form-horizontal" id="userform" role="form" method="post" autocomplete="off">
-    <div class="form-group" style="padding-top: 30px;">
-      <label for="name" class="col-md-2 control-label">Name:</label>
-      <div class="col-md-4">
-        {{ form.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name']) }}
+      <div class="form-group" style="padding-top: 30px;">
+        <label for="name" class="col-md-2 control-label">Name:</label>
+        <div class="col-md-4">
+          {{ form.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name']) }}
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label for="email" class="col-md-2 control-label">Email:</label>
-      <div class="col-md-4">
-        {{ form.render("email", ['class': 'form-control', 'placeholder': 'Email', 'type': 'email']) }}
+      <div class="form-group">
+        <label for="email" class="col-md-2 control-label">Email:</label>
+        <div class="col-md-4">
+          {{ form.render("email", ['class': 'form-control', 'placeholder': 'Email', 'type': 'email']) }}
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label for="phone" class="col-md-2 control-label">Cell Phone:</label>
-      <div class="col-md-4">
-        {{ form.render("phone", ['class': 'form-control', 'placeholder': 'Cell Phone', 'type': 'tel']) }}
+      <div class="form-group">
+        <label for="phone" class="col-md-2 control-label">Cell Phone:</label>
+        <div class="col-md-4">
+          {{ form.render("phone", ['class': 'form-control', 'placeholder': 'Cell Phone', 'type': 'tel']) }}
+        </div>
       </div>
-    </div>
-    <?php 
+      <?php
     if ($profilesId!=3) {
       ?>
       <div class="form-group">
@@ -47,89 +47,89 @@
       <?php
     }
     ?>
-    <div class="form-group">
-      <label for="locations" class="col-md-2 control-label">Location:</label>
-      <div class="col-md-8">
-        <div id="userlocationselect" style="display: none;">
-        <?php 
+      <div class="form-group">
+        <label for="locations" class="col-md-2 control-label">Location:</label>
+        <div class="col-md-8">
+          <div id="userlocationselect" style="display: none;">
+            <?php
         if ($profilesId!=3) {
           $checked = false;
           if ($user->is_all_locations==1) $checked = true;
-          //check post also
-          if(!empty($_POST['locations'])) {
+            //check post also
+            if(!empty($_POST['locations'])) {
             foreach($_POST['locations'] as $check) {
-              if ($check == 'all') $checked = true;
+            if ($check == 'all') $checked = true;
             }
-          }
-          ?>
-          <div class="location-data">
-            <input type="checkbox" name="locations[]" value="all" <?=($checked?'checked="checked"':'')?> /> All
-          </div>
-          <?php
+            }
+            ?>
+            <div class="location-data">
+              <input type="checkbox" name="locations[]" value="all" <?=($checked?'checked="checked"':'')?> /> All
+            </div>
+            <?php
         }
-        
+
         $found = false;
-        foreach($locations as $data) { 
+        foreach($locations as $data) {
           $found = true;
-          
+
           //now check if this record should be checked
           $checked = false;
-          foreach($userlocations as $ul) { 
+          foreach($userlocations as $ul) {
             if ($ul->location_id == $data->location_id) $checked = true;
-          }
-          //check post also
-          if(!empty($_POST['locations'])) {
-            foreach($_POST['locations'] as $check) {
-              if ($check == $data->location_id) $checked = true;
             }
-          }
-          ?>
-          <div class="location-data">
-            <input type="checkbox" name="locations[]" value="<?=$data->location_id?>" <?=($checked?'checked="checked"':'')?> /> <?=$data->name?>
-          </div>
-          <?php
-        } 
+            //check post also
+            if(!empty($_POST['locations'])) {
+            foreach($_POST['locations'] as $check) {
+            if ($check == $data->location_id) $checked = true;
+            }
+            }
+            ?>
+            <div class="location-data">
+              <input type="checkbox" name="locations[]" value="<?=$data->location_id?>" <?=($checked?'checked="checked"':'')?> /> <?=$data->name?>
+            </div>
+            <?php
+        }
         if (!$found) {
           ?>
-          No locations found
-          <?php
-        }  
+            No locations found
+            <?php
+        }
         ?>
+          </div>
+          <div id="userlocationall" style="display: none;">All</div>
         </div>
-        <div id="userlocationall" style="display: none;">All</div>
       </div>
-    </div>
-    <div class="form-group">
-      <div class="error" id="emailerror" style="display: none;">
-        Invalid email.
+      <div class="form-group">
+        <div class="error" id="emailerror" style="display: none;">
+          Invalid email.
+        </div>
+        <div class="col-md-offset-2 col-md-10">
+          <input type="submit" class="btnLink" value="Save" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: right;" />
+        </div>
       </div>
-      <div class="col-md-offset-2 col-md-10">
-        <input type="submit" class="btnLink" value="Save" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: right;" />
-      </div>
-    </div>
-    {{ form.render("id") }}
-  </form>
+      {{ form.render("id") }}
+    </form>
   </div>
 </div>
 <script type="text/javascript">
-//Interactive Chart
-jQuery(document).ready(function($){
-  function isEmail(email) {
-    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    return regex.test(email);
-  }
-  
-  
-
-  $("#userform").on("submit", function(e){
-
-    if($('#email').val() != '' && !isEmail($('#email').val())){
-      e.preventDefault();
-      $('#emailerror').show();
-      return false;
+  //Interactive Chart
+  jQuery(document).ready(function($){
+    function isEmail(email) {
+      var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      return regex.test(email);
     }
-    $('#emailerror').hide();
-    return true;
+
+
+
+    $("#userform").on("submit", function(e){
+
+      if($('#email').val() != '' && !isEmail($('#email').val())){
+        e.preventDefault();
+        $('#emailerror').show();
+        return false;
+      }
+      $('#emailerror').hide();
+      return true;
+    });
   });
-});
 </script>

@@ -34,8 +34,8 @@
                         <div class="panel panel-default apple-backgound">
                             <div class="panel-body">
                                 <div id="current-plan" class="responsive-float-left subscription-panel-default-caption"
-                                    data-locations="<?php echo $this->view->subscriptionPlan['locations']; ?>"
-                                    data-messages="<?php echo $this->view->subscriptionPlan['sms_messages_per_location']; ?>">
+                                     data-locations="<?php echo $this->view->subscriptionPlan['locations']; ?>"
+                                     data-messages="<?php echo $this->view->subscriptionPlan['sms_messages_per_location']; ?>">
                                     <div><span id="current-locations" class="bold"></span> Location(s)</div>
                                     <div><span id="current-messages" class="bold"></span> Text Messages</div>
                                 </div>
@@ -127,8 +127,8 @@
                                             <div><span id="change-plan-locations" class="bold"></span> Location(s)</div>
                                             <div><span id="change-plan-messages" class="bold"></span> Text Messages</div>
                                         </div>
-                                        <div id="pricing-attr" 
-                                             class="responsive-float-right subscription-panel-large-caption" 
+                                        <div id="pricing-attr"
+                                             class="responsive-float-right subscription-panel-large-caption"
                                              data-base="<?php echo $this->view->pricingPlan['base_price']; ?>"
                                              data-cpm="<?php echo $this->view->pricingPlan['charge_per_sms']; ?>"
                                              data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>">
@@ -235,7 +235,7 @@
                                 <div class="form-group">
                                     <div class="row">
                                         <div class="col-md-12 col-sm-12">
-                                            <div id="plan-type" class="btn-group btn-toggle subscription-toggle"> 
+                                            <div id="plan-type" class="btn-group btn-toggle subscription-toggle">
                                                 <button class="btn active btn-primary" data-subscription='M'>Monthly</button>
                                                 <button class="btn btn-default" data-subscription='Y'>Annually</button>
                                             </div>
@@ -319,35 +319,35 @@
         var maxMessages = 1000;
 
         function initSubscriptionParameters() {
-            var currentPlanLocations = 
-               parseInt($(document.getElementById("current-plan"))[0].dataset.locations);
+            var currentPlanLocations =
+                    parseInt($(document.getElementById("current-plan"))[0].dataset.locations);
             var currentPlanMessages =
-               parseInt($(document.getElementById("current-plan"))[0].dataset.messages);
-            
+                    parseInt($(document.getElementById("current-plan"))[0].dataset.messages);
+
             /* Slider initializations */
             smsLocationSlider.setValue(currentPlanLocations, true, true);
             smsMessagesSlider.setValue(currentPlanMessages, true, true);
-            
+
             /* Message init */
             $('#current-locations').text(smsLocationSlider.getValue());
             $('#change-plan-locations').text(smsLocationSlider.getValue());
             $('#slider-locations').text(smsLocationSlider.getValue());
             $('#modal-locations').text(smsLocationSlider.getValue());
-            
+
             /* Locations init */
             $('#current-messages').text(smsMessagesSlider.getValue());
             $('#change-plan-messages').text(smsMessagesSlider.getValue());
             $('#slider-messages').text(smsMessagesSlider.getValue());
             $('#modal-messages').text(smsMessagesSlider.getValue());
-            
+
             /* Lock the plan type selector if yearly plan */
-            var planType = 
-                $(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
+            var planType =
+                    $(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
             if (planType === 'Y') {  // (TODO: Add expiration function)
                 // $('.subscription-toggle').click();  // Toggle to yearly
                 // $(document.getElementById("plan-type")).prop('disabled', true);
             }
-            
+
             /* Calculate the initial plan value */
             calculatePlanValue();
         }
@@ -364,13 +364,13 @@
             var totalCost = (costPerLocation * locations);
 
             var price = Math.round(parseFloat(priceElem.dataset.base) + totalCost);
-            
+
             var planType = $(document.getElementById("plan-type")).find('.btn-primary').text();
             if (planType === 'Annually') {
-                price = Math.round(((price * 12) * parseFloat(1 - priceElem.dataset.ad))); // Apply the discount 
+                price = Math.round(((price * 12) * parseFloat(1 - priceElem.dataset.ad))); // Apply the discount
                 $('#annual-cost').text('$' + price.toFixed(2));
                 $('#paid-annually-caption').show();
-                price = Math.round(price/12);  
+                price = Math.round(price/12);
             } else {
                 $('#paid-annually-caption').hide();
             }
@@ -383,7 +383,7 @@
             var locations = smsLocationSlider.getValue();
             var messages = smsMessagesSlider.getValue();
             var planType = $(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
-            
+
             var price = $(document.getElementById("change-plan-final-price")).text();
             if (planType === 'Annually') {
                 price = $('#annual-cost').text('$' + price.toFixed(2)).substring(1); // Strip the leading dollar sign
@@ -391,61 +391,61 @@
             ;
             return {locations: locations, messages: messages, planType: planType, price: price};
         };
-        
+
         function getCCParams() {
-            var cardNumber = $('#updateCardModal .card-number').val(); 
+            var cardNumber = $('#updateCardModal .card-number').val();
             var cardName = $('#updateCardModal .name').val();
             var expirationDate = $('#updateCardModal .expiry').val();
             var csv = $('#updateCardModal .cvc').val();
-            return { 
-                cardNumber: cardNumber, 
-                cardName: cardName, 
-                expirationDate: expirationDate, 
+            return {
+                cardNumber: cardNumber,
+                cardName: cardName,
+                expirationDate: expirationDate,
                 csv: csv
             };
         };
-        
+
         function pingPaymentProfile() {
             $.post('/businessSubscription/hasPaymentProfile', getCCParams())
-                .done(function (data) {
-                    if (data.status === true) {
-                        changePlan()
-                    } else {
-                        $('#updateCardModal').data('paymentProfile', "new");
-                        $('#updateCardModal').modal('show');
-                    }
-                })
-                .fail(function () {})
-                .always(function () {});
+                    .done(function (data) {
+                        if (data.status === true) {
+                            changePlan()
+                        } else {
+                            $('#updateCardModal').data('paymentProfile', "new");
+                            $('#updateCardModal').modal('show');
+                        }
+                    })
+                    .fail(function () {})
+                    .always(function () {});
         }
-        
+
         function addPlanWithPaymentProfile() {
             var allParams = $.extend({}, getCCParams(), getSubscriptionParams());
             $.post('/businessSubscription/addPlanWithPaymentProfile', allParams)
-                .done(function (data) {
-                    if (data.status === true) {
-                        $('#updatePlanModal').modal('show');
-                    } else {
-                        alert("Change plan failed!!!");
-                    }
-                })
-                .fail(function () {})
-                .always(function () {});
+                    .done(function (data) {
+                        if (data.status === true) {
+                            $('#updatePlanModal').modal('show');
+                        } else {
+                            alert("Change plan failed!!!");
+                        }
+                    })
+                    .fail(function () {})
+                    .always(function () {});
         }
-        
-        function changePlan() {  
+
+        function changePlan() {
             $.post('/businessSubscription/changePlan', getSubscriptionParams())
-                .done(function (data) {
-                    if (data.status === true) {
-                        $('#updatePlanModal').modal('show');
-                    } else {
-                        alert("Change plan failed!!!");
-                    }
-                })
-                .fail(function () {})
-                .always(function () {});
+                    .done(function (data) {
+                        if (data.status === true) {
+                            $('#updatePlanModal').modal('show');
+                        } else {
+                            alert("Change plan failed!!!");
+                        }
+                    })
+                    .fail(function () {})
+                    .always(function () {});
         }
-        
+
         function updateLargeCaption(current, max) {
             if (current === max) {
                 $('#contact-us').show();
@@ -460,13 +460,13 @@
 
         function updateCard() {
             $.post('/businessSubscription/updatePaymentProfile', getCCParams())
-                .done(function (data) {
-                    if (data.status !== true) {
-                        alert("Update card failed!!!")
-                    } 
-                })
-                .fail(function () {})
-                .always(function () {});
+                    .done(function (data) {
+                        if (data.status !== true) {
+                            alert("Update card failed!!!")
+                        }
+                    })
+                    .fail(function () {})
+                    .always(function () {});
         }
 
         var smsLocationSlider = new Slider("#smsLocationSlider", {
@@ -520,7 +520,7 @@
             ],
             ticks_snap_bounds: 1
         });
-        
+
         smsLocationSlider.on('change', function (values) {
             $('#change-plan-locations').text(values.newValue);
             $('#slider-locations').text(values.newValue);
@@ -542,9 +542,9 @@
             } else {
                 updateCard();
             }
-            $('#updateCardModal').modal('hide');  // We can hide the modal here, we don't need any paramters    
+            $('#updateCardModal').modal('hide');  // We can hide the modal here, we don't need any paramters
         });
-        
+
         $('.subscription-toggle').click(function () {
             $(this).find('.btn').toggleClass('active');
 
@@ -556,12 +556,12 @@
 
             calculatePlanValue();
         });
-        
+
         $('#submit-change-plan-btn').click(function () {
             pingPaymentProfile();
         });
-        
+
         initSubscriptionParameters();
-        
+
     });
 </script>

@@ -47,44 +47,44 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
 
-<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 </head>
 <!-- END HEAD -->
 <body class="signup">
 <div class="topheader"></div>
 <header>
-<div class="headercontent">
-  <!-- BEGIN LOGO -->
-  <div class="logo">
-      <a href="/"><img src="<?=(false && isset($logo_setting) && $logo_setting != ''?$logo_setting:'/img/logo-white.gif')?>" alt="" /></a>
-  </div>
-  <!-- END LOGO -->
-  <div class="steps">
-    <div class="step"><img src="/img/step-<?=($current_step > 1?'on':'current')?>.gif" alt="Sign up form, Step 1 (Account)" /></div>
-    <div class="divider"><img src="/img/step-line-<?=($current_step > 1?'on':'off')?>.gif" /></div>
-    <div class="step"><img src="/img/step-<?=($current_step == 2?'current':($current_step > 2?'on':'off'))?>.gif" alt="Sign up form, Step 2 (Add Location)" /></div>
-    <div class="divider"><img src="/img/step-line-<?=($current_step > 2?'on':'off')?>.gif" /></div>
-    <div class="step"><img src="/img/step-<?=($current_step == 3?'current':($current_step > 3?'on':'off'))?>.gif" alt="Sign up form, Step 3 (Customize Survey)" /></div>
-    <div class="divider"><img src="/img/step-line-<?=($current_step > 3?'on':'off')?>.gif" /></div>
-    <div class="step"><img src="/img/step-<?=($current_step == 4?'current':($current_step > 4?'on':'off'))?>.gif" alt="Sign up form, Step 4 (Add Employee)" /></div>
-    <div class="divider"><img src="/img/step-line-<?=($current_step > 4?'on':'off')?>.gif" /></div>
-    <div class="step"><img src="/img/step-<?=($current_step == 5?'current':($current_step > 5?'on':'off'))?>.gif" alt="Sign up form, Step 5 (Share)" /></div>
-  </div>
-  <div class="steps-desc">
-    <div id="step1">Step 1</div>
-    <div id="step2">Step 2</div>
-    <div id="step3">Step 3</div>
-    <div id="step4">Step 4</div>
-    <div id="step5">Step 5</div>
-  </div>
-</div>
+    <div class="headercontent">
+        <!-- BEGIN LOGO -->
+        <div class="logo">
+            <a href="/"><img src="<?=(false && isset($logo_setting) && $logo_setting != ''?$logo_setting:'/img/logo-white.gif')?>" alt="" /></a>
+        </div>
+        <!-- END LOGO -->
+        <div class="steps">
+            <div class="step"><img src="/img/step-<?=($current_step > 1?'on':'current')?>.gif" alt="Sign up form, Step 1 (Account)" /></div>
+            <div class="divider"><img src="/img/step-line-<?=($current_step > 1?'on':'off')?>.gif" /></div>
+            <div class="step"><img src="/img/step-<?=($current_step == 2?'current':($current_step > 2?'on':'off'))?>.gif" alt="Sign up form, Step 2 (Add Location)" /></div>
+            <div class="divider"><img src="/img/step-line-<?=($current_step > 2?'on':'off')?>.gif" /></div>
+            <div class="step"><img src="/img/step-<?=($current_step == 3?'current':($current_step > 3?'on':'off'))?>.gif" alt="Sign up form, Step 3 (Customize Survey)" /></div>
+            <div class="divider"><img src="/img/step-line-<?=($current_step > 3?'on':'off')?>.gif" /></div>
+            <div class="step"><img src="/img/step-<?=($current_step == 4?'current':($current_step > 4?'on':'off'))?>.gif" alt="Sign up form, Step 4 (Add Employee)" /></div>
+            <div class="divider"><img src="/img/step-line-<?=($current_step > 4?'on':'off')?>.gif" /></div>
+            <div class="step"><img src="/img/step-<?=($current_step == 5?'current':($current_step > 5?'on':'off'))?>.gif" alt="Sign up form, Step 5 (Share)" /></div>
+        </div>
+        <div class="steps-desc">
+            <div id="step1">Step 1</div>
+            <div id="step2">Step 2</div>
+            <div id="step3">Step 3</div>
+            <div id="step4">Step 4</div>
+            <div id="step5">Step 5</div>
+        </div>
+    </div>
 </header>
 
 <div class="content">
-{{ content() }}
+    {{ content() }}
 </div>
 <footer>
-  <div class="copyright"> &copy; Copyright Review Velocity.  All Rights Reserved. </div>
+    <div class="copyright"> &copy; Copyright Review Velocity.  All Rights Reserved. </div>
 </footer>
 
 </body>

@@ -1,33 +1,33 @@
 <!-- views/review/index.volt -->
 {{ content() }}
 <div class="review index">
-<?php 
+  <?php
 //verify that we found a review invite
 if (isset($invite)) {
   //we have an invite, so find what type of question we should ask
   $question_type = 1;
   if ($location && $location->review_invite_type_id > 0) {
-    $question_type = $location->review_invite_type_id;
+  $question_type = $location->review_invite_type_id;
   }
-  
+
   if ($question_type == 3) {
-    //question type is 3 = NPS Rating
-    ?>
+  //question type is 3 = NPS Rating
+  ?>
   <div class="rounded-wrapper NPS">
     <div class="rounded">
-      <?php 
+      <?php
       if (isset($logo_setting) && $logo_setting != '') {
         ?>
-        <div class="page-logo">
-          <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
-        </div>
-        <?php 
-      } else if (isset($name) && $name != '') {      
+      <div class="page-logo">
+        <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
+      </div>
+      <?php
+      } else if (isset($name) && $name != '') {
         ?>
-        <div class="page-logo">
-          <?=$name?>
-        </div>
-        <?php 
+      <div class="page-logo">
+        <?=$name?>
+      </div>
+      <?php
       }
       ?>
       <div class="question">How Likely Are You To Recommend Us To A Friend?</div>
@@ -44,84 +44,84 @@ if (isset($invite)) {
     </div>
     <div class="subtext text-center">Next Step, Write A Review</div>
   </div>
-    <?php 
+  <?php
   } elseif ($question_type == 2) {
     //question type is 2 = Star Rating
     ?>
   <div class="rounded-wrapper star">
     <div class="rounded">
-      <?php 
+      <?php
       if (isset($logo_setting) && $logo_setting != '') {
         ?>
-        <div class="page-logo">
-          <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
-        </div>
-        <?php 
-      } else if (isset($name) && $name != '') {      
+      <div class="page-logo">
+        <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
+      </div>
+      <?php
+      } else if (isset($name) && $name != '') {
         ?>
-        <div class="page-logo">
-          <?=$name?>
-        </div>
-        <?php 
+      <div class="page-logo">
+        <?=$name?>
+      </div>
+      <?php
       }
       ?>
       <div class="question">Please Rate Us?</div>
       <form action="/review/recommend" class="form-horizontal" role="form" method="get">
-      <div class="row text-center"><input id="input-2c" name="r" class="rating" min="0" max="5" step="0.5" data-size="xl" data-symbol="&#xf005;" data-glyphicon="false" data-rating-class="rating-fa" /></div>
-      <div class="row text-center last"><input type="submit" class="btn-lg btn-recommend" value="Submit" /></div> 
-      <input type="hidden" name="a" value="<?=htmlspecialchars($_GET["a"])?>" />
+        <div class="row text-center"><input id="input-2c" name="r" class="rating" min="0" max="5" step="0.5" data-size="xl" data-symbol="&#xf005;" data-glyphicon="false" data-rating-class="rating-fa" /></div>
+        <div class="row text-center last"><input type="submit" class="btn-lg btn-recommend" value="Submit" /></div>
+        <input type="hidden" name="a" value="<?=htmlspecialchars($_GET["a"])?>" />
       </form>
     </div>
     <div class="subtext text-center">Next Step, Write A Review</div>
   </div>
-    <?php 
+  <?php
   } else {
     //question type is 1 = Question
     ?>
   <div class="rounded-wrapper">
     <div class="rounded">
-      <?php 
+      <?php
       if (isset($logo_setting) && $logo_setting != '') {
         ?>
-        <div class="page-logo">
-          <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
-        </div>
-        <?php 
-      } else if (isset($name) && $name != '') {      
+      <div class="page-logo">
+        <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
+      </div>
+      <?php
+      } else if (isset($name) && $name != '') {
         ?>
-        <div class="page-logo">
-          <?=$name?>
-        </div>
-        <?php 
+      <div class="page-logo">
+        <?=$name?>
+      </div>
+      <?php
       }
       ?>
       <div class="question">Would You Recommend Us?</div>
       <div class="row text-center"><a href="/review/recommend?a=<?=htmlspecialchars($_GET["a"])?>" class="btn-lg btn-recommend">Yes</a></div>
-      <div class="row text-center last"><a href="/review/nothanks?a=<?=htmlspecialchars($_GET["a"])?>" class="btn-lg btn-nothanks">No Thanks</a></div>  
+      <div class="row text-center last"><a href="/review/nothanks?a=<?=htmlspecialchars($_GET["a"])?>" class="btn-lg btn-nothanks">No Thanks</a></div>
     </div>
     <div class="subtext text-center">Next Step, Write A Review</div>
   </div>
-    <?php 
+  <?php
   }
 } else {
   //no review invite was found
   ?>
   <div class="rounded-wrapper">
     <div class="rounded">
-      <?php 
+      <?php
       if (isset($logo_setting) && $logo_setting != '') {
         ?>
-        <div class="page-logo">
-          <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
-        </div>
-        <?php 
+      <div class="page-logo">
+        <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
+      </div>
+      <?php
       }
       ?>
       <div class="question">No review invite found.</div>
       <div class="row text-center">&nbsp;</div>
     </div>
   </div>
-  <?php 
+  <?php
 } //end checking for a review invite
 ?>
 </div>

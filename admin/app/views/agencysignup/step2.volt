@@ -36,12 +36,12 @@
             </div>
             <div class="col-xs-8">
                 <input type="text" class="form-control" id="upload-file-info"
-                    {% if LogoFilename %}
-                        value="{{  LogoFilename }}"
-                    {% else %}
-                        value="No file chosen"
-                    {% endif %}
-                    readonly>
+                        {% if LogoFilename %}
+                            value="{{  LogoFilename }}"
+                        {% else %}
+                            value="No file chosen"
+                        {% endif %}
+                       readonly>
             </div>
         </div>
         <div class="col-xs-6">

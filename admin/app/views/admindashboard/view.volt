@@ -53,54 +53,54 @@
 
 
 {% for user in users %}
-{% if loop.first %}
-<div class="portlet box red" style="clear: both;">
-  <div class="portlet-title">
+  {% if loop.first %}
+    <div class="portlet box red" style="clear: both;">
+    <div class="portlet-title">
       <div class="caption">
-          <i class="fa fa-user"></i> Employee List </div>
+        <i class="fa fa-user"></i> Employee List </div>
       <div class="tools"> </div>
-  </div>
-  <div class="portlet-body">
-          <!-- Start .panel -->
-          <div class="panel-default toggle panelMove panelClose panelRefresh">
-            <div class="">
-  <table id="basic-datatables" class="table table-striped table-bordered" cellspacing="0" width="100%">
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Profile</th>
-    <th>Status</th>
-    <th>Location</th>
-    <th>Actions</th>
-  </tr>
-  </thead>
-  <tfoot>
-  <tr>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Profile</th>
-    <th>Status</th>
-    <th>Location</th>
-    <th>Actions</th>
-  </tr>
-  </tfoot>
-  <tbody>
-{% endif %}
+    </div>
+    <div class="portlet-body">
+    <!-- Start .panel -->
+    <div class="panel-default toggle panelMove panelClose panelRefresh">
+    <div class="">
+    <table id="basic-datatables" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
     <tr>
-      <td>{{ user.name }}</td>
-      <td>{{ user.email }}</td>
-      <td>{{ user.profile.name }}</td>
-      <td>{{ user.active == 'Y' ? 'Active' : 'Archived' }}</td>
-      <td style="width: 100% !important;">
+      <th>Name</th>
+      <th>Email</th>
+      <th>Profile</th>
+      <th>Status</th>
+      <th>Location</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Profile</th>
+      <th>Status</th>
+      <th>Location</th>
+      <th>Actions</th>
+    </tr>
+    </tfoot>
+    <tbody>
+  {% endif %}
+  <tr>
+    <td>{{ user.name }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.profile.name }}</td>
+    <td>{{ user.active == 'Y' ? 'Active' : 'Archived' }}</td>
+    <td style="width: 100% !important;">
       {% if user.profilesId == 1 or user.profilesId == 4 %}
         <div><b>All</b></div>
       {% else %}
         {% for location in user.locations %}
-        <div><b>{{ location.name }}</b><br />{{ location.address }}<br />{{ location.locality }}, {{ location.state_province }}, {{ location.postal_code }}</div>
+          <div><b>{{ location.name }}</b><br />{{ location.address }}<br />{{ location.locality }}, {{ location.state_province }}, {{ location.postal_code }}</div>
         {% endfor %}
       {% endif %}</td>
-      <td style="text-align: right;">
+    <td style="text-align: right;">
       <div class="actions">
         <div class="btn-group">
           <a data-toggle="dropdown" href="javascript:;" class="btn btn-sm green dropdown-toggle" aria-expanded="false"> Actions <i class="fa fa-angle-down"></i></a>
@@ -112,17 +112,17 @@
           </ul>
         </div>
       </div>
-      </td>
-    </tr>
-{% if loop.last %}
-  </tbody>
-  </table>
-            </div>
-          </div>
-          <!-- End .panel -->
-  </div>
-</div>
-{% endif %}
+    </td>
+  </tr>
+  {% if loop.last %}
+    </tbody>
+    </table>
+    </div>
+    </div>
+    <!-- End .panel -->
+    </div>
+    </div>
+  {% endif %}
 {% else %}
-    No employees
+  No employees
 {% endfor %}

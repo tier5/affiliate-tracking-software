@@ -27,26 +27,26 @@
           {{ form.render("phone", ['class': 'form-control', 'placeholder': 'Phone', 'type': 'tel']) }}
         </div>
       </div>
-      <?php 
+      <?php
       if ($profilesId!=3) {
         ?>
-        <div class="form-group">
-          <label for="profilesId" class="col-md-2 control-label">Type:</label>
-          <div class="col-md-4">
-            <select name="type" id="type" class="form-control" style="width: 100%;">
-              <option value="">Admin</option>
-              <option value="1" <?=(isset($_POST['type']) && $_POST['type']=='1'?'selected="selected"':'')?>>Admin & Employee</option>
-            </select>
-          </div>
+      <div class="form-group">
+        <label for="profilesId" class="col-md-2 control-label">Type:</label>
+        <div class="col-md-4">
+          <select name="type" id="type" class="form-control" style="width: 100%;">
+            <option value="">Admin</option>
+            <option value="1" <?=(isset($_POST['type']) && $_POST['type']=='1'?'selected="selected"':'')?>>Admin & Employee</option>
+          </select>
         </div>
-        <?php
+      </div>
+      <?php
       }
       ?>
       <div class="form-group">
         <label for="locations" class="col-md-2 control-label">Locations</label>
         <div class="col-md-8">
           <div id="userlocationselect" style="display: none;">
-          <?php 
+            <?php
           if ($profilesId!=3) {
             $checked = false;
             //check post also
@@ -61,66 +61,66 @@
             </div>
             <?php
           }
-          
+
           $found = false;
-          foreach($locations as $data) { 
+          foreach($locations as $data) {
             $found = true;
-          
+
             //now check if this record should be checked
             $checked = false;
-            //check post 
+            //check post
             if(!empty($_POST['locations'])) {
               foreach($_POST['locations'] as $check) {
                 if ($check == $data->location_id) $checked = true;
-              }
-            } 
+            }
+            }
             ?>
             <div class="location-data">
               <input type="checkbox" name="locations[]" value="<?=$data->location_id?>" <?=($checked?'checked="checked"':'')?> /> <?=$data->name?>
             </div>
             <?php
-          } 
+          }
           if (!$found) {
             ?>
             No locations found
             <?php
-          }  
+          }
           ?>
           </div>
           <div id="userlocationall" <?=($profilesId==3?' style="display: none;"':'')?>>All</div>
-        </div>
       </div>
-      <div class="form-group">
-        <div class="error" id="emailerror" style="display: none;">
-          Invalid email.
-        </div>
-        <div class="col-md-offset-2 col-md-10">
-          <input type="submit" class="btnLink" value="Save" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: right;" />
-        </div>
-      </div>
-    </form>
   </div>
+  <div class="form-group">
+    <div class="error" id="emailerror" style="display: none;">
+      Invalid email.
+    </div>
+    <div class="col-md-offset-2 col-md-10">
+      <input type="submit" class="btnLink" value="Save" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: right;" />
+    </div>
+  </div>
+  </form>
+</div>
 </div>
 
 <script type="text/javascript">
-//Interactive Chart
-jQuery(document).ready(function($){
-  function isEmail(email) {
-    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    return regex.test(email);
-  }
-  
-  
-
-  $("#userform").on("submit", function(e){
-
-    if($('#email').val() != '' && !isEmail($('#email').val())){
-      e.preventDefault();
-      $('#emailerror').show();
-      return false;
+  //Interactive Chart
+  jQuery(document).ready(function($){
+    function isEmail(email) {
+      var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      return regex.test(email);
     }
-    $('#emailerror').hide();
-    return true;
+
+
+
+    $("#userform").on("submit", function(e){
+
+      if($('#email').val() != '' && !isEmail($('#email').val())){
+        e.preventDefault();
+        $('#emailerror').show();
+        return false;
+      }
+      $('#emailerror').hide();
+      return true;
+    });
   });
-});
 </script>

@@ -202,9 +202,9 @@
                     <div class="col-xs-10">
                         <span class="description-text">
                             <ul>
-                            <li>Increase online reviews</li>
-                            <li>Employee accountability</li>
-                            <li>More customers and revenue</li>
+                                <li>Increase online reviews</li>
+                                <li>Employee accountability</li>
+                                <li>More customers and revenue</li>
                             </ul>
                         </span>
                     </div>
