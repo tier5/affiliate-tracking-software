@@ -122,7 +122,8 @@ class AuthorizeDotNet {
             return $customerProfile;
         } else {
             $errorMessages = $response->getMessages()->getMessage();
-            print_r($errorMessages->getMessages()->getMessage());
+            echo "<PRE>";
+            print_r($errorMessages);
             die;
         }
 

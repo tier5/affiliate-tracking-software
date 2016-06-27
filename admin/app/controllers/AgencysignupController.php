@@ -4,6 +4,7 @@
     use Vokuro\Models\Agency;
     use Vokuro\Models\Users;
     use Vokuro\Models\AuthorizeDotNet as AuthorizeDotNetModel;
+    use Vokuro\Models\AgencyPricingPlan;
 
 
     class AgencysignupController extends ControllerBase {
@@ -283,7 +284,6 @@
 
 
             } catch(Exception $e) {
-                die($e->getMessage());
                 return false;
             }
 
@@ -297,35 +297,6 @@
          * 1) 100 for 10 business accounts at 10 per month for each additional business account
          * 2) The one time offer, 160 for 20 accounts, plus lifetime 8 per additional business account
          *
-         * To do:
-         * Create 2 rows in subscription_plan.
-         *      Locations = (10,20).
-         *      What is column payment_plan?  FR?
-         *      user_id = person who created the plan?
-         *
-         * Create 2 rows in subscription_pricing_plan
-         * INSERT INTO subscription_pricing_plan (name, base_price,
-         *
-         * Create table agency_subscription_plan (# of Businesses,
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
          *
          */
         /**
@@ -337,18 +308,38 @@
                 if (!$this->request->isPost())
                     throw new \Exception();
 
+
+                if(!$UserID = $this->CreateAgency($this->session->AgencySignup)) {
+                    throw new \Exception('DB Error:  Could not create agency.');
+                }
+
+                $objAuthDotNet = new AuthorizeDotNetModel();
+                $objAuthDotNet->setUserId($UserID);
+                $objAuthDotNet->setCustomerProfileId($tData['AuthProfile']['customerProfileId']);
+                if (!$objAuthDotNet->create()) {
+                    throw new \Exception('Could not insert auth profile into db.');
+                }
+
                 $objPaymentService = $this->di->get('paymentService');
 
                 $tParameters = [
-                    'userId'            => $tData['UserID'],
-                    'provider'          => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET,
+                    'userId'                    => $UserID,
+                    'provider'                  => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET,
+                    'price'                     => $tData['Price'],
+                    'customerProfileId'         => $tData['AuthProfile']['customerProfileId'],
+                    'customerPaymentProfileId'  => $tData['AuthProfile']['customerPaymentProfileId'],
+                    'shippingAddressId'         => $tData['AuthProfile']['shippingAddressId'],
                 ];
 
-                if (!$objPaymentService->changeSubscription($tParameters))
+                if (!$objPaymentService->changeSubscription($tParameters)) {
                     throw new \Exception('Could not add subscription.');
-            } catch (Exception $e) {
+                }
 
+
+            } catch (Exception $e) {
+                return false;
             }
+            return $UserID;
         }
 
 
@@ -356,7 +347,7 @@
             // Generate months
             $tMonths = [];
             for($i = 1 ; $i <= 12 ; $i++) {
-                $tMonths[$i] = date('F', mktime(0, 0, 0,$i+1, 0, 0));
+                $tMonths[$i] = date('F', mktime(0, 0, 0, $i+1, 0, 0));
             }
             // Years.  Up to 15 years from this year
             for($i = 0 ; $i <= 15 ; $i++) {
@@ -369,27 +360,40 @@
             $this->view->setLayout('agencyorder');
         }
 
+        protected function GetSubscriptionPrice($Name) {
+            $objPricingPlan = AgencyPricingPlan::findFirst("name='{$Name}'");
+            if(!$objPricingPlan)
+                throw Exception("Could not find subscription plan.");
+
+            return $objPricingPlan->number_of_businesses * $objPricingPlan->price_per_business;
+        }
+
         public function submitorderAction() {
-            // MUST TODO:  Verify email is not in use before processing payments.
-            if($this->request->isPost() && $this->ValidateFields('Order')) {
-                if(!$Profile = $this->CreateAuthProfile($this->session->AgencySignup)) {
-                    return false;
-                }
+            try {
+                // MUST TODO:  Verify email is not in use before processing payments.
+                if ($this->request->isPost() && $this->ValidateFields('Order')) {
+                    $this->db->begin();
 
-                if(!$UserID = $this->CreateAgency($this->session->AgencySignup)) {
-                    return false;
-                }
+                    if (!$Profile = $this->CreateAuthProfile($this->session->AgencySignup))
+                        throw new \Exception('Could not create Auth Profile');
 
-                $objAuthDotNet = new AuthorizeDotNetModel();
-                $objAuthDotNet->setUserId($UserID);
-                $objAuthDotNet->setCustomerProfileId($Profile['customerProfileId']);
-                if(!$objAuthDotNet->create()) {
-                    throw new \Exception('Could not insert auth profile into db.');
-                }
+                    // TODO:  Determine which plan
+                    $Price = $this->GetSubscriptionPrice('Ten for ten');
 
-                if(!$this->CreateSubscription($this->session->AgencySignup))
-                    throw new \Exception('Could not add subscription.');
+                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile, 'Price' => $Price]);
+
+                    if (!$UserID = $this->CreateSubscription($this->session->AgencySignup))
+                        throw new \Exception('Could not add subscription.');
+
+
+                    $this->db->commit();
+
+                }
+            } catch(Exception $e) {
+                $this->db->rollback();
+                return false;
             }
+            return true;
         }
 
         public function thankyouAction() {
