@@ -174,6 +174,11 @@ class LocationController extends ControllerBase
   public function createAction()
   {
 
+    //add needed css
+    $this->assets
+        ->addCss('css/main.css')
+        ->addCss('css/signup.css');
+
     //get the user id, to find the settings
     $identity = $this->auth->getIdentity();
     //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
@@ -183,16 +188,33 @@ class LocationController extends ControllerBase
       $this->view->disable();
       return;
     }
+
     // Query binding parameters with string placeholders
     $conditions = "id = :id:";
-    $parameters = array("id" => $identity['id']);
-    $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-    //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+    $parameters = array(
+        "id" => $identity['id']
+    );
+
+    $userObj = Users::findFirst(
+        array(
+            $conditions,
+            "bind" => $parameters
+        )
+    );
+
                         
     //find the agency 
     $conditions = "agency_id = :agency_id:";
-    $parameters = array("agency_id" => $userObj->agency_id);
-    $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+    $parameters = array(
+        "agency_id" => $userObj->agency_id
+    );
+
+    $agency = Agency::findFirst(
+        array(
+            $conditions, "bind" => $parameters
+        )
+    );
 
     if ($this->request->isPost()) {
       $loc = new Location();
@@ -299,6 +321,7 @@ class LocationController extends ControllerBase
     $this->view->facebook_access_token = $this->facebook_access_token;
     $this->view->form = new LocationForm(null);
     $this->view->pick("session/signup2");
+
   }
 
 
@@ -309,6 +332,11 @@ class LocationController extends ControllerBase
     */
   public function create2Action($location_id)
   {
+
+    //add needed css
+    $this->assets
+        ->addCss('css/main.css')
+        ->addCss('css/signup.css');
 
     //get the user id, to find the settings
     $identity = $this->auth->getIdentity();
@@ -368,6 +396,11 @@ class LocationController extends ControllerBase
     */
   public function create3Action($location_id)
   {
+
+    //add needed css
+    $this->assets
+        ->addCss('css/main.css')
+        ->addCss('css/signup.css');
 
     //get the user id, to find the settings
     $identity = $this->auth->getIdentity();
@@ -497,9 +530,26 @@ class LocationController extends ControllerBase
     */
   public function editAction($location_id)
   {
+
+    //add needed css
+    $this->assets
+        ->addCss('css/main.css')
+        ->addCss('css/signup.css');
+
+
     $conditions = "location_id = :location_id:";
-    $parameters = array("location_id" => $location_id);
-    $loc = Location::findFirst(array($conditions, "bind" => $parameters));
+
+    $parameters = array(
+        "location_id" => $location_id
+    );
+
+    $loc = Location::findFirst(
+        array(
+            $conditions,
+            "bind" => $parameters
+        )
+    );
+
     if (!$loc) {
       $this->flash->error("Location was not found");
       return $this->dispatcher->forward(array(

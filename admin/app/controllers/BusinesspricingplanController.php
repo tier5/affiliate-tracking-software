@@ -25,6 +25,18 @@ class BusinessPricingPlanController extends ControllerBase {
             return;
         }
         parent::initialize();
+
+        //add needed css
+        $this->assets
+            ->addCss('/assets/global/plugins/bootstrap-summernote/summernote.css')
+            ->addCss('/css/subscription.css')
+            ->addCss('/css/slider-extended.css')
+            ->addCss('/assets/global/plugins/card-js/card-js.min.css');
+
+        //add needed js
+        $this->assets
+            ->addJs('/assets/global/plugins/bootstrap-summernote/summernote.min.js')
+            ->addJs('/assets/global/plugins/card-js/card-js.min.js');
     }
     
     public function indexAction() {

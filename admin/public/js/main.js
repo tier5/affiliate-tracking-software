@@ -123,3 +123,6 @@ function googleClickHandler(google_place_id, address) {
   deeplink.open('comgooglemaps://maps.google.com/geo:0,0?q=' + address + '', 'intent://maps.google.com/geo:0,0?q=' + address + ';/#Intent;scheme=geo;package=com.google.android.apps.maps;end;');//comgooglemaps://?q=' + google_place_id);
   return false;
 }
+
+//set active link in left menu
+$('a[href="' + this.location.pathname + '"]').parents('li,ul').addClass('active');

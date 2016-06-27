@@ -30,32 +30,43 @@ class IndexController extends ControllerBase
     {
       $logged_in = is_array($this->auth->getIdentity());
       if ($logged_in) {
+
         if (isset($_POST['locationselect'])) {
           $this->auth->setLocation($_POST['locationselect']);
         }
-        
+
         $identity = $this->session->get('auth-identity');
 
-        if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
+        if ($identity['is_admin'] > 0) {
           $this->response->redirect('/admindashboard/');
-        } else
-        if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') {
-          $this->response->redirect('/agency/');
         }
+
+        else if ($identity['agencytype'] == 'agency') {
+            $this->response->redirect('/agency/');
+          }
 
         $this->view->setVar('logged_in', $logged_in);
         $this->view->setTemplateBefore('private');
-      } else {        
+      } else {
         $this->response->redirect('/session/login');
         $this->view->disable();
         return;
       }
 
       //get the location and calculate the review total and avg.
-      if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
+      if ($identity['location_id'] > 0) {
         $conditions = "location_id = :location_id:";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-        $loc = Location::findFirst(array($conditions, "bind" => $parameters));
+
+        $parameters = array(
+            "location_id" => $identity['location_id']
+        );
+
+        $loc = Location::findFirst(
+            array(
+                $conditions,
+                "bind" => $parameters)
+        );
+
         $this->view->location = $loc;
 
         
