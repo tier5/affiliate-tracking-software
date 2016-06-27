@@ -22,7 +22,6 @@
 
     <link rel="shortcut icon" href="favicon.ico" />
     <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script>
-    <link rel="stylesheet" href="/js/vendor/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
     <script type="text/javascript" src="/js/vendor/fancybox/jquery.fancybox.pack.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <?php
@@ -108,22 +107,21 @@
         <!-- BEGIN TOP NAVIGATION MENU -->
         <div class="top-menu">
             <ul class="nav navbar-nav pull-right">
+                {% if haspaid %}
+
                 <?php
-                        if (isset($haspaid) && $haspaid == false) {
 
-                        } else {
-                        if ((isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0)
-                || (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') ) {
+                if (( $this->session->get('auth-identity')['is_admin'] > 0) || ($this->session->get('auth-identity')['agencytype'] == 'agency') ) {
+                } else {  ?>
 
-                } else {
-                if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
-                ?>
-                <li class="" id="">
-                    <a href="#sendreviewinvite" class="fancybox"><img src="/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
-                </li>
-                <?php }
+               {%  if location_id %}
+                   <li class="" id="">
+                       <a href="#sendreviewinvite" class="fancybox"><img src="/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
+                   </li>
+                {%  endif %}
 
-                        if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
+                {%  if location_id %}
+                    <?php
                 //get location list from the identity
                 $loclist = $this->session->get('auth-identity')['locations'];
 
@@ -146,13 +144,9 @@
                                     <input type="submit" class="btn red" value="Change"></form>
                             </span>
                 </li>
-                <?php
-                        }
-                        }
+                <?php }
                         ?>
-                <?php
-                        } //end looking for admin
-                        ?>
+               {%  endif %}
                 <li class="dropdown dropdown-user" style="margin-left: 20px;">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                         <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> <?=$this->session->get('auth-identity')['name']?> </span>
@@ -174,6 +168,7 @@
                 <?php
                         }  //end checking if paid
                         ?>
+                {%  endif %}
             </ul>
         </div>
         <!-- END TOP NAVIGATION MENU -->

@@ -131,9 +131,14 @@
                         "bind" => $parameters)
                 );
 
+                $agencytype = $this->session->get('auth-identity')['agencytype'];
                 $this->view->setVars([
                     'agency'                => $agency,
-                    'location'              => $loc
+                    'location'              => $loc,
+                    'agencytype'            => $agencytype,
+                    'location_id'           => $this->session->get('auth-identity')['location_id'],
+                    'locations'             => $this->session->get('auth-identity')['locations'],
+                    'is_admin'              => $this->session->get('auth-identity')['is_admin']
                 ]);
 
                 $this->getShareInfo($agency);
