@@ -116,18 +116,18 @@ class SubscriptionManager extends BaseService {
         return $subscriptionPricingPlan->toArray();
     }
     
-    public function createPricingProfile($parameters) {
+    public function savePricingProfile($parameters, $isUpdate) {
         
         $status = false;
         
         try {
                 
-            $id = $this->createSubscriptionPricingPlan($parameters);
+            $id = $this->saveSubscriptionPricingPlan($parameters, $isUpdate);
             if (!$id) {
                 throw new \Exception();
             }
         
-            if (!$this->appendPricingParameterLists($id, $parameters)) {
+            if (!$this->appendPricingParameterLists($id, $parameters, $isUpdate)) {
                 throw new \Exception();
             }
             
@@ -186,12 +186,30 @@ class SubscriptionManager extends BaseService {
         return true;
     }
     
-    private function createSubscriptionPricingPlan($parameters) {
+    private function saveSubscriptionPricingPlan($parameters, $isUpdate) {
         
-        $subscriptionPricingPlan = new SubscriptionPricingPlan();
+        /*
+         * REFACTOR: This function is half baked crap - but we're in a rush.
+         * Must fix.  MT June 23, 2016
+         * 
+         */
+        if ($isUpdate) {
+            $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
+                ->where("name = :name:")
+                ->bind(["name" => $parameters["name"]])
+                ->execute()
+                ->getFirst();
+        } else {
+            $subscriptionPricingPlan = new SubscriptionPricingPlan();
+        }
+        
+        if (!$subscriptionPricingPlan) {
+            return false;
+        }
+        
         $subscriptionPricingPlan->user_id = $parameters["userId"];
         $subscriptionPricingPlan->name = $parameters["name"];                               
-        $subscriptionPricingPlan->enabled = true;
+        $subscriptionPricingPlan->enabled = $subscriptionPricingPlan->enabled;
         $subscriptionPricingPlan->enable_trial_account = $parameters["enableTrialAccount"];
         $subscriptionPricingPlan->enable_discount_on_upgrade = $parameters["enableDiscountOnUpgrade"];
         $subscriptionPricingPlan->base_price = $parameters["basePrice"];
@@ -203,15 +221,28 @@ class SubscriptionManager extends BaseService {
         $subscriptionPricingPlan->enable_annual_discount = $parameters["enableAnnualDiscount"];
         $subscriptionPricingPlan->annual_discount = $parameters["annualDiscount"];
         $subscriptionPricingPlan->pricing_details = $parameters["pricingDetails"] ? : new \Phalcon\Db\RawValue('default');
-        if (!$subscriptionPricingPlan->create()) {
-            return false;
-        } 
         
+        if ($isUpdate && !$subscriptionPricingPlan->update()) {
+            return false;
+        } else if (!$isUpdate && !$subscriptionPricingPlan->create()) {
+            return false;
+        }
         
         return $subscriptionPricingPlan->id;
     }
         
-    private function appendPricingParameterLists($id, $parameters) {
+    private function appendPricingParameterLists($id, $parameters, $isUpdate) {
+        
+        /* Simply delete and refresh */
+        if ($isUpdate) {
+            $pricingParameterLists = SubscriptionPricingPlanParameterList::query()  
+                ->where("subscription_pricing_plan_id = :subscription_pricing_plan_id:")
+                ->bind(["subscription_pricing_plan_id" => $id])
+                ->execute();
+            if(!$pricingParameterLists->delete()) {
+                return false;
+            }
+        }
         
         foreach($parameters as $segment => $params) {    
             

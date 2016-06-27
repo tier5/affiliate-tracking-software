@@ -145,7 +145,7 @@ class BusinessPricingPlanController extends ControllerBase {
         return $this->response;   
     }
     
-    private function savePricingPlanAction($update) {
+    private function savePricingPlanAction($isUpdate) {
        
         $responseParameters['status'] = false;
         
@@ -168,15 +168,15 @@ class BusinessPricingPlanController extends ControllerBase {
             /* Get the user id */
             $validatedParams['userId'] = $userManager->getUserId($this->session);
             
-            /* Ensure the name of the pricing profile is unique for this user */
+            /* If we are creating a new plan, ensure the name of the pricing profile is unique for this user */
             $pricingPlan = $subscriptionManager->getPricingPlanByName($validatedParams['userId'], $validatedParams['name']);
-            if($pricingPlan && !$update) {  
+            if($pricingPlan && !$isUpdate) {  
                 throw new \Exception('Another pricing profile with that name already exists! Please choose a unique name and try again.');
             }
             
             /* Save the profile */
             $this->db->begin();
-            if(!$subscriptionManager->createPricingProfile($validatedParams)) {
+            if(!$subscriptionManager->savePricingProfile($validatedParams, $isUpdate)) {
                 throw new \Exception('Unable to save pricing profile!!!');
             }
             $this->db->commit();
