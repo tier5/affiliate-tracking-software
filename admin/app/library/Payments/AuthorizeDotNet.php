@@ -363,10 +363,6 @@ class AuthorizeDotNet {
         $profile->setCustomerPaymentProfileId($parameters['customerPaymentProfileId']);
         $profile->setCustomerAddressId($parameters['customerAddressId']);
 
-        echo "<PRE>";
-        print_r($parameters);
-        die();
-
         $subscription->setProfile($profile);
 
         /* Send the request */
