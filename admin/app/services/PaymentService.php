@@ -171,7 +171,7 @@ class PaymentService extends BaseService {
     }
     
     private function changeAuthorizeDotNetSubscription($subscriptionParameters) {
-        
+
         /* Get the customer profile */
         $authorizeDotNetModel = AuthorizeDotNetModel::query()
             ->where("user_id = :userId:")
@@ -190,6 +190,7 @@ class PaymentService extends BaseService {
         
         $parameters = [];
         $subscriptionId = $authorizeDotNetModel->getSubscriptionId();
+
         if($subscriptionId === 'N') {
             
             $parameters['customerProfileId'] = $authorizeDotNetModel->getCustomerProfileId();

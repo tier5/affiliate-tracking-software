@@ -122,7 +122,8 @@ class AuthorizeDotNet {
             return $customerProfile;
         } else {
             $errorMessages = $response->getMessages()->getMessage();
-            print_r($errorMessages->getMessages()->getMessage());
+            echo "<PRE>";
+            print_r($errorMessages);
             die;
         }
 
@@ -361,6 +362,10 @@ class AuthorizeDotNet {
         $profile->setCustomerProfileId($parameters['customerProfileId']);
         $profile->setCustomerPaymentProfileId($parameters['customerPaymentProfileId']);
         $profile->setCustomerAddressId($parameters['customerAddressId']);
+
+        echo "<PRE>";
+        print_r($parameters);
+        die();
 
         $subscription->setProfile($profile);
 
