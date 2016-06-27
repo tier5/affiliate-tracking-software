@@ -79,7 +79,7 @@ class SubscriptionManager extends BaseService {
         return $subscriptionPlan->toArray();
     }
     
-    public function getPricingPlan($pricingPlanId) {
+    public function getPricingPlanById($pricingPlanId) {
         $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
             ->where("id = :id:")
             ->bind(["id" => intval($pricingPlanId)])
@@ -89,6 +89,18 @@ class SubscriptionManager extends BaseService {
             return false;
         }
         return $subscriptionPricingPlan->toArray();
+    }
+    
+    public function isPricingPlanLocked($pricingPlanId) {
+        $subscriptionPlan = BusinessSubscriptionPlan::query()  
+            ->where("subscription_pricing_plan_id = :subscription_pricing_plan_id:")
+            ->bind(["subscription_pricing_plan_id" => intval($pricingPlanId)])
+            ->execute()
+            ->getFirst();
+        if(!$subscriptionPlan) {
+            return false;
+        }
+        return true;        
     }
     
     public function getPricingPlanByName($userId, $pricingPlanName) {

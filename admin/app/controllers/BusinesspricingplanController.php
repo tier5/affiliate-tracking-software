@@ -5,8 +5,6 @@ namespace Vokuro\Controllers;
 use Exception;
 use Phalcon\Filter;
 use Vokuro\Utils;
-use Vokuro\Services\ServicesConsts;
-
 /**
  * Vokuro\Controllers\BusinessPricingPlanController
  * CRUD to manage users
@@ -69,25 +67,45 @@ class BusinessPricingPlanController extends ControllerBase {
         
     }
     
-    public function editPricingPlanAction($pricingPlanId) {
-        $this->view->name = "My New Subscription";
-        $this->view->enableTrialAccount = true; 
-        $this->view->enableDiscountOnUpgrade = true;
-        $this->view->basePrice = "0.00";
-        $this->view->costPerSms = "0.00";
-        $this->view->maxMessagesOnTrialAccount = "10";
-        $this->view->updgradeDiscount = "1";
-        $this->view->chargePerSms = "0.00";
-        $this->view->maxSmsMessages = "100";
-        $this->view->enableAnnualDiscount = true;
-        $this->view->annualDiscount = "1";
-        $this->view->pricingDetails = "";
-        $this->view->canEdit = false;
+    public function editExistingPricingPlanAction($pricingPlanId) {
+        
+        /* Get services */
+        $subscriptionManager = $this->di->get('subscriptionManager');
+        
+        /* Ensure the name of the pricing profile is unique for this user */
+        $pricingPlan = (object)$subscriptionManager->getPricingPlanById($pricingPlanId);
+        if(!$pricingPlan) {  
+            $this->flash->error("Could not open pricing plan for editing.");
+            return;
+        }
+        
+        $this->view->name = $pricingPlan->name;
+        $this->view->enableTrialAccount = $pricingPlan->enable_trial_account; 
+        $this->view->enableDiscountOnUpgrade = $pricingPlan->enable_discount_on_upgrade;
+        $this->view->basePrice = $pricingPlan->base_price;
+        $this->view->costPerSms = $pricingPlan->cost_per_sms;
+        $this->view->maxMessagesOnTrialAccount = $pricingPlan->max_messages_on_trial_account;
+        $this->view->updgradeDiscount = $pricingPlan->updgrade_discount;
+        $this->view->chargePerSms = $pricingPlan->charge_per_sms;
+        $this->view->maxSmsMessages = $pricingPlan->max_sms_messages;
+        $this->view->enableAnnualDiscount = $pricingPlan->enable_annual_discount;
+        $this->view->annualDiscount = $pricingPlan->annual_discount;
+        $this->view->pricingDetails = $pricingPlan->pricing_details;
+        $this->view->canEdit = true;
+        $this->view->gridEditStatus = "";
+        $this->view->isCreateMode = false;        
+        
+        $pricingPlanLocked = $subscriptionManager->isPricingPlanLocked($pricingPlanId);
+        if($pricingPlanLocked) {  
+            $this->view->gridEditStatus = "disabled";
+            // $this->flash->notice("This plan is currently associated to active an business subscription.  Grid parameters may not be edited.");
+        }
         
         $this->view->pick("businessPricingPlan/pricingPlan");
+        
     }
     
-    public function createPricingPlanAction() {
+    public function showNewPricingPlanAction() {
         $this->view->name = "My New Subscription";
         $this->view->enableTrialAccount = true; 
         $this->view->enableDiscountOnUpgrade = true;
@@ -101,13 +119,34 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->annualDiscount = "1";
         $this->view->pricingDetails = "";
         $this->view->canEdit = true;
+        $this->view->gridEditStatus = "";
+        $this->view->isCreateMode = true;
         
         $this->view->pick("businessPricingPlan/pricingPlan");
     }
     
-    public function savePricingPlanAction() {
+    public function createPricingPlanAction() {
         $this->view->disable();
         
+        $responseParameters = $this->savePricingPlanAction(false);
+    
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
+    }
+    
+    public function updatePricingPlanAction() {
+        $this->view->disable();
+        
+        $responseParameters = $this->savePricingPlanAction(true);
+    
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;   
+    }
+    
+    private function savePricingPlanAction($update) {
+       
         $responseParameters['status'] = false;
         
         try {
@@ -131,7 +170,7 @@ class BusinessPricingPlanController extends ControllerBase {
             
             /* Ensure the name of the pricing profile is unique for this user */
             $pricingPlan = $subscriptionManager->getPricingPlanByName($validatedParams['userId'], $validatedParams['name']);
-            if($pricingPlan) {  
+            if($pricingPlan && !$update) {  
                 throw new \Exception('Another pricing profile with that name already exists! Please choose a unique name and try again.');
             }
             
@@ -160,9 +199,7 @@ class BusinessPricingPlanController extends ControllerBase {
                     
         }
         
-        $this->response->setContentType('application/json', 'UTF-8');
-        $this->response->setContent(json_encode($responseParameters));
-        return $this->response;
+        return $responseParameters;
     }
     
     public function updateEnablePricingPlanAction($pricingPlanId, $enable) {
@@ -292,7 +329,7 @@ class BusinessPricingPlanController extends ControllerBase {
                 $validated[$key] = [];
             }
             if ($key === "pricingDetails"){
-                $validated[$key] = htmlentities($string);
+                $validated[$key] = Utils::purifyHtml($value);
             } else {
                 $validated[$key] = $filter->sanitize($value, "string");
             }

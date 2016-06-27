@@ -77,7 +77,7 @@ class BusinessSubscriptionController extends ControllerBase {
         
         /* Get pricing plan */
         $pricingPlanId = $this->view->subscriptionPlan['subscription_pricing_plan_id'];
-        $this->view->pricingPlan = $subscriptionManager->getPricingPlan($pricingPlanId);
+        $this->view->pricingPlan = $subscriptionManager->getPricingPlanById($pricingPlanId);
              
         /* Payments paramaters */
         $paymentParams = [

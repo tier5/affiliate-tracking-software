@@ -3,6 +3,8 @@
 namespace Vokuro; 
 
 use DateTime;
+use HTMLPurifier_Config;
+use HTMLPurifier;
 
 class Utils {
 
@@ -27,4 +29,14 @@ class Utils {
         }
         return $new;
     }
+    
+    public static function purifyHtml($dirtyHtml) {
+        $config = HTMLPurifier_Config::createDefault();
+        $purifier = new HTMLPurifier($config);
+        return $purifier->purify($dirtyHtml);
+    }
+    
+    
+                
+    
 }

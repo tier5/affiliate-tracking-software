@@ -22,7 +22,7 @@
                             <span class="caption-subject bold uppercase">Subscriptions</span>
                         </div>
                         <div class="tools">
-                            <a href="/businessPricingPlan/createPricingPlan" class="btn default btn-lg apple-backgound subscription-btn">Create Subscription</a>
+                            <a href="/businessPricingPlan/showNewPricingPlan" class="btn default btn-lg apple-backgound subscription-btn">Create Subscription</a>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -56,7 +56,7 @@
                                             {% endif %}
                                             <td><button class="btn default btn-lg apple-backgound subscription-btn" disabled>View Page</button></td>
                                             <td><button class="btn default btn-lg apple-backgound subscription-btn" disabled>View Page</button></td>
-                                            <td><a href="/businessPricingPlan/editPricingPlan/{{ pricingProfile.id }}" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
+                                            <td><a href="/businessPricingPlan/editExistingPricingPlan/{{ pricingProfile.id }}" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
                                             <td><button id="delete-pricing-plan-control" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></button></td>
                                         </tr>
                                     {% endfor %}
