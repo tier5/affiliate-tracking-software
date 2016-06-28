@@ -187,6 +187,10 @@ class SubscriptionManager extends BaseService {
         return true;
     }
     
+    public function getPricingParameterListsByPricingPlanId($pricingPlanId) { 
+        return SubscriptionPricingPlanParameterList::find("subscription_pricing_plan_id = ".$pricingPlanId)->toArray();
+    }
+    
     private function saveSubscriptionPricingPlan($parameters, $isUpdate) {
         
         /*
