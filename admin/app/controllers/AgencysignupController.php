@@ -1,5 +1,6 @@
 <?php
     namespace Vokuro\Controllers;
+    use Phalcon\Mvc\View;
     use Vokuro\Services\ServicesConsts;
     use Vokuro\Models\Agency;
     use Vokuro\Models\Users;
@@ -38,6 +39,9 @@
             /* Step 4 Fields */
             'StripeSecretKey',
             'StripePublishableKey',
+
+            /* Step 5 / Upgrade Step */
+            'Upgrade',
 
             /* Order form Fields */
             'FirstName',
@@ -84,7 +88,7 @@
             'StripePublishableKey'  => 'stripe_publishable_keys',
 
             /* Order form Fields */
-            'FirstName'             => 'name',
+            'FirstName'             => '',
             'LastName'              => '', // TODO:  Add last name to db or explode the name
             'OwnerEmail'            => 'email',
             'OwnerPhone'            => 'phone',
@@ -105,7 +109,6 @@
             'Step1' => [
                 'BusinessName',
                 'Address',
-                'Address2',
                 'City',
                 'State',
                 'Zip',
@@ -166,8 +169,15 @@
 
             // Determine step from URI
             preg_match("#agencysignup\/step(\d)+#", $_SERVER['REQUEST_URI'], $tMatches);
-            if($tMatches)
+            if($tMatches) {
+                // In the step process.  Verify credit card information is in place, otherwise redirect.
+                if(!$this->session->AgencySignup['CardNumber'] || !$this->session->AgencySignup['CardType']) {
+                    $this->flash->error("Please fill out the order information first!");
+                    $this->response->redirect('/agencysignup/order');
+                }
+
                 $this->view->current_step = $tMatches[1];
+            }
         }
 
         /**
@@ -320,7 +330,7 @@
                     throw new \Exception('Could not insert auth profile into db.');
                 }
 
-                $objPaymentService = $this->di->get('paymentService');
+                /*$objPaymentService = $this->di->get('paymentService');
 
                 $tParameters = [
                     'userId'                    => $UserID,
@@ -333,7 +343,7 @@
 
                 if (!$objPaymentService->changeSubscription($tParameters)) {
                     throw new \Exception('Could not add subscription.');
-                }
+                }*/
 
 
             } catch (Exception $e) {
@@ -369,6 +379,10 @@
         }
 
         public function submitorderAction() {
+            $this->response->redirect('/agencysignup/step1');
+            // REMOVE JUST FOR TESTING
+            $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => ['customerProfileId' => 123]]);
+            return true;
             try {
                 // MUST TODO:  Verify email is not in use before processing payments.
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
@@ -377,14 +391,7 @@
                     if (!$Profile = $this->CreateAuthProfile($this->session->AgencySignup))
                         throw new \Exception('Could not create Auth Profile');
 
-                    // TODO:  Determine which plan
-                    $Price = $this->GetSubscriptionPrice('Ten for ten');
-
-                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile, 'Price' => $Price]);
-
-                    if (!$UserID = $this->CreateSubscription($this->session->AgencySignup))
-                        throw new \Exception('Could not add subscription.');
-
+                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile]);
 
                     $this->db->commit();
 
@@ -393,11 +400,36 @@
                 $this->db->rollback();
                 return false;
             }
+
+            $this->response->redirect('/agencysignup/step1');
             return true;
         }
 
         public function thankyouAction() {
+            $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? 'Twenty for eight' : 'Ten for ten';
+            $this->view->TodayYear = date("Y");
 
+            try {
+                // MUST TODO:  Verify email is not in use before processing payments.
+                if ($this->request->isPost() && $this->ValidateFields('Order')) {
+                    $this->db->begin();
+
+                    // TODO:  Determine which plan
+                    $Price = $this->GetSubscriptionPrice($SubscriptionPlan);
+                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['Price' => $Price]);
+
+                    if (!$UserID = $this->CreateSubscription($this->session->AgencySignup))
+                        throw new \Exception('Could not add subscription.');
+
+                    $this->db->commit();
+
+                }
+            } catch(Exception $e) {
+                $this->db->rollback();
+                return false;
+            }
+
+            $this->view->setLayout('agencyorder');
         }
 
         public function salesAction () {
@@ -408,14 +440,26 @@
 
         public function step2Action() {
             $this->ValidateFields('Step1');
+
+            $this->view->PrimaryColor = $this->session->AgencySignup['PrimaryColor'] ?: '#2a3644';
+            $this->view->SecondaryColor = $this->session->AgencySignup['SecondaryColor'] ?: '#2eb82e';
+
         }
 
         public function step3Action() {
+            if($this->request->hasFiles()) {
+                foreach ($this->request->getUploadedFiles() as $file) {
+                    $FileName = uniqid('logo') . '.' .  $file->getExtension();
+                    file_put_contents(__DIR__ . "/../../public/img/agency_logos/{$FileName}", file_get_contents($file->getTempName()));
+                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['LogoFilename' => $FileName]);
+                }
+            }
         }
 
         public function step4Action() {
         }
 
         public function step5Action() {
+
         }
     }

@@ -1,4 +1,4 @@
-<form action="step3" method="post">
+<form action="step3" method="post" enctype="multipart/form-data">
     <div class="row small-vertical-margins">
         <div class="col-xs-12">
             <h2 class="section-header">Customized Agency Landing Page</h2>
@@ -29,6 +29,7 @@
             <label><h4 class="tertiary-text">Primary Color</h4></label>
         </div>
     </div>
+
     <div class="row form-group">
         <div class="col-xs-6">
             <div class="col-xs-4">
@@ -45,7 +46,7 @@
             </div>
         </div>
         <div class="col-xs-6">
-            <div class="rounded-square primary-color" style="float: left; margin-right: 15px;"></div><input type="text" class="form-control" name="PrimaryColor" value="{{ PrimaryColor }}" style="width: 90%;">
+            <div class="rounded-square primary-color" id="PrimarySquare" style="float: left; margin-right: 15px; background-color: {{ PrimaryColor }}; border-color: {{ PrimaryColor }}"></div><input id="PrimaryColor" type="color" class="form-control" name="PrimaryColor" value="{{ PrimaryColor }}" style="width: 90%;">
         </div>
     </div>
 
@@ -59,7 +60,7 @@
     <div class="row">
         <div class="col-xs-6"></div>
         <div class="col-xs-6">
-            <div class="rounded-square secondary-color" style="float: left; margin-right: 15px;"></div><input type="text" class="form-control" name="SecondaryColor" value="{{ SecondaryColor }}" style="width: 90%;">
+            <div class="rounded-square secondary-color" id="SecondarySquare" style="float: left; margin-right: 15px; background-color: {{ SecondaryColor }}; border-color: {{ SecondaryColor }}"></div><input id="SecondaryColor" type="color" class="form-control" name="SecondaryColor" value="{{ SecondaryColor }}" style="width: 90%;">
         </div>
     </div>
 
@@ -75,3 +76,20 @@
         </div>
     </div>
 </form>
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+        $('#PrimaryColor').change(function() {
+            $('#PrimarySquare').css('background-color', $(this).val());
+            $('#PrimarySquare').css('border-color', $(this).val());
+
+        });
+    });
+     $( document ).ready(function() {
+        $('#SecondaryColor').change(function() {
+            $('#SecondarySquare').css('background-color', $(this).val());
+            $('#SecondarySquare').css('border-color', $(this).val());
+
+        });
+    });
+</script>
