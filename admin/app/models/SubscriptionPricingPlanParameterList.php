@@ -44,7 +44,7 @@
 
             $this->skipAttributesOnCreate(array('updated_at'));
 
-            $this->belongsTo("subscription_pricing_plan_id", "\Vokuro\Models\SubscriptionPricingPlan", "id", ['alias' => 'SubscriptionPricingPlan']);
+            // $this->belongsTo("subscription_pricing_plan_id", "\Vokuro\Models\SubscriptionPricingPlan", "id", ['alias' => 'SubscriptionPricingPlan']);
         }
 
         public function validation()
@@ -60,28 +60,6 @@
         public function getSource()
         {
             return 'subscription_pricing_plan_parameter_list';
-        }
-
-        /**
-         * Allows to query a set of records that match the specified conditions
-         *
-         * @param mixed $parameters
-         * @return SubscriptionPricingPlanParameterList[]
-         */
-        public static function find($parameters = null)
-        {
-            return parent::find($parameters);
-        }
-
-        /**
-         * Allows to query the first record that match the specified conditions
-         *
-         * @param mixed $parameters
-         * @return SubscriptionPricingPlanParameterList
-         */
-        public static function findFirst($parameters = null)
-        {
-            return parent::findFirst($parameters);
         }
 
         /**

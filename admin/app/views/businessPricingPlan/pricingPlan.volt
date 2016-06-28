@@ -35,7 +35,7 @@
                                             <input id="enable-trial-account-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info">
                                         {% else  %}
                                             <input id="enable-trial-account-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info">
-                                        {% endif  %}
+                                        {% endif  %}    
                                     </div>
                                 </div>
                             </div>
@@ -233,12 +233,14 @@
                                             <div class="row progression-controls">
                                                 <div class="col-md-6 col-sm-6"></div>
                                                 <div class="col-md-6 col-sm-6">
-                                                    {% if canEdit %}
-                                                        <button id="remove-segment-btn" class="btn default btn-lg apple-backgound subscription-btn">Remove Last</button>
-                                                        <button id="add-segment-btn" class="btn default btn-lg apple-backgound subscription-btn">Add New</button>
-                                                        <button id="save-progression-btn" class="btn default btn-lg apple-backgound subscription-btn">Save</button>
-                                                        <button id="start-over-btn" class="btn default btn-lg apple-backgound subscription-btn">Start Over</button>
-                                                    {% endif %}
+                                                    <button id="remove-segment-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Remove Last</button>
+                                                    <button id="add-segment-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Add New</button>
+                                                    {% if isCreateMode %}
+                                                        <button id="save-plan-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Save</button>
+                                                    {% else  %}
+                                                        <button id="update-plan-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Update</button>
+                                                    {% endif  %}
+                                                    <button id="start-over-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Start Over</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -323,11 +325,16 @@
 
         }
 
-        function savePricingProfile() {
+        function savePricingProfile(isCreate) {
             var parameters = {};
             $.extend(parameters, getValueParameters(), getProgressionDetails());
+            
+            var url = "/businessPricingPlan/createPricingPlan";
+            if (!isCreate) {
+                url = "/businessPricingPlan/updatePricingPlan";
+            }
 
-            $.post("/businessPricingPlan/savePricingPlan",
+            $.post(url,
                     JSON.stringify(parameters),
                     function(data) {
                         if (data.status === true) {
@@ -544,8 +551,11 @@
             $('#remove-segment-btn').click(function () {
                 removeSegment();
             });
-            $('#save-progression-btn').click(function () {
-                savePricingProfile();
+            $('#save-plan-btn').click(function () {
+                savePricingProfile(true);
+            });
+            $('#update-plan-btn').click(function () {
+                savePricingProfile(false);
             });
 
         }

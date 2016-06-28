@@ -14,7 +14,8 @@
     "codeception/codeception": "^2.1",
     "doctrine/migrations": "^1.4",
     "vlucas/phpdotenv": "^2.2",
-    "robmorgan/phinx": "^0.5.3"
+    "robmorgan/phinx": "^0.5.3",
+    "ezyang/htmlpurifier": "^4.7"
   },
   "require-dev": {
     "goetas/xsd2php": "2.0.x-dev#fdc2ab0bb3f2b3ab796ca567cf8c0f3446a7ea3a",
