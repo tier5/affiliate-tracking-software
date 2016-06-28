@@ -108,66 +108,52 @@
         <div class="top-menu">
             <ul class="nav navbar-nav pull-right">
                 {% if haspaid %}
-
-                <?php
-
-                if (( $this->session->get('auth-identity')['is_admin'] > 0) || ($this->session->get('auth-identity')['agencytype'] == 'agency') ) {
-                } else {  ?>
-
-               {%  if location_id %}
-                   <li class="" id="">
-                       <a href="#sendreviewinvite" class="fancybox"><img src="/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
-                   </li>
-                {%  endif %}
-
-                {%  if location_id %}
-                    <?php
-                //get location list from the identity
-                $loclist = $this->session->get('auth-identity')['locations'];
-
-                if ($loclist) {
-                ?>
-                <li class="location-header" id="">
-                            <span id="locationset">
-                                Location: <?=$this->session->get('auth-identity')['location_name']?>  <?php if (count($loclist) > 1) { ?><a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a><?php } ?>
-                            </span>
-                            <span id="locationnotset" style="display: none;"><form action="/" method="post">
-                                    Location: <select name="locationselect" id="locationselect">
-                                        <?php
-                                        if (count($loclist) > 1) {
-                                        foreach ($loclist as $loc) {
-                                        echo "<option value='$loc->location_id' ".($loc->location_id==$this->session->get('auth-identity')['location_id']?' selected="selected"':'').">$loc->name</option>\n";
-                                        }
-                                        }
-                                        ?>
+                    {%  if not is_admin and agencytype != 'agency' %}
+                        <li class="" id="">
+                            <a href="#sendreviewinvite" class="fancybox"><img src="/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
+                        </li>
+                    {%  endif %}
+                    {%  if location_id %}
+                        {%  if locations %}
+                            <li class="location-header" id="">
+                                <span id="locationset">
+                                    Location: {{ location.name }}
+                                    {%  if locations|length > '1' %}
+                                        <a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a>
+                                    {% endif %}
+                                </span>
+                                <span id="locationnotset" style="display: none;"><form action="/" method="post">
+                                    Location:
+                                    <select name="locationselect" id="locationselect">
+                                        {%  if locations|length > '1' %}
+                                            {% for loc in locations %}
+                                                <option value='{{ loc.location_id}}'>{{ loc.name}}</option>
+                                            {% endfor %}
+                                        {% endif %}
                                     </select>
                                     <input type="submit" class="btn red" value="Change"></form>
-                            </span>
-                </li>
-                <?php }
-                        ?>
-               {%  endif %}
-                <li class="dropdown dropdown-user" style="margin-left: 20px;">
-                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                        <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> <?=$this->session->get('auth-identity')['name']?> </span>
-                        <i class="fa fa-angle-down" style="color: #484848;"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-default">
-                        <li>
-                            <a href="#">
-                                <i class="icon-user"></i> My Profile </a>
-                        </li>
-                        <li>
-                            <a href="/session/logout">
-                                <i class="icon-key"></i>
-                                <span class="title">Log Out</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <?php
-                        }  //end checking if paid
-                        ?>
+                                </span>
+                            </li>
+                        {% endif %}
+                    {%  endif %}
+                    <li class="dropdown dropdown-user" style="margin-left: 20px;">
+                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> <?=$this->session->get('auth-identity')['name']?> </span>
+                            <i class="fa fa-angle-down" style="color: #484848;"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-default">
+                            <li>
+                                <a href="#">
+                                    <i class="icon-user"></i> My Profile </a>
+                            </li>
+                            <li>
+                                <a href="/session/logout">
+                                    <i class="icon-key"></i>
+                                    <span class="title">Log Out</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 {%  endif %}
             </ul>
         </div>
@@ -194,217 +180,147 @@
                     <!-- END SIDEBAR TOGGLER BUTTON -->
                 </li>
 
+                {% if haspaid %}
+                    {% if is_admin %}
+                        <li class="nav-item start">
+                            <a href="/admindashboard/" class="nav-link nav-toggle">
+                                <i class="icon-home"></i>
+                                <span class="title">Dashboard</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item start">
+                            <a href="/admindashboard/list/2" class="nav-link nav-toggle">
+                                <i class="icon-pointer"></i>
+                                <span class="title">See All Businesses</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item start">
+                            <a href="/admindashboard/list/1" class="nav-link nav-toggle">
+                                <i class="icon-pointer"></i>
+                                <span class="title">See All Agencies</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        {% if internalNavParams['hasPricingPlans'] %}
+                            <li class="nav-item">
+                                <a href='/businessPricingPlan' class="nav-link nav-toggle">
+                                    <i class="icon-list"></i>
+                                    <span class="title">Business Subscriptions</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        {%  endif %}
+                        <li class="nav-item start">
+                            <a href="/admindashboard/settings" class="nav-link nav-toggle">
+                                <i class="icon-settings"></i>
+                                <span class="title">Settings</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    {% else %}
+                        {% if agencytype == "agency" %}
+                            <li class="nav-item start">
+                                <a href="/agency" class="nav-link nav-toggle">
+                                    <i class="icon-home"></i>
+                                    <span class="title">Manage Businesses</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item start">
+                                <a href="/" class="nav-link nav-toggle">
+                                    <i class="icon-home"></i>
+                                    <span class="title">Dashboard</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if location_id %}
+                            {% if agencytype != "agency" %}
+                                <li class="nav-item">
+                                    <a href="/reviews/" class="nav-link nav-toggle">
+                                        <i class="icon-diamond"></i>
+                                        <span class="title">Reviews</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/analytics/" class="nav-link nav-toggle">
+                                        <i class="icon-bar-chart"></i>
+                                        <span class="title">Analytics</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
 
-                <?php
-                        if (isset($haspaid) && $haspaid == false) {
-                        //the user has not paid
-                        } else {
+                                {%  if is_business_admin %}
+                                    <li class="nav-item">
+                                        <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
+                                            <i class="icon-envelope"></i>
+                                            <span class="title">SMS Broadcast</span>
+                                            <span class="selected"></span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/contacts" class="nav-link nav-toggle">
+                                            <i class="icon-users"></i>
+                                            <span class="title">Contacts</span>
+                                            <span class="selected"></span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/users/" class="nav-link nav-toggle">
+                                            <i class="icon-user"></i>
+                                            <span class="title">Employees</span>
+                                            <span class="selected"></span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        {% if profile == "Agency Admin" and agencytype == "business"%}
+                            <li class="nav-item">
+                                <a href="/location/" class="nav-link nav-toggle">
+                                    <i class="icon-pointer"></i>
+                                    <span class="title">Locations</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if profile != "Employee" %}
+                            {% if agencytype == "agency" %}
+                                {% set SettingsLocation = "agency" %}
+                            {% else %}
+                                {% set SettingsLocation = "location" %}
+                            {% endif %}
+                            <li class="nav-item">
+                                <a href="/settings/{{ SettingsLocation }}/" class="nav-link nav-toggle">
+                                    <i class="icon-settings"></i>
+                                    <span class="title">Settings</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/users/" class="nav-link nav-toggle">
+                                    <i class="icon-user"></i>
+                                    <span class="title">Admin Users</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
 
-                        if (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
-                ?>
-                <li class="nav-item start">
-                    <a href="/admindashboard/" class="nav-link nav-toggle">
-                        <i class="icon-home"></i>
-                        <span class="title">Dashboard</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <li class="nav-item start">
-                    <a href="/admindashboard/list/2" class="nav-link nav-toggle">
-                        <i class="icon-pointer"></i>
-                        <span class="title">See All Businesses</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <li class="nav-item start">
-                    <a href="/admindashboard/list/1" class="nav-link nav-toggle">
-                        <i class="icon-pointer"></i>
-                        <span class="title">See All Agencies</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-
-                <?php if ($this->view->internalNavParams['hasPricingPlans']) { ?>
-                <li class="nav-item">
-                    <a href='/businessPricingPlan' class="nav-link nav-toggle">
-                        <i class="icon-list"></i>
-                        <span class="title">Business Subscriptions</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <?php } ?>
-
-                <li class="nav-item start">
-                    <a href="/admindashboard/settings" class="nav-link nav-toggle">
-                        <i class="icon-settings"></i>
-                        <span class="title">Settings</span>
-                       <span class="selected"></span>
-                    </a>
-                </li>
-                <?php
-                        } else {
-
-                        if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency') {
-                ?>
-                <li class="nav-item start">
-                    <a href="/agency" class="nav-link nav-toggle">
-                        <i class="icon-home"></i>
-                        <span class="title">Manage Businesses</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <?php
-                        } else {
-                        ?>
-                <li class="nav-item start">
-                    <a href="/" class="nav-link nav-toggle">
-                        <i class="icon-home"></i>
-                        <span class="title">Dashboard</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <?php
-
-                        }
-
-                        if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
-                ?>
-
-                <?php
-                        if (!(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'agency')) {
-                ?>
-
-                <li class="nav-item">
-                    <a href="/reviews/" class="nav-link nav-toggle">
-                        <i class="icon-diamond"></i>
-                        <span class="title">Reviews</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/analytics/" class="nav-link nav-toggle">
-                        <i class="icon-bar-chart"></i>
-                        <span class="title">Analytics</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <?php
-
-                        //only the business Admin gets access to locations
-                        if (strpos($this->session->get('auth-identity')['profile'], 'Admin') > 0) {
-                ?>
-                <li class="nav-item">
-                    <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
-                        <i class="icon-envelope"></i>
-                        <span class="title">SMS Broadcast</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/contacts" class="nav-link nav-toggle">
-                        <i class="icon-users"></i>
-                        <span class="title">Contacts</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <?php
-                        }
-                        //only the Agency Admin gets access to employees
-                        if (strpos($this->session->get('auth-identity')['profile'], 'Admin') > 0) {
-                ?>
-                <li class="nav-item">
-                    <a href="/users/" class="nav-link nav-toggle">
-                        <i class="icon-user"></i>
-                        <span class="title">Employees</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <?php
-                        }
-
-                        }
-                        ?>
-                <?php
-                        ?>
-                <?php
-                        }
-                        ?>
-                <?php
-                        //only the Business Admin gets access to locations
-                        if ($this->session->get('auth-identity')['profile'] == 'Agency Admin' &&
-                (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business')) {
-                ?>
-                <li class="nav-item">
-                    <a href="/location/" class="nav-link nav-toggle">
-                        <i class="icon-pointer"></i>
-                        <span class="title">Locations</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <?php
-                        }
-                        ?>
-                <?php
-                        //if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
-                ?>
-
-                <?php
-                        //only the Agency Admin gets access to locations
-                        // if ($this->session->get('auth-identity')['profile'] != 'Employee' &&
-                // !(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business')) {
-                ?>
-
-                <!--
-                <li class="nav-item">
-                    <a href="/stripe/" class="nav-link nav-toggle">
-                        <i class="icon-credit-card"></i>
-                        <span class="title">Subscriptions</span>
-                        <span class="selected"></span>
-                    </a>
-                </li> -->
-
-                <?php
-                        // }
-
-                        //only the Agency Admin gets access to locations
-                        if ($this->session->get('auth-identity')['profile'] != 'Employee') {
-
-                $SettingsLocation = $this->session->get('auth-identity')['agencytype'] == 'agency' ? 'agency' : 'location';
-                ?>
-                <li class="nav-item">
-                    <a href="/settings/<?=$SettingsLocation; ?>/" class="nav-link nav-toggle">
-                        <i class="icon-settings"></i>
-                        <span class="title">Settings</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/users/" class="nav-link nav-toggle">
-                        <i class="icon-user"></i>
-                        <span class="title">Admin Users</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-
-                <?php if ($this->view->internalNavParams['hasSubscriptions']) { ?>
-                <li class="nav-item">
-                    <a href=<?= $this->view->internalNavParams['subscriptionController']; ?> class="nav-link nav-toggle">
-                        <i class="icon-wallet"></i>
-                        <span class="title">Subscriptions</span>
-                        <span class="selected"></span>
-                    </a>
-                </li>
-                <?php } ?>
-
-                <?php
-                        }
-                        ?>
-
-                <?php
-                        // }
-                        } //end checking for super admin
-                        } // end checking if the user has paid
-                        ?>
+                            {% if internalNavParams['hasSubscriptions'] %}
+                                <li class="nav-item">
+                                    <a href="{{ internalNavParams['subscriptionController'] }}" class="nav-link nav-toggle">
+                                        <i class="icon-wallet"></i>
+                                        <span class="title">Subscriptions</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
             </ul>
             <!-- END SIDEBAR MENU -->
         </div>
@@ -529,13 +445,9 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                 </div>
             </form>
 
-            <?php
-                    } else {
-                    ?>
+            <?php } else { ?>
             You have no more SMS messages to send this month.
-            <?php
-                    }
-                    ?>
+            <?php  } ?>
 
             <?php
                     } else {
