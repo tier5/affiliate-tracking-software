@@ -142,7 +142,8 @@
                     'location_id'           => $this->session->get('auth-identity')['location_id'],
                     'locations'             => $this->session->get('auth-identity')['locations'],
                     'is_admin'              => $this->session->get('auth-identity')['is_admin'],
-                    'profile'               =>$this->session->get('auth-identity')['profile'],
+                    'profile'               => $this->session->get('auth-identity')['profile'],
+                    'name'                  =>$this->session->get('auth-identity')['name'],
                     'is_business_admin'     => strpos($this->session->get('auth-identity')['profile'], 'Admin')
                 ]);
 
