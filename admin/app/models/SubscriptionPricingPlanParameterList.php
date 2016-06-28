@@ -24,6 +24,7 @@
         public $total_price;
         public $location_discount;
         public $upgrade_discount;
+        public $discount_price;
         public $sms_messages;
         public $sms_cost;
         public $profit_per_location;
@@ -81,6 +82,7 @@
                 'total_price' => 'total_price',
                 'location_discount' => 'location_discount',
                 'upgrade_discount' => 'upgrade_discount',
+                'discount_price' => 'discount_price',
                 'sms_messages' => 'sms_messages',
                 'sms_cost' => 'sms_cost',
                 'profit_per_location' => 'profit_per_location',

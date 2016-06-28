@@ -11,6 +11,8 @@ use Vokuro\Utils;
  */
 class BusinessPricingPlanController extends ControllerBase {
 
+    const MAX_PROGRESSION_SEGMENTS = 10;
+    
     public function initialize() {
         
         $identity = $this->session->get('auth-identity');
@@ -79,6 +81,7 @@ class BusinessPricingPlanController extends ControllerBase {
             return;
         }
         
+        /* Set top level parameters */
         $this->view->name = $pricingPlan->name;
         $this->view->enableTrialAccount = $pricingPlan->enable_trial_account; 
         $this->view->enableDiscountOnUpgrade = $pricingPlan->enable_discount_on_upgrade;
@@ -93,7 +96,14 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->pricingDetails = $pricingPlan->pricing_details;
         $this->view->canEdit = true;
         $this->view->gridEditStatus = "";
-        $this->view->isCreateMode = false;        
+        $this->view->isCreateMode = false;    
+        
+        $progressions = $subscriptionManager->getPricingParameterListsByPricingPlanId($pricingPlanId);
+        
+        
+        
+        $this->view->progressions = 
+            $subscriptionManager->getPricingParameterListsByPricingPlanId($pricingPlanId);
         
         $pricingPlanLocked = $subscriptionManager->isPricingPlanLocked($pricingPlanId);
         if($pricingPlanLocked) {  
@@ -121,6 +131,29 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->canEdit = true;
         $this->view->gridEditStatus = "";
         $this->view->isCreateMode = true;
+        
+        /* Add progression parameters */
+        $progressions = [];
+        for ($i = 0; $i < self::MAX_PROGRESSION_SEGMENTS; $i++) {
+            $min = ($i * self::MAX_PROGRESSION_SEGMENTS) + 1;
+            $max = (($i + 1) * self::MAX_PROGRESSION_SEGMENTS);
+            
+            $progressions[] = 
+                [ 
+                    "min_locations" => $min, 
+                    "max_locations" => $max, 
+                    "base_price" => 0,
+                    "sms_charge" => 0,
+                    "total_price" => 0,
+                    "location_discount" => 0,
+                    "upgrade_discount" => 0,
+                    "discount_price" => 0,
+                    "sms_messages" => 0,
+                    "sms_cost" => 0,
+                    "profit_per_location" => 0
+                ];
+        }
+        $this->view->progressions = $progressions;
         
         $this->view->pick("businessPricingPlan/pricingPlan");
     }

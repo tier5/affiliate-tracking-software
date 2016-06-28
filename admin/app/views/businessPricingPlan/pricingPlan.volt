@@ -227,12 +227,41 @@
                                                         <th>Profit Per Location</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody id="progression-table-rows"></tbody>
+                                                    <tbody id="progression-table-rows">
+                                                        {% for progression in progressions %}
+                                                        <tr role="row" class="odd">
+                                                            <td>
+                                                                <form class="form-inline" role="form">
+                                                                    <div class="form-group">
+                                                                        <input type="number" value="{{ progression['min_locations'] }}" step="1" min="{{ progression['min_locations'] }}" class="form-control input-xsmall min-locations-control" placeholder="">
+                                                                    </div>
+                                                                    <span>To</span>
+                                                                    <div class="form-group">
+                                                                        <input type="number" value="{{ progression['max_locations'] }}" step="1" min="{{ progression['max_locations'] }}" class="form-control input-xsmall max-locations-control" placeholder="">
+                                                                    </div>
+                                                                </form>
+                                                            </td>
+                                                            <td>
+                                                                <select class="form-control input-small location-discount-control"></select>
+                                                            </td>
+                                                            <td class="base-price-column">{{ progression['base_price'] }}</td>
+                                                            <td class="sms-charge-column">{{ progression['sms_charge'] }}</td>
+                                                            <td class="total-price-column">{{ progression['total_price'] }}</td>
+                                                            <td class="location-discount-column">{{ progression['location_discount'] }}</td>
+                                                            <td class="upgrade-discount-column">{{ progression['upgrade_discount'] }}</td>
+                                                            <td class="discount-price-columns">{{ progression['discount_price'] }}</td>
+                                                            <td class="sms-messages-column">{{ progression['sms_messages'] }}</td>
+                                                            <td class="sms-cost-column">{{ progression['sms_cost'] }}</td>
+                                                            <td class="profit-per-location-column">{{ progression['profit_per_location'] }}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
                                                 </table>
                                             </div>
                                             <div class="row progression-controls">
-                                                <div class="col-md-6 col-sm-6"></div>
-                                                <div class="col-md-6 col-sm-6">
+                                                <div class="col-md-4 col-sm-4"></div>
+                                                <div class="col-md-8 col-sm-8">
+                                                    <button id="cancel-btn" class="btn default btn-lg apple-backgound subscription-btn">Cancel</button>
                                                     <button id="remove-segment-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Remove Last</button>
                                                     <button id="add-segment-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Add New</button>
                                                     {% if isCreateMode %}
@@ -261,7 +290,7 @@
 
         function generatePercentageOptions() {
             var options = "";
-            for (var i = 1; i <= 100; i++) {
+            for (var i = 0; i <= 100; i++) {
                 options += "<option value=\"" + i.toString() + "\">" + +i.toString() + "</option>";
             }
             return options;
@@ -367,39 +396,96 @@
                     });
                 }
             });
-
+            
         }
-
+        
+        function recalculateTotalSmsCharge() {
+            var chargePerSms = $('input[id="charge-per-sms-control"]').val();
+            var smsMessages = $('input[id="max-sms-messages-control"]').val();
+            var smsCharge = parseFloat(chargePerSms) * parseInt(smsMessages);
+            $('#progression-table-rows').find('tr td.sms-charge-column').each(function (index) {
+                $(this).text(smsCharge.toFixed(2)); // Update the cell value
+            });     
+        }
+        
+        function recalculateTotalCharge() {
+            var basePrice = $('input[id="base-price-control"]').val();
+            var chargePerSms = $('input[id="charge-per-sms-control"]').val();
+            var smsMessages = $('input[id="max-sms-messages-control"]').val();
+            var smsCharge = parseFloat(chargePerSms) * parseInt(smsMessages);
+            var totalCharge = parseFloat(basePrice) + parseFloat(smsCharge);
+            
+            $('#progression-table-rows').find('tr td.total-price-column').each(function (index) {
+                $(this).text(totalCharge.toFixed(2)); // Update the cell value
+            });    
+        }
+        
+        function refreshBasePrice() {
+            var basePrice = parseFloat($('input[id="base-price-control"]').val());
+            $('#progression-table-rows').find('tr td.base-price-column').each(function (index) {
+                $(this).text(basePrice.toFixed(2)); // Update the cell value
+            });
+        }
+        
+        function refreshLocationDiscount(discountElement) {
+            var discount = discountElement.val();
+            var basePrice = $('input[id="base-price-control"]').val();
+            var locationDiscount = parseFloat(basePrice) * parseFloat(discount * 0.01); 
+            $(discountElement).parent().siblings(".location-discount-column").text(locationDiscount.toFixed(2));         
+        }
+        
+        function refreshAllLocationDiscounts() {
+            $('#progression-table-rows').find('tr td select.location-discount-control').each(function (index) {
+                refreshLocationDiscount($(this));
+            });                     
+        }
+        
+        function recalculateAllUpgradeDiscounts() {
+            var discount = $('select[id="upgrade-discount-control"]').val();
+            var basePrice = $('input[id="base-price-control"]').val();
+            var upgradeDiscount = parseFloat(basePrice) * parseFloat(discount * 0.01); 
+            $('#progression-table-rows').find('tr td.upgrade-discount-column').each(function (index) {
+                $(this).text(upgradeDiscount.toFixed(2));
+            });
+        };
+        
         function initValueBindings(options) {
 
+            $('select.location-discount-control').on('change', function (event) {
+                refreshLocationDiscount($(event.currentTarget));
+            });
+            
+            // Base price control
             $('input[id="base-price-control"]').on('change', function (event) {
-                $('#progression-table-rows').find('tr td.base-price-column').each(function (index) {
-                    $(this).text($(event.currentTarget).val()); // Update the cell value
-                });
+                refreshBasePrice();
+                recalculateTotalCharge();
+                refreshAllLocationDiscounts();
             });
 
+            // Charge per sms control
             $('input[id="charge-per-sms-control"]').on('change', function (event) {
+                recalculateTotalSmsCharge();
+                recalculateTotalCharge();
+                refreshAllLocationDiscounts();
+            });
+
+            // Upgrade discount control    
+            $('select[id="upgrade-discount-control"]').on('change', function (event) {
+                recalculateAllUpgradeDiscounts();    
+            });
+            
+            // Cost per sms control
+            $('input[id="cost-per-sms-control"]').on('change', function (event) {
                 $('#progression-table-rows').find('tr td.sms-charge-column').each(function (index) {
                     $(this).text($(event.currentTarget).val()); // Update the cell value
                 });
             });
 
-            $('select[id="upgrade-discount-control"]').on('change', function (event) {
-                $('#progression-table-rows').find('tr td.upgrade-discount-column').each(function (index) {
-                    $(this).text($(event.currentTarget).val()); // Update the cell value
-                });
-            });
-
-            $('input[id="cost-per-sms-control"]').on('change', function (event) {
-                $('#progression-table-rows').find('tr td.sms-cost-column').each(function (index) {
-                    $(this).text($(event.currentTarget).val()); // Update the cell value
-                });
-            });
-
+            // Max sms messages control
             $('input[id="max-sms-messages-control"]').on('change', function (event) {
-                $('#progression-table-rows').find('tr td.sms-messages-column').each(function (index) {
-                    $(this).text($(event.currentTarget).val()); // Update the cell value
-                });
+                recalculateTotalSmsCharge();
+                recalculateTotalCharge();
+                refreshAllLocationDiscounts();
             });
 
         }
@@ -485,12 +571,21 @@
             $('#progression-table-rows').append(row);
             $('#progression-table-rows').find('tr td > select.location-discount-control').last().append(options);
 
+            // If this is the second row, enable the remove button
+            if ($('#progression-table-rows').find('tr').length === 2) {
+                $('#remove-segment-btn').prop('disabled', false);  
+            }
         }
 
         function removeSegment() {
             var segment = $('#progression-table-rows').find('tr').last();
             if (segment.length > 0) {
                 segment.remove();
+            }
+            // If this is the last row, disable the remove button
+            if ($('#progression-table-rows').find('tr').length < 2) {
+                var e = $('#remove-segment-btn');
+                $('#remove-segment-btn').prop('disabled', true);
             }
         }
 
@@ -536,10 +631,12 @@
 
         function initProgressionControls(options) {
 
-            /* Rebuild the progression */
-            rebuildProgression(options);
+            appendDiscountPercentage(options);
 
             /* Init progression button controls */
+            $('#cancel-btn').click(function () {
+                window.location.href = "/businessPricingPlan";
+            });
             $('#start-over-btn').click(function () {
                 rebuildProgression(options);
             });
@@ -558,6 +655,10 @@
                 savePricingProfile(false);
             });
 
+        }
+        
+        function appendDiscountPercentage(options) {
+            $('#progression-table-rows').find('tr td > select.location-discount-control').append(options);
         }
 
         function init() {
