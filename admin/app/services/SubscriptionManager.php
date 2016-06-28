@@ -6,6 +6,7 @@ use Vokuro\Services\ServicesConsts;
 use Vokuro\Models\BusinessSubscriptionPlan;
 use Vokuro\Models\SubscriptionPricingPlan;
 use Vokuro\Models\SubscriptionPricingPlanParameterList;
+use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
     
 class SubscriptionManager extends BaseService {
     
@@ -209,7 +210,7 @@ class SubscriptionManager extends BaseService {
         
         $subscriptionPricingPlan->user_id = $parameters["userId"];
         $subscriptionPricingPlan->name = $parameters["name"];                               
-        $subscriptionPricingPlan->enabled = $subscriptionPricingPlan->enabled;
+        $subscriptionPricingPlan->enabled = $isUpdate ? $subscriptionPricingPlan->enabled : true;
         $subscriptionPricingPlan->enable_trial_account = $parameters["enableTrialAccount"];
         $subscriptionPricingPlan->enable_discount_on_upgrade = $parameters["enableDiscountOnUpgrade"];
         $subscriptionPricingPlan->base_price = $parameters["basePrice"];
@@ -235,13 +236,16 @@ class SubscriptionManager extends BaseService {
         
         /* Simply delete and refresh */
         if ($isUpdate) {
-            $pricingParameterLists = SubscriptionPricingPlanParameterList::query()  
-                ->where("subscription_pricing_plan_id = :subscription_pricing_plan_id:")
-                ->bind(["subscription_pricing_plan_id" => $id])
-                ->execute();
-            if(!$pricingParameterLists->delete()) {
-                return false;
-            }
+            
+            $db = new DbAdapter(array(
+                'host' => $this->config->database->host,
+                'username' => $this->config->database->username,
+                'password' => $this->config->database->password,
+                'dbname' => $this->config->database->dbname
+            ));
+            $db->query("DELETE FROM subscription_pricing_plan_parameter_list WHERE subscription_pricing_plan_id=".$id);
+            $db->close();
+            
         }
         
         foreach($parameters as $segment => $params) {    
