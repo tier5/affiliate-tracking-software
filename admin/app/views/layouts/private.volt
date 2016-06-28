@@ -203,22 +203,20 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
-
-                        <?php if ($this->view->internalNavParams['hasPricingPlans']) { ?>
-                        <li class="nav-item">
-                            <a href='/businessPricingPlan' class="nav-link nav-toggle">
-                                <i class="icon-list"></i>
-                                <span class="title">Business Subscriptions</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php } ?>
-
+                        {% if internalNavParams['hasPricingPlans'] %}
+                            <li class="nav-item">
+                                <a href='/businessPricingPlan' class="nav-link nav-toggle">
+                                    <i class="icon-list"></i>
+                                    <span class="title">Business Subscriptions</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        {%  endif %}
                         <li class="nav-item start">
                             <a href="/admindashboard/settings" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
                                 <span class="title">Settings</span>
-                               <span class="selected"></span>
+                                <span class="selected"></span>
                             </a>
                         </li>
                     {% else %}
@@ -240,7 +238,7 @@
                             </li>
                         {% endif %}
                         {% if location_id %}
-                            {% if agencytype == "agency" %}
+                            {% if agencytype != "agency" %}
                                 <li class="nav-item">
                                     <a href="/reviews/" class="nav-link nav-toggle">
                                         <i class="icon-diamond"></i>
@@ -447,13 +445,9 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                 </div>
             </form>
 
-            <?php
-                    } else {
-                    ?>
+            <?php } else { ?>
             You have no more SMS messages to send this month.
-            <?php
-                    }
-                    ?>
+            <?php  } ?>
 
             <?php
                     } else {
