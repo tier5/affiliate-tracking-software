@@ -145,7 +145,7 @@ div.logo > img {
 }
 
 .white-section {
-    color: white;
+    background-color: white;
 }
 .light-section {
     background-color: rgb(246, 246, 246);
@@ -185,6 +185,11 @@ div.logo > img {
     border: 1px solid rgba(206, 179, 154, .2);
 }
 
+.black-border {
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 5px;
+}
+
 .bottom-black-border {
     border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
@@ -218,4 +223,8 @@ div.logo > img {
     width: 20px;
     height: 18px;
     float: left;
+}
+
+.thanks-container {
+    margin-top: 150px;
 }
