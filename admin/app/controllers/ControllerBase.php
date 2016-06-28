@@ -79,8 +79,11 @@
                 );
 
                 if ($agency) {
+                    list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+                    $rgb = $r.', '.$g.', '.$b;
                     $this->view->setVars([
                         'main_color_setting' => $agency->main_color,
+                        'rgb'                => $rgb,
                         'logo_setting'       => $agency->logo_path
                     ]);
                 }
@@ -138,7 +141,10 @@
                     'agencytype'            => $agencytype,
                     'location_id'           => $this->session->get('auth-identity')['location_id'],
                     'locations'             => $this->session->get('auth-identity')['locations'],
-                    'is_admin'              => $this->session->get('auth-identity')['is_admin']
+                    'is_admin'              => $this->session->get('auth-identity')['is_admin'],
+                    'profile'               => $this->session->get('auth-identity')['profile'],
+                    'name'                  =>$this->session->get('auth-identity')['name'],
+                    'is_business_admin'     => strpos($this->session->get('auth-identity')['profile'], 'Admin')
                 ]);
 
                 $this->getShareInfo($agency);
@@ -164,16 +170,25 @@
                 );
 
                 if ($agency) {
+
+                    list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+                    $rgb = $r.', '.$g.', '.$b;
                     $this->view->setVars([
                         'agency_id'             => $agency->agency_id,
                         'main_color_setting'    => $agency->main_color,
+                        'rgb'                   => $rgb,
                         'logo_setting'          => $agency->logo_path
                     ]);
                 }
             }
 
             if ($this->request->getPost('main_color')) {
-                $this->view->main_color_setting = $this->request->getPost('main_color');
+                list($r, $g, $b) = sscanf($this->request->getPost('main_color'), "#%02x%02x%02x");
+                $rgb = $r.', '.$g.', '.$b;
+                $this->view->setVars([
+                    'main_color_setting'    => $this->request->getPost('main_color'),
+                    'rgb'                   => $rgb
+                ]);
             }
 
         }

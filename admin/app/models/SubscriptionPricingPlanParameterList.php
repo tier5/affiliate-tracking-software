@@ -24,6 +24,7 @@
         public $total_price;
         public $location_discount;
         public $upgrade_discount;
+        public $discount_price;
         public $sms_messages;
         public $sms_cost;
         public $profit_per_location;
@@ -44,7 +45,7 @@
 
             $this->skipAttributesOnCreate(array('updated_at'));
 
-            $this->belongsTo("subscription_pricing_plan_id", "\Vokuro\Models\SubscriptionPricingPlan", "id", ['alias' => 'SubscriptionPricingPlan']);
+            // $this->belongsTo("subscription_pricing_plan_id", "\Vokuro\Models\SubscriptionPricingPlan", "id", ['alias' => 'SubscriptionPricingPlan']);
         }
 
         public function validation()
@@ -60,28 +61,6 @@
         public function getSource()
         {
             return 'subscription_pricing_plan_parameter_list';
-        }
-
-        /**
-         * Allows to query a set of records that match the specified conditions
-         *
-         * @param mixed $parameters
-         * @return SubscriptionPricingPlanParameterList[]
-         */
-        public static function find($parameters = null)
-        {
-            return parent::find($parameters);
-        }
-
-        /**
-         * Allows to query the first record that match the specified conditions
-         *
-         * @param mixed $parameters
-         * @return SubscriptionPricingPlanParameterList
-         */
-        public static function findFirst($parameters = null)
-        {
-            return parent::findFirst($parameters);
         }
 
         /**
@@ -103,6 +82,7 @@
                 'total_price' => 'total_price',
                 'location_discount' => 'location_discount',
                 'upgrade_discount' => 'upgrade_discount',
+                'discount_price' => 'discount_price',
                 'sms_messages' => 'sms_messages',
                 'sms_cost' => 'sms_cost',
                 'profit_per_location' => 'profit_per_location',
