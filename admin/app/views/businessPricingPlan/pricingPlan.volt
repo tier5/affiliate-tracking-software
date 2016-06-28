@@ -227,12 +227,41 @@
                                                         <th>Profit Per Location</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody id="progression-table-rows"></tbody>
+                                                    <tbody id="progression-table-rows">
+                                                        {% for progression in progressions %}
+                                                        <tr role="row" class="odd">
+                                                            <td>
+                                                                <form class="form-inline" role="form">
+                                                                    <div class="form-group">
+                                                                        <input type="number" value="{{ progression['min_locations'] }}" step="1" min="{{ progression['min_locations'] }}" class="form-control input-xsmall min-locations-control" placeholder="">
+                                                                    </div>
+                                                                    <span>To</span>
+                                                                    <div class="form-group">
+                                                                        <input type="number" value="{{ progression['max_locations'] }}" step="1" min="{{ progression['max_locations'] }}" class="form-control input-xsmall max-locations-control" placeholder="">
+                                                                    </div>
+                                                                </form>
+                                                            </td>
+                                                            <td>
+                                                                <select class="form-control input-small location-discount-control"></select>
+                                                            </td>
+                                                            <td class="base-price-column">{{ progression['base_price'] }}</td>
+                                                            <td class="sms-charge-column">{{ progression['sms_charge'] }}</td>
+                                                            <td class="total-price-column">{{ progression['total_price'] }}</td>
+                                                            <td class="location-discount-column">{{ progression['location_discount'] }}</td>
+                                                            <td class="upgrade-discount-column">{{ progression['upgrade_discount'] }}</td>
+                                                            <td class="discount-price-columns">{{ progression['discount_price'] }}</td>
+                                                            <td class="sms-messages-column">{{ progression['sms_messages'] }}</td>
+                                                            <td class="sms-cost-column">{{ progression['sms_cost'] }}</td>
+                                                            <td class="profit-per-location-column">{{ progression['profit_per_location'] }}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
                                                 </table>
                                             </div>
                                             <div class="row progression-controls">
-                                                <div class="col-md-6 col-sm-6"></div>
-                                                <div class="col-md-6 col-sm-6">
+                                                <div class="col-md-4 col-sm-4"></div>
+                                                <div class="col-md-8 col-sm-8">
+                                                    <button id="cancel-btn" class="btn default btn-lg apple-backgound subscription-btn">Cancel</button>
                                                     <button id="remove-segment-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Remove Last</button>
                                                     <button id="add-segment-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Add New</button>
                                                     {% if isCreateMode %}
@@ -536,10 +565,15 @@
 
         function initProgressionControls(options) {
 
-            /* Rebuild the progression */
-            rebuildProgression(options);
+            /* Rebuild the progression 
+            rebuildProgression(options); 
+            */
+            appendDiscountPercentage(options);
 
             /* Init progression button controls */
+            $('#cancel-btn').click(function () {
+                window.location.href = "/businessPricingPlan";
+            });
             $('#start-over-btn').click(function () {
                 rebuildProgression(options);
             });
@@ -558,6 +592,10 @@
                 savePricingProfile(false);
             });
 
+        }
+        
+        function appendDiscountPercentage(options) {
+            $('#progression-table-rows').find('tr td > select.location-discount-control').append(options);
         }
 
         function init() {
