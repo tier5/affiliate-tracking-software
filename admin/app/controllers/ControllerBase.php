@@ -79,8 +79,11 @@
                 );
 
                 if ($agency) {
+                    list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+                    $rgb = $r.', '.$g.', '.$b;
                     $this->view->setVars([
                         'main_color_setting' => $agency->main_color,
+                        'rgb'                => $rgb,
                         'logo_setting'       => $agency->logo_path
                     ]);
                 }
@@ -166,16 +169,25 @@
                 );
 
                 if ($agency) {
+
+                    list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+                    $rgb = $r.', '.$g.', '.$b;
                     $this->view->setVars([
                         'agency_id'             => $agency->agency_id,
                         'main_color_setting'    => $agency->main_color,
+                        'rgb'                   => $rgb,
                         'logo_setting'          => $agency->logo_path
                     ]);
                 }
             }
 
             if ($this->request->getPost('main_color')) {
-                $this->view->main_color_setting = $this->request->getPost('main_color');
+                list($r, $g, $b) = sscanf($this->request->getPost('main_color'), "#%02x%02x%02x");
+                $rgb = $r.', '.$g.', '.$b;
+                $this->view->setVars([
+                    'main_color_setting'    => $this->request->getPost('main_color'),
+                    'rgb'                   => $rgb
+                ]);
             }
 
         }
