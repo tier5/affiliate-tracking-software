@@ -98,10 +98,6 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->gridEditStatus = "";
         $this->view->isCreateMode = false;    
         
-        $progressions = $subscriptionManager->getPricingParameterListsByPricingPlanId($pricingPlanId);
-        
-        
-        
         $this->view->progressions = 
             $subscriptionManager->getPricingParameterListsByPricingPlanId($pricingPlanId);
         
@@ -233,6 +229,10 @@ class BusinessPricingPlanController extends ControllerBase {
         }
         
         return $responseParameters;
+    }
+    
+    public function previewSignUpPageAction() {
+        $this->view->pick("session/signup");    
     }
     
     public function updateEnablePricingPlanAction($pricingPlanId, $enable) {

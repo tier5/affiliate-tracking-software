@@ -14,12 +14,8 @@ use Vokuro\Models\GoogleScanning;
 use Vokuro\Models\Location;
 use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\ResetPasswords;
-use Vokuro\Models\Subscription;
-use Vokuro\Models\SubscriptionInterval;
-use Vokuro\Models\SubscriptionStripe;
 use Vokuro\Models\Users;
 use Vokuro\Models\UsersSubscription;
-use Vokuro\Models\YelpScanning;
 
 /**
  * Controller used handle non-authenticated session actions like login/logout, user signup, and forgotten passwords
@@ -62,121 +58,7 @@ class SessionController extends ControllerBase {
         return $maxreached;
     }
 
-    /**
-     * Allow a user to signup to the system
-     */
-    public function subscribeAction($subscription_stripe_id = 0) {
-        /*
-          $this->view->setTemplateBefore('login');
-          $this->tag->setTitle('Review Velocity | Sign up');
-          $form = new SignUpForm();
-
-          $this->view->maxlimitreached = $this->isMaxLimitReached();
-
-          //find the agency
-          $conditions = "agency_id = :agency_id:";
-          $parameters = array("agency_id" => $this->view->agency_id);
-          $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-          if (!$agency) {
-          $this->flash->error("No agency found");
-          } else {
-          $this->view->agency = $agency;
-
-          if ($subscription_stripe_id > 0) {
-          $conditions = "subscription_stripe_id = :subscription_stripe_id:";
-          $parameters = array("subscription_stripe_id" => $subscription_stripe_id);
-          $subscriptionobj = SubscriptionStripe::findFirst(array($conditions, "bind" => $parameters));
-          $this->view->subscription = $subscriptionobj;
-
-          if ($this->request->isPost()) {
-          try {
-
-          $ccformvalid = false;
-          //check to make sure credit card values were filled out
-          if (isset($_POST['stripeToken']) && $_POST['stripeToken'] != '' &&
-          isset($_POST['stripeEmail']) && $_POST['stripeEmail'] != '') {
-          //$_POST['email'] = $_POST['stripeEmail'];
-          //we have values, assume valid
-          $ccformvalid = true;
-          }
-          //check user email unuique
-          $user = new Users();
-          $user->assign(array(
-          'name' => $this->request->getPost('name', 'striptags'),
-          'email' => $this->request->getPost('email'),
-          'password' => $this->security->hash($this->request->getPost('password')),
-          'profilesId' => 1, //All new users will be "Agency Admin"
-          ));
-          $isemailunuique = $user->validation();
-
-          if ($form->isValid($this->request->getPost()) != false && $ccformvalid && $isemailunuique) {
-          //create the Stripe subscription account
-          \Stripe\Stripe::setApiKey($agency->stripe_account_secret);
-          $customer = \Stripe\Customer::create(array(
-          'source' => $_POST['stripeToken'],
-          'email' => $_POST['stripeEmail'],
-          'plan' => $subscriptionobj->plan,
-          ));
-          //echo '<pre>$customer:'.print_r($customer,true).'</pre>';
-          //first create an agency
-          $agency_name = $this->request->getPost('agency_name', 'striptags');
-          $agency2 = new Agency();
-          $agency2->assign(array(
-          'name' => $agency_name,
-          'stripe_token' => $_POST['stripeToken'],
-          'parent_agency_id' => $agency->agency_id,
-          'stripe_customer_id' => $customer->id,
-          'stripe_subscription_id' => $customer->subscriptions->data[0]->id,
-          'date_created' => date('Y-m-d H:i:s'),
-          ));
-          if (!$agency2->save()) {
-          $this->flash->error($agency2->getMessages());
-          } else {
-          $user->agency_id = $agency2->agency_id;
-
-          if ($user->save()) {
-          //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
-          //redirect
-          return $this->response->redirect('/session/login?n=1');
-          }
-          }
-
-          $this->flash->error($user->getMessages());
-          } else {
-          if (!$isemailunuique)
-          $this->flash->error('That email address is already taken.');
-          if (!$ccformvalid)
-          $this->flash->error('Please enter your credit card information.');
-          }
-          } catch (Stripe_CardError $e) {
-          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-          } catch (Stripe_InvalidRequestError $e) {
-          // Invalid parameters were supplied to Stripe's API
-          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-          } catch (Stripe_AuthenticationError $e) {
-          // Authentication with Stripe's API failed
-          // (maybe you changed API keys recently)
-          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-          } catch (Stripe_ApiConnectionError $e) {
-          // Network communication with Stripe failed
-          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-          } catch (Stripe_Error $e) {
-          // Display a very generic error to the user, and maybe send
-          // yourself an email
-          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-          } catch (Exception $e) {
-          // Something else happened, completely unrelated to Stripe
-          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-          } catch (\Stripe\Error\Base $e) {
-          // Code to do something with the $e exception object when an error occurs
-          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
-          }
-          }
-          }
-          }
-         * 
-         */
-    }
+    
 
     public function noSubDomains($page, $subscription_id) {
         $sub = array_shift((explode(".", $_SERVER['HTTP_HOST'])));
@@ -202,8 +84,6 @@ class SessionController extends ControllerBase {
      * Collect credit card info
      */
     public function ccAction() {
-        
-        
         
     }
 
@@ -1009,3 +889,122 @@ class SessionController extends ControllerBase {
     }
 
 }
+
+
+/**
+     * Allow a user to signup to the system
+     */
+    /*
+    public function subscribeAction($subscription_stripe_id = 0) {
+        
+          $this->view->setTemplateBefore('login');
+          $this->tag->setTitle('Review Velocity | Sign up');
+          $form = new SignUpForm();
+
+          $this->view->maxlimitreached = $this->isMaxLimitReached();
+
+          //find the agency
+          $conditions = "agency_id = :agency_id:";
+          $parameters = array("agency_id" => $this->view->agency_id);
+          $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+          if (!$agency) {
+          $this->flash->error("No agency found");
+          } else {
+          $this->view->agency = $agency;
+
+          if ($subscription_stripe_id > 0) {
+          $conditions = "subscription_stripe_id = :subscription_stripe_id:";
+          $parameters = array("subscription_stripe_id" => $subscription_stripe_id);
+          $subscriptionobj = SubscriptionStripe::findFirst(array($conditions, "bind" => $parameters));
+          $this->view->subscription = $subscriptionobj;
+
+          if ($this->request->isPost()) {
+          try {
+
+          $ccformvalid = false;
+          //check to make sure credit card values were filled out
+          if (isset($_POST['stripeToken']) && $_POST['stripeToken'] != '' &&
+          isset($_POST['stripeEmail']) && $_POST['stripeEmail'] != '') {
+          //$_POST['email'] = $_POST['stripeEmail'];
+          //we have values, assume valid
+          $ccformvalid = true;
+          }
+          //check user email unuique
+          $user = new Users();
+          $user->assign(array(
+          'name' => $this->request->getPost('name', 'striptags'),
+          'email' => $this->request->getPost('email'),
+          'password' => $this->security->hash($this->request->getPost('password')),
+          'profilesId' => 1, //All new users will be "Agency Admin"
+          ));
+          $isemailunuique = $user->validation();
+
+          if ($form->isValid($this->request->getPost()) != false && $ccformvalid && $isemailunuique) {
+          //create the Stripe subscription account
+          \Stripe\Stripe::setApiKey($agency->stripe_account_secret);
+          $customer = \Stripe\Customer::create(array(
+          'source' => $_POST['stripeToken'],
+          'email' => $_POST['stripeEmail'],
+          'plan' => $subscriptionobj->plan,
+          ));
+          //echo '<pre>$customer:'.print_r($customer,true).'</pre>';
+          //first create an agency
+          $agency_name = $this->request->getPost('agency_name', 'striptags');
+          $agency2 = new Agency();
+          $agency2->assign(array(
+          'name' => $agency_name,
+          'stripe_token' => $_POST['stripeToken'],
+          'parent_agency_id' => $agency->agency_id,
+          'stripe_customer_id' => $customer->id,
+          'stripe_subscription_id' => $customer->subscriptions->data[0]->id,
+          'date_created' => date('Y-m-d H:i:s'),
+          ));
+          if (!$agency2->save()) {
+          $this->flash->error($agency2->getMessages());
+          } else {
+          $user->agency_id = $agency2->agency_id;
+
+          if ($user->save()) {
+          //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
+          //redirect
+          return $this->response->redirect('/session/login?n=1');
+          }
+          }
+
+          $this->flash->error($user->getMessages());
+          } else {
+          if (!$isemailunuique)
+          $this->flash->error('That email address is already taken.');
+          if (!$ccformvalid)
+          $this->flash->error('Please enter your credit card information.');
+          }
+          } catch (Stripe_CardError $e) {
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_InvalidRequestError $e) {
+          // Invalid parameters were supplied to Stripe's API
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_AuthenticationError $e) {
+          // Authentication with Stripe's API failed
+          // (maybe you changed API keys recently)
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_ApiConnectionError $e) {
+          // Network communication with Stripe failed
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_Error $e) {
+          // Display a very generic error to the user, and maybe send
+          // yourself an email
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Exception $e) {
+          // Something else happened, completely unrelated to Stripe
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (\Stripe\Error\Base $e) {
+          // Code to do something with the $e exception object when an error occurs
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          }
+          }
+          }
+          }
+         *   
+    }
+     * 
+     */
