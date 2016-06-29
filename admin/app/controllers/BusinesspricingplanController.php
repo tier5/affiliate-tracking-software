@@ -5,6 +5,9 @@ namespace Vokuro\Controllers;
 use Exception;
 use Phalcon\Filter;
 use Vokuro\Utils;
+use Vokuro\Forms\SignUpForm;
+use Vokuro\Forms\CreditCardForm;
+
 /**
  * Vokuro\Controllers\BusinessPricingPlanController
  * CRUD to manage users
@@ -31,8 +34,9 @@ class BusinessPricingPlanController extends ControllerBase {
             ->addCss('/assets/global/plugins/bootstrap-summernote/summernote.css')
             ->addCss('/css/subscription.css')
             ->addCss('/css/slider-extended.css')
-            ->addCss('/assets/global/plugins/card-js/card-js.min.css');
-
+            ->addCss('/assets/global/plugins/card-js/card-js.min.css')
+            ->addCss('/css/login.css');
+            
         //add needed js
         $this->assets
             ->addJs('/assets/global/plugins/bootstrap-summernote/summernote.min.js')
@@ -232,7 +236,22 @@ class BusinessPricingPlanController extends ControllerBase {
     }
     
     public function previewSignUpPageAction() {
-        $this->view->pick("session/signup");    
+        // $this->view->setTemplateBefore('private');
+        $this->view->setTemplateBefore('private');
+        $form = new SignUpForm();
+        $ccform = new CreditCardForm();
+        
+        /* Get services */
+        $userManager = $this->di->get('userManager');
+        
+        $user_id = $userManager->getUserId($this->session);
+        $this->view->user_id = $user_id;
+        $this->view->maxlimitreached = false;
+        
+        $this->view->form = $form;
+        $this->view->ccform = $ccform;
+        $this->view->current_step = 1;        
+        $this->view->pick("businessPricingPlan/signupPreview");    
     }
     
     public function updateEnablePricingPlanAction($pricingPlanId, $enable) {

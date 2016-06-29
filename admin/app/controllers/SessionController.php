@@ -170,7 +170,7 @@ class SessionController extends ControllerBase {
                              * this later.  MT, 2016 
                              * 
                              */
-                            $this->createDefaultSubscriptionPlan($user->id);
+                            // $this->createDefaultSubscriptionPlan($user->id);
 
                             return $this->response->redirect('/session/thankyou');
                             //'signup_page' => 2, //go to the next page

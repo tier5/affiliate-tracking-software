@@ -1,7 +1,6 @@
 <div class="content">
     {{ content() }}
 
-
     <!-- BEGIN LOGIN FORM -->
     <form class="login-form" action="/session/login?return=<?=(isset($_GET['return'])?$_GET['return']:'')?>" method="post">
         <h3><?=(strpos($_SERVER['REQUEST_URI'],'admin/confirm/')>0?'Thank You For Confirming Your Email Sign In':'Sign In')?></h3>
