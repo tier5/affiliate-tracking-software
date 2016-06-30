@@ -7,3 +7,4 @@ admin/app/cache/*
 admin/vendor/*
 /nbproject/private/
 .idea
+admin/public/img/agency_logos
