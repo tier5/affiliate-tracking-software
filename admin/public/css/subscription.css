@@ -302,14 +302,13 @@
     margin: 5px;
 }
 
-/* 
-Reformat the table for devices smaller that 890px
+/* Reformat the table for devices smaller that 890px */
 
-@media (max-width: 1024px) {
+@media (max-width: 1645px) {
     table, thead, tbody, th, td, tr { 
         display: block; 
     }
-    /* Hide table headers (but not display: none;, for accessibility)
+    /* Hide table headers (but not display: none;, for accessibility) */
     thead tr { 
         position: absolute;
         top: -9999px;
@@ -329,19 +328,19 @@ Reformat the table for devices smaller that 890px
         position: absolute;
         top: 6px;
         left: 6px;
-        width: 45%; 
+        width: auto; 
         padding-right: 10px; 
         white-space: nowrap;
     }
 
-    /* Label the data
-    td:nth-of-type(1):before { content: "Type"; }
-    /*td:nth-of-type(2):before { content: "Date"; }
-    td:nth-of-type(3):before { content: "Subscription Id"; }
-    td:nth-of-type(4):before { content: "Term/Status"; }
-    td:nth-of-type(5):before { content: "Plan"; }
-    td:nth-of-type(6):before { content: "Amount"; }
-    td:nth-of-type(7):before { content: "Invoice"; }
+    /* Label the data */ 
+    td:nth-of-type(1):before { content: "Type"; z-index: -1; }
+    td:nth-of-type(2):before { content: "Date"; z-index: -1; }
+    td:nth-of-type(3):before { content: "Subscription Id"; z-index: -1; }
+    td:nth-of-type(4):before { content: "Term/Status"; z-index: -1; }
+    td:nth-of-type(5):before { content: "Plan"; z-index: -1; }
+    td:nth-of-type(6):before { content: "Amount"; z-index: -1; }
+    td:nth-of-type(7):before { content: "Invoice"; z-index: -1; }
     
-}*/
+}
  
