@@ -4,8 +4,8 @@ namespace Vokuro\Services;
 
 class UserManager extends BaseService {
     
-    function __construct($config, $di) {
-        parent::__construct($config, $di);
+    function __construct($config) {
+        parent::__construct($config);
     }
     
     public function isSuperAdmin($session) {

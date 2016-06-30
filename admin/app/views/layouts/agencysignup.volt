@@ -48,15 +48,10 @@
 
 
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-
 </head>
 <!-- END HEAD -->
 <body class="signup">
-<div class="topheader">
-
-
-</div>
-
+<div class="topheader"></div>
 <header>
     <div class="headercontent">
         <!-- BEGIN LOGO -->
@@ -97,6 +92,7 @@
             <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
         </div>
     </div>
+    {{ flashSession.output() }}
     {{ content() }}
 
 </div>

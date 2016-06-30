@@ -129,6 +129,14 @@ $di->set('flash', function () {
         'warning' => 'alert alert-warning'
     ));
 });
+    $di->set('flashSession', function(){
+        $flash = new \Phalcon\Flash\Session(array(
+            'error' => 'alert alert-danger',
+            'success' => 'alert alert-success',
+            'notice' => 'alert alert-info',
+        ));
+        return $flash;
+    });
 
 /**
  * Custom authentication component

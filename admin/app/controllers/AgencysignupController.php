@@ -464,8 +464,10 @@
                 $objAgency->subscription_id = '';
                 $objAgency->parent_id = -1;
 
-                if (!$objAgency->create())
-                    throw new \Exception('Agency could not be created.');
+                if (!$objAgency->create()) {
+                    $this->flashSession->error($objAgency->get_val_errors());
+                    return false;
+                }
 
                 $objUser = new Users();
                 $objUser->agency_id = $objAgency->agency_id;
@@ -486,7 +488,7 @@
                 $objUser->is_all_locations = 0;
                 $objUser->profilesId = 1; // Agency Admin
                 if(!$objUser->create())
-                throw new \Exception('Agency could not be created.');
+                    throw new \Exception('Agency could not be created.');
                 return $objUser->id;
 
             } catch (Exception $e) {
@@ -550,6 +552,7 @@
 
 
                 if(!$UserID = $this->CreateAgency($this->session->AgencySignup)) {
+                    return $this->response->redirect('/agencysignup/order');
                     throw new \Exception('DB Error:  Could not create agency.');
                 }
 
@@ -560,7 +563,7 @@
                     throw new \Exception('Could not insert auth profile into db.');
                 }
 
-                /*$objPaymentService = $this->di->get('paymentService');
+                $objPaymentService = $this->di->get('paymentService');
 
                 $tParameters = [
                     'userId'                    => $UserID,
@@ -573,7 +576,7 @@
 
                 if (!$objPaymentService->changeSubscription($tParameters)) {
                     throw new \Exception('Could not add subscription.');
-                }*/
+                }
 
 
             } catch (Exception $e) {
@@ -625,18 +628,14 @@
 
             try {
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
-                    $this->db->begin();
 
                     if (!$Profile = $this->CreateAuthProfile($this->session->AgencySignup))
                         throw new \Exception('Could not create Auth Profile');
 
                     $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile]);
 
-                    $this->db->commit();
-
                 }
             } catch(Exception $e) {
-                $this->db->rollback();
                 return false;
             }
 
@@ -678,6 +677,7 @@
 
             $this->view->PrimaryColor = $this->session->AgencySignup['PrimaryColor'] ?: '#2a3644';
             $this->view->SecondaryColor = $this->session->AgencySignup['SecondaryColor'] ?: '#2eb82e';
+
         }
 
         protected function StoreLogo() {
@@ -699,7 +699,6 @@
                     }
                 }
             }
-
         }
 
         public function salesAction () {

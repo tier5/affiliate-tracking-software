@@ -74,21 +74,21 @@ class PaymentService extends BaseService {
                 $status = false;
                 break;
         }
-        
+        /* KT commenting out temporarily for agency signup
         if ($status) {
             $subscriptionPlan = BusinessSubscriptionPlan::query()
                 ->where("user_id = :userId:")
                 ->bind(["userId" => $subscriptionParameters['userId']])
                 ->execute()
                 ->getFirst();
-            $subscriptionPlan->setLocations($subscriptionParameters['locations']);
+            //$subscriptionPlan->setLocations($subscriptionParameters['locations']);
             $subscriptionPlan->setSmsMessagesPerLocation($subscriptionParameters['messages']);
             $subscriptionPlan->setPaymentPlan($subscriptionParameters['planType']);
             if (!$subscriptionPlan->save()) {
                 $status = false;
             }
         }
-        
+        */
         return $status;
     }
     
