@@ -1,23 +1,19 @@
-<?php if (!($user_id > 0)) { ?>
+<% if !$userId %>
 <div class="signup-footer">
     <div class="title">Try us for free</div>
     <div class="description">No credit card required.  All features included.</div>
 </div>
 <div class="content">
-    
-    <?php } ?>
+{% endif %}
+
     {{ content() }}
-    <?php
-    if ($maxlimitreached) {
-    ?>
+    <% if maxLimitReached %>
     The max signup limit has been reached for today.  Please try again tomorrow.
     <p><a href="/session/login" id="register-back-btn" class="btn btn-default" style="margin-right: 50px;">Back</a></p>
-    <?php
-    } else {
-    ?>
-
+    <% else %>
+    
     <!-- BEGIN REGISTRATION FORM -->
-    <form class="register-form" action="/session/signup/<?=(isset($subscription->subscription_id)?$subscription->subscription_id:'')?><?=(isset($_GET['code'])?'?code='.$_GET['code']:'')?>" method="post" style="display: block;">
+    <form class="register-form" action="/session/submitSignupAction/{{ pricingPlanTokenId }}" method="post" style="display: block;">
         <?php if ($user_id > 0) { ?>
         <h3>Subscribe</h3>
         <p class="hint"> Please enter your credit card information to continue to the Web site. </p>

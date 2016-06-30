@@ -2,6 +2,8 @@
 
 namespace Vokuro\Controllers;
 
+use Vokuro\Utils;
+use Vokuro\ArrayException;
 use Phalcon\Tag;
 use Vokuro\Forms\LoginForm;
 use Vokuro\Forms\SignUpForm;
@@ -22,6 +24,8 @@ use Vokuro\Models\UsersSubscription;
  */
 class SessionController extends ControllerBase {
 
+    public $validSubDomains = [ 'my', 'www', 'reviewvelocity', '104', 'dev', 'stage', 'dev2', 'localhost' ];
+    
     public $facebook_access_token;
 
     /**
@@ -40,195 +44,115 @@ class SessionController extends ControllerBase {
         $this->tag->setTitle('Review Velocity | Subscription');
     }
 
-    public function isMaxLimitReached() {
-        $maxreached = false;
-
-        //check to make sure that we have not already reached the max allowed for signup today
-        //echo '<p>perday:'.$this->config->maxSignup->perday.'</p>';
-        if ($this->config->maxSignup->perday > 0) { //zero equals infinite
-            //find out how many signed up today
-            $report = Users::getDailySignupCount();
-            //echo '<p>count:'.$report->count().'</p>';
-            if ($report->count() >= $this->config->maxSignup->perday) {
-                //we reached our max limit, so don't allow any additional signup
-                $maxreached = true;
+    public function submitSignupAction($subscriptionToken) {
+        
+        try {
+            
+            // Start transaction
+            $this->db->begin();
+            
+            if (!$this->request->isPost()) {
+                throw new \ArrayException("", 0, null, ['POST request required!!!']);
             }
-        } //end checking for a max signup
-        //echo '<p>$maxreached:'.($maxreached?'true':'false').'</p>';
-        return $maxreached;
-    }
-
-    
-
-    public function noSubDomains($page, $subscription_id) {
-        $sub = array_shift((explode(".", $_SERVER['HTTP_HOST'])));
-
-        if ($sub && $sub != '' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104' && $sub != 'dev' && $sub != 'stage' && $sub != 'dev2' && $sub != 'localhost') {
-            //there is a subdomain.  That is not allowed, so redirect them out of here
-            $found = false;
-            $querystring = '';
-            if (isset($_GET['code'])) {
-                $code = $_GET['code'];
-                $querystring = '?code=' . $code;
-                $found = true;
+            
+            // Is this a valid subscritpion token?
+            
+            
+            $form = new SignUpForm();
+            $ccform = new CreditCardForm();
+            $ccformvalid = $ccform->isValid($this->request->getPost());
+            if (!$ccformvalid) {
+                throw new \ArrayException("", 0, null, implode('The credit card is invalid.  Please check the informaiton and try again.', $ccform->getMessages()));    
             }
-            if ($subscription_id > 0) {
-                $querystring = $subscription_id . '/' . $querystring;
-                $found = true;
+            
+            // Check user email unuique            
+            $user = new Users();
+            $user->assign(array(
+                'name' => $this->request->getPost('name', 'striptags'),
+                'email' => $this->request->getPost('email'),
+                'password' => $this->security->hash($this->request->getPost('password')),
+                'profilesId' => 1, //All new users will be "Agency Admin"
+            ));
+            
+            $isemailunuique = $user->validation();
+            if (!$isemailunuique) {
+                throw new \ArrayException("", 0, null, ['That email address is already taken.']);    
             }
-            //return $this->response->redirect('/session/signup' . ($page > 1 ? $page : '') . '/' . $querystring);
+
+            $uservalid = $form->isValid($this->request->getPost());
+            if (!$uservalid) {
+                throw new \ArrayException("", 0, null, implode('The submitted user info is invalid.', $form->getMessages()));
+            }
+            
+            // First create an agency
+            $agency_name = $this->request->getPost('agency_name', 'striptags');
+            $agency = new Agency();
+            $agency->assign(array(
+                'name' => $agency_name,
+                'referrer_code' => $this->request->getPost('sharecode'),
+                'date_created' => date('Y-m-d H:i:s'),
+                'signup_page' => 2, //go to the next page,
+                'agency_type_id' => 2,
+            ));
+            
+            if (!$agency->save()) {
+                throw new \ArrayException("", 0, null, $agency->getMessages());
+            }
+            
+            $user->agency_id = $agency->agency_id;    
+            if (!$user->save()) { 
+                throw new \ArrayException("", 0, null, $user->getMessages());
+            }
+            
+            $_SESSION['name'] = $this->request->getPost('name', 'striptags');
+            $_SESSION['email'] = $this->request->getPost('email');
+
+            $this->db->commit();
+            
+            return $this->response->redirect('/session/thankyou');
+            
+        } catch(ArrayException $e) {
+            
+            $this->db->rollback();
+            
+            foreach($e->getOptions() as $message) {
+                $this->flash->error($message);
+            }
+                    
         }
     }
     
-    /**
-     * Collect credit card info
-     */
-    public function ccAction() {
+    /* public function signupAction($subscription_id = 0) { */
+    public function showSignupAction($pricingProfileToken) {
         
-    }
-
-    /**
-     * Sign up form, Step 1 (Account)
-     */
-    public function signupAction($subscription_id = 0) {
-        $this->noSubDomains(1, $subscription_id);
+        /* Get services */
+        $userManager = $this->di->get('userManager');
+        
+        /* $this->noSubDomains(1, $subscription_id); */
+        Utils::noSubDomains(1, $this->validSubDomains, $pricingProfileToken);
 
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Review Velocity | Sign up');
         $form = new SignUpForm();
         $ccform = new CreditCardForm();
-
-        $user_id = 0;
-        if (isset($this->session->get('auth-identity')['id']) && $this->session->get('auth-identity')['id'] > 0) {
-            $user_id = $this->session->get('auth-identity')['id'];
+        
+        $userId = $userManager->getUserId($this->session); 
+        if ($userId > 0) {
             $this->view->setTemplateBefore('private');
         }
-        $this->view->user_id = $user_id;
-        if ($user_id > 0) {
-            $this->view->maxlimitreached = false;
-        } else {
-            $this->view->maxlimitreached = $this->isMaxLimitReached();
+        $this->view->userId = $userId;
+        $this->view->maxLimitReached = false;
+        if (!$userId) {
+            $this->view->maxLimitReached = $userManager->isMaxLimitReached();
         }
-
-        //echo '<p>$subscriptionobj test:'.(isset($subscriptionobj->subscription_id) == false).'</p>';
-
-        if ($this->request->isPost()) {
-            $ccformvalid = true;
-            if (isset($subscriptionobj->subscription_id) == true && $subscriptionobj->subscription_id > 0)
-                $ccformvalid = $ccform->isValid($this->request->getPost());
-            //echo '<p>test:'.$ccformvalid.'</p>';
-
-            $uservalid = true;
-            $isemailunuique = true;
-            if ($user_id == 0) {
-                //check user email unuique            
-                $user = new Users();
-                $user->assign(array(
-                    'name' => $this->request->getPost('name', 'striptags'),
-                    'email' => $this->request->getPost('email'),
-                    'password' => $this->security->hash($this->request->getPost('password')),
-                    'profilesId' => 1, //All new users will be "Agency Admin"
-                ));
-                $isemailunuique = $user->validation();
-                $uservalid = ($form->isValid($this->request->getPost()) != false);
-            }
-
-            //$this->flash->error('Posted...');
-            if ($uservalid && $ccformvalid && $isemailunuique) {
-
-                if (isset($subscriptionobj->subscription_id) == false || (($response != null) && ($response->getMessages()->getResultCode() == "Ok") )) {
-                    //echo "SUCCESS: Subscription ID : " . $response->getSubscriptionId() . "\n";
-                    //$this->flash->error('Valid...');
-                    if ($user_id == 0) {
-                        //first create an agency
-                        $agency_name = $this->request->getPost('agency_name', 'striptags');
-                        $agency = new Agency();
-                        $agency->assign(array(
-                            'name' => $agency_name,
-                            'referrer_code' => $this->request->getPost('sharecode'),
-                            'date_created' => date('Y-m-d H:i:s'),
-                            'signup_page' => 2, //go to the next page,
-                            'agency_type_id' => 2,
-                        ));
-                        if (!$agency->save()) {
-                            $this->flash->error($agency->getMessages());
-                        }
-                        //$this->flash->error('Agency created.  Id:'.$agency->agency_id);
-
-                        $user->agency_id = $agency->agency_id;
-
-                        if ($user->save()) {
-                
-                            //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
-                            //redirect
-                            //return $this->response->redirect('/session/login?n=1');
-                            $_SESSION['name'] = $this->request->getPost('name', 'striptags');
-                            $_SESSION['email'] = $this->request->getPost('email');
-
-                            /*
-                             * REFACTOR: We don't have a choice due to the fragmented registration system :(  Will remove 
-                             * this later.  MT, 2016 
-                             * 
-                             */
-                            // $this->createDefaultSubscriptionPlan($user->id);
-
-                            return $this->response->redirect('/session/thankyou');
-                            //'signup_page' => 2, //go to the next page
-                            //return $this->dispatcher->forward(array(
-                            //  'controller' => 'index',
-                            //  'action' => 'index'
-                            //));
-                        }
-                    } else {
-                        //else, we already have a user, so redirect home
-                        $conditions = "id = :id:";
-                        $parameters = array("id" => $user_id);
-                        $user = Users::findFirst(array($conditions, "bind" => $parameters));
-
-                        //save the credit card info            
-                        $us = new UsersSubscription();
-                        $us->assign(array(
-                            'user_id' => $user->id,
-                            'agency_id' => $user->agency_id,
-                            'subscription_id' => $subscription_id,
-                            'date_created' => date('Y-m-d H:i:s'),
-                            'cardnumber' => preg_replace('/\s+/', '', $this->request->getPost('card-number')),
-                            'expirymonth' => $this->request->getPost('expiry-month'),
-                            'expiryyear' => $this->request->getPost('expiry-year'),
-                            'cvc' => $this->request->getPost('cvc'),
-                            'auth_subscription_id' => $response->getSubscriptionId(),
-                        ));
-
-                        //save the UsersSubscription now
-                        if (!$us->save()) {
-                            $this->flash->error($us->getMessages());
-                        }
-                        return $this->response->redirect('/?n=1');
-                    }
-                    $this->flash->error($user->getMessages());
-                } else {
-                    $this->flash->error('The credit card is invalid.  Please check the informaiton and try again.' . "<!--Response : " . $response->getMessages()->getMessage()[0]->getCode() . "  " . $response->getMessages()->getMessage()[0]->getText() . "-->");
-                    //echo "ERROR: Credit Card Proccessing Error\n";
-                    //echo "Response : " . $response->getMessages()->getMessage()[0]->getCode() . "  " .$response->getMessages()->getMessage()[0]->getText() . "\n";
-                }
-            } else {
-                if (!$isemailunuique)
-                    $this->flash->error('That email address is already taken.');
-
-                foreach ($form->getMessages() as $message) {
-                    $this->flash->error($message->getMessage());
-                }
-                foreach ($ccform->getMessages() as $message) {
-                    $this->flash->error($message->getMessage());
-                }
-            }
-        }
-
+        
         $this->view->form = $form;
         $this->view->ccform = $ccform;
         $this->view->current_step = 1;
+        
     }
 
+    /*
     private function createDefaultSubscriptionPlan($userId) {
         $subscriptionManager = $this->di->get('subscriptionManager');
 
@@ -252,12 +176,17 @@ class SessionController extends ControllerBase {
             $this->flash->error('Failed to create default subscription plan');
         }
     }
+     * 
+     */
 
     /**
      * Sign up form, Step 2 (Add Location) 
      */
-    public function signup2Action($subscription_id = 0) {
-        $this->noSubDomains(2, $subscription_id);
+    /* public function signup2Action($subscription_id = 0) { */
+    public function signup2Action($pricingProfileToken = 0) {
+    
+        /* $this->noSubDomains(2, $subscription_id); */
+        Utils::noSubDomains(2, $this->validSubDomains, $pricingProfileToken);
 
         $this->view->setTemplateBefore('signup');
         $this->tag->setTitle('Review Velocity | Sign up | Step 2 | Add Location');
@@ -381,8 +310,11 @@ class SessionController extends ControllerBase {
     /**
      * Sign up form, Step 3 (Customize Survey)
      */
-    public function signup3Action($subscription_id = 0) {
-        $this->noSubDomains(3, $subscription_id);
+    /* public function signup3Action($subscription_id = 0) { */
+    public function signup3Action($pricingProfileToken = 0) {
+    
+        /* $this->noSubDomains(3, $subscription_id); */
+        Utils::noSubDomains(3, $this->validSubDomains, $pricingProfileToken);
 
         $this->view->setTemplateBefore('signup');
         $this->tag->setTitle('Review Velocity | Sign up | Step 3 | Customize Survey');
@@ -442,8 +374,11 @@ class SessionController extends ControllerBase {
     /**
      * Sign up form, Step 4 (Add Employee)
      */
-    public function signup4Action($subscription_id = 0) {
-        $this->noSubDomains(4, $subscription_id);
+    /* public function signup4Action($subscription_id = 0) { */
+    public function signup4Action($pricingProfileToken = 0) {
+        
+        /* $this->noSubDomains(4, $subscription_id); */
+        Utils::noSubDomains(4, $this->validSubDomains, $pricingProfileToken);
 
         $this->view->setTemplateBefore('signup');
         $this->tag->setTitle('Review Velocity | Sign up | Step 4 | Add Employee');
@@ -501,8 +436,11 @@ class SessionController extends ControllerBase {
     /**
      * Sign up form, Step 5 (Share)
      */
-    public function signup5Action($subscription_id = 0) {
-        $this->noSubDomains(5, $subscription_id);
+    /* public function signup5Action($subscription_id = 0) { */
+    public function signup5Action($pricingProfileToken = 0) {
+        
+        /* $this->noSubDomains(5, $subscription_id); */
+        Utils::noSubDomains(5, $this->validSubDomains, $pricingProfileToken);
 
         $this->view->setTemplateBefore('signup');
         $this->tag->setTitle('Review Velocity | Sign up | Step 5 | Share');

@@ -36,7 +36,24 @@ class Utils {
         return $purifier->purify($dirtyHtml);
     }
     
-    
-                
+    public static function noSubDomains($page, $validSubdomains, $subscription_id) {
+        $sub = array_shift((explode(".", $_SERVER['HTTP_HOST'])));
+        
+        if ($sub && in_array($sub, $validSubdomains)) {
+            //there is a subdomain.  That is not allowed, so redirect them out of here
+            $found = false;
+            $querystring = '';
+            if (isset($_GET['code'])) {
+                $code = $_GET['code'];
+                $querystring = '?code=' . $code;
+                $found = true;
+            }
+            if ($subscription_id > 0) {
+                $querystring = $subscription_id . '/' . $querystring;
+                $found = true;
+            }
+            //return $this->response->redirect('/session/signup' . ($page > 1 ? $page : '') . '/' . $querystring);
+        }
+    }
     
 }
