@@ -325,6 +325,7 @@
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
         <div class="page-content">
+            {{ flashSession.output() }}
             {{ content() }}
         </div>
     </div>

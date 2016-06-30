@@ -44,6 +44,7 @@
 <!-- END HEAD -->
 
 <body>
+{{ flashSession.output() }}
 {{ content() }}
 </body>
 </html>

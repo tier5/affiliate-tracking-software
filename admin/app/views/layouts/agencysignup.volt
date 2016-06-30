@@ -81,6 +81,7 @@
 </header>
 
 <div class="content">
+    {{ flashSession.output() }}
     {{ content() }}
 </div>
 <footer>

@@ -211,8 +211,10 @@
                 $objAgency->subscription_id = '';
                 $objAgency->parent_id = -1;
 
-                if (!$objAgency->create())
-                    throw new \Exception('Agency could not be created.');
+                if (!$objAgency->create()) {
+                    $this->flashSession->error($objAgency->get_val_errors());
+                    return false;
+                }
 
                 $objUser = new Users();
                 $objUser->agency_id = $objAgency->agency_id;
@@ -320,6 +322,7 @@
 
 
                 if(!$UserID = $this->CreateAgency($this->session->AgencySignup)) {
+                    return $this->response->redirect('/agencysignup/order');
                     throw new \Exception('DB Error:  Could not create agency.');
                 }
 
@@ -330,7 +333,7 @@
                     throw new \Exception('Could not insert auth profile into db.');
                 }
 
-                /*$objPaymentService = $this->di->get('paymentService');
+                $objPaymentService = $this->di->get('paymentService');
 
                 $tParameters = [
                     'userId'                    => $UserID,
@@ -343,7 +346,7 @@
 
                 if (!$objPaymentService->changeSubscription($tParameters)) {
                     throw new \Exception('Could not add subscription.');
-                }*/
+                }
 
 
             } catch (Exception $e) {
@@ -379,25 +382,21 @@
         }
 
         public function submitorderAction() {
-            $this->response->redirect('/agencysignup/step1');
+          //  $this->response->redirect('/agencysignup/step1');
             // REMOVE JUST FOR TESTING
-            $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => ['customerProfileId' => 123]]);
-            return true;
+          //  $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => ['customerProfileId' => 123]]);
+          //  return true;
             try {
                 // MUST TODO:  Verify email is not in use before processing payments.
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
-                    $this->db->begin();
 
                     if (!$Profile = $this->CreateAuthProfile($this->session->AgencySignup))
                         throw new \Exception('Could not create Auth Profile');
 
                     $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile]);
 
-                    $this->db->commit();
-
                 }
             } catch(Exception $e) {
-                $this->db->rollback();
                 return false;
             }
 
