@@ -1,7 +1,7 @@
 <form action="step2" method="post" id="Step1Form">
     <div class="row small-vertical-margins">
         <div class="col-xs-12">
-            <h2 class="section-header">Tell Us About Your Business</h2>
+            <h2 class="section-header">Congratulations You Have Been Approved! <br /><br />Tell Us About Your Agency</h2>
         </div>
     </div>
 

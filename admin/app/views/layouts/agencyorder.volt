@@ -40,12 +40,28 @@
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
     <link rel="stylesheet" href="/js/vendor/minicolors/jquery.minicolors.css" />
+
+    <style type="text/css">
+        .PrimaryColor {
+            background-color: {{ PrimaryColor }} !important;
+        }
+        .SecondaryColor {
+            background-color: {{ SecondaryColor }} !important;
+        }
+        .PrimaryColorText {
+            color: {{ PrimaryColor }} !important;
+        }
+        .SecondaryColorText {
+            color: {{ SecondaryColor }} !important;
+        }
+    </style>
 </head>
 <!-- END HEAD -->
 
 <body>
+    {{ flashSession.output() }}
     {% if DisplayTranslator %}
-    <div class="col-xs-2 col-xs-offset-5" style="margin-top: 30px;">
+    <div class="col-xs-2 col-xs-offset-5" style="margin-top: 30px; margin-right: 30px;">
         <div id="google_translate_element"></div>
         <script type="text/javascript">
             function googleTranslateElementInit() {
@@ -55,7 +71,6 @@
         <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     </div>
     {% endif %}
-{{ flashSession.output() }}
 {{ content() }}
 </body>
 </html>
