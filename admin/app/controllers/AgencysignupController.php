@@ -426,12 +426,14 @@
             if($tMatches) {
                 // In the step process.  Verify credit card information is in place, otherwise redirect.
                 if(!$this->session->AgencySignup['CardNumber'] || !$this->session->AgencySignup['CardType']) {
-                    $this->flash->error("Please fill out the order information first!");
                     $this->response->redirect('/agencysignup/order');
                 }
 
                 $this->view->current_step = $tMatches[1];
             }
+
+            $this->view->PrimaryColor = isset($this->session->AgencySignup['PrimaryColor']) ? $this->session->AgencySignup['PrimaryColor'] : '#2a3644';
+            $this->view->SecondaryColor = isset($this->session->AgencySignup['SecondaryColor']) ? $this->session->AgencySignup['SecondaryColor'] : '#2eb82e';
 
             $this->view->DisplayTranslator = true;
         }
@@ -442,8 +444,8 @@
         protected function ValidateFields($Page) {
             foreach($this->tRequiredFields[$Page] as $ReqField) {
                 if(!isset($this->session->AgencySignup[$ReqField]) || !$this->session->AgencySignup[$ReqField]) {
-                    $this->flash->error($ReqField . " cannot be empty.");
-                    //$this->response->redirect('/agencysignup/' . strtolower($Step));
+                    $this->flashSession->error($ReqField . " cannot be empty.");
+                    $this->response->redirect('/agencysignup/step' . strtolower($this->view->current_step - 1));
                 }
             }
 
@@ -487,8 +489,10 @@
                 $objUser->is_employee = 0;
                 $objUser->is_all_locations = 0;
                 $objUser->profilesId = 1; // Agency Admin
-                if(!$objUser->create())
-                    throw new \Exception('Agency could not be created.');
+                if(!$objUser->create()) {
+                    $this->flashSession->error($objUser->getMessages());
+                    return false;
+                }
                 return $objUser->id;
 
             } catch (Exception $e) {
@@ -521,7 +525,7 @@
 
 
                 if(!$Profile = $objPaymentService->createPaymentProfile($tParameters)) {
-                    throw new \Exception('Could not create payment profile.');
+                    $this->flashSession->error('Could not create payment profile.');
                 }
 
 
@@ -560,7 +564,7 @@
                 $objAuthDotNet->setUserId($UserID);
                 $objAuthDotNet->setCustomerProfileId($tData['AuthProfile']['customerProfileId']);
                 if (!$objAuthDotNet->create()) {
-                    throw new \Exception('Could not insert auth profile into db.');
+                    $this->flashSession->error($objAuthDotNet->getMessages());
                 }
 
                 $objPaymentService = $this->di->get('paymentService');
@@ -575,7 +579,8 @@
                 ];
 
                 if (!$objPaymentService->changeSubscription($tParameters)) {
-                    throw new \Exception('Could not add subscription.');
+                    throw new $this->flashSession->error('Could not add subscription.');
+                    return false;
                 }
 
 
@@ -606,7 +611,7 @@
         protected function GetSubscriptionPrice($Name) {
             $objPricingPlan = AgencyPricingPlan::findFirst("name='{$Name}'");
             if(!$objPricingPlan)
-                throw Exception("Could not find subscription plan.");
+                $this->flashSession->error("Could not find subscription plan.  Contact customer support.");
 
             return $objPricingPlan->number_of_businesses * $objPricingPlan->price_per_business;
         }
@@ -617,20 +622,17 @@
 
         public function submitorderAction() {
             if(!$this->IsUniqueEmail($this->session->AgencySignup)) {
-                $this->flash->error("This email address is already in use.  Please use another one.");
+                $this->flashSession->error("This email address is already in use.  Please use another one.");
                 $this->response->redirect('/agencysignup/order');
+                return false;
             }
-
-            $this->response->redirect('/agencysignup/step1');
-            // REMOVE JUST FOR TESTING
-            $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => ['customerProfileId' => 123]]);
-            return true;
 
             try {
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
 
-                    if (!$Profile = $this->CreateAuthProfile($this->session->AgencySignup))
-                        throw new \Exception('Could not create Auth Profile');
+                    if (!$Profile = $this->CreateAuthProfile($this->session->AgencySignup)) {
+                        $this->flashSession->error('Invalid credit card information');
+                    }
 
                     $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile]);
 
@@ -641,6 +643,10 @@
 
             $this->response->redirect('/agencysignup/step1');
             return true;
+        }
+
+        protected function GetAgencyUrl() {
+            return "http://" . $this->session->AgencySignup['custom_domain'] . ".getmobilereviews.com";
         }
 
         public function thankyouAction() {
@@ -665,6 +671,18 @@
                 return false;
             }
 
+            $Message = "
+                Thank you for signing up!<br /><br />
+                
+                You can login to your agency with your email / password at " . $this->GetAgencyUrl() . "
+            ";
+
+            $this->getDI()
+                ->getMail()
+                ->send($this->session->AgencySignup['OwnerEmail'], "Thank you for signing up!", '', '', $Message);
+
+
+            $this->view->DisplayTranslator = false;
             $this->view->setLayout('agencyorder');
         }
 
@@ -674,10 +692,6 @@
 
         public function step2Action() {
             $this->ValidateFields('Step1');
-
-            $this->view->PrimaryColor = $this->session->AgencySignup['PrimaryColor'] ?: '#2a3644';
-            $this->view->SecondaryColor = $this->session->AgencySignup['SecondaryColor'] ?: '#2eb82e';
-
         }
 
         protected function StoreLogo() {
