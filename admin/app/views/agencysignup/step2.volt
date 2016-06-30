@@ -1,4 +1,4 @@
-<form action="step3" method="post" enctype="multipart/form-data">
+<form action="step3" method="post" enctype="multipart/form-data" id="Step2Form">
     <div class="row small-vertical-margins">
         <div class="col-xs-12">
             <h2 class="section-header">Customized Agency Landing Page</h2>
@@ -11,7 +11,7 @@
         </div>
     </div>
     <div class="row medium-vertical-margins">
-        <button class="btn btn-primary center-block">Preview Landing Page</button>
+        <button class="btn btn-primary center-block" type="button" id="PreviewButton">Preview Landing Page</button>
     </div>
 
     <div class="row small-vertical-margins">
@@ -71,7 +71,7 @@
                 <a href="step1"><button class="btn btn-primary" type="button" style="width: 100%">Back</button></a>
             </div>
             <div class="col-xs-6">
-                <button class="btn btn-primary" style="width: 100%">Next Step</button>
+                <button class="btn btn-primary" style="width: 100%" id="NextStep">Next Step</button>
             </div>
         </div>
     </div>
@@ -82,14 +82,23 @@
         $('#PrimaryColor').change(function() {
             $('#PrimarySquare').css('background-color', $(this).val());
             $('#PrimarySquare').css('border-color', $(this).val());
-
         });
-    });
-     $( document ).ready(function() {
+
         $('#SecondaryColor').change(function() {
             $('#SecondarySquare').css('background-color', $(this).val());
             $('#SecondarySquare').css('border-color', $(this).val());
 
         });
+
+        $('#PreviewButton').click(function() {
+            $('#Step2Form').attr("action", '/agencysignup/sales');
+            $('#Step2Form').submit();
+        });
+
+        $('#NextStep').click(function() {
+            $('#Step2Form').attr("action", '/agencysignup/step3');
+            $('#Step2Form').submit();
+        });
     });
+
 </script>

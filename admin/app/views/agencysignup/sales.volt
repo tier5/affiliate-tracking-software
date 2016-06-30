@@ -4,7 +4,7 @@
     <header>
         <div class="headercontent">
             <div class="logo">
-                <img src="/img/logo-white.gif" alt="Review Velocity" />
+                <img src="{{ LogoSource }}" alt="Review Velocity" />
             </div>
             <div class="contactnumber">
                 <span class="contact-text">Contact Us:</span> <span class="contact-phone">(866) 700-9330</span>
