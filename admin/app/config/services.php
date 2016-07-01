@@ -159,7 +159,7 @@ $di->set('userManager', new UserManager($config));
 /**
  * Subscription Manager
  */
-$di->set('subscriptionManager', new SubscriptionManager($config));
+$di->set('subscriptionManager', new SubscriptionManager($config, $di));
 
 /**
  * Sms Manager

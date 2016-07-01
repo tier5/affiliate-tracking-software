@@ -28,7 +28,7 @@
         public $is_admin;
         public $subscription_valid;
         public $phone;
-
+        public $byPassConfirmationEmail;
 
         /**
          * Before create the user assign a password
@@ -67,7 +67,7 @@
          */
         public function afterSave()
         {
-            if ($this->active == 'N') {
+            if ($this->active == 'N' || $this->byPassConfirmationEmail) {
                 $emailConfirmation = new EmailConfirmations();
                 $emailConfirmation->usersId = $this->id;
                 $emailConfirmation->save();
@@ -94,6 +94,8 @@
 
         public function initialize()
         {
+            $this->byPassConfirmationEmail = false;
+            
             $this->belongsTo('profilesId', __NAMESPACE__ . '\Profiles', 'id', array(
                 'alias' => 'profile',
                 'reusable' => true

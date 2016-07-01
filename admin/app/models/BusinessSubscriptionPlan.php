@@ -15,231 +15,22 @@ use Phalcon\Mvc\Model\Validator\Numericality;
  */
 class BusinessSubscriptionPlan extends Model
 {
-
-
-    protected $id;
-    protected $locations;
-    protected $sms_messages_per_location;
-    protected $payment_plan;
-    protected $subscription_pricing_plan_id;
-    protected $user_id;
-    protected $created_at;
-    protected $update_at;
-    protected $deleted_at;
+    public $id;
+    public $locations;
+    public $sms_messages_per_location;
+    public $payment_plan;
+    public $subscription_pricing_plan_id;
+    public $user_id;
+    public $created_at;
+    public $update_at;
+    public $deleted_at;
     
-    /**
-     * Method to set the value of field id
-     *
-     * @param integer $id
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field locations
-     *
-     * @param integer $locations
-     * @return $this
-     */
-    public function setLocations($locations)
-    {
-        $this->locations = $locations;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field sms_messages_per_location
-     *
-     * @param integer $sms_messages_per_location
-     * @return $this
-     */
-    public function setSmsMessagesPerLocation($sms_messages_per_location)
-    {
-        $this->sms_messages_per_location = $sms_messages_per_location;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field payment_plan
-     *
-     * @param string $payment_plan
-     * @return $this
-     */
-    public function setPaymentPlan($payment_plan)
-    {
-        $this->payment_plan = $payment_plan;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field subscription_pricing_plan_id
-     *
-     * @param integer $subscription_pricing_plan_id
-     * @return $this
-     */
-    public function setSubscriptionPricingPlanId($subscription_pricing_plan_id)
-    {
-        $this->subscription_pricing_plan_id = $subscription_pricing_plan_id;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field user_id
-     *
-     * @param integer $user_id
-     * @return $this
-     */
-    public function setUserId($user_id)
-    {
-        $this->user_id = $user_id;
-
-        return $this;
-    }
-    
-    /**
-     * Method to set the value of field created_at
-     *
-     * @param integer $created_at
-     * @return $this
-     */
-    public function setCreatedAt($created_at)
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-    
-    /**
-     * Method to set the value of field updated_at
-     *
-     * @param integer $updated_at
-     * @return $this
-     */
-    public function setUpdatedAt($updated_at)
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
-    
-    /**
-     * Method to set the value of field deleted_at
-     *
-     * @param integer $deleted_at
-     * @return $this
-     */
-    public function setDeletedAt($deleted_at)
-    {
-        $this->deleted_at = $deleted_at;
-
-        return $this;
-    }
-
-    /**
-     * Returns the value of field id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Returns the value of field locations
-     *
-     * @return integer
-     */
-    public function getLocations()
-    {
-        return $this->locations;
-    }
-
-    /**
-     * Returns the value of field sms_messages_per_location
-     *
-     * @return integer
-     */
-    public function getSmsMessagesPerLocation()
-    {
-        return $this->sms_messages_per_location;
-    }
-
-    /**
-     * Returns the value of field payment_plan
-     *
-     * @return string
-     */
-    public function getPaymentPlan()
-    {
-        return $this->payment_plan;
-    }
-
-    /**
-     * Returns the value of field subscription_pricing_plan_id
-     *
-     * @return integer
-     */
-    public function getSubscriptionPricingPlanId()
-    {
-        return $this->subscription_pricing_plan_id;
-    }
-
-    /**
-     * Returns the value of field user_id
-     *
-     * @return integer
-     */
-    public function getUserId()
-    {
-        return $this->user_id;
-    }
-    
-    /**
-     * Returns the value of field created_at
-     *
-     * @return integer
-     */
-    public function getCreatedAt()
-    {
-        return $this->created_at;
-    }
-    
-    /**
-     * Returns the value of field updated_at
-     *
-     * @return integer
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updated_at;
-    }
-    
-    /**
-     * Returns the value of field deleted_at
-     *
-     * @return integer
-     */
-    public function getDeletedAt()
-    {
-        return $this->deleted_at;
-    }
-
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('subscription_pricing_plan_id', 'Vokuro\Models\SubscriptionPricingPlan', 'id', ['alias' => 'SubscriptionPricingPlan']);
+        $this->skipAttributesOnCreate(['updated_at']);
         $this->belongsTo('user_id', 'Vokuro\Models\Users', 'id', ['alias' => 'Users']);
     }
     
@@ -248,17 +39,6 @@ class BusinessSubscriptionPlan extends Model
      */
     public function validation()
     {
-        $this->validate(new Numericality(["field" => 'locations' ]));
-        $this->validate(new Numericality(["field" => 'sms_messages_per_location']));
-        $this->validate(new InclusionIn([ "field"  => "payment_plan", "domain" => ['TR', 'M', 'Y', 'FR'] ]));
-        $this->validate(new Numericality(["field" => 'subscription_pricing_plan_id']));
-        $this->validate(new Numericality(["field" => 'user_id']));
-        
-        $pass = $this->locations > 0 &&
-            $this->sms_messages_per_location > 0 &&
-            $this->subscription_pricing_plan_id > 0 &&
-            $this->user_id > 0;
-        
         return true;//$pass && $this->validationHasFailed() != true;
     }
 

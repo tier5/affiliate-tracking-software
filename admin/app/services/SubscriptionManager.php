@@ -2,16 +2,18 @@
 
 namespace Vokuro\Services;
 
+use Vokuro\ArrayException;
 use Vokuro\Services\ServicesConsts;
 use Vokuro\Models\BusinessSubscriptionPlan;
 use Vokuro\Models\SubscriptionPricingPlan;
 use Vokuro\Models\SubscriptionPricingPlanParameterList;
+use Vokuro\Models\BusinessSubscriptionInvitation;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
     
 class SubscriptionManager extends BaseService {
     
-    function __construct($config) {
-        parent::__construct($config);
+    function __construct($config, $di) {
+        parent::__construct($config, $di);
     }
     
     public function getSubscriptionPricingPlans() {
@@ -23,46 +25,76 @@ class SubscriptionManager extends BaseService {
     
     public function createSubscriptionPlan($newSubscriptionParameters) {
         
-        $userId = $newSubscriptionParameters['userAccountId'];
+        try {
         
-        /* Configure subscription parameters */
-        if ($newSubscriptionParameters['pricingPlanId'] === 'Unpaid') {
-            
-            $pricingPlan = SubscriptionPricingPlan::findFirst();   // Default pricing plan is always first in the table
-            $pricingPlanId = $pricingPlan->id;
-            $locations = $newSubscriptionParameters['freeLocations'];
-            $smsMessagesPerLocation = $newSubscriptionParameters['freeSmsMessagesPerLocation'];
-            $paymentPlan = ServicesConsts::$PAYMENT_PLAN_FREE;
-            
-        } else {
-            
-            $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
-                ->where("id = :id:")
-                ->bind(["id" => $newSubscriptionParameters['pricingPlanId']])
-                ->execute()
-                ->getFirst();
-            $pricingPlanId = $subscriptionPricingPlan->id;   
-            if ($subscriptionPricingPlan->getTrialPeriod()) {
-                $paymentPlan = ServicesConsts::$PAYMENT_PLAN_TRIAL;  
-                $locations = $subscriptionPricingPlan->getMaxLocationsOnFreeAccount();
-                $smsMessagesPerLocation = $subscriptionPricingPlan->getMaxMessagesOnFreeAccount();
-            } else {
-                $paymentPlan = ServicesConsts::$PAYMENT_PLAN_MONTHLY;;
-                $locations = 0;
-                $smsMessagesPerLocation = 0;;
+            $userId = $newSubscriptionParameters['userAccountId'];
+
+            /* Configure subscription parameters */
+            if ($newSubscriptionParameters['pricingPlanId'] !== 'Unpaid') {
+                
+                $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
+                    ->where("id = :id:")
+                    ->bind(["id" => $newSubscriptionParameters['pricingPlanId']])
+                    ->execute()
+                    ->getFirst();
+                $pricingPlanId = $subscriptionPricingPlan->id;   
+                if ($subscriptionPricingPlan->enable_trial_account) {
+                    $paymentPlan = ServicesConsts::$PAYMENT_PLAN_TRIAL;  
+                    $locations = 1;
+                    $smsMessagesPerLocation = $subscriptionPricingPlan->max_messages_on_trial_account;
+                } else {
+                    $paymentPlan = ServicesConsts::$PAYMENT_PLAN_MONTHLY;;
+                    $locations = 0;
+                    $smsMessagesPerLocation = 0;;
+                }
+                
+            } else  {
+                
+                $pricingPlanId = 0;
+                $locations = $newSubscriptionParameters['freeLocations'];
+                $smsMessagesPerLocation = $newSubscriptionParameters['freeSmsMessagesPerLocation'];
+                $paymentPlan = ServicesConsts::$PAYMENT_PLAN_FREE;
+                
             }
             
-        }
-        
-        // Subscription plan
-        $subscriptionPlan = new BusinessSubscriptionPlan();
-        $subscriptionPlan->setUserId(intval($userId));
-        $subscriptionPlan->setLocations(intval($locations));
-        $subscriptionPlan->setSmsMessagesPerLocation(intval($smsMessagesPerLocation));
-        $subscriptionPlan->setPaymentPlan($paymentPlan);
-        $subscriptionPlan->setSubscriptionPricingPlanId(intval($pricingPlanId));
-        if (!$subscriptionPlan->create()) {
-            return false;
+            $db = $this->di->get('db'); 
+            $db->begin();
+            
+            /* Create the subscription plan */
+            $subscriptionPlan = new BusinessSubscriptionPlan();
+            $subscriptionPlan->user_id = intval($userId);
+            $subscriptionPlan->locations = intval($locations);
+            $subscriptionPlan->sms_messages_per_location = intval($smsMessagesPerLocation);
+            $subscriptionPlan->payment_plan = $paymentPlan;
+            $subscriptionPlan->subscription_pricing_plan_id = intval($pricingPlanId);
+            if (!$subscriptionPlan->create()) {
+                throw new ArrayException("", 0, null, $subscriptionPlan->getMessages());
+            }
+            
+            /* Create and send the invitation */
+            $businessSubscriptionInvitation = new BusinessSubscriptionInvitation();
+            $businessSubscriptionInvitation->user_id = $userId;
+            $businessSubscriptionInvitation->business_subscription_plan_id = $subscriptionPlan->id;
+            if (!$businessSubscriptionInvitation->create()) {
+                throw new ArrayException("", 0, null, $businessSubscriptionInvitation->getMessages());
+            }
+            
+            $this->di->get('mail')->send(
+                $newSubscriptionParameters['userEmail'], 
+                "Invitation To Review Velocity!", 
+                'invitation', 
+                ['invitationUrl' => '/session/showSignup/' . $businessSubscriptionInvitation->token ]
+            );
+            
+            $db->commit();
+            
+        } catch(ArrayException $e) {
+            
+            if (isset($db)) {
+                $db->rollback();
+            }
+            return $e->getOptions();
+            
         }
         
         return true;
@@ -78,6 +110,34 @@ class SubscriptionManager extends BaseService {
             return false;
         }
         return $subscriptionPlan->toArray();
+    }
+    
+    public function isValidInvitation($subscriptionToken) {
+        $businessSubscriptionInvitation = BusinessSubscriptionInvitation::query()  
+            ->where("token = :token:")
+            ->bind(["token" => $subscriptionToken])
+            ->execute()
+            ->getFirst();
+        if(!$businessSubscriptionInvitation) {
+            return false;
+        }
+        return true;
+    }
+    
+    public function invalidateInvitation($subscriptionToken) {
+        $businessSubscriptionInvitation = BusinessSubscriptionInvitation::query()  
+            ->where("token = :token:")
+            ->bind(["token" => $subscriptionToken])
+            ->execute()
+            ->getFirst();
+        if (!$businessSubscriptionInvitation) {
+            return ['There is no invitation associated to that token'];
+        }
+        $businessSubscriptionInvitation->deleted_at = date('Y-m-d');
+        if (!$businessSubscriptionInvitation->update()) {
+            return $businessSubscriptionInvitation->getMessages();
+        }
+        return true;
     }
     
     public function getPricingPlanById($pricingPlanId) {

@@ -48,22 +48,17 @@ class SessionController extends ControllerBase {
         
         try {
             
+            /* Get services */
+            $subscriptionManager = $this->di->get('subscriptionManager');
+            
             // Start transaction
             $this->db->begin();
             
             if (!$this->request->isPost()) {
-                throw new \ArrayException("", 0, null, ['POST request required!!!']);
+                throw new ArrayException("", 0, null, ['POST request required!!!']);
             }
-            
-            // Is this a valid subscritpion token?
-            
             
             $form = new SignUpForm();
-            $ccform = new CreditCardForm();
-            $ccformvalid = $ccform->isValid($this->request->getPost());
-            if (!$ccformvalid) {
-                throw new \ArrayException("", 0, null, implode('The credit card is invalid.  Please check the informaiton and try again.', $ccform->getMessages()));    
-            }
             
             // Check user email unuique            
             $user = new Users();
@@ -76,12 +71,12 @@ class SessionController extends ControllerBase {
             
             $isemailunuique = $user->validation();
             if (!$isemailunuique) {
-                throw new \ArrayException("", 0, null, ['That email address is already taken.']);    
+                throw new ArrayException("", 0, null, ['That email address is already taken.']);    
             }
 
             $uservalid = $form->isValid($this->request->getPost());
             if (!$uservalid) {
-                throw new \ArrayException("", 0, null, implode('The submitted user info is invalid.', $form->getMessages()));
+                throw new ArrayException("", 0, null, implode('The submitted user info is invalid.', $form->getMessages()));
             }
             
             // First create an agency
@@ -96,17 +91,24 @@ class SessionController extends ControllerBase {
             ));
             
             if (!$agency->save()) {
-                throw new \ArrayException("", 0, null, $agency->getMessages());
+                throw new ArrayException("", 0, null, $agency->getMessages());
             }
             
             $user->agency_id = $agency->agency_id;    
             if (!$user->save()) { 
-                throw new \ArrayException("", 0, null, $user->getMessages());
+                throw new ArrayException("", 0, null, $user->getMessages());
             }
             
             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
             $_SESSION['email'] = $this->request->getPost('email');
 
+            
+            /* Invalidate invitation */
+            $invalidated = $subscriptionManager->invalidateInvitation($subscriptionToken);
+            if (!$invalidated) {
+                /* Not quite sure how to handle this */
+            }
+            
             $this->db->commit();
             
             return $this->response->redirect('/session/thankyou');
@@ -122,34 +124,53 @@ class SessionController extends ControllerBase {
         }
     }
     
-    /* public function signupAction($subscription_id = 0) { */
-    public function showSignupAction($pricingProfileToken) {
+    public function showSignupAction($subscriptionToken = '0') {
         
-        /* Get services */
-        $userManager = $this->di->get('userManager');
+        try {
         
-        /* $this->noSubDomains(1, $subscription_id); */
-        Utils::noSubDomains(1, $this->validSubDomains, $pricingProfileToken);
-
-        $this->view->setTemplateBefore('login');
-        $this->tag->setTitle('Review Velocity | Sign up');
-        $form = new SignUpForm();
-        $ccform = new CreditCardForm();
+            /* Get services */
+            $userManager = $this->di->get('userManager');
+            $subscriptionManager = $this->di->get('subscriptionManager');
+            
+            /* Are we are logged in? */
+            $userId = $userManager->getUserId($this->session); 
+            
+            /* Is this a valid subscription? */
+            $isValid = $subscriptionManager->isValidInvitation($subscriptionToken);
+            
+            /* If we simply redirect to the home,  */
+            if ($userId || !$isValid) {
+                $this->response->redirect('/');
+                return;
+                // $this->view->setTemplateBefore('private');
+            }
+            
+            Utils::noSubDomains(1, $this->validSubDomains, $subscriptionToken);
+            
+            $this->view->setTemplateBefore('login');
+            $this->tag->setTitle('Review Velocity | Sign up');
+            $form = new SignUpForm();
+            $ccform = new CreditCardForm();
         
-        $userId = $userManager->getUserId($this->session); 
-        if ($userId > 0) {
-            $this->view->setTemplateBefore('private');
-        }
-        $this->view->userId = $userId;
-        $this->view->maxLimitReached = false;
-        if (!$userId) {
-            $this->view->maxLimitReached = $userManager->isMaxLimitReached();
-        }
+            $this->view->userId = $userId;
+            $this->view->maxLimitReached = false;
+            $this->view->token = $subscriptionToken;
+            if (!$userId) {
+                $this->view->maxLimitReached = $userManager->isMaxLimitReached();
+            }
         
-        $this->view->form = $form;
-        $this->view->ccform = $ccform;
-        $this->view->current_step = 1;
+            $this->view->form = $form;
+            $this->view->ccform = $ccform;
+            $this->view->current_step = 1;
         
+            $this->view->pick('session/signup');
+        
+        } catch(ArrayException $e) {        
+            
+            foreach($e->getOptions() as $message) {
+                $this->flash->error($message);
+            }
+        } 
     }
 
     /*
