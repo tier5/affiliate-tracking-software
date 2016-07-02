@@ -1,4 +1,4 @@
-{{ content() }}
+<?php echo $this->getContent(); ?>
 <header class="jumbotron subhead" id="reviews">
     <div class="hero-unit">
         <div class="row">
@@ -20,7 +20,7 @@
                         </div>
                         <div class="caption font-dark subscription-name">
                             <span class="caption-subject bold uppercase subscription-name-caption">Subscription Name:    </span>
-                            <input id="name-control" type="text" value="{{ name }}" class="caption-subject" placeholder="Subscription Name">
+                            <input id="name-control" type="text" value="<?php echo $name; ?>" class="caption-subject" placeholder="Subscription Name">
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -31,11 +31,11 @@
                                         <label class="control-label">Enable Trial Account</label>
                                     </div>
                                     <div class="col-md-6">
-                                        {% if enableTrialAccount %}
+                                        <?php if ($enableTrialAccount) { ?>
                                             <input id="enable-trial-account-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info">
-                                        {% else  %}
+                                        <?php } else { ?>
                                             <input id="enable-trial-account-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info">
-                                        {% endif  %}    
+                                        <?php } ?>    
                                     </div>
                                 </div>
                             </div>
@@ -45,7 +45,7 @@
                                         <label class="control-label">Free SMS Messages on Trial Account</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <select id="free-sms-messages-control" class="form-control input-small" value="{{ maxMessagesOnTrialAccount }}">
+                                        <select id="free-sms-messages-control" class="form-control input-small" value="<?php echo $maxMessagesOnTrialAccount; ?>">
                                             <option value="10">10</option>
                                             <option value="20">20</option>
                                             <option value="30">30</option>
@@ -66,7 +66,7 @@
                                         <label class="control-label">Base Price $</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="base-price-control" type="number" value="{{ basePrice }}" step="0.01" min="0.00" class="form-control" placeholder="0.00">
+                                        <input id="base-price-control" type="number" value="<?php echo $basePrice; ?>" step="0.01" min="0.00" class="form-control" placeholder="0.00">
                                     </div>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                                         <label class="control-label">Charge Per SMS $</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="charge-per-sms-control" type="number" value="{{ chargePerSms }}" step="0.01" min="0" class="form-control" placeholder="0.00">
+                                        <input id="charge-per-sms-control" type="number" value="<?php echo $chargePerSms; ?>" step="0.01" min="0" class="form-control" placeholder="0.00">
                                     </div>
                                 </div>
                             </div>
@@ -88,11 +88,11 @@
                                         <label class="control-label">Enable Discount On Upgrade</label>
                                     </div>
                                     <div class="col-md-6">
-                                        {% if enableDiscountOnUpgrade %}
+                                        <?php if ($enableDiscountOnUpgrade) { ?>
                                             <input id="enable-discount-on-upgrade-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info">
-                                        {% else  %}
+                                        <?php } else { ?>
                                             <input id="enable-discount-on-upgrade-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info">
-                                        {% endif  %}
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@
                                         <label class="control-label">Upgrade Discount %</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <select id="upgrade-discount-control" class="form-control input-small" value="{{ updgradeDiscount }}"></select>
+                                        <select id="upgrade-discount-control" class="form-control input-small" value="<?php echo $updgradeDiscount; ?>"></select>
                                     </div>
                                 </div>
                             </div>
@@ -112,7 +112,7 @@
                                         <label class="control-label">My Cost Per SMS $</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="cost-per-sms-control" type="number" value="{{ costPerSms }}" step="0.01" min="0" class="form-control" placeholder="0.00">
+                                        <input id="cost-per-sms-control" type="number" value="<?php echo $costPerSms; ?>" step="0.01" min="0" class="form-control" placeholder="0.00">
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +122,7 @@
                                         <label class="control-label">Max SMS Messages</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="max-sms-messages-control" type="number" value="{{ maxSmsMessages }}" step="50" min="0" class="form-control" placeholder="1">
+                                        <input id="max-sms-messages-control" type="number" value="<?php echo $maxSmsMessages; ?>" step="50" min="0" class="form-control" placeholder="1">
                                     </div>
                                 </div>
                             </div>
@@ -134,11 +134,11 @@
                                         <label class="control-label">Enable Annual Discount</label>
                                     </div>
                                     <div class="col-md-6">
-                                        {% if enableAnnualDiscount %}
+                                        <?php if ($enableAnnualDiscount) { ?>
                                             <input id="enable-annual-discount-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info">
-                                        {% else  %}
+                                        <?php } else { ?>
                                             <input id="enable-annual-discount-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info">
-                                        {% endif  %}
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
@@ -148,7 +148,7 @@
                                         <label class="control-label">Annual Discount %</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <select id="annual-discount-control" class="form-control input-small" value="{{ annualDiscount }}"></select>
+                                        <select id="annual-discount-control" class="form-control input-small" value="<?php echo $annualDiscount; ?>"></select>
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@
                                             <div class="form-body">
                                                 <div class="form-group last">
                                                     <div class="col-md-12">
-                                                        <div name="summernote" id="summernote_1">{{ pricingDetails }}</div>
+                                                        <div name="summernote" id="summernote_1"><?php echo $pricingDetails; ?></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -228,33 +228,33 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody id="progression-table-rows">
-                                                        {% for progression in progressions %}
+                                                        <?php foreach ($progressions as $progression) { ?>
                                                         <tr role="row" class="odd">
                                                             <td>
                                                                 <form class="form-inline" role="form">
                                                                     <div class="form-group">
-                                                                        <input type="number" value="{{ progression['min_locations'] }}" step="1" min="{{ progression['min_locations'] }}" class="form-control input-xsmall min-locations-control" placeholder="">
+                                                                        <input type="number" value="<?php echo $progression['min_locations']; ?>" step="1" min="<?php echo $progression['min_locations']; ?>" class="form-control input-xsmall min-locations-control" placeholder="">
                                                                     </div>
                                                                     <span>To</span>
                                                                     <div class="form-group">
-                                                                        <input type="number" value="{{ progression['max_locations'] }}" step="1" min="{{ progression['max_locations'] }}" class="form-control input-xsmall max-locations-control" placeholder="">
+                                                                        <input type="number" value="<?php echo $progression['max_locations']; ?>" step="1" min="<?php echo $progression['max_locations']; ?>" class="form-control input-xsmall max-locations-control" placeholder="">
                                                                     </div>
                                                                 </form>
                                                             </td>
                                                             <td>
                                                                 <select class="form-control input-small location-discount-control"></select>
                                                             </td>
-                                                            <td class="base-price-column">{{ progression['base_price'] }}</td>
-                                                            <td class="sms-charge-column">{{ progression['sms_charge'] }}</td>
-                                                            <td class="total-price-column">{{ progression['total_price'] }}</td>
-                                                            <td class="location-discount-column">{{ progression['location_discount'] }}</td>
-                                                            <td class="upgrade-discount-column">{{ progression['upgrade_discount'] }}</td>
-                                                            <td class="discount-price-column">{{ progression['discount_price'] }}</td>
-                                                            <td class="sms-messages-column">{{ progression['sms_messages'] }}</td>
-                                                            <td class="sms-cost-column">{{ progression['sms_cost'] }}</td>
-                                                            <td class="profit-per-location-column">{{ progression['profit_per_location'] }}</td>
+                                                            <td class="base-price-column"><?php echo $progression['base_price']; ?></td>
+                                                            <td class="sms-charge-column"><?php echo $progression['sms_charge']; ?></td>
+                                                            <td class="total-price-column"><?php echo $progression['total_price']; ?></td>
+                                                            <td class="location-discount-column"><?php echo $progression['location_discount']; ?></td>
+                                                            <td class="upgrade-discount-column"><?php echo $progression['upgrade_discount']; ?></td>
+                                                            <td class="discount-price-column"><?php echo $progression['discount_price']; ?></td>
+                                                            <td class="sms-messages-column"><?php echo $progression['sms_messages']; ?></td>
+                                                            <td class="sms-cost-column"><?php echo $progression['sms_cost']; ?></td>
+                                                            <td class="profit-per-location-column"><?php echo $progression['profit_per_location']; ?></td>
                                                         </tr>
-                                                        {% endfor %}
+                                                        <?php } ?>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -262,14 +262,14 @@
                                                 <div class="col-md-4 col-sm-4"></div>
                                                 <div class="col-md-8 col-sm-8">
                                                     <button id="cancel-btn" class="btn default btn-lg apple-backgound subscription-btn">Cancel</button>
-                                                    <button id="remove-segment-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Remove Last</button>
-                                                    <button id="add-segment-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Add New</button>
-                                                    {% if isCreateMode %}
-                                                        <button id="save-plan-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Save</button>
-                                                    {% else  %}
-                                                        <button id="update-plan-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Update</button>
-                                                    {% endif  %}
-                                                    <button id="start-over-btn" class="btn default btn-lg apple-backgound subscription-btn" {{ gridEditStatus }}>Start Over</button>
+                                                    <button id="remove-segment-btn" class="btn default btn-lg apple-backgound subscription-btn" <?php echo $gridEditStatus; ?>>Remove Last</button>
+                                                    <button id="add-segment-btn" class="btn default btn-lg apple-backgound subscription-btn" <?php echo $gridEditStatus; ?>>Add New</button>
+                                                    <?php if ($isCreateMode) { ?>
+                                                        <button id="save-plan-btn" class="btn default btn-lg apple-backgound subscription-btn" <?php echo $gridEditStatus; ?>>Save</button>
+                                                    <?php } else { ?>
+                                                        <button id="update-plan-btn" class="btn default btn-lg apple-backgound subscription-btn" <?php echo $gridEditStatus; ?>>Update</button>
+                                                    <?php } ?>
+                                                    <button id="start-over-btn" class="btn default btn-lg apple-backgound subscription-btn" <?php echo $gridEditStatus; ?>>Start Over</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -535,23 +535,36 @@
             
         }
 
-        function initSmsSlider(max, step) {
-            
-            // Compute ticks scales
-            var ticks = [];
-            var tick_labels = [];
-            for(var i = step; i <= max; i += step) {
-                ticks.push(i);
-                tick_labels.push('<div>' + i + '</div><div class="tick-marker">|</div>');
-            }
-            
+        function initSmsSlider() {
+
             var smsMessagesSlider = new Slider("#sms-messages-slider", {
                 tooltip: 'show',
-                min: step,
-                max: max,
-                step: step,
-                ticks: ticks,/*[50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000]*/,
-                ticks_labels: tick_labels,
+                min: 50,
+                max: 1001,
+                step: 50,
+                ticks: [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000],
+                ticks_labels: [
+                    '<div>50</div><div class="tick-marker">|</div>',
+                    '<div>100</div><div class="tick-marker">|</div>',
+                    '<div>150</div><div class="tick-marker">|</div>',
+                    '<div>200</div><div class="tick-marker">|</div>',
+                    '<div>250</div><div class="tick-marker">|</div>',
+                    '<div>300</div><div class="tick-marker">|</div>',
+                    '<div>350</div><div class="tick-marker">|</div>',
+                    '<div>400</div><div class="tick-marker">|</div>',
+                    '<div>450</div><div class="tick-marker">|</div>',
+                    '<div>500</div><div class="tick-marker">|</div>',
+                    '<div>550</div><div class="tick-marker">|</div>',
+                    '<div>600</div><div class="tick-marker">|</div>',
+                    '<div>650</div><div class="tick-marker">|</div>',
+                    '<div>700</div><div class="tick-marker">|</div>',
+                    '<div>750</div><div class="tick-marker">|</div>',
+                    '<div>800</div><div class="tick-marker">|</div>',
+                    '<div>850</div><div class="tick-marker">|</div>',
+                    '<div>900</div><div class="tick-marker">|</div>',
+                    '<div>950</div><div class="tick-marker">|</div>',
+                    '<div>1000</div><div class="tick-marker">|</div>'
+                ],
                 ticks_snap_bounds: 1
             });
 
@@ -657,8 +670,7 @@
             initValueBindings(options);
 
             /* Init slider */
-            initSmsSlider(50, 1000);
-
+            initSmsSlider();
 
         }
 
