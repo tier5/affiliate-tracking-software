@@ -329,7 +329,7 @@ class BusinessSubscriptionController extends ControllerBase {
             $responseParameters['status'] = true;
                
         }  catch(Exception $e) {}
-        
+         
         /* 
          * Construct the response  
          */

@@ -1,5 +1,6 @@
 <?php
     namespace Vokuro\Controllers;
+    use Phalcon\Mvc\View;
     use Vokuro\Services\ServicesConsts;
     use Vokuro\Models\Agency;
     use Vokuro\Models\Users;
@@ -24,6 +25,7 @@
             'Website',
             'EmailFromName',
             'EmailFromAddress',
+            'Password',
 
             /* Step 2 Fields */
             'LogoFilename',
@@ -38,6 +40,9 @@
             /* Step 4 Fields */
             'StripeSecretKey',
             'StripePublishableKey',
+
+            /* Step 5 / Upgrade Step */
+            'Upgrade',
 
             /* Order form Fields */
             'FirstName',
@@ -56,15 +61,16 @@
             /* Step 1 Fields */
             'BusinessName'          => 'name',
             'Address'               => 'address',
-            'Address2'              => '', // TODO:  Remove here or add this to the db.
-            'City'                  => '', // TODO:  Remove here or add this to the db.
+            'Address2'              => 'address2',
+            'City'                  => 'city',
+            'Country'               => 'country',
             'State'                 => 'state_province',
             'Zip'                   => 'postal_code',
-            'Phone'                 => '', // TODO:  This should be populated by the order.  This may be a different email?
-            'Email'                 => '', // TODO:  This should be populated by the order.  This may be a different email?
-            'Website'               => '', // TODO:  Remove here or add this to the db.
-            'EmailFromName'         => '', // TODO:  Remove here or add this to the db.
-            'EmailFromAddress'      => '', // TODO:  Remove here or add this to the db.
+            'Phone'                 => 'phone',
+            'Email'                 => '', // Email from order form, not from sign up process.  Handled below.
+            'Website'               => 'website',
+            'EmailFromName'         => 'email_from_name',
+            'EmailFromAddress'      => 'email_from_address',
 
             /* Step 2 Fields */
             'LogoFilename'          => 'logo_path',
@@ -85,7 +91,7 @@
 
             /* Order form Fields */
             'FirstName'             => 'name',
-            'LastName'              => '', // TODO:  Add last name to db or explode the name
+            'LastName'              => 'last_name',
             'OwnerEmail'            => 'email',
             'OwnerPhone'            => 'phone',
             'URL'                   => 'custom_domain',
@@ -94,18 +100,17 @@
         protected $tUserFieldTranslaction = [
             /* Order form Fields */
             'FirstName'             => 'name',
-            'LastName'              => '', // TODO:  Add last name to db or explode the name
-            'OwnerEmail'            => 'email',
-            'OwnerPhone'            => 'phone',
+            'LastName'              => 'last_name',
+            'Email'                 => 'email',
+            'Phone'                 => 'phone',
             'URL'                   => 'custom_domain',
-            'Password'              => '', // MUST TODO: Add this somewhere in registration process.
+            'Password'              => 'password',
         ];
 
         protected $tRequiredFields = [
             'Step1' => [
                 'BusinessName',
                 'Address',
-                'Address2',
                 'City',
                 'State',
                 'Zip',
@@ -134,6 +139,258 @@
             'Master Card',
             'American Express',
             'Discover',
+        ];
+
+        protected $tCountries = [
+            "US" => "United States",
+            "CA" => "Canada",
+            "GB" => "United Kingdom",
+            "AU" => "Australia",
+            "AF" => "Afghanistan",
+            "AX" => "Åland Islands",
+            "AL" => "Albania",
+            "DZ" => "Algeria",
+            "AS" => "American Samoa",
+            "AD" => "Andorra",
+            "AO" => "Angola",
+            "AI" => "Anguilla",
+            "AQ" => "Antarctica",
+            "AG" => "Antigua and Barbuda",
+            "AR" => "Argentina",
+            "AM" => "Armenia",
+            "AW" => "Aruba",
+            "AT" => "Austria",
+            "AZ" => "Azerbaijan",
+            "BS" => "Bahamas",
+            "BH" => "Bahrain",
+            "BD" => "Bangladesh",
+            "BB" => "Barbados",
+            "BY" => "Belarus",
+            "BE" => "Belgium",
+            "BZ" => "Belize",
+            "BJ" => "Benin",
+            "BM" => "Bermuda",
+            "BT" => "Bhutan",
+            "BO" => "Bolivia, Plurinational State of",
+            "BQ" => "Bonaire, Sint Eustatius and Saba",
+            "BA" => "Bosnia and Herzegovina",
+            "BW" => "Botswana",
+            "BV" => "Bouvet Island",
+            "BR" => "Brazil",
+            "IO" => "British Indian Ocean Territory",
+            "BN" => "Brunei Darussalam",
+            "BG" => "Bulgaria",
+            "BF" => "Burkina Faso",
+            "BI" => "Burundi",
+            "KH" => "Cambodia",
+            "CM" => "Cameroon",
+            "CV" => "Cape Verde",
+            "KY" => "Cayman Islands",
+            "CF" => "Central African Republic",
+            "TD" => "Chad",
+            "CL" => "Chile",
+            "CN" => "China",
+            "CX" => "Christmas Island",
+            "CC" => "Cocos (Keeling) Islands",
+            "CO" => "Colombia",
+            "KM" => "Comoros",
+            "CG" => "Congo",
+            "CD" => "Congo, the Democratic Republic of the",
+            "CK" => "Cook Islands",
+            "CR" => "Costa Rica",
+            "CI" => "Côte d'Ivoire",
+            "HR" => "Croatia",
+            "CU" => "Cuba",
+            "CW" => "Curaçao",
+            "CY" => "Cyprus",
+            "CZ" => "Czech Republic",
+            "DK" => "Denmark",
+            "DJ" => "Djibouti",
+            "DM" => "Dominica",
+            "DO" => "Dominican Republic",
+            "EC" => "Ecuador",
+            "EG" => "Egypt",
+            "SV" => "El Salvador",
+            "GQ" => "Equatorial Guinea",
+            "ER" => "Eritrea",
+            "EE" => "Estonia",
+            "ET" => "Ethiopia",
+            "FK" => "Falkland Islands (Malvinas)",
+            "FO" => "Faroe Islands",
+            "FJ" => "Fiji",
+            "FI" => "Finland",
+            "FR" => "France",
+            "GF" => "French Guiana",
+            "PF" => "French Polynesia",
+            "TF" => "French Southern Territories",
+            "GA" => "Gabon",
+            "GM" => "Gambia",
+            "GE" => "Georgia",
+            "DE" => "Germany",
+            "GH" => "Ghana",
+            "GI" => "Gibraltar",
+            "GR" => "Greece",
+            "GL" => "Greenland",
+            "GD" => "Grenada",
+            "GP" => "Guadeloupe",
+            "GU" => "Guam",
+            "GT" => "Guatemala",
+            "GG" => "Guernsey",
+            "GN" => "Guinea",
+            "GW" => "Guinea-Bissau",
+            "GY" => "Guyana",
+            "HT" => "Haiti",
+            "HM" => "Heard Island and McDonald Islands",
+            "VA" => "Holy See (Vatican City State)",
+            "HN" => "Honduras",
+            "HK" => "Hong Kong",
+            "HU" => "Hungary",
+            "IS" => "Iceland",
+            "IN" => "India",
+            "ID" => "Indonesia",
+            "IR" => "Iran, Islamic Republic of",
+            "IQ" => "Iraq",
+            "IE" => "Ireland",
+            "IM" => "Isle of Man",
+            "IL" => "Israel",
+            "IT" => "Italy",
+            "JM" => "Jamaica",
+            "JP" => "Japan",
+            "JE" => "Jersey",
+            "JO" => "Jordan",
+            "KZ" => "Kazakhstan",
+            "KE" => "Kenya",
+            "KI" => "Kiribati",
+            "KP" => "Korea, Democratic People's Republic of",
+            "KR" => "Korea, Republic of",
+            "KW" => "Kuwait",
+            "KG" => "Kyrgyzstan",
+            "LA" => "Lao People's Democratic Republic",
+            "LV" => "Latvia",
+            "LB" => "Lebanon",
+            "LS" => "Lesotho",
+            "LR" => "Liberia",
+            "LY" => "Libya",
+            "LI" => "Liechtenstein",
+            "LT" => "Lithuania",
+            "LU" => "Luxembourg",
+            "MO" => "Macao",
+            "MK" => "Macedonia, the former Yugoslav Republic of",
+            "MG" => "Madagascar",
+            "MW" => "Malawi",
+            "MY" => "Malaysia",
+            "MV" => "Maldives",
+            "ML" => "Mali",
+            "MT" => "Malta",
+            "MH" => "Marshall Islands",
+            "MQ" => "Martinique",
+            "MR" => "Mauritania",
+            "MU" => "Mauritius",
+            "YT" => "Mayotte",
+            "MX" => "Mexico",
+            "FM" => "Micronesia, Federated States of",
+            "MD" => "Moldova, Republic of",
+            "MC" => "Monaco",
+            "MN" => "Mongolia",
+            "ME" => "Montenegro",
+            "MS" => "Montserrat",
+            "MA" => "Morocco",
+            "MZ" => "Mozambique",
+            "MM" => "Myanmar",
+            "NA" => "Namibia",
+            "NR" => "Nauru",
+            "NP" => "Nepal",
+            "NL" => "Netherlands",
+            "NC" => "New Caledonia",
+            "NZ" => "New Zealand",
+            "NI" => "Nicaragua",
+            "NE" => "Niger",
+            "NG" => "Nigeria",
+            "NU" => "Niue",
+            "NF" => "Norfolk Island",
+            "MP" => "Northern Mariana Islands",
+            "NO" => "Norway",
+            "OM" => "Oman",
+            "PK" => "Pakistan",
+            "PW" => "Palau",
+            "PS" => "Palestinian Territory, Occupied",
+            "PA" => "Panama",
+            "PG" => "Papua New Guinea",
+            "PY" => "Paraguay",
+            "PE" => "Peru",
+            "PH" => "Philippines",
+            "PN" => "Pitcairn",
+            "PL" => "Poland",
+            "PT" => "Portugal",
+            "PR" => "Puerto Rico",
+            "QA" => "Qatar",
+            "RE" => "Réunion",
+            "RO" => "Romania",
+            "RU" => "Russian Federation",
+            "RW" => "Rwanda",
+            "BL" => "Saint Barthélemy",
+            "SH" => "Saint Helena, Ascension and Tristan da Cunha",
+            "KN" => "Saint Kitts and Nevis",
+            "LC" => "Saint Lucia",
+            "MF" => "Saint Martin (French part)",
+            "PM" => "Saint Pierre and Miquelon",
+            "VC" => "Saint Vincent and the Grenadines",
+            "WS" => "Samoa",
+            "SM" => "San Marino",
+            "ST" => "Sao Tome and Principe",
+            "SA" => "Saudi Arabia",
+            "SN" => "Senegal",
+            "RS" => "Serbia",
+            "SC" => "Seychelles",
+            "SL" => "Sierra Leone",
+            "SG" => "Singapore",
+            "SX" => "Sint Maarten (Dutch part)",
+            "SK" => "Slovakia",
+            "SI" => "Slovenia",
+            "SB" => "Solomon Islands",
+            "SO" => "Somalia",
+            "ZA" => "South Africa",
+            "GS" => "South Georgia and the South Sandwich Islands",
+            "SS" => "South Sudan",
+            "ES" => "Spain",
+            "LK" => "Sri Lanka",
+            "SD" => "Sudan",
+            "SR" => "Suriname",
+            "SJ" => "Svalbard and Jan Mayen",
+            "SZ" => "Swaziland",
+            "SE" => "Sweden",
+            "CH" => "Switzerland",
+            "SY" => "Syrian Arab Republic",
+            "TW" => "Taiwan, Province of China",
+            "TJ" => "Tajikistan",
+            "TZ" => "Tanzania, United Republic of",
+            "TH" => "Thailand",
+            "TL" => "Timor-Leste",
+            "TG" => "Togo",
+            "TK" => "Tokelau",
+            "TO" => "Tonga",
+            "TT" => "Trinidad and Tobago",
+            "TN" => "Tunisia",
+            "TR" => "Turkey",
+            "TM" => "Turkmenistan",
+            "TC" => "Turks and Caicos Islands",
+            "TV" => "Tuvalu",
+            "UG" => "Uganda",
+            "UA" => "Ukraine",
+            "AE" => "United Arab Emirates",
+            "UM" => "United States Minor Outlying Islands",
+            "UY" => "Uruguay",
+            "UZ" => "Uzbekistan",
+            "VU" => "Vanuatu",
+            "VE" => "Venezuela, Bolivarian Republic of",
+            "VN" => "Viet Nam",
+            "VG" => "Virgin Islands, British",
+            "VI" => "Virgin Islands, U.S.",
+            "WF" => "Wallis and Futuna",
+            "EH" => "Western Sahara",
+            "YE" => "Yemen",
+            "ZM" => "Zambia",
+            "ZW" => "Zimbabwe",
         ];
 
 
@@ -166,8 +423,19 @@
 
             // Determine step from URI
             preg_match("#agencysignup\/step(\d)+#", $_SERVER['REQUEST_URI'], $tMatches);
-            if($tMatches)
+            if($tMatches) {
+                // In the step process.  Verify credit card information is in place, otherwise redirect.
+                if(!$this->session->AgencySignup['CardNumber'] || !$this->session->AgencySignup['CardType']) {
+                    $this->response->redirect('/agencysignup/order');
+                }
+
                 $this->view->current_step = $tMatches[1];
+            }
+
+            $this->view->PrimaryColor = isset($this->session->AgencySignup['PrimaryColor']) ? $this->session->AgencySignup['PrimaryColor'] : '#2a3644';
+            $this->view->SecondaryColor = isset($this->session->AgencySignup['SecondaryColor']) ? $this->session->AgencySignup['SecondaryColor'] : '#2eb82e';
+
+            $this->view->DisplayTranslator = true;
         }
 
         /**
@@ -176,8 +444,8 @@
         protected function ValidateFields($Page) {
             foreach($this->tRequiredFields[$Page] as $ReqField) {
                 if(!isset($this->session->AgencySignup[$ReqField]) || !$this->session->AgencySignup[$ReqField]) {
-                    $this->flash->error($ReqField . " cannot be empty.");
-                    //$this->response->redirect('/agencysignup/' . strtolower($Step));
+                    $this->flashSession->error($ReqField . " cannot be empty.");
+                    $this->response->redirect('/agencysignup/step' . strtolower($this->view->current_step - 1));
                 }
             }
 
@@ -189,10 +457,7 @@
                 $objAgency = new Agency();
                 foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
                     if($dbField) {
-                        if($FormField == 'FirstName')
-                            $objAgency->name = $tData['FirstName'] . ' ' . $tData['LastName'];
-                        else
-                            $objAgency->$dbField = isset($tData[$FormField]) ? $tData[$FormField] : '';
+                        $objAgency->$dbField = isset($tData[$FormField]) ? $tData[$FormField] : '';
                     }
                 }
                 unset($dbField);
@@ -201,15 +466,17 @@
                 $objAgency->subscription_id = '';
                 $objAgency->parent_id = -1;
 
-                if (!$objAgency->create())
-                    throw new \Exception('Agency could not be created.');
+                if (!$objAgency->create()) {
+                    $this->flashSession->error($objAgency->get_val_errors());
+                    return false;
+                }
 
                 $objUser = new Users();
                 $objUser->agency_id = $objAgency->agency_id;
                 foreach ($this->tUserFieldTranslaction as $FormField => $dbField) {
                     if($dbField) {
-                        if ($FormField == 'FirstName')
-                            $objUser->name = $tData['FirstName'] . ' ' . $tData['LastName'];
+                        if ($FormField == 'Password')
+                            $objUser->password = $this->security->hash($tData[$FormField]);
                         else
                             $objUser->$dbField = isset($tData[$FormField]) ? $tData[$FormField] : '';
                     }
@@ -222,35 +489,16 @@
                 $objUser->is_employee = 0;
                 $objUser->is_all_locations = 0;
                 $objUser->profilesId = 1; // Agency Admin
-                if(!$objUser->create())
-                    throw new \Exception('Agency could not be created.');
+                if(!$objUser->create()) {
+                    $this->flashSession->error($objUser->getMessages());
+                    return false;
+                }
                 return $objUser->id;
 
             } catch (Exception $e) {
                 // TODO:  Figure out logging / error reporting.
                 return false;
             }
-
-
-            /* TODO:  Update defaults in the database for fields
-                review_invite_type_id
-                SMS_message
-                message_frequency
-                date_created
-
-            */
-            /*
-                Unknown Fields:
-                notifications
-                viral_sharing_code
-                locality
-                date_left
-
-                parent_agency_id - Verify this isn't used
-
-                user->is_all_locations ???
-            */
-
 
             return true;
         }
@@ -262,9 +510,7 @@
 
                 $objPaymentService = $this->di->get('paymentService');
 
-                if(count($tData['MonthExpiration']) == 1)
-                    $tData['MonthExpiration'] = '0'.$tData['MonthExpiration'];
-
+                $tData['MonthExpiration'] = strlen($tData['MonthExpiration']) == 1 ? '0'.$tData['MonthExpiration'] : $tData['MonthExpiration'];
 
                 $tParameters = [
                     'cardNumber'        => $tData['CardNumber'],
@@ -279,7 +525,7 @@
 
 
                 if(!$Profile = $objPaymentService->createPaymentProfile($tParameters)) {
-                    throw new \Exception('Could not create payment profile.');
+                    $this->flashSession->error('Could not create payment profile.');
                 }
 
 
@@ -310,6 +556,7 @@
 
 
                 if(!$UserID = $this->CreateAgency($this->session->AgencySignup)) {
+                    return $this->response->redirect('/agencysignup/order');
                     throw new \Exception('DB Error:  Could not create agency.');
                 }
 
@@ -317,7 +564,7 @@
                 $objAuthDotNet->setUserId($UserID);
                 $objAuthDotNet->setCustomerProfileId($tData['AuthProfile']['customerProfileId']);
                 if (!$objAuthDotNet->create()) {
-                    throw new \Exception('Could not insert auth profile into db.');
+                    $this->flashSession->error($objAuthDotNet->getMessages());
                 }
 
                 $objPaymentService = $this->di->get('paymentService');
@@ -332,7 +579,8 @@
                 ];
 
                 if (!$objPaymentService->changeSubscription($tParameters)) {
-                    throw new \Exception('Could not add subscription.');
+                    throw new $this->flashSession->error('Could not add subscription.');
+                    return false;
                 }
 
 
@@ -363,28 +611,57 @@
         protected function GetSubscriptionPrice($Name) {
             $objPricingPlan = AgencyPricingPlan::findFirst("name='{$Name}'");
             if(!$objPricingPlan)
-                throw Exception("Could not find subscription plan.");
+                $this->flashSession->error("Could not find subscription plan.  Contact customer support.");
 
             return $objPricingPlan->number_of_businesses * $objPricingPlan->price_per_business;
         }
 
+        protected function IsUniqueEmail($tData) {
+            return count(Agency::find('email = "' . $tData['OwnerEmail'] . '"')) == 0;
+        }
+
         public function submitorderAction() {
+            if(!$this->IsUniqueEmail($this->session->AgencySignup)) {
+                $this->flashSession->error("This email address is already in use.  Please use another one.");
+                $this->response->redirect('/agencysignup/order');
+                return false;
+            }
+
             try {
-                // MUST TODO:  Verify email is not in use before processing payments.
+                if ($this->request->isPost() && $this->ValidateFields('Order')) {
+
+                    if (!$Profile = $this->CreateAuthProfile($this->session->AgencySignup)) {
+                        $this->flashSession->error('Invalid credit card information');
+                    }
+
+                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile]);
+
+                }
+            } catch(Exception $e) {
+                return false;
+            }
+
+            $this->response->redirect('/agencysignup/step1');
+            return true;
+        }
+
+        protected function GetAgencyUrl() {
+            return "http://" . $this->session->AgencySignup['custom_domain'] . ".getmobilereviews.com";
+        }
+
+        public function thankyouAction() {
+            $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? 'Twenty for eight' : 'Ten for ten';
+            $this->view->TodayYear = date("Y");
+
+            try {
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
                     $this->db->begin();
 
-                    if (!$Profile = $this->CreateAuthProfile($this->session->AgencySignup))
-                        throw new \Exception('Could not create Auth Profile');
-
-                    // TODO:  Determine which plan
-                    $Price = $this->GetSubscriptionPrice('Ten for ten');
-
-                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile, 'Price' => $Price]);
+                    $Price = $this->GetSubscriptionPrice($SubscriptionPlan);
+                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['Price' => $Price]);
 
                     if (!$UserID = $this->CreateSubscription($this->session->AgencySignup))
                         throw new \Exception('Could not add subscription.');
-
 
                     $this->db->commit();
 
@@ -393,24 +670,60 @@
                 $this->db->rollback();
                 return false;
             }
-            return true;
-        }
 
-        public function thankyouAction() {
+            $Message = "
+                Thank you for signing up!<br /><br />
+                
+                You can login to your agency with your email / password at " . $this->GetAgencyUrl() . "
+            ";
 
-        }
+            $this->getDI()
+                ->getMail()
+                ->send($this->session->AgencySignup['OwnerEmail'], "Thank you for signing up!", '', '', $Message);
 
-        public function salesAction () {
+
+            $this->view->DisplayTranslator = false;
             $this->view->setLayout('agencyorder');
         }
+
         public function step1Action() {
+            $this->view->tCountries = $this->tCountries;
         }
 
         public function step2Action() {
             $this->ValidateFields('Step1');
         }
 
+        protected function StoreLogo() {
+            if($this->request->hasFiles()) {
+
+                foreach ($this->request->getUploadedFiles() as $file) {
+                    // This is for handling page reloads.
+                    if($file->getTempName()) {
+                        if(isset($this->session->AgencySignup['LogoFilename']) && $this->session->AgencySignup['LogoFilename']) {
+                            unlink(__DIR__ . "/../../public/img/agency_logos/" . $this->session->AgencySignup['LogoFilename']);
+                            $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['LogoFilename' => '']);
+                        }
+
+                        $FileName = uniqid('logo') . '.' . $file->getExtension();
+                        echo $FileName;
+                        file_put_contents(__DIR__ . "/../../public/img/agency_logos/{$FileName}", file_get_contents($file->getTempName()));
+                        $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['LogoFilename' => $FileName]);
+                        break;
+                    }
+                }
+            }
+        }
+
+        public function salesAction () {
+            $this->StoreLogo();
+            $this->view->DisplayTranslator = false;
+            $this->view->LogoSource = (isset($this->session->AgencySignup['LogoFilename']) && $this->session->AgencySignup['LogoFilename']) ? '/img/agency_logos/' . $this->session->AgencySignup['LogoFilename'] : '/img/logo-white.gif';
+            $this->view->setLayout('agencyorder');
+        }
+
         public function step3Action() {
+            $this->StoreLogo();
         }
 
         public function step4Action() {

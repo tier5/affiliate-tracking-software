@@ -1,10 +1,10 @@
-<div class="topheader"></div>
+<div class="topheader PrimaryColor"></div>
 
 <div class="main-container">
     <header>
         <div class="headercontent">
             <div class="logo">
-                <img src="/img/logo-white.gif" alt="Review Velocity" />
+                <img src="{{ LogoSource }}" alt="Review Velocity" />
             </div>
             <div class="contactnumber">
                 <span class="contact-text">Contact Us:</span> <span class="contact-phone">(866) 700-9330</span>
@@ -28,7 +28,7 @@
         <div class="row small-vertical-margins">
             <div class="col-xs-2"></div>
             <div class="col-xs-8">
-                <button class="big-green-button thin-white-text">
+                <button class="big-green-button thin-white-text SecondaryColor">
                     Click Here To Sign Up Today
                 </button>
             </div>
@@ -51,12 +51,12 @@
             <div class="col-xs-2"></div>
             <div class="col-xs-4 light-section" style="margin-right: 15px; height: 275px;">
                 <img class="center-block small-raise" src="/img/agencysignup/sales/icon_green_circle_chart.png" alt="Graph" />
-                <div style="height: 70px"><h3 class="green-text text-center sub-header-text">Generate Fresh Customer Online Reviews Daily</h3></div>
+                <div style="height: 70px"><h3 class="green-text text-center sub-header-text SecondaryColorText">Generate Fresh Customer Online Reviews Daily</h3></div>
                 <div class="text-center description-text">The key to winning new business and boosting revenue is through social proof from your most recent happy visitors.  Help prospective customers choose you over your competitors by ranking higher and being the obvious choice.</div>
             </div>
             <div class="col-xs-4 light-section" style="margin-left: 15px; height: 275px;">
                 <img class="center-block small-raise" src="/img/agencysignup/sales/icon_green_circle_people.png" alt="People" />
-                <div style="height: 70px"><h3 class="green-text text-center sub-header-text">Increase Employee Accountability</h3></div>
+                <div style="height: 70px"><h3 class="green-text text-center sub-header-text SecondaryColorText">Increase Employee Accountability</h3></div>
                 <div class="text-center description-text">Leverage your key staff and empoloyees that work directly with customers through gamifcation of the feedback process.  Our powerful leader board module adds social proof to motivate and incentivize employees to actively participate in the review getting process.</div>
             </div>
             <div class="col-xs-2"></div>
@@ -357,7 +357,7 @@
         <div class="row">
             <div class="col-xs-4"></div>
             <div class="col-xs-4">
-                <button class="big-green-button small-vertical-margins" style="width: 100%; margin-left: 0px; height: 80px;">
+                <button class="big-green-button small-vertical-margins SecondaryColor" style="width: 100%; margin-left: 0px; height: 80px;">
                     Get Started Today
                 </button>
             </div>

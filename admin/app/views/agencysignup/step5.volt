@@ -1,4 +1,4 @@
-<form action="step6" method="post">
+<form action="thankyou" method="post">
     <div class="row">
         <div class="col-xs-12 text-center">
             <span class="sub-section-header"><h1 class="bold">One Time Offer</h1></span>
@@ -24,7 +24,17 @@
 
     <div class="row small-vertical-margins">
         <div class="col-xs-12 text-center">
-            <span class="sub-section-header"><h5 ><a href="step6" class="tertiary-text">No Thanks I Don't Want To Save 20% For Life!</a></h5></span>
+            <span class="sub-section-header"><h5 ><a href="thankyou" class="tertiary-text">No Thanks I Don't Want To Save 20% For Life!</a></h5></span>
         </div>
     </div>
+
+    <input type="hidden" value="0" name="Upgrade" id="Upgrade" />
 </form>
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+        $('#UpgradeButton').click(function() {
+            $('#Upgrade').val(1)
+        });
+    });
+</script>

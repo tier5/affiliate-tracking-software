@@ -1,6 +1,5 @@
 <form method="post" action="submitorder">
     <div class="topheader"></div>
-
     <div class="main-container">
         <header>
             <div class="headercontent">

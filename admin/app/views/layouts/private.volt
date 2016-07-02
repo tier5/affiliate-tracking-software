@@ -325,6 +325,7 @@
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
         <div class="page-content">
+            {{ flashSession.output() }}
             {{ content() }}
         </div>
     </div>
@@ -346,10 +347,6 @@
 <!-- add required js from controller -->
 {{ assets.outputJs() }}
 
-TEST
-{{ num_signed_up }}
-{{ sms_sent_this_month_total }}
-{{ total_sms_month }}
 {% if haspaid %}
     {% if not is_admin and agencytype != "agency" %}
         {% if location_id %}
