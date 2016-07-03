@@ -484,6 +484,54 @@
             $(profitElement).text(profit.toFixed(2));
         }
         
+        var smsMessagesSlider = null;
+        
+        function refreshSmsSliderControls(val) {
+            if (smsMessagesSlider) {
+                $('#slider-messages').text(val);
+                
+                smsMessagesSlider.setValue(parseInt(val), true, true);
+                smsMessagesSlider.on('change', function () {
+                    $('#slider-messages').text(smsMessagesSlider.getValue());
+                    $('#max-sms-messages-control').val(smsMessagesSlider.getValue());
+                });
+                
+                $('#progression-table-rows').find('tr td.sms-messages-column').each(function (index) {
+                    $(this).text(val); // Update the cell value
+                });
+            }
+        }
+        
+        function rebuildSmsSlider(max, step) {
+            
+            if (smsMessagesSlider) {
+                smsMessagesSlider.destroy();
+            }
+            
+            if (max < 1000) {
+                max = 1000;
+            }
+            
+            // Compute ticks scales
+            var ticks = [];
+            var tick_labels = [];
+            for(var i = step; i <= max; i += step) {
+                ticks.push(i);
+                tick_labels.push('<div>' + i + '</div><div class="tick-marker">|</div>');
+            }
+            
+            smsMessagesSlider = new Slider("#sms-messages-slider", {
+                tooltip: 'show',
+                min: step,
+                max: max,
+                step: step,
+                ticks: ticks/*[50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000]*/,
+                ticks_labels: tick_labels,
+                ticks_snap_bounds: step
+            });
+            
+        }
+        
         function initValueBindings(options) {
 
             $('select.location-discount-control').on('change', function (event) {
@@ -531,59 +579,17 @@
                 $('#progression-table-rows').find('tr td.sms-messages-column').each(function (index) {
                     $(this).text($(event.currentTarget).val()); // Update the cell value
                 });
+                $('#slider-messages').text($(event.currentTarget).val());
+                
+                /* Refresh the slider */
+                var messages = $(event.currentTarget).val();
+                rebuildSmsSlider(messages, 50);
+                refreshSmsSliderControls(messages);
+                
             });
             
         }
-
-        function initSmsSlider() {
-
-            var smsMessagesSlider = new Slider("#sms-messages-slider", {
-                tooltip: 'show',
-                min: 50,
-                max: 1001,
-                step: 50,
-                ticks: [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000],
-                ticks_labels: [
-                    '<div>50</div><div class="tick-marker">|</div>',
-                    '<div>100</div><div class="tick-marker">|</div>',
-                    '<div>150</div><div class="tick-marker">|</div>',
-                    '<div>200</div><div class="tick-marker">|</div>',
-                    '<div>250</div><div class="tick-marker">|</div>',
-                    '<div>300</div><div class="tick-marker">|</div>',
-                    '<div>350</div><div class="tick-marker">|</div>',
-                    '<div>400</div><div class="tick-marker">|</div>',
-                    '<div>450</div><div class="tick-marker">|</div>',
-                    '<div>500</div><div class="tick-marker">|</div>',
-                    '<div>550</div><div class="tick-marker">|</div>',
-                    '<div>600</div><div class="tick-marker">|</div>',
-                    '<div>650</div><div class="tick-marker">|</div>',
-                    '<div>700</div><div class="tick-marker">|</div>',
-                    '<div>750</div><div class="tick-marker">|</div>',
-                    '<div>800</div><div class="tick-marker">|</div>',
-                    '<div>850</div><div class="tick-marker">|</div>',
-                    '<div>900</div><div class="tick-marker">|</div>',
-                    '<div>950</div><div class="tick-marker">|</div>',
-                    '<div>1000</div><div class="tick-marker">|</div>'
-                ],
-                ticks_snap_bounds: 1
-            });
-
-            smsMessagesSlider.on('change', function () {
-                $('#slider-messages').text(smsMessagesSlider.getValue());
-                $('#max-sms-messages-control').val(smsMessagesSlider.getValue()).change();
-            });
-            $('#max-sms-messages-control').on('change', function (e) {
-                smsMessagesSlider.setValue(parseInt(this.value), true, true);
-                $('#slider-messages').text(this.value);
-            });
-
-            smsMessagesSlider.setValue(100, true, true);
-
-            /* Message init */
-            $('#slider-messages').text(smsMessagesSlider.getValue());
-
-        }
-
+        
         function addSegment(min, max, options) {
 
             var row = "";
@@ -669,8 +675,9 @@
             /* Init value field bindings */
             initValueBindings(options);
 
-            /* Init slider */
-            initSmsSlider();
+            /* Rebuild slider */
+            rebuildSmsSlider(1000, 50);
+            refreshSmsSliderControls(100);
 
         }
 

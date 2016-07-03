@@ -355,6 +355,7 @@
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
         <div class="page-content">
+            <?php echo $this->flashSession->output(); ?>
             <?php echo $this->getContent(); ?>
         </div>
     </div>
@@ -450,10 +451,6 @@
 <!-- add required js from controller -->
 <?php echo $this->assets->outputJs(); ?>
 
-TEST
-<?php echo $num_signed_up; ?>
-<?php echo $sms_sent_this_month_total; ?>
-<?php echo $total_sms_month; ?>
 <?php if ($haspaid) { ?>
     <?php if (!$is_admin && $agencytype != 'agency') { ?>
         <?php if ($location_id) { ?>
