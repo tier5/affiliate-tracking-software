@@ -28,7 +28,7 @@
         public $is_admin;
         public $subscription_valid;
         public $phone;
-        public $byPassConfirmationEmail;
+        public $send_confirmation;
 
         /**
          * Before create the user assign a password
@@ -67,7 +67,7 @@
          */
         public function afterSave()
         {
-            if ($this->active == 'N' || $this->byPassConfirmationEmail) {
+            if ($this->active == 'N' || $this->send_confirmation) {
                 $emailConfirmation = new EmailConfirmations();
                 $emailConfirmation->usersId = $this->id;
                 $emailConfirmation->save();

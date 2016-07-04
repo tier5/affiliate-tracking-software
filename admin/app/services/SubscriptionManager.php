@@ -79,13 +79,6 @@ class SubscriptionManager extends BaseService {
                 throw new ArrayException("", 0, null, $businessSubscriptionInvitation->getMessages());
             }
             
-            $this->di->get('mail')->send(
-                $newSubscriptionParameters['userEmail'], 
-                "Invitation To Review Velocity!", 
-                'invitation', 
-                ['invitationUrl' => '/session/showSignup/' . $businessSubscriptionInvitation->token ]
-            );
-            
             $db->commit();
             
         } catch(ArrayException $e) {
@@ -95,6 +88,27 @@ class SubscriptionManager extends BaseService {
             }
             return $e->getOptions();
             
+        }
+        
+        return true;
+    }
+    
+    public function changeSubscriptionPlan($subscriptionParameters) {
+        
+        $subscriptionPlan = BusinessSubscriptionPlan::query()
+            ->where("user_id = :userId:")
+            ->bind(["userId" => $subscriptionParameters['userId']])
+            ->execute()
+            ->getFirst();
+        if (!$subscriptionPlan) {
+            return false;
+        }
+        
+        $subscriptionPlan->setLocations($subscriptionParameters['locations']);
+        $subscriptionPlan->setSmsMessagesPerLocation($subscriptionParameters['messages']);
+        $subscriptionPlan->setPaymentPlan($subscriptionParameters['planType']);
+        if (!$subscriptionPlan->save()) {
+            return false;
         }
         
         return true;

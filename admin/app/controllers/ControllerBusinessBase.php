@@ -68,6 +68,7 @@ class ControllerBusinessBase extends ControllerBase {
                 if (count($messages) > 0) {
                     throw new ArrayException("", 0, null, $messages);
                 }
+                
 
                 $db = $this->di->get('db'); 
                 $db->begin();
@@ -97,7 +98,7 @@ class ControllerBusinessBase extends ControllerBase {
 
                 /* Create an admin for this new agency */
                 $user = new Users();
-                $user->byPassConfirmationEmail = true;
+                $user->send_confirmation = $this->request->getPost('send_registration_email', 'striptags') === "on " ? true : false;
                 $user->assign(array(
                     'name' => $this->request->getPost('admin_name', 'striptags'),
                     'email' => $this->request->getPost('admin_email'),
@@ -113,8 +114,8 @@ class ControllerBusinessBase extends ControllerBase {
                     $this->flash->error($messages);
                 }
 
-                $this->flash->success('A invitation email has been sent to ' . $this->request->getPost('admin_email'));
                 $this->flash->success("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was " . ($agency_id > 0 ? 'edited' : 'created') . " successfully");
+                $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
 
                 $db->commit();
             

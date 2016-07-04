@@ -17,15 +17,15 @@
     <div class="portlet-body form">
         <form class="form-horizontal" role="form" id="agencyform" method="post" autocomplete="off">
             <div class="form-group">
-                <label for="name" class="col-md-4 control-label">Name</label>
-                <div class="col-md-8">
-                    {{ form.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name']) }}
-                </div>
-            </div>
-            <div class="form-group">
                 <label for="subscription_pricing_plan_id" class="col-md-4 control-label">Subscription Pricing Plan</label>
                 <div class="col-md-8">
                     {{ subscriptionPricingPlans }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-md-4 control-label">Name</label>
+                <div class="col-md-8">
+                    {{ form.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name']) }}
                 </div>
             </div>
             <div class="form-group">
@@ -97,6 +97,12 @@
                     <input class="form-control" type="text" placeholder="Admin Email" name="admin_email" value="<?=(isset($_POST['admin_email'])?$_POST["admin_email"]:'')?>" />
                 </div>
             </div>
+            <div class="form-group">
+                <label for="send_registration_email" class="col-md-4 control-label">Send Registration Email</label>
+                <div class="col-md-8">
+                    <input id="send-registration-email-control" type="checkbox" name="send_registration_email" class="make-switch" checked data-on-color="primary" data-off-color="info">
+                </div>
+            </div>
             <?php } ?>
             <div class="form-group">
                 <div class="col-md-offset-4 col-md-8">
@@ -108,6 +114,15 @@
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
+        
+        $('#send-registration-email-control').change(function () {
+            if ($(this).val() === 'Unpaid') {
+                $(".free_subscription_pricing_plan").addClass('show');
+            } else {
+                $(".free_subscription_pricing_plan").removeClass('show');
+            }
+        });
+        
         $('#subscription_pricing_plan_id').change(function () {
             if ($(this).val() === 'Unpaid') {
                 $(".free_subscription_pricing_plan").addClass('show');
@@ -115,5 +130,8 @@
                 $(".free_subscription_pricing_plan").removeClass('show');
             }
         });
+        
+        
+        
     });
 </script>
