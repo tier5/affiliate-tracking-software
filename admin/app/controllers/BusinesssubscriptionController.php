@@ -349,12 +349,13 @@ class BusinessSubscriptionController extends ControllerBase {
         try {
         
             if (!$this->request->isPost()) {
-                throw new \Exception();
+                throw new \Exception('POST request is required!');
             }
         
             /* Get services */
             $userManager = $this->di->get('userManager');
             $paymentService = $this->di->get('paymentService');
+            $subscriptionManager = $this->di->get('subscriptionManager');
         
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
@@ -370,12 +371,10 @@ class BusinessSubscriptionController extends ControllerBase {
             
             $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
             if(!$hasPaymentProfile) {
-                throw new \Exception();
+                throw new \Exception('Payment information not found!');
             }
             
-            /* 
-             * Create the subscription 
-             */
+            /* Create the subscription */
             $subscriptionParameters = [
                 'userId' => $userId,
                 'locations' => $this->request->getPost('locations', 'striptags'),
@@ -386,8 +385,11 @@ class BusinessSubscriptionController extends ControllerBase {
             ];
             $changePlanSucceeded = $paymentService->changeSubscription($subscriptionParameters);
             if(!$changePlanSucceeded) {
-                throw new \Exception();
-            }   
+                throw new \Exception('Payment information not found!');
+            }            
+            if(!$subscriptionManager->changeSubscriptionPlan($subscriptionParameters)) {
+                throw new \Exception('Payment information not found!');
+            }
             
             /* 
              * Success!!! 
