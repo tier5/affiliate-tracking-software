@@ -22,7 +22,12 @@ class UserManager extends BaseService {
         $identity = $session->get('auth-identity');
         return $identity && ($identity['agencytype'] === 'business');
     }
-
+    
+    public function isWhiteLabeledBusiness($session) {
+        $identity = $session->get('auth-identity');
+        return $identity && ($identity['agencytype'] === 'business') && (intval($identity['parent_id']) !== -1);
+    }
+    
     public function isEmployee($session) {
         $identity = $session->get('auth-identity');
         return $identity && $identity['profile'] === 'Employee';
@@ -39,6 +44,14 @@ class UserManager extends BaseService {
             return $identity['id'];
         }
         return false;
+    }
+    
+    public function currentSignupPage($session) {
+        $identity = $session->get('auth-identity');
+        if ($identity) {
+            return $identity['signup_page'];
+        }
+        return 0;
     }
     
     public function getLocationId($session) {

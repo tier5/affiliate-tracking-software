@@ -85,8 +85,7 @@ class BusinessSubscriptionController extends ControllerBase {
             'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
         ];
         $this->view->upgradeCreditCardStatus = 
-            !$paymentService->hasPaymentProfile($paymentParams) ? 'disabled' : '';
-        
+            !$paymentService->hasPaymentProfile($paymentParams) ? 'disabled' : '';    
     }
     
     /**

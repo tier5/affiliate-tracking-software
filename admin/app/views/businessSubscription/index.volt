@@ -257,7 +257,7 @@
         </div>
     </div>
 
-    <!-- Update credit card pop up -->
+    <!-- Update credit card pop up
     <div class="modal fade" id="updateCardModal" tabindex="-1" role="dialog" aria-labelledby="updateCardModalLabel">
         <div class="credit-card-details modal-dialog" role="document">
             <div class="modal-content">
@@ -277,7 +277,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Change plan pop up -->
     <div class="modal fade" id="updatePlanModal" tabindex="-1" role="dialog" aria-labelledby="updatePlanModalLabel">
         <div class="change-plan modal-dialog" role="document">

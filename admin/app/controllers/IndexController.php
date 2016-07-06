@@ -19,8 +19,17 @@ use Vokuro\Models\Users;
 class IndexController extends ControllerBase {
 
     public function initialize() {
+        
         $this->tag->setTitle('Review Velocity | Dashboard');
         parent::initialize();
+        
+        //add needed css
+        $this->assets
+            ->addCss('/assets/global/plugins/card-js/card-js.min.css');
+
+        //add needed js
+        $this->assets
+            ->addJs('/assets/global/plugins/card-js/card-js.min.js');
     }
 
     /**
@@ -37,8 +46,11 @@ class IndexController extends ControllerBase {
              * the create business sequence.   
              */
             $userManager = $this->di->get('userManager'); 
-            if($userManager->isBusiness($this->session) && !$userManager->getLocationId($this->session) ) {
-                $this->response->redirect('/session/signup2');
+            
+            $isBusiness = $userManager->isBusiness($this->session);
+            $signupPage = $userManager->currentSignupPage($this->session); 
+            if($isBusiness && $signupPage) {
+                $this->response->redirect('/session/signup' . $signupPage);
                 return;
             }
             
@@ -53,7 +65,12 @@ class IndexController extends ControllerBase {
             } else if ($identity['agencytype'] == 'agency') {
                 $this->response->redirect('/agency/');
             }
-
+            
+            /*
+             * Has this user provided their credit card info?
+             */
+            $this->view->ccInfoRequired = $this->di->get('subscriptionManager')->creditCardInfoRequired($this->session);
+            
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
         } else {

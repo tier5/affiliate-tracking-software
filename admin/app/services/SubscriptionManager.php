@@ -16,19 +16,21 @@ class SubscriptionManager extends BaseService {
         parent::__construct($config, $di);
     }
     
-    
-    public function hasPaymentProfile($userId) {
-        /* Get services */
+    public function creditCardInfoRequired($session) { 
         $userManager = $this->di->get('userManager');
         $paymentService = $this->di->get('paymentService');
+   
+        $userId = $userManager->getUserId($session);
+        $subscriptionPlan = $this->getSubscriptionPlan($userId);
+        if (!$subscriptionPlan || $subscriptionPlan->payment_plan === 'FR' /*ServicesConsts::$PAYMENT_PLAN_FREE*/ ) {
+            return false;
+        }
         
-        $provider = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET;
-        if ($userManager->isWhiteLabeledBusiness()) {
-            $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
-        } 
-        
-        $paymentParams = [ 'userId' => $userId, 'provider' => $provider ];            
-        $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams); 
+        $provider = "AuthorizeDotNet" /* ServicesConsts::PAYMENT_PROVIDER_AUTHORIZE_DOT_NET */;
+        if ($userManager->isWhiteLabeledBusiness($session)) {
+            $provider = "Stripe";/* ServicesConsts::$PAYMENT_PROVIDER_STRIPE */;
+        }  
+        return $paymentService->hasPaymentProfile([ 'userId' => $userId, 'provider' => $provider ]); 
     }
         
     public function getSubscriptionPricingPlans() {
