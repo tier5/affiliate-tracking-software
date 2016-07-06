@@ -1,4 +1,4 @@
-<form action="thankyou" method="post">
+<form action="thankyou" method="post" id="Step5Form">
     <div class="row">
         <div class="col-xs-12 text-center">
             <span class="sub-section-header"><h1 class="bold">One Time Offer</h1></span>
@@ -18,13 +18,13 @@
 
     <div class="row small-vertical-margins">
         <div class="col-xs-12">
-            <button class="btn btn-primary center-block" type="text" id="UpgradeButton">Upgrade Now</button>
+            <button class="btn btn-primary center-block" type="button" id="UpgradeButton">Upgrade Now</button>
         </div>
     </div>
 
     <div class="row small-vertical-margins">
         <div class="col-xs-12 text-center">
-            <span class="sub-section-header"><h5 ><a href="thankyou" class="tertiary-text">No Thanks I Don't Want To Save 20% For Life!</a></h5></span>
+            <span class="sub-section-header"><h5 ><a class="tertiary-text" id="NoThanks">No Thanks I Don't Want To Save 20% For Life!</a></h5></span>
         </div>
     </div>
 
@@ -35,6 +35,12 @@
     $( document ).ready(function() {
         $('#UpgradeButton').click(function() {
             $('#Upgrade').val(1)
+            $('#Step5Form').submit();
+        });
+
+        $('#NoThanks').click(function() {
+            $('#Upgrade').val(0)
+            $('#Step5Form').submit();
         });
     });
 </script>

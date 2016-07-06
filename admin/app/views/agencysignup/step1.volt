@@ -1,5 +1,5 @@
 <form action="step2" method="post" id="Step1Form">
-    <div class="row small-vertical-margins">
+    <div class="row">
         <div class="col-xs-12">
             <h2 class="section-header">Congratulations You Have Been Approved! <br /><br />Tell Us About Your Agency</h2>
         </div>
@@ -20,7 +20,7 @@
             <label>Address</label><span class="required">*</span><input class="form-control" type="text" name="Address" value="{{ Address }}" required />
         </div>
         <div class="col-xs-4">
-            <label>Address2</label><span class="required">*</span><input class="form-control" type="text" name="Address2" value="{{ Address2 }}" />
+            <label>Address2</label><input class="form-control" type="text" name="Address2" value="{{ Address2 }}" />
         </div>
     </div>
     <div class="row form-group small-vertical-margins">

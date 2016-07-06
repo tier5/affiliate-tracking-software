@@ -67,7 +67,7 @@
             'State'                 => 'state_province',
             'Zip'                   => 'postal_code',
             'Phone'                 => 'phone',
-            'Email'                 => '', // Email from order form, not from sign up process.  Handled below.
+            'Email'                 => 'email',
             'Website'               => 'website',
             'EmailFromName'         => 'email_from_name',
             'EmailFromAddress'      => 'email_from_address',
@@ -92,7 +92,7 @@
             /* Order form Fields */
             'FirstName'             => 'name',
             'LastName'              => 'last_name',
-            'OwnerEmail'            => 'email',
+            'OwnerEmail'            => '',
             'OwnerPhone'            => 'phone',
             'URL'                   => 'custom_domain',
         ];
@@ -101,7 +101,7 @@
             /* Order form Fields */
             'FirstName'             => 'name',
             'LastName'              => 'last_name',
-            'Email'                 => 'email',
+            'OwnerEmail'            => 'email',
             'Phone'                 => 'phone',
             'URL'                   => 'custom_domain',
             'Password'              => 'password',
@@ -132,7 +132,6 @@
                 'YearExpiration',
             ],
         ];
-
 
         protected $tAcceptedCardTypes = [
             'Visa',
@@ -430,6 +429,8 @@
                 }
 
                 $this->view->current_step = $tMatches[1];
+            } else {
+                $this->view->current_step = "";
             }
 
             $this->view->PrimaryColor = isset($this->session->AgencySignup['PrimaryColor']) ? $this->session->AgencySignup['PrimaryColor'] : '#2a3644';
@@ -483,12 +484,12 @@
                 }
                 unset($dbField);
 
-                $objUser->mustChangePassword = 'Y';
-                $objUser->active = 1;
+                $objUser->mustChangePassword = 'N';
                 $objUser->create_time = date("Y-m-d H:i:s");
                 $objUser->is_employee = 0;
                 $objUser->is_all_locations = 0;
                 $objUser->profilesId = 1; // Agency Admin
+
                 if(!$objUser->create()) {
                     $this->flashSession->error($objUser->getMessages());
                     return false;
@@ -556,13 +557,14 @@
 
 
                 if(!$UserID = $this->CreateAgency($this->session->AgencySignup)) {
-                    return $this->response->redirect('/agencysignup/order');
-                    throw new \Exception('DB Error:  Could not create agency.');
+                    $this->response->redirect('/agencysignup/order');
+                    return false;
                 }
 
                 $objAuthDotNet = new AuthorizeDotNetModel();
                 $objAuthDotNet->setUserId($UserID);
                 $objAuthDotNet->setCustomerProfileId($tData['AuthProfile']['customerProfileId']);
+
                 if (!$objAuthDotNet->create()) {
                     $this->flashSession->error($objAuthDotNet->getMessages());
                 }
@@ -579,13 +581,12 @@
                 ];
 
                 if (!$objPaymentService->changeSubscription($tParameters)) {
-                    throw new $this->flashSession->error('Could not add subscription.');
+                    $this->flashSession->error('Could not create subscription.  Contact customer support.');
                     return false;
                 }
 
-
             } catch (Exception $e) {
-                return $this->response->redirect('/agencysignup/step5');
+                $this->response->redirect('/agencysignup/step5');
                 return false;
             }
             return $UserID;
@@ -606,7 +607,7 @@
             $this->view->tMonths = $tMonths;
             $this->view->tYears = $tYears;
             $this->view->tCardTypes = $this->tAcceptedCardTypes;
-            $this->view->setLayout('agencyorder');
+            $this->view->setLayout('agencysignup');
         }
 
         protected function GetSubscriptionPrice($Name) {
@@ -618,12 +619,22 @@
         }
 
         protected function IsUniqueEmail($tData) {
-            return count(Agency::find('email = "' . $tData['OwnerEmail'] . '"')) == 0;
+            return count(Users::find('email = "' . $tData['OwnerEmail'] . '"')) == 0;
+        }
+
+        protected function IsUniqueDomain($tData) {
+            return count(Agency::find('custom_domain = "' . $tData['URL'] . '"')) == 0;
         }
 
         public function submitorderAction() {
             if(!$this->IsUniqueEmail($this->session->AgencySignup)) {
                 $this->flashSession->error("This email address is already in use.  Please use another one.");
+                $this->response->redirect('/agencysignup/order');
+                return false;
+            }
+
+            if(!$this->IsUniqueDomain($this->session->AgencySignup)) {
+                $this->flashSession->error("This domain is already in use.  Please use another one.");
                 $this->response->redirect('/agencysignup/order');
                 return false;
             }
@@ -663,8 +674,10 @@
                     $Price = $this->GetSubscriptionPrice($SubscriptionPlan);
                     $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['Price' => $Price]);
 
-                    if (!$UserID = $this->CreateSubscription($this->session->AgencySignup))
-                        throw new \Exception('Could not add subscription.');
+                    if (!$UserID = $this->CreateSubscription($this->session->AgencySignup)) {
+                        $this->flashSession->error('Could not create subscription.  Contact customer support.');
+                        $this->response->redirect('/agencysignup/step5');
+                    }
 
                     $this->db->commit();
 
@@ -686,7 +699,7 @@
 
 
             $this->view->DisplayTranslator = false;
-            $this->view->setLayout('agencyorder');
+            $this->view->setLayout('agencysignup');
         }
 
         public function step1Action() {
@@ -695,6 +708,7 @@
 
         public function step2Action() {
             $this->ValidateFields('Step1');
+            $this->StoreLogo();
         }
 
         protected function StoreLogo() {
@@ -719,10 +733,9 @@
         }
 
         public function salesAction () {
-            $this->StoreLogo();
             $this->view->DisplayTranslator = false;
             $this->view->LogoSource = (isset($this->session->AgencySignup['LogoFilename']) && $this->session->AgencySignup['LogoFilename']) ? '/img/agency_logos/' . $this->session->AgencySignup['LogoFilename'] : '/img/logo-white.gif';
-            $this->view->setLayout('agencyorder');
+            $this->view->setLayout('agencysignup');
         }
 
         public function step3Action() {

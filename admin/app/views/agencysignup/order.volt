@@ -1,15 +1,15 @@
 <form method="post" action="submitorder">
-    <header>
-        <div class="row small-vertical-margins">
-            <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 col-xs-offset-1 col-md-offset-1">
-                <img class="logo" src="/img/logo-white.gif" alt="Review Velocity" />
-            </div>
-            <div class="col-xs-7 col-sm-4 col-sm-offset-4 col-lg-3 col-md-offset-6">
-                <span class="contact-text">Contact Us:</span> <span class="contact-phone">(866) 700-9330</span>
-            </div>
+
+    <div class="row small-vertical-margins">
+        <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 col-xs-offset-1 col-md-offset-1">
+            <img class="logo-order" src="/img/logo-white.gif" alt="Review Velocity" />
         </div>
-    </header>
-    <div class="col-xs-12 col-lg-8 left-container small-vertical-margins">
+        <div class="col-xs-7 col-sm-4 col-sm-offset-4 col-lg-3 col-md-offset-6">
+            <span class="contact-text">Contact Us:</span> <span class="contact-phone">(866) 700-9330</span>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-md-8 col-lg-8 left-container small-vertical-margins">
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="growth-bar">
@@ -17,9 +17,7 @@
                 </div>
             </div>
         </div>
-        <div class="row form-group">
-
-        </div>
+        <div class="row form-group"></div>
 
         <div class="row subscription-panel-group">
             <div class="col-xs-12">
@@ -38,7 +36,7 @@
                     </div>
                     <div class="row contact-row">
                         <div class="col-xs-5 col-lg-3"><label>Phone</label><span class="required">*</span></div>
-                        <div class="col-xs-7 col-lg-9"><input type="text" class="form-control" placeholder="Please enter your phone" name="OwnerPhone" value="{{ Phone }}" required /></div>
+                        <div class="col-xs-7 col-lg-9"><input type="text" class="form-control" placeholder="Please enter your phone" name="OwnerPhone" value="{{ OwnerPhone }}" required /></div>
                     </div>
                     <div class="row contact-row">
                         <div class="col-xs-5 col-lg-3"><label class="hidden-xs">Get A Company URL</label><label class="hidden-sm hidden-md hidden-lg">Domain</label><span class="required">*</span></div>
@@ -147,7 +145,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-3 col-xs-offset-1 right-container hidden-md hidden-sm hidden-xs">
+    <div class="col-xs-3 col-xs-offset-1 hidden-xs hidden-sm">
         <div class="row">
             <img class="center-block" src="/img/agencysignup/monitor_dashboard.png" alt="Dashboard" />
         </div>
