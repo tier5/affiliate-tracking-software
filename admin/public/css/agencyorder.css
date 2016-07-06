@@ -1,6 +1,7 @@
-.topheader { background-color: #2a3644; width: 100%; height: 8px; }
-header { background-color: #FFFFFF; width: 100%; height: 100px; }
-header .logo {  float: left;width: 220px; margin-left: 20px; margin-top: 20px; }
+
+body {
+    border-top: 10px solid #2a3644;
+}
 
 .growth-bar {
     border-radius: 0px !important;
@@ -26,16 +27,6 @@ header .logo {  float: left;width: 220px; margin-left: 20px; margin-top: 20px; }
 .contact-row {
     margin-top: 15px;
     margin-bottom: 15px;
-}
-
-div.logo > img {
-    width: 50%;
-    height: 50%;
-}
-
-.contactnumber {
-    float: right;
-    margin-top: 20px;
 }
 
 .contact-text {
@@ -135,7 +126,7 @@ div.logo > img {
     font-size: 36px;
     font-weight: bold;
     border: none;
-    margin-left: 75px;
+    /*margin-left: 75px;*/
 }
 
 .thin-white-text {
@@ -227,4 +218,23 @@ div.logo > img {
 
 .thanks-container {
     margin-top: 150px;
+}
+
+footer {
+    background-color: #2a3644; color: #ffffff; height: 80px;
+}
+.copyright {
+    font-family: 'Open Sans', sans-serif;
+    padding-top: 31px;
+    text-align: center;
+}
+
+.popup {
+    background-color: white;
+    width: 800px;
+    height: 600px;
+}
+
+.logo {
+    width: 100%;
 }

@@ -7,6 +7,7 @@
 <!-- BEGIN HEAD -->
 
 <head>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <meta charset="utf-8" />
     {{ get_title() }}
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -46,8 +47,7 @@
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
-
-    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 </head>
 <!-- END HEAD -->
 <body class="signup">
@@ -69,6 +69,18 @@
             <div class="step"><img src="/img/step-<?=($current_step == 4?'current':($current_step > 4?'on':'off'))?>.gif" alt="Sign up form, Step 4 (Add Employee)" /></div>
             <div class="divider"><img src="/img/step-line-<?=($current_step > 4?'on':'off')?>.gif" /></div>
             <div class="step"><img src="/img/step-<?=($current_step == 5?'current':($current_step > 5?'on':'off'))?>.gif" alt="Sign up form, Step 5 (Share)" /></div>
+
+            <div style="margin-top: -25px;">
+                <div class="col-xs-2 col-xs-offset-5" style="margin-top: 30px;">
+                    <div id="google_translate_element"></div>
+                    <script type="text/javascript">
+                        function googleTranslateElementInit() {
+                          new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                        }
+                    </script>
+                    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+                </div>
+            </div>
         </div>
         <div class="steps-desc">
             <div id="step1">Step 1</div>
@@ -76,29 +88,57 @@
             <div id="step3">Step 3</div>
             <div id="step4">Step 4</div>
             <div id="step5">Step 5</div>
+
+
         </div>
     </div>
 </header>
 
 <div class="content">
-    <div class="row">
-        <div class="col-xs-2 col-xs-offset-5" style="margin-top: 30px;">
-            <div id="google_translate_element"></div>
-            <script type="text/javascript">
-                function googleTranslateElementInit() {
-                  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-                }
-            </script>
-            <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-        </div>
-    </div>
+
     {{ flashSession.output() }}
     {{ content() }}
 
 </div>
 <footer>
-    <div class="copyright"> &copy; Copyright Review Velocity.  All Rights Reserved. </div>
+    <div class="copyright PrimaryColor"> &copy; Copyright Review Velocity.  All Rights Reserved.  <a data-toggle="modal" data-target="#Terms">Terms of Service</a> | <a data-toggle="modal" data-target="#Privacy">Privacy Policy</a></div>
 </footer>
+
+    <div id="Terms" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="TermsTitle">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title" id="TermsTitle">
+                        Terms of Service Title
+                    </div>
+                </div>
+                <div class="modal-body">
+                    Terms of Service Content
+                </div>
+                <div class="modal-footer">
+                    Terms of Service Footer
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="Privacy" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="PrivacyTitle">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title" id="PrivacyTitle">
+                        Privacy Policy Title
+                    </div>
+                </div>
+                <div class="modal-body">
+                    Privacy Policy Content
+                </div>
+                <div class="modal-footer">
+                    Privacy Policy Footer
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 

@@ -2,11 +2,11 @@
 
 <div class="main-container">
     <header>
-        <div class="headercontent">
-            <div class="logo">
-                <img src="{{ LogoSource }}" alt="Review Velocity" />
+        <div class="row small-vertical-margins">
+            <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 col-xs-offset-1 col-md-offset-1">
+                <img class="logo" src="{{ LogoSource }}"  alt="Review Velocity" />
             </div>
-            <div class="contactnumber">
+            <div class="col-xs-7 col-sm-4 col-sm-offset-4 col-lg-3 col-md-offset-6">
                 <span class="contact-text">Contact Us:</span> <span class="contact-phone">(866) 700-9330</span>
             </div>
         </div>
@@ -26,9 +26,9 @@
             <div class="col-xs-3"></div>
         </div>
         <div class="row small-vertical-margins">
-            <div class="col-xs-2"></div>
-            <div class="col-xs-8">
-                <button class="big-green-button thin-white-text SecondaryColor">
+
+            <div class="col-xs-8 col-xs-offset-2">
+                <button class="big-green-button thin-white-text SecondaryColor center-block">
                     Click Here To Sign Up Today
                 </button>
             </div>
