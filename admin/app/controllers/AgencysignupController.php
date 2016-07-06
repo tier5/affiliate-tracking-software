@@ -585,6 +585,7 @@
 
 
             } catch (Exception $e) {
+                return $this->response->redirect('/agencysignup/step5');
                 return false;
             }
             return $UserID;
@@ -632,12 +633,14 @@
 
                     if (!$Profile = $this->CreateAuthProfile($this->session->AgencySignup)) {
                         $this->flashSession->error('Invalid credit card information');
+                        return $this->response->redirect('/agencysignup/order');
                     }
 
                     $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile]);
 
                 }
             } catch(Exception $e) {
+                $this->response->redirect('/agencysignup/order');
                 return false;
             }
 
