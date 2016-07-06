@@ -103,7 +103,7 @@ class BusinessSubscriptionController extends ControllerBase {
                 throw new \Exception();
             }
             
-             /* Get services */
+            /* Get services */
             $userManager = $this->di->get('userManager');
             $paymentService = $this->di->get('paymentService');
         

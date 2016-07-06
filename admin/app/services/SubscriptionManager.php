@@ -16,6 +16,21 @@ class SubscriptionManager extends BaseService {
         parent::__construct($config, $di);
     }
     
+    
+    public function hasPaymentProfile($userId) {
+        /* Get services */
+        $userManager = $this->di->get('userManager');
+        $paymentService = $this->di->get('paymentService');
+        
+        $provider = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET;
+        if ($userManager->isWhiteLabeledBusiness()) {
+            $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
+        } 
+        
+        $paymentParams = [ 'userId' => $userId, 'provider' => $provider ];            
+        $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams); 
+    }
+        
     public function getSubscriptionPricingPlans() {
         return $subscriptionPricingPlans = SubscriptionPricingPlan::query()  
             ->where("enabled = true")
@@ -70,15 +85,7 @@ class SubscriptionManager extends BaseService {
             if (!$subscriptionPlan->create()) {
                 throw new ArrayException("", 0, null, $subscriptionPlan->getMessages());
             }
-            
-            /* Create and send the invitation */
-            $businessSubscriptionInvitation = new BusinessSubscriptionInvitation();
-            $businessSubscriptionInvitation->user_id = $userId;
-            $businessSubscriptionInvitation->business_subscription_plan_id = $subscriptionPlan->id;
-            if (!$businessSubscriptionInvitation->create()) {
-                throw new ArrayException("", 0, null, $businessSubscriptionInvitation->getMessages());
-            }
-            
+                        
             $db->commit();
             
         } catch(ArrayException $e) {

@@ -509,7 +509,7 @@
                     } else {
 
                         $this->flash->success('Your password was successfully changed');
-
+                        
                         //if ($this->session->has('auth-identity')) {
                         //  Tag::resetInput();
                         //} else {
@@ -524,3 +524,5 @@
             $this->view->form = $form;
         }
     }
+    
+    
