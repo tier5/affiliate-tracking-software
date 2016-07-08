@@ -3,9 +3,11 @@
 <header class="jumbotron subhead" id="reviews">
     <div class="hero-unit">
         <div class="row">
-            <?php $this->partial("shared/smsQuota", $this->view->smsQuotaParameters); ?>
+            {% if showSmsQuota %}
+                {{ partial("shared/smsQuota", smsQuotaParams) }}
+            {% endif %}
         </div>
-
+        
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <div class="growth-bar transparent pull-right">
@@ -33,19 +35,17 @@
                     <div class="portlet-body">
                         <div class="panel panel-default apple-backgound">
                             <div class="panel-body">
-                                <div id="current-plan" class="responsive-float-left subscription-panel-default-caption"
-                                     data-locations="<?php echo $this->view->subscriptionPlan['locations']; ?>"
-                                     data-messages="<?php echo $this->view->subscriptionPlan['sms_messages_per_location']; ?>">
+                                <div id="current-plan" class="responsive-float-left subscription-panel-default-caption">
                                     <div><span id="current-locations" class="bold"></span> Location(s)</div>
                                     <div><span id="current-messages" class="bold"></span> Text Messages</div>
                                 </div>
-                                <div class="responsive-float-right subscription-panel-large-caption"><?php echo $this->view->paymentPlan; ?></div>
+                                <div class="responsive-float-right subscription-panel-large-caption">{{ paymentPlan }}</div>
                             </div>
                         </div>
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="quota-display">
-                                    <div class="subscription-panel-quota-caption midnight-text"><?php echo $this->view->smsQuotaParams['smsSentThisMonth']; ?>/<?php echo $this->view->subscriptionPlan['sms_messages_per_location']; ?></div>
+                                    <div class="subscription-panel-quota-caption midnight-text">{{ smsQuotaParams['smsSentThisMonth'] }}/{{ subscriptionPlan['sms_messages_per_location'] }}</div>
                                     <div class="subscription-panel-quota-caption midnight-text">Messages Sent</div>
                                 </div>
                             </div>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-
+           
             <div class="col-md-12 col-lg-4">
                 <div class="portlet light bordered dashboard-panel payment-info">
                     <div class="portlet-title">
@@ -77,7 +77,7 @@
                                     </div>
                                     <div class="col-xs-4 col-md-4 pull-right">
                                         <div class="form-group">
-                                            <div><img src="/img/cc/visa.png"></div>
+                                            <div><img src="/img/cc/{{ registeredCardType }}.png"></div>
                                             <div><span>XX/XX</span></div>
                                         </div>
                                     </div>
@@ -88,7 +88,7 @@
                                             <input type="text" disabled class="form-control center" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="cc-exp" required="" aria-required="true">
                                         </div>
                                         <div class="form-group">
-                                            <div><img src="/img/cc/visa.png"></div>
+                                            <div><img src="/img/cc/{{ registeredCardType }}.png"></div>
                                             <div><span>10/2016</span></div>
                                         </div>
                                     </div>
@@ -96,7 +96,7 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="form-group">
-                                            <button type="button" <?php echo $this->view->upgradeCreditCardStatus; ?> class="btn default btn-lg apple-backgound subscription-btn" data-toggle="modal" data-target="#updateCardModal">Update Card</button>
+                                            <button type="button" class="btn default btn-lg apple-backgound subscription-btn" data-toggle="modal" data-target="#updateCardModal">Update Card</button>
                                         </div>
                                     </div>
                                 </div>
@@ -128,10 +128,7 @@
                                             <div><span id="change-plan-messages" class="bold"></span> Text Messages</div>
                                         </div>
                                         <div id="pricing-attr"
-                                             class="responsive-float-right subscription-panel-large-caption"
-                                             data-base="<?php echo $this->view->pricingPlan['base_price']; ?>"
-                                             data-cpm="<?php echo $this->view->pricingPlan['charge_per_sms']; ?>"
-                                             data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>">
+                                             class="responsive-float-right subscription-panel-large-caption">
                                             <sup class="subscription-panel-default-caption">$</sup><span id="change-plan-final-price"></span><sub class="subscription-panel-default-caption">/mo</sub>
                                             <div id="paid-annually-caption">
                                                 <span id="annual-cost"></span><span>Paid Annually</span>
@@ -257,27 +254,6 @@
         </div>
     </div>
 
-    <!-- Update credit card pop up
-    <div class="modal fade" id="updateCardModal" tabindex="-1" role="dialog" aria-labelledby="updateCardModalLabel">
-        <div class="credit-card-details modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="growth-bar">
-                        <div>Update Card</div>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="card-js" data-capture-name="true" data-icon-colour="#65CE4D"></div>
-                </div>
-                <div class="modal-footer">
-                    <div class="form-group">
-                        <button type="button" id="confirm-update-credit-card" class="btn default apple-backgound subscription-btn">Update</button>
-                        <button type="button" id="cancel-update-credit-card" class="btn default apple-backgound subscription-btn" data-dismiss="modal">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
     <!-- Change plan pop up -->
     <div class="modal fade" id="updatePlanModal" tabindex="-1" role="dialog" aria-labelledby="updatePlanModalLabel">
         <div class="change-plan modal-dialog" role="document">
@@ -311,6 +287,13 @@
         </div>
     </div>
 </header>
+
+<!-- data-locations="<?php echo $this->view->subscriptionPlan['locations']; ?>"
+data-messages="<?php echo $this->view->subscriptionPlan['sms_messages_per_location']; ?>"
+data-base="<?php echo $this->view->pricingPlan['base_price']; ?>"
+data-cpm="<?php echo $this->view->pricingPlan['charge_per_sms']; ?>"
+data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>"  -->
+        
 <script type="text/javascript">
 
     jQuery(document).ready(function ($) {
@@ -319,10 +302,10 @@
         var maxMessages = 1000;
 
         function initSubscriptionParameters() {
-            var currentPlanLocations =
-                    parseInt($(document.getElementById("current-plan"))[0].dataset.locations);
-            var currentPlanMessages =
-                    parseInt($(document.getElementById("current-plan"))[0].dataset.messages);
+            var currentPlanLocations = 1;
+                    // parseInt($(document.getElementById("current-plan"))[0].dataset.locations);
+            var currentPlanMessages = 100;
+                    // parseInt($(document.getElementById("current-plan"))[0].dataset.messages);
 
             /* Slider initializations */
             smsLocationSlider.setValue(currentPlanLocations, true, true);
@@ -341,8 +324,8 @@
             $('#modal-messages').text(smsMessagesSlider.getValue());
 
             /* Lock the plan type selector if yearly plan */
-            var planType =
-                    $(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
+            var planType = 'FR';
+                    // $(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
             if (planType === 'Y') {  // (TODO: Add expiration function)
                 // $('.subscription-toggle').click();  // Toggle to yearly
                 // $(document.getElementById("plan-type")).prop('disabled', true);
@@ -382,7 +365,7 @@
         function getSubscriptionParams() {
             var locations = smsLocationSlider.getValue();
             var messages = smsMessagesSlider.getValue();
-            var planType = $(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
+            var planType = 'FR'; //$(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
 
             var price = $(document.getElementById("change-plan-final-price")).text();
             if (planType === 'Annually') {
@@ -391,47 +374,6 @@
             ;
             return {locations: locations, messages: messages, planType: planType, price: price};
         };
-
-        function getCCParams() {
-            var cardNumber = $('#updateCardModal .card-number').val();
-            var cardName = $('#updateCardModal .name').val();
-            var expirationDate = $('#updateCardModal .expiry').val();
-            var csv = $('#updateCardModal .cvc').val();
-            return {
-                cardNumber: cardNumber,
-                cardName: cardName,
-                expirationDate: expirationDate,
-                csv: csv
-            };
-        };
-
-        function pingPaymentProfile() {
-            $.post('/businessSubscription/hasPaymentProfile', getCCParams())
-                    .done(function (data) {
-                        if (data.status === true) {
-                            changePlan()
-                        } else {
-                            $('#updateCardModal').data('paymentProfile', "new");
-                            $('#updateCardModal').modal('show');
-                        }
-                    })
-                    .fail(function () {})
-                    .always(function () {});
-        }
-
-        function addPlanWithPaymentProfile() {
-            var allParams = $.extend({}, getCCParams(), getSubscriptionParams());
-            $.post('/businessSubscription/addPlanWithPaymentProfile', allParams)
-                    .done(function (data) {
-                        if (data.status === true) {
-                            $('#updatePlanModal').modal('show');
-                        } else {
-                            alert("Change plan failed!!!");
-                        }
-                    })
-                    .fail(function () {})
-                    .always(function () {});
-        }
 
         function changePlan() {
             $.post('/businessSubscription/changePlan', getSubscriptionParams())
@@ -456,17 +398,6 @@
                 $('#pricing-attr').show();
                 $('#submit-change-plan-btn').prop('disabled', false);
             }
-        }
-
-        function updateCard() {
-            $.post('/businessSubscription/updatePaymentProfile', getCCParams())
-                    .done(function (data) {
-                        if (data.status !== true) {
-                            alert("Update card failed!!!")
-                        }
-                    })
-                    .fail(function () {})
-                    .always(function () {});
         }
 
         var smsLocationSlider = new Slider("#smsLocationSlider", {
@@ -536,18 +467,9 @@
             updateLargeCaption(values.newValue, maxMessages);
         });
 
-        $('#confirm-update-credit-card').click(function () {
-            if ($('#updateCardModal').data('paymentProfile') === "new") {
-                addPlanWithPaymentProfile();
-            } else {
-                updateCard();
-            }
-            $('#updateCardModal').modal('hide');  // We can hide the modal here, we don't need any paramters
-        });
-
         $('.subscription-toggle').click(function () {
             $(this).find('.btn').toggleClass('active');
-
+            
             if ($(this).find('.btn-primary').size() > 0) {
                 $(this).find('.btn').toggleClass('btn-primary');
             }
@@ -558,7 +480,7 @@
         });
 
         $('#submit-change-plan-btn').click(function () {
-            pingPaymentProfile();
+            changePlan();
         });
 
         initSubscriptionParameters();

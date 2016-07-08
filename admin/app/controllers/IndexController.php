@@ -3,14 +3,11 @@
 namespace Vokuro\Controllers;
 
 use Vokuro\Models\Agency;
-use Vokuro\Models\GoogleScanning;
 use Vokuro\Models\Location;
 use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\Review;
 use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\ReviewsMonthly;
-use Vokuro\Models\SharingCode;
-use Vokuro\Models\Subscription;
 use Vokuro\Models\Users;
 
 /**
@@ -25,6 +22,7 @@ class IndexController extends ControllerBase {
         
         //add needed css
         $this->assets
+            ->addCss('/css/subscription.css')    
             ->addCss('/assets/global/plugins/card-js/card-js.min.css');
 
         //add needed js
@@ -65,11 +63,6 @@ class IndexController extends ControllerBase {
             } else if ($identity['agencytype'] == 'agency') {
                 $this->response->redirect('/agency/');
             }
-            
-            /*
-             * Has this user provided their credit card info?
-             */
-            $this->view->ccInfoRequired = $this->di->get('subscriptionManager')->creditCardInfoRequired($this->session);
             
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');

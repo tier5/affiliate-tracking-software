@@ -17,7 +17,6 @@ use Vokuro\Models\Location;
 use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\ResetPasswords;
 use Vokuro\Models\Users;
-use Vokuro\Models\UsersSubscription;
 
 /**
  * Controller used handle non-authenticated session actions like login/logout, user signup, and forgotten passwords
@@ -101,13 +100,6 @@ class SessionController extends ControllerBase {
             
             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
             $_SESSION['email'] = $this->request->getPost('email');
-
-            
-            /* Invalidate invitation */
-            $invalidated = $subscriptionManager->invalidateInvitation($subscriptionToken);
-            if (!$invalidated) {
-                /* Not quite sure how to handle this */
-            }
             
             $this->db->commit();
             

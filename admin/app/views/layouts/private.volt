@@ -446,7 +446,9 @@
                     <div class="modal-footer">
                         <div class="form-group">
                             <button type="button" id="confirm-update-credit-card" class="btn default apple-backgound subscription-btn">Update</button>
-                            <button type="button" id="cancel-update-credit-card" class="btn default apple-backgound subscription-btn" data-dismiss="modal">Cancel</button>
+                            {% if ccInfoRequired == "closed" %}
+                                <button type="button" id="cancel-update-credit-card" class="btn default apple-backgound subscription-btn" data-dismiss="modal">Cancel</button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -455,11 +457,42 @@
         <script type="text/javascript">
             jQuery(document).ready(function ($) {
 
+                function getCCParams() {
+                    var cardNumber = $('#updateCardModal .card-number').val();
+                    var cardName = $('#updateCardModal .name').val();
+                    var expirationDate = $('#updateCardModal .expiry').val();
+                    var csv = $('#updateCardModal .cvc').val();
+                    return {
+                        cardNumber: cardNumber,
+                        cardName: cardName,
+                        expirationDate: expirationDate,
+                        csv: csv
+                    };
+                };
+
+                function updateCard() {
+                    $.post('/businessSubscription/updatePaymentProfile', getCCParams())
+                        .done(function (data) {
+                            if (data.status !== true) {
+                                alert("Update card failed!!!")
+                            } else {
+                                $('#updateCardModal').modal('hide');
+                            }
+                        })
+                        .fail(function () {})
+                        .always(function () {});  
+                }
+
                 $('.fancybox').fancybox();
 
-                if(document.getElementsByTagName("body").dataset.ccprompt) {
+                var bodyElem = document.getElementsByTagName("body")[0];
+                if(bodyElem.dataset.ccprompt === "open") {
                     $('#updateCardModal').modal('show');
                 }
+                
+                $('#confirm-update-credit-card').click(function () {
+                    updateCard();
+                });
             
                 //callback handler for form submit
                 $("#smsrequestform").submit(function (e)

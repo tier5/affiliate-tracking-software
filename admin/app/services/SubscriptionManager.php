@@ -17,20 +17,22 @@ class SubscriptionManager extends BaseService {
     }
     
     public function creditCardInfoRequired($session) { 
+        
         $userManager = $this->di->get('userManager');
         $paymentService = $this->di->get('paymentService');
    
         $userId = $userManager->getUserId($session);
         $subscriptionPlan = $this->getSubscriptionPlan($userId);
-        if (!$subscriptionPlan || $subscriptionPlan->payment_plan === 'FR' /*ServicesConsts::$PAYMENT_PLAN_FREE*/ ) {
+        $payment_plan = $subscriptionPlan['payment_plan'];
+        if (!$subscriptionPlan  || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE) {
             return false;
         }
         
-        $provider = "AuthorizeDotNet" /* ServicesConsts::PAYMENT_PROVIDER_AUTHORIZE_DOT_NET */;
+        $provider = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET;
         if ($userManager->isWhiteLabeledBusiness($session)) {
-            $provider = "Stripe";/* ServicesConsts::$PAYMENT_PROVIDER_STRIPE */;
+            $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
         }  
-        return $paymentService->hasPaymentProfile([ 'userId' => $userId, 'provider' => $provider ]); 
+        return !$paymentService->hasPaymentProfile([ 'userId' => $userId, 'provider' => $provider ]);         
     }
         
     public function getSubscriptionPricingPlans() {

@@ -4,7 +4,6 @@ namespace Vokuro\Controllers;
 
 use Vokuro\ArrayException;
 use Vokuro\Forms\AgencyForm;
-use Vokuro\Models\Subscription;
 use Vokuro\Models\Agency;
 use Vokuro\Models\Users;
 

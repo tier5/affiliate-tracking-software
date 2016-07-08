@@ -289,7 +289,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                 <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="">Emploee Leaderboard</span>
+                            <span class="">Employee Leaderboard</span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -468,8 +468,8 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
 
                 var data = google.visualization.arrayToDataTable([
                     ['Task', 'Hours per Day'],
-                    ['Sent', < ? = $percent? > ],
-                    ['Goal', < ? = 100 - $percent? > ],
+                    ['Sent', <?= $percent ?> ],
+                    ['Goal', <?= 100 - $percent ?> ],
                     ['Commute', 100],
                 ]);
             
