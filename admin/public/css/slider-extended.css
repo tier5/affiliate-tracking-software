@@ -33,6 +33,8 @@
     background-repeat: repeat-x;
 }
 .tick-marker {
+    position: relative;
+    left: -2px;
     font-size: 0.8rem;
 }
 .slider.slider-horizontal .slider-track {

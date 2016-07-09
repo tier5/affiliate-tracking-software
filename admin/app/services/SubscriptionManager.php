@@ -23,7 +23,7 @@ class SubscriptionManager extends BaseService {
    
         $userId = $userManager->getUserId($session);
         $subscriptionPlan = $this->getSubscriptionPlan($userId);
-        $payment_plan = $subscriptionPlan['payment_plan'];
+        $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
         if (!$subscriptionPlan  || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE) {
             return false;
         }
@@ -126,6 +126,8 @@ class SubscriptionManager extends BaseService {
     }
     
     public function getSubscriptionPlan($userId) {
+        
+        /* Get subscription plan */
         $subscriptionPlan = BusinessSubscriptionPlan::query()  
             ->where("user_id = :user_id:")
             ->bind(["user_id" => intval($userId)])
@@ -134,7 +136,38 @@ class SubscriptionManager extends BaseService {
         if(!$subscriptionPlan) {
             return false;
         }
-        return $subscriptionPlan->toArray();
+        
+        /* Get the pricing plan */
+        $pricingPlan = SubscriptionPricingPlan::query()  
+            ->where("id = :id:")
+            ->bind(["id" => intval($subscriptionPlan->subscription_pricing_plan_id)])
+            ->execute()
+            ->getFirst();  
+        if (!$pricingPlan) {
+            return false;
+        }
+        
+        /* Get the parameter lists */
+        $parameterLists = SubscriptionPricingPlanParameterList::query()  
+            ->where("subscription_pricing_plan_id = :subscription_pricing_plan_id:")
+            ->bind(["subscription_pricing_plan_id" => intval($pricingPlan->id)])
+            ->execute();
+        if (!$parameterLists) {
+            return false;
+        }
+        
+        /* Build the plan data */
+        $subscriptionPlanData = [];
+        $subscriptionPlanData['subscriptionPlan'] = $subscriptionPlan->toArray();
+        $subscriptionPlanData['pricingPlan'] = $pricingPlan->toArray();
+                
+        
+        $subscriptionPlanData['pricingPlanParameterLists'] = [];
+        foreach($parameterLists as $parameterList) {
+            $subscriptionPlanData['pricingPlanParameterLists'][$parameterList->max_locations] = $parameterList->toArray();
+        }
+        
+        return $subscriptionPlanData;
     }
     
     public function isValidInvitation($subscriptionToken) {

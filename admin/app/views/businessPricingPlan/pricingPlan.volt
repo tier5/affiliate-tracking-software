@@ -46,16 +46,16 @@
                                     </div>
                                     <div class="col-md-6">
                                         <select id="free-sms-messages-control" class="form-control input-small" value="{{ maxMessagesOnTrialAccount }}">
-                                            <option value="10">10</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="40">40</option>
-                                            <option value="50">50</option>
-                                            <option value="60">60</option>
-                                            <option value="70">70</option>
-                                            <option value="80">80</option>
-                                            <option value="90">90</option>
-                                            <option value="100">100</option>
+                                            <option value="10">100</option>
+                                            <option value="20">200</option>
+                                            <option value="30">300</option>
+                                            <option value="40">400</option>
+                                            <option value="50">500</option>
+                                            <option value="60">600</option>
+                                            <option value="70">700</option>
+                                            <option value="80">800</option>
+                                            <option value="90">900</option>
+                                            <option value="100">1000</option>
                                         </select>
                                     </div>
                                 </div>

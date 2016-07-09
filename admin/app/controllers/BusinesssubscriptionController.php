@@ -72,13 +72,18 @@ class BusinessSubscriptionController extends ControllerBase {
         
         /* Get subscription paramaters */
         $userId = $userManager->getUserId($this->session);
-        $this->view->subscriptionPlan = $subscriptionManager->getSubscriptionPlan($userId);
-        $this->view->paymentPlan = 
-            $this->view->subscriptionPlan['payment_plan'] === ServicesConsts::$PAYMENT_PLAN_TRIAL ? 'TRIAL' : 'PAID';
         
-        /* Get pricing plan */
-        $pricingPlanId = $this->view->subscriptionPlan['subscription_pricing_plan_id'];
-        $this->view->pricingPlan = $subscriptionManager->getPricingPlanById($pricingPlanId);
+        /* Get the subscription plan */
+        $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($userId);
+        
+        /* Filter out the pricing plan details into its own view because it contains markup */
+        $this->view->pricingDetails = $subscriptionPlanData['pricingPlan']['pricing_details'];
+        
+        /* Set pricing plan details to empty so it doesn't display when attaching the json string to the data attribute */
+        $subscriptionPlanData['pricingPlan']['pricing_details'] = '';
+        $this->view->subscriptionPlanData = $subscriptionPlanData;
+        $this->view->paymentPlan = 
+            $this->view->subscriptionPlanData['subscriptionPlan']['payment_plan'] === ServicesConsts::$PAYMENT_PLAN_TRIAL ? 'TRIAL' : 'PAID';
              
         /* Payments paramaters */
         $provider = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET;

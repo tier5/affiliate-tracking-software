@@ -1,7 +1,7 @@
 {{ content() }}
 
 <header class="jumbotron subhead" id="reviews">
-    <div class="hero-unit">
+    <div id="subscription-data" class="hero-unit" data-subscription="{{ subscriptionPlanData | json_encode | escape }}">
         <div class="row">
             {% if showSmsQuota %}
                 {{ partial("shared/smsQuota", smsQuotaParams) }}
@@ -36,8 +36,8 @@
                         <div class="panel panel-default apple-backgound">
                             <div class="panel-body">
                                 <div id="current-plan" class="responsive-float-left subscription-panel-default-caption">
-                                    <div><span id="current-locations" class="bold"></span> Location(s)</div>
-                                    <div><span id="current-messages" class="bold"></span> Text Messages</div>
+                                    <div><span id="current-locations" class="bold">{{ subscriptionPlanData['subscriptionPlan']['locations'] }}</span> Location(s)</div>
+                                    <div><span id="current-messages" class="bold">{{ subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] }}</span> Text Messages</div>
                                 </div>
                                 <div class="responsive-float-right subscription-panel-large-caption">{{ paymentPlan }}</div>
                             </div>
@@ -45,7 +45,7 @@
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="quota-display">
-                                    <div class="subscription-panel-quota-caption midnight-text">{{ smsQuotaParams['smsSentThisMonth'] }}/{{ subscriptionPlan['sms_messages_per_location'] }}</div>
+                                    <div class="subscription-panel-quota-caption midnight-text">{{ smsQuotaParams['smsSentThisMonth'] }}/{{ subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] }}</div>
                                     <div class="subscription-panel-quota-caption midnight-text">Messages Sent</div>
                                 </div>
                             </div>
@@ -213,14 +213,7 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                <ul>
-                                    <li>For Websites with up to 3000 Unique Visitors per Month</li>
-                                    <li>Visitor, Lead, and Conversion Tracking</li>
-                                    <li>Unlimted Affiliates</li>
-                                    <li>Email and Phone Installation Support</li>
-                                    <li>Email & Phone Ongoing Support</li>
-                                    <li>Live Chat Support 7 Days/Week</li>
-                                </ul>
+                                {{ pricingDetails }}
                             </div>
                         </div>
                     </div>
@@ -288,12 +281,6 @@
     </div>
 </header>
 
-<!-- data-locations="<?php echo $this->view->subscriptionPlan['locations']; ?>"
-data-messages="<?php echo $this->view->subscriptionPlan['sms_messages_per_location']; ?>"
-data-base="<?php echo $this->view->pricingPlan['base_price']; ?>"
-data-cpm="<?php echo $this->view->pricingPlan['charge_per_sms']; ?>"
-data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>"  -->
-        
 <script type="text/javascript">
 
     jQuery(document).ready(function ($) {
@@ -301,11 +288,15 @@ data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>"  -->
         var maxLocations = 100;
         var maxMessages = 1000;
 
+        function getSubscriptionData() {
+            return $('[id="subscription-data"]').data('subscription');
+        }
+
         function initSubscriptionParameters() {
-            var currentPlanLocations = 1;
-                    // parseInt($(document.getElementById("current-plan"))[0].dataset.locations);
-            var currentPlanMessages = 100;
-                    // parseInt($(document.getElementById("current-plan"))[0].dataset.messages);
+            var subscriptionData = getSubscriptionData();
+        
+            var currentPlanLocations = parseInt(subscriptionData.subscriptionPlan.locations);
+            var currentPlanMessages = parseInt(subscriptionData.subscriptionPlan.sms_messages_per_location);
 
             /* Slider initializations */
             smsLocationSlider.setValue(currentPlanLocations, true, true);
@@ -323,49 +314,98 @@ data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>"  -->
             $('#slider-messages').text(smsMessagesSlider.getValue());
             $('#modal-messages').text(smsMessagesSlider.getValue());
 
-            /* Lock the plan type selector if yearly plan */
-            var planType = 'FR';
-                    // $(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
-            if (planType === 'Y') {  // (TODO: Add expiration function)
-                // $('.subscription-toggle').click();  // Toggle to yearly
-                // $(document.getElementById("plan-type")).prop('disabled', true);
-            }
-
             /* Calculate the initial plan value */
-            calculatePlanValue();
+            refreshPlanValue();
         }
 
-        function calculatePlanValue() {
-            var priceElem = document.getElementById("pricing-attr");
+        function calculateMonthlyPlanCost() {
+            
+            /* Calculate the plan value */
+            var subscriptionData = getSubscriptionData();
+            
+            /* Get number of locations and messages  */
+            var locations = smsLocationSlider.getValue();
+            var messages = smsMessagesSlider.getValue();
+            
+            /* 
+             * Fetch the applicbale ranges for the calculations - we need the maximum values in an ordered sequence 
+             * so we can limit to O(n) complexity and any complex branching. 
+             *  
+             */
+            var range_maximums = Object.keys(subscriptionData.pricingPlanParameterLists);
+            
+            /* Calculate the total cost */
+            var planCost = parseFloat(subscriptionData.pricingPlan.base_price);  
+            var breakOnNextIteration = false;
+            for (var i = 0; i < range_maximums.length; i++) {
+            
+                /* 
+                 * Charge the next batch of locations, based on the current range, 
+                 * and add it to the total
+                 * 
+                 */
+                var parameterList = subscriptionData.pricingPlanParameterLists[range_maximums[i]];
+                var nextBatchOfLocations = (parameterList.max_locations - parameterList.min_locations + 1);
+                
+                if ((locations - nextBatchOfLocations) <= 0) {  
+                    nextBatchOfLocations = locations;
+                    breakOnNextIteration = true; 
+                } else {
+                    locations -= nextBatchOfLocations;
+                }
+                
+                var cost = parseFloat(nextBatchOfLocations * messages * subscriptionData.pricingPlan.charge_per_sms);
+                cost *= ((100 - parseFloat(parameterList.location_discount_percentage)) * 0.01); 
+                        
+                planCost += cost;
+                
+                if(breakOnNextIteration) {
+                    break;
+                }
+               
+            }
+            
+            return planCost;
+        }
+        
+        function applyAnnualDiscount(monthlyPlanCost) {
+            
+            /*
+             * If the yearly plan is selected, calculate the current plan cost over 12 months, apply the annual
+             * discount, and divide by 12 to get the monthly payment. 
+             * 
+             */
+            var subscriptionData = getSubscriptionData();
+
+            return Math.round(monthlyPlanCost * ((100 - parseFloat(subscriptionData.pricingPlan.annual_discount)) * 0.01)); 
+        }
+        
+        function refreshPlanValue() {
+            
+            /* Get elements */
             var priceDisplay = document.getElementById("change-plan-final-price");
             var modalPriceDisplay = document.getElementById("modal-price");
 
-            var locations = smsLocationSlider.getValue();
-            var messages = smsMessagesSlider.getValue();
-
-            var costPerLocation = (messages * priceElem.dataset.cpm);
-            var totalCost = (costPerLocation * locations);
-
-            var price = Math.round(parseFloat(priceElem.dataset.base) + totalCost);
-
+            var monthlyPlanCost = calculateMonthlyPlanCost();
+            
             var planType = $(document.getElementById("plan-type")).find('.btn-primary').text();
             if (planType === 'Annually') {
-                price = Math.round(((price * 12) * parseFloat(1 - priceElem.dataset.ad))); // Apply the discount
-                $('#annual-cost').text('$' + price.toFixed(2));
-                $('#paid-annually-caption').show();
-                price = Math.round(price/12);
+                monthlyPlanCost = applyAnnualDiscount(monthlyPlanCost);
+                $('#annual-cost').text('$' + monthlyPlanCost.toFixed(2));
+                $('#paid-annually-caption').show()
             } else {
                 $('#paid-annually-caption').hide();
             }
-
-            $(priceDisplay).text(price.toFixed(2));
-            $(modalPriceDisplay).text(price.toFixed(2));
+            
+            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
+            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
+            
         };
 
         function getSubscriptionParams() {
             var locations = smsLocationSlider.getValue();
             var messages = smsMessagesSlider.getValue();
-            var planType = 'FR'; //$(document.getElementById("plan-type")).find('.btn-primary')[0].dataset.subscription;
+            var planType = getSubscriptionData().subscriptionPlan.payment_plan;
 
             var price = $(document.getElementById("change-plan-final-price")).text();
             if (planType === 'Annually') {
@@ -389,7 +429,7 @@ data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>"  -->
         }
 
         function updateLargeCaption(current, max) {
-            if (current === max) {
+            if (current > max) {
                 $('#contact-us').show();
                 $('#pricing-attr').hide();
                 $('#submit-change-plan-btn').prop('disabled', true);
@@ -403,9 +443,9 @@ data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>"  -->
         var smsLocationSlider = new Slider("#smsLocationSlider", {
             tooltip: 'show',
             min: 1,
-            max: maxLocations,
+            max: maxLocations + 1,
             step: 1,
-            ticks: [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+            ticks: [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 101],
             ticks_labels: [
                 '<div>1</div><div class="tick-marker">|</div>',
                 '<div>10</div><div class="tick-marker">|</div>',
@@ -425,9 +465,9 @@ data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>"  -->
         var smsMessagesSlider = new Slider("#smsMessagesSlider", {
             tooltip: 'show',
             min: 100,
-            max: maxMessages,
+            max: maxMessages + 1,
             step: 50,
-            ticks: [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000],
+            ticks: [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1001],
             ticks_labels: [
                 '<div>100</div><div class="tick-marker">|</div>',
                 '<div>150</div><div class="tick-marker">|</div>',
@@ -453,18 +493,26 @@ data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>"  -->
         });
 
         smsLocationSlider.on('change', function (values) {
+            updateLargeCaption(values.newValue, maxLocations);
+            refreshPlanValue();
+            
+            if (values.newValue > maxLocations) {
+                values.newValue = maxLocations + '+';
+            }
             $('#change-plan-locations').text(values.newValue);
             $('#slider-locations').text(values.newValue);
             $('#modal-locations').text(values.newValue);
-            calculatePlanValue();
-            updateLargeCaption(values.newValue, maxLocations);
         });
         smsMessagesSlider.on('change', function (values) {
+            refreshPlanValue();
+            updateLargeCaption(values.newValue, maxMessages);
+            if (values.newValue > maxMessages) {
+                values.newValue = maxMessages + '+';
+            }
             $('#change-plan-messages').text(values.newValue);
             $('#slider-messages').text(values.newValue);
             $('#modal-messages').text(values.newValue);
-            calculatePlanValue();
-            updateLargeCaption(values.newValue, maxMessages);
+            
         });
 
         $('.subscription-toggle').click(function () {
@@ -476,9 +524,9 @@ data-ad="<?php echo $this->view->pricingPlan['annual_plan_discount']; ?>"  -->
 
             $(this).find('.btn').toggleClass('btn-default');
 
-            calculatePlanValue();
+            refreshPlanValue();
         });
-
+        
         $('#submit-change-plan-btn').click(function () {
             changePlan();
         });
