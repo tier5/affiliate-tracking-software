@@ -115,9 +115,9 @@ class SubscriptionManager extends BaseService {
             return false;
         }
         
-        $subscriptionPlan->setLocations($subscriptionParameters['locations']);
-        $subscriptionPlan->setSmsMessagesPerLocation($subscriptionParameters['messages']);
-        $subscriptionPlan->setPaymentPlan($subscriptionParameters['planType']);
+        $subscriptionPlan->locations = $subscriptionParameters['locations'];
+        $subscriptionPlan->sms_messages_per_location = $subscriptionParameters['messages'];
+        $subscriptionPlan->payment_plan = $subscriptionParameters['planType'];
         if (!$subscriptionPlan->save()) {
             return false;
         }

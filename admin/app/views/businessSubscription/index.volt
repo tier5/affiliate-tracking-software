@@ -226,8 +226,13 @@
                                     <div class="row">
                                         <div class="col-md-12 col-sm-12">
                                             <div id="plan-type" class="btn-group btn-toggle subscription-toggle">
-                                                <button class="btn active btn-primary" data-subscription='M'>Monthly</button>
-                                                <button class="btn btn-default" data-subscription='Y'>Annually</button>
+                                                {% if subscriptionPlanData['pricingPlan']['enable_annual_discount'] == true %}
+                                                    <button class="btn active btn-primary" data-subscription='M'>Monthly</button>
+                                                    <button class="btn btn-default" data-subscription='Y'>Annually</button>
+                                                {% else %}
+                                                    <button disabled class="btn active btn-primary" data-subscription='M'>Monthly</button>
+                                                    <button disabled class="btn btn-default" data-subscription='Y'>Annually</button>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -316,6 +321,7 @@
 
             /* Calculate the initial plan value */
             refreshPlanValue();
+            
         }
 
         function calculateMonthlyPlanCost() {
@@ -391,7 +397,7 @@
             var planType = $(document.getElementById("plan-type")).find('.btn-primary').text();
             if (planType === 'Annually') {
                 monthlyPlanCost = applyAnnualDiscount(monthlyPlanCost);
-                $('#annual-cost').text('$' + monthlyPlanCost.toFixed(2));
+                $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(2));
                 $('#paid-annually-caption').show()
             } else {
                 $('#paid-annually-caption').hide();
@@ -419,6 +425,9 @@
             $.post('/businessSubscription/changePlan', getSubscriptionParams())
                     .done(function (data) {
                         if (data.status === true) {
+                            $('#current-locations').text(smsLocationSlider.getValue());
+                            $('#current-messages').text(smsMessagesSlider.getValue());
+                            $('.subscription-panel-large-caption').text("PAID");
                             $('#updatePlanModal').modal('show');
                         } else {
                             alert("Change plan failed!!!");

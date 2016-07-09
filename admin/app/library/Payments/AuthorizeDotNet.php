@@ -218,8 +218,8 @@ class AuthorizeDotNet {
         $request = new AnetAPI\UpdateCustomerPaymentProfileRequest();
         $request->setMerchantAuthentication($merchantAuthentication);
         $request->setCustomerProfileId($parameters['customerProfileId']);
-        $controller = new AnetController\GetCustomerProfileController($request);
-
+        $controller = new AnetController\GetCustomerProfileController($request);   
+        
         // Create the credit card update
         $creditCardPayment = $this->createCreditCardPayment($parameters);
 
