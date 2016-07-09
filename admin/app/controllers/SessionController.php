@@ -17,7 +17,6 @@ use Vokuro\Models\Location;
 use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\ResetPasswords;
 use Vokuro\Models\Users;
-use Vokuro\Models\UsersSubscription;
 
 /**
  * Controller used handle non-authenticated session actions like login/logout, user signup, and forgotten passwords
@@ -101,13 +100,6 @@ class SessionController extends ControllerBase {
             
             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
             $_SESSION['email'] = $this->request->getPost('email');
-
-            
-            /* Invalidate invitation */
-            $invalidated = $subscriptionManager->invalidateInvitation($subscriptionToken);
-            if (!$invalidated) {
-                /* Not quite sure how to handle this */
-            }
             
             $this->db->commit();
             
@@ -124,7 +116,7 @@ class SessionController extends ControllerBase {
         }
     }
     
-    public function showSignupAction($subscriptionToken = '0') {
+    public function signupAction($subscriptionToken = '0') {
         
         try {
         
@@ -138,7 +130,7 @@ class SessionController extends ControllerBase {
             /* Is this a valid subscription? */
             $isValid = $subscriptionManager->isValidInvitation($subscriptionToken);
             
-            /* If we simply redirect to the home,  */
+            /* Simply redirect to the home if we are logged in or the form is invalid  */
             if ($userId || !$isValid) {
                 $this->response->redirect('/');
                 return;
@@ -217,7 +209,8 @@ class SessionController extends ControllerBase {
         //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
         // If there is no identity available the user is redirected to index/index
         if (!is_array($identity)) {
-            $this->response->redirect('/session/login?return=/session/signup2/' . ($subscription_id > 0 ? $subscription_id : ''));
+            /* $this->response->redirect('/session/login?return=/session/signup2/' . ($pricingProfileToken > 0 ? $subscription_id : '')); */
+            $this->response->redirect('/session/login');
             $this->view->disable();
             return;
         }

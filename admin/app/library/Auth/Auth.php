@@ -1,4 +1,5 @@
 <?php
+
 namespace Vokuro\Auth;
 
 use Phalcon\Mvc\User\Component;
@@ -13,8 +14,7 @@ use Vokuro\Models\Users;
  * Vokuro\Auth\Auth
  * Manages Authentication/Identity Management in Vokuro
  */
-class Auth extends Component
-{
+class Auth extends Component {
 
     /**
      * Checks the user credentials
@@ -22,8 +22,7 @@ class Auth extends Component
      * @param array $credentials
      * @return boolan
      */
-    public function check($credentials)
-    {
+    public function check($credentials) {
 
         // Check if the user exist
         $user = Users::findFirstByEmail($credentials['email']);
@@ -47,83 +46,110 @@ class Auth extends Component
         // Check if the remember me was selected
         if (isset($credentials['remember'])) {
             $this->createRememberEnviroment($user);
-        }        
+        }
 
         $this->login($user);
     }
 
+    public function login($user) {
+        $locs = $this->getLocationList($user); //set the location list in the identity
+        $location_id = ($locs && isset($locs[0]) ? $locs[0]->location_id : '');
+        $location_name = ($locs && isset($locs[0]) ? $locs[0]->name : '');
 
-    public function login($user)
-    {
-      $locs = $this->getLocationList($user); //set the location list in the identity
-      $location_id = ($locs && isset($locs[0])?$locs[0]->location_id:'');
-      $location_name = ($locs && isset($locs[0])?$locs[0]->name:'');
-      
-      $this->session->set('auth-identity', array(
-          'id' => $user->id,
-          'name' => $user->name,
-          'profile' => $user->profile->name,
-          'locations' => $locs, //set the location list in the identity,
-          'location_id' => $location_id, 
-          'location_name' => $location_name, 
-          'is_admin' => $user->is_admin, 
-          'agencytype' => $this->getAgencyType($user->agency_id)
-      ));
+        $this->session->set('auth-identity', array(
+            'id' => $user->id,
+            'name' => $user->name,
+            'profile' => $user->profile->name,
+            'locations' => $locs, //set the location list in the identity,
+            'location_id' => $location_id,
+            'location_name' => $location_name,
+            'is_admin' => $user->is_admin,
+            'agencytype' => $this->getAgencyType($user->agency_id),
+            'parent_id' => $this->getAgencyParentId($user->agency_id),
+            'signup_page' => $this->getCurrentSignupPage($user->agency_id)
+        ));
     }
-
-
     
-    public function getAgencyType($agency_id)
-    {
-      //find agency type
-      $agencytype = 'agency';
-      $conditions = "agency_id = :agency_id:";
-      $parameters = array("agency_id" => $agency_id);
-      $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-      if ($agency->agency_type_id == 2) {
-        $agencytype = 'business';
-      }
-      return $agencytype;
+    public function getAgencyParentId($agency_id) {
+        //find agency type
+        $agencytype = 'agency';
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency_id);
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        if (!$agency) {
+            return 0;
+        }
+        return $agency->parent_id;
     }
 
-
-
+    public function getAgencyType($agency_id) {
+        //find agency type
+        $agencytype = 'agency';
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency_id);
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        if ($agency->agency_type_id == 2) {
+            $agencytype = 'business';
+        }
+        return $agencytype;
+    }
+    
+    public function getCurrentSignupPage($agency_id) {
+        //find agency type
+        $agencytype = 'agency';
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency_id);
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        return $agency->signup_page;
+    }
 
     /**
      * This function gets a list of agency locations
      *
      * @param Vokuro\Models\Users $user
      */
-    public function getLocationList($user)
-    {
-      //check the user type
-      if (($user->profilesId == 1 || $user->profilesId == 4) && ($user->is_all_locations==1 || count($user->locations) <= 0)) {
+    public function getLocationList($user) {
+        
+        //check the user type
+        
+        /* if (($user->profilesId == 1 || $user->profilesId == 4) && ($user->is_all_locations == 1 || count($user->locations) <= 0)) {
+            // Query binding parameters with string placeholders
+            $conditions = "agency_id = :agency_id:";
+            $parameters = array("agency_id" => $user->agency_id);
+            $locs = Location::find(array($conditions, "bind" => $parameters));
+            return $locs;
+        } else {
+            return $user->locations;
+        }
+         * 
+         */
+        
         // Query binding parameters with string placeholders
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $user->agency_id);
         $locs = Location::find(array($conditions, "bind" => $parameters));
-
-        return $locs;
-      } else {
-        return $user->locations;
-      }
+        
+        if ($locs) {
+            return $locs;
+        }
+        
+        return [];
     }
 
     /**
      * This function sets a list of agency locations
      *
      */
-    public function setLocationList()
-    {
+    public function setLocationList() {
         $this->session->set('auth-identity', array(
             'id' => $this->session->get('auth-identity')['id'],
             'name' => $this->session->get('auth-identity')['name'],
             'profile' => $this->session->get('auth-identity')['profile'],
             'locations' => $this->getLocationList($this->getUser()), //set the location list in the identity,
-            'location_id' => $this->session->get('auth-identity')['location_id'], 
-            'location_name' => $this->session->get('auth-identity')['location_name'], 
-            'is_admin' => $this->session->get('auth-identity')['is_admin'], 
-            'agencytype' => $this->session->get('auth-identity')['agencytype'] 
+            'location_id' => $this->session->get('auth-identity')['location_id'],
+            'location_name' => $this->session->get('auth-identity')['location_name'],
+            'is_admin' => $this->session->get('auth-identity')['is_admin'],
+            'agencytype' => $this->session->get('auth-identity')['agencytype']
         ));
     }
 
@@ -132,8 +158,7 @@ class Auth extends Component
      *
      * @param Vokuro\Models\Users $user
      */
-    public function saveSuccessLogin($user)
-    {
+    public function saveSuccessLogin($user) {
         $successLogin = new SuccessLogins();
         $successLogin->usersId = $user->id;
         $successLogin->ipAddress = $this->request->getClientAddress();
@@ -150,8 +175,7 @@ class Auth extends Component
      *
      * @param int $userId
      */
-    public function registerUserThrottling($userId)
-    {
+    public function registerUserThrottling($userId) {
         $failedLogin = new FailedLogins();
         $failedLogin->usersId = $userId;
         $failedLogin->ipAddress = $this->request->getClientAddress();
@@ -159,11 +183,11 @@ class Auth extends Component
         $failedLogin->save();
 
         $attempts = FailedLogins::count(array(
-            'ipAddress = ?0 AND attempted >= ?1',
-            'bind' => array(
-                $this->request->getClientAddress(),
-                time() - 3600 * 6
-            )
+                    'ipAddress = ?0 AND attempted >= ?1',
+                    'bind' => array(
+                        $this->request->getClientAddress(),
+                        time() - 3600 * 6
+                    )
         ));
 
         switch ($attempts) {
@@ -186,8 +210,7 @@ class Auth extends Component
      *
      * @param Vokuro\Models\Users $user
      */
-    public function createRememberEnviroment(Users $user)
-    {
+    public function createRememberEnviroment(Users $user) {
         $userAgent = $this->request->getUserAgent();
         $token = md5($user->email . $user->password . $userAgent);
 
@@ -208,8 +231,7 @@ class Auth extends Component
      *
      * @return boolean
      */
-    public function hasRememberMe()
-    {
+    public function hasRememberMe() {
         return $this->cookies->has('RMU');
     }
 
@@ -218,8 +240,7 @@ class Auth extends Component
      *
      * @return Phalcon\Http\Response
      */
-    public function loginWithRememberMe()
-    {
+    public function loginWithRememberMe() {
         $userId = $this->cookies->get('RMU')->getValue();
         $cookieToken = $this->cookies->get('RMT')->getValue();
 
@@ -232,11 +253,11 @@ class Auth extends Component
             if ($cookieToken == $token) {
 
                 $remember = RememberTokens::findFirst(array(
-                    'usersId = ?0 AND token = ?1',
-                    'bind' => array(
-                        $user->id,
-                        $token
-                    )
+                            'usersId = ?0 AND token = ?1',
+                            'bind' => array(
+                                $user->id,
+                                $token
+                            )
                 ));
                 if ($remember) {
 
@@ -247,17 +268,17 @@ class Auth extends Component
                         $this->checkUserFlags($user);
 
                         $locs = $this->getLocationList($user); //set the location list in the identity
-                        $location_id = ($locs && isset($locs[0])?$locs[0]->location_id:'');
-                        $location_name = ($locs && isset($locs[0])?$locs[0]->name:'');
+                        $location_id = ($locs && isset($locs[0]) ? $locs[0]->location_id : '');
+                        $location_name = ($locs && isset($locs[0]) ? $locs[0]->name : '');
                         $this->session->set('auth-identity', array(
                             'id' => $user->id,
                             'name' => $user->name,
                             'profile' => $user->profile->name,
                             'locations' => $locs, //set the location list in the identity,
-                            'location_id' => $location_id, 
-                            'location_name' => $location_name, 
-                            'is_admin' => $user->is_admin, 
-                            'agencytype' => $this->getAgencyType($user->agency_id) 
+                            'location_id' => $location_id,
+                            'location_name' => $location_name,
+                            'is_admin' => $user->is_admin,
+                            'agencytype' => $this->getAgencyType($user->agency_id)
                         ));
 
                         // Register the successful login
@@ -275,29 +296,27 @@ class Auth extends Component
         return $this->response->redirect('/session/login');
     }
 
-
     /**
      * Sets the location
      *
      * @return array
      */
-    public function setLocation($locationid)
-    {
+    public function setLocation($locationid) {
         $conditions = "location_id = :location_id:";
         $parameters = array("location_id" => $locationid);
         $loc = Location::findFirst(array($conditions, "bind" => $parameters));
 
         $iden = $this->session->get('auth-identity');
         $this->session->set('auth-identity', array(
-                            'id' => $iden['id'],
-                            'name' => $iden['name'],
-                            'profile' => $iden['profile'],
-                            'locations' => $iden['locations'], //set the location list in the identity,
-                            'location_id' => $locationid, 
-                            'location_name' => $loc->name,
-                            'is_admin' => $iden['is_admin'], 
-                            'agencytype' => $iden['agencytype']
-                        ));
+            'id' => $iden['id'],
+            'name' => $iden['name'],
+            'profile' => $iden['profile'],
+            'locations' => $iden['locations'], //set the location list in the identity,
+            'location_id' => $locationid,
+            'location_name' => $loc->name,
+            'is_admin' => $iden['is_admin'],
+            'agencytype' => $iden['agencytype']
+        ));
     }
 
     /**
@@ -305,8 +324,7 @@ class Auth extends Component
      *
      * @param Vokuro\Models\Users $user
      */
-    public function checkUserFlags(Users $user)
-    {
+    public function checkUserFlags(Users $user) {
         //check to make sure the user matches the agency
         //echo '<p>$this->view->agency_id:'.$this->view->agency_id.'</p>';
         //echo '<p>$this->view->agency_id:'.$user->agency_id.'</p>';
@@ -343,8 +361,7 @@ class Auth extends Component
      *
      * @return array
      */
-    public function getIdentity()
-    {
+    public function getIdentity() {
         return $this->session->get('auth-identity');
     }
 
@@ -353,8 +370,7 @@ class Auth extends Component
      *
      * @return string
      */
-    public function getName()
-    {
+    public function getName() {
         $identity = $this->session->get('auth-identity');
         return $identity['name'];
     }
@@ -362,8 +378,7 @@ class Auth extends Component
     /**
      * Removes the user identity information from session
      */
-    public function remove()
-    {
+    public function remove() {
         if ($this->cookies->has('RMU')) {
             $this->cookies->get('RMU')->delete();
         }
@@ -379,8 +394,7 @@ class Auth extends Component
      *
      * @param int $id
      */
-    public function authUserById($id)
-    {
+    public function authUserById($id) {
         $user = Users::findFirstById($id);
         if ($user == false) {
             throw new Exception('The user does not exist');
@@ -389,17 +403,17 @@ class Auth extends Component
         $this->checkUserFlags($user);
 
         $locs = $this->getLocationList($user); //set the location list in the identity
-        $location_id = ($locs && isset($locs[0])?$locs[0]->location_id:'');
-        $location_name = ($locs && isset($locs[0])?$locs[0]->name:'');
+        $location_id = ($locs && isset($locs[0]) ? $locs[0]->location_id : '');
+        $location_name = ($locs && isset($locs[0]) ? $locs[0]->name : '');
         $this->session->set('auth-identity', array(
             'id' => $user->id,
             'name' => $user->name,
             'profile' => $user->profile->name,
             'locations' => $locs, //set the location list in the identity,
-            'location_id' => $location_id, 
-            'location_name' => $location_name, 
-            'is_admin' => $user->is_admin, 
-            'agencytype' => $this->getAgencyType($user->agency_id) 
+            'location_id' => $location_id,
+            'location_name' => $location_name,
+            'is_admin' => $user->is_admin,
+            'agencytype' => $this->getAgencyType($user->agency_id)
         ));
     }
 
@@ -408,8 +422,7 @@ class Auth extends Component
      *
      * @return \Vokuro\Models\Users
      */
-    public function getUser()
-    {
+    public function getUser() {
         $identity = $this->session->get('auth-identity');
         if (isset($identity['id'])) {
 
@@ -423,4 +436,5 @@ class Auth extends Component
 
         return false;
     }
+
 }

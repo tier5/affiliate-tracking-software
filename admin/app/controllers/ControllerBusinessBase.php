@@ -4,7 +4,6 @@ namespace Vokuro\Controllers;
 
 use Vokuro\ArrayException;
 use Vokuro\Forms\AgencyForm;
-use Vokuro\Models\Subscription;
 use Vokuro\Models\Agency;
 use Vokuro\Models\Users;
 
@@ -116,7 +115,7 @@ class ControllerBusinessBase extends ControllerBase {
 
                 $this->flash->success("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was " . ($agency_id > 0 ? 'edited' : 'created') . " successfully");
                 $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
-
+                
                 $db->commit();
             
             } catch(ArrayException $e) {

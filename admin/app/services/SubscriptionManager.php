@@ -16,6 +16,25 @@ class SubscriptionManager extends BaseService {
         parent::__construct($config, $di);
     }
     
+    public function creditCardInfoRequired($session) { 
+        
+        $userManager = $this->di->get('userManager');
+        $paymentService = $this->di->get('paymentService');
+   
+        $userId = $userManager->getUserId($session);
+        $subscriptionPlan = $this->getSubscriptionPlan($userId);
+        $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
+        if (!$subscriptionPlan  || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE) {
+            return false;
+        }
+        
+        $provider = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET;
+        if ($userManager->isWhiteLabeledBusiness($session)) {
+            $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
+        }  
+        return !$paymentService->hasPaymentProfile([ 'userId' => $userId, 'provider' => $provider ]);         
+    }
+        
     public function getSubscriptionPricingPlans() {
         return $subscriptionPricingPlans = SubscriptionPricingPlan::query()  
             ->where("enabled = true")
@@ -70,15 +89,7 @@ class SubscriptionManager extends BaseService {
             if (!$subscriptionPlan->create()) {
                 throw new ArrayException("", 0, null, $subscriptionPlan->getMessages());
             }
-            
-            /* Create and send the invitation */
-            $businessSubscriptionInvitation = new BusinessSubscriptionInvitation();
-            $businessSubscriptionInvitation->user_id = $userId;
-            $businessSubscriptionInvitation->business_subscription_plan_id = $subscriptionPlan->id;
-            if (!$businessSubscriptionInvitation->create()) {
-                throw new ArrayException("", 0, null, $businessSubscriptionInvitation->getMessages());
-            }
-            
+                        
             $db->commit();
             
         } catch(ArrayException $e) {
@@ -104,9 +115,9 @@ class SubscriptionManager extends BaseService {
             return false;
         }
         
-        $subscriptionPlan->setLocations($subscriptionParameters['locations']);
-        $subscriptionPlan->setSmsMessagesPerLocation($subscriptionParameters['messages']);
-        $subscriptionPlan->setPaymentPlan($subscriptionParameters['planType']);
+        $subscriptionPlan->locations = $subscriptionParameters['locations'];
+        $subscriptionPlan->sms_messages_per_location = $subscriptionParameters['messages'];
+        $subscriptionPlan->payment_plan = $subscriptionParameters['planType'];
         if (!$subscriptionPlan->save()) {
             return false;
         }
@@ -115,6 +126,8 @@ class SubscriptionManager extends BaseService {
     }
     
     public function getSubscriptionPlan($userId) {
+        
+        /* Get subscription plan */
         $subscriptionPlan = BusinessSubscriptionPlan::query()  
             ->where("user_id = :user_id:")
             ->bind(["user_id" => intval($userId)])
@@ -123,7 +136,38 @@ class SubscriptionManager extends BaseService {
         if(!$subscriptionPlan) {
             return false;
         }
-        return $subscriptionPlan->toArray();
+        
+        /* Get the pricing plan */
+        $pricingPlan = SubscriptionPricingPlan::query()  
+            ->where("id = :id:")
+            ->bind(["id" => intval($subscriptionPlan->subscription_pricing_plan_id)])
+            ->execute()
+            ->getFirst();  
+        if (!$pricingPlan) {
+            return false;
+        }
+        
+        /* Get the parameter lists */
+        $parameterLists = SubscriptionPricingPlanParameterList::query()  
+            ->where("subscription_pricing_plan_id = :subscription_pricing_plan_id:")
+            ->bind(["subscription_pricing_plan_id" => intval($pricingPlan->id)])
+            ->execute();
+        if (!$parameterLists) {
+            return false;
+        }
+        
+        /* Build the plan data */
+        $subscriptionPlanData = [];
+        $subscriptionPlanData['subscriptionPlan'] = $subscriptionPlan->toArray();
+        $subscriptionPlanData['pricingPlan'] = $pricingPlan->toArray();
+                
+        
+        $subscriptionPlanData['pricingPlanParameterLists'] = [];
+        foreach($parameterLists as $parameterList) {
+            $subscriptionPlanData['pricingPlanParameterLists'][$parameterList->max_locations] = $parameterList->toArray();
+        }
+        
+        return $subscriptionPlanData;
     }
     
     public function isValidInvitation($subscriptionToken) {
