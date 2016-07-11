@@ -164,9 +164,6 @@
             return;
         }
 
-
-
-
         /**
          * Creates a User
          */
@@ -200,7 +197,7 @@
                     'agency_id' => $userObj->agency_id,
                     'create_time' => date('Y-m-d H:i:s'),
                 ));
-//echo '<pre>$user:'.print_r($user,true).'</pre>';
+                //echo '<pre>$user:'.print_r($user,true).'</pre>';
 
                 if (isset($_POST['type']) && $_POST['type']=='1') {
                     $user->is_employee=1;
@@ -509,7 +506,7 @@
                     } else {
 
                         $this->flash->success('Your password was successfully changed');
-
+                        
                         //if ($this->session->has('auth-identity')) {
                         //  Tag::resetInput();
                         //} else {
@@ -524,3 +521,5 @@
             $this->view->form = $form;
         }
     }
+    
+    

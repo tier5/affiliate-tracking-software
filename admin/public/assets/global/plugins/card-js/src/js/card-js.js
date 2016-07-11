@@ -413,6 +413,12 @@ CardJs.cardTypeFromNumber = function(number) {
   if (number.match(re) != null)
     return "Discover";
 
+  /*  
+   * TODO: MT, 2016 - Removing Diners, Diners - Carte Blanche, and JCB
+   * When time permits, should extend by enabling/disabling card types
+   * via configuration options
+   */
+  /*
   // Diners
   re = new RegExp("^(30|36|38)");
   if (number.match(re) != null)
@@ -432,7 +438,8 @@ CardJs.cardTypeFromNumber = function(number) {
   re = new RegExp("^(4026|417500|4508|4844|491(3|7))");
   if (number.match(re) != null)
     return "Visa Electron";
-
+  */
+   
   return "";
 };
 
@@ -940,8 +947,6 @@ CardJs.prototype.setupNameInput = function() {
     wrapper.find(".icon").append(CardJs.USER_SVG);
   }
 };
-
-
 
 CardJs.prototype.setupExpiryInput = function() {
   this.elem.append("<div class='expiry-container'><div class='expiry-wrapper'></div></div>");
