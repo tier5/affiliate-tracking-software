@@ -35,7 +35,7 @@
     <!-- END PAGE LEVEL STYLES -->
     <!-- BEGIN THEME LAYOUT STYLES -->
     <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="shortcut icon" href="/img/favicon.png" />
     <link href="/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
@@ -74,6 +74,7 @@
 
         </style>
     {% endif %}
+
 </head>
 <body class="signup">
 {% if current_step %}
@@ -108,19 +109,6 @@
 
 <div class="container">
     {{ flashSession.output() }}
-    {% if DisplayTranslator %}
-    <div class="row">
-        <div class="col-xs-4 col-xs-offset-3 col-sm-offset-5 col-lg-offset-5 small-vertical-margins" style="margin-top: 30px; margin-right: 30px;">
-            <div id="google_translate_element"></div>
-            <script type="text/javascript">
-                function googleTranslateElementInit() {
-                  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-                }
-            </script>
-            <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-        </div>
-    </div>
-    {% endif %}
     {{ content() }}
     </div>
 <div style="clear: both;"></div>

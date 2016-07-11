@@ -435,8 +435,6 @@
 
             $this->view->PrimaryColor = isset($this->session->AgencySignup['PrimaryColor']) ? $this->session->AgencySignup['PrimaryColor'] : '#2a3644';
             $this->view->SecondaryColor = isset($this->session->AgencySignup['SecondaryColor']) ? $this->session->AgencySignup['SecondaryColor'] : '#2eb82e';
-
-            $this->view->DisplayTranslator = true;
         }
 
         /**
@@ -687,18 +685,6 @@
                 return false;
             }
 
-            $Message = "
-                Thank you for signing up!<br /><br />
-                
-                You can login to your agency with your email / password at " . $this->GetAgencyUrl() . "
-            ";
-
-            $this->getDI()
-                ->getMail()
-                ->send($this->session->AgencySignup['OwnerEmail'], "Thank you for signing up!", '', '', $Message);
-
-
-            $this->view->DisplayTranslator = false;
             $this->view->setLayout('agencysignup');
         }
 
@@ -713,7 +699,6 @@
 
         protected function StoreLogo() {
             if($this->request->hasFiles()) {
-
                 foreach ($this->request->getUploadedFiles() as $file) {
                     // This is for handling page reloads.
                     if($file->getTempName()) {
@@ -733,7 +718,6 @@
         }
 
         public function salesAction () {
-            $this->view->DisplayTranslator = false;
             $this->view->LogoSource = (isset($this->session->AgencySignup['LogoFilename']) && $this->session->AgencySignup['LogoFilename']) ? '/img/agency_logos/' . $this->session->AgencySignup['LogoFilename'] : '/img/logo-white.gif';
             $this->view->setLayout('agencysignup');
         }
