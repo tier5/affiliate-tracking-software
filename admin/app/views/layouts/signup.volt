@@ -109,7 +109,6 @@ if (isset($main_color_setting)) {
 </div>
 <footer>
     <div class="copyright"> &copy; Copyright Review Velocity.  All Rights Reserved. </div>
-    <footer>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
@@ -139,6 +138,7 @@ if (isset($main_color_setting)) {
         <!-- END THEME LAYOUT SCRIPTS -->
         <script src="/js/card-js.min.js"></script>
         <script src="/js/login.js"></script>
+</footer>
 </body>
 
 </html>
