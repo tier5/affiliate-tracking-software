@@ -121,7 +121,7 @@
                                     <select name="locationselect" id="locationselect">
                                         {%  if locations|length > '1' %}
                                         {% for loc in locations %}
-                                        <option value='{{ loc.location_id}}'>{{ loc.name}}</option>
+                                        <option value='{{ loc.location_id}}' {{loc.location_id == location_id ? 'selected="selected"' : ''}}>{{ loc.name}}</option>
                                         {% endfor %}
                                         {% endif %}
                                     </select>
@@ -456,7 +456,6 @@
         </div>
         <script type="text/javascript">
             jQuery(document).ready(function ($) {
-
                 function getCCParams() {
                     var cardNumber = $('#updateCardModal .card-number').val();
                     var cardName = $('#updateCardModal .name').val();
@@ -470,17 +469,23 @@
                     };
                 };
 
+                function alertCardFailed(){
+                    alert('We failed to update your credit card');
+                }
+
                 function updateCard() {
                     $.post('/businessSubscription/updatePaymentProfile', getCCParams())
                         .done(function (data) {
                             if (data.status !== true) {
-                                alert("Update card failed!!!")
+                                alertCardFailed();
                             } else {
                                 $('#updateCardModal').modal('hide');
                             }
                         })
-                        .fail(function () {})
-                        .always(function () {});  
+                        .fail(function () {
+                        alertCardFailed();
+                        })
+                        .always(function () {});
                 }
 
                 $('.fancybox').fancybox();
@@ -489,11 +494,9 @@
                 if(bodyElem.dataset.ccprompt === "open") {
                     $('#updateCardModal').modal('show');
                 }
-                
-                $('#confirm-update-credit-card').click(function () {
-                    updateCard();
-                });
-            
+
+                $('#confirm-update-credit-card').click(updateCard);
+
                 //callback handler for form submit
                 $("#smsrequestform").submit(function (e)
                 {
@@ -521,7 +524,7 @@
                                 },
                                 error: function (jqXHR, textStatus, errorThrown)
                                 {
-                                    //if fails
+                                    //it fails
                                     $('#smsrequestformsuccess').hide();
                                     $('#smsrequestformerror').show();
                                 }

@@ -16,13 +16,13 @@ use Vokuro\Models\Users;
 class IndexController extends ControllerBase {
 
     public function initialize() {
-        
+
         $this->tag->setTitle('Review Velocity | Dashboard');
         parent::initialize();
-        
+
         //add needed css
         $this->assets
-            ->addCss('/css/subscription.css')    
+            ->addCss('/css/subscription.css')
             ->addCss('/assets/global/plugins/card-js/card-js.min.css');
 
         //add needed js
@@ -39,19 +39,19 @@ class IndexController extends ControllerBase {
 
             /*
              * TODO: The setup process is currently "baked" into the free signup sequence.
-             * There's no time to rewrite it so I will add a check here to see if the user has 
-             * any locations yet.  If not, we know that this action is being called from 
-             * the create business sequence.   
+             * There's no time to rewrite it so I will add a check here to see if the user has
+             * any locations yet.  If not, we know that this action is being called from
+             * the create business sequence.
              */
-            $userManager = $this->di->get('userManager'); 
-            
+            $userManager = $this->di->get('userManager');
+
             $isBusiness = $userManager->isBusiness($this->session);
-            $signupPage = $userManager->currentSignupPage($this->session); 
+            $signupPage = $userManager->currentSignupPage($this->session);
             if($isBusiness && $signupPage) {
                 $this->response->redirect('/session/signup' . $signupPage);
                 return;
             }
-            
+
             if (isset($_POST['locationselect'])) {
                 $this->auth->setLocation($_POST['locationselect']);
             }
@@ -63,7 +63,7 @@ class IndexController extends ControllerBase {
             } else if ($identity['agencytype'] == 'agency') {
                 $this->response->redirect('/agency/');
             }
-            
+
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
         } else {
@@ -87,6 +87,7 @@ class IndexController extends ControllerBase {
             );
 
             $this->view->location = $loc;
+            $this->view->location_id = $identity['location_id'];
 
 
 
@@ -157,7 +158,7 @@ class IndexController extends ControllerBase {
             $this->view->google_review_count = $google_review_count;
             $this->view->yelp_review_count = $yelp_review_count;
             $this->view->total_reviews = $total_reviews;
-            //calculate the average rating        
+            //calculate the average rating
             if ($total_reviews > 0) {
                 $average_rating = (($yelp_rating * $yelp_review_count) + ($google_rating * $google_review_count) + ($facebook_rating * $facebook_review_count)) / $total_reviews;
             } else {
@@ -292,7 +293,7 @@ class IndexController extends ControllerBase {
             $this->view->review_goal = $loc->review_goal;
             //calculate how many sms messages we need to send to meet this goal.
             //$percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
-            //if ($percent_needed == 0) 
+            //if ($percent_needed == 0)
             $percent_needed = 10;
             $this->view->percent_needed = $percent_needed;
             //echo '<p>$sms_sent_last_month:'.$sms_sent_last_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
