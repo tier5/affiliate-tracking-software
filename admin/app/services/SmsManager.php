@@ -1,11 +1,8 @@
 <?php
-
 namespace Vokuro\Services;
-
 use Vokuro\Models\Location;
 use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\ReviewsMonthly;
-
 class SmsManager extends BaseService {
 
     public static $reviewPercentage = 10;
