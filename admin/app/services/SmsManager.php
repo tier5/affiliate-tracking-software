@@ -10,8 +10,16 @@ class SmsManager extends BaseService {
 
     public static $reviewPercentage = 10;
 
-    function __construct($config) {
+    public function __construct($config) {
         parent::__construct($config);
+    }
+
+    /**
+     * @param int $reviewPercentage
+     */
+    public static function setReviewPercentage($reviewPercentage)
+    {
+        self::$reviewPercentage = $reviewPercentage;
     }
 
     public function getBusinessSmsQuotaParams($locationId) {
