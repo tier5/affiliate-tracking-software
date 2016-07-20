@@ -21,11 +21,6 @@ use Vokuro\Services\ServicesConsts;
 use Services_Twilio;
 use Services_Twilio_RestException;
 
-//use Vokuro\Controllers\Facebook\Facebook;
-// Skip these two lines if you're using Composer
-define('FACEBOOK_SDK_V4_SRC_DIR', BASE_DIR . '/vendor/facebook/php-sdk-v4/src/Facebook/');
-require BASE_DIR . '/vendor/facebook/php-sdk-v4/autoload.php';
-
 //TURN ON PRETTY ERRORS!!!
 error_reporting(E_ALL);
 ini_set("display_errors", "on");
@@ -44,7 +39,7 @@ class ControllerBase extends Controller {
         //KT WHERE?
 
         if (is_array($identity)) {
-            $conditions = "id = :id:";
+            $conditions = 'id = :id:';
 
             $parameters = array(
                 "id" => $identity['id']
@@ -111,13 +106,13 @@ class ControllerBase extends Controller {
                     return;
                 }
             }
-            
+
             /*
              * Has this user provided their credit card info?
              */
             $required = $this->di->get('subscriptionManager')->creditCardInfoRequired($this->session);
             $this->view->ccInfoRequired = $required ? "open" : "closed";
-            
+
             $this->view->haspaid = $haspaid;
             //###  END: check to see if this user has paid   #####
 
@@ -130,7 +125,7 @@ class ControllerBase extends Controller {
             $loc = Location::findFirst(
                             array(
                                 $conditions,
-                                "bind" => $parameters)
+                                'bind' => $parameters)
             );
 
             $agencytype = $this->session->get('auth-identity')['agencytype'];
@@ -388,7 +383,7 @@ class ControllerBase extends Controller {
                 $sms_sent_last_month = ReviewInvite::count(
                                 array(
                                     "column" => "review_invite_id",
-                                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
+                                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . ' AND sms_broadcast_id IS NULL',
                                 )
                 );
             }
@@ -403,7 +398,7 @@ class ControllerBase extends Controller {
                 $sms_sent_this_month = ReviewInvite::count(
                                 array(
                                     "column" => "review_invite_id",
-                                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
+                                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . ' AND sms_broadcast_id IS NULL',
                                 )
                 );
             }
@@ -673,7 +668,7 @@ class ControllerBase extends Controller {
             }
 
             if (strpos($_SERVER['REQUEST_URI'], 'users/admin') > 0) {
-                
+
             } else {
                 $users_report = null;
                 if ($loc)
@@ -703,7 +698,7 @@ class ControllerBase extends Controller {
 
         //import data from the feed into the database, first update the location
         $Obj->rating = $google_reviews['rating'];
-        $Obj->review_count = (isset($google_reviews['user_ratings_total']) ? $google_reviews['user_ratings_total'] : 0);
+        $Obj->review_count = ($google_reviews['user_ratings_total'] ? $google_reviews['user_ratings_total'] : 0);
 
         if (!isset($Obj->original_review_count) || (!($Obj->original_review_count > 0)) || $Obj->original_review_count > $Obj->review_count) {
             $Obj->original_rating = $Obj->rating;
@@ -714,9 +709,9 @@ class ControllerBase extends Controller {
 
         //now import the reviews (if not already in the database)
         //loop through reviews
-        foreach ($google_reviews['reviews'] as $reviewDetails) {
+        if($google_reviews['reviews']) foreach($google_reviews['reviews'] as $reviewDetails) {
             //check if the review is already in the db
-            $conditions = "time_created = :time_created: AND rating_type_id = 3 AND location_id = " . $location->location_id;
+            $conditions = 'time_created = :time_created: AND rating_type_id = 3 AND location_id = ' . $location->location_id;
             $parameters = array("time_created" => date("Y-m-d H:i:s", $reviewDetails['time']));
             $googlerev = Review::findFirst(array($conditions, "bind" => $parameters));
             if (!$googlerev) {
@@ -726,7 +721,7 @@ class ControllerBase extends Controller {
                     'rating_type_id' => 3, //3 = Google
                     'rating' => $reviewDetails['rating'],
                     'review_text' => $reviewDetails['text'],
-                    'time_created' => date("Y-m-d H:i:s", $reviewDetails['time']),
+                    'time_created' => date('Y-m-d H:i:s', $reviewDetails['time']),
                     'user_name' => $reviewDetails['author_name'],
                     'user_id' => $reviewDetails['author_url'],
                     'user_image' => (isset($reviewDetails['profile_photo_url']) ? $reviewDetails['profile_photo_url'] : ''),
@@ -771,9 +766,9 @@ class ControllerBase extends Controller {
 //echo '<pre>$yelpreviews->reviews:'.print_r($yelpreviews->reviews,true).'</pre>';
         foreach ($yelpreviews->reviews as $rev) {
             //check if the review is already in the db
-            $conditions = "external_id = :external_id: AND rating_type_id = 1 AND location_id = " . $location->location_id;
-            $parameters = array("external_id" => $rev->id);
-            $yelprev = Review::findFirst(array($conditions, "bind" => $parameters));
+            $conditions = 'external_id = :external_id: AND rating_type_id = 1 AND location_id = ' . $location->location_id;
+            $parameters = array('external_id' => $rev->id);
+            $yelprev = Review::findFirst(array($conditions, 'bind' => $parameters));
             if (!$yelprev) {
                 //we didn't find the review, so assign the values
                 $r = new Review();
@@ -929,8 +924,8 @@ class ControllerBase extends Controller {
                     //check if the review is already in the db
                     $conditions = "time_created = :time_created: AND rating_type_id = 2 AND location_id = " . $location->location_id;
                     $phpdate = strtotime($reviewDetails->created_time);
-                    $parameters = array("time_created" => date("Y-m-d H:i:s", $phpdate));
-                    $googlerev = Review::findFirst(array($conditions, "bind" => $parameters));
+                    $parameters = array("time_created" => date('Y-m-d H:i:s', $phpdate));
+                    $googlerev = Review::findFirst(array($conditions, 'bind' => $parameters));
                     if (!$googlerev) {
                         //we didn't find the review, so assign the values
                         $r = new Review();
@@ -938,7 +933,7 @@ class ControllerBase extends Controller {
                             'rating_type_id' => 2, //2 = Facebook
                             'rating' => $reviewDetails->rating,
                             'review_text' => $reviewDetails->review_text,
-                            'time_created' => date("Y-m-d H:i:s", $phpdate),
+                            'time_created' => date('Y-m-d H:i:s', $phpdate),
                             'user_name' => $reviewDetails->reviewer->name,
                             'user_id' => $reviewDetails->reviewer->id,
                             //'external_id' => $reviewDetails->id,  facebook has no review id
@@ -1055,4 +1050,16 @@ class ControllerBase extends Controller {
         $this->view->internalNavParams = $internalNavParams;
     }
 
+    /**
+     * This function takes either an array or string, sets the content type and returns the response
+     * @param $json array|string
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     */
+    public function sendJSON($json){
+        if(is_array($json)) $json = json_encode($json);
+        $this->view->disable();
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent($json);
+        return $this->response;
+    }
 }
