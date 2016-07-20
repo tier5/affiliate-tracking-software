@@ -23,8 +23,8 @@ use Vokuro\Models\Users;
  */
 class SessionController extends ControllerBase {
 
-    public $validSubDomains = [ 'my', 'www', 'reviewvelocity', '104', 'dev', 'stage', 'dev2', 'localhost' ];
-    
+    public $validSubDomains = [ 'my', 'www', 'reviewvelocity', '104', 'dev', 'stage', 'dev2', 'localhost'];
+
     public $facebook_access_token;
 
     /**
@@ -44,22 +44,22 @@ class SessionController extends ControllerBase {
     }
 
     public function submitSignupAction($subscriptionToken) {
-        
+
         try {
-            
+
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
-            
+
             // Start transaction
             $this->db->begin();
-            
+
             if (!$this->request->isPost()) {
                 throw new ArrayException("", 0, null, ['POST request required!!!']);
             }
-            
+
             $form = new SignUpForm();
-            
-            // Check user email unuique            
+
+            // Check user email unuique
             $user = new Users();
             $user->assign(array(
                 'name' => $this->request->getPost('name', 'striptags'),
@@ -67,17 +67,17 @@ class SessionController extends ControllerBase {
                 'password' => $this->security->hash($this->request->getPost('password')),
                 'profilesId' => 1, //All new users will be "Agency Admin"
             ));
-            
+
             $isemailunuique = $user->validation();
             if (!$isemailunuique) {
-                throw new ArrayException("", 0, null, ['That email address is already taken.']);    
+                throw new ArrayException("", 0, null, ['That email address is already taken.']);
             }
 
             $uservalid = $form->isValid($this->request->getPost());
             if (!$uservalid) {
                 throw new ArrayException("", 0, null, implode('The submitted user info is invalid.', $form->getMessages()));
             }
-            
+
             // First create an agency
             $agency_name = $this->request->getPost('agency_name', 'striptags');
             $agency = new Agency();
@@ -88,81 +88,81 @@ class SessionController extends ControllerBase {
                 'signup_page' => 2, //go to the next page,
                 'agency_type_id' => 2,
             ));
-            
+
             if (!$agency->save()) {
                 throw new ArrayException("", 0, null, $agency->getMessages());
             }
-            
-            $user->agency_id = $agency->agency_id;    
-            if (!$user->save()) { 
+
+            $user->agency_id = $agency->agency_id;
+            if (!$user->save()) {
                 throw new ArrayException("", 0, null, $user->getMessages());
             }
-            
+
             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
             $_SESSION['email'] = $this->request->getPost('email');
-            
+
             $this->db->commit();
-            
+
             return $this->response->redirect('/session/thankyou');
-            
+
         } catch(ArrayException $e) {
-            
+
             $this->db->rollback();
-            
+
             foreach($e->getOptions() as $message) {
                 $this->flash->error($message);
             }
-                    
+
         }
     }
-    
+
     public function signupAction($subscriptionToken = '0') {
-        
+
         try {
-        
+
             /* Get services */
             $userManager = $this->di->get('userManager');
             $subscriptionManager = $this->di->get('subscriptionManager');
-            
+
             /* Are we are logged in? */
-            $userId = $userManager->getUserId($this->session); 
-            
+            $userId = $userManager->getUserId($this->session);
+
             /* Is this a valid subscription? */
             $isValid = $subscriptionManager->isValidInvitation($subscriptionToken);
-            
+
             /* Simply redirect to the home if we are logged in or the form is invalid  */
             if ($userId || !$isValid) {
                 $this->response->redirect('/');
                 return;
                 // $this->view->setTemplateBefore('private');
             }
-            
+
             Utils::noSubDomains(1, $this->validSubDomains, $subscriptionToken);
-            
+
             $this->view->setTemplateBefore('login');
             $this->tag->setTitle('Review Velocity | Sign up');
             $form = new SignUpForm();
             $ccform = new CreditCardForm();
-        
+
             $this->view->userId = $userId;
             $this->view->maxLimitReached = false;
             $this->view->token = $subscriptionToken;
             if (!$userId) {
                 $this->view->maxLimitReached = $userManager->isMaxLimitReached();
             }
-        
+
             $this->view->form = $form;
             $this->view->ccform = $ccform;
             $this->view->current_step = 1;
-        
+
             $this->view->pick('session/signup');
-        
-        } catch(ArrayException $e) {        
-            
+
+        } catch(ArrayException $e) {
+
             foreach($e->getOptions() as $message) {
                 $this->flash->error($message);
             }
-        } 
+        }
     }
 
     /*
@@ -189,15 +189,15 @@ class SessionController extends ControllerBase {
             $this->flash->error('Failed to create default subscription plan');
         }
     }
-     * 
+     *
      */
 
     /**
-     * Sign up form, Step 2 (Add Location) 
+     * Sign up form, Step 2 (Add Location)
      */
     /* public function signup2Action($subscription_id = 0) { */
     public function signup2Action($pricingProfileToken = 0) {
-    
+
         /* $this->noSubDomains(2, $subscription_id); */
         Utils::noSubDomains(2, $this->validSubDomains, $pricingProfileToken);
 
@@ -219,7 +219,7 @@ class SessionController extends ControllerBase {
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
         //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-        //find the agency 
+        //find the agency
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -326,7 +326,7 @@ class SessionController extends ControllerBase {
      */
     /* public function signup3Action($subscription_id = 0) { */
     public function signup3Action($pricingProfileToken = 0) {
-    
+
         /* $this->noSubDomains(3, $subscription_id); */
         Utils::noSubDomains(3, $this->validSubDomains, $pricingProfileToken);
 
@@ -346,7 +346,7 @@ class SessionController extends ControllerBase {
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
         //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-        //find the agency 
+        //find the agency
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -390,7 +390,7 @@ class SessionController extends ControllerBase {
      */
     /* public function signup4Action($subscription_id = 0) { */
     public function signup4Action($pricingProfileToken = 0) {
-        
+
         /* $this->noSubDomains(4, $subscription_id); */
         Utils::noSubDomains(4, $this->validSubDomains, $pricingProfileToken);
 
@@ -406,11 +406,11 @@ class SessionController extends ControllerBase {
             return;
         }
         // Query binding parameters with string placeholders
-        $conditions = "id = :id:";
-        $parameters = array("id" => $identity['id']);
-        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+        $conditions = 'id = :id:';
+        $parameters = array('id' => $identity['id']);
+        $userObj = Users::findFirst(array($conditions, 'bind' => $parameters));
         //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-        //find the agency 
+        //find the agency
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -452,7 +452,7 @@ class SessionController extends ControllerBase {
      */
     /* public function signup5Action($subscription_id = 0) { */
     public function signup5Action($pricingProfileToken = 0) {
-        
+
         /* $this->noSubDomains(5, $subscription_id); */
         Utils::noSubDomains(5, $this->validSubDomains, $pricingProfileToken);
 
@@ -473,7 +473,7 @@ class SessionController extends ControllerBase {
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
         //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-        //find the agency 
+        //find the agency
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -598,7 +598,7 @@ class SessionController extends ControllerBase {
                         $parameters = array("id" => $identity['id']);
                         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
                         //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-                        //find the agency 
+                        //find the agency
                         $conditions = "agency_id = :agency_id:";
                         $parameters = array("agency_id" => $userObj->agency_id);
                         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -703,7 +703,7 @@ class SessionController extends ControllerBase {
                     //die();
 
                     $admincode = '0';
-                    //echo '<pre>'.print_r($_POST,true).'</pre>';         
+                    //echo '<pre>'.print_r($_POST,true).'</pre>';
                     if (isset($_POST['admin']) && $_POST['admin'] != '') {
                         //we need to save results
                         $admincode = '1';
@@ -749,7 +749,13 @@ class SessionController extends ControllerBase {
                                 $parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
                                 $loc = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
                                 if (!$loc) {
-                                    $strURL = "onclick=\"selectLocation('" . $this->encode(@$arrResultFindPlaceDetail['result']['place_id']) . "', '" . $this->encode(@$arrResultFindPlaceDetail['result']['url']) . "', '" . $this->encode($returnBusinessName) . "', '" . $this->encode($street_number) . "', '" . $this->encode($route) . "', '" . $this->encode($locality) . "', '" . $this->encode($administrative_area_level_1) . "', '" . $this->encode($postal_code) . "', '" . $this->encode($country) . "', '" . $this->encode(@$arrResultFindPlaceDetail['result']['formatted_phone_number']) . "', '" . $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lat']) . "', '" . $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng']) . "');return false;\" href=\"javascript:void(0);\"";
+                                    $strURL = "onclick=\"selectLocation('" . $this->encode(@$arrResultFindPlaceDetail['result']['place_id']) . "', '" .
+                                      $this->encode(@$arrResultFindPlaceDetail['result']['url']) . "', '" . $this->encode($returnBusinessName) . "', '" .
+                                      $this->encode($street_number) . "', '" . $this->encode($route) . "', '" . $this->encode($locality) . "', '" .
+                                      $this->encode($administrative_area_level_1) . "', '" . $this->encode($postal_code) . "', '" .
+                                      $this->encode($country) . "', '" . $this->encode(@$arrResultFindPlaceDetail['result']['formatted_phone_number']) . "', '" .
+                                      $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lat']) . "', '" .
+                                      $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng']) . "');return false;\" href=\"javascript:void(0);\"";
                                     $strButton = "<a id=\"business-name-link\" " . $strURL . " style=\"float: right; height: 40px; line-height: 24px;\" class=\"btnLink\" >Choose This Listing</a>";
                                 } else {
                                     //the location was found, so tell the user that
@@ -827,7 +833,7 @@ class SessionController extends ControllerBase {
         $message = str_replace("{name}", 'Name', $message);
         $message = str_replace("{link}", 'Link', $message);
 
-        //find the agency 
+        //find the agency
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -848,7 +854,7 @@ class SessionController extends ControllerBase {
      */
     /*
     public function subscribeAction($subscription_stripe_id = 0) {
-        
+
           $this->view->setTemplateBefore('login');
           $this->tag->setTitle('Review Velocity | Sign up');
           $form = new SignUpForm();
@@ -956,7 +962,7 @@ class SessionController extends ControllerBase {
           }
           }
           }
-         *   
+         *
     }
-     * 
+     *
      */
