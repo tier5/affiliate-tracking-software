@@ -39,7 +39,7 @@ if ($agencies) {
 foreach($agencies as $agency) {
 ?><!--Business Name, Email Address, Date Created, Plan Name, Account Type (Free/Paid), Status (can turn on and off from here - Active/Inactive), Action -->
                         <tr>
-                            <td><?=$agency->name?></td>
+                            <td><?=($agency->name) ? $agency->name : 'n/a'?></td>
                             <td><?=$agency->email?></td>
                             <td><?=date("Y-m-d",strtotime($agency->date_created))?></td>
                             <td><?=(isset($agency->subscription_id) && $agency->subscription_id > 0?$agency->subscription->name:'Free')?></td>
