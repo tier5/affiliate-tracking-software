@@ -370,7 +370,7 @@ class Auth extends Component {
     }
 
     /**
-     * Auths the user by his/her id
+     * Auths the user by id
      *
      * @param int $id
      */
