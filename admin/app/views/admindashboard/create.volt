@@ -73,13 +73,13 @@
                 <div class="form-group">
                     <label for="locations" class="col-md-4 control-label">Locations</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="number" placeholder="Number of locations" name="free_locations" />
+                        <input class="form-control" type="number" min="0" placeholder="Number of locations" name="free_locations" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="sms_messages" class="col-md-4 control-label">Sms Messages</label>
+                    <label for="sms_messages" class="col-md-4 control-label">SMS Messages</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="number" placeholder="Number of messages" name="sms_messages" />
+                        <input class="form-control" type="number" min="0" placeholder="Number of messages" name="sms_messages" />
                     </div>
                 </div>
             </div>
@@ -114,7 +114,7 @@
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-        
+
         $('#send-registration-email-control').change(function () {
             if ($(this).val() === 'Unpaid') {
                 $(".free_subscription_pricing_plan").addClass('show');
@@ -122,7 +122,7 @@
                 $(".free_subscription_pricing_plan").removeClass('show');
             }
         });
-        
+
         $('#subscription_pricing_plan_id').change(function () {
             if ($(this).val() === 'Unpaid') {
                 $(".free_subscription_pricing_plan").addClass('show');
@@ -130,8 +130,8 @@
                 $(".free_subscription_pricing_plan").removeClass('show');
             }
         });
-        
-        
-        
+
+
+
     });
 </script>
