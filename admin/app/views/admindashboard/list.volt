@@ -1,10 +1,4 @@
-{{ content() }}
-
-
-
 <div id="locationlist">
-    {{ content() }}
-
     <ul class="pager">
         <li class="pull-right">
             <a href="/admindashboard/create/<?=$agency_type_id?>" class="btn default btn-lg apple-backgound subscription-btn">Create {{ agency_type_id == 1 ? 'Agency' : 'Business' }}</a>
@@ -38,11 +32,11 @@ if ($agencies) {
                         <?php foreach($agencies as $agency) {  ?>
                         <!--Business Name, Email Address, Date Created, Plan Name, Account Type (Free/Paid), Status (can turn on and off from here - Active/Inactive), Action -->
                         <tr>
-                            <td><?=($agency->name) ? $agency->name : 'n/a'?></td>
-                            <td><?=$agency->email?></td>
+                            <td class="name">{{ agency.name ? agency.name : 'n/a' }}</td>
+                            <td>{{  agency.email }}</td>
                             <td><?=date("Y-m-d",strtotime($agency->date_created))?></td>
-                            <td><?=(isset($agency->subscription_id) && $agency->subscription_id > 0?$agency->subscription->name:'Free')?></td>
-                            <td><?=(isset($agency->subscription_id) && $agency->subscription_id > 0?'Paid':'Free')?></td>
+                            <td>{{ agency.subscription_id > 0 ? agency.subscription.name : 'Free' }}</td>
+                            <td>{{ agency.subscription_id  > 0 ? 'Paid' : 'Free' }}</td>
                             <td><a href="/admindashboard/status/<?=$agency_type_id?>/<?=$agency->agency_id?>/<?=($agency->status==0?1:0)?>"><img src="/public/img/{{ agency.status == 0 ? 'off' : 'on' }}.png" /></td>
                             <td style="text-align: right;">
                                 <div class="actions">
@@ -78,7 +72,7 @@ if ($agencies) {
 </div>
 <script>
     $(function(){
-        $('tbody tr').bind('click',function(e){
+        $('tbody tr td.name').bind('click',function(e){
             e.stopPropagation();
            var edit_link = $(this).find('i.icon-pencil').parent().attr('href');
             window.location = edit_link;
@@ -88,7 +82,7 @@ if ($agencies) {
 
 </script>
 <style type="text/css">
-    tbody tr:hover{
+    tbody tr td.name:hover{
         cursor:pointer;
     }
 </style>
