@@ -21,10 +21,6 @@ use Vokuro\Services\ServicesConsts;
 use Services_Twilio;
 use Services_Twilio_RestException;
 
-//TURN ON PRETTY ERRORS!!!
-error_reporting(E_ALL);
-ini_set("display_errors", "on");
-
 /**
  * ControllerBase
  * This is the base controller for all controllers in the application
