@@ -232,7 +232,7 @@ class AdminController extends ControllerBase {
     }
 
     public function profileAction() {
-        
+
     }
 
 }
