@@ -84,6 +84,8 @@
     <!-- END HEAD -->
 
     <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" data-ccprompt="{{ ccInfoRequired }}">
+    {% include "partials/layouts/private-css.volt" %}
+    {% include "partials/sudo.volt" %}
         <!-- BEGIN HEADER -->
         <div class="page-header navbar navbar-fixed-top">
             <!-- BEGIN HEADER INNER -->
