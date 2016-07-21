@@ -165,6 +165,7 @@ $di->set('acl', function () {
  */
 $di->set('userManager', new UserManager($config));
 
+
 /**
  * Subscription Manager
  */

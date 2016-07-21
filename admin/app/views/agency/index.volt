@@ -43,12 +43,12 @@ foreach($tBusinesses as $objBusiness) {
                             <td><?=$objBusiness->name?></td>
                             <td><?=$objBusiness->email?></td>
                             <td><?=date("Y-m-d",strtotime($objBusiness->date_created))?></td>
-                            <td>{{ objBusiness.subscription_id) ? $objBusiness->subscription->name : 'Free' }}
+                            <td>{{ objBusiness.subscription_id ? objBusiness.subscription.name : 'Free' }}
                             </td>
                             <td>{{ objBusiness.subscription_id ? 'Paid':'Free' }}
                             </td>
                             <td>
-                                <a href="/agency/status/{{ objBusiness.agency_id }} >/{{ objBusiness.status  0 : 1 }}?>"><img src="/public/img/{{ objBusiness.status ? 'on' : 'off' }}.png" />
+                                <a href="/agency/status/{{ objBusiness.agency_id }} >/{{ objBusiness.status ? 0 : 1 }}?>"><img src="/public/img/{{ objBusiness.status ? 'on' : 'off' }}.png" />
                             </td>
                             <td style="text-align: right;">
                                 <div class="actions">
@@ -57,7 +57,7 @@ foreach($tBusinesses as $objBusiness) {
                                             Actions <i class="fa fa-angle-down"></i></a>
                                         <ul class="dropdown-menu pull-right">
                                             <li>
-                                                <a href="/agency/view/2/{{ $objBusiness->agency_id }}" class=""><i class="icon-eye"></i>
+                                                <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-eye"></i>
                                                     View</a></li>
                                             <li>
                                                 <a href="/agency/create/2/{{ objBusiness.agency_id }}" class=""><i class="icon-pencil"></i>
@@ -66,7 +66,7 @@ foreach($tBusinesses as $objBusiness) {
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-user"></i>
                                                     Password</a></li>
                                             <li>
-                                                <a href="/agency/delete/2/{{ $objBusiness.agency_id }}" onclick="return confirm('Are you sure you want to delete this item?');" class=""><i class="fa fa-trash-o"></i>
+                                                <a href="/agency/delete/2/{{ objBusiness.agency_id }}" onclick="return confirm('Are you sure you want to delete this item?');" class=""><i class="fa fa-trash-o"></i>
                                                     Delete</a></li>
                                             <li>
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-envelope"></i>
