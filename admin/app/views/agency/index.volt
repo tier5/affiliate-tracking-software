@@ -1,12 +1,12 @@
 {{ content() }}
 
-
+<?php die(); ?>
 <div id="locationlist">
     {{ content() }}
 
     <ul class="pager">
         <li class="pull-right">
-            <a href="/agency/create/2" class="btn red btn-outline">Create Business</a>
+            <a href="/agency/create/2" class="btn default btn-lg apple-backgound subscription-btn">Create Business</a>
         </li>
     </ul>
     <?php
