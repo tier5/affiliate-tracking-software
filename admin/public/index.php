@@ -13,7 +13,7 @@ try {
     /**
       * Read the configuration
       */
-    $config = include APP_DIR . '/config/config.sample.php';
+    $config = include APP_DIR . '/config/config.php';
 
     /**
      * Read auto-loader
