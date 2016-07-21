@@ -38,7 +38,7 @@ class UserManager extends BaseService {
     }
 
     public function hasLocation($session) {
-        $identity = $session->getIdentity($session);
+        $identity = $this->getIdentity($session);
         return $identity && $identity['location_id'];
     }
 
