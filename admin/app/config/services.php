@@ -177,5 +177,5 @@ $di->set('smsManager', new SmsManager($config));
 /**
  * Payment Service
  */
-$di->set('paymentService', new PaymentService($config));
+$di->set('paymentService', new PaymentService($config, $di));
 

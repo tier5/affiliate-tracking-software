@@ -117,6 +117,12 @@ class ControllerBase extends Controller {
              */
             $required = $this->di->get('subscriptionManager')->creditCardInfoRequired($this->session);
             $this->view->ccInfoRequired = $required ? "open" : "closed";
+
+            $this->view->paymentService = $agency->parent_id == -1 ? 'AuthorizeDotNet' : 'Stripe';
+
+            // GARY_TODO:  Fix default stripe key / handling.
+            $this->view->stripePublishableKey = $agency->stripe_publishable_keys ?: $this->config->stripe->publishable_key;
+
             
             $this->view->haspaid = $haspaid;
             //###  END: check to see if this user has paid   #####
@@ -1037,10 +1043,11 @@ class ControllerBase extends Controller {
         // Subscriptions
         $userSubscription = $subscriptionManager->getSubscriptionPlan($userManager->getUserId($this->session));
 
+        // GARY_TODO Determine if the comment below is accurate.
         $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] &&
                 ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
-                ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
-                $userManager->hasLocation($this->session);
+                ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE);/* &&
+                $userManager->hasLocation($this->session);*/
 
         $internalNavParams['hasPricingPlans'] = $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];
 

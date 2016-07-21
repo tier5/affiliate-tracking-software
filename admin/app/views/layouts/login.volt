@@ -122,7 +122,6 @@
         <!-- END PAGE LEVEL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <!-- END THEME LAYOUT SCRIPTS -->
-        <script src="/js/card-js.min.js"></script>
         <script src="/js/login.js"></script>
     </body>
 

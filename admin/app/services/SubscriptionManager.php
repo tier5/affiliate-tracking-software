@@ -16,14 +16,14 @@ class SubscriptionManager extends BaseService {
         parent::__construct($config, $di);
     }
     
-    public function creditCardInfoRequired($session) { 
-        
+    public function creditCardInfoRequired($session) {
         $userManager = $this->di->get('userManager');
         $paymentService = $this->di->get('paymentService');
    
         $userId = $userManager->getUserId($session);
         $subscriptionPlan = $this->getSubscriptionPlan($userId);
         $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
+
         if (!$subscriptionPlan  || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE) {
             return false;
         }
@@ -31,8 +31,16 @@ class SubscriptionManager extends BaseService {
         $provider = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET;
         if ($userManager->isWhiteLabeledBusiness($session)) {
             $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
-        }  
-        return !$paymentService->hasPaymentProfile([ 'userId' => $userId, 'provider' => $provider ]);         
+        }
+
+        $paymentProfile = $paymentService->getPaymentProfile([ 'userId' => $userId, 'provider' => $provider ]);
+
+        // GARY_TODO:  Add cron script to reset customer_id on expired / invalid cards.
+
+        if(!$paymentProfile || !$paymentProfile['customer_id'])
+            return true;
+
+        return false;
     }
         
     public function getSubscriptionPricingPlans() {
@@ -64,7 +72,7 @@ class SubscriptionManager extends BaseService {
                 } else {
                     $paymentPlan = ServicesConsts::$PAYMENT_PLAN_MONTHLY;;
                     $locations = 0;
-                    $smsMessagesPerLocation = 0;;
+                    $smsMessagesPerLocation = 0;
                 }
                 
             } else  {
@@ -136,7 +144,7 @@ class SubscriptionManager extends BaseService {
         if(!$subscriptionPlan) {
             return false;
         }
-        
+
         /* Get the pricing plan */
         $pricingPlan = SubscriptionPricingPlan::query()  
             ->where("id = :id:")
@@ -384,6 +392,52 @@ class SubscriptionManager extends BaseService {
         }
         
         return true;
+    }
+
+    public function getSubscriptionPrice($UserID, $PlanType) {
+        $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst('user_id = ' . $UserID);
+        $objSubscriptionParameters = \Vokuro\Models\SubscriptionPricingPlanParameterList::find('subscription_pricing_plan_id = ' . $objSubscriptionPlan->subscription_pricing_plan_id);
+        $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $objSubscriptionPlan->subscription_pricing_plan_id);
+
+        $Locations = $objSubscriptionPlan->locations;
+        $Messages = $objSubscriptionPricingPlan->max_sms_messages;
+        $PlanCost = 0;
+
+        foreach($objSubscriptionParameters as $objParameter) {
+            $tPricingPlanParameterList[$objParameter->max_locations] = $objParameter;
+        }
+
+        $tRangeMaximums = array_keys($tPricingPlanParameterList);
+
+        $BreakOnNextIteration = false;
+
+        for($c = 0 ; $c < count($tRangeMaximums) ; $c++) {
+            $objParameterList = $tPricingPlanParameterList[$tRangeMaximums[$c]];
+
+            $NextBatchOfLocations = $objParameterList->max_locations - $objParameterList->min_locations + 1;
+
+            if(($Locations - $NextBatchOfLocations) <= 0) {
+                $NextBatchOfLocations = $Locations;
+                $BreakOnNextIteration = true;
+            } else {
+                $Locations -= $NextBatchOfLocations;
+            }
+
+            $Cost = $NextBatchOfLocations * $objParameterList->base_price + $NextBatchOfLocations * $Messages * $objParameterList->sms_cost;
+            $Cost *= ((100 - $objParameterList->location_discount_percentage)) * 0.01;
+
+            $PlanCost += $Cost;
+
+            if($BreakOnNextIteration)
+                break;
+        }
+
+        if($PlanType === 'Annually') {
+            $PlanCost *= 12;
+            $PlanCost *= (1 - $objSubscriptionPricingPlan->annual_discount / 100);
+        }
+
+        return $PlanCost;
     }
     
     private function createPricingParameterList($id, $parameters) {

@@ -96,7 +96,7 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="form-group">
-                                            <button type="button" class="btn default btn-lg apple-backgound subscription-btn" data-toggle="modal" data-target="#updateCardModal">Update Card</button>
+                                            <button type="button" class="btn default btn-lg apple-backgound subscription-btn" data-target="#updateCardModal" id="UpdateCard">Update Card</button>
                                         </div>
                                     </div>
                                 </div>
@@ -226,20 +226,56 @@
                                     <div class="row">
                                         <div class="col-md-12 col-sm-12">
                                             <div id="plan-type" class="btn-group btn-toggle subscription-toggle">
-                                                {% if subscriptionPlanData['pricingPlan']['enable_annual_discount'] == true %}
-                                                    <button class="btn active btn-primary" data-subscription='M'>Monthly</button>
-                                                    <button class="btn btn-default" data-subscription='Y'>Annually</button>
+
+                                                {% if subscriptionPlanData['pricingPlan']['enable_annual_discount'] == true AND paymentService != 'Stripe' %}
+                                                    {% if subscriptionPlanData['subscriptionPlan']['payment_plan'] === 'Annually' %}
+                                                        {% set AnnuallyActive = 'active' %}
+                                                        {% set MonthlyActive = '' %}
+                                                        {% set ButtonDisabled = 'disabled' %}
+                                                        {% set PlanVerbage = "Change" %}
+                                                    {% elseif subscriptionPlanData['subscriptionPlan']['payment_plan'] === 'Monthly' %}
+                                                        {% set AnnuallyActive = '' %}
+                                                        {% set MonthlyActive = 'active' %}
+                                                        {% set ButtonDisabled = 'disabled' %}
+                                                        {% set PlanVerbage = "Change" %}
+                                                    {% else %}
+                                                        {% set AnnuallyActive = '' %}
+                                                        {% set MonthlyActive = 'active' %}
+                                                        {% set ButtonDisabled = '' %}
+                                                        {% set PlanVerbage = "Begin" %}
+                                                    {% endif %}
                                                 {% else %}
-                                                    <button disabled class="btn active btn-primary" data-subscription='M'>Monthly</button>
-                                                    <button disabled class="btn btn-default" data-subscription='Y'>Annually</button>
+                                                    {% set AnnuallyActive = '' %}
+                                                    {% set MonthlyActive = 'active' %}
+                                                    {% set ButtonDisabled = 'disabled' %}
+
+                                                    {% if subscriptionPlanData['subscriptionPlan'] %}
+                                                        {% set PlanVerbage = "Change" %}
+                                                    {% else %}
+                                                        {% set PlanVerbage = "Begin" %}
+                                                    {% endif %}
                                                 {% endif %}
+
+                                                {% if subscriptionPlanData['pricingPlan']['enable_annual_discount'] == true AND paymentService == 'Stripe' %}
+                                                    {% set ButtonDisabled = '' %}
+                                                    {% if subscriptionPlanData['subscriptionPlan']['payment_plan'] === 'Annually' %}
+                                                        {% set AnnuallyActive = 'active' %}
+                                                        {% set MonthlyActive = '' %}
+                                                    {% elseif subscriptionPlanData['subscriptionPlan']['payment_plan'] === 'Monthly' %}
+                                                        {% set AnnuallyActive = '' %}
+                                                        {% set MonthlyActive = 'active' %}
+                                                    {% endif %}
+                                                {% endif %}
+
+                                                <button {{ ButtonDisabled }} class="btn {{ MonthlyActive }} btn-primary" data-subscription='M'>Monthly</button>
+                                                <button {{ ButtonDisabled }} class="btn {{ AnnuallyActive }} btn-default" data-subscription='Y'>Annually</button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 col-sm-12">
                                             <div class="growth-bar transparent center">
-                                                <button id="submit-change-plan-btn" class="btn btn-block subscription-btn golden-poppy-backgound">Change Plan</button>
+                                                <button id="submit-change-plan-btn" class="btn btn-block subscription-btn golden-poppy-backgound">{{ PlanVerbage }} Plan</button>
                                             </div>
                                         </div>
                                     </div>
@@ -289,6 +325,50 @@
 <script type="text/javascript">
 
     jQuery(document).ready(function ($) {
+        $("#UpdateCard").click(function() {
+            var bodyElem = document.getElementsByTagName("body")[0];
+            if(bodyElem.dataset.paymentprovider === "AuthorizeDotNet") {
+                $('#updateCardModal').modal('show');
+            }
+            else if(bodyElem.dataset.paymentprovider === "Stripe") {
+                var handler = StripeCheckout.configure({
+                    key: '{{ stripePublishableKey }}',
+                    /* TODO: Replace with agency logo */
+                    /*image: '/img/documentation/checkout/marketplace.png',*/
+                    locale: 'auto',
+                    token: function(token) {
+                    // You can access the token ID with `token.id`.
+                    // Get the token ID to your server-side code for use.
+                    // GARY_TODO  UGH, why can't I call the UpdateStripeCard method?!?
+                    $.post('/businessSubscription/updatePaymentProfile', {
+                        tokenID: token.id,
+                        email: token.emai1
+                    })
+                        .done(function (data) {
+                            /*if (data.status !== true) {
+                                alert("Update card failed!!!")
+                            }*/
+                            console.log(data);
+                        })
+                        .fail(function () {
+                        })
+                        .always(function () {
+                        });
+                    }
+                });
+
+                // Open Checkout with further options:
+                handler.open({
+                    name: 'Update Payment Info',
+                    description: '',
+                });
+
+                // Close Checkout on page navigation:
+                $(window).on('popstate', function() {
+                    handler.close();
+                });
+            }
+        });
 
         var maxLocations = 100;
         var maxMessages = 1000;
@@ -328,7 +408,7 @@
             
             /* Calculate the plan value */
             var subscriptionData = getSubscriptionData();
-            
+
             /* Get number of locations and messages  */
             var locations = smsLocationSlider.getValue();
             var messages = smsMessagesSlider.getValue();
@@ -339,16 +419,15 @@
              *  
              */
             var range_maximums = Object.keys(subscriptionData.pricingPlanParameterLists);
-            
+
             /* Calculate the total cost */
-            var planCost = parseFloat(subscriptionData.pricingPlan.base_price);  
+            var planCost = 0.00;
             var breakOnNextIteration = false;
             for (var i = 0; i < range_maximums.length; i++) {
             
                 /* 
                  * Charge the next batch of locations, based on the current range, 
                  * and add it to the total
-                 * 
                  */
                 var parameterList = subscriptionData.pricingPlanParameterLists[range_maximums[i]];
                 var nextBatchOfLocations = (parameterList.max_locations - parameterList.min_locations + 1);
@@ -360,8 +439,8 @@
                     locations -= nextBatchOfLocations;
                 }
                 
-                var cost = parseFloat(nextBatchOfLocations * messages * subscriptionData.pricingPlan.charge_per_sms);
-                cost *= ((100 - parseFloat(parameterList.location_discount_percentage)) * 0.01); 
+                var cost = parseFloat(nextBatchOfLocations * parameterList.base_price + nextBatchOfLocations * messages * parameterList.sms_cost);
+                cost *= ((100 - parseFloat(parameterList.location_discount_percentage)) * 0.01);
                         
                 planCost += cost;
                 
@@ -375,7 +454,6 @@
         }
         
         function applyAnnualDiscount(monthlyPlanCost) {
-            
             /*
              * If the yearly plan is selected, calculate the current plan cost over 12 months, apply the annual
              * discount, and divide by 12 to get the monthly payment. 
@@ -394,7 +472,7 @@
 
             var monthlyPlanCost = calculateMonthlyPlanCost();
             
-            var planType = $(document.getElementById("plan-type")).find('.btn-primary').text();
+            var planType = $("#plan-type > button.active").text();
             if (planType === 'Annually') {
                 monthlyPlanCost = applyAnnualDiscount(monthlyPlanCost);
                 $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(2));
@@ -411,13 +489,14 @@
         function getSubscriptionParams() {
             var locations = smsLocationSlider.getValue();
             var messages = smsMessagesSlider.getValue();
-            var planType = getSubscriptionData().subscriptionPlan.payment_plan;
+            var planType = $("#plan-type > button.active").text();
 
-            var price = $(document.getElementById("change-plan-final-price")).text();
+
+            var price = $("#change-plan-final-price").text();
             if (planType === 'Annually') {
-                price = $('#annual-cost').text('$' + price.toFixed(2)).substring(1); // Strip the leading dollar sign
+                price = $('#annual-cost').text().substring(1); // Strip the leading dollar sign
             }
-            ;
+
             return {locations: locations, messages: messages, planType: planType, price: price};
         };
 
@@ -468,7 +547,7 @@
                 '<div>90</div><div class="tick-marker">|</div>',
                 '<div>100</div><div class="tick-marker">|</div>'
             ],
-            ticks_snap_bounds: 1
+            ticks_snap_bounds: 0
         });
 
         var smsMessagesSlider = new Slider("#smsMessagesSlider", {
@@ -498,7 +577,7 @@
                 '<div>950</div><div class="tick-marker">|</div>',
                 '<div>1000</div><div class="tick-marker">|</div>'
             ],
-            ticks_snap_bounds: 1
+            ticks_snap_bounds: 0
         });
 
         smsLocationSlider.on('change', function (values) {
