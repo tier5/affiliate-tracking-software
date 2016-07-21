@@ -39,11 +39,11 @@
         <div class="title">SMS Messages Sent</div>
         <div class="bar-wrapper">
           <div class="bar-background"></div>
-          <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-          <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-          <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
+          <div class="bar-filled" style="width: {{ percent }}%;"></div>
+          <div class="bar-percent" style="padding-left: {{ percent }}%;"><?=$percent?>%</div>
+          <div class="bar-number" style="margin-left: {{ percent }}%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" {{ percent > 60 ? 'style="display: none;"':'' }}>This Month</div></div>
       </div>
-      <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
+      <div class="end-title">{{ total_sms_needed }}<br /><span class="goal">Goal</span></div>
     </div>
   </div>
   <?php
@@ -214,13 +214,13 @@
             <div class="col-md-6 col-sm-6 border-right">
               <div class="easy-pie-chart">
                 <div class="number lastmonth" data-percent="<?=$thism?>">
-                  <span><?=$thism?></span>%
+                  <span>{{ thism }}</span>%
                 </div>
                 <div class="pie-title"> This Month </div>
               </div>
             </div>
             <div class="col-md-6 col-sm-6 border-panel" style="height: 107px;">
-              <div class="report-num <?=($thism>=$last?'greenfont':'redfont')?>" style="margin-top: 15px;"><?=($thism>=$last?'&and;':'&or;')?> <?=abs($last - $thism)?>%</div>
+              <div class="report-num <?=($thism>=$last?'greenfont':'redfont')?>" style="margin-top: 15px;">{{ thism >= last ? '&and;' : '&or' }} <?=abs($last - $thism)?>%</div>
               <div class="report-title">Previous 30 Days</div>
             </div>
           </div>

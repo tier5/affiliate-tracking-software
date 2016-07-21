@@ -342,3 +342,23 @@
 
 }
 
+.portlet.light.bordered{
+    min-height:215px;
+}
+
+.portlet-body .easy-pie-chart .number > span, .portlet-body .easy-pie-chart-big .number > span{
+    font-size:16px;
+    margin-left:-5px;
+}
+
+@media (max-width: 500px) {
+    .portlet.light.bordered div.easy-pie-chart {
+        margin-top: inherit;
+    }
+}
+
+@media (max-width: 9999px) {
+    .portlet.light.bordered div.easy-pie-chart {
+        margin-top: 30px;
+    }
+}
