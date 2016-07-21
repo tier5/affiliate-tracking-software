@@ -362,3 +362,7 @@
         margin-top: 30px;
     }
 }
+
+div#basic-datatables_wrapper{
+    margin:auto 10px;
+}
