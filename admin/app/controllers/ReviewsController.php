@@ -39,11 +39,13 @@ class ReviewsController extends ControllerBase
     public function indexAction()
     {
 
+      $location_id = $this->session->get('auth-identity')['location_id'];
+
       $this->tag->setTitle('Review Velocity | Reviews');
       //get the location and calculate the review total and avg.
       if (isset($this->session->get('auth-identity')['location_id'])) {
         $conditions = "location_id = :location_id:";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        $parameters = array("location_id" => $location_id);
         $loc = Location::findFirst(array($conditions, "bind" => $parameters));
         $this->view->location = $loc;
 
@@ -57,7 +59,7 @@ class ReviewsController extends ControllerBase
 
         //look for a yelp review configuration
         $conditions = "location_id = :location_id: AND review_site_id =  2";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        $parameters = array("location_id" => $location_id);
 
 
         $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
@@ -72,7 +74,7 @@ class ReviewsController extends ControllerBase
 
         //look for a google review configuration
         $conditions = "location_id = :location_id: AND review_site_id =  3";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        $parameters = array("location_id" => $location_id);
 
         $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
         //start with google reviews, if configured
@@ -86,7 +88,7 @@ class ReviewsController extends ControllerBase
 
         //look for a facebook review configuration
         $conditions = "location_id = :location_id: AND review_site_id =  1";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        $parameters = array("location_id" => $location_id);
         $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
         //start with Facebook reviews, if configured
         if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
@@ -102,6 +104,7 @@ class ReviewsController extends ControllerBase
         $total_reviews = $facebook_review_count + $google_review_count + $yelp_review_count;
         $this->view->facebook_review_count = $facebook_review_count;
         $this->view->google_review_count = $google_review_count;
+
         $this->view->yelp_review_count = $yelp_review_count;
         $this->view->total_reviews = $total_reviews;
         //calculate the average rating
@@ -114,6 +117,7 @@ class ReviewsController extends ControllerBase
         $this->view->google_rating = $google_rating;
         $this->view->facebook_rating = $facebook_rating;
         $this->view->average_rating = $average_rating;
+
 
         $negative_total = ReviewInvite::count(
               array(
