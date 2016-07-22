@@ -2,6 +2,7 @@
 
 namespace Vokuro\Services;
 
+use Vokuro\Models\StripeSubscriptions;
 use Vokuro\Models\Users;
 use Vokuro\Models\Agency;
 use Vokuro\Services\ServicesConsts;
@@ -10,8 +11,8 @@ use Vokuro\Payments\AuthorizeDotNet as AuthorizeDotNetPayment;
 
 class PaymentService extends BaseService {
         
-    function __construct($config) {
-        parent::__construct($config);
+    function __construct($config, $di) {
+        parent::__construct($config, $di);
     }
     
     public function getRegisteredCardType($userId, $provider) {
@@ -29,6 +30,41 @@ class PaymentService extends BaseService {
         }
         return $creditCard ? $creditCard->credit_card_type : false;
     }
+
+    public function getPaymentProfile($paymentParams) {
+        $class = $this->getProviderClass($paymentParams['provider']);
+        switch($class) {
+            case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
+                $profile = AuthorizeDotNetModel::query()
+                    ->where("user_id = :userId:")
+                    ->bind(["userId" => $paymentParams['userId']])
+                    ->execute()
+                    ->getFirst();
+                $paymentProfile = [
+                    'id'                => $profile->id,
+                    'user_id'           => $profile->user_id,
+                    'customer_id'       => $profile->customer_profile_id,
+                    'subscription_id'   => $profile->subscription_id,
+                    'provider'          => $class,
+                ];
+                return $paymentProfile;
+            case ServicesConsts::$PAYMENT_PROVIDER_STRIPE:
+                $profile = StripeSubscriptions::query()
+                    ->where("user_id = :userId:")
+                    ->bind(["userId" => $paymentParams['userId']])
+                    ->execute()
+                    ->getFirst();
+                $paymentProfile = [
+                    'id'                => $profile->id,
+                    'user_id'           => $profile->user_id,
+                    'customer_id'       => $profile->stripe_customer_id,
+                    'subscription_id'   => $profile->stripe_subscription_id,
+                    'provider'          => $class,
+                ];
+                return $paymentProfile;
+        }
+        return false;
+    }
     
     public function hasPaymentProfile($paymentParams) {
         $class = $this->getProviderClass($paymentParams['provider']);
@@ -41,11 +77,20 @@ class PaymentService extends BaseService {
                     ->getFirst();
                 $status = $creditCard ? true : false;
                 break;
+            case ServicesConsts::$PAYMENT_PROVIDER_STRIPE:
+                $creditCard = StripeSubscriptions::query()
+                    ->where("user_id = :userId:")
+                    ->bind(["userId" => $paymentParams['userId']])
+                    ->execute()
+                    ->getFirst();
+
+                    $status = $creditCard ? true : false;
+                break;
             default:
                 $status = false;
                 break;
         }
-        return $status;    
+        return $status;
     }
     
     public function createPaymentProfile($ccParameters) {
@@ -54,6 +99,9 @@ class PaymentService extends BaseService {
         switch($class) {
             case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
                 $status = $this->createAuthorizeDotNetPaymentProfile($ccParameters);
+                break;
+            case ServicesConsts::$PAYMENT_PROVIDER_STRIPE:
+                $status = $this->createStripePaymentProfile($ccParameters);
                 break;
             default:
                 $status = false;
@@ -71,7 +119,7 @@ class PaymentService extends BaseService {
                 $status = $this->updateAuthorizeDotNetPaymentProfile($ccParameters);
                 break;
             default:
-                $status = false;
+                $status = $this->updateStripePaymentProfile($ccParameters);
                 break;
         }
         
@@ -84,6 +132,9 @@ class PaymentService extends BaseService {
         switch($class) {
             case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
                 $status = $this->changeAuthorizeDotNetSubscription($subscriptionParameters);
+                break;
+            case ServicesConsts::$PAYMENT_PROVIDER_STRIPE:
+                $status = $this->changeStripeSubscription($subscriptionParameters);
                 break;
             default:
                 $status = false;
@@ -101,11 +152,151 @@ class PaymentService extends BaseService {
                 $providerClass = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET; 
                 break;
             case ServicesConsts::$PAYMENT_PROVIDER_STRIPE:
+                $providerClass = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
+                break;
             default:
                 break;
         }
         
         return $providerClass;
+    }
+
+    private function createStripePaymentProfile($ccParameters) {
+        /* Check parameters */
+        $required = ['tokenID', 'userEmail', 'userId'];
+        $supplied = array_keys($ccParameters);
+        $intersect = array_intersect($supplied, $required);
+
+        if ( count($intersect) !== count($required)) {
+            return false;
+        }
+
+        $responseParameters = ['status' => false];
+        $userId = $ccParameters['userId'];
+
+        $user = Users::query()
+            ->where("id = :id:")
+            ->bind(["id" => $userId])
+            ->execute()
+            ->getFirst();
+        $agency = Agency::query()
+            ->where("agency_id = :agency_id:")
+            ->bind(["agency_id" => $user->agency_id])
+            ->execute()
+            ->getFirst();
+
+        //TODO: This needs to change, saving for last.  Not sure on behavior if stripe key not available.
+        $StripeSecretKey = $agency->stripe_account_secret ?: $this->config->stripe->secret_key;
+
+        try {
+            \Stripe\Stripe::setApiKey($StripeSecretKey);
+            $Customer = \Stripe\Customer::create([
+                'email'     => $ccParameters['userEmail'],
+                'source'    => $ccParameters['tokenID'],
+            ]);
+
+            if($Customer->id) {
+                $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
+                if (!$objStripeSubscription)
+                    $objStripeSubscription = new \Vokuro\Models\StripeSubscriptions();
+
+                $objStripeSubscription->stripe_customer_id = $Customer->id;
+                $objStripeSubscription->user_id = $userId;
+                $objStripeSubscription->stripe_subscription_id = 'N';
+
+                if ($objStripeSubscription->save())
+                    $responseParameters['status'] = true;
+            }
+        } catch (Exception $e) {
+            print_r($e->getMessage());
+            die();
+        }
+
+        return $responseParameters;
+    }
+
+    private function changeStripeSubscription($ccParameters) {
+        /* Check parameters */
+        $required = ['userId', 'planType'];
+        $supplied = array_keys($ccParameters);
+        $intersect = array_intersect($supplied, $required);
+
+        if ( count($intersect) !== count($required)) {
+            return false;
+        }
+
+        $responseParameters = ['status' => false];
+        $userId = $ccParameters['userId'];
+
+        $user = Users::query()
+            ->where("id = :id:")
+            ->bind(["id" => $userId])
+            ->execute()
+            ->getFirst();
+        $agency = Agency::query()
+            ->where("agency_id = :agency_id:")
+            ->bind(["agency_id" => $user->agency_id])
+            ->execute()
+            ->getFirst();
+
+        $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
+        if(!$objStripeSubscription->stripe_customer_id)
+            return false;
+
+        //TODO: This needs to change, saving for last.  Not sure on behavior if stripe key not available.
+        $StripeSecretKey = $agency->stripe_account_secret ?: $this->config->stripe->secret_key;
+        try {
+            \Stripe\Stripe::setApiKey($StripeSecretKey);
+
+            $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
+            if (!$objStripeSubscription)
+                return false;
+
+            $BusinessPlanID = 'business_plan_' . $user->agency_id;
+            $BusinessName = "Business Plan {$user->agency_id}";
+            $subscriptionManager = $this->di->get('subscriptionManager');
+
+            if($objStripeSubscription->stripe_subscription_id != 'N' && $objStripeSubscription->stripe_subscription_id) {
+                // Delete plan first
+                $StripePlan = \Stripe\Plan::retrieve($BusinessPlanID);
+                $StripePlan->delete();
+            }
+
+            $subscriptionManager = $this->di->get('subscriptionManager');
+            $Interval = $ccParameters['planType'] == 'Annually' ? 'year' : 'month';
+
+            \Stripe\Plan::create([
+                'amount'    => $subscriptionManager->getSubscriptionPrice($userId, $ccParameters['planType']) * 100,
+                'interval'  => $Interval,
+                'name'      => $BusinessName,
+                'currency'  => 'usd',
+                'id'        => $BusinessPlanID
+            ]);
+
+            if($objStripeSubscription->stripe_subscription_id != 'N' && $objStripeSubscription->stripe_subscription_id) {
+                $StripeSubscription = \Stripe\Subscription::retrieve($objStripeSubscription->stripe_subscription_id);
+            } else {
+                $StripeSubscription = \Stripe\Subscription::create([
+                    'customer' => $objStripeSubscription->stripe_customer_id,
+                    'plan' => $BusinessPlanID,
+                ]);
+            }
+
+            // Update stripe subscription to newly created plan
+            $StripeSubscription->plan = $BusinessPlanID;
+            $StripeSubscription->save();
+
+            $objStripeSubscription->stripe_subscription_id = $StripeSubscription->id;
+
+            if ($objStripeSubscription->update())
+                return true;
+
+        } catch (Exception $e) {
+            print_r($e->getMessage());
+            die();
+        }
+
+        return false;
     }
     
     private function createAuthorizeDotNetPaymentProfile($ccParameters) {
@@ -138,6 +329,7 @@ class PaymentService extends BaseService {
         
         $profile = $authorizeDotNet->createCustomerProfile($customerProfileParameters);
         if (!$profile) {
+            throw new \Exception('Could not create AuthorizeDotNetPayment Customer Profile');
             return false;
         }
         
@@ -149,6 +341,57 @@ class PaymentService extends BaseService {
         }
         
         return $profile;
+    }
+
+    private function updateStripePaymentProfile($ccParameters) {
+        $required = ['userId', 'tokenID'];
+        $supplied = array_keys($ccParameters);
+        $intersect = array_intersect($supplied, $required);
+
+        if (count($intersect) !== count($required)) {
+            return false;
+        }
+
+        $user = Users::query()
+            ->where("id = :id:")
+            ->bind(["id" => $userId])
+            ->execute()
+            ->getFirst();
+        $agency = Agency::query()
+            ->where("agency_id = :agency_id:")
+            ->bind(["agency_id" => $user->agency_id])
+            ->execute()
+            ->getFirst();
+
+        $responseParameters = ['status' => false];
+        $Errors = [];
+        $userId = $ccParameters['userId'];
+
+        //TODO: This needs to change, saving for last.  Not sure on behavior if stripe key not available.
+        $StripeSecretKey = $agency->stripe_account_secret ?: $this->config->stripe->secret_key;
+        try {
+            \Stripe\Stripe::setApiKey($StripeSecretKey);
+            $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
+            if (!$objStripeSubscription->stripe_customer_id) {
+                // Need to create a profile.  Ideally, this shouldn't really be called.
+                if ($this->createStripePaymentProfile($ccParameters))
+                    $responseParameters['status'] = true;
+            } else {
+                $StripeCustomer = \Stripe\Customer::retrieve($objStripeSubscription->stripe_customer_id);
+                $StripeCustomer->source = $ccParameters['tokenID'];
+                $StripeCustomer->save();
+
+            }
+        } catch (Exception $e) {
+            $Errors[] = $e->getMessage();
+        }
+
+        if(count($Errors)) {
+            $responseParameters['Errors'] = $Errors;
+            $responseParameters['status'] = false;
+        }
+
+        return $responseParameters;
     }
     
     private function updateAuthorizeDotNetPaymentProfile($ccParameters) {
@@ -229,13 +472,14 @@ class PaymentService extends BaseService {
             $parameters['customerPaymentProfileId'] = $customerPaymentProfile->getCustomerPaymentProfileId();
             $parameters['customerAddressId'] = $shippingAddresses->getCustomerAddressId();
             $parameters['subscriptionName'] = "Review Velocity Subscription";
-            $parameters['intervalLength'] = $this->config->authorizeDotNet->intervalLength;
+            $parameters['intervalLength'] = $subscriptionParameters['intervalLength'] ?: $this->config->authorizeDotNet->intervalLength;
             $parameters['unit'] = $this->config->authorizeDotNet->unit;
             $parameters['startDate'] = date("Y-m-d");
             $parameters['totalOccurences'] = $this->config->authorizeDotNet->totalOccurences;
             $parameters['amount'] = round($subscriptionParameters['price'], 2);
             
             $subscriptionId = $authorizeDotNetPayment->createSubscriptionForCustomer($parameters);
+
             if (!$subscriptionId) {
                 return false;
             }
@@ -249,7 +493,8 @@ class PaymentService extends BaseService {
             
             $parameters['subscriptionId'] = $subscriptionId;
             $parameters['amount'] = $subscriptionParameters['price'];
-            
+            $parameters['intervalLength'] = $subscriptionParameters['intervalLength'] ?: $this->config->authorizeDotNet->intervalLength;
+
             $status = $authorizeDotNetPayment->updateSubscriptionForCustomer($parameters);
             if(!$status) {
                 return false;

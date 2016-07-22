@@ -11,7 +11,8 @@
         </div>
     </div>
     <div class="row medium-vertical-margins">
-        <button class="btn btn-primary center-block" type="button" id="PreviewButton">Preview Landing Page</button>
+        <div class="col-xs-4 col-xs-offset-2"><a href="sales" target="_blank"><button class="btn btn-primary center-block" type="button" id="PreviewButton">Preview Landing Page</button></a></div>
+        <div class="col-xs-4"><button class="btn btn-primary center-block" type="button" id="SaveButton">Save Changes</button></div>
     </div>
 
     <div class="row small-vertical-margins">
@@ -87,11 +88,10 @@
         $('#SecondaryColor').change(function() {
             $('#SecondarySquare').css('background-color', $(this).val());
             $('#SecondarySquare').css('border-color', $(this).val());
-
         });
 
-        $('#PreviewButton').click(function() {
-            $('#Step2Form').attr("action", '/agencysignup/sales');
+        $('#SaveButton').click(function() {
+            $('#Step2Form').attr("action", '/agencysignup/step2');
             $('#Step2Form').submit();
         });
 
@@ -100,5 +100,4 @@
             $('#Step2Form').submit();
         });
     });
-
 </script>

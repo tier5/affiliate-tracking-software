@@ -90,6 +90,9 @@ class AuthorizeDotNet {
         } else {
 
             $errorMessages = $response->getMessages()->getMessage();
+            print_r($errorMessages);
+            die();
+            throw new \Exception($errorMessages);
 
         }
         

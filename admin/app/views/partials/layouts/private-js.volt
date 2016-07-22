@@ -70,5 +70,4 @@
 <!-- <script src="/js/pdf-viewer.js" type="text/javascript"></script> -->
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script src="/js/card-js.min.js"></script>
 <script src="/js/login.js"></script>

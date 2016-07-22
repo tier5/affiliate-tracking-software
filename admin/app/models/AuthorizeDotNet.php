@@ -18,6 +18,10 @@ class AuthorizeDotNet extends Model
     public $update_at;
     public $deleted_at;
 
+    public function initialize() {
+        $this->skipAttributes(['credit_card_type']);
+    }
+
     /**
      * Validation method for model.
      */

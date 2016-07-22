@@ -48,5 +48,9 @@ return new \Phalcon\Config(array(
     ),
     'maxSignup' => array(
         'perday' => '0', //zero equals infinite
-    )
+    ),
+    'stripe' => [
+        'secret_key'        => '',
+        'publishable_key'   => '',
+    ],
 ));
