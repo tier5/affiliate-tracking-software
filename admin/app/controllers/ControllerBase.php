@@ -10,6 +10,7 @@ use Vokuro\Models\FacebookScanning;
 use Vokuro\Models\GoogleScanning;
 use Vokuro\Models\Location;
 use Vokuro\Models\LocationNotifications;
+use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\Review;
 use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\ReviewsMonthly;
@@ -687,7 +688,7 @@ class ControllerBase extends Controller {
             $this->view->users = $users;
     }
 
-    public function importGoogle($Obj, $location, &$foundagency) {
+    public function importGoogle($Obj, $location, &$foundagency = null) {
         $google = new GoogleScanning();
 
         $google_reviews = $google->get_business($Obj->api_id);
@@ -700,6 +701,8 @@ class ControllerBase extends Controller {
             $Obj->original_rating = $Obj->rating;
             $Obj->original_review_count = $Obj->review_count;
         }
+
+        $Obj->review_count = count($google_reviews['reviews']);
 
         $Obj->save();
 
@@ -720,23 +723,24 @@ class ControllerBase extends Controller {
                     'time_created' => date('Y-m-d H:i:s', $reviewDetails['time']),
                     'user_name' => $reviewDetails['author_name'],
                     'user_id' => $reviewDetails['author_url'],
-                    'user_image' => (isset($reviewDetails['profile_photo_url']) ? $reviewDetails['profile_photo_url'] : ''),
+                    'user_image' => $reviewDetails['profile_photo_url'] ? $reviewDetails['profile_photo_url'] : '',
                     //'external_id' => $reviewDetails['id'],  google has no review id
                     'location_id' => $location->location_id,
                 ));
                 //save now
                 $r->save();
 
-                //add agency to our found array
-                if (isset($foundagency[$location->agency_id])) {
-                    $foundagency[$location->agency_id] .= ', ';
-                } else {
-                    $foundagency[$location->agency_id] = '';
+                if($foundagency) {
+                    //add agency to our found array
+                    if (isset($foundagency[$location->agency_id])) {
+                        $foundagency[$location->agency_id] .= ', ';
+                    } else {
+                        $foundagency[$location->agency_id] = '';
+                    }
+                    $foundagency[$location->agency_id] .= $location->name;
                 }
-                $foundagency[$location->agency_id] .= $location->name;
             }
         } // go to the next google review
-
         return $Obj;
     }
 

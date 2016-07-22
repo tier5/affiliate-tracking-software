@@ -171,6 +171,13 @@ $di->set('userManager', new UserManager($config));
  */
 $di->set('subscriptionManager', new SubscriptionManager($config, $di));
 
+
+/**
+ * Review Service
+ */
+
+$di->set('ReviewService', new \Vokuro\Services\Reviews($config,$di));
+
 /**
  * Sms Manager
  */
