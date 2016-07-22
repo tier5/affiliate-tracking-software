@@ -51,16 +51,16 @@ if (isset($invite)) {
   <div class="rounded-wrapper star">
     <div class="rounded">
       <?php
-      if (isset($logo_setting) && $logo_setting != '') {
+      if ($logo_setting != '') {
         ?>
       <div class="page-logo">
-        <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
+        <img src="{{ logo_setting }}" alt="logo" class="logo-default" /> </a>
       </div>
       <?php
-      } else if (isset($name) && $name != '') {
+      } else if ($name != '') {
         ?>
       <div class="page-logo">
-        <?=$name?>
+        {{ name }}
       </div>
       <?php
       }
@@ -81,16 +81,16 @@ if (isset($invite)) {
   <div class="rounded-wrapper">
     <div class="rounded">
       <?php
-      if (isset($logo_setting) && $logo_setting != '') {
+      if ($logo_setting != '') {
         ?>
       <div class="page-logo">
-        <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
+        <img src="{{ logo_setting }}" alt="logo" class="logo-default" /> </a>
       </div>
       <?php
-      } else if (isset($name) && $name != '') {
+      } else if ($name != '') {
         ?>
       <div class="page-logo">
-        <?=$name?>
+        {{ name }}
       </div>
       <?php
       }
