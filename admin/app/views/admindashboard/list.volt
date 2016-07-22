@@ -74,7 +74,7 @@ if ($agencies) {
     $(function(){
         $('tbody tr td.name').bind('click',function(e){
             e.stopPropagation();
-           var edit_link = $(this).find('i.icon-pencil').parent().attr('href');
+           var edit_link = $(this).parent().find('i.icon-pencil').parent().attr('href');
             window.location = edit_link;
         });
 
