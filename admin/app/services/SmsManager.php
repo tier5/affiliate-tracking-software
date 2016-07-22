@@ -6,14 +6,14 @@ use Vokuro\Models\Location;
 use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\ReviewsMonthly;
 
-class SmsManager extends BaseService {  
+class SmsManager extends BaseService {
 
-    static $reviewPercentage = 10;
-    
+    public static $reviewPercentage = 10;
+
     function __construct($config) {
         parent::__construct($config);
     }
-    
+
     public function getBusinessSmsQuotaParams($locationId) {
 
         $smsQuotaParams['hasUpgrade'] = false;
@@ -21,47 +21,47 @@ class SmsManager extends BaseService {
         /* Sms sent last month */
         $lastMonthStartTime = date("Y-m-d", strtotime("first day of previous month"));
         $lastMonthEndTime = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
-       
-        $smsQuotaParams['smsSentLastMonth'] = ReviewInvite::query() 
+
+        $smsQuotaParams['smsSentLastMonth'] = ReviewInvite::query()
             ->columns("review_invite_id")
-            ->where('date_sent >= :startTime:') 
+            ->where('date_sent >= :startTime:')
             ->andWhere('date_sent >= :endTime:')
             ->andWhere('location_id >= :locationId:')
             ->andWhere('sms_broadcast_id IS NULL')
             ->bind([
-                "startTime" => $lastMonthStartTime, 
+                "startTime" => $lastMonthStartTime,
                 "endTime" => $lastMonthEndTime,
                 "locationId" => $locationId
                 ])
             ->execute()
             ->count();
-        
+
         /* Sms sent this month */
         $thisMonthStartTime = date("Y-m-d", strtotime("first day of this month"));
         $thisMonthEndTime = date("Y-m-d 23:59:59", strtotime("last day of this month"));
 
-        $smsQuotaParams['smsSentThisMonth'] = ReviewInvite::query() 
+        $smsQuotaParams['smsSentThisMonth'] = ReviewInvite::query()
             ->columns("review_invite_id")
-            ->where('date_sent >= :startTime:') 
+            ->where('date_sent >= :startTime:')
             ->andWhere('date_sent >= :endTime:')
             ->andWhere('location_id >= :locationId:')
             ->andWhere('sms_broadcast_id IS NULL')
             ->bind([
-                "startTime" => $thisMonthStartTime, 
+                "startTime" => $thisMonthStartTime,
                 "endTime" => $thisMonthEndTime,
                 "locationId" => $locationId
                 ])
             ->execute()
             ->count();
-        
-        /* Reviews sent last month */  
+
+        /* Reviews sent last month */
         $smsQuotaParams['numReviewsLastMonth'] = ReviewsMonthly::sum(
             [
                 "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
                 "conditions" => "month = " . date("m", strtotime("first day of previous month")) . " AND year = '" . date("Y", strtotime("first day of previous month")) . "' AND location_id = " . $locationId,
             ]
         );
-        
+
         /* Reviews sent 2 months ago */
         $smsQuotaParams['numReviewsTwoMonthsAgo'] = ReviewsMonthly::sum(
             [
@@ -69,57 +69,57 @@ class SmsManager extends BaseService {
                 "conditions" => "month = " . date("m", strtotime("-2 months", time())) . " AND year = '" . date("Y", strtotime("-2 months", time())) . "' AND location_id = " . $locationId,
             ]
         );
-        
+
         /* Reviews total last month */
         $smsQuotaParams['totalReviewsLastMonth'] = $smsQuotaParams['numReviewsLastMonth'] - $smsQuotaParams['numReviewsTwoMonthsAgo'];
-    
+
         /* Reviews this month */
         $smsQuotaParams['numReviewsThisMonth'] = ReviewsMonthly::sum(
-            [        
+            [
                 "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
                 "conditions" => "month = " . date("m", strtotime("first day of this month")) . " AND year = '" . date("Y", strtotime("first day of this month")) . "' AND location_id = " . $locationId,
             ]
         );
-        
+
         /* Reviews total this month */
         $smsQuotaParams['totalReviewsThisMonth'] = $smsQuotaParams['numReviewsThisMonth'] - $smsQuotaParams['totalReviewsLastMonth'];
-        
+
         /* Set the agency SMS limit */
         $location = Location::findFirst(
-            [ 
-                "location_id = :location_id:", 
-                "bind" => [ "location_id" => $locationId ]        
+            [
+                "location_id = :location_id:",
+                "bind" => [ "location_id" => $locationId ]
             ]
         );
         if ($location) {
-        
+
             $smsQuotaParams['reviewGoal'] = $location->review_goal;
             $smsQuotaParams['percentNeeded'] = SmsManager::$reviewPercentage;
             $smsQuotaParams['totalSmsNeeded'] = round(
                     $smsQuotaParams['reviewGoal'] / ($smsQuotaParams['percentNeeded'] * 0.1)
             );
-            
+
         } else {
-            
+
             $smsQuotaParams['reviewGoal'] = 0;
             $smsQuotaParams['percentNeeded'] = 0;
             $smsQuotaParams['totalSmsNeeded'] = 0;
-            
+
         }
-        
+
         if (!$smsQuotaParams['hasUpgrade']) {
-            $smsQuotaParams['percent'] = 
-                ($smsQuotaParams['totalSmsNeeded'] > 0 ? 
-                floatval(number_format((float)($smsQuotaParams['smsSentThisMonth'] / $smsQuotaParams['totalSmsNeeded']) * 100, 0, '.', '')) : 
+            $smsQuotaParams['percent'] =
+                ($smsQuotaParams['totalSmsNeeded'] > 0 ?
+                floatval(number_format((float)($smsQuotaParams['smsSentThisMonth'] / $smsQuotaParams['totalSmsNeeded']) * 100, 0, '.', '')) :
                 100);
             $smsQuotaParams['percent']  > 100 ? 100 : $smsQuotaParams['percent'] ;
-        } else { 
+        } else {
             $smsQuotaParams['percent'] = 100;
         }
-         
+
         return $smsQuotaParams;
     }
-    
+
     public function getAgencySmsQuotaParams() {
 
         // $smsQuotaParams['showUpgradeMessage'] = false;
@@ -141,7 +141,7 @@ class SmsManager extends BaseService {
         //         $this->view->is_upgrade = true;
         //     }
         // }
-        
+
     }
-    
+
 }

@@ -8,3 +8,4 @@ admin/vendor/*
 /nbproject/private/
 .idea
 admin/public/img/agency_logos
+/info.php
