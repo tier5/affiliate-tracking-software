@@ -16,7 +16,7 @@ class UserControlController extends ControllerBase
         if ($this->session->has('auth-identity')) {
             $this->view->setTemplateBefore('private');
         } else {
-          $this->view->setTemplateBefore('login');        
+          $this->view->setTemplateBefore('login');
         }
       parent::initialize();
     }
@@ -33,9 +33,20 @@ class UserControlController extends ControllerBase
     {
         $this->tag->setTitle('Review Velocity | Confirm email');
         $code = $this->dispatcher->getParam('code');
+        $email = $this->dispatcher->getParam('email');
 
         $confirmation = EmailConfirmations::findFirstByCode($code);
+        if($confirmation->confirmed == 'N'){
+            $confirmation->confirmed = 'Y';
+            $confirmation->active = 'Y';
+            $confirmation->save();
+        }
 
+        //set user to active... need to check this out...
+        if($confirmation) {
+            $confirmation->user->active = 'Y';
+            $confirmation->user->save();
+        }
         if (!$confirmation) {
             return $this->dispatcher->forward(array(
                 'controller' => 'index',
@@ -43,10 +54,11 @@ class UserControlController extends ControllerBase
             ));
         }
 
-        if ($confirmation->confirmed != 'N') {
+        if ($confirmation->confirmed == 'Y') {
             return $this->dispatcher->forward(array(
                 'controller' => 'session',
-                'action' => 'login'
+                'action' => 'login',
+                'params'=>['email'=>$email]
             ));
         }
 
@@ -57,6 +69,7 @@ class UserControlController extends ControllerBase
         /**
          * Change the confirmation to 'confirmed' and update the user to 'active'
          */
+        $confirmation->save();
         if (!$confirmation->save()) {
 
             foreach ($confirmation->getMessages() as $message) {
@@ -88,7 +101,8 @@ class UserControlController extends ControllerBase
         }
 
         //$this->flash->success('The email was successfully confirmed');
-        
+        dd('here');
+
         return $this->dispatcher->forward(array(
             'controller' => 'session',
             'action' => 'login'
@@ -139,7 +153,7 @@ class UserControlController extends ControllerBase
         $this->auth->authUserById($resetPassword->usersId);
 
         $this->flash->success('Please reset your password');
-        
+
         return $this->dispatcher->forward(array(
             'controller' => 'users',
             'action' => 'changePassword'

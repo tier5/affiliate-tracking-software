@@ -1,7 +1,6 @@
 <?php
 
 namespace Vokuro\Controllers;
-
 use Vokuro\Utils;
 use Vokuro\ArrayException;
 use Phalcon\Tag;
@@ -17,7 +16,6 @@ use Vokuro\Models\Location;
 use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\ResetPasswords;
 use Vokuro\Models\Users;
-
 /**
  * Controller used handle non-authenticated session actions like login/logout, user signup, and forgotten passwords
  */
@@ -43,8 +41,7 @@ class SessionController extends ControllerBase {
         $this->tag->setTitle('Review Velocity | Subscription');
     }
 
-    public function submitSignupAction($subscriptionToken) {
-
+    public function submitSignupAction() {
         try {
 
             /* Get services */
@@ -70,16 +67,20 @@ class SessionController extends ControllerBase {
 
             $isemailunuique = $user->validation();
             if (!$isemailunuique) {
-                throw new ArrayException("", 0, null, ['That email address is already taken.']);
+                throw new ArrayException("Email address is not unique", 0, null, ['That email address is already taken.']);
             }
+
 
             $uservalid = $form->isValid($this->request->getPost());
             if (!$uservalid) {
-                throw new ArrayException("", 0, null, implode('The submitted user info is invalid.', $form->getMessages()));
-            }
+                $messages = $form->getMessages();
+                if(!$messages) $messages = ['Invalid User'];
 
+                throw new ArrayException("The user was not valid", 0, null, $messages);
+            }
             // First create an agency
             $agency_name = $this->request->getPost('agency_name', 'striptags');
+            if(!$agency_name) $agency_name = $this->request->getPost('name','striptags');
             $agency = new Agency();
             $agency->assign(array(
                 'name' => $agency_name,
@@ -87,17 +88,18 @@ class SessionController extends ControllerBase {
                 'date_created' => date('Y-m-d H:i:s'),
                 'signup_page' => 2, //go to the next page,
                 'agency_type_id' => 2,
+                'email'=>$this->request->getPost('email')
             ));
 
             if (!$agency->save()) {
-                throw new ArrayException("", 0, null, $agency->getMessages());
+                throw new ArrayException('Could not save Agency', 0, null, $agency->getMessages());
             }
 
             $user->agency_id = $agency->agency_id;
+            $user->send_confirmation = true;
             if (!$user->save()) {
-                throw new ArrayException("", 0, null, $user->getMessages());
+                throw new ArrayException('Could not save the user', 0, null, $user->getMessages());
             }
-
             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
             $_SESSION['email'] = $this->request->getPost('email');
 
@@ -109,7 +111,7 @@ class SessionController extends ControllerBase {
 
             $this->db->rollback();
 
-            foreach($e->getOptions() as $message) {
+            if($e->getOptions()) foreach($e->getOptions() as $message) {
                 $this->flash->error($message);
             }
 
@@ -131,14 +133,13 @@ class SessionController extends ControllerBase {
             $isValid = $subscriptionManager->isValidInvitation($subscriptionToken);
 
             /* Simply redirect to the home if we are logged in or the form is invalid  */
-            if ($userId || !$isValid) {
-                $this->response->redirect('/');
+            if ($userId || (!$isValid && $this->request->isPost())) {
+                //$this->response->redirect('/');
                 return;
                 // $this->view->setTemplateBefore('private');
             }
 
             Utils::noSubDomains(1, $this->validSubDomains, $subscriptionToken);
-
             $this->view->setTemplateBefore('login');
             $this->tag->setTitle('Review Velocity | Sign up');
             $form = new SignUpForm();
@@ -158,39 +159,14 @@ class SessionController extends ControllerBase {
             $this->view->pick('session/signup');
 
         } catch(ArrayException $e) {
+            print $e->getMessage();
+            print_r($e->getTraceAsString());
 
             foreach($e->getOptions() as $message) {
                 $this->flash->error($message);
             }
         }
     }
-
-    /*
-    private function createDefaultSubscriptionPlan($userId) {
-        $subscriptionManager = $this->di->get('subscriptionManager');
-
-        $newSubscriptionParameters = [];
-
-        $pricingPlan = $subscriptionManager->getPricingPlanByName('Review Velocity - Default');
-        if ($pricingPlan) {
-            $newSubscriptionParameters['userAccountId'] = $userId;
-            $newSubscriptionParameters['freeLocations'] = 0;
-            $newSubscriptionParameters['freeSmsMessagesPerLocation'] = 0;
-            $newSubscriptionParameters['pricingPlanId'] = $pricingPlan['id'];
-        } else {
-            $newSubscriptionParameters['userAccountId'] = $userId;
-            $newSubscriptionParameters['freeLocations'] = 1;
-            $newSubscriptionParameters['freeSmsMessagesPerLocation'] = 100;
-            $newSubscriptionParameters['pricingPlanId'] = "Unpaid";
-        }
-
-        $created = $subscriptionManager->createSubscriptionPlan($newSubscriptionParameters);
-        if (!$created) {
-            $this->flash->error('Failed to create default subscription plan');
-        }
-    }
-     *
-     */
 
     /**
      * Sign up form, Step 2 (Add Location)
@@ -241,7 +217,8 @@ class SessionController extends ControllerBase {
                 'region_id' => $this->request->getPost('region_id', 'striptags'),
                 'date_created' => date('Y-m-d H:i:s'),
             ));
-
+            //
+            //
 
             if (!$loc->save()) {
                 $this->flash->error($loc->getMessages());
@@ -451,15 +428,14 @@ class SessionController extends ControllerBase {
      * Sign up form, Step 5 (Share)
      */
     /* public function signup5Action($subscription_id = 0) { */
-    public function signup5Action($pricingProfileToken = 0) {
+    public function signup5Action($pricingProfileToken = 0,$email = null) {
 
         /* $this->noSubDomains(5, $subscription_id); */
         Utils::noSubDomains(5, $this->validSubDomains, $pricingProfileToken);
 
         $this->view->setTemplateBefore('signup');
         $this->tag->setTitle('Review Velocity | Sign up | Step 5 | Share');
-        $this->view->messages_sent = false;
-
+        $this->view->messages_sent = false;;
         //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
         // If there is no identity available the user is redirected to index/index
@@ -488,8 +464,8 @@ class SessionController extends ControllerBase {
             $message = $this->view->share_message;
 
             //loop through all the emails
-            for ($i = 1; $i < 12; $i++) {
-                if (isset($_POST['email_' . $i])) {
+            for ($i = 1; $i < 16; $i++) {
+                if ($_POST['email_' . $i]) {
                     $email = $_POST['email_' . $i];
                     if ($email != '') {
                         try {
@@ -564,9 +540,12 @@ class SessionController extends ControllerBase {
      * Starts a session in the admin backend
      */
     public function loginAction() {
+
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Review Velocity | Login');
         $form = new LoginForm();
+        $email = $this->dispatcher->getParam('email');
+        $this->view->email = $email;
 
         try {
             if (!$this->request->isPost()) {
@@ -606,7 +585,6 @@ class SessionController extends ControllerBase {
                         if ($agency->signup_page > 0)
                             $return = '/session/signup' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : '');
                     }
-
                     return $this->response->redirect($return);
                 }
             }
@@ -673,6 +651,7 @@ class SessionController extends ControllerBase {
 
     /**
      * This is Search using Google place API.
+     * This is used at: /session/signup2/
      * @return Json
      */
     public function googlesearchapiAction() {
@@ -756,7 +735,7 @@ class SessionController extends ControllerBase {
                                       $this->encode($country) . "', '" . $this->encode(@$arrResultFindPlaceDetail['result']['formatted_phone_number']) . "', '" .
                                       $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lat']) . "', '" .
                                       $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng']) . "');return false;\" href=\"javascript:void(0);\"";
-                                    $strButton = "<a id=\"business-name-link\" " . $strURL . " style=\"float: right; height: 40px; line-height: 24px;\" class=\"btnLink\" >Choose This Listing</a>";
+                                    $strButton = "<a class=\"business-name-link\" id=\"business-name-link\" " . $strURL . " style=\"float: right; height: 40px; line-height: 24px;\" class=\"btnLink\" >Choose This Listing</a>";
                                 } else {
                                     //the location was found, so tell the user that
                                     $strURL = "href=\"javascript:void(0);\"";
@@ -765,7 +744,7 @@ class SessionController extends ControllerBase {
 
 
                                 $strHTML .= "<div class=\"border-box-s\" style=\"min-height: 110px;\">
-                    <p class=\"business-name\"><a id=\"business-name-link\" " . $strURL . ">" . $returnBusinessName . "</a></p>
+                    <p class=\"business-name\"><a class=\"business-name-link\" id=\"business-name-link\" " . $strURL . ">" . $returnBusinessName . "</a></p>
                     " . $strButton . "
                     <ul>
                     <li>" . $returnAddress . "</li>
@@ -797,24 +776,6 @@ class SessionController extends ControllerBase {
             echo json_encode($responseArr);
             exit;
         }
-    }
-
-    function encode($val) {
-        if ($val) {
-            return str_replace("'", "%27", str_replace("\"", "%22", $val));
-        } else {
-            return '';
-        }
-    }
-
-    function extractFromAdress($components, $type) {
-        for ($i = 0; $i < count($components); ++$i) {
-            for ($j = 0; $j < count($components[$i]['types']); ++$j) {
-                if ($components[$i]['types'][$j] == $type)
-                    return $components[$i]['short_name'];
-            }
-        }
-        return "";
     }
 
     /**

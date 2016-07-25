@@ -49,6 +49,7 @@ class EmailConfirmations extends Model
      */
     public function afterCreate()
     {
+        print_r($this);
       try {
         $this->getDI()
             ->getMail()
@@ -57,6 +58,7 @@ class EmailConfirmations extends Model
         ));
       } catch (Exception $e) {
         //do nothing
+          dd($e);
       }
     }
 

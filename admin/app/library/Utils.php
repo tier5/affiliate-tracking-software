@@ -35,14 +35,15 @@ class Utils {
         return $purifier->purify($dirtyHtml);
     }
 
-
     /**
      * @TODO : determine why this existed
      * @param $page
      * @param $validSubdomains
      * @param $subscription_id
      */
-    public static function noSubDomains($page, $validSubdomains, $subscription_id) {
+    public static function noSubDomains($page = null, $validSubdomains, $subscription_id) {
+        //sigh
+        error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);
         $http_host = $_SERVER['HTTP_HOST'];
         $sub = array_shift(explode(".", $http_host));
 

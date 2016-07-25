@@ -29,7 +29,6 @@ class SignUpForm extends Form
     ));
 
     $this->add($name);
-
     // Email
     $email = new Text('email');
 

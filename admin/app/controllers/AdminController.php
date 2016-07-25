@@ -181,7 +181,7 @@ class AdminController extends ControllerBase {
     /**
      * Confirms an e-mail, if the user must change its password then changes it
      */
-    public function confirmEmailAction($code, $email) {
+    public function confirmEmailAction($code) {
         $confirmation = UserEmailConfirmations::findFirstByCode($code);
 
         if (!$confirmation) {

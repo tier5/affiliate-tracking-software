@@ -18,6 +18,7 @@ use Vokuro\Models\SharingCode;
 use Vokuro\Models\Users;
 use Vokuro\Models\UsersSubscription;
 use Vokuro\Models\YelpScanning;
+use Vokuro\Services\Reviews;
 use Vokuro\Services\ServicesConsts;
 use Services_Twilio;
 use Services_Twilio_RestException;
@@ -708,7 +709,7 @@ class ControllerBase extends Controller {
 
         //now import the reviews (if not already in the database)
         //loop through reviews
-        if($google_reviews['reviews']) foreach($google_reviews['reviews'] as $reviewDetails) {
+        if($google_reviews && $google_reviews['reviews']) foreach($google_reviews['reviews'] as $reviewDetails) {
             //check if the review is already in the db
             $conditions = 'time_created = :time_created: AND rating_type_id = 3 AND location_id = ' . $location->location_id;
             $parameters = array("time_created" => date("Y-m-d H:i:s", $reviewDetails['time']));
@@ -741,6 +742,19 @@ class ControllerBase extends Controller {
                 }
             }
         } // go to the next google review
+
+        $s = $this->di->get('ReviewService');
+        /**
+         * @var $s \Vokuro\Services\Reviews
+         */
+        try {
+            $s->updateReviewCountByTypeAndLocationId(3, $location->location_id);
+
+        }catch( \Exception $e){
+            print "there was an error \n";
+            print_r($e->getTraceAsString());
+            exit();
+        }
         return $Obj;
     }
 
@@ -1061,5 +1075,26 @@ class ControllerBase extends Controller {
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent($json);
         return $this->response;
+    }
+    //gave it public, not sure how it is used throughout the app
+    public function encode($val)
+    {
+        if ($val) {
+            return str_replace("'", "%27", str_replace("\"", "%22", $val));
+        } else {
+            return '';
+        }
+    }
+    //also gave this public
+    public function extractFromAdress($components, $type)
+    {
+        if(!is_array($components)) throw new \Exception('$components, the first argument must be an array');
+        for ($i = 0; $i < count($components); ++$i) {
+            for ($j = 0; $j < count($components[$i]['types']); ++$j) {
+                if ($components[$i]['types'][$j] == $type)
+                    return $components[$i]['short_name'];
+            }
+        }
+        return "";
     }
 }
