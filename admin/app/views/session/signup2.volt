@@ -71,7 +71,7 @@
   </div>
   <div style="clear: both;">&nbsp;</div>
   <input type="hidden" name="form" value="2" />
-  <input type="hidden" id="name" name="name" />
+  <input type="hidden" id="name" required name="name" />
   <input type="hidden" id="phone" name="phone" />
   <input type="hidden" id="address" name="address" />
   <input type="hidden" id="locality" name="locality" />
@@ -112,7 +112,7 @@
     $('#location_name').on('click blur keyup',function(){
       updateBusinessName(this);
     });
-    
+
 
     // Scanning form validation and ajax submit
     $("#locationform1").validate({
@@ -165,8 +165,6 @@
             else {
               $("#relevant-result-list").html(response.HTML);
             }
-
-            bindBusinessClick();
           },
           error: function(e) {
             // void
@@ -174,7 +172,7 @@
         });
       }
     });
-
+    $('#register-form').validate();
 
 
 
