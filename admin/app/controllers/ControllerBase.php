@@ -810,6 +810,19 @@ class ControllerBase extends Controller {
             }
         } // go to the next yelp review
 
+        try {
+            $s = $this->di->get('ReviewService');
+            /**
+             * @var $s \Vokuro\Services\Reviews
+             */
+            $s->updateReviewCountByTypeAndLocationId(1, $location->location_id);
+
+        } catch (\Exception $e) {
+            print "there was an error \n";
+            print_r($e->getTraceAsString());
+            exit();
+        }
+
         return $Obj;
     }
 
@@ -967,6 +980,19 @@ class ControllerBase extends Controller {
                 } // go to the next facebook review
             }
         } //end checking for an access token
+
+        try {
+            $s = $this->di->get('ReviewService');
+            /**
+             * @var $s \Vokuro\Services\Reviews
+             */
+            $s->updateReviewCountByTypeAndLocationId(3, $location->location_id);
+
+        } catch (\Exception $e) {
+            print "there was an error \n";
+            print_r($e->getTraceAsString());
+            exit();
+        }
 
         return $Obj;
     }
