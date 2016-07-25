@@ -95,7 +95,7 @@
         </div>
         <!-- END LOGO -->
         <?php } ?>
-        <div class="copyright"> &copy; {{ date("Y") }} TEST All Rights Reserved. Review Velocity. <a href="/session/privacy">Privacy</a> | <a href="/session/terms">Terms</a></div>
+        <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. Review Velocity. <a href="/session/privacy">Privacy</a> | <a href="/session/terms">Terms</a></div>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
