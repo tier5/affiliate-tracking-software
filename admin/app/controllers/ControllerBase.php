@@ -689,7 +689,7 @@ class ControllerBase extends Controller {
             $this->view->users = $users;
     }
 
-    public function importGoogle($Obj, $location, &$foundagency = null) {
+    public function importGoogle($Obj, $location = null, &$foundagency = null) {
         $google = new GoogleScanning();
 
         $google_reviews = $google->get_business($Obj->api_id);
@@ -748,7 +748,7 @@ class ControllerBase extends Controller {
          * @var $s \Vokuro\Services\Reviews
          */
         try {
-            $s->updateReviewCountByTypeAndLocationId(3, $location->location_id);
+            if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(3, $location->location_id);
 
         }catch( \Exception $e){
             print "there was an error \n";
@@ -815,7 +815,7 @@ class ControllerBase extends Controller {
             /**
              * @var $s \Vokuro\Services\Reviews
              */
-            $s->updateReviewCountByTypeAndLocationId(1, $location->location_id);
+            if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(1, $location->location_id);
 
         } catch (\Exception $e) {
             print "there was an error \n";
@@ -826,7 +826,7 @@ class ControllerBase extends Controller {
         return $Obj;
     }
 
-    public function importFacebook($Obj, $location, &$foundagency) {
+    public function importFacebook($Obj, $location = null, &$foundagency = null) {
 
         $face = new FacebookScanning();
         $this->facebook_access_token = $face->getAccessToken();
@@ -986,7 +986,7 @@ class ControllerBase extends Controller {
             /**
              * @var $s \Vokuro\Services\Reviews
              */
-            $s->updateReviewCountByTypeAndLocationId(3, $location->location_id);
+            if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(3, $location->location_id);
 
         } catch (\Exception $e) {
             print "there was an error \n";
