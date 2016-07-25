@@ -80,7 +80,7 @@ function selectLocation(googleid, url, name, street_number, route, locality, adm
     var lat = unencode(lat);
     var lng = unencode(lng);
     ReputationLoop.location.name = name;
-    
+
     //making this use jQuery
     $("#name").val(name);
     $("#phone").val(formatted_phone_number);

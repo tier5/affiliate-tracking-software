@@ -105,26 +105,14 @@
 
   jQuery(document).ready(function($){
     var business_name = null;
-
-    var bindBusinessClick = function(){
-      $('a.business-name-link').bind('click',function(e){
-        console.log('we got a click');
-        return false;
-      });
-
-
-    }
-
     var updateBusinessName = function(el){
       business_name = $(el).val().trim();
-      console.log(business_name);
+      $('#name').val(business_name);
     }
     $('#location_name').on('click blur keyup',function(){
       updateBusinessName(this);
     });
-
-    //bind the business click
-    bindBusinessClick();
+    
 
     // Scanning form validation and ajax submit
     $("#locationform1").validate({
