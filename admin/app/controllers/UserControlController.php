@@ -3,6 +3,7 @@ namespace Vokuro\Controllers;
 
 use Vokuro\Models\EmailConfirmations;
 use Vokuro\Models\ResetPasswords;
+use Vokuro\Models\Users;
 
 /**
  * UserControlController
@@ -40,6 +41,14 @@ class UserControlController extends ControllerBase
             $confirmation->confirmed = 'Y';
             $confirmation->active = 'Y';
             $confirmation->save();
+        }
+
+        $user_id = $confirmation->usersId;
+
+        $user = Users::findFirst('id = '.$user_id);
+        if($user){
+            $user->active = 'Y';
+            $user->save();
         }
 
         //set user to active... need to check this out...
@@ -101,7 +110,6 @@ class UserControlController extends ControllerBase
         }
 
         //$this->flash->success('The email was successfully confirmed');
-        dd('here');
 
         return $this->dispatcher->forward(array(
             'controller' => 'session',
