@@ -187,6 +187,7 @@ class ControllerBusinessBase extends ControllerBase {
         }
         $markup .= "</select>";
         return $markup;
+
     }
 
     private function createSubscriptionPlan($user, $request) {
