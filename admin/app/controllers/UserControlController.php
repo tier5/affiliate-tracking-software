@@ -4,6 +4,7 @@ namespace Vokuro\Controllers;
 use Vokuro\Models\EmailConfirmations;
 use Vokuro\Models\ResetPasswords;
 use Vokuro\Models\Users;
+use Vokuro\Services\UserManager;
 
 /**
  * UserControlController
@@ -44,13 +45,13 @@ class UserControlController extends ControllerBase
         }
 
         $user_id = $confirmation->usersId;
-
-        $user = Users::findFirst('id = '.$user_id);
-        if($user){
+        $user = Users::findFirst('id = ' . $user_id);
+        if ($user) {
             $db = $this->dispatcher->getDI()->get('db');
-            //the freaking model update wouldn't save.. so I am doing this here..
-            //I am not happy or proud about this: Scott
-            $db->execute("UPDATE users set active = 'Y' where id = ".$user_id);
+            //the model update wouldn't save.. so I am doing this here..
+            //I am not happy or proud about this, but the ORM isn't saving it
+            //-Scott
+            $db->execute("UPDATE users set active = 'Y' where id = " . $user_id);
 
         }
 
