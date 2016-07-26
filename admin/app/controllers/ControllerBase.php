@@ -818,9 +818,6 @@ class ControllerBase extends Controller {
             if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(1, $location->location_id);
 
         } catch (\Exception $e) {
-            print "there was an error \n";
-            print_r($e->getTraceAsString());
-            exit();
         }
 
         return $Obj;

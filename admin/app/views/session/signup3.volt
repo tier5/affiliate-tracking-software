@@ -17,7 +17,7 @@
     <div class="col-md-6 col-sm-6" style="margin-top: 30px;">
       <div class="form-group">
         <label class="control-label">Business Name:</label>
-        <input class="form-control placeholder-no-fix" type="name" autocomplete="off" placeholder="Business Name" id="name" name="agency_name" value="<?=(isset($_POST['agency_name'])?$_POST["agency_name"]:(isset($location->name)?$location->name:''))?>" />
+        <input class="form-control placeholder-no-fix" type="name" required autocomplete="off" placeholder="Business Name" id="name" name="agency_name" value="<?=(isset($_POST['agency_name'])?$_POST["agency_name"]:(isset($location->name)?$location->name:''))?>" />
       </div>
 
       <div class="form-group">
@@ -121,7 +121,9 @@
     $('#sms_button_color').minicolors();
 
     $("#signup3form").on("submit", function(e){
-      if($('#logo_path').val() != ''){
+      var logo_path = $('#logo_path').val();
+      if(logo_path && logo_path !== ''){
+        console.log(logo_path);
         var ext = $('#logo_path').val().split('.').pop().toLowerCase();
         if($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
           e.preventDefault();
@@ -218,6 +220,8 @@
       });
       return false;
     });
+    console.log('this ran');
+    $('#signup3form').validate();
 
   });
 </script>

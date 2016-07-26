@@ -390,7 +390,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="<?=(isset($_POST['name'])?$_POST[" name"]:'')?>"
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="<?=(isset($_POST['name']))?$_POST[" name"]:'')?>"
                                                 />
                                             </div>
                                         </div>
