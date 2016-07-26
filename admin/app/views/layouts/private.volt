@@ -1,32 +1,30 @@
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]>
-<html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<!--<![endif]-->
-<!-- BEGIN HEAD -->
+    <!--<![endif]-->
+    <!-- BEGIN HEAD -->
 
-<head>
-    <meta charset="utf-8"/>
-    {{ get_title() }}
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <meta content="" name="description"/>
-    <meta content="" name="author"/>
+    <head>
+        <meta charset="utf-8" />
+        {{ get_title() }}
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta content="" name="description" />
+        <meta content="" name="author" />
 
-    <!-- include needed css in partial -->
-    {% include "partials/layouts/private-css.volt" %}
+        <!-- include needed css in partial -->
+        {%  include "partials/layouts/private-css.volt" %}
 
-    <!-- output css based on controller -->
-    {{ assets.outputCss() }}
+        <!-- output css based on controller -->
+        {{ assets.outputCss() }}
 
-    <link rel="shortcut icon" href="favicon.ico"/>
-    <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="/js/vendor/fancybox/jquery.fancybox.pack.js"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    {% if main_color_setting %}
+        <link rel="shortcut icon" href="favicon.ico" />
+        <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="/js/vendor/fancybox/jquery.fancybox.pack.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        {% if main_color_setting %}
         <style>
             .page-header.navbar {
                 background-color: {{ main_color_setting }};
@@ -38,8 +36,7 @@
 
             .page-sidebar .page-sidebar-menu > li > a,
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a {
-                border-top: {{ main_color_setting }};
-                color: #FFFFFF;
+                border-top: {{ main_color_setting }}; color: #FFFFFF;
             }
 
             .page-sidebar .page-sidebar-menu > li.active.open > a,
@@ -82,9 +79,9 @@
                 color: #FFFFFF !important;
             }
         </style>
-    {% endif %}
-</head>
-<!-- END HEAD -->
+        {% endif %}
+    </head>
+    <!-- END HEAD -->
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" data-ccprompt="{{ ccInfoRequired }}" data-paymentprovider="{{ paymentService }}">
 <!-- BEGIN HEADER -->
@@ -108,16 +105,16 @@
                 {% if haspaid %}
                     {% if not is_admin and agencytype != 'agency' %}
                         <li class="" id="">
-                            <a href="#sendreviewinvite" class="fancybox"><img src="/img/btn_send_review_invite.png" alt="Send Review Invite"/></a>
+                            <a href="#sendreviewinvite" class="fancybox"><img src="/img/btn_send_review_invite.png" alt="Send Review Invite" /></a>
                         </li>
-                    {% endif %}
-                    {% if location_id %}
-                        {% if locations %}
-                            <li class="location-header" id="">
+                        {%  endif %}
+                        {%  if location_id %}
+                        {%  if locations %}
+                        <li class="location-header" id="">
                             <span id="locationset">
                                 Location: {{ location.name }}
-                                {% if locations|length > '1' %}
-                                    <a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a>
+                                {%  if locations|length > '1' %}
+                                <a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a>
                                 {% endif %}
                             </span>
                             <span id="locationnotset" style="display: none;"><form action="/" method="post">
@@ -131,55 +128,55 @@
                                     </select>
                                     <input type="submit" class="btn red" value="Change"></form>
                             </span>
-                            </li>
+                        </li>
                         {% endif %}
-                    {% endif %}
-                    <li class="dropdown dropdown-user" style="margin-left: 20px;">
-                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                            <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> {{ name }} </span>
-                            <i class="fa fa-angle-down" style="color: #484848;"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-default">
-                            <li>
-                                <a href="#">
-                                    <i class="icon-user"></i> My Profile </a>
-                            </li>
-                            <li>
-                                <a href="/session/logout">
-                                    <i class="icon-key"></i>
-                                    <span class="title">Log Out</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                {% endif %}
-            </ul>
+                        {%  endif %}
+                        <li class="dropdown dropdown-user" style="margin-left: 20px;">
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> {{ name }} </span>
+                                <i class="fa fa-angle-down" style="color: #484848;"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-default">
+                                <li>
+                                    <a href="#">
+                                        <i class="icon-user"></i> My Profile </a>
+                                </li>
+                                <li>
+                                    <a href="/session/logout">
+                                        <i class="icon-key"></i>
+                                        <span class="title">Log Out</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        {%  endif %}
+                    </ul>
+                </div>
+                <!-- END TOP NAVIGATION MENU -->
+            </div>
+            <!-- END HEADER INNER -->
         </div>
-        <!-- END TOP NAVIGATION MENU -->
-    </div>
-    <!-- END HEADER INNER -->
-</div>
-<!-- END HEADER -->
-<!-- BEGIN HEADER & CONTENT DIVIDER -->
-<div class="clearfix"></div>
-<!-- END HEADER & CONTENT DIVIDER -->
-<!-- BEGIN CONTAINER -->
-<div class="page-container">
-    <!-- BEGIN SIDEBAR -->
-    <div class="page-sidebar-wrapper">
-        <!-- BEGIN SIDEBAR -->
-        <div class="page-sidebar navbar-collapse collapse">
-            <!-- BEGIN SIDEBAR MENU -->
-            <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
-                <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-                <li class="sidebar-toggler-wrapper hide">
-                    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-                    <div class="sidebar-toggler"></div>
-                    <!-- END SIDEBAR TOGGLER BUTTON -->
-                </li>
+        <!-- END HEADER -->
+        <!-- BEGIN HEADER & CONTENT DIVIDER -->
+        <div class="clearfix"> </div>
+        <!-- END HEADER & CONTENT DIVIDER -->
+        <!-- BEGIN CONTAINER -->
+        <div class="page-container">
+            <!-- BEGIN SIDEBAR -->
+            <div class="page-sidebar-wrapper">
+                <!-- BEGIN SIDEBAR -->
+                <div class="page-sidebar navbar-collapse collapse">
+                    <!-- BEGIN SIDEBAR MENU -->
+                    <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
+                        <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+                        <li class="sidebar-toggler-wrapper hide">
+                            <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                            <div class="sidebar-toggler"> </div>
+                            <!-- END SIDEBAR TOGGLER BUTTON -->
+                        </li>
 
-                {% if haspaid %}
-                    {% if is_admin %}
+                        {% if haspaid %}
+                        {% if is_admin %}
                         <li class="nav-item start">
                             <a href="/admindashboard/" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
@@ -217,163 +214,156 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
-                    {% else %}
-                        {% if agencytype == "agency" %}
-                            <li class="nav-item start">
-                                <a href="/agency" class="nav-link nav-toggle">
-                                    <i class="icon-home"></i>
-                                    <span class="title">Manage Businesses</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
                         {% else %}
-                            <li class="nav-item start">
-                                <a href="/" class="nav-link nav-toggle">
-                                    <i class="icon-home"></i>
-                                    <span class="title">Dashboard</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
+                        {% if agencytype == "agency" %}
+                        <li class="nav-item start">
+                            <a href="/agency" class="nav-link nav-toggle">
+                                <i class="icon-home"></i>
+                                <span class="title">Manage Businesses</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item start">
+                            <a href="/" class="nav-link nav-toggle">
+                                <i class="icon-home"></i>
+                                <span class="title">Dashboard</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                         {% endif %}
                         {% if location_id %}
-                            {% if agencytype != "agency" %}
-                                <li class="nav-item">
-                                    <a href="/reviews/" class="nav-link nav-toggle">
-                                        <i class="icon-diamond"></i>
-                                        <span class="title">Reviews</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/analytics/" class="nav-link nav-toggle">
-                                        <i class="icon-bar-chart"></i>
-                                        <span class="title">Analytics</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
+                        {% if agencytype != "agency" %}
+                        <li class="nav-item">
+                            <a href="/reviews/" class="nav-link nav-toggle">
+                                <i class="icon-diamond"></i>
+                                <span class="title">Reviews</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/analytics/" class="nav-link nav-toggle">
+                                <i class="icon-bar-chart"></i>
+                                <span class="title">Analytics</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
 
-                                {% if is_business_admin %}
-                                    <li class="nav-item">
-                                        <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
-                                            <i class="icon-envelope"></i>
-                                            <span class="title">SMS Broadcast</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/contacts" class="nav-link nav-toggle">
-                                            <i class="icon-users"></i>
-                                            <span class="title">Contacts</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/users/" class="nav-link nav-toggle">
-                                            <i class="icon-user"></i>
-                                            <span class="title">Employees</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/stripe/updatePayment" class="nav-link nav-toggle">
-                                            <i class="icon-credit-card"></i>
-                                            <span class="title">Update Payment Info</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            {% endif %}
+                        {%  if is_business_admin %}
+                        <li class="nav-item">
+                            <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
+                                <i class="icon-envelope"></i>
+                                <span class="title">SMS Broadcast</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/contacts" class="nav-link nav-toggle">
+                                <i class="icon-users"></i>
+                                <span class="title">Contacts</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/users/" class="nav-link nav-toggle">
+                                <i class="icon-user"></i>
+                                <span class="title">Employees</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                         {% endif %}
-                        {% if profile == "Agency Admin" and agencytype == "business" %}
-                            <li class="nav-item">
-                                <a href="/location/" class="nav-link nav-toggle">
-                                    <i class="icon-pointer"></i>
-                                    <span class="title">Locations</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
+                        {% endif %}
+                        {% endif %}
+                        {% if profile == "Agency Admin" and agencytype == "business"%}
+                        <li class="nav-item">
+                            <a href="/location/" class="nav-link nav-toggle">
+                                <i class="icon-pointer"></i>
+                                <span class="title">Locations</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                         {% endif %}
                         {% if profile != "Employee" %}
-                            {% if agencytype == "agency" %}
-                                {% set SettingsLocation = "agency" %}
-                            {% else %}
-                                {% set SettingsLocation = "location" %}
-                            {% endif %}
-                            <li class="nav-item">
-                                <a href="/settings/{{ SettingsLocation }}/" class="nav-link nav-toggle">
-                                    <i class="icon-settings"></i>
-                                    <span class="title">Settings</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="/users/" class="nav-link nav-toggle">
-                                    <i class="icon-user"></i>
-                                    <span class="title">Admin Users</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-
-                            {% if internalNavParams['hasSubscriptions'] %}
-                                <li class="nav-item">
-                                    <a href="{{ internalNavParams['subscriptionController'] }}" class="nav-link nav-toggle">
-                                        <i class="icon-wallet"></i>
-                                        <span class="title">Subscriptions</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
-                            {% endif %}
+                        {% if agencytype == "agency" %}
+                        {% set SettingsLocation = "agency" %}
+                        {% else %}
+                        {% set SettingsLocation = "location" %}
                         {% endif %}
-                    {% endif %}
-                {% endif %}
-            </ul>
-            <!-- END SIDEBAR MENU -->
+                        <li class="nav-item">
+                            <a href="/settings/{{ SettingsLocation }}/" class="nav-link nav-toggle">
+                                <i class="icon-settings"></i>
+                                <span class="title">Settings</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/users/" class="nav-link nav-toggle">
+                                <i class="icon-user"></i>
+                                <span class="title">Admin Users</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+
+                        {% if internalNavParams['hasSubscriptions'] %}
+                        <li class="nav-item">
+                            <a href="{{ internalNavParams['subscriptionController'] }}" class="nav-link nav-toggle">
+                                <i class="icon-wallet"></i>
+                                <span class="title">Subscriptions</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% endif %}
+                        {% endif %}
+                        {% endif %}
+                    </ul>
+                    <!-- END SIDEBAR MENU -->
+                </div>
+                <!-- END SIDEBAR -->
+            </div>
+            <!-- END SIDEBAR -->
+            <!-- BEGIN CONTENT -->
+            <div class="page-content-wrapper">
+                <!-- BEGIN CONTENT BODY -->
+                <div class="page-content">
+                    {{ flashSession.output() }}
+                    {{ content() }}
+                </div>
+            </div>
+            <!-- END CONTENT -->
         </div>
-        <!-- END SIDEBAR -->
-    </div>
-    <!-- END SIDEBAR -->
-    <!-- BEGIN CONTENT -->
-    <div class="page-content-wrapper">
-        <!-- BEGIN CONTENT BODY -->
-        <div class="page-content">
-            {{ flashSession.output() }}
-            {{ content() }}
+        <!-- END CONTAINER -->
+        <!-- BEGIN FOOTER -->
+        <div class="page-footer">
+            <div class="page-footer-inner"> {{ date("Y") }} &copy; Review Velocity </div>
+            <div class="scroll-to-top">
+                <i class="icon-arrow-up"></i>
+            </div>
         </div>
-    </div>
-    <!-- END CONTENT -->
-</div>
-<!-- END CONTAINER -->
-<!-- BEGIN FOOTER -->
-<div class="page-footer">
-    <div class="page-footer-inner"> {{ date("Y") }} &copy; Review Velocity</div>
-    <div class="scroll-to-top">
-        <i class="icon-arrow-up"></i>
-    </div>
-</div>
-<!-- END FOOTER -->
+        <!-- END FOOTER -->
 
-<!-- include needed javascript from partial -->
-{% include "partials/layouts/private-js.volt" %}
+        <!-- include needed javascript from partial -->
+        {%  include "partials/layouts/private-js.volt" %}
 
-<!-- add required js from controller -->
-{{ assets.outputJs() }}
+        <!-- add required js from controller -->
+        {{ assets.outputJs() }}
 
-{% if haspaid %}
-    {% if not is_admin and agencytype != "agency" %}
+        {% if haspaid %}
+        {% if not is_admin and agencytype != "agency" %}
         {% if location_id %}
-            <div id="sendreviewinvite" style="width:400px; display: none; color: #7A7A7A;">
-                <!-- BEGIN SAMPLE FORM PORTLET-->
-                <div class="portlet light">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <span class="caption-subject" style="text-align: left; text-transform: none; font-weight: normal; font-size: 27px !important;"> Send Review Invite </span>
-                        </div>
+        <div id="sendreviewinvite" style="width:400px; display: none; color: #7A7A7A;">
+            <!-- BEGIN SAMPLE FORM PORTLET-->
+            <div class="portlet light">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-subject" style="text-align: left; text-transform: none; font-weight: normal; font-size: 27px !important;"> Send Review Invite </span>
                     </div>
-                    <div class="portlet-body form">
-                        {% if (agency.twilio_api_key != ''
-                        and agency.twilio_auth_token != ''
-                        and (agency.twilio_auth_messaging_sid != '' or agency.twilio_from_phone != '' ))
-                        or (agency.parent_agency_id and agency.agency_type_id == '2') %}
+                </div>
+                <div class="portlet-body form">
+                    {% if (agency.twilio_api_key != ''
+                    and agency.twilio_auth_token != ''
+                    and (agency.twilio_auth_messaging_sid != '' or agency.twilio_from_phone != '' ))
+                    or (agency.parent_agency_id and agency.agency_type_id == '2') %}
 
                             {% if num_signed_up %}d
                                 <div class="row" style="margin-bottom: 10px;">
@@ -533,7 +523,7 @@
                             });
                     }
 
-                    $('.fancybox').fancybox();
+                $('.fancybox').fancybox();
 
                     var bodyElem = document.getElementsByTagName("body")[0];
                     if (bodyElem.dataset.ccprompt === "open") {
@@ -603,8 +593,8 @@
                 });
             </script>
         {% endif %}
-    {% endif %}
-{% endif %}
-</body>
+        {% endif %}
+        {% endif %}
+    </body>
 
 </html>

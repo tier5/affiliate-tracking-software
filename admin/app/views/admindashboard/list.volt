@@ -79,3 +79,19 @@ foreach($agencies as $agency) {
     <?php }  ?>
 
 </div>
+<script>
+    $(function(){
+        $('tbody tr td.name').bind('click',function(e){
+            e.stopPropagation();
+           var edit_link = $(this).parent().find('i.icon-pencil').parent().attr('href');
+            window.location = edit_link;
+        });
+
+    });
+
+</script>
+<style type="text/css">
+    tbody tr td.name:hover{
+        cursor:pointer;
+    }
+</style>

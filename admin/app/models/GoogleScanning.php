@@ -7,14 +7,14 @@ class GoogleScanning extends Model {
     #array for input parameters for other directories
     public $inputParamsForAPIs = array();
     public $googleApiKey = 'AIzaSyAPisblAqZJJ7mGWcORf4FBjNMQKV20J20';
-    
-    
+
+
      /**
      * This finds business details
-     * 
+     *
      * @return Json
      */
-    public function get_business($google_place_id) {      
+    public function get_business($google_place_id) {
       $strFindPlaceDetail = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" . $google_place_id . "&key=" . $this->googleApiKey;
       //$strFindPlaceDetail = 'https://mybusiness.googleapis.com/v3/accounts/' . $google_place_id . '/locations/location_name/reviews?placeid=' . $google_place_id . '&key=' . $this->googleApiKey;
 //echo '<pre>$strFindPlaceDetail:'.print_r($strFindPlaceDetail,true).'</pre>';
@@ -24,17 +24,17 @@ class GoogleScanning extends Model {
 //echo '<pre>$arrResultFindPlaceDetail[result]:'.print_r($arrResultFindPlaceDetail,true).'</pre>';
       return $arrResultFindPlaceDetail['result'];
     }
-    
-    
-    
+
+
+
      /**
      * This function finds the google lrd field which is used to find the review url.
      * This field is not in the API, so we have to scrape it
      *
-     * 
+     *
      * @return Json
      */
-    public function getLRD($cid) {    
+    public function getLRD($cid) {
       $lrd = '';
       $url = 'https://maps.google.com/?cid='.$cid;
       $result = $this->curl_get_contents($url);
@@ -49,7 +49,7 @@ class GoogleScanning extends Model {
       }
       return $lrd;
     }
-    
+
     function curl_get_contents($url)
     {
       $ch = curl_init($url);
@@ -61,7 +61,7 @@ class GoogleScanning extends Model {
       curl_close($ch);
       return $data;
     }
-    
+
 
      /**
      * This is Search result using Google place API.
@@ -291,7 +291,7 @@ class GoogleScanning extends Model {
                             $inputParams['stateShort']   = $returnStateShort;
                             $inputParams['countryLong']  = $returnCountryLong;
                             $inputParams['countryShort'] = $returnCountryShort;
-                            
+
                             if (isset($returnZipLong)) {
                               $inputParams['zipLong'] = $returnZipLong;
                             } else {
@@ -334,7 +334,6 @@ class GoogleScanning extends Model {
                 $responseArr = array('errorMsg' => 'There was an error processing your request.');
             }
 
-        #return array
         return $responseArr;
     }
 

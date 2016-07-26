@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="portlet-body form">
-        <form class="form-horizontal" role="form" id="agencyform" method="post" autocomplete="off">
+        <form class="form-horizontal validated" role="form" id="agencyform" method="post" autocomplete="off">
             <div class="form-group">
                 <label for="subscription_pricing_plan_id" class="col-md-4 control-label">Subscription Pricing Plan</label>
                 <div class="col-md-8">
@@ -25,13 +25,13 @@
             <div class="form-group">
                 <label for="name" class="col-md-4 control-label">Name</label>
                 <div class="col-md-8">
-                    {{ form.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name']) }}
+                    {{ form.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name','required':'']) }}
                 </div>
             </div>
             <div class="form-group">
                 <label for="email" class="col-md-4 control-label">Email</label>
                 <div class="col-md-8">
-                    {{ form.render("email", ["class": 'form-control', 'placeholder': 'Email', 'type': 'name']) }}
+                    {{ form.render("email", ["class": 'form-control', 'placeholder': 'Email', 'type': 'name','required':'']) }}
                 </div>
             </div>
             <div class="form-group">
@@ -73,13 +73,13 @@
                 <div class="form-group">
                     <label for="locations" class="col-md-4 control-label">Locations</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="number" placeholder="Number of locations" name="free_locations" />
+                        <input class="form-control" type="number" min="0" placeholder="Number of locations" required name="free_locations" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="sms_messages" class="col-md-4 control-label">Sms Messages</label>
+                    <label for="sms_messages" class="col-md-4 control-label">SMS Messages</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="number" placeholder="Number of messages" name="sms_messages" />
+                        <input class="form-control" type="number" min="0" placeholder="Number of messages" required name="sms_messages" />
                     </div>
                 </div>
             </div>
@@ -88,13 +88,13 @@
             <div class="form-group">
                 <label for="admin_name" class="col-md-4 control-label">Admin Full Name</label>
                 <div class="col-md-8">
-                    <input class="form-control" type="text" placeholder="Admin Full Name" name="admin_name" value="<?=(isset($_POST['admin_name'])?$_POST["admin_name"]:'')?>" />
+                    <input class="form-control" type="text" placeholder="Admin Full Name" name="admin_name" required value="<?=(isset($_POST['admin_name'])?$_POST["admin_name"]:'')?>" />
                 </div>
             </div>
             <div class="form-group">
                 <label for="admin_email" class="col-md-4 control-label">Admin Email</label>
                 <div class="col-md-8">
-                    <input class="form-control" type="text" placeholder="Admin Email" name="admin_email" value="<?=(isset($_POST['admin_email'])?$_POST["admin_email"]:'')?>" />
+                    <input class="form-control" type="text" placeholder="Admin Email" name="admin_email" required value="<?=(isset($_POST['admin_email'])?$_POST["admin_email"]:'')?>" />
                 </div>
             </div>
             <div class="form-group">
@@ -114,7 +114,7 @@
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-        
+
         $('#send-registration-email-control').change(function () {
             if ($(this).val() === 'Unpaid') {
                 $(".free_subscription_pricing_plan").addClass('show');
@@ -122,7 +122,7 @@
                 $(".free_subscription_pricing_plan").removeClass('show');
             }
         });
-        
+
         $('#subscription_pricing_plan_id').change(function () {
             if ($(this).val() === 'Unpaid') {
                 $(".free_subscription_pricing_plan").addClass('show');
@@ -130,8 +130,8 @@
                 $(".free_subscription_pricing_plan").removeClass('show');
             }
         });
-        
-        
-        
+
+        $('.validated').validate();
+
     });
 </script>
