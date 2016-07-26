@@ -36,28 +36,20 @@ class UserControlController extends ControllerBase
         $this->tag->setTitle('Review Velocity | Confirm email');
         $code = $this->dispatcher->getParam('code');
         $email = $this->dispatcher->getParam('email');
-
         $confirmation = EmailConfirmations::findFirstByCode($code);
-        if($confirmation->confirmed == 'N'){
+        if($confirmation && $confirmation->confirmed == 'N'){
             $confirmation->confirmed = 'Y';
-            $confirmation->active = 'Y';
-            $confirmation->save();
+            $confirmation->update();
         }
 
         $user_id = $confirmation->usersId;
-        $user = Users::findFirst('id = ' . $user_id);
+        if($user_id) $user = Users::findFirst('id = ' . $user_id);
         if ($user) {
-            $db = $this->dispatcher->getDI()->get('db');
-            //the model update wouldn't save.. so I am doing this here..
-            //I am not happy or proud about this, but the ORM isn't saving it
-            //-Scott
-            $db->execute("UPDATE users set active = 'Y' where id = " . $user_id);
-
+            $user->active = 'Y';
+            $user->save();
         }
-
         //dd($user->active); //it is a 'Y';
 
-        $user = Users::findFirst('id = ' . $user_id);
         //it is a 'N'
 
 
