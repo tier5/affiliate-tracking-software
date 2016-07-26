@@ -80,6 +80,7 @@
                       ->notice('A confirmation email has been sent to ' . $this->email);
                 }
             }
+            return true;
         }
 
         /**
@@ -93,6 +94,10 @@
             )));
 
             return $this->validationHasFailed() != true;
+        }
+
+        public function beforeValidationOnUpdate(){
+           return true;
         }
 
         public function initialize()
@@ -301,6 +306,10 @@
             // Execute the query
             $params = null;
             return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        }
+
+        public function save($data = null,$whitelist = null){
+            parent::save($data);
         }
 
     }

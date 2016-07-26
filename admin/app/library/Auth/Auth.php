@@ -311,7 +311,6 @@ class Auth extends Component {
         if (isset($this->view->agency_id) && $this->view->agency_id > 0 && $user->agency_id != $this->view->agency_id) {
             throw new Exception('Your account does not belong to this site.');
         }
-
         if ($user->active != 'Y') {
             throw new Exception('Your account is inactive');
         }

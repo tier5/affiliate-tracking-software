@@ -47,14 +47,25 @@ class UserControlController extends ControllerBase
 
         $user = Users::findFirst('id = '.$user_id);
         if($user){
-            $user->active = 'Y';
-            $user->save();
+            $db = $this->dispatcher->getDI()->get('db');
+            //the freaking model update wouldn't save.. so I am doing this here..
+            //I am not happy or proud about this: Scott
+            $db->execute("UPDATE users set active = 'Y' where id = ".$user_id);
+
         }
+
+        //dd($user->active); //it is a 'Y';
+
+        $user = Users::findFirst('id = ' . $user_id);
+        //it is a 'N'
+
 
         //set user to active... need to check this out...
         if($confirmation) {
+            $confirmation->confirmed = 'Y';
             $confirmation->user->active = 'Y';
             $confirmation->user->save();
+            $confirmation->save();
         }
         if (!$confirmation) {
             return $this->dispatcher->forward(array(
