@@ -244,6 +244,7 @@
     },
 
     applyTransformParams: function (scale, transX, transY) {
+      if(!scale || !transX || !transY) return;
       if (this.mode == 'svg') {
         this.rootGroup.setAttribute('transform', 'scale(' + scale + ') translate(' + transX + ', ' + transY + ')');
       } else {
