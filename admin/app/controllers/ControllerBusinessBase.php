@@ -139,7 +139,6 @@ class ControllerBusinessBase extends ControllerBase {
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $agency_id);
             $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
-            $form = new AgencyForm($age2);
             $this->view->agency = $age2;
         }
     }
@@ -154,8 +153,8 @@ class ControllerBusinessBase extends ControllerBase {
         //set agency details
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency_id);
-        $age = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->agency = $age;
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->agency = $agency;
 
         //find all users associated with the agency
         $conditions = "agency_id = :agency_id:";
@@ -187,7 +186,6 @@ class ControllerBusinessBase extends ControllerBase {
         }
         $markup .= "</select>";
         return $markup;
-
     }
 
     private function createSubscriptionPlan($user, $request) {
@@ -200,9 +198,4 @@ class ControllerBusinessBase extends ControllerBase {
         ];
         return $this->di->get('subscriptionManager')->createSubscriptionPlan($newSubscriptionParameters);
     }
-
-    /**
-     * END BUSINESS COMMON FUNCTIONS
-     */
-
 }
