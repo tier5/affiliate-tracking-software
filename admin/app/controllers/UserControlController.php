@@ -4,6 +4,7 @@ namespace Vokuro\Controllers;
 use Vokuro\Models\EmailConfirmations;
 use Vokuro\Models\ResetPasswords;
 use Vokuro\Models\Users;
+use Vokuro\Services\UserManager;
 
 /**
  * UserControlController
@@ -35,26 +36,29 @@ class UserControlController extends ControllerBase
         $this->tag->setTitle('Review Velocity | Confirm email');
         $code = $this->dispatcher->getParam('code');
         $email = $this->dispatcher->getParam('email');
-
         $confirmation = EmailConfirmations::findFirstByCode($code);
-        if($confirmation->confirmed == 'N'){
+        if($confirmation && $confirmation->confirmed == 'N'){
             $confirmation->confirmed = 'Y';
-            $confirmation->active = 'Y';
-            $confirmation->save();
+            $confirmation->update();
         }
 
         $user_id = $confirmation->usersId;
-
-        $user = Users::findFirst('id = '.$user_id);
-        if($user){
+        if($user_id) $user = Users::findFirst('id = ' . $user_id);
+        if ($user) {
             $user->active = 'Y';
             $user->save();
         }
+        //dd($user->active); //it is a 'Y';
+
+        //it is a 'N'
+
 
         //set user to active... need to check this out...
         if($confirmation) {
+            $confirmation->confirmed = 'Y';
             $confirmation->user->active = 'Y';
             $confirmation->user->save();
+            $confirmation->save();
         }
         if (!$confirmation) {
             return $this->dispatcher->forward(array(

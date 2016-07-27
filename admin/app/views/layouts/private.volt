@@ -390,7 +390,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="<?=(isset($_POST['name'])?$_POST[" name"]:'')?>"
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>"
                                                 />
                                             </div>
                                         </div>
@@ -403,7 +403,7 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])?$_POST[" phone"]:'')?>"
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])? $_POST["phone"]:'')?>"
                                                 />
                                             </div>
                                         </div>

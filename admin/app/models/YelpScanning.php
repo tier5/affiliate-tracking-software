@@ -237,7 +237,6 @@
          * @param    $location    The location of the business to query
          */
         public function yelpApiResult($businessDetails, &$returnreviews, $countrycode) {
-            die('test');
             $response = json_decode($this->search($businessDetails['businessName'], $businessDetails['completeAddress']));
             $responseArr = $this->objCommonFunc->blankArrayOutput();
 
