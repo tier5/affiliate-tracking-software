@@ -42,10 +42,10 @@ class ControllerBase extends Controller {
             );
 
             $userObj = Users::findFirst(
-                            array(
-                                $conditions,
-                                "bind" => $parameters
-                            )
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
             );
 
             //find the agency
@@ -75,34 +75,8 @@ class ControllerBase extends Controller {
             //internal navigation parameters
             $this->configureNavigation($identity);
 
-            //###  START: check to see if this user has paid   #####
             $haspaid = true;
-
-            if ($agency->subscription_id > 0) {
-                $conditions = "agency_id = :agency_id:";
-
-                $parameters = array(
-                    "agency_id" => $userObj->agency_id
-                );
-
-                $subs = UsersSubscription::findFirst(
-                                array(
-                                    $conditions,
-                                    "bind" => $parameters)
-                );
-
-                if (isset($subs) && isset($subs->users_subscription_id) && $subs->users_subscription_id > 0) {
-                    $haspaid = true;
-                } else {
-                    $haspaid = false;
-                }
-                if (!$haspaid && (strpos($_SERVER['REQUEST_URI'], 'session') <= 0) && (strpos($_SERVER['REQUEST_URI'], 'session') <= 0)) {
-                    $this->response->redirect('/session/signup/' . $agency->subscription_id);
-                    $this->view->disable();
-                    return;
-                }
-            }
-
+            
             /*
              * Has this user provided their credit card info?
              */
@@ -111,10 +85,33 @@ class ControllerBase extends Controller {
 
             $this->view->paymentService = $agency->parent_id == -1 ? 'AuthorizeDotNet' : 'Stripe';
 
+            $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = '. $identity['id']);
+
+            $this->view->BusinessDisableBecauseOfStripe = false;
+
+            if($agency->parent_id > 0 && (!$objStripeSubscription || !$objStripeSubscription->stripe_subscription_id || $objStripeSubscription->stripe_subscription_id == 'N')) {
+                $haspaid = false;
+
+                if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret)
+                    $this->view->BusinessDisableBecauseOfStripe = true;
+            }
+
+            $this->AgencyInvalidStripe = false;
+            $this->view->ShowAgencyStripePopup = false;
+            if($agency->parent_id <= 0) {
+                // We're an agency.
+                if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret) {
+                    $this->view->AgencyInvalidStripe = true;
+                    $this->view->ShowAgencyStripePopup = true;
+                }
+            }
+
+//            $this->view->DisableBecauseOfStripe = true;
+
             // GARY_TODO:  Fix default stripe key / handling.
             $this->view->stripePublishableKey = $agency->stripe_publishable_keys ?: $this->config->stripe->publishable_key;
 
-
+            
             $this->view->haspaid = $haspaid;
             //###  END: check to see if this user has paid   #####
 
@@ -148,7 +145,9 @@ class ControllerBase extends Controller {
         }
 
         //find white label info based on the url
-        $sub = array_shift((explode(".", $_SERVER['HTTP_HOST'])));
+        $tHost = explode(".", $_SERVER['HTTP_HOST']);
+        $sub = array_shift($tHost);
+
         if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104') {
             //find the agency object
             $conditions = "custom_domain = :custom_domain:";

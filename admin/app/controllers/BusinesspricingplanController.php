@@ -7,6 +7,7 @@ use Phalcon\Filter;
 use Vokuro\Utils;
 use Vokuro\Forms\SignUpForm;
 use Vokuro\Forms\CreditCardForm;
+use Vokuro\Services\StripeManager;
 
 /**
  * Vokuro\Controllers\BusinessPricingPlanController
@@ -19,14 +20,16 @@ class BusinessPricingPlanController extends ControllerBase {
     public function initialize() {
         
         $identity = $this->session->get('auth-identity');
-        if ($identity && $identity['profile'] != 'Employee') {
+        /*if ($identity && $identity['profile'] != 'Employee') {
             $this->tag->setTitle('Review Velocity | Subscription');
             $this->view->setTemplateBefore('private');
         } else {    
             $this->response->redirect('/session/login?return=/');
             $this->view->disable();
             return;
-        }
+        }*/
+        $this->tag->setTitle('Review Velocity | Subscription');
+        $this->view->setTemplateBefore('private');
         parent::initialize();
 
         //add needed css

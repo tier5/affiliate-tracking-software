@@ -25,6 +25,10 @@ class PaymentService extends BaseService {
                     ->execute()
                     ->getFirst();
             break;
+            case ServicesConsts::$PAYMENT_PROVIDER_STRIPE:
+                // We don't store credit card type for Stripe
+                return false;
+
             default:
                 break;
         }
