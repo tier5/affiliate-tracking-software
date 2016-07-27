@@ -82,6 +82,7 @@
                 color: #FFFFFF !important;
             }
         </style>
+        <link rel="stylesheet" href="/dashboard/css?primary_color={{primary_color}}&secondary_color={{secondary_color}}">
     {% endif %}
 </head>
 <!-- END HEAD -->

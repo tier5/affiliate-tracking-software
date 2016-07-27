@@ -68,6 +68,8 @@ class ControllerBase extends Controller {
                 $this->view->setVars([
                     'main_color_setting' => $agency->main_color,
                     'rgb' => $rgb,
+                    'main_color'=>$agency->main_color,
+                    'secondary_color'=>$agency->secondary_color,
                     'logo_setting' => $agency->logo_path
                 ]);
             }
@@ -76,7 +78,7 @@ class ControllerBase extends Controller {
             $this->configureNavigation($identity);
 
             $haspaid = true;
-            
+
             /*
              * Has this user provided their credit card info?
              */
@@ -111,7 +113,7 @@ class ControllerBase extends Controller {
             // GARY_TODO:  Fix default stripe key / handling.
             $this->view->stripePublishableKey = $agency->stripe_publishable_keys ?: $this->config->stripe->publishable_key;
 
-            
+
             $this->view->haspaid = $haspaid;
             //###  END: check to see if this user has paid   #####
 
@@ -1119,5 +1121,15 @@ class ControllerBase extends Controller {
             }
         }
         return "";
+    }
+
+    public function cssAction(){
+        $this->response->setHeader("Content-Type", "text/css");
+        //for ie
+        $this->response->setHeader('X-Content-Type-Options','nosniff');
+        $main_color = $this->request->get('primary_color');
+        $secondary_color = $this->request->get('secondary_color');
+        $this->view->setVars(['primary_color'=>$main_color,'secondary_color'=>$secondary_color]);
+        $this->view->setMainView('layouts/css');
     }
 }
