@@ -369,6 +369,10 @@
                 return;
             }
 
+            $this->view->tab = $this->request->get('tab');
+            if($this->request->get('tab') == 'Stripe') {
+                $this->view->ShowAgencyStripePopup = false;
+            }
 
             $objUser = Users::findFirst("id = " . $Identity['id']);
 
@@ -376,25 +380,33 @@
             if (!$objAgency)
                 $this->flash->error("Agency not found.  Contact customer support.");
 
-            if (!$this->storeSettings($objAgency, 'agency')) {
-                $this->flash->error($objAgency->getMessages());
+            $SettingsForm  = new SettingsForm($objAgency, array(
+                'edit' => true
+            ));
+            $AgencyForm = new AgencyForm($objAgency, array(
+                'edit' => true
+            ));
+
+            if($this->request->isPost() && $SettingsForm->isValid($_POST) && $AgencyForm->isValid($_POST)) {
+                if (!$this->storeSettings($objAgency, 'agency')) {
+                    $this->flash->error($objAgency->getMessages());
+                } else {
+                    $this->flash->success("The settings were updated successfully");
+                    Tag::resetInput();
+                }
             } else {
-                $this->flash->success("The settings were updated successfully");
-                Tag::resetInput();
+                foreach ($AgencyForm->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
+                foreach ($SettingsForm->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
             }
 
-
-            $this->view->form = new SettingsForm($objAgency, array(
-                'edit' => true
-            ));
-
-
-            $this->view->agencyform = new AgencyForm($objAgency, array(
-                'edit' => true
-            ));
+            $this->view->form = $SettingsForm;
+            $this->view->agencyform = $AgencyForm;
 
             $this->view->objAgency = $objAgency;
-
         }
 
         public function siteaddAction($location_id = 0, $review_site_id = 0) {

@@ -1,4 +1,5 @@
 {{ content() }}
+
 <div id="locationlist">
     {{ content() }}
 
@@ -58,7 +59,7 @@ foreach($tBusinesses as $objBusiness) {
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-eye"></i>
                                                     View</a></li>
                                             <li>
-                                                <a href="/agency/edit/{{ objBusiness.agency_id }}/2" class=""><i class="icon-pencil"></i>
+                                                <a href="/agency/create/2/{{ objBusiness.agency_id }}" class=""><i class="icon-pencil"></i>
                                                     Edit</a></li>
                                             <li>
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-user"></i>

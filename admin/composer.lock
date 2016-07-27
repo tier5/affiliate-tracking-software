@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b3c43aeac2be8ee602852e96895427ac",
-    "content-hash": "7177232a5c157a4b54d342e6530e53f1",
+    "hash": "42572874a4ea2833b0dd42e335d47ed4",
+    "content-hash": "3b8c8ff8fb05f76729372c88386a9161",
     "packages": [
         {
             "name": "amazonwebservices/aws-sdk-for-php",
@@ -1123,9 +1123,8 @@
                 "zendframework/zend-code": "~2.3"
             },
             "require-dev": {
-                "goetas-webservices/xsd2php-runtime": "^0.1",
-                "jms/serializer": "serializer-master-dev as 1.0",
-                "phpunit/phpunit": "^4.8|^5.0"
+                "jms/serializer": "xsd2php-dev as 0.18.0",
+                "phpunit/phpunit": "~4.0"
             },
             "bin": [
                 "bin/xsd2php"
@@ -2376,16 +2375,16 @@
         },
         {
             "name": "robmorgan/phinx",
-            "version": "v0.5.5",
+            "version": "v0.5.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/robmorgan/phinx.git",
-                "reference": "da9950a5e5b9314ebf72ddc6317ed587ce9ba8dc"
+                "reference": "809d403eaee5583efe48b0f24d3ff8f1d893e1a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/robmorgan/phinx/zipball/da9950a5e5b9314ebf72ddc6317ed587ce9ba8dc",
-                "reference": "da9950a5e5b9314ebf72ddc6317ed587ce9ba8dc",
+                "url": "https://api.github.com/repos/robmorgan/phinx/zipball/809d403eaee5583efe48b0f24d3ff8f1d893e1a0",
+                "reference": "809d403eaee5583efe48b0f24d3ff8f1d893e1a0",
                 "shasum": ""
             },
             "require": {
@@ -2433,7 +2432,7 @@
                 "migrations",
                 "phinx"
             ],
-            "time": "2016-06-17 15:29:02"
+            "time": "2016-06-17 15:51:03"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
