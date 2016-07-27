@@ -10,12 +10,12 @@
         }
 
         // messages from custom validators
-        public function getMessages($filter = null) {
+        /*public function getMessages($filter = null) {
             $this->_errorMessages = [];
             $this->validation();
 
             return $this->_errorMessages;
-        }
+        }*/
 
         // formatted version of getMessages
         public function get_val_errors() {
