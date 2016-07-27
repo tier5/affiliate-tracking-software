@@ -87,6 +87,17 @@
 <!-- END HEAD -->
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" data-ccprompt="{{ ccInfoRequired }}" data-paymentprovider="{{ paymentService }}">
+{% if BusinessDisableBecauseOfStripe %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                There seems to be a problem with the stripe configuration.  Please contact customer support.
+            </div>
+        </div>
+    </div>
+    <?php die(); ?>
+{% endif %}
+
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
     <!-- BEGIN HEADER INNER -->
@@ -357,7 +368,23 @@
 
 <!-- add required js from controller -->
 {{ assets.outputJs() }}
-
+{% if agencytype == "agency" %}
+    <div class="modal fade" id="updateStripeModal" tabindex="-1" role="dialog" aria-labelledby="updateStripeModalLabel">
+        <div class="credit-card-details modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="growth-bar">
+                        <div>Update Stripe Information</div>
+                    </div>
+                </div>
+                <div class="modal-body center-block">
+                    <a href="/settings/agency?tab=Stripe" style="text-decoration:none;" ><button type="button" class="btn btn-warning btn-lg center-block">Click here to update Stripe Information</button></a>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% if haspaid %}
     {% if not is_admin and agencytype != "agency" %}
         {% if location_id %}
@@ -400,7 +427,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="<?=(isset($_POST['name'])?$_POST[" name"]:'')?>"
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>"
                                                 />
                                             </div>
                                         </div>
@@ -413,7 +440,7 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])?$_POST[" phone"]:'')?>"
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])? $_POST["phone"]:'')?>"
                                                 />
                                             </div>
                                         </div>
@@ -482,11 +509,11 @@
                     </div>
                 </div>
             </div>
+
             <script src="https://checkout.stripe.com/checkout.js"></script>
 
             <script type="text/javascript">
                 jQuery(document).ready(function ($) {
-
                     function getCCParams() {
                         var cardNumber = $('#updateCardModal .card-number').val();
                         var cardName = $('#updateCardModal .name').val();
@@ -604,6 +631,16 @@
             </script>
         {% endif %}
     {% endif %}
+{% endif %}
+{% if agencytype == "agency" %}
+    <script>
+        jQuery(document).ready(function ($) {
+            {% if AgencyInvalidStripe AND ShowAgencyStripePopup %}
+                $('#updateStripeModal').modal('show');
+            {% endif %}
+        });
+    </script>
+
 {% endif %}
 </body>
 

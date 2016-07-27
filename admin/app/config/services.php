@@ -53,7 +53,8 @@ $di->set('view', function () use ($config) {
 
             $volt->setOptions(array(
                 'compiledPath' => $config->application->cacheDir . 'volt/',
-                'compiledSeparator' => '_'
+                'compiledSeparator' => '_',
+                'compileAlways' => true
             ));
 
             return $volt;
@@ -164,10 +165,18 @@ $di->set('acl', function () {
  */
 $di->set('userManager', new UserManager($config));
 
+
 /**
  * Subscription Manager
  */
 $di->set('subscriptionManager', new SubscriptionManager($config, $di));
+
+
+/**
+ * Review Service
+ */
+
+$di->set('ReviewService', new \Vokuro\Services\Reviews($config,$di));
 
 /**
  * Sms Manager

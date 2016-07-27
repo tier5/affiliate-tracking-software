@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_NOTICE);
 
 try {
 
@@ -13,7 +13,7 @@ try {
     /**
       * Read the configuration
       */
-    $config = include APP_DIR . '/config/config.sample.php';
+    $config = include APP_DIR . '/config/config.php';
 
     /**
      * Read auto-loader
@@ -24,6 +24,8 @@ try {
      * Read services
      */
     include APP_DIR . '/config/services.php';
+
+    include APP_DIR . '/config/functions.php';
 
     if (!defined('ENV_PRODUCTION')) { define('ENV_PRODUCTION', 'production'); }
     if (!defined('APPLICATION_ENV')) { define('APPLICATION_ENV', getenv('APP_ENV') ?: ENV_PRODUCTION); }

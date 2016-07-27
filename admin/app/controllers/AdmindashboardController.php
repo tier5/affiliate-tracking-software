@@ -23,7 +23,7 @@ class AdmindashboardController extends ControllerBusinessBase {
     public function initialize() {
 
         $this->assets->addCss('/css/subscription.css');
-        
+
         $logged_in = is_array($this->auth->getIdentity());
         if ($logged_in && isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
             $this->view->setVar('logged_in', $logged_in);
@@ -66,7 +66,7 @@ class AdmindashboardController extends ControllerBusinessBase {
           => end of Oct you have 100 + 20 - 5 = 115 customers
 
           Churn Rate = 5 / 115 = 4.34%
-	
+
          */
         $this->view->churn_rate = $this->view->lost_businesses / $this->view->total_businesses;
 
@@ -206,7 +206,7 @@ class AdmindashboardController extends ControllerBusinessBase {
         //$this->view->sms_sent_total
         //$this->view->total_reviews
     }
-    
+
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
 	    $Identity = $this->auth->getIdentity();
 	    $UserID = $Identity['id'];
@@ -328,6 +328,11 @@ class AdmindashboardController extends ControllerBusinessBase {
         $this->response->redirect('/');
         $this->view->disable();
         return;
+    }
+
+    public function editAction($agency_id,$agency_type_id = null){
+
+        $this->createAction($agency_type_id,$agency_id);
     }
 
     /**

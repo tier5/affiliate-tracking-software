@@ -71,7 +71,7 @@
   </div>
   <div style="clear: both;">&nbsp;</div>
   <input type="hidden" name="form" value="2" />
-  <input type="hidden" id="name" name="name" />
+  <input type="hidden" id="name" required name="name" />
   <input type="hidden" id="phone" name="phone" />
   <input type="hidden" id="address" name="address" />
   <input type="hidden" id="locality" name="locality" />
@@ -104,6 +104,15 @@
 <script type="text/javascript">
 
   jQuery(document).ready(function($){
+    var business_name = null;
+    var updateBusinessName = function(el){
+      business_name = $(el).val().trim();
+      $('#name').val(business_name);
+    }
+    $('#location_name').on('click blur keyup',function(){
+      updateBusinessName(this);
+    });
+
 
     // Scanning form validation and ajax submit
     $("#locationform1").validate({
@@ -163,7 +172,7 @@
         });
       }
     });
-
+    $('#register-form').validate();
 
 
 

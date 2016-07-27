@@ -21,15 +21,6 @@ use Vokuro\Services\ServicesConsts;
 use Services_Twilio;
 use Services_Twilio_RestException;
 
-//use Vokuro\Controllers\Facebook\Facebook;
-// Skip these two lines if you're using Composer
-define('FACEBOOK_SDK_V4_SRC_DIR', BASE_DIR . '/vendor/facebook/php-sdk-v4/src/Facebook/');
-require BASE_DIR . '/vendor/facebook/php-sdk-v4/autoload.php';
-
-//TURN ON PRETTY ERRORS!!!
-error_reporting(E_ALL);
-ini_set("display_errors", "on");
-
 /**
  * ControllerBase
  * This is the base controller for all controllers in the application
@@ -44,17 +35,17 @@ class ControllerBase extends Controller {
         //KT WHERE?
 
         if (is_array($identity)) {
-            $conditions = "id = :id:";
+            $conditions = 'id = :id:';
 
             $parameters = array(
                 "id" => $identity['id']
             );
 
             $userObj = Users::findFirst(
-                            array(
-                                $conditions,
-                                "bind" => $parameters
-                            )
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
             );
 
             //find the agency
@@ -84,33 +75,7 @@ class ControllerBase extends Controller {
             //internal navigation parameters
             $this->configureNavigation($identity);
 
-            //###  START: check to see if this user has paid   #####
             $haspaid = true;
-
-            if ($agency->subscription_id > 0) {
-                $conditions = "agency_id = :agency_id:";
-
-                $parameters = array(
-                    "agency_id" => $userObj->agency_id
-                );
-
-                $subs = UsersSubscription::findFirst(
-                                array(
-                                    $conditions,
-                                    "bind" => $parameters)
-                );
-
-                if (isset($subs) && isset($subs->users_subscription_id) && $subs->users_subscription_id > 0) {
-                    $haspaid = true;
-                } else {
-                    $haspaid = false;
-                }
-                if (!$haspaid && (strpos($_SERVER['REQUEST_URI'], 'session') <= 0) && (strpos($_SERVER['REQUEST_URI'], 'session') <= 0)) {
-                    $this->response->redirect('/session/signup/' . $agency->subscription_id);
-                    $this->view->disable();
-                    return;
-                }
-            }
             
             /*
              * Has this user provided their credit card info?
@@ -119,6 +84,29 @@ class ControllerBase extends Controller {
             $this->view->ccInfoRequired = $required ? "open" : "closed";
 
             $this->view->paymentService = $agency->parent_id == -1 ? 'AuthorizeDotNet' : 'Stripe';
+
+            $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = '. $identity['id']);
+
+            $this->view->BusinessDisableBecauseOfStripe = false;
+
+            if($agency->parent_id > 0 && (!$objStripeSubscription || !$objStripeSubscription->stripe_subscription_id || $objStripeSubscription->stripe_subscription_id == 'N')) {
+                $haspaid = false;
+
+                if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret)
+                    $this->view->BusinessDisableBecauseOfStripe = true;
+            }
+
+            $this->AgencyInvalidStripe = false;
+            $this->view->ShowAgencyStripePopup = false;
+            if($agency->parent_id <= 0) {
+                // We're an agency.
+                if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret) {
+                    $this->view->AgencyInvalidStripe = true;
+                    $this->view->ShowAgencyStripePopup = true;
+                }
+            }
+
+//            $this->view->DisableBecauseOfStripe = true;
 
             // GARY_TODO:  Fix default stripe key / handling.
             $this->view->stripePublishableKey = $agency->stripe_publishable_keys ?: $this->config->stripe->publishable_key;
@@ -157,7 +145,9 @@ class ControllerBase extends Controller {
         }
 
         //find white label info based on the url
-        $sub = array_shift((explode(".", $_SERVER['HTTP_HOST'])));
+        $tHost = explode(".", $_SERVER['HTTP_HOST']);
+        $sub = array_shift($tHost);
+
         if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104') {
             //find the agency object
             $conditions = "custom_domain = :custom_domain:";
@@ -679,7 +669,7 @@ class ControllerBase extends Controller {
             }
 
             if (strpos($_SERVER['REQUEST_URI'], 'users/admin') > 0) {
-                
+
             } else {
                 $users_report = null;
                 if ($loc)
@@ -752,6 +742,18 @@ class ControllerBase extends Controller {
             }
         } // go to the next google review
 
+        $s = $this->di->get('ReviewService');
+        /**
+         * @var $s \Vokuro\Services\Reviews
+         */
+        try {
+            if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(3, $location->location_id);
+
+        }catch( \Exception $e){
+            print "there was an error \n";
+            print_r($e->getTraceAsString());
+            exit();
+        }
         return $Obj;
     }
 
@@ -806,6 +808,16 @@ class ControllerBase extends Controller {
                 $foundagency[$location->agency_id] .= $location->name;
             }
         } // go to the next yelp review
+
+        try {
+            $s = $this->di->get('ReviewService');
+            /**
+             * @var $s \Vokuro\Services\Reviews
+             */
+            if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(1, $location->location_id);
+
+        } catch (\Exception $e) {
+        }
 
         return $Obj;
     }
@@ -965,6 +977,19 @@ class ControllerBase extends Controller {
             }
         } //end checking for an access token
 
+        try {
+            $s = $this->di->get('ReviewService');
+            /**
+             * @var $s \Vokuro\Services\Reviews
+             */
+            if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(3, $location->location_id);
+
+        } catch (\Exception $e) {
+            print "there was an error \n";
+            print_r($e->getTraceAsString());
+            exit();
+        }
+
         return $Obj;
     }
 
@@ -1046,8 +1071,8 @@ class ControllerBase extends Controller {
         // GARY_TODO Determine if the comment below is accurate.
         $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] &&
                 ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
-                ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE);/* &&
-                $userManager->hasLocation($this->session);*/
+                ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
+                $userManager->hasLocation($this->session);
 
         $internalNavParams['hasPricingPlans'] = $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];
 
@@ -1062,4 +1087,37 @@ class ControllerBase extends Controller {
         $this->view->internalNavParams = $internalNavParams;
     }
 
+    /**
+     * This function takes either an array or string, sets the content type and returns the response
+     * @param $json array|string
+     * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface
+     */
+    public function sendJSON($json){
+        if(is_array($json)) $json = json_encode($json);
+        $this->view->disable();
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent($json);
+        return $this->response;
+    }
+    //gave it public, not sure how it is used throughout the app
+    public function encode($val)
+    {
+        if ($val) {
+            return str_replace("'", "%27", str_replace("\"", "%22", $val));
+        } else {
+            return '';
+        }
+    }
+    //also gave this public
+    public function extractFromAdress($components, $type)
+    {
+        if(!is_array($components)) throw new \Exception('$components, the first argument must be an array');
+        for ($i = 0; $i < count($components); ++$i) {
+            for ($j = 0; $j < count($components[$i]['types']); ++$j) {
+                if ($components[$i]['types'][$j] == $type)
+                    return $components[$i]['short_name'];
+            }
+        }
+        return "";
+    }
 }

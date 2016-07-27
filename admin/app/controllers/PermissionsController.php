@@ -15,7 +15,7 @@ class PermissionsController extends ControllerBase
      */
     public function indexAction()
     {
-    
+
       //disable
       $this->response->redirect('/session/logout');
 
@@ -45,7 +45,6 @@ class PermissionsController extends ControllerBase
                     foreach ($this->request->getPost('permissions') as $permission) {
 
                         $parts = explode('.', $permission);
-
                         $permission = new Permissions();
                         $permission->profilesId = $profile->id;
                         $permission->resource = $parts[0];
@@ -54,7 +53,7 @@ class PermissionsController extends ControllerBase
                         $permission->save();
                     }
 
-                    $this->flash->success('Permissions were updated with success');
+                    $this->flash->success('Permissions were successfully updated');
                 }
 
                 // Rebuild the ACL with

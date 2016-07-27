@@ -1,7 +1,4 @@
 {{ content() }}
-
-
-
 <!-- BEGIN FORM -->
 <form class="register-form4" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/location/create3/'.$location_id:'/session/signup4/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block;">
 
@@ -11,7 +8,7 @@
     <div class="form-group col-md-6">
       <label for="review_goal" class="col-md-8 control-label">How many reviews do you want monthly<span class="required">*</span>:</label>
       <div class="col-md-4">
-        <input required="required" class="form-control placeholder-no-fix" type="text" placeholder="Review Goal" name="review_goal" id="review_goal" value="<?=(isset($_POST['review_goal'])?$_POST["review_goal"]:(isset($_GET['review_goal'])?$_GET["review_goal"]:(isset($location->review_goal)?$location->review_goal:'')))?>" />
+        <input required="required" class="form-control placeholder-no-fix" type="number" min="1" placeholder="Review Goal" name="review_goal" id="review_goal" value="<?=(isset($_POST['review_goal'])?$_POST["review_goal"]:(isset($_GET['review_goal'])?$_GET["review_goal"]:(isset($location->review_goal)?$location->review_goal:'10')))?>" />
       </div>
     </div>
 

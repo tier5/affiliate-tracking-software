@@ -65,31 +65,14 @@
                         <div class="portlet light bordered">
                             <div class="portlet-title">
                                 <div class="caption">
-                                    <span class="">No Payment Details</span>
+                                    <span class="text-center">Update Payment Details</span>
                                 </div>
                             </div>
                             <div class="panel-body credit-card-details">
                                 <div class="row large">
-                                    <div class="col-xs-8 col-md-8">
+                                    <div class="col-xs-offset-2 col-xs-8 col-md-8">
                                         <div class="form-group">
                                             <input type="text" disabled class="form-control center" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="cc-exp" required="" aria-required="true">
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-4 col-md-4 pull-right">
-                                        <div class="form-group">
-                                            <div><img src="/img/cc/{{ registeredCardType }}.png"></div>
-                                            <div><span>XX/XX</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row small">
-                                    <div class="col-xs-12 col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" disabled class="form-control center" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="cc-exp" required="" aria-required="true">
-                                        </div>
-                                        <div class="form-group">
-                                            <div><img src="/img/cc/{{ registeredCardType }}.png"></div>
-                                            <div><span>10/2016</span></div>
                                         </div>
                                     </div>
                                 </div>

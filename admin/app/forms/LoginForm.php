@@ -42,9 +42,7 @@ class LoginForm extends Form
         )));
 
         $password->clear();
-
         $this->add($password);
-
         // Remember
         $remember = new Check('remember', array(
             'value' => 'yes'

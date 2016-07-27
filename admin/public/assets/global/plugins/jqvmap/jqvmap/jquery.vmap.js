@@ -121,6 +121,8 @@
     canvas: null,
 
     setSize: function (width, height) {
+      if(!width) width = 0;
+      if(!height) height = 0;
       if (this.mode == 'svg') {
         this.canvas.setAttribute('width', width);
         this.canvas.setAttribute('height', height);
@@ -242,6 +244,7 @@
     },
 
     applyTransformParams: function (scale, transX, transY) {
+      if(!scale || !transX || !transY) return;
       if (this.mode == 'svg') {
         this.rootGroup.setAttribute('transform', 'scale(' + scale + ') translate(' + transX + ', ' + transY + ')');
       } else {
