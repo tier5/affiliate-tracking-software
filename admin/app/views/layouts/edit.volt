@@ -24,7 +24,7 @@
             <?php
           foreach($regions as $data) {
             ?>
-            <option value="<?=$data->region_id?>" <?=(isset($_POST['region_id']) && $_POST['region_id']==$data->region_id?'selected="selected"':($data->region_id==$location->region_id?'selected="selected"':''))?>><?=$data->name?></option>
+            <option value="<?=$data->region_id?>" <?php echo(isset($_POST['region_id']) && $_POST['region_id']==$data->region_id?'selected="selected"':($data->region_id==$location->region_id?'selected="selected"':''))?>><?=$data->name?></option>
             <?php
           }
           ?>
@@ -209,7 +209,6 @@
             $("#loader").hide();
             $("#relevant-result-list").show();
             $(".footerscan").show();
-            // $("#relevant-result-list").empty();
           },
           url: '/session/googlesearchapi/',
           data: {
@@ -233,9 +232,6 @@
         });
       }
     });
-
-
-
 
     $('#urllink, #urllinkyelp').on('click', function(e) {
       e.preventDefault();

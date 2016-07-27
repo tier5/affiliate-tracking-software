@@ -44,7 +44,7 @@ class Auth extends Component {
         $this->saveSuccessLogin($user);
 
         // Check if the remember me was selected
-        if (isset($credentials['remember'])) {
+        if ($credentials['remember']) {
             $this->createRememberEnviroment($user);
         }
 
@@ -69,10 +69,8 @@ class Auth extends Component {
             'signup_page' => $this->getCurrentSignupPage($user->agency_id)
         ));
     }
-    
+
     public function getAgencyParentId($agency_id) {
-        //find agency type
-        $agencytype = 'agency';
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -93,10 +91,8 @@ class Auth extends Component {
         }
         return $agencytype;
     }
-    
+
     public function getCurrentSignupPage($agency_id) {
-        //find agency type
-        $agencytype = 'agency';
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -109,30 +105,14 @@ class Auth extends Component {
      * @param Vokuro\Models\Users $user
      */
     public function getLocationList($user) {
-        
-        //check the user type
-        
-        /* if (($user->profilesId == 1 || $user->profilesId == 4) && ($user->is_all_locations == 1 || count($user->locations) <= 0)) {
-            // Query binding parameters with string placeholders
-            $conditions = "agency_id = :agency_id:";
-            $parameters = array("agency_id" => $user->agency_id);
-            $locs = Location::find(array($conditions, "bind" => $parameters));
-            return $locs;
-        } else {
-            return $user->locations;
-        }
-         * 
-         */
-        
-        // Query binding parameters with string placeholders
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $user->agency_id);
         $locs = Location::find(array($conditions, "bind" => $parameters));
-        
+
         if ($locs) {
             return $locs;
         }
-        
+
         return [];
     }
 
@@ -268,8 +248,8 @@ class Auth extends Component {
                         $this->checkUserFlags($user);
 
                         $locs = $this->getLocationList($user); //set the location list in the identity
-                        $location_id = ($locs && isset($locs[0]) ? $locs[0]->location_id : '');
-                        $location_name = ($locs && isset($locs[0]) ? $locs[0]->name : '');
+                        $location_id = ($locs && $locs[0]) ? $locs[0]->location_id : '';
+                        $location_name = ($locs && $locs[0]) ? $locs[0]->name : '';
                         $this->session->set('auth-identity', array(
                             'id' => $user->id,
                             'name' => $user->name,
@@ -331,7 +311,6 @@ class Auth extends Component {
         if (isset($this->view->agency_id) && $this->view->agency_id > 0 && $user->agency_id != $this->view->agency_id) {
             throw new Exception('Your account does not belong to this site.');
         }
-
         if ($user->active != 'Y') {
             throw new Exception('Your account is inactive');
         }
@@ -390,7 +369,7 @@ class Auth extends Component {
     }
 
     /**
-     * Auths the user by his/her id
+     * Auths the user by id
      *
      * @param int $id
      */
@@ -403,8 +382,8 @@ class Auth extends Component {
         $this->checkUserFlags($user);
 
         $locs = $this->getLocationList($user); //set the location list in the identity
-        $location_id = ($locs && isset($locs[0]) ? $locs[0]->location_id : '');
-        $location_name = ($locs && isset($locs[0]) ? $locs[0]->name : '');
+        $location_id = ($locs && $locs[0]) ? $locs[0]->location_id : '';
+        $location_name = ($locs && $locs[0]) ? $locs[0]->name : '';
         $this->session->set('auth-identity', array(
             'id' => $user->id,
             'name' => $user->name,
@@ -424,17 +403,14 @@ class Auth extends Component {
      */
     public function getUser() {
         $identity = $this->session->get('auth-identity');
-        if (isset($identity['id'])) {
+        if ($identity['id']) {
 
             $user = Users::findFirstById($identity['id']);
             if ($user == false) {
-                throw new Exception('The user does not exist');
+                throw new Exception('The user with id of: '.$identity['id'].' does not exist');
             }
-
             return $user;
         }
-
         return false;
     }
-
 }

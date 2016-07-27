@@ -18,9 +18,9 @@
           <div class="title">SMS Messages Sent</div>
           <div class="bar-wrapper">
             <div class="bar-background"></div>
-            <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-            <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-            <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
+            <div class="bar-filled" style="width: {{   percent }}%;"></div>
+            <div class="bar-percent" style="padding-left: {{ percent }}%;"><?=$percent?>%</div>
+            <div class="bar-number" style="margin-left: {{ percent }}%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
         </div>
         <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
       </div>
@@ -810,15 +810,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
 
     function changeColor(hex) {
-      //stuff to do on hover
-      //console.log($(this).attr("data-color"));
-      //var hex = $(this).attr("data-color");
       $('.page-header.navbar').css( "background-color", hex);
-      //calculate the rgb
-      /*var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-       var r = result[1];
-       var g = result[2];
-       var b = result[3];*/
       var bigint = parseInt(hex.replace('#', ''), 16);
       var r = (bigint >> 16) & 255;
       var g = (bigint >> 8) & 255;
@@ -828,7 +820,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       $('.page-sidebar .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a').css("color", "#FFFFFF");
       $('.page-sidebar .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a').css("background-color", hex);
       $('li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a').css("background-color", hex+' !important');
-      //console.log("background-color: "+hex+" !important;");
       $("li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a").css("cssText", "background-color: "+hex+" !important;");
 
       $('#main_color').val(hex);

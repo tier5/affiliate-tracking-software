@@ -46,28 +46,6 @@ if (isset($main_color_setting)) {
   list($r, $g, $b) = sscanf($main_color_setting, "#%02x%02x%02x");
   //echo "$main_color_setting -> $r $g $b";
     ?>
-    <style> /*
-  .page-header.navbar { background-color: <?=$main_color_setting?>; }
-  body { background-color: rgba(<?=$r?>, <?=$g?>, <?=$b?>, 0.8); }
-  .page-sidebar .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a { border-top: <?=$main_color_setting?>; color: #FFFFFF; }
-  .page-sidebar .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a { background-color: <?=$main_color_setting?>; }
-  li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a { background-color: <?=$main_color_setting?> !important; }
-  .minicolors-swatch-color { background-color: <?=$main_color_setting?>; }
-
-  li.nav-item:hover, li.nav-item a:hover,
-  .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a,
-  .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a {
-    background: <?=$main_color_setting?> none repeat scroll 0 0 !important;
-  }
-  .page-sidebar .page-sidebar-menu > li.open > a > .arrow.open::before, .page-sidebar .page-sidebar-menu > li.open > a > .arrow::before, .page-sidebar .page-sidebar-menu > li.open > a > i, .page-sidebar .page-sidebar-menu > li > a > .arrow.open::before, .page-sidebar .page-sidebar-menu > li > a > .arrow::before, .page-sidebar .page-sidebar-menu > li > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > .arrow.open::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > .arrow::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > .arrow.open::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > .arrow::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > i { color: #FFFFFF !important; }
-
-  body {
-      background-color: <?=$main_color_setting?>;
-  }
-  .login {
-    background-color: <?=$main_color_setting?> !important;
-  }*/
-    </style>
     <?php
 }
 ?>
@@ -109,7 +87,6 @@ if (isset($main_color_setting)) {
 </div>
 <footer>
     <div class="copyright"> &copy; Copyright Review Velocity.  All Rights Reserved. </div>
-    <footer>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
@@ -138,6 +115,7 @@ if (isset($main_color_setting)) {
         <script type="text/javascript" src="/js/vendor/minicolors/jquery.minicolors.js"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
         <script src="/js/login.js"></script>
+</footer>
 </body>
 
 </html>

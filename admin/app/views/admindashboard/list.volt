@@ -51,7 +51,7 @@ foreach($agencies as $agency) {
                                         <a data-toggle="dropdown" href="javascript:;" class="btn btn-sm green dropdown-toggle" aria-expanded="false"> Actions <i class="fa fa-angle-down"></i></a>
                                         <ul class="dropdown-menu pull-right">
                                             <li><a href="/admindashboard/view/<?=$agency_type_id?>/<?=$agency->agency_id?>" class=""><i class="icon-eye"></i> View</a></li>
-                                            <li><a href="/admindashboard/create/<?=$agency_type_id?>/<?=$agency->agency_id?>" class=""><i class="icon-pencil"></i> Edit</a></li>
+                                            <li><a href="/admindashboard/edit/<?=$agency->agency_id?>" class=""><i class="icon-pencil"></i> Edit</a></li>
                                             <li><a href="/admindashboard/view/<?=$agency_type_id?>/<?=$agency->agency_id?>" class=""><i class="icon-user"></i> Password</a></li>
                                             <li><a href="/admindashboard/delete/<?=$agency_type_id?>/<?=$agency->agency_id?>" onclick="return confirm('Are you sure you want to delete this item?');" class=""><i class="fa fa-trash-o"></i> Delete</a></li>
                                             <li><a href="/admindashboard/view/<?=$agency_type_id?>/<?=$agency->agency_id?>" class=""><i class="icon-envelope"></i> Resend Credentials</a></li>
@@ -79,3 +79,19 @@ foreach($agencies as $agency) {
     <?php }  ?>
 
 </div>
+<script>
+    $(function(){
+        $('tbody tr td.name').bind('click',function(e){
+            e.stopPropagation();
+           var edit_link = $(this).parent().find('i.icon-pencil').parent().attr('href');
+            window.location = edit_link;
+        });
+
+    });
+
+</script>
+<style type="text/css">
+    tbody tr td.name:hover{
+        cursor:pointer;
+    }
+</style>

@@ -16,7 +16,7 @@ class ControllerBusinessBase extends ControllerBase {
      * Creates business / agencies
      */
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
-        
+
         $this->view->agency_type_id = $agency_type_id;
         $this->view->agency_id = $agency_id;
 
@@ -30,11 +30,11 @@ class ControllerBusinessBase extends ControllerBase {
         } else {
             $age = new Agency();
         }
-        
+
         if ($this->request->isPost()) {
-            
+
             try {
-            
+
                 $IsEmailUnique = true;
                 $IsEmailValid = true;
                 $IsNameValid = true;
@@ -67,9 +67,9 @@ class ControllerBusinessBase extends ControllerBase {
                 if (count($messages) > 0) {
                     throw new ArrayException("", 0, null, $messages);
                 }
-                
 
-                $db = $this->di->get('db'); 
+
+                $db = $this->di->get('db');
                 $db->begin();
 
                 /* Attempt to create our new business */
@@ -84,7 +84,7 @@ class ControllerBusinessBase extends ControllerBase {
                     'country'            => $this->request->getPost('country', 'striptags'),
                     'phone'              => $this->request->getPost('phone', 'striptags'),
                     'date_created'       => (isset($age->date_created) ? $age->date_created : date('Y-m-d H:i:s')),
-                    'subscription_id'    => $this->request->getPost('subscription_id', 'striptags'),
+                    'subscription_id'    => $this->request->getPost('subscription_pricing_plan_id', 'striptags'),
                     'deleted'            => (isset($age->deleted) ? $age->deleted : 0),
                     'status'             => (isset($age->status) ? $age->status : 1),
                     'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
@@ -93,7 +93,7 @@ class ControllerBusinessBase extends ControllerBase {
 
                 if (!$age->createOrUpdateBusiness($params)) {
                     throw new ArrayException("", 0, null, $age->getMessages());
-                } 
+                }
 
                 /* Create an admin for this new agency */
                 $user = new Users();
@@ -105,29 +105,31 @@ class ControllerBusinessBase extends ControllerBase {
                     'profilesId' => $agency_type_id, // 1 = Agency User, 2 = Business User
                 ));
                 if (!$user->save()) {
-                    throw new ArrayException("", 0, null, $user->getMessages());   
+                    throw new ArrayException("", 0, null, $user->getMessages());
                 }
 
                 $result = $this->createSubscriptionPlan($user, $this->request);
-                if($result !== true) {   
+                if($result !== true) {
                     $this->flash->error($messages);
                 }
 
                 $this->flash->success("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was " . ($agency_id > 0 ? 'edited' : 'created') . " successfully");
                 $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
-                
+
                 $db->commit();
-            
+
             } catch(ArrayException $e) {
-        
+
                 if(isset($db)) { $db->rollback(); }
                 $this->flash->error($e->getOptions());
-            
-            }   
+
+            }
         }
-         
+
         // find all subscriptions for the form
-        $markup = $this->buildSubsriptionPricingPlanMarkUp();
+        //dd(get_object_vars($age));
+        $sub_selected = $age->subscription_id;
+        $markup = $this->buildSubsriptionPricingPlanMarkUp($sub_selected);
         $this->view->setVar("subscriptionPricingPlans", $markup);
 
         $this->view->agency = new Agency();
@@ -137,7 +139,6 @@ class ControllerBusinessBase extends ControllerBase {
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $agency_id);
             $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
-            $form = new AgencyForm($age2);
             $this->view->agency = $age2;
         }
     }
@@ -152,8 +153,8 @@ class ControllerBusinessBase extends ControllerBase {
         //set agency details
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency_id);
-        $age = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->agency = $age;
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->agency = $agency;
 
         //find all users associated with the agency
         $conditions = "agency_id = :agency_id:";
@@ -169,17 +170,19 @@ class ControllerBusinessBase extends ControllerBase {
 
     }
 
-    private function buildSubsriptionPricingPlanMarkUp() {
+    private function buildSubsriptionPricingPlanMarkUp($selected_subscription_id = null) {
         $subscriptionPricingPlans = $this->di->get('subscriptionManager')->getSubscriptionPricingPlans();
+        $selected_subscription_id = (int)$selected_subscription_id;
 
         $markup = "<select id=\"subscription_pricing_plan_id\" name=\"subscription_pricing_plan_id\">";
-        $markup .= "    <option value=\"Unpaid\">Unpaid</option>";  // This is default plan
+        $markup .= "    <option value=\"0\">Unpaid</option>";  // This is default plan
         foreach($subscriptionPricingPlans as $subscriptionPricingPlan) {
             $markup .= "<option value=\"";
-            $markup .= $subscriptionPricingPlan->id;
+            $markup .= $subscriptionPricingPlan->id.'"';
+            if ($subscriptionPricingPlan->id == $selected_subscription_id) $markup .= ' selected="selected" ';
             $markup .= '">';
             $markup .= $subscriptionPricingPlan->name;
-            $markup .= "</option>";
+            $markup .= '</option>';
         }
         $markup .= "</select>";
         return $markup;
@@ -195,9 +198,4 @@ class ControllerBusinessBase extends ControllerBase {
         ];
         return $this->di->get('subscriptionManager')->createSubscriptionPlan($newSubscriptionParameters);
     }
-    
-    /**
-     * END BUSINESS COMMON FUNCTIONS
-     */
-
 }

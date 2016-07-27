@@ -15,12 +15,12 @@ use Vokuro\Services\ServicesConsts;
 class BusinessSubscriptionController extends ControllerBase {
 
     public function initialize() {
-        
+
         $identity = $this->session->get('auth-identity');
         if ($identity && $identity['profile'] != 'Employee') {
             $this->tag->setTitle('Review Velocity | Subscription');
             $this->view->setTemplateBefore('private');
-        } else {    
+        } else {
             $this->response->redirect('/session/login?return=/');
             $this->view->disable();
             return;
@@ -39,27 +39,27 @@ class BusinessSubscriptionController extends ControllerBase {
             ->addJs('/assets/global/plugins/bootstrap-summernote/summernote.min.js')
             ->addJs('/assets/global/plugins/card-js/card-js.min.js');
     }
-    
-    public function indexAction() {   
-        
+
+    public function indexAction() {
+
         /* Get services */
         $userManager = $this->di->get('userManager');
         $subscriptionManager = $this->di->get('subscriptionManager');
         $smsManager = $this->di->get('smsManager');
         $paymentService = $this->di->get('paymentService');
-        
+
         /* Get the role type */
         $isBusiness = $userManager->isBusiness($this->session);
-        
+
         /* Show sms quota? */
         $this->view->showSmsQuota = $isBusiness;
-        if ($this->view->showSmsQuota) {
-            
+        if ($isBusiness) {
+
             /* Get sms quota parameters */
             $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams(
                 $userManager->getLocationId($this->session)
-            ); 
-            
+            );
+
             if ($smsQuotaParams['hasUpgrade']) {
                 // REFACTOR: DOESN'T SEEM TO BE GETTING CALLED
                 // $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
@@ -69,67 +69,67 @@ class BusinessSubscriptionController extends ControllerBase {
             }
             $this->view->smsQuotaParams = $smsQuotaParams;
         }
-        
+
         /* Get subscription paramaters */
         $userId = $userManager->getUserId($this->session);
-        
+
         /* Get the subscription plan */
         $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($userId);
-        
+
         /* Filter out the pricing plan details into its own view because it contains markup */
         $this->view->pricingDetails = $subscriptionPlanData['pricingPlan']['pricing_details'];
-        
+
         /* Set pricing plan details to empty so it doesn't display when attaching the json string to the data attribute */
         $subscriptionPlanData['pricingPlan']['pricing_details'] = '';
         $this->view->subscriptionPlanData = $subscriptionPlanData;
-        $this->view->paymentPlan = 
+        $this->view->paymentPlan =
             $this->view->subscriptionPlanData['subscriptionPlan']['payment_plan'] === ServicesConsts::$PAYMENT_PLAN_TRIAL ? 'TRIAL' : 'PAID';
-             
+
         /* Payments paramaters */
         $provider = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET;
         if ($userManager->isWhiteLabeledBusiness($this->session)) {
             $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
         }
         $this->view->registeredCardType = $paymentService->getRegisteredCardType($userId, $provider);
-        
+
     }
-    
+
     /**
-     * Check whether a customer profile exists for the current user 
+     * Check whether a customer profile exists for the current user
      */
     public function hasPaymentProfileAction() {
         $this->view->disable();
-        
+
         $responseParameters['status'] = false;
-        
+
         try {
-        
+
             if (!$this->request->isPost()) {
                 throw new \Exception();
             }
-            
+
             /* Get services */
             $userManager = $this->di->get('userManager');
             $paymentService = $this->di->get('paymentService');
-        
+
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
-            
+
             $paymentParams = [
                 'userId' => $userId,
                 'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
             ];
-            
-            $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);    
-            
+
+            $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
+
             if (!$hasPaymentProfile) {
                 throw new \Exception();
             }
-            
-            $responseParameters['status'] = true;    
-            
+
+            $responseParameters['status'] = true;
+
         } catch(Exception $e) {}
-        
+
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
@@ -138,21 +138,21 @@ class BusinessSubscriptionController extends ControllerBase {
     /**
      * Update credit card
      */
-    public function updatePaymentProfileAction() {  
+    public function updatePaymentProfileAction() {
         $this->view->disable();
-        
+
         $responseParameters['status'] = false;
-        
+
         try {
-        
+
             if (!$this->request->isPost()) {
                 throw new \Exception();
             }
-        
+
             /* Get services */
             $userManager = $this->di->get('userManager');
             $paymentService = $this->di->get('paymentService');
-        
+
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
 
@@ -178,17 +178,17 @@ class BusinessSubscriptionController extends ControllerBase {
             $tokenID = $agency->parent_id == -1 ? '' : $this->request->getPost('tokenID', 'striptags');
 
             /* Format the date accordingly  */
-            $date = $agency->parent_id == -1 ? Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags')) : '';
-            
+            $date = Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags'));
+
             /* Create the payment profile */
-            $paymentParams = [ 'userId' => $userId, 'provider' => $Provider];
+            $paymentParams = [ 'userId' => $userId, 'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET ];
             $ccParameters = [
-                'userId'                => $userId,
-                'cardNumber'            => str_replace(' ', '', $cardNumber),
-                'cardName'              => $cardName,
-                'expirationDate'        => $date,
-                'csv'                   => $csv,
-                'provider'              => $Provider,
+                'userId' => $userId,
+                'cardNumber' => $this->request->getPost('cardNumber', 'striptags'),
+                'cardName' => $this->request->getPost('cardName', 'striptags'),
+                'expirationDate' => $date,
+                'csv' => $this->request->getPost('csv', 'striptags'),
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET,
                 'userEmail'             => $user->email,
                 'userName'              => $user->name,
                 'agencyName'            => $agency->name,
@@ -197,9 +197,9 @@ class BusinessSubscriptionController extends ControllerBase {
                 'agencyStateProvince'   => $agency->state_province,
                 'agencyPostalCode'      => $agency->postal_code,
                 'agencyCountry'         => $agency->country,
-                'tokenID'                 => $tokenID,
+                'tokenID'               => $tokenID,
             ];
-            
+
             if ($paymentService->hasPaymentProfile($paymentParams)) {
                 $profile = $paymentService->updatePaymentProfile($ccParameters);
                 if (!$profile) {
@@ -207,77 +207,74 @@ class BusinessSubscriptionController extends ControllerBase {
                 }
             } else {
                 $profile = $paymentService->createPaymentProfile($ccParameters);
-                if (!$profile) {
-                    throw new \Exception('Payment Profile Could not be created');
-                }
+            }
+            if (!$profile) {
+                throw new \Exception();
             }
 
-
-
-            
-            /* 
-             * Success!!! 
+            /*
+             * Success!!!
              */
             $responseParameters['status'] = true;
-               
-        }  catch(Exception $e) {$responseParameters['error'] = $e->getMessage();}
-        
-        /* 
-         * Construct the response  
-         */  
+
+        }  catch(Exception $e) {}
+
+        /*
+         * Construct the response
+         */
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
     }
-    
+
     /**
-     * Change plan 
+     * Change plan
      */
     public function changePlanAction() {
         $this->view->disable();
-        
+
         $responseParameters['status'] = false;
 
         try {
-        
+
             if (!$this->request->isPost()) {
                 throw new \Exception('POST request is required!');
             }
-        
+
             /* Get services */
             $userManager = $this->di->get('userManager');
             $paymentService = $this->di->get('paymentService');
             $subscriptionManager = $this->di->get('subscriptionManager');
-        
+
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
             $objUser = \Vokuro\Models\Users::findFirst("id = {$userId}");
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
-            
+
 
             $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst('user_id = ' . $userId);
             $objSubscriptionPlan->sms_messages_per_location = $this->request->getPost('messages', 'striptags');
             $objSubscriptionPlan->locations = $this->request->getPost('locations', 'striptags');
             if(!$objSubscriptionPlan->update())
                 throw new \Exception('Could not update subscription plan.');
-        
-            /* 
+
+            /*
              * If they don't have a customer profile, then create one (they shouldn't have one if calling this action,
-             * but check just to be safe) 
+             * but check just to be safe)
              */
             $Provider = $objAgency->parent_id == -1 ? ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET : ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
             $paymentParams = [
                 'userId' => $userId,
-                'provider' => $Provider,
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
             ];
-            
+
             $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
             if(!$hasPaymentProfile) {
-                throw new \Exception('Could not find payment profile.');
+                throw new \Exception('Payment information not found!');
             }
 
             $intervalLength = $this->request->getPost('planType', 'striptags') === 'Annually' ? 12 : 1;
-            
+
             /* Create the subscription */
             $subscriptionParameters = [
                 'userId'            => $userId,
@@ -289,33 +286,32 @@ class BusinessSubscriptionController extends ControllerBase {
                 'intervalLength'    => $intervalLength,
             ];
             $changePlanSucceeded = $paymentService->changeSubscription($subscriptionParameters);
-
             if(!$changePlanSucceeded) {
                 throw new \Exception('Could not change subscription.');
-            }            
-            if(!$subscriptionManager->changeSubscriptionPlan($subscriptionParameters)) {
-                throw new \Exception('Could not change subscription plan.');
             }
-            
-            /* 
-             * Success!!! 
+            if(!$subscriptionManager->changeSubscriptionPlan($subscriptionParameters)) {
+                throw new \Exception('Payment information not found!');
+            }
+
+            /*
+             * Success!!!
              */
             $responseParameters['status'] = true;
-               
+
         }  catch(Exception $e) {$responseParameters['error'] = $e->getMessage();}
-        
+
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
     }
-    
+
     /**
-     * Show invoices 
+     * Show invoices
      */
     public function invoicesAction() {
         if ($this->request->isGet()) {
 
         }
     }
-    
+
 }

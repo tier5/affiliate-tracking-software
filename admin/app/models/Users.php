@@ -67,16 +67,20 @@
          */
         public function afterSave()
         {
+
             if ($this->active == 'N' || $this->send_confirmation) {
+            //dd('we should send an email');
+
                 $emailConfirmation = new EmailConfirmations();
                 $emailConfirmation->usersId = $this->id;
                 $emailConfirmation->save();
-                /*if ($emailConfirmation->save()) {
+                 if($emailConfirmation->save()) {
                   $this->getDI()
                       ->getFlash()
                       ->notice('A confirmation email has been sent to ' . $this->email);
-                }*/
+                }
             }
+            return true;
         }
 
         /**
@@ -92,10 +96,14 @@
             return $this->validationHasFailed() != true;
         }
 
+        public function beforeValidationOnUpdate(){
+           return true;
+        }
+
         public function initialize()
         {
             $this->byPassConfirmationEmail = false;
-            
+
             $this->belongsTo('profilesId', __NAMESPACE__ . '\Profiles', 'id', array(
                 'alias' => 'profile',
                 'reusable' => true
@@ -298,6 +306,10 @@
             // Execute the query
             $params = null;
             return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        }
+
+        public function save($data = null,$whitelist = null){
+            return parent::save($data,$whitelist);
         }
 
     }

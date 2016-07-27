@@ -1,5 +1,4 @@
 {{ content() }}
-
 <header class="jumbotron subhead" id="dashboard">
   <div class="hero-unit">
     <!-- BEGIN PAGE TITLE-->
