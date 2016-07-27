@@ -29,7 +29,7 @@ class EmailConfirmations extends Model
         $this->createdAt = time();
 
         // Generate a random confirmation code
-        $this->code = preg_replace('/[^a-zA-Z0-9]/', '', base64_encode(openssl_random_pseudo_bytes(24)));
+        if(!$this->code) $this->code = preg_replace('/[^a-zA-Z0-9]/', '', base64_encode(openssl_random_pseudo_bytes(24)));
 
         // Set status to non-confirmed
         $this->confirmed = 'N';
@@ -49,7 +49,6 @@ class EmailConfirmations extends Model
      */
     public function afterCreate()
     {
-        print_r($this);
       try {
         $this->getDI()
             ->getMail()
@@ -57,8 +56,8 @@ class EmailConfirmations extends Model
             'confirmUrl' => '/confirm/' . $this->code . '/' . $this->user->email
         ));
       } catch (Exception $e) {
+          print $e;
         //do nothing
-          dd($e);
       }
     }
 

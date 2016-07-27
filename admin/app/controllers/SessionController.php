@@ -42,7 +42,7 @@ class SessionController extends ControllerBase {
     }
 
     public function submitSignupAction() {
-        try {
+        //try {
 
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
@@ -97,7 +97,8 @@ class SessionController extends ControllerBase {
 
             $user->agency_id = $agency->agency_id;
             $user->send_confirmation = true;
-            if (!$user->save()) {
+            if (!$user->save() && $user->getMessages()) {
+
                 throw new ArrayException('Could not save the user', 0, null, $user->getMessages());
             }
             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
@@ -106,8 +107,11 @@ class SessionController extends ControllerBase {
             $this->db->commit();
 
             return $this->response->redirect('/session/thankyou');
-
+        /*
         } catch(ArrayException $e) {
+            var_dump($e);
+            print_r($e->getTrace());
+            exit();
 
             $this->db->rollback();
 
@@ -116,6 +120,7 @@ class SessionController extends ControllerBase {
             }
 
         }
+        */
     }
 
     public function signupAction($subscriptionToken = '0') {
@@ -159,9 +164,6 @@ class SessionController extends ControllerBase {
             $this->view->pick('session/signup');
 
         } catch(ArrayException $e) {
-            print $e->getMessage();
-            print_r($e->getTraceAsString());
-
             foreach($e->getOptions() as $message) {
                 $this->flash->error($message);
             }

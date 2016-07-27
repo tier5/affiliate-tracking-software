@@ -309,7 +309,7 @@
         }
 
         public function save($data = null,$whitelist = null){
-            parent::save($data);
+            return parent::save($data,$whitelist);
         }
 
     }
