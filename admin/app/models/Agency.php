@@ -12,6 +12,7 @@
 
     class Agency extends BaseModel {
 
+
         /**
          * Validate that custom_domain is unique across agencies
          */
@@ -52,6 +53,8 @@
                 'alias' => 'subscription',
                 'reusable' => true
             ));
+            if (!$this->_skipped) $this->skipAttributes(['address2']); //address2 should NOT be required
+            parent::initialize();
         }
 
         /**
