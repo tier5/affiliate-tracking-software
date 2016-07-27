@@ -36,7 +36,7 @@ class UserControlController extends ControllerBase
         $this->tag->setTitle('Review Velocity | Confirm email');
         $code = $this->dispatcher->getParam('code');
         $email = $this->dispatcher->getParam('email');
-        $email = str_replace(' ','+',$email);
+        $email = str_replace(' ', '+', $email);
         $confirmation = EmailConfirmations::findFirstByCode($code);
         if($confirmation && $confirmation->confirmed == 'N'){
             $confirmation->confirmed = 'Y';
@@ -44,11 +44,14 @@ class UserControlController extends ControllerBase
         }
 
         $user_id = $confirmation->usersId;
-        if($user_id) $user = Users::findFirst('id = ' . $user_id);
+        if ($user_id) $user = Users::findFirst('id = ' . $user_id);
         if ($user) {
             $user->active = 'Y';
+            $user->last_name = ' ';
             $user->save();
+
         }
+        //if($user) $error_messages = $user->getMessages();
         //dd($user->active); //it is a 'Y';
 
         //it is a 'N'
@@ -58,7 +61,7 @@ class UserControlController extends ControllerBase
         if($confirmation) {
             $confirmation->confirmed = 'Y';
             $confirmation->user->active = 'Y';
-            $confirmation->user->save();
+            //$confirmation->user->save();
             $confirmation->save();
         }
         if (!$confirmation) {
@@ -67,7 +70,6 @@ class UserControlController extends ControllerBase
                 'action' => 'index'
             ));
         }
-
         if ($confirmation->confirmed == 'Y') {
             return $this->dispatcher->forward(array(
                 'controller' => 'session',
@@ -99,7 +101,7 @@ class UserControlController extends ControllerBase
         /**
          * Identify the user in the application
          */
-        $this->auth->authUserById($confirmation->user->id);
+        $this->auth->authUserById($user_id);
 
         /**
          * Check if the user must change his/her password
