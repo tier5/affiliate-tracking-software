@@ -9,25 +9,25 @@ use Vokuro\Models\SubscriptionPricingPlan;
 use Vokuro\Models\SubscriptionPricingPlanParameterList;
 use Vokuro\Models\BusinessSubscriptionInvitation;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
-
+    
 class SubscriptionManager extends BaseService {
-
+    
     function __construct($config, $di) {
         parent::__construct($config, $di);
     }
-
+    
     public function creditCardInfoRequired($session) {
-
         $userManager = $this->di->get('userManager');
         $paymentService = $this->di->get('paymentService');
-
+   
         $userId = $userManager->getUserId($session);
         $subscriptionPlan = $this->getSubscriptionPlan($userId);
         $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
+
         if (!$subscriptionPlan  || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE) {
             return false;
         }
-
+        
         $provider = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET;
         if ($userManager->isWhiteLabeledBusiness($session)) {
             $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
@@ -42,51 +42,51 @@ class SubscriptionManager extends BaseService {
 
         return false;
     }
-
+        
     public function getSubscriptionPricingPlans() {
-        return $subscriptionPricingPlans = SubscriptionPricingPlan::query()
+        return $subscriptionPricingPlans = SubscriptionPricingPlan::query()  
             ->where("enabled = true")
             ->andWhere("deleted_at = '0000-00-00 00:00:00'")
             ->execute();
     }
-
+    
     public function createSubscriptionPlan($newSubscriptionParameters) {
-
+        
         try {
-
+        
             $userId = $newSubscriptionParameters['userAccountId'];
 
             /* Configure subscription parameters */
             if ($newSubscriptionParameters['pricingPlanId'] !== 'Unpaid') {
-
-                $subscriptionPricingPlan = SubscriptionPricingPlan::query()
+                
+                $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
                     ->where("id = :id:")
                     ->bind(["id" => $newSubscriptionParameters['pricingPlanId']])
                     ->execute()
                     ->getFirst();
-                $pricingPlanId = $subscriptionPricingPlan->id;
+                $pricingPlanId = $subscriptionPricingPlan->id;   
                 if ($subscriptionPricingPlan->enable_trial_account) {
-                    $paymentPlan = ServicesConsts::$PAYMENT_PLAN_TRIAL;
+                    $paymentPlan = ServicesConsts::$PAYMENT_PLAN_TRIAL;  
                     $locations = 1;
                     $smsMessagesPerLocation = $subscriptionPricingPlan->max_messages_on_trial_account;
                 } else {
                     $paymentPlan = ServicesConsts::$PAYMENT_PLAN_MONTHLY;;
                     $locations = 0;
-                    $smsMessagesPerLocation = 0;;
+                    $smsMessagesPerLocation = 0;
                 }
-
+                
             } else  {
-
+                
                 $pricingPlanId = 0;
                 $locations = $newSubscriptionParameters['freeLocations'];
                 $smsMessagesPerLocation = $newSubscriptionParameters['freeSmsMessagesPerLocation'];
                 $paymentPlan = ServicesConsts::$PAYMENT_PLAN_FREE;
-
+                
             }
-
-            $db = $this->di->get('db');
+            
+            $db = $this->di->get('db'); 
             $db->begin();
-
+            
             /* Create the subscription plan */
             $subscriptionPlan = new BusinessSubscriptionPlan();
             $subscriptionPlan->user_id = intval($userId);
@@ -97,23 +97,23 @@ class SubscriptionManager extends BaseService {
             if (!$subscriptionPlan->create()) {
                 throw new ArrayException("", 0, null, $subscriptionPlan->getMessages());
             }
-
+                        
             $db->commit();
-
+            
         } catch(ArrayException $e) {
-
+            
             if (isset($db)) {
                 $db->rollback();
             }
             return $e->getOptions();
-
+            
         }
-
+        
         return true;
     }
-
+    
     public function changeSubscriptionPlan($subscriptionParameters) {
-
+        
         $subscriptionPlan = BusinessSubscriptionPlan::query()
             ->where("user_id = :userId:")
             ->bind(["userId" => $subscriptionParameters['userId']])
@@ -122,21 +122,21 @@ class SubscriptionManager extends BaseService {
         if (!$subscriptionPlan) {
             return false;
         }
-
+        
         $subscriptionPlan->locations = $subscriptionParameters['locations'];
         $subscriptionPlan->sms_messages_per_location = $subscriptionParameters['messages'];
         $subscriptionPlan->payment_plan = $subscriptionParameters['planType'];
         if (!$subscriptionPlan->save()) {
             return false;
         }
-
+        
         return true;
     }
-
+    
     public function getSubscriptionPlan($userId) {
-
+        
         /* Get subscription plan */
-        $subscriptionPlan = BusinessSubscriptionPlan::query()
+        $subscriptionPlan = BusinessSubscriptionPlan::query()  
             ->where("user_id = :user_id:")
             ->bind(["user_id" => intval($userId)])
             ->execute()
@@ -146,40 +146,40 @@ class SubscriptionManager extends BaseService {
         }
 
         /* Get the pricing plan */
-        $pricingPlan = SubscriptionPricingPlan::query()
+        $pricingPlan = SubscriptionPricingPlan::query()  
             ->where("id = :id:")
             ->bind(["id" => intval($subscriptionPlan->subscription_pricing_plan_id)])
             ->execute()
-            ->getFirst();
+            ->getFirst();  
         if (!$pricingPlan) {
             return false;
         }
-
+        
         /* Get the parameter lists */
-        $parameterLists = SubscriptionPricingPlanParameterList::query()
+        $parameterLists = SubscriptionPricingPlanParameterList::query()  
             ->where("subscription_pricing_plan_id = :subscription_pricing_plan_id:")
             ->bind(["subscription_pricing_plan_id" => intval($pricingPlan->id)])
             ->execute();
         if (!$parameterLists) {
             return false;
         }
-
+        
         /* Build the plan data */
         $subscriptionPlanData = [];
         $subscriptionPlanData['subscriptionPlan'] = $subscriptionPlan->toArray();
         $subscriptionPlanData['pricingPlan'] = $pricingPlan->toArray();
-
-
+                
+        
         $subscriptionPlanData['pricingPlanParameterLists'] = [];
         foreach($parameterLists as $parameterList) {
             $subscriptionPlanData['pricingPlanParameterLists'][$parameterList->max_locations] = $parameterList->toArray();
         }
-
+        
         return $subscriptionPlanData;
     }
-
+    
     public function isValidInvitation($subscriptionToken) {
-        $businessSubscriptionInvitation = BusinessSubscriptionInvitation::query()
+        $businessSubscriptionInvitation = BusinessSubscriptionInvitation::query()  
             ->where("token = :token:")
             ->bind(["token" => $subscriptionToken])
             ->execute()
@@ -189,9 +189,9 @@ class SubscriptionManager extends BaseService {
         }
         return true;
     }
-
+    
     public function invalidateInvitation($subscriptionToken) {
-        $businessSubscriptionInvitation = BusinessSubscriptionInvitation::query()
+        $businessSubscriptionInvitation = BusinessSubscriptionInvitation::query()  
             ->where("token = :token:")
             ->bind(["token" => $subscriptionToken])
             ->execute()
@@ -205,9 +205,9 @@ class SubscriptionManager extends BaseService {
         }
         return true;
     }
-
+    
     public function getPricingPlanById($pricingPlanId) {
-        $subscriptionPricingPlan = SubscriptionPricingPlan::query()
+        $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
             ->where("id = :id:")
             ->bind(["id" => intval($pricingPlanId)])
             ->execute()
@@ -217,9 +217,9 @@ class SubscriptionManager extends BaseService {
         }
         return $subscriptionPricingPlan->toArray();
     }
-
+    
     public function isPricingPlanLocked($pricingPlanId) {
-        $subscriptionPlan = BusinessSubscriptionPlan::query()
+        $subscriptionPlan = BusinessSubscriptionPlan::query()  
             ->where("subscription_pricing_plan_id = :subscription_pricing_plan_id:")
             ->bind(["subscription_pricing_plan_id" => intval($pricingPlanId)])
             ->execute()
@@ -227,11 +227,11 @@ class SubscriptionManager extends BaseService {
         if(!$subscriptionPlan) {
             return false;
         }
-        return true;
+        return true;        
     }
-
+    
     public function getPricingPlanByName($userId, $pricingPlanName) {
-        $subscriptionPricingPlan = SubscriptionPricingPlan::query()
+        $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
             ->where("user_id = :userId:")
             ->andWhere("name = :pricingPlanName:")
             ->bind(["userId" => $userId, "pricingPlanName" => $pricingPlanName])
@@ -242,41 +242,41 @@ class SubscriptionManager extends BaseService {
         }
         return $subscriptionPricingPlan->toArray();
     }
-
+    
     public function savePricingProfile($parameters, $isUpdate) {
-
+        
         $status = false;
-
+        
         try {
-
+                
             $id = $this->saveSubscriptionPricingPlan($parameters, $isUpdate);
             if (!$id) {
                 throw new \Exception();
             }
-
+        
             if (!$this->appendPricingParameterLists($id, $parameters, $isUpdate)) {
                 throw new \Exception();
             }
-
+            
             $status = true;
-
+        
         } catch(Exception $e) {}
-
+        
         return $status;
-
+        
     }
-
+    
     public function getAllPricingPlansByUserId($userId) {
-        $subscriptionPricingPlans = SubscriptionPricingPlan::query()
+        $subscriptionPricingPlans = SubscriptionPricingPlan::query()  
             ->where("user_id = :userId:")
             ->andWhere("deleted_at = '0000-00-00 00:00:00'")
             ->bind(["userId" => $userId])
             ->execute();
         return $subscriptionPricingPlans;
     }
-
+    
     public function enablePricingPlanById($pricingPlanId, $enable) {  // Second param is a dirty filthy hack :(, See comment below for details
-        $subscriptionPricingPlan = SubscriptionPricingPlan::query()
+        $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
             ->where("id = :id:")
             ->bind(["id" => $pricingPlanId])
             ->execute()
@@ -284,48 +284,48 @@ class SubscriptionManager extends BaseService {
         if (!$subscriptionPricingPlan) {
             return false;
         }
-
+        
         $subscriptionPricingPlan->enabled = $enable === 'true' ? 1 : 0;
         $subscriptionPricingPlan->updated_at = time();
         if (!$subscriptionPricingPlan->update()) {
             return false;
         }
-
+        
         return true;
     }
-
+    
     public function deletePricingPlanById($pricingPlanId) {
-        $subscriptionPricingPlan = SubscriptionPricingPlan::query()
+        $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
             ->where("id = :id:")
             ->bind(["id" => $pricingPlanId])
             ->execute()
-            ->getFirst();
+            ->getFirst(); 
         if (!$subscriptionPricingPlan) {
             return false;
         }
-
+        
         $subscriptionPricingPlan->deleted_at = time();
         // $result = $db->query("DELETE FROM subscription_pricing_plan WHERE id=" . $subscriptionPricingPlan->id ); // Working now
         if (!$subscriptionPricingPlan->update()) {
             return false;
         }
-
+        
         return true;
     }
-
-    public function getPricingParameterListsByPricingPlanId($pricingPlanId) {
+    
+    public function getPricingParameterListsByPricingPlanId($pricingPlanId) { 
         return SubscriptionPricingPlanParameterList::find("subscription_pricing_plan_id = ".$pricingPlanId)->toArray();
     }
-
+    
     private function saveSubscriptionPricingPlan($parameters, $isUpdate) {
-
+        
         /*
          * REFACTOR: This function is half baked crap - but we're in a rush.
          * Must fix.  MT June 23, 2016
-         *
+         * 
          */
         if ($isUpdate) {
-            $subscriptionPricingPlan = SubscriptionPricingPlan::query()
+            $subscriptionPricingPlan = SubscriptionPricingPlan::query()  
                 ->where("name = :name:")
                 ->bind(["name" => $parameters["name"]])
                 ->execute()
@@ -333,13 +333,13 @@ class SubscriptionManager extends BaseService {
         } else {
             $subscriptionPricingPlan = new SubscriptionPricingPlan();
         }
-
+        
         if (!$subscriptionPricingPlan) {
             return false;
         }
-
+        
         $subscriptionPricingPlan->user_id = $parameters["userId"];
-        $subscriptionPricingPlan->name = $parameters["name"];
+        $subscriptionPricingPlan->name = $parameters["name"];                               
         $subscriptionPricingPlan->enabled = $isUpdate ? $subscriptionPricingPlan->enabled : true;
         $subscriptionPricingPlan->enable_trial_account = $parameters["enableTrialAccount"];
         $subscriptionPricingPlan->enable_discount_on_upgrade = $parameters["enableDiscountOnUpgrade"];
@@ -352,21 +352,21 @@ class SubscriptionManager extends BaseService {
         $subscriptionPricingPlan->enable_annual_discount = $parameters["enableAnnualDiscount"];
         $subscriptionPricingPlan->annual_discount = $parameters["annualDiscount"];
         $subscriptionPricingPlan->pricing_details = $parameters["pricingDetails"] ? : new \Phalcon\Db\RawValue('default');
-
+        
         if ($isUpdate && !$subscriptionPricingPlan->update()) {
             return false;
         } else if (!$isUpdate && !$subscriptionPricingPlan->create()) {
             return false;
         }
-
+        
         return $subscriptionPricingPlan->id;
     }
-
+        
     private function appendPricingParameterLists($id, $parameters, $isUpdate) {
-
+        
         /* Simply delete and refresh */
         if ($isUpdate) {
-
+            
             $db = new DbAdapter(array(
                 'host' => $this->config->database->host,
                 'username' => $this->config->database->username,
@@ -375,22 +375,22 @@ class SubscriptionManager extends BaseService {
             ));
             $db->query("DELETE FROM subscription_pricing_plan_parameter_list WHERE subscription_pricing_plan_id=".$id);
             $db->close();
-
+            
         }
-
-        foreach($parameters as $segment => $params) {
-
+        
+        foreach($parameters as $segment => $params) {    
+            
             if(substr($segment,0,7) !== "segment") {
                 continue;
             }
-
+            
             $pricingParameterList = $this->createPricingParameterList($id, $params);
             if(!$pricingParameterList) {
                 return false;
             }
-
+            
         }
-
+        
         return true;
     }
 
@@ -439,9 +439,9 @@ class SubscriptionManager extends BaseService {
 
         return $PlanCost;
     }
-
+    
     private function createPricingParameterList($id, $parameters) {
-
+         
         $subscriptionPricingPlanParameterList = new SubscriptionPricingPlanParameterList();
         $subscriptionPricingPlanParameterList->subscription_pricing_plan_id = intval($id);
         $subscriptionPricingPlanParameterList->min_locations = intval($parameters['minLocations']);
@@ -458,8 +458,8 @@ class SubscriptionManager extends BaseService {
         if(!$subscriptionPricingPlanParameterList->create()) {
             return false;
         }
-
+        
         return true;
     }
-
+    
 }

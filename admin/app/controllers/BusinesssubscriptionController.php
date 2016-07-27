@@ -53,7 +53,7 @@ class BusinessSubscriptionController extends ControllerBase {
 
         /* Show sms quota? */
         $this->view->showSmsQuota = $isBusiness;
-        if ($isBusiness) {
+        if ($this->view->showSmsQuota) {
 
             /* Get sms quota parameters */
             $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams(
@@ -178,17 +178,17 @@ class BusinessSubscriptionController extends ControllerBase {
             $tokenID = $agency->parent_id == -1 ? '' : $this->request->getPost('tokenID', 'striptags');
 
             /* Format the date accordingly  */
-            $date = Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags'));
+            $date = $agency->parent_id == -1 ? Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags')) : '';
 
             /* Create the payment profile */
-            $paymentParams = [ 'userId' => $userId, 'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET ];
+            $paymentParams = [ 'userId' => $userId, 'provider' => $Provider];
             $ccParameters = [
-                'userId' => $userId,
-                'cardNumber' => $this->request->getPost('cardNumber', 'striptags'),
-                'cardName' => $this->request->getPost('cardName', 'striptags'),
-                'expirationDate' => $date,
-                'csv' => $this->request->getPost('csv', 'striptags'),
-                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET,
+                'userId'                => $userId,
+                'cardNumber'            => str_replace(' ', '', $cardNumber),
+                'cardName'              => $cardName,
+                'expirationDate'        => $date,
+                'csv'                   => $csv,
+                'provider'              => $Provider,
                 'userEmail'             => $user->email,
                 'userName'              => $user->name,
                 'agencyName'            => $agency->name,
@@ -207,17 +207,20 @@ class BusinessSubscriptionController extends ControllerBase {
                 }
             } else {
                 $profile = $paymentService->createPaymentProfile($ccParameters);
+                if (!$profile) {
+                    throw new \Exception('Payment Profile Could not be created');
+                }
             }
-            if (!$profile) {
-                throw new \Exception();
-            }
+
+
+
 
             /*
              * Success!!!
              */
             $responseParameters['status'] = true;
 
-        }  catch(Exception $e) {}
+        }  catch(Exception $e) {$responseParameters['error'] = $e->getMessage();}
 
         /*
          * Construct the response
@@ -265,12 +268,12 @@ class BusinessSubscriptionController extends ControllerBase {
             $Provider = $objAgency->parent_id == -1 ? ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET : ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
             $paymentParams = [
                 'userId' => $userId,
-                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+                'provider' => $Provider,
             ];
 
             $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
             if(!$hasPaymentProfile) {
-                throw new \Exception('Payment information not found!');
+                throw new \Exception('Could not find payment profile.');
             }
 
             $intervalLength = $this->request->getPost('planType', 'striptags') === 'Annually' ? 12 : 1;
@@ -286,11 +289,12 @@ class BusinessSubscriptionController extends ControllerBase {
                 'intervalLength'    => $intervalLength,
             ];
             $changePlanSucceeded = $paymentService->changeSubscription($subscriptionParameters);
+
             if(!$changePlanSucceeded) {
                 throw new \Exception('Could not change subscription.');
             }
             if(!$subscriptionManager->changeSubscriptionPlan($subscriptionParameters)) {
-                throw new \Exception('Payment information not found!');
+                throw new \Exception('Could not change subscription plan.');
             }
 
             /*
