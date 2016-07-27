@@ -36,6 +36,7 @@ class UserControlController extends ControllerBase
         $this->tag->setTitle('Review Velocity | Confirm email');
         $code = $this->dispatcher->getParam('code');
         $email = $this->dispatcher->getParam('email');
+        $email = str_replace(' ','+',$email);
         $confirmation = EmailConfirmations::findFirstByCode($code);
         if($confirmation && $confirmation->confirmed == 'N'){
             $confirmation->confirmed = 'Y';
