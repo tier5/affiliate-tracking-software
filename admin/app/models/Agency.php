@@ -13,6 +13,7 @@
     class Agency extends BaseModel {
 
 
+
         /**
          * Validate that custom_domain is unique across agencies
          */

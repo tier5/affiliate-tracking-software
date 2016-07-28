@@ -28,6 +28,7 @@ use Services_Twilio_RestException;
 class ControllerBase extends Controller {
 
     public function initialize() {
+        error_reporting(E_ALL ^ E_NOTICE);
         //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
 
@@ -149,7 +150,6 @@ class ControllerBase extends Controller {
         //find white label info based on the url
         $tHost = explode(".", $_SERVER['HTTP_HOST']);
         $sub = array_shift($tHost);
-
         if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104') {
             //find the agency object
             $conditions = "custom_domain = :custom_domain:";
@@ -166,15 +166,18 @@ class ControllerBase extends Controller {
             );
 
             if ($agency) {
-
                 list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
                 $rgb = $r . ', ' . $g . ', ' . $b;
-                $this->view->setVars([
+                $vars = [
                     'agency_id' => $agency->agency_id,
                     'main_color_setting' => $agency->main_color,
                     'rgb' => $rgb,
-                    'logo_setting' => $agency->logo_path
-                ]);
+                    'logo_setting' => $agency->logo_path,
+                    'main_color' => str_replace('#', '', $agency->main_color),
+                    'primary_color' => str_replace('#', '', $agency->main_color),
+                    'secondary_color' => str_replace('#', '', $agency->secondary_color)
+                ];
+                $this->view->setVars($vars);
             }
         }
 
@@ -1131,5 +1134,22 @@ class ControllerBase extends Controller {
         $secondary_color = $this->request->get('secondary_color');
         $this->view->setVars(['primary_color'=>$main_color,'secondary_color'=>$secondary_color]);
         $this->view->setMainView('layouts/css');
+    }
+
+    public function getLocationId(){
+        $identity = $this->session->get('auth-identity');
+       return $identity['location_id'];
+    }
+
+    public function getUserObject(){
+        $identity = $this->auth->getIdentity();
+        if(!$identity) return false;
+        // If there is no identity available the user is redirected to index/index
+        // Query binding parameters with string placeholders
+        $conditions = "id = :id:";
+        $parameters = array("id" => $identity['id']);
+        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+        //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+        return $userObj;
     }
 }

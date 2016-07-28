@@ -51,11 +51,13 @@
             //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
 
             //find the agency
-            $conditions = "agency_id = :agency_id:";
-            $parameters = array("agency_id" => $userObj->agency_id);
-            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-            if (!$agency) {
-                $this->flash->error("No settings were found");
+            if($userObj->agency_id) {
+                $conditions = "agency_id = :agency_id:";
+                $parameters = array("agency_id" => $userObj->agency_id);
+                $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+                if (!$agency) {
+                    $this->flash->error("No settings were found");
+                }
             }
 
             if ($this->request->isPost()) {
@@ -136,27 +138,28 @@
                 }
             }
 
-            // Query binding parameters with string placeholders
-            $conditions = "agency_id = :agency_id:";
-            $parameters = array("agency_id" => $userObj->agency_id);
-            $users = Users::find(array($conditions, "bind" => $parameters));
-            $this->view->users = $users;
+            $location_id = $this->session->get('auth-identity')['location_id'];
+            if($location_id) {
+                // Query binding parameters with string placeholders
+                $conditions = "agency_id = :agency_id:";
+                $parameters = array("agency_id" => $userObj->agency_id);
+                $users = Users::find(array($conditions, "bind" => $parameters));
+                $this->view->users = $users;
 
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+                $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
 
-            $this->view->agency = $agency;
-            $this->view->location = $agency;
+                $this->view->agency = $agency;
+                $this->view->location = $agency;
 
-            $this->view->form = new SettingsForm($agency, array(
-                'edit' => true
-            ));
-            $this->view->agencyform = new AgencyForm($agency, array(
-                'edit' => true
-            ));
-
-
+                $this->view->form = new SettingsForm($agency, array(
+                    'edit' => true
+                ));
+                $this->view->agencyform = new AgencyForm($agency, array(
+                    'edit' => true
+                ));
+            }
             $this->getSMSReport();
 
         }
@@ -261,18 +264,15 @@
          * Updates settings for locations
          */
         public function locationAction() {
-            //get the user id, to find the settings
-            $identity = $this->auth->getIdentity();
+            $location_id = $this->getLocationId();
+            $userObj = $this->getUserObject();
             // If there is no identity available the user is redirected to index/index
-            if (!is_array($identity)) {
+            if (!$userObj) {
                 $this->response->redirect('/session/login?return=/settings/location/');
                 $this->view->disable();
                 return;
             }
             // Query binding parameters with string placeholders
-            $conditions = "id = :id:";
-            $parameters = array("id" => $identity['id']);
-            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
             //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
 
             //find the agency
@@ -282,27 +282,26 @@
             if (!$agency) {
                 $this->flash->error("No settings were found");
             }
-
-            //find the location
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $location = Location::findFirst(array($conditions, "bind" => $parameters));
-
+            if($location_id) {
+                //find the location
+                $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+                $location = Location::findFirst(array($conditions, "bind" => $parameters));
+            }
             if(!$location)
                 $location = new Location();
 
 
             if (!$this->storeSettings($location, 'location')) {
                 $this->flash->error($location->getMessages());
-            } else {
+            } elseif($this->request->isPost()) {
                 $this->flash->success("The settings were updated successfully");
                 Tag::resetInput();
             }
-
-
-            $notificationdelete = LocationNotifications::find("location_id = " . $this->session->get('auth-identity')['location_id']);
-            $notificationdelete->delete();
-
+            if($location_id) {
+                $notificationdelete = LocationNotifications::find("location_id = " . $location_id);
+                $notificationdelete->delete();
+            }
             if (!empty($_POST['users'])) {
                 foreach ($_POST['users'] as $check) {
                     $agencyInsert = new LocationNotifications();
@@ -518,8 +517,6 @@
                         return $filepath;
                     }
                 }
-            } else {
-                //echo '<p>hasFiles() == true!</p>';
             }
         }
     }
