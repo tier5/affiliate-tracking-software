@@ -58,35 +58,6 @@ class UsersForm extends Form
 
         $this->add($phone);
 
-        /*
-        // Password
-        $password = new Password('password', array(
-            'placeholder' => 'Password'
-        ));
-
-        $password->addValidator(new PresenceOf(array(
-            'message' => 'The password is required'
-        )));
-
-        $password->clear();
-
-        $this->add($password);*/
-
-        /*
-        $profilesId = new Select('profilesId', Profiles::find('active = "Y"'), array(
-            'using' => array(
-                'id',
-                'name'
-            ),
-            'useEmpty' => true,
-            'emptyText' => '...',
-            'emptyValue' => ''
-        ));
-        $profilesId->addValidator(new PresenceOf(array(
-            'message' => 'The role is required'
-        )));
-        $this->add($profilesId);*/
-
 
         $this->add(new Select('banned', array(
             'Y' => 'Yes',
@@ -102,6 +73,6 @@ class UsersForm extends Form
             'Y' => 'Yes',
             'N' => 'No'
         )));
-        
+
     }
 }

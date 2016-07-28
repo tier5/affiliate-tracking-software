@@ -288,7 +288,7 @@ class BusinessSubscriptionController extends ControllerBase {
                 throw new \Exception('Could not change subscription.');
             }
             if(!$subscriptionManager->changeSubscriptionPlan($subscriptionParameters)) {
-                throw new \Exception('Payment information not found!');
+                throw new \Exception('Could not change subscription plan.');
             }
 
             /*

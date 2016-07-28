@@ -42,7 +42,7 @@ class SessionController extends ControllerBase {
     }
 
     public function submitSignupAction() {
-        //try {
+        try {
 
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
@@ -58,8 +58,19 @@ class SessionController extends ControllerBase {
 
             // Check user email unuique
             $user = new Users();
+            $name = $this->request->getPost('name', 'striptags');
+            if(strpos($name,' ') > -1) {
+                $names = explode(' ', $name);
+            }
+            if($names){
+                $first_name = $names[0];
+                $last_name = $names[1];
+            }
+            if(!$last_name) $last_name = ' ';
+
             $user->assign(array(
-                'name' => $this->request->getPost('name', 'striptags'),
+                'name' => $name,
+                'last_name'=>$last_name,
                 'email' => $this->request->getPost('email'),
                 'password' => $this->security->hash($this->request->getPost('password')),
                 'profilesId' => 1, //All new users will be "Agency Admin"
@@ -107,11 +118,8 @@ class SessionController extends ControllerBase {
             $this->db->commit();
 
             return $this->response->redirect('/session/thankyou');
-        /*
+
         } catch(ArrayException $e) {
-            var_dump($e);
-            print_r($e->getTrace());
-            exit();
 
             $this->db->rollback();
 
@@ -120,12 +128,12 @@ class SessionController extends ControllerBase {
             }
 
         }
-        */
+
     }
 
     public function signupAction($subscriptionToken = '0') {
-
-        try {
+        $this->tag->setTitle('Review Velocity | Sign Up');
+        $this->view->setTemplateBefore('login');
 
             /* Get services */
             $userManager = $this->di->get('userManager');
@@ -163,11 +171,6 @@ class SessionController extends ControllerBase {
 
             $this->view->pick('session/signup');
 
-        } catch(ArrayException $e) {
-            foreach($e->getOptions() as $message) {
-                $this->flash->error($message);
-            }
-        }
     }
 
     /**
@@ -282,7 +285,7 @@ class SessionController extends ControllerBase {
                 }
 
 
-                $this->flash->success("The location was created successfully");
+                //$this->flash->success("The location was created successfully");
                 $agency->assign(array(
                     'signup_page' => 3, //go to the next page
                 ));

@@ -35,9 +35,9 @@
                                         <th>Subscription Type</th>
                                         <th>Active/Inactive</th>
                                         <th>Pricing Page</th>
-                                        <th>Free Sign Up Link</th>
+                                        <th class="hide-small">Free Sign Up Link</th>
                                         <th>Edit</th>
-                                        <th>Delete</th>
+                                        <th class="hide-small">Delete</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -55,7 +55,7 @@
                                                 <td><input id="update-enable-pricing-plan-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info"></td>
                                             {% endif %}
                                             <td><button class="btn default btn-lg apple-backgound subscription-btn" disabled>View Page</button></td>
-                                            <td><a href="/businessPricingPlan/previewSignUpPage" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
+                                            <td class="hide-small"><a href="/businessPricingPlan/previewSignUpPage" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
                                             <td><a href="/businessPricingPlan/editExistingPricingPlan/{{ pricingProfile.id }}" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
                                             <td><button id="delete-pricing-plan-control" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></button></td>
                                         </tr>

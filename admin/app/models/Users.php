@@ -10,7 +10,7 @@
      * Vokuro\Models\Users
      * All the users registered in the application
      */
-    class Users extends Model
+    class Users extends BaseModel
     {
 
 
@@ -29,6 +29,9 @@
         public $subscription_valid;
         public $phone;
         public $send_confirmation;
+
+
+
 
         /**
          * Before create the user assign a password
@@ -108,27 +111,6 @@
                 'alias' => 'profile',
                 'reusable' => true
             ));
-            /*
-            $this->hasMany('id', __NAMESPACE__ . '\SuccessLogins', 'usersId', array(
-              'alias' => 'successLogins',
-              'foreignKey' => array(
-                'message' => 'Employee cannot be deleted because he/she has activity in the system'
-              )
-            ));
-
-            $this->hasMany('id', __NAMESPACE__ . '\PasswordChanges', 'usersId', array(
-              'alias' => 'passwordChanges',
-              'foreignKey' => array(
-                'message' => 'Employee cannot be deleted because he/she has activity in the system'
-              )
-            ));
-
-            $this->hasMany('id', __NAMESPACE__ . '\ResetPasswords', 'usersId', array(
-              'alias' => 'resetPasswords',
-              'foreignKey' => array(
-                'message' => 'Employee cannot be deleted because he/she has activity in the system'
-              )
-            ));*/
 
             $this->hasManyToMany(
                 "id",

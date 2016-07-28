@@ -1,9 +1,5 @@
 {{ content() }}
-
-<?php
-//check for a location, before we do anything
-if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) {
-?>
+<?php if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) { ?>
 <header class="jumbotron subhead" id="dashboard">
     <div class="hero-unit">
         <!-- END PAGE TITLE-->
@@ -401,7 +397,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
             $('#page-wrapper').show();
             $('.overlay').show();
         });
-        
+
         $('.overlay, .closelink').on('click', function(e) {
             e.preventDefault();
             $('#page-wrapper').hide();
@@ -427,7 +423,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
         $('.starfield').rating({displayOnly: true, step: 0.5});
             google.charts.load('current', {packages: ['corechart', 'bar']});
             google.charts.setOnLoadCallback(drawBasic);
-    
+
             function drawBasic() {
 
                 var data = google.visualization.arrayToDataTable([
@@ -447,7 +443,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                     echo $strarray;
                 ?>
                 ]);
-        
+
                 var options = {
                     title: 'New Reviews By Month',
                     legend: {position: 'none'},
@@ -456,14 +452,14 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                         trigger: 'none'
                     }
                 };
-                
+
                 var chart = new google.visualization.ColumnChart(document.getElementById('barchart_div'));
                 chart.draw(data, options);
             }
 
             //google.charts.load('current', {'packages':['corechart']});
             google.charts.setOnLoadCallback(drawChart);
-            
+
             function drawChart() {
 
                 var data = google.visualization.arrayToDataTable([
@@ -472,7 +468,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                     ['Goal', <?= 100 - $percent ?> ],
                     ['Commute', 100],
                 ]);
-            
+
                 var options = {
                     title: '',
                     legend: {position: 'none'},
@@ -489,7 +485,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                         trigger: 'none'
                     }
                 };
-            
+
                 var chart = new google.visualization.PieChart(document.getElementById('piechart'));
                 chart.draw(data, options);
             }
@@ -514,7 +510,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                     // Make sure that the formMessages div has the 'success' class.
                     $(formMessages).removeClass('error');
                     $(formMessages).addClass('success');
-                    
+
                     // Set the message text.
                     $(formMessages).text(response);
                 })
@@ -530,7 +526,7 @@ if (isset($this->session->get('auth-identity')['location_id']) && $this->session
                     }
                 });
             });
-            
+
         });
 </script>
 
