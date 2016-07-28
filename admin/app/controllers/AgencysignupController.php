@@ -38,8 +38,8 @@
             'TwilioFromNumber',
             
             /* Step 4 Fields */
-            'StripeSecretKey',
-            'StripePublishableKey',
+            'AgencyStripeSecretKey',
+            'AgencyStripePublishableKey',
 
             /* Step 5 / Upgrade Step */
             'Upgrade',
@@ -81,8 +81,8 @@
             /* Step 4 Fields */
 
             // TODO:  Where is stripe_account_id in form?
-            'StripeSecretKey'       => 'stripe_account_secret',
-            'StripePublishableKey'  => 'stripe_publishable_keys',
+            'AgencyStripeSecretKey'       => 'stripe_account_secret',
+            'AgencyStripePublishableKey'  => 'stripe_publishable_keys',
 
             /* Order form Fields */
             'FirstName'             => 'name',
@@ -388,8 +388,10 @@
          * Auto populate the session with form data, set their appropriate view variables and determine current step.
          */
         public function initialize() {
+
             if(!$this->session->AgencySignup)
                 $this->session->AgencySignup = [];
+
 
             // Update Session Data
             $tData = [];
@@ -422,7 +424,6 @@
             $this->view->PrimaryColor = isset($this->session->AgencySignup['PrimaryColor']) ? $this->session->AgencySignup['PrimaryColor'] : '#2a3644';
             $this->view->SecondaryColor = isset($this->session->AgencySignup['SecondaryColor']) ? $this->session->AgencySignup['SecondaryColor'] : '#2eb82e';
             $this->view->StripePublishableKey = $this->config->stripe->publishable_key;
-
         }
 
         /**
@@ -459,6 +460,7 @@
                     return false;
                 }
 
+
                 $objUser = new Users();
                 $objUser->agency_id = $objAgency->agency_id;
                 foreach ($this->tUserFieldTranslaction as $FormField => $dbField) {
@@ -481,6 +483,7 @@
                     $this->flashSession->error($objUser->getMessages());
                     return false;
                 }
+
                 return $objUser->id;
 
             } catch (Exception $e) {
@@ -562,7 +565,7 @@
                 $tParameters = [
                     'userId'                    => $tData['UserID'],
                     'provider'                  => ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
-                    'amount'                    => $tData['Price'],
+                    'amount'                    => $tData['Price'] * 100,
                     'type'                      => 'Agency',
                 ];
 
@@ -613,6 +616,7 @@
         }
 
         public function submitorderAction() {
+
             if(!$this->IsUniqueEmail($this->session->AgencySignup)) {
                 $this->flashSession->error("This email address is already in use.  Please use another one.");
                 $this->response->redirect('/agencysignup/order');
@@ -634,6 +638,7 @@
                 $this->response->redirect('/agencysignup/order');
                 return false;
             }
+
             try {
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
 

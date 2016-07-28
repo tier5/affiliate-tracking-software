@@ -70,13 +70,11 @@
          */
         public function afterSave()
         {
-
             if ($this->active == 'N' || $this->send_confirmation) {
             //dd('we should send an email');
 
                 $emailConfirmation = new EmailConfirmations();
                 $emailConfirmation->usersId = $this->id;
-                $emailConfirmation->save();
                  if($emailConfirmation->save()) {
                   $this->getDI()
                       ->getFlash()
@@ -286,9 +284,5 @@
             $params = null;
             return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
         }
-
-        public function save($data = null,$whitelist = null){
-            return parent::save($data,$whitelist);
-        }
-
+        
     }
