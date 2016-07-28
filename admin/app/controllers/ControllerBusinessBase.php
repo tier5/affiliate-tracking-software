@@ -125,11 +125,9 @@ class ControllerBusinessBase extends ControllerBase {
 
             }
         }
-
-        // find all subscriptions for the form
-        //dd(get_object_vars($age));
         $sub_selected = $age->subscription_id;
-        $markup = $this->buildSubsriptionPricingPlanMarkUp($sub_selected);
+        if(!$sub_selected) $sub_selected = 0;
+            $markup = $this->buildSubsriptionPricingPlanMarkUp($sub_selected);
         $this->view->setVar("subscriptionPricingPlans", $markup);
 
         $this->view->agency = new Agency();
