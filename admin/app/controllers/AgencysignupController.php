@@ -503,7 +503,6 @@
                     $this->db->rollback();
                     return false;
                 }
-                die('CreateProfile');
 
                 // I hate that this is in here.  Quick fix.  I dont want this function using the session at all.  This is due to wiping Authorize.net out completely and just getting this out.
                 $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['UserID' => $UserID]);
