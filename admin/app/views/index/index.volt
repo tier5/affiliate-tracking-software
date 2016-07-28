@@ -393,7 +393,7 @@
 <script type="text/javascript">
     jQuery(document).ready(function($){
         var primary_color = $('#primary_color').val();
-        var secondary_color = $('secondary_color').val();
+        var secondary_color = $('#secondary_color').val();
 
         if(primary_color == "#") delete(primary_color);
         if(secondary_color == "#") delete(secondary_color);
@@ -432,17 +432,18 @@
             google.charts.setOnLoadCallback(drawBasic);
 
             function drawBasic() {
-
+                var color = primary_color ? primary_color : '#67cd4d';
                 var data = google.visualization.arrayToDataTable([
                     ['Month', 'Density', { role: 'style' }],
                 <?php
                     $prevmonth = 0;
                     $count = 0;
                     $strarray = '';
+                    $color = ($primary_color) ? $primary_color : '';
                     foreach ($new_reviews as $data) {
                         if ($new_reviews->count() > 6 && $count == 0) {
                         } else {
-                            $strarray = $strarray."['".date("M", mktime(0, 0, 0, $data-> month, 1, 2011))."', ".($data-> reviewcount - $prevmonth).", '#67cd4d'],\n";
+                            $strarray = $strarray."['".date("M", mktime(0, 0, 0, $data-> month, 1, 2011))."', ".($data-> reviewcount - $prevmonth).", '".$color."'],\n";
                         }
                         $prevmonth = $data->reviewcount;
                         $count++;
@@ -460,14 +461,7 @@
                     }
                 };
 
-                if(primary_color){
-                    options.chartArea = {
-                        backgroundColor: {
-                            'fill': primary_color
-                        }
-                    }
-                }
-
+                console.log(data)
                 var chart = new google.visualization.ColumnChart(document.getElementById('barchart_div'));
                 chart.draw(data, options);
             }
