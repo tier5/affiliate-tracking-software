@@ -643,6 +643,7 @@
 {% endif %}
 <script type="text/javascript">
     $(window).resize(function(){
+        if(console) console.warn('We are hiding the chart here for now, eventually we want to re-paint it');
         $('#piechart > div > div').hide();
 
     });
