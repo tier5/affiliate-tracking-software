@@ -83,6 +83,8 @@
             }
         </style>
     {% endif %}
+    <style type="text/css">
+    </style>
     <?php echo $primary_color; ?>
     <link rel="stylesheet" href="/dashboard/css?primary_color={{ primary_color }}&secondary_color={{ secondary_color }}">
 </head>
@@ -638,8 +640,13 @@
                 $('#updateStripeModal').modal('show');
         });
     </script>
-
 {% endif %}
+<script type="text/javascript">
+    $(window).resize(function(){
+        $('#piechart > div > div').hide();
+
+    });
+</script>
 </body>
 
 </html>
