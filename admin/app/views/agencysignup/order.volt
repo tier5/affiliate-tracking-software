@@ -1,5 +1,5 @@
-<form method="post" action="submitorder">
-
+<form method="post" action="submitorder" id="payment-form">
+    <span class="payment-errors"></span>
     <div class="row small-vertical-margins">
         <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 col-xs-offset-1 col-md-offset-1">
             <img class="logo-order" src="/img/logo-white.gif" alt="Review Velocity" />
@@ -88,7 +88,7 @@
                 <div class="">
                     <div class="row contact-row">
                         <div class="col-xs-12 col-lg-3"><label>Card Number</label><span class="required">*</span></div>
-                        <div class="col-xs-12 col-lg-9"><input type="text" class="form-control" name="CardNumber" required /></div>
+                        <div class="col-xs-12 col-lg-9"><input type="text" class="form-control" required data-stripe="number" /></div>
                     </div>
                     <div class="row contact-row">
                         <div class="col-xs-12 col-lg-3"><label>Card Type</label><span class="required">*</span></div>
@@ -104,23 +104,23 @@
                     <div class="row contact-row">
                         <div class="col-xs-12 col-lg-3"><label>Exp. Date</label><span class="required">*</span></div>
                         <div class="col-xs-6 col-lg-5">
-                            <select name="MonthExpiration" class="form-control">
+                            <select class="form-control" data-stripe="exp_month">
                                 {% for NumMonth, Month in tMonths %}
                                     <option value="{{ NumMonth }}">{{ Month }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="col-xs-6 col-lg-4">
-                            <select name="YearExpiration" class="form-control">
+                            <select class="form-control" data-stripe="exp_year">
                                 {% for Year in tYears %}
-                                    <option value="{{ Year }}">{{ Year }}</option>
+                                    <option value="<?=substr($Year, -2); ?>">{{ Year }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                     </div>
                     <div class="row contact-row">
-                        <div class="col-xs-12 col-lg-3"><label>CVV Code</label></div>
-                        <div class="col-xs-12 col-lg-9"><input type="text" class="form-control" name="CVV" /></div>
+                        <div class="col-xs-12 col-lg-3"><label>CVC</label></div>
+                        <div class="col-xs-12 col-lg-9"><input type="text" class="form-control" data-stripe="cvc" /></div>
                     </div>
                 </div>
             </div>
@@ -139,7 +139,7 @@
             </div>
 
             <div class="col-xs-12 col-xs-offset-1 submit-section">
-                <button class="big-green-button">
+                <button class="big-green-button submit">
                     Submit Order
                 </button>
             </div>
@@ -226,3 +226,44 @@
         </div>
     </div>
 </form>
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript">
+  Stripe.setPublishableKey('{{ StripePublishableKey }}');
+
+  $(function () {
+      var $form = $('#payment-form');
+      $form.submit(function (event) {
+          // Disable the submit button to prevent repeated clicks:
+          $form.find('.submit').prop('disabled', true);
+
+          // Request a token from Stripe:
+          Stripe.card.createToken($form, stripeResponseHandler);
+
+          // Prevent the form from being submitted:
+          return false;
+      });
+      function stripeResponseHandler(status, response) {
+          // Grab the form:
+          var $form = $('#payment-form');
+
+          if (response.error) { // Problem!
+
+              // Show the errors on the form:
+              $form.find('.payment-errors').text(response.error.message);
+              $form.find('.submit').prop('disabled', false); // Re-enable submission
+
+          } else { // Token was created!
+
+              // Get the token ID:
+              var token = response.id;
+
+              // Insert the token ID into the form so it gets submitted to the server:
+              $form.append($('<input type="hidden" name="stripeToken">').val(token));
+
+              // Submit the form:
+              $form.get(0).submit();
+          }
+      };
+  });
+
+</script>

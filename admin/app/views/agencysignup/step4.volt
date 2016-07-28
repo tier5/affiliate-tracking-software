@@ -14,10 +14,10 @@
 
     <div class="row form-group small-vertical-margins">
         <div class="col-xs-6">
-            <label>Stripe Secret Key</label><input class="form-control" type="text" name="StripeSecretKey" value="{{ StripeSecretKey }}" />
+            <label>Stripe Secret Key</label><input class="form-control" type="text" name="AgencyStripeSecretKey" value="{{ AgencyStripeSecretKey }}" />
         </div>
         <div class="col-xs-6">
-            <label>Stripe Publishable Key</label><input class="form-control" type="text" name="StripePublishableKey" value="{{ StripePublishableKey }}" />
+            <label>Stripe Publishable Key</label><input class="form-control" type="text" name="AgencyStripePublishableKey" value="{{ AgencyStripePublishableKey }}" />
         </div>
     </div>
 
