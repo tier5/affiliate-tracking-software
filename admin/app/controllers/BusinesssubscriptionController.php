@@ -86,10 +86,8 @@ class BusinessSubscriptionController extends ControllerBase {
             $this->view->subscriptionPlanData['subscriptionPlan']['payment_plan'] === ServicesConsts::$PAYMENT_PLAN_TRIAL ? 'TRIAL' : 'PAID';
 
         /* Payments paramaters */
-        $provider = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET;
-        if ($userManager->isWhiteLabeledBusiness($this->session)) {
-            $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
-        }
+        $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
+
         $this->view->registeredCardType = $paymentService->getRegisteredCardType($userId, $provider);
 
     }
@@ -117,7 +115,7 @@ class BusinessSubscriptionController extends ControllerBase {
 
             $paymentParams = [
                 'userId' => $userId,
-                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+                'provider' => ServicesConsts::$PAYMENT_PROVIDER_STRIPE
             ];
 
             $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
@@ -168,7 +166,7 @@ class BusinessSubscriptionController extends ControllerBase {
                 ->getFirst();
 
 
-            $Provider = $agency->parent_id == -1 ? ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET : ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
+            $Provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
 
             // Card Number, Name and CSV aren't required for Stripe.  Just grab the token
 
@@ -181,14 +179,14 @@ class BusinessSubscriptionController extends ControllerBase {
             $date = Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags'));
 
             /* Create the payment profile */
-            $paymentParams = [ 'userId' => $userId, 'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET ];
+            $paymentParams = [ 'userId' => $userId, 'provider' => $Provider];
             $ccParameters = [
-                'userId' => $userId,
-                'cardNumber' => $this->request->getPost('cardNumber', 'striptags'),
-                'cardName' => $this->request->getPost('cardName', 'striptags'),
-                'expirationDate' => $date,
-                'csv' => $this->request->getPost('csv', 'striptags'),
-                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET,
+                'userId'                => $userId,
+                'cardNumber'            => str_replace(' ', '', $cardNumber),
+                'cardName'              => $cardName,
+                'expirationDate'        => $date,
+                'csv'                   => $csv,
+                'provider'              => $Provider,
                 'userEmail'             => $user->email,
                 'userName'              => $user->name,
                 'agencyName'            => $agency->name,
@@ -207,9 +205,9 @@ class BusinessSubscriptionController extends ControllerBase {
                 }
             } else {
                 $profile = $paymentService->createPaymentProfile($ccParameters);
-            }
-            if (!$profile) {
-                throw new \Exception();
+                if (!$profile) {
+                    throw new \Exception('Payment Profile Could not be created');
+                }
             }
 
             /*
@@ -262,10 +260,10 @@ class BusinessSubscriptionController extends ControllerBase {
              * If they don't have a customer profile, then create one (they shouldn't have one if calling this action,
              * but check just to be safe)
              */
-            $Provider = $objAgency->parent_id == -1 ? ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET : ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
+            $Provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
             $paymentParams = [
                 'userId' => $userId,
-                'provider' => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+                'provider' => $Provider
             ];
 
             $hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);

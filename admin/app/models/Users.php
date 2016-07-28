@@ -222,9 +222,6 @@
             return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
         }
 
-
-
-
         /*
          * Find the data for the report
          */

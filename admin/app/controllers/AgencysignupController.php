@@ -50,11 +50,6 @@
             'OwnerEmail',
             'OwnerPhone',
             'URL',
-            'CardNumber',
-            'CardType',
-            'MonthExpiration',
-            'YearExpiration',
-            'CVV',
         ];
 
         protected $tAgencyFieldTranslation = [
@@ -67,7 +62,7 @@
             'State'                 => 'state_province',
             'Zip'                   => 'postal_code',
             'Phone'                 => 'phone',
-            'Email'                 => 'email',
+            'Email'                 => '',
             'Website'               => 'website',
             'EmailFromName'         => 'email_from_name',
             'EmailFromAddress'      => 'email_from_address',
@@ -92,7 +87,7 @@
             /* Order form Fields */
             'FirstName'             => 'name',
             'LastName'              => 'last_name',
-            'OwnerEmail'            => '',
+            'OwnerEmail'            => 'email',
             'OwnerPhone'            => 'phone',
             'URL'                   => 'custom_domain',
         ];
@@ -126,10 +121,6 @@
                 'OwnerEmail',
                 'OwnerPhone',
                 'URL',
-                'CardNumber',
-                'CardType',
-                'MonthExpiration',
-                'YearExpiration',
             ],
         ];
 
@@ -423,11 +414,6 @@
             // Determine step from URI
             preg_match("#agencysignup\/step(\d)+#", $_SERVER['REQUEST_URI'], $tMatches);
             if($tMatches) {
-                // In the step process.  Verify credit card information is in place, otherwise redirect.
-                if(!$this->session->AgencySignup['CardNumber'] || !$this->session->AgencySignup['CardType']) {
-                    $this->response->redirect('/agencysignup/order');
-                }
-
                 $this->view->current_step = $tMatches[1];
             } else {
                 $this->view->current_step = "";
@@ -435,6 +421,8 @@
 
             $this->view->PrimaryColor = isset($this->session->AgencySignup['PrimaryColor']) ? $this->session->AgencySignup['PrimaryColor'] : '#2a3644';
             $this->view->SecondaryColor = isset($this->session->AgencySignup['SecondaryColor']) ? $this->session->AgencySignup['SecondaryColor'] : '#2eb82e';
+            $this->view->StripePublishableKey = $this->config->stripe->publishable_key;
+
         }
 
         /**
@@ -464,6 +452,7 @@
                 $objAgency->agency_type_id = 1; // REFACTOR:  Drop this column
                 $objAgency->subscription_id = '';
                 $objAgency->parent_id = -1;
+
 
                 if (!$objAgency->create()) {
                     $this->flashSession->error($objAgency->get_val_errors());
@@ -495,14 +484,11 @@
                 return $objUser->id;
 
             } catch (Exception $e) {
-                // TODO:  Figure out logging / error reporting.
                 return false;
             }
-
-            return true;
         }
 
-        protected function CreateAuthProfile($tData) {
+        protected function CreateProfile($tData) {
             try {
                 if (!$this->request->isPost())
                     throw new \Exception();
@@ -511,22 +497,33 @@
 
                 $tData['MonthExpiration'] = strlen($tData['MonthExpiration']) == 1 ? '0'.$tData['MonthExpiration'] : $tData['MonthExpiration'];
 
+                $this->db->begin();
+                if(!$UserID = $this->CreateAgency($this->session->AgencySignup)) {
+                    $this->response->redirect('/agencysignup/order');
+                    $this->db->rollback();
+                    return false;
+                }
+                die('CreateProfile');
+
+                // I hate that this is in here.  Quick fix.  I dont want this function using the session at all.  This is due to wiping Authorize.net out completely and just getting this out.
+                $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['UserID' => $UserID]);
+
                 $tParameters = [
-                    'cardNumber'        => $tData['CardNumber'],
-                    'cardName'          => $tData['CardType'],
-                    'expirationDate'    => $tData['YearExpiration'] . '-' . $tData['MonthExpiration'],
-                    'csv'               => $tData['CVV'],
                     'userName'          => $tData['FirstName'],
                     'lastName'          => $tData['LastName'],
                     'userEmail'         => $tData['OwnerEmail'],
-                    'provider'          => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET
+                    'provider'          => ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
+                    'tokenID'           => $tData['StripeToken'],
+                    'type'              => 'Agency',
+                    'userId'            => $UserID,
                 ];
 
-
                 if(!$Profile = $objPaymentService->createPaymentProfile($tParameters)) {
+                    $this->db->rollback();
                     $this->flashSession->error('Could not create payment profile.');
+                    return false;
                 }
-
+                $this->db->commit();
 
             } catch(Exception $e) {
                 return false;
@@ -553,29 +550,21 @@
                 if (!$this->request->isPost())
                     throw new \Exception();
 
-
-                if(!$UserID = $this->CreateAgency($this->session->AgencySignup)) {
-                    $this->response->redirect('/agencysignup/order');
-                    return false;
-                }
-
-                $objAuthDotNet = new AuthorizeDotNetModel();
+                /*$objAuthDotNet = new AuthorizeDotNetModel();
                 $objAuthDotNet->setUserId($UserID);
                 $objAuthDotNet->setCustomerProfileId($tData['AuthProfile']['customerProfileId']);
 
                 if (!$objAuthDotNet->create()) {
                     $this->flashSession->error($objAuthDotNet->getMessages());
-                }
+                }*/
 
                 $objPaymentService = $this->di->get('paymentService');
 
                 $tParameters = [
-                    'userId'                    => $UserID,
-                    'provider'                  => ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET,
-                    'price'                     => $tData['Price'],
-                    'customerProfileId'         => $tData['AuthProfile']['customerProfileId'],
-                    'customerPaymentProfileId'  => $tData['AuthProfile']['customerPaymentProfileId'],
-                    'shippingAddressId'         => $tData['AuthProfile']['shippingAddressId'],
+                    'userId'                    => $tData['UserID'],
+                    'provider'                  => ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
+                    'amount'                    => $tData['Price'],
+                    'type'                      => 'Agency',
                 ];
 
                 if (!$objPaymentService->changeSubscription($tParameters)) {
@@ -587,7 +576,7 @@
                 $this->response->redirect('/agencysignup/step5');
                 return false;
             }
-            return $UserID;
+            return true;
         }
 
 
@@ -637,10 +626,19 @@
                 return false;
             }
 
+            $Token = $this->request->getPost('stripeToken', 'striptags');
+            if($Token) {
+                $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['StripeToken' => $Token]);
+            }
+            else {
+                $this->flashSession->error("Credit card declined.  If you feel this is an error, please contact our customer support.");
+                $this->response->redirect('/agencysignup/order');
+                return false;
+            }
             try {
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
 
-                    if (!$Profile = $this->CreateAuthProfile($this->session->AgencySignup)) {
+                    if (!$Profile = $this->CreateProfile($this->session->AgencySignup)) {
                         $this->flashSession->error('Invalid credit card information');
                         return $this->response->redirect('/agencysignup/order');
                     }
