@@ -31,7 +31,6 @@ class ControllerBase extends Controller {
         error_reporting(E_ALL ^ E_NOTICE);
         //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
-
         // If there is no identity available the user is redirected to index/index
         //KT WHERE?
 

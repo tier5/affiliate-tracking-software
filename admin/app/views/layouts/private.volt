@@ -28,18 +28,14 @@
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     {% if main_color_setting %}
         <style>
-            .page-header.navbar {
-                background-color: {{ main_color_setting }};
-            }
-
-            body {
-                background-color: rgba({{ rgb }}, 0.8);
+            .page-content{
+                background-color: #f6f6f6;
             }
 
             .page-sidebar .page-sidebar-menu > li > a,
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a {
                 border-top: {{ main_color_setting }};
-                color: #FFFFFF;
+                color: #333;
             }
 
             .page-sidebar .page-sidebar-menu > li.active.open > a,
@@ -81,19 +77,22 @@
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > i {
                 color: #FFFFFF !important;
             }
+            .page-content-wrapper{
+                margin-top:-60px;
+                padding-top:30px;
+            }
         </style>
-        <link rel="stylesheet" href="/dashboard/css?primary_color={{primary_color}}&secondary_color={{secondary_color}}">
     {% endif %}
+    <?php echo $primary_color; ?>
+    <link rel="stylesheet" href="/dashboard/css?primary_color={{ primary_color }}&secondary_color={{ secondary_color }}">
 </head>
 <!-- END HEAD -->
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" data-ccprompt="{{ ccInfoRequired }}" data-paymentprovider="{{ paymentService }}">
-{% if BusinessDisableBecauseOfStripe %}
+{% if BusinessDisableBecauseOfStripe AND 1 == 2 %}
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 text-center">
-                There seems to be a problem with the stripe configuration.  Please contact customer support.
-            </div>
+            <div class="col-xs-12 text-center">There seems to be a problem with the stripe configuration.  Please contact customer support.</div>
         </div>
     </div>
     <?php die(); ?>
@@ -193,7 +192,7 @@
                 {% if haspaid %}
                     {% if is_admin %}
                         <li class="nav-item start">
-                            <a href="/admindashboard/" class="nav-link nav-toggle">
+                            <a href="/admindashboard" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
                                 <span class="title">Dashboard</span>
                                 <span class="selected"></span>
@@ -240,7 +239,7 @@
                             </li>
                         {% else %}
                             <li class="nav-item start">
-                                <a href="/" class="nav-link nav-toggle">
+                                <a href="/admindashboard" class="nav-link nav-toggle">
                                     <i class="icon-home"></i>
                                     <span class="title">Dashboard</span>
                                     <span class="selected"></span>
@@ -250,14 +249,14 @@
                         {% if location_id %}
                             {% if agencytype != "agency" %}
                                 <li class="nav-item">
-                                    <a href="/reviews/" class="nav-link nav-toggle">
+                                    <a href="/reviews" class="nav-link nav-toggle">
                                         <i class="icon-diamond"></i>
                                         <span class="title">Reviews</span>
                                         <span class="selected"></span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/analytics/" class="nav-link nav-toggle">
+                                    <a href="/analytics" class="nav-link nav-toggle">
                                         <i class="icon-bar-chart"></i>
                                         <span class="title">Analytics</span>
                                         <span class="selected"></span>
@@ -633,12 +632,10 @@
         {% endif %}
     {% endif %}
 {% endif %}
-{% if agencytype == "agency" %}
+{% if agencytype == "agency" AND AgencyInvalidStripe AND ShowAgencyStripPopup %}
     <script>
-        jQuery(document).ready(function ($) {
-            {% if AgencyInvalidStripe AND ShowAgencyStripePopup %}
+        $(function(){
                 $('#updateStripeModal').modal('show');
-            {% endif %}
         });
     </script>
 
