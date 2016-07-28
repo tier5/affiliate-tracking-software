@@ -110,7 +110,7 @@ class ControllerBase extends Controller {
                     $this->view->ShowAgencyStripePopup = true;
                 }
 
-                $this->view->stripePublishableKey = $agency->stripe_publishable_key;
+                $this->view->stripePublishableKey = ($agency && isset($agency->strip_publishable_key)) ? $agency->stripe_publishable_key : null;
             }
             elseif($agency->parent_id == -1) {
                 $this->view->stripePublishableKey = $this->config->stripe->publishable_key;
