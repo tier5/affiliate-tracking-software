@@ -170,22 +170,13 @@ class BusinessSubscriptionController extends ControllerBase {
 
             // Card Number, Name and CSV aren't required for Stripe.  Just grab the token
 
-            $cardNumber = $agency->parent_id == -1 ? $this->request->getPost('cardNumber', 'striptags') : '';
-            $cardName = $agency->parent_id == -1 ? $this->request->getPost('cardName', 'striptags') : '';
-            $csv = $agency->parent_id == -1 ? $this->request->getPost('csv', 'striptags') : '';
-            $tokenID = $agency->parent_id == -1 ? '' : $this->request->getPost('tokenID', 'striptags');
-
-            /* Format the date accordingly  */
-            $date = Utils::formatCCDate($this->request->getPost('expirationDate', 'striptags'));
+            $tokenID = $this->request->getPost('tokenID', 'striptags');
 
             /* Create the payment profile */
             $paymentParams = [ 'userId' => $userId, 'provider' => $Provider];
             $ccParameters = [
                 'userId'                => $userId,
                 'cardNumber'            => str_replace(' ', '', $cardNumber),
-                'cardName'              => $cardName,
-                'expirationDate'        => $date,
-                'csv'                   => $csv,
                 'provider'              => $Provider,
                 'userEmail'             => $user->email,
                 'userName'              => $user->name,
@@ -215,7 +206,7 @@ class BusinessSubscriptionController extends ControllerBase {
              */
             $responseParameters['status'] = true;
 
-        }  catch(Exception $e) {}
+        }  catch(Exception $e) {die($e->getMessage());}
 
         /*
          * Construct the response

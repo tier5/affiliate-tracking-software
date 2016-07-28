@@ -195,7 +195,7 @@ class PaymentService extends BaseService {
 
             $objAgency = Agency::findFirst("parent_id = {$objBusiness->parent_id}");
 
-            $StripeSecretKey = $objAgency->stripe_account_secret;
+            $StripeSecretKey = $objBusiness->parent_id == -1 ? $this->config->stripe->secret_key : $objAgency->stripe_account_secret;
 
         } else {
              $StripeSecretKey = $this->config->stripe->secret_key;
@@ -250,6 +250,8 @@ class PaymentService extends BaseService {
 
         $responseParameters = ['status' => false];
         $userId = $ccParameters['userId'];
+
+        $ccParameters['type'] = $ccParameters['type'] ?: 'Business';
 
         $user = Users::query()
             ->where("id = :id:")
