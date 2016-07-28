@@ -392,6 +392,13 @@
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function($){
+        var primary_color = $('#primary_color').val();
+        var secondary_color = $('secondary_color').val();
+
+        if(primary_color == "#") delete(primary_color);
+        if(secondary_color == "#") delete(secondary_color);
+
+
         $('#maillink').on('click', function(e) {
             e.preventDefault();
             $('#page-wrapper').show();
@@ -452,6 +459,14 @@
                         trigger: 'none'
                     }
                 };
+
+                if(primary_color){
+                    options.chartArea = {
+                        backgroundColor: {
+                            'fill': primary_color
+                        }
+                    }
+                }
 
                 var chart = new google.visualization.ColumnChart(document.getElementById('barchart_div'));
                 chart.draw(data, options);

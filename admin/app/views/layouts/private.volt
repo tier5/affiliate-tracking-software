@@ -85,7 +85,6 @@
     {% endif %}
     <style type="text/css">
     </style>
-    <?php echo $primary_color; ?>
     <link rel="stylesheet" href="/dashboard/css?primary_color={{ primary_color }}&secondary_color={{ secondary_color }}">
 </head>
 <!-- END HEAD -->
@@ -99,7 +98,8 @@
     </div>
     <?php die(); ?>
 {% endif %}
-
+<input type="hidden" id="primary_color" value="{{primary_color }}" />
+<input type="hidden" id="primary_color" value="{{secondary_color}}" />
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
     <!-- BEGIN HEADER INNER -->
