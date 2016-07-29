@@ -167,13 +167,16 @@ class PaymentService extends BaseService {
 
     private function createStripePaymentProfile($ccParameters) {
         /* Check parameters */
-        $required = ['tokenID', 'userEmail', 'userId'];
+        $required = ['tokenID', 'userEmail'];
         $supplied = array_keys($ccParameters);
         $intersect = array_intersect($supplied, $required);
 
         if ( count($intersect) !== count($required)) {
             return false;
         }
+
+
+        $ccParameters['type'] = $ccParameters['type'] ?: 'Business';
 
         $responseParameters = ['status' => false];
         $userId = $ccParameters['userId'];
@@ -183,14 +186,25 @@ class PaymentService extends BaseService {
             ->bind(["id" => $userId])
             ->execute()
             ->getFirst();
-        $agency = Agency::query()
-            ->where("agency_id = :agency_id:")
-            ->bind(["agency_id" => $user->agency_id])
-            ->execute()
-            ->getFirst();
+        if($ccParameters['type'] == 'Business') {
+            $objBusiness = Agency::query()
+                ->where("agency_id = :agency_id:")
+                ->bind(["agency_id" => $user->agency_id])
+                ->execute()
+                ->getFirst();
 
-        //TODO: This needs to change, saving for last.  Not sure on behavior if stripe key not available.
-        $StripeSecretKey = $agency->stripe_account_secret ?: $this->config->stripe->secret_key;
+            $objAgency = Agency::findFirst("parent_id = {$objBusiness->parent_id}");
+
+            $StripeSecretKey = $objBusiness->parent_id == -1 ? $this->config->stripe->secret_key : $objAgency->stripe_account_secret;
+
+        } else {
+             $StripeSecretKey = $this->config->stripe->secret_key;
+        }
+
+        if(!$StripeSecretKey) {
+            $responseParameters['errors'] = "Invalid stripe key";
+            return $responseParameters;
+        }
 
         try {
             \Stripe\Stripe::setApiKey($StripeSecretKey);
@@ -221,16 +235,23 @@ class PaymentService extends BaseService {
 
     private function changeStripeSubscription($ccParameters) {
         /* Check parameters */
-        $required = ['userId', 'planType'];
+        $required = ['userId'];
         $supplied = array_keys($ccParameters);
         $intersect = array_intersect($supplied, $required);
 
-        if ( count($intersect) !== count($required)) {
+        if ( count($intersect) !== count($required))
             return false;
-        }
+
+        if($ccParameters['type'] == 'Business' && !$ccParameters['planType'])
+            return false;
+
+        if($ccParameters['type'] == 'Agency' && !$ccParameters['amount'])
+            return false;
 
         $responseParameters = ['status' => false];
         $userId = $ccParameters['userId'];
+
+        $ccParameters['type'] = $ccParameters['type'] ?: 'Business';
 
         $user = Users::query()
             ->where("id = :id:")
@@ -248,7 +269,7 @@ class PaymentService extends BaseService {
             return false;
 
         //TODO: This needs to change, saving for last.  Not sure on behavior if stripe key not available.
-        $StripeSecretKey = $agency->stripe_account_secret ?: $this->config->stripe->secret_key;
+        $StripeSecretKey = $agency->parent_id > 0 ? $agency->stripe_account_secret : $this->config->stripe->secret_key;
         try {
             \Stripe\Stripe::setApiKey($StripeSecretKey);
 
@@ -256,25 +277,27 @@ class PaymentService extends BaseService {
             if (!$objStripeSubscription)
                 return false;
 
-            $BusinessPlanID = 'business_plan_' . $user->agency_id;
-            $BusinessName = "Business Plan {$user->agency_id}";
+            $PlanID = strtolower($ccParameters['type']) . '_plan_' . $user->agency_id;
+            $Name = $ccParameters['type'] . " Plan {$user->agency_id}";
             $subscriptionManager = $this->di->get('subscriptionManager');
 
             if($objStripeSubscription->stripe_subscription_id != 'N' && $objStripeSubscription->stripe_subscription_id) {
                 // Delete plan first
-                $StripePlan = \Stripe\Plan::retrieve($BusinessPlanID);
+                $StripePlan = \Stripe\Plan::retrieve($PlanID);
                 $StripePlan->delete();
             }
 
             $subscriptionManager = $this->di->get('subscriptionManager');
             $Interval = $ccParameters['planType'] == 'Annually' ? 'year' : 'month';
 
+            $Amount = $ccParameters['type'] == 'Agency' ? $ccParameters['amount'] : $subscriptionManager->getSubscriptionPrice($userId, $ccParameters['planType']) * 100;
+
             \Stripe\Plan::create([
-                'amount'    => $subscriptionManager->getSubscriptionPrice($userId, $ccParameters['planType']) * 100,
+                'amount'    => $Amount,
                 'interval'  => $Interval,
-                'name'      => $BusinessName,
+                'name'      => $Name,
                 'currency'  => 'usd',
-                'id'        => $BusinessPlanID
+                'id'        => $PlanID
             ]);
 
             if($objStripeSubscription->stripe_subscription_id != 'N' && $objStripeSubscription->stripe_subscription_id) {
@@ -282,12 +305,12 @@ class PaymentService extends BaseService {
             } else {
                 $StripeSubscription = \Stripe\Subscription::create([
                     'customer' => $objStripeSubscription->stripe_customer_id,
-                    'plan' => $BusinessPlanID,
+                    'plan' => $PlanID,
                 ]);
             }
 
             // Update stripe subscription to newly created plan
-            $StripeSubscription->plan = $BusinessPlanID;
+            $StripeSubscription->plan = $PlanID;
             $StripeSubscription->save();
 
             $objStripeSubscription->stripe_subscription_id = $StripeSubscription->id;

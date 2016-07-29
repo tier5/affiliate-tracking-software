@@ -85,33 +85,37 @@ class ControllerBase extends Controller {
             $required = $this->di->get('subscriptionManager')->creditCardInfoRequired($this->session);
             $this->view->ccInfoRequired = $required ? "open" : "closed";
 
-            $this->view->paymentService = $agency->parent_id == -1 ? 'AuthorizeDotNet' : 'Stripe';
+            $this->view->paymentService = 'Stripe';
 
             $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = '. $identity['id']);
 
+            // Check if business should be disabled
             $this->view->BusinessDisableBecauseOfStripe = false;
-
             if($agency->parent_id > 0 && (!$objStripeSubscription || !$objStripeSubscription->stripe_subscription_id || $objStripeSubscription->stripe_subscription_id == 'N')) {
                 $haspaid = false;
 
                 if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret)
                     $this->view->BusinessDisableBecauseOfStripe = true;
             }
+            // End disabled check
 
+            // Should popup agency stripe modal?
             $this->AgencyInvalidStripe = false;
             $this->view->ShowAgencyStripePopup = false;
-            if($agency->parent_id <= 0) {
-                // We're an agency.
+
+
+            if($agency->parent_id == 0) {
                 if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret) {
                     $this->view->AgencyInvalidStripe = true;
                     $this->view->ShowAgencyStripePopup = true;
                 }
+
+                $this->view->stripePublishableKey = ($agency && isset($agency->strip_publishable_key)) ? $agency->stripe_publishable_key : null;
             }
-
-//            $this->view->DisableBecauseOfStripe = true;
-
-            // GARY_TODO:  Fix default stripe key / handling.
-            $this->view->stripePublishableKey = $agency->stripe_publishable_keys ?: $this->config->stripe->publishable_key;
+            elseif($agency->parent_id == -1) {
+                $this->view->stripePublishableKey = $this->config->stripe->publishable_key;
+            }
+            // End stripe modal
 
 
             $this->view->haspaid = $haspaid;
@@ -124,9 +128,9 @@ class ControllerBase extends Controller {
             );
 
             $loc = Location::findFirst(
-                            array(
-                                $conditions,
-                                "bind" => $parameters)
+                array(
+                    $conditions,
+                    "bind" => $parameters)
             );
 
             $agencytype = $this->session->get('auth-identity')['agencytype'];

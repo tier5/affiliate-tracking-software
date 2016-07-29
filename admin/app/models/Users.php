@@ -30,8 +30,71 @@
         public $phone;
         public $send_confirmation;
 
+        /**
+         * @return mixed
+         */
+        public function getId()
+        {
+            return $this->id;
+        }
 
+        /**
+         * @param mixed $id
+         */
+        public function setId($id)
+        {
+            $this->id = $id;
+        }
 
+        /**
+         * @return mixed
+         */
+        public function getEmail()
+        {
+            return $this->email;
+        }
+
+        /**
+         * @param mixed $email
+         */
+        public function setEmail($email)
+        {
+            $this->email = $email;
+        }
+
+        /**
+         * @return mixed
+         */
+        public function getName()
+        {
+            return $this->name;
+        }
+
+        /**
+         * @param mixed $name
+         */
+        public function setName($name)
+        {
+            $this->name = $name;
+        }
+
+        public function getFirstName(){
+            $first_name = null;
+            $name = trim($this->getName());
+            $space_exists = strpos($name,' ') > 0;
+            if($space_exists){
+                $parts = explode(' ',$name);
+                $first_name = $parts[0];
+            }
+
+            return $first_name;
+        }
+
+        public function getById($id)
+        {
+            if(!is_numeric($id)) throw new \Exception("Invalid Id specified, expecting number");
+            return $this->findFirst($id);
+        }
 
         /**
          * Before create the user assign a password
@@ -70,13 +133,11 @@
          */
         public function afterSave()
         {
-
             if ($this->active == 'N' || $this->send_confirmation) {
             //dd('we should send an email');
 
                 $emailConfirmation = new EmailConfirmations();
                 $emailConfirmation->usersId = $this->id;
-                $emailConfirmation->save();
                  if($emailConfirmation->save()) {
                   $this->getDI()
                       ->getFlash()
@@ -85,6 +146,8 @@
             }
             return true;
         }
+
+
 
         /**
          * Validate that emails are unique across users
@@ -204,9 +267,6 @@
             return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
         }
 
-
-
-
         /*
          * Find the data for the report
          */
@@ -288,10 +348,6 @@
             // Execute the query
             $params = null;
             return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
-        }
-
-        public function save($data = null,$whitelist = null){
-            return parent::save($data,$whitelist);
         }
 
     }
