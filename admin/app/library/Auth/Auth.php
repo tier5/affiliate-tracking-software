@@ -308,7 +308,7 @@ class Auth extends Component {
         //check to make sure the user matches the agency
         //echo '<p>$this->view->agency_id:'.$this->view->agency_id.'</p>';
         //echo '<p>$this->view->agency_id:'.$user->agency_id.'</p>';
-        if (isset($this->view->agency_id) && $this->view->agency_id > 0 && $user->agency_id != $this->view->agency_id) {
+        if (isset($this->view->agency_id) && $this->view->agency_id > 0 && $user->agency_id != $this->view->agency_id && $user->agency_id) {
             throw new Exception('Your account does not belong to this site.');
         }
         if ($user->active != 'Y') {

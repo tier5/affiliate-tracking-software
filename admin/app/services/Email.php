@@ -1,4 +1,5 @@
 <?php namespace Vokuro\Services;
+use Vokuro\Models\EmailConfirmations;
 use Vokuro\Models\Users;
 
 /**
@@ -47,8 +48,11 @@ class Email{
      * @param Users $user
      */
     public function sendActivationEmailToUser(Users $user){
+        $confirmationModel = new EmailConfirmations();
+        $record = $confirmationModel->getByUserId($user->getId());
+        if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
         $params = [
-            'confirmUrl'=> '/confirm/' . $this->code . '/' . $this->user->email,
+            'confirmUrl'=> '/confirm/' . $record->code . '/' . $user->email,
             'firstName' => $user->getFirstName()
         ];
         try {
