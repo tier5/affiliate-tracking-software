@@ -9,10 +9,10 @@
     use \Phalcon\Mvc\Model\Validator\Regex;
     use \Phalcon\Mvc\Model\Validator\Email;
 
-
     class Agency extends BaseModel {
 
-
+        const AGENCY = 0;
+        const BUSINESS_UNDER_RV = -1;
 
         /**
          * Validate that custom_domain is unique across agencies
@@ -47,7 +47,6 @@
             $this->skipAttributes(['website']);
             $this->skipAttributes(['email_from_name']);
             $this->skipAttributes(['email_from_address']);
-
             $this->setSource('agency');
 
             $this->belongsTo('subscription_id', __NAMESPACE__ . '\Subscription', 'subscription_id', array(

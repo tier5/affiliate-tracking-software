@@ -104,7 +104,7 @@ class ControllerBase extends Controller {
             $this->view->ShowAgencyStripePopup = false;
 
 
-            if($agency->parent_id == 0) {
+            if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                 if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret) {
                     $this->view->AgencyInvalidStripe = true;
                     $this->view->ShowAgencyStripePopup = true;
@@ -112,7 +112,7 @@ class ControllerBase extends Controller {
 
                 $this->view->stripePublishableKey = ($agency && isset($agency->strip_publishable_key)) ? $agency->stripe_publishable_key : null;
             }
-            elseif($agency->parent_id == -1) {
+            elseif($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 $this->view->stripePublishableKey = $this->config->stripe->publishable_key;
             }
             // End stripe modal
