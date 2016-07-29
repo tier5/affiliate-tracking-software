@@ -105,7 +105,7 @@ html, body {
   font-family: "Open Sans",sans-serif;
 }
 #pnlNewReviews .number.transactions > span {
-  font-size: 15px; 
+  font-size: 15px;
 }
 #pnlNewReviews .title,
 #pnlClickThroughRate .title,
@@ -143,7 +143,7 @@ html, body {
     background-color: transparent !important;
 }
 /*li.nav-item:hover, li.nav-item a:hover,
-.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, 
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a,
 .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a {
   background: #36c6d3 none repeat scroll 0 0 !important;
 }*/
@@ -214,13 +214,13 @@ div#image_container img.selected, div#image_container img:hover{
     position: absolute; top: 0; bottom: 0;
     right: 56px;
     border: 2px solid #999999; border-radius: 20px;
-    transition: all 0.3s ease-in 0s; 
+    transition: all 0.3s ease-in 0s;
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
     margin-left: 0;
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-    right: 0px; 
+    right: 0px;
 }
 
 
@@ -309,7 +309,7 @@ div#image_container img.selected, div#image_container img:hover{
 }
 .employee_conversion_report th,
 .employee_conversion_report td { text-transform: none; color: #000000 !important; text-align: center; border: 1px solid #e7ecf1 !important; }
-.employee_conversion_report td { 
+.employee_conversion_report td {
 /* These are technically the same, but use both */
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -560,9 +560,9 @@ div#image_container img.selected, div#image_container img:hover{
 
 #reviews .portlet.light > .portlet-title > .caption > .caption-subject { font-size: 13px; text-align: left; }
 #reviews .portlet.light > .portlet-title > .caption > img { float: left; margin-right: 8px; }
-#reviews #pnlNewReviews .number.transactions > span, 
-#reviews #pnlClickThroughRate .number.transactions > span, 
-#reviews #pnlSMSSent .number.transactions > span, 
+#reviews #pnlNewReviews .number.transactions > span,
+#reviews #pnlClickThroughRate .number.transactions > span,
+#reviews #pnlSMSSent .number.transactions > span,
 #reviews #pnlConversionRate .number.transactions > span { font-weight: bold; line-height: 56px; }
 #reviews .title img, #reviews .pie-title img { padding-bottom: 15px; }
 .portlet-body .easy-pie-chart .number > span,
@@ -616,12 +616,12 @@ div#image_container img.selected, div#image_container img:hover{
 	margin: 0;
 	position: relative;
 }
-	
+
 #reviews .flexsearch--form {
 	overflow: hidden;
 	position: relative;
 }
-	
+
 #reviews .flexsearch--input-wrapper {
 	padding: 0; /* Right padding for submit button width */
 	overflow: hidden;
@@ -654,7 +654,7 @@ div#image_container img.selected, div#image_container img:hover{
 	-webkit-appearance: none;
 	-moz-appearance: none;
 }
-	
+
 #reviews .flexsearch--submit img { margin-left:5px; }
 #reviews .flexsearch--submit {
   background: transparent none repeat scroll 0 0;
@@ -673,7 +673,7 @@ div#image_container img.selected, div#image_container img:hover{
   top: 0;
   width: 40px;
   background-color: #f6f6f6;
-  
+
 	border-color: #E7ECF0;
   border-radius: 0 25px 25px 0 !important; /* (height/2) + border-width */
   border-style: solid;
@@ -686,7 +686,7 @@ div#image_container img.selected, div#image_container img:hover{
 }*/
 
 #reviews .flexsearch--input:focus.flexsearch--submit {
- 	color: #333; 
+ 	color: #333;
 }
 
 #reviews .flexsearch--submit:hover {
@@ -695,7 +695,7 @@ div#image_container img.selected, div#image_container img:hover{
 }
 
 #reviews ::-webkit-input-placeholder {
-	color: #888;  
+	color: #888;
 }
 
 #reviews input:-moz-placeholder {
@@ -725,53 +725,53 @@ div#image_container img.selected, div#image_container img:hover{
 }
 
 
-#reviews .customdatatable-wrapper .col-lg-1, 
-#reviews .customdatatable-wrapper .col-lg-10, 
-#reviews .customdatatable-wrapper .col-lg-11, 
-#reviews .customdatatable-wrapper .col-lg-12, 
-#reviews .customdatatable-wrapper .col-lg-2, 
-#reviews .customdatatable-wrapper .col-lg-3, 
-#reviews .customdatatable-wrapper .col-lg-4, 
-#reviews .customdatatable-wrapper .col-lg-5, 
-#reviews .customdatatable-wrapper .col-lg-6, 
-#reviews .customdatatable-wrapper .col-lg-7, 
-#reviews .customdatatable-wrapper .col-lg-8, 
-#reviews .customdatatable-wrapper .col-lg-9, 
-#reviews .customdatatable-wrapper .col-md-1, 
-#reviews .customdatatable-wrapper .col-md-10, 
-#reviews .customdatatable-wrapper .col-md-11, 
-#reviews .customdatatable-wrapper .col-md-12, 
-#reviews .customdatatable-wrapper .col-md-2, 
-#reviews .customdatatable-wrapper .col-md-3, 
-#reviews .customdatatable-wrapper .col-md-4, 
-#reviews .customdatatable-wrapper .col-md-5, 
-#reviews .customdatatable-wrapper .col-md-6, 
-#reviews .customdatatable-wrapper .col-md-7, 
-#reviews .customdatatable-wrapper .col-md-8, 
-#reviews .customdatatable-wrapper .col-md-9, 
-#reviews .customdatatable-wrapper .col-sm-1, 
+#reviews .customdatatable-wrapper .col-lg-1,
+#reviews .customdatatable-wrapper .col-lg-10,
+#reviews .customdatatable-wrapper .col-lg-11,
+#reviews .customdatatable-wrapper .col-lg-12,
+#reviews .customdatatable-wrapper .col-lg-2,
+#reviews .customdatatable-wrapper .col-lg-3,
+#reviews .customdatatable-wrapper .col-lg-4,
+#reviews .customdatatable-wrapper .col-lg-5,
+#reviews .customdatatable-wrapper .col-lg-6,
+#reviews .customdatatable-wrapper .col-lg-7,
+#reviews .customdatatable-wrapper .col-lg-8,
+#reviews .customdatatable-wrapper .col-lg-9,
+#reviews .customdatatable-wrapper .col-md-1,
+#reviews .customdatatable-wrapper .col-md-10,
+#reviews .customdatatable-wrapper .col-md-11,
+#reviews .customdatatable-wrapper .col-md-12,
+#reviews .customdatatable-wrapper .col-md-2,
+#reviews .customdatatable-wrapper .col-md-3,
+#reviews .customdatatable-wrapper .col-md-4,
+#reviews .customdatatable-wrapper .col-md-5,
+#reviews .customdatatable-wrapper .col-md-6,
+#reviews .customdatatable-wrapper .col-md-7,
+#reviews .customdatatable-wrapper .col-md-8,
+#reviews .customdatatable-wrapper .col-md-9,
+#reviews .customdatatable-wrapper .col-sm-1,
 #reviews .customdatatable-wrapper .col-sm-10,
-#reviews .customdatatable-wrapper .col-sm-11, 
-#reviews .customdatatable-wrapper .col-sm-12, 
-#reviews .customdatatable-wrapper .col-sm-2, 
-#reviews .customdatatable-wrapper .col-sm-3, 
-#reviews .customdatatable-wrapper .col-sm-4, 
-#reviews .customdatatable-wrapper .col-sm-5, 
-#reviews .customdatatable-wrapper .col-sm-6, 
-#reviews .customdatatable-wrapper .col-sm-7, 
-#reviews .customdatatable-wrapper .col-sm-8, 
-#reviews .customdatatable-wrapper .col-sm-9, 
-#reviews .customdatatable-wrapper .col-xs-1, 
+#reviews .customdatatable-wrapper .col-sm-11,
+#reviews .customdatatable-wrapper .col-sm-12,
+#reviews .customdatatable-wrapper .col-sm-2,
+#reviews .customdatatable-wrapper .col-sm-3,
+#reviews .customdatatable-wrapper .col-sm-4,
+#reviews .customdatatable-wrapper .col-sm-5,
+#reviews .customdatatable-wrapper .col-sm-6,
+#reviews .customdatatable-wrapper .col-sm-7,
+#reviews .customdatatable-wrapper .col-sm-8,
+#reviews .customdatatable-wrapper .col-sm-9,
+#reviews .customdatatable-wrapper .col-xs-1,
 #reviews .customdatatable-wrapper .col-xs-10,
-#reviews .customdatatable-wrapper .col-xs-11, 
-#reviews .customdatatable-wrapper .col-xs-12, 
-#reviews .customdatatable-wrapper .col-xs-2, 
-#reviews .customdatatable-wrapper .col-xs-3, 
-#reviews .customdatatable-wrapper .col-xs-4, 
-#reviews .customdatatable-wrapper .col-xs-5, 
-#reviews .customdatatable-wrapper .col-xs-6, 
-#reviews .customdatatable-wrapper .col-xs-7, 
-#reviews .customdatatable-wrapper .col-xs-8, 
+#reviews .customdatatable-wrapper .col-xs-11,
+#reviews .customdatatable-wrapper .col-xs-12,
+#reviews .customdatatable-wrapper .col-xs-2,
+#reviews .customdatatable-wrapper .col-xs-3,
+#reviews .customdatatable-wrapper .col-xs-4,
+#reviews .customdatatable-wrapper .col-xs-5,
+#reviews .customdatatable-wrapper .col-xs-6,
+#reviews .customdatatable-wrapper .col-xs-7,
+#reviews .customdatatable-wrapper .col-xs-8,
 #reviews .customdatatable-wrapper .col-xs-9 { position: inherit; }
 
 #reviews .customdatatable tbody tr:nth-child(odd) { background-color: #F6F6F6; }
@@ -809,8 +809,8 @@ div#image_container img.selected, div#image_container img:hover{
 .form-control { border-radius: 4px !important; border: 1px solid #e8ebf0; }
 input[type="checkbox"] { outline: none !important; margin: 0 !important; padding: 0 !important; }
 
-#reviews .ui-state-default, 
-#reviews .ui-widget-content .ui-state-default, 
+#reviews .ui-state-default,
+#reviews .ui-widget-content .ui-state-default,
 #reviews .ui-widget-header .ui-state-default { background: #FFFFFF; border: 1px solid #e8ebf0; border-radius: 5px !important; color: #374552; height: 52px; margin-bottom: 8px; }
 #sortable { width: 100%; }
 #sortable .ui-icon.ui-icon-arrowthick-2-n-s { right: 20px; }
@@ -939,7 +939,7 @@ body { background-color: #FFFFFF; color: #484848; }
 /* Alignment */
 .responsive-float-left,
 .responsive-float-right {
-   float: none; 
+   float: none;
 }
 .center {
    text-align: center !important;
@@ -952,7 +952,7 @@ body { background-color: #FFFFFF; color: #484848; }
    font-weight: bold !important;
 }
 /* Colors */
-.transparent {    
+.transparent {
     background-color: transparent !important;
 }
 .apple-backgound {
