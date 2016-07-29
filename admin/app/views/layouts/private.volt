@@ -28,9 +28,7 @@
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     {% if main_color_setting %}
         <style>
-            .page-content{
-                background-color: #f6f6f6;
-            }
+
 
             .page-sidebar .page-sidebar-menu > li > a,
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a {
@@ -78,12 +76,13 @@
                 color: #FFFFFF !important;
             }
             .page-content-wrapper{
-                margin-top:-60px;
-                padding-top:30px;
+                margin-top:-95px;
+                padding-top:75px;
             }
         </style>
     {% endif %}
-    <?php echo $primary_color; ?>
+    <style type="text/css">
+    </style>
     <link rel="stylesheet" href="/dashboard/css?primary_color={{ primary_color }}&secondary_color={{ secondary_color }}">
 </head>
 <!-- END HEAD -->
@@ -97,7 +96,8 @@
     </div>
     <?php die(); ?>
 {% endif %}
-
+<input type="hidden" id="primary_color" value="#{{primary_color }}" />
+<input type="hidden" id="secondary_color" value="#{{secondary_color}}" />
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
     <!-- BEGIN HEADER INNER -->
@@ -638,8 +638,13 @@
                 $('#updateStripeModal').modal('show');
         });
     </script>
-
 {% endif %}
-</body>
+<script type="text/javascript">
+    $(window).resize(function(){
+        if(console) console.warn('We are hiding the chart here for now, eventually we want to re-paint it');
+        $('#piechart > div > div').hide();
 
+    });
+</script>
+</body>
 </html>

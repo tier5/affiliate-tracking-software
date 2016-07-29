@@ -493,7 +493,6 @@ class ControllerBase extends Controller {
 
     public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_auth_messaging_sid, $twilio_from_phone, $agency) {
         // this line loads the library
-        require_once("/var/www/html/" . $this->config->webpathfolder->path . "/vendor/twilio/sdk/Services/Twilio.php");
 
         // set your AccountSid and AuthToken from www.twilio.com/user/account
         //new tokens
@@ -1035,25 +1034,29 @@ class ControllerBase extends Controller {
         // Check if the user has uploaded files
         if ($this->request->hasFiles() == true) {
             //echo '<p>hasFiles() == true!</p>';
-            $baseLocation = '/var/www/html/' . $this->config->webpathfolder->path . '/public/img/upload/';
+            try {
+                $baseLocation = '/var/www/html/' . $this->config->webpathfolder->path . '/public/img/upload/';
 
 
-            // Print the real file names and sizes
-            foreach ($this->request->getUploadedFiles() as $file) {
-                if ($file->getName() != '') {
-                    //Move the file into the application
-                    $filepath = $baseLocation . $agencyid . '-' . $file->getName();
-                    $file->moveTo($filepath);
+                // Print the real file names and sizes
+                foreach ($this->request->getUploadedFiles() as $file) {
+                    if ($file->getName() != '') {
+                        //Move the file into the application
+                        $filepath = $baseLocation . $agencyid . '-' . $file->getName();
+                        $file->moveTo($filepath);
 
-                    //resize
-                    $image = new \Phalcon\Image\Adapter\GD($filepath);
-                    $image->resize(200, 30)->save($filepath);
+                        //resize
+                        $image = new \Phalcon\Image\Adapter\GD($filepath);
+                        $image->resize(200, 30)->save($filepath);
 
-                    //echo '<p>$filepath: '.$filepath.'</p>';
-                    $filepath = '/admin' . str_replace("/var/www/html/" . $this->config->webpathfolder->path . "/public", "", $filepath);
-                    $this->view->logo_setting = $filepath;
-                    return $filepath;
+                        //echo '<p>$filepath: '.$filepath.'</p>';
+                        $filepath = '/admin' . str_replace("/var/www/html/" . $this->config->webpathfolder->path . "/public", "", $filepath);
+                        $this->view->logo_setting = $filepath;
+                        return $filepath;
+                    }
                 }
+            }catch(\Exception $e){
+                //here we explicitly do nothing
             }
         } else {
             //echo '<p>hasFiles() == true!</p>';
@@ -1140,19 +1143,22 @@ class ControllerBase extends Controller {
     }
 
     public function getLocationId(){
-        $identity = $this->session->get('auth-identity');
+        $identity = $this->getIdentity();
        return $identity['location_id'];
     }
 
+    public function getIdentity(){
+        return $this->auth->getIdentity();
+    }
+
     public function getUserObject(){
-        $identity = $this->auth->getIdentity();
+        $identity = $this->getIdentity();
         if(!$identity) return false;
         // If there is no identity available the user is redirected to index/index
         // Query binding parameters with string placeholders
         $conditions = "id = :id:";
         $parameters = array("id" => $identity['id']);
-        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-        //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-        return $userObj;
+        return Users::findFirst(array($conditions, "bind" => $parameters));
+
     }
 }

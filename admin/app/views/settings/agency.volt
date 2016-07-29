@@ -281,15 +281,15 @@
                         </div>
                         <div class="form-group">
                             <div class="row">
-                                <label for="review_goal" class="col-md-4 control-label">Review Invite Goal</label>
+                                <label for="review_goal" class="col-md-4 control-label">New Monthly Reviews Goal</label>
                                 <div class="col-md-8">
                                     {{ form.render("review_goal", ["class": 'form-control', 'placeholder': 'Review Goal']) }}
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <i>A review invite goal provides you and your staff with a specific target of review
-                                        invites to send each month.</i>
+                                    <i> A new monthly review goal provides you and your staff with a specific target of
+                                        new reviews to receive each month online from your customers.</i>
                                 </div>
                             </div>
                         </div>
@@ -387,41 +387,18 @@
                         <h4>Color Theme</h4>
                         <div class="form-group">
                             <div class="col-md-6" style="border-right: 1px dashed #333;">
-                                <p><b>Choose a preset color theme:</b></p>
-                                <div class="row">
-                                    <a class="color" data-color="#DC4FAD" style="background-color: #DC4FAD;">&nbsp;</a>
-                                    <a class="color" data-color="#AC193D" style="background-color: #AC193D;">&nbsp;</a>
-                                    <a class="color" data-color="#D24726" style="background-color: #D24726;">&nbsp;</a>
-                                    <a class="color" data-color="#FF8F32" style="background-color: #FF8F32;">&nbsp;</a>
-                                    <a class="color" data-color="#82BA00" style="background-color: #82BA00;">&nbsp;</a>
-                                    <a class="color" data-color="#008A17" style="background-color: #008A17;">&nbsp;</a>
-                                </div>
-                                <div class="row">
-                                    <a class="color" data-color="#058563" style="background-color: #058563;">&nbsp;</a>
-                                    <a class="color" data-color="#008299" style="background-color: #008299;">&nbsp;</a>
-                                    <a class="color" data-color="#5DB2FF" style="background-color: #5DB2FF;">&nbsp;</a>
-                                    <a class="color" data-color="#0072C6" style="background-color: #0072C6;">&nbsp;</a>
-                                    <a class="color" data-color="#4617B4" style="background-color: #4617B4;">&nbsp;</a>
-                                    <a class="color" data-color="#8C0095" style="background-color: #8C0095;">&nbsp;</a>
-                                </div>
-                                <div class="row">
-                                    <a class="color" data-color="#004B8B" style="background-color: #004B8B;">&nbsp;</a>
-                                    <a class="color" data-color="#364150" style="background-color: #364150;">&nbsp;</a>
-                                    <a class="color" data-color="#570000" style="background-color: #570000;">&nbsp;</a>
-                                    <a class="color" data-color="#380000" style="background-color: #380000;">&nbsp;</a>
-                                    <a class="color" data-color="#585858" style="background-color: #585858;">&nbsp;</a>
-                                    <a class="color" data-color="#000000" style="background-color: #000000;">&nbsp;</a>
+                                <div class="color-select">
+                                    <input type="text" id="main_color" name="main_color" class="" data-control="hue"
+                                           value="<?=(isset($_POST['main_color'])?$_POST['main_color']:(isset($agency->main_color)?$agency->main_color:''))?>"
+                                    style="margin: 4px;" /> Primary Color
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <p><b>Or choose your own color theme:</b></p>
                                 <div class="color-select">
-                                    <input type="text" id="main_color" name="main_color" class="" data-control="hue" value="<?=(isset($_POST['main_color'])?$_POST[" main_color"]:(isset($agency->main_color)?$agency->main_color:'#2B3643'))?>"
-                                    style="margin: 4px;" /> Primary
-                                </div>
-                                <div class="color-select">
-                                    <input type="text" id="secondary_color" name="secondary_color" class="" data-control="hue" value="#364150" style="margin: 4px;"/>
-                                    Secondary
+                                    <input type="text" id="secondary_color" name="secondary_color" class="" data-control="hue" style="margin: 4px;"
+                                           value="<?=(isset($_POST['main_color'])?$_POST['secondary_color']:(isset($agency->secondary_color)?$agency->secondary_color:''))?>"
+                                    />
+                                    Secondary Color
                                 </div>
                             </div>
                         </div>
@@ -725,7 +702,8 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 }
 ?>
 
-
+<script type="text/javascript" src="/assets/colorpicker/farbtastic.js"></script>
+<link rel="stylesheet" href="/assets/colorpicker/farbtastic.css" />
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
         $('#btnAddReviewSite').on('click', function (e) {
@@ -859,7 +837,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         $("#settingsform").on("submit", function (e) {
             var idsInOrder = $("#sortable").sortable("toArray");
             //-----------------^^^^
-            console.log(idsInOrder);
             $('input#review_order').val(idsInOrder);
             //return false;
 
@@ -876,30 +853,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         });
 
 
-        $(".color").hover(function () {
-            changeColor($(this).attr("data-color"));
-        });
-        $("#main_color").change(function () {
-            changeColor($(this).val());
-        });
-
-
-        function changeColor(hex) {
-            $('.page-header.navbar').css("background-color", hex);
-            var bigint = parseInt(hex.replace('#', ''), 16);
-            var r = (bigint >> 16) & 255;
-            var g = (bigint >> 8) & 255;
-            var b = bigint & 255;
-            $('body').css("background-color", 'rgba(' + r + ', ' + g + ', ' + b + ', 0.8)');
-            $('.page-sidebar .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a').css("border-top", hex);
-            $('.page-sidebar .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a').css("color", "#FFFFFF");
-            $('.page-sidebar .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a').css("background-color", hex);
-            $('li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a').css("background-color", hex + ' !important');
-            $("li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a").css("cssText", "background-color: " + hex + " !important;");
-
-            $('#main_color').val(hex);
-            $('.minicolors-swatch-color').css("background-color", hex);
-        }
 
         $('div#image_container img').click(function () {
             // set the img-source as value of image_from_list

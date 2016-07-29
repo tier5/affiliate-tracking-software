@@ -319,7 +319,8 @@
 
         }
 
-        protected function updateSubscriptionPlan($businessID) {
+        protected function updateSubscriptionPlan($businessID = null) {
+            if(!$businessID) return;
             $Name = "Business Plan {$businessID}";
             $UniqueID = "business_plan_{$businessID}";
 
