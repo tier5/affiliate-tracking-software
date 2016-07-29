@@ -1,6 +1,7 @@
 <?php
 namespace Vokuro\Models;
 
+use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Phalcon\Mvc\Model;
 use Vokuro\Mail\Mail;
 
@@ -18,6 +19,7 @@ class EmailConfirmations extends Model
     public $createdAt;
     public $modifiedAt;
     public $confirmed;
+
 
 
 
@@ -64,5 +66,12 @@ class EmailConfirmations extends Model
         $this->belongsTo('usersId', __NAMESPACE__ . '\Users', 'id', array(
             'alias' => 'user'
         ));
+    }
+
+    public function getByUserId($user_id){
+        if(!is_numeric($user_id)) throw new \InvalidArgumentException('$user_id must be a number');
+        $condition = 'usersId = '.$user_id;
+        $records = $this->findFirst($condition);
+        return $records;
     }
 }
