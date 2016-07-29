@@ -24,6 +24,7 @@ class Email{
     public function setFrom($from)
     {
         $this->from = $from;
+        return $this;
     }
 
     public function getDI(){
@@ -51,9 +52,9 @@ class Email{
             'firstName' => $user->getFirstName()
         ];
         try {
-            $this->getDI()
-                ->getMail()
-                ->send($user->email, "You’re in :) | PLUS, a quick question...", 'confirmation', $params);
+            $mail = $this->getDI()->getMail();
+            $mail->setFrom('zacha@reputationloop.com');
+            $mail->send($user->email, "You’re in :) | PLUS, a quick question...", 'confirmation', $params);
         } catch (Exception $e) {
             print $e;
             throw new \Exception('Not able to send email in:'.__CLASS__.'::'.__FUNCTION__);

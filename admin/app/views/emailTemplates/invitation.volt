@@ -10,7 +10,7 @@
 
                     <br>
                     <br>
-                    <a style="padding:10px" href="http://{{ publicUrl }}{{ invitationUrl }}">Confirm</a>
+                    <a style="padding:10px; margin-left:-10px;" href="http://{{ publicUrl }}{{ invitationUrl }}">Confirm</a>
 
                     <br>
                 </p>

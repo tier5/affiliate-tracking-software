@@ -28,9 +28,7 @@
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     {% if main_color_setting %}
         <style>
-            .page-content{
-                background-color: #f6f6f6;
-            }
+
 
             .page-sidebar .page-sidebar-menu > li > a,
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a {
@@ -78,8 +76,8 @@
                 color: #FFFFFF !important;
             }
             .page-content-wrapper{
-                margin-top:-60px;
-                padding-top:30px;
+                margin-top:-95px;
+                padding-top:75px;
             }
         </style>
     {% endif %}
@@ -643,10 +641,10 @@
 {% endif %}
 <script type="text/javascript">
     $(window).resize(function(){
+        if(console) console.warn('We are hiding the chart here for now, eventually we want to re-paint it');
         $('#piechart > div > div').hide();
 
     });
 </script>
 </body>
-
 </html>

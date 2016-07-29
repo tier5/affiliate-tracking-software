@@ -106,9 +106,9 @@
           <a data-toggle="dropdown" href="javascript:;" class="btn btn-sm green dropdown-toggle" aria-expanded="false"> Actions <i class="fa fa-angle-down"></i></a>
           <ul class="dropdown-menu pull-right">
             <li><a class="" href="mailto:{{ user.email }}"><i class="icon-envelope-letter"></i> Email</a></li>
-            <li><a href="/admindashboard/forgotPassword/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to reset this employee\'s password?');" class=""><i class="icon-user"></i> Password</a></li>
-            <li><a href="/admindashboard/confirmation/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to resend this employee\'s confirmation email?');" class=""><i class="icon-envelope"></i> Resend Credentials</a></li>
-            <li><a href="/admindashboard/login/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to log in as this employee?');" class=""><i class="icon-paper-plane"></i> Manage</a></li>
+            <li><a href="/admindashboard/forgotPassword/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to reset this user\'s password?');" class=""><i class="icon-user"></i> Password</a></li>
+            <li><a href="/admindashboard/confirmation/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to resend this user\'s confirmation email?');" class=""><i class="icon-envelope"></i> Resend Credentials</a></li>
+            <li><a href="/admindashboard/login/<?=$agency_type_id?>/<?=$agency->agency_id?>/{{ user.id }}" onclick="return confirm('Are you sure you want to log in as this user?');" class=""><i class="icon-paper-plane"></i> Manage</a></li>
           </ul>
         </div>
       </div>
