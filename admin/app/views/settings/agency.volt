@@ -281,15 +281,15 @@
                         </div>
                         <div class="form-group">
                             <div class="row">
-                                <label for="review_goal" class="col-md-4 control-label">Review Invite Goal</label>
+                                <label for="review_goal" class="col-md-4 control-label">New Monthly Reviews Goal</label>
                                 <div class="col-md-8">
                                     {{ form.render("review_goal", ["class": 'form-control', 'placeholder': 'Review Goal']) }}
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <i>A review invite goal provides you and your staff with a specific target of review
-                                        invites to send each month.</i>
+                                    <i> A new monthly review goal provides you and your staff with a specific target of
+                                        new reviews to receive each month online from your customers.</i>
                                 </div>
                             </div>
                         </div>
