@@ -2,6 +2,7 @@
 namespace Vokuro\Models;
 
 use Phalcon\Mvc\Model;
+use Vokuro\Mail\Mail;
 
 /**
  * EmailConfirmations
@@ -49,12 +50,9 @@ class EmailConfirmations extends Model
      */
     public function afterCreate()
     {
+        $email = new \Vokuro\Services\Email();
       try {
-        $this->getDI()
-            ->getMail()
-            ->send($this->user->email, "Please confirm your email", 'confirmation', array(
-            'confirmUrl' => '/confirm/' . $this->code . '/' . $this->user->email
-        ));
+       $email->sendActivationEmailByUserId($this->usersId);
       } catch (Exception $e) {
           print $e;
         //do nothing

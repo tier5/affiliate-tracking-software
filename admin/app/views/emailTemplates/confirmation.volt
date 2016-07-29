@@ -21,7 +21,7 @@
 			value from Review Velocity. We’ll be sharing some tips, checking in with you and showing you how some of our
 			customers use Review Velocity to grow their businesses.<br/><br/>
 
-			To get started just confirm your email by <a href="http://{{ publicUrl }}{{ confirmUrl }}">Clicking Here</a><br/><br/>
+			To get started just confirm your email by <a style="padding:10px; margin-left:-10px; display:block;" href="http://{{ publicUrl }}{{ confirmUrl }}">Clicking Here</a><br/><br/>
 
 			Thanks,<br/>
 			Zach<br/>

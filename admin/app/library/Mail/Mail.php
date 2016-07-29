@@ -19,6 +19,16 @@ class Mail extends Component
 
     protected $directSmtp = true;
 
+    protected $from = null;
+
+    /**
+     * @param null $from
+     */
+    public function setFrom($from)
+    {
+        $this->from = $from;
+    }
+
     /**
      * Send a raw e-mail via AmazonSES
      *
@@ -85,13 +95,14 @@ class Mail extends Component
 
         if ($template == '') $template = $this->getTemplate($name, $params);
 
+        if($this->from) $mailSettings->fromEmail = $this->from;
         // Create the message
         $message = Message::newInstance()
             ->setSubject($subject)
             ->setTo($to)
             ->setFrom($mailSettings->fromEmail)
             ->setBody($template, 'text/html');
-            
+
         // To send HTML mail, the Content-type header must be set
         //$headers  = 'MIME-Version: 1.0' . "\r\n";
         //$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -103,7 +114,7 @@ class Mail extends Component
         //$headers .= 'To: '.$explode_emails . "\r\n";
         //$headers .= 'From: '.$mailSettings->fromEmail;// . "\r\n" .
           //'Return-Path: ' . $mailSettings->fromEmail . "\r\n" . 'X-Mailer: PHP/' . phpversion(). "\r\n";
-          
+
         //echo '<p>headers:'.$headers.'</p>';
         //echo '<p>$mailSettings->fromEmail:'.$mailSettings->fromEmail.'</p>';
         //exit();
