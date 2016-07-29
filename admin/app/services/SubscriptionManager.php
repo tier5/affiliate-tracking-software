@@ -27,12 +27,8 @@ class SubscriptionManager extends BaseService {
         if (!$subscriptionPlan  || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE) {
             return false;
         }
-        
-        $provider = ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET;
-        if ($userManager->isWhiteLabeledBusiness($session)) {
-            $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
-        }
 
+        $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
         $paymentProfile = $paymentService->getPaymentProfile([ 'userId' => $userId, 'provider' => $provider ]);
 
         // GARY_TODO:  Add cron script to reset customer_id on expired / invalid cards.
