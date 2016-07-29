@@ -61,5 +61,23 @@ class Email{
         return true;
     }
 
+    public function sendResetPasswordEmailToUser(Users $user){
+        $this->getDI()
+            ->getMail()
+            ->send($user->email, "Reset your password", 'reset', array(
+                'resetUrl' => '/reset-password/' . $this->code . '/' . $user->email
+            ));
+    }
+
+    /**
+     * @param $user_id
+     */
+    public function sendResetPasswordEmailByUserId($user_id)
+    {
+        $users = new Users();
+        $record = $users->getById($user_id);
+        if ($record) return $this->sendResetPasswordEmailToUser($record);
+    }
+
 
 }
