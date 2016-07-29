@@ -17,6 +17,8 @@
             return $this->_errorMessages;
         }*/
 
+
+
         // formatted version of getMessages
         public function get_val_errors() {
             $model_errors = $this->getMessages();

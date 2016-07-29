@@ -392,6 +392,16 @@
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function($){
+        var primary_color = $('#primary_color').val();
+        var secondary_color = $('#secondary_color').val();
+        console.log(secondary_color);
+
+        if(primary_color == "#"){
+            delete(primary_color);
+        }
+        if(secondary_color == "#"){
+            delete(secondary_color);
+        }
         $('#maillink').on('click', function(e) {
             e.preventDefault();
             $('#page-wrapper').show();
@@ -403,11 +413,13 @@
             $('#page-wrapper').hide();
             $('.overlay').hide();
         });
+
+        var barColor = primary_color ? '#' + primary_color : '#F8CB00';
         $('.easy-pie-chart .number.monthly-review').easyPieChart({
             animate: 1000,
             size: 100,
             lineWidth: 3,
-            barColor: '#F8CB00'
+            'barColor': barColor
         });
         //alert('width:'+viewport());
 
@@ -425,17 +437,18 @@
             google.charts.setOnLoadCallback(drawBasic);
 
             function drawBasic() {
-
+                var color = primary_color ? primary_color : '#67cd4d';
                 var data = google.visualization.arrayToDataTable([
                     ['Month', 'Density', { role: 'style' }],
                 <?php
                     $prevmonth = 0;
                     $count = 0;
                     $strarray = '';
+                    $color = ($primary_color) ? $primary_color : '';
                     foreach ($new_reviews as $data) {
                         if ($new_reviews->count() > 6 && $count == 0) {
                         } else {
-                            $strarray = $strarray."['".date("M", mktime(0, 0, 0, $data-> month, 1, 2011))."', ".($data-> reviewcount - $prevmonth).", '#67cd4d'],\n";
+                            $strarray = $strarray."['".date("M", mktime(0, 0, 0, $data-> month, 1, 2011))."', ".($data-> reviewcount - $prevmonth).", '".$color."'],\n";
                         }
                         $prevmonth = $data->reviewcount;
                         $count++;
@@ -453,6 +466,7 @@
                     }
                 };
 
+                console.log(data)
                 var chart = new google.visualization.ColumnChart(document.getElementById('barchart_div'));
                 chart.draw(data, options);
             }
@@ -468,6 +482,11 @@
                     ['Goal', <?= 100 - $percent ?> ],
                     ['Commute', 100],
                 ]);
+                var first_color = primary_color ?  primary_color : '#67cd4d';
+
+                var second_color = secondary_color ?  secondary_color : '#E1F5DA';
+                console.log(second_color);
+
 
                 var options = {
                     title: '',
@@ -476,8 +495,8 @@
                     pieHole: 0.85,
                     pieStartAngle: 270,
                     slices: {
-                        0: { color: '#67cd4d' },
-                        1: { color: '#E1F5DA' },
+                        0: { color: first_color },
+                        1: { color: second_color },
                         2: { color: 'transparent' }
                     },
                     pieSliceTextStyle: {color: 'transparent'},
