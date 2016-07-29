@@ -24,6 +24,7 @@ class Email{
     public function setFrom($from)
     {
         $this->from = $from;
+        return $this;
     }
 
     public function getDI(){
@@ -46,9 +47,6 @@ class Email{
      * @param Users $user
      */
     public function sendActivationEmailToUser(Users $user){
-
-
-
         $params = [
             'confirmUrl'=> '/confirm/' . $this->code . '/' . $this->user->email,
             'firstName' => $user->getFirstName()

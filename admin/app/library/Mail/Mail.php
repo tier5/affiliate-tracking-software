@@ -94,11 +94,8 @@ class Mail extends Component
         $mailSettings = $this->config->mail;
 
         if ($template == '') $template = $this->getTemplate($name, $params);
-        
+
         if($this->from) $mailSettings->fromEmail = $this->from;
-
-
-
         // Create the message
         $message = Message::newInstance()
             ->setSubject($subject)
