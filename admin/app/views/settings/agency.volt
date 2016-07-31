@@ -386,20 +386,22 @@
                         <hr>
                         <h4>Color Theme</h4>
                         <div class="form-group">
-                            <div class="col-md-6" style="border-right: 1px dashed #333;">
-                                <div class="color-select">
-                                    <input type="text" id="main_color" name="main_color" class="" data-control="hue"
+                            <div class="col-md-6" style="border-right: 1px silver solid;">
+                                    <div id="primary-color-picker" style="height:50px; color:white;"></div>
+                                    <input type="color" id="main_color_chooser" pattern="#[a-f0-9]{6}" name="main_color"
                                            value="<?=(isset($_POST['main_color'])?$_POST['main_color']:(isset($agency->main_color)?$agency->main_color:''))?>"
                                     style="margin: 4px;" /> Primary Color
-                                </div>
+                                <input type="hidden" id="main_color" value="<?=$agency->main_color; ?>"/>
                             </div>
                             <div class="col-md-6">
-                                <div class="color-select">
-                                    <input type="text" id="secondary_color" name="secondary_color" class="" data-control="hue" style="margin: 4px;"
+
+                                    <div id="secondary-color-picker" style="height:50px; color:white;"></div>
+                                    <input type="color" id="secondary_color_chooser" pattern="#[a-f0-9]{6}" name="secondary_color" style="margin: 4px;"
                                            value="<?=(isset($_POST['main_color'])?$_POST['secondary_color']:(isset($agency->secondary_color)?$agency->secondary_color:''))?>"
                                     />
+
+                                <input type="hidden" id="secondary_color" value="<?=$agency->secondary_color; ?>"/>
                                     Secondary Color
-                                </div>
                             </div>
                         </div>
                         <hr>
@@ -701,9 +703,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 <?php
 }
 ?>
-
-<script type="text/javascript" src="/assets/colorpicker/farbtastic.js"></script>
-<link rel="stylesheet" href="/assets/colorpicker/farbtastic.css" />
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
         $('#btnAddReviewSite').on('click', function (e) {
@@ -831,9 +830,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         });
 
 
-        $('#main_color').minicolors();
-        $('#secondary_color').minicolors();
-
         $("#settingsform").on("submit", function (e) {
             var idsInOrder = $("#sortable").sortable("toArray");
             //-----------------^^^^
@@ -861,7 +857,41 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
             $('input#review_invite_type_id').val($(this).attr("data-id"));
         });
 
+        var selected = $('div#image_container img.selected');
+        console.log(selected);
+        if(selected.length < 1)  $('div#image_container img')[0].click();
+
         $("#sortable").sortable();
         $("#sortable").disableSelection();
     });
+
+    $(function(){
+        function colorToHex(color) {
+            if (color.substr(0, 1) === '#') {
+                return color;
+            }
+            var digits = /(.*?)rgb\((\d+), (\d+), (\d+)\)/.exec(color);
+
+            var red = parseInt(digits[2]);
+            var green = parseInt(digits[3]);
+            var blue = parseInt(digits[4]);
+
+            var rgb = blue | (green << 8) | (red << 16);
+            return digits[1] + '#' + rgb.toString(16);
+        };
+
+        $('#main_color_chooser').on('input', function(){
+            document.getElementById('main_color').value = colorToHex($(this).val());
+            $('#primary-color-picker').css('background-color', $(this).val());
+        });
+
+        $('#secondary_color_chooser').on('input', function () {
+            document.getElementById('secondary_color').value = colorToHex($(this).val());
+            $('#secondary-color-picker').css('background-color', $(this).val());
+        });
+
+
+
+    });
+
 </script>

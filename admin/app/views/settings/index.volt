@@ -785,9 +785,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
     });
 
 
-    $('#main_color').minicolors();
-    $('#secondary_color').minicolors();
-
     $("#settingsform").on("submit", function(e){
       var idsInOrder = $("#sortable").sortable("toArray");
       //-----------------^^^^
@@ -808,40 +805,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
     });
 
 
-    $(".color").hover(function () {
-      changeColor($(this).attr("data-color"));
-    });
-    $("#main_color").change(function () {
-      changeColor($(this).val());
-    });
-
-
-    function changeColor(hex) {
-      //stuff to do on hover
-      //console.log($(this).attr("data-color"));
-      //var hex = $(this).attr("data-color");
-      $('.page-header.navbar').css( "background-color", hex);
-      //calculate the rgb
-      /*var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-       var r = result[1];
-       var g = result[2];
-       var b = result[3];*/
-      var bigint = parseInt(hex.replace('#', ''), 16);
-      var r = (bigint >> 16) & 255;
-      var g = (bigint >> 8) & 255;
-      var b = bigint & 255;
-      $('body').css( "background-color", 'rgba('+r+', '+g+', '+b+', 0.8)');
-      $('.page-sidebar .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a').css("border-top", hex);
-      $('.page-sidebar .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a').css("color", "#FFFFFF");
-      $('.page-sidebar .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a').css("background-color", hex);
-      $('li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a').css("background-color", hex+' !important');
-      //console.log("background-color: "+hex+" !important;");
-      $("li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a").css("cssText", "background-color: "+hex+" !important;");
-
-      $('#main_color').val(hex);
-      $('.minicolors-swatch-color').css("background-color", hex);
-    }
-
     $('div#image_container img').click(function(){
       // set the img-source as value of image_from_list
       $('div#image_container img').removeClass("selected");
@@ -851,5 +814,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
     $("#sortable").sortable();
     $("#sortable").disableSelection();
+
+
   });
 </script>
