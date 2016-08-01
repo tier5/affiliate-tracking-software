@@ -335,9 +335,18 @@
             //end making sure the user should be here
 
             if ($this->request->isPost()) {
+                $name = $this->request->getPost('name','striptags');
+                if(strpos($name,' ') > -1){
+                    //explode on space
+                    $exploded = explode(' ',$name);
+                    $first_name = $exploded[0];
+                    $last_name = $exploded[1];
+                }
+                if(!$last_name) $last_name = "";
                 $user->assign(array(
-                    'name' => $this->request->getPost('name', 'striptags'),
+                    'name' => $name,
                     //'profilesId' => $profilesId,
+                    'last_name'=>$last_name,
                     'email' => $this->request->getPost('email', 'email'),
                     'phone' => $this->request->getPost('phone'),
                     //'banned' => $this->request->getPost('banned'),
@@ -506,7 +515,7 @@
                     } else {
 
                         $this->flash->success('Your password was successfully changed');
-                        
+
                         //if ($this->session->has('auth-identity')) {
                         //  Tag::resetInput();
                         //} else {
@@ -521,5 +530,5 @@
             $this->view->form = $form;
         }
     }
-    
-    
+
+
