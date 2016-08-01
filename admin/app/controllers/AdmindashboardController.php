@@ -327,7 +327,7 @@ class AdmindashboardController extends ControllerBusinessBase {
             $this->response->redirect('/');
         }catch(\Exception $e){
             $this->flash->error('You cannot login as an inactivated user');
-            exit();
+            exit('exiting: line '.__LINE__.' of file:'.__FILE__);
             $this->response->redirect('/admindashboard');
             return;
         }
