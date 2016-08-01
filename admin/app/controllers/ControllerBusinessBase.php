@@ -125,7 +125,7 @@ class ControllerBusinessBase extends ControllerBase {
 
             }
         }
-        $sub_selected = $age->subscription_id;
+        $sub_selected = ($age && isset($age->subscription_id)) ? $age->subscription_id : null;
         if(!$sub_selected) $sub_selected = 0;
             $markup = $this->buildSubsriptionPricingPlanMarkUp($sub_selected);
         $this->view->setVar("subscriptionPricingPlans", $markup);
