@@ -814,7 +814,13 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
     $("#sortable").sortable();
     $("#sortable").disableSelection();
-
-
+    //i broke this out so it would be on its own function
   });
+  $(function () {
+    var selected = $('#image_container img.selected').length;
+    if (selected <= 0 || typeof selected == undefined) {
+      $('div#image_container img:first').trigger('click');
+    }
+  });
+
 </script>

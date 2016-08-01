@@ -493,7 +493,7 @@ class SessionController extends ControllerBase {
                 'signup_page' => '', //go to the next page
             ));
 
-            if (!$agency->save()) {
+            if ($this->request->isPost() && !$agency->save()) {
                 $this->flash->error($agency->getMessages());
             } else {
                 return $this->response->redirect('/');

@@ -73,13 +73,13 @@
                 <div class="form-group">
                     <label for="locations" class="col-md-4 control-label">Locations</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="number" min="0" placeholder="Number of locations" required name="free_locations" />
+                        <input class="form-control" type="number" min="0" value="<?=(!$free_locations) ? 1 : $free_locations ; ?>" placeholder="Number of locations" required name="free_locations" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="sms_messages" class="col-md-4 control-label">SMS Messages</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="number" min="0" placeholder="Number of messages" required name="sms_messages" />
+                        <input class="form-control" type="number" min="0" placeholder="Number of messages" value="<?=$_POST['sms_messages'] ? $_POST['sms_messages'] : 100; ?>" required name="sms_messages" />
                     </div>
                 </div>
             </div>

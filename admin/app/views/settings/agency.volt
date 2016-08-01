@@ -889,6 +889,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
             document.getElementById('secondary_color').value = colorToHex($(this).val());
             $('#secondary-color-picker').css('background-color', $(this).val());
         });
+
     });
 
 </script>
