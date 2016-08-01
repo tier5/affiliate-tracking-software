@@ -394,6 +394,7 @@
     jQuery(document).ready(function($){
         var primary_color = $('#primary_color').val();
         var secondary_color = $('#secondary_color').val();
+        console.log(primary_color,secondary_color);
         console.log(secondary_color);
 
         if(primary_color == "#"){
@@ -482,10 +483,9 @@
                     ['Goal', <?= 100 - $percent ?> ],
                     ['Commute', 100],
                 ]);
-                var first_color = primary_color ?  primary_color : '#67cd4d';
+                var first_color = (primary_color !== '#') ?  primary_color : '#67cd4d';
 
-                var second_color = secondary_color ?  secondary_color : '#E1F5DA';
-                console.log(second_color);
+                var second_color = (secondary_color !== '#' && secondary_color !== '') ?  secondary_color : '#E1F5DA';
 
 
                 var options = {
