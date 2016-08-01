@@ -14,6 +14,7 @@ use Vokuro\Models\ReviewsMonthly;
 use Vokuro\Models\SharingCode;
 use Vokuro\Models\Subscription;
 use Vokuro\Models\Users;
+use Vokuro\Services\UserManager;
 
 /**
  * Display the default index page.
@@ -319,11 +320,16 @@ class AdmindashboardController extends ControllerBusinessBase {
     /**
      * Logs in as the user
      */
-    public function loginAction($agency_type_id, $agency_id, $user_id) {
-        $conditions = "id = :id:";
-        $parameters = array("id" => $user_id);
-        $user = Users::findFirst(array($conditions, "bind" => $parameters));
-        $this->auth->login($user);
+    public function loginAction($agency_type_id, $agency_id = null, $user_id = null) {
+        $usermanager = new UserManager();
+        try{
+            $usermanager->sudoAsUserId($user_id);
+            $this->response->redirect('/');
+        }catch(\Exception $e){
+            $this->flash->error('You cannot login as an inactivated user');
+            $this->redirect('/admindashboard/view');
+            return;
+        }
 
         $this->response->redirect('/');
         $this->view->disable();
