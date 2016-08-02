@@ -19,6 +19,8 @@ class EmailConfirmations extends Model
     public $createdAt;
     public $modifiedAt;
     public $confirmed;
+    public $send_email = true;
+    public $template = null;
 
 
 
@@ -52,9 +54,19 @@ class EmailConfirmations extends Model
      */
     public function afterCreate()
     {
+        if(!$this->send_email) return;
+
+
         $email = new \Vokuro\Services\Email();
       try {
-       $email->sendActivationEmailByUserId($this->usersId);
+          if($this->template == "employee"){
+              $email->sendActivationEmailToEmployeeById($this->usersId);
+          }
+          if($this->template == null){
+              $email->sendActivationEmailByUserId($this->usersId);
+          }
+
+
       } catch (Exception $e) {
           print $e;
         //do nothing

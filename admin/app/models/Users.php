@@ -133,7 +133,19 @@
          */
         public function afterSave()
         {
-            if ($this->active == 'N' || $this->send_confirmation) {
+            if($this->is_employee && $this->send_confirmation){
+                $emailConfirmation = new EmailConfirmations();
+                $emailConfirmation->usersId = $this->id;
+                $emailConfirmation->template = 'employee';
+                if ($emailConfirmation->save()) {
+                    $this->getDI()
+                        ->getFlash()
+                        ->notice('A confirmation email has been sent to ' . $this->email);
+                }
+
+            }
+
+            if ($this->active == 'N' && $this->send_confirmation) {
             //dd('we should send an email');
 
                 $emailConfirmation = new EmailConfirmations();
