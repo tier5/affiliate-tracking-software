@@ -46,7 +46,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <select id="free-sms-messages-control" class="form-control input-small" value="{{ maxMessagesOnTrialAccount }}">
-                                            <option value="10">100</option>
+                                            <option  value="10">100</option>
                                             <option value="20">200</option>
                                             <option value="30">300</option>
                                             <option value="40">400</option>
@@ -102,7 +102,8 @@
                                         <label class="control-label">Upgrade Discount %</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <select id="upgrade-discount-control" class="form-control input-small" value="{{ updgradeDiscount }}"></select>
+                                        <input type="hidden" name="upgradeDiscountValue" id="upgrade-discount-value" value="{{upgradeDiscount}}"/>
+                                        <select id="upgrade-discount-control" name="upgradeDiscount" class="form-control input-small" value="{{ upgradeDiscount }}"></select>
                                     </div>
                                 </div>
                             </div>
@@ -148,7 +149,9 @@
                                         <label class="control-label">Annual Discount %</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <select id="annual-discount-control" class="form-control input-small" value="{{ annualDiscount }}"></select>
+                                        <input type="hidden" name="annualDiscountValue" id="annual-discount-value" value="{{ annualDiscount }}"/>
+                                        <select id="annual-discount-control" name="annualDiscount" class="form-control input-small" value="{{ annualDiscount }}">
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -288,6 +291,11 @@
 
         var maxProgressionSegments = 10;
 
+        var annualDiscount = $('#annual-discount-value').val();
+        var upgradeDiscount = $('#upgrade-discount-value').val();
+
+        console.log(annualDiscount,upgradeDiscount);
+
         function generatePercentageOptions() {
             var options = "";
             for (var i = 0; i <= 100; i++) {
@@ -326,6 +334,7 @@
                 maxSmsMessages: $('input[id="max-sms-messages-control"]').val(),
                 enableAnnualDiscount: $('input[id="enable-annual-discount-control"]').val() === "on" ? true : false,
                 annualDiscount: $('select[id="annual-discount-control"]').val(),
+                upgradeDiscount: $('select[id="upgrade-discount-control"]').val(),
                 pricingDetails: $('#summernote_1').code()
             };
 
@@ -343,7 +352,7 @@
                     smsCharge: $(this).find('td.sms-charge-column').first().text(),
                     totalPrice: $(this).find('td.total-price-column').first().text(),
                     locationDiscount: $(this).find('td.location-discount-column').first().text(),
-                    upgradeDiscount: $(this).find('td.upgrade-discount-column').first().text(),
+                    upgradeDiscount: $(this).find('td.upgrade-discount-control').first().text(),
                     smsMessages: $(this).find('td.sms-messages-column').first().text(),
                     smsCost: $(this).find('td.sms-cost-column').first().text(),
                     profitPerLocation: $(this).find('td.profit-per-location-column').first().text()
@@ -587,6 +596,9 @@
                 refreshSmsSliderControls(messages);
 
             });
+
+            $('#upgrade-discount-control').val(parseInt(upgradeDiscount,10));
+            $('#annual-discount-control').val(parseInt(annualDiscount,10));
 
         }
 
