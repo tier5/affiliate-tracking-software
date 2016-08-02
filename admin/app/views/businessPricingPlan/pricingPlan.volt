@@ -596,9 +596,8 @@
                 refreshSmsSliderControls(messages);
 
             });
-
-            $('#upgrade-discount-control').val(parseInt(upgradeDiscount,10));
-            $('#annual-discount-control').val(parseInt(annualDiscount,10));
+            if(upgradeDiscount && upgradeDiscount !== '') $('#upgrade-discount-control').val(parseInt(upgradeDiscount,10));
+            if(annualDiscount && annualDiscount !== '') $('#annual-discount-control').val(parseInt(annualDiscount,10));
 
         }
 
