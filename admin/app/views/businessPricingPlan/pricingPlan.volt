@@ -408,8 +408,8 @@
         }
 
         function recalculateTotalSmsCharge() {
-            var chargePerSms = $('input[id="charge-per-sms-control"]').val();
-            var smsMessages = $('input[id="max-sms-messages-control"]').val();
+            var chargePerSms = parseFloat($('input[id="charge-per-sms-control"]').val());
+            var smsMessages = parseFloat($('input[id="max-sms-messages-control"]').val());
             var smsCharge = parseFloat(chargePerSms) * parseInt(smsMessages);
             $('#progression-table-rows').find('tr td.sms-charge-column').each(function (index) {
                 $(this).text(smsCharge.toFixed(2)); // Update the cell value
@@ -436,8 +436,8 @@
         }
 
         function refreshLocationDiscount(discountElement) {
-            var discount = discountElement.val();
-            var basePrice = $('input[id="base-price-control"]').val();
+            var discount = parseFloat(discountElement.val());
+            var basePrice = parseFloat($('input[id="base-price-control"]').val());
             var locationDiscount = parseFloat(basePrice) * parseFloat(discount * 0.01);
             $(discountElement).parent().siblings(".location-discount-column").text(locationDiscount.toFixed(2));
         }
@@ -449,8 +449,8 @@
         }
 
         function recalculateAllUpgradeDiscounts() {
-            var discount = $('select[id="upgrade-discount-control"]').val();
-            var basePrice = $('input[id="base-price-control"]').val();
+            var discount = parseFloat($('select[id="upgrade-discount-control"]').val());
+            var basePrice = parseFloat($('input[id="base-price-control"]').val());
             var upgradeDiscount = parseFloat(basePrice) * parseFloat(discount * 0.01);
             $('#progression-table-rows').find('tr td.upgrade-discount-column').each(function (index) {
                 $(this).text(upgradeDiscount.toFixed(2));
@@ -476,7 +476,7 @@
 
         function recalculateAllSmsCost() {
             var smsCost = parseFloat($('input[id="cost-per-sms-control"]').val());
-            var maxSmsMessages = parseFloat($('input[id="max-sms-messages-control"]').val());
+            var maxSmsMessages = parseInt($('input[id="max-sms-messages-control"]').val());
             var total = parseFloat(smsCost * maxSmsMessages);
             $('#progression-table-rows').find('tr td.sms-cost-column').each(function (index) {
                 $(this).text(total.toFixed(2));
@@ -492,6 +492,31 @@
             $(profitElement).text(profit.toFixed(2));
         }
 
+        function getPlanCostPerSMSMessage(){
+            return parseFloat(document.getElementById('charge-per-sms-control').value);
+
+        }
+
+        function getActualCostPerSMSMessage(){
+            return parseFloat(document.getElementById('cost-per-sms-control').value);
+        }
+
+        function refreshDisplayPrices(){
+            var planCost = getPlanCostPerSMSMessage();
+            var actualCost = getActualCostPerSMSMessage();
+            var sliderValue = smsMessagesSlider.getValue();
+            var totalPlanCost = planCost * sliderValue;
+            var actualPlanCost = actualCost * sliderValue;
+
+            var profit = totalPlanCost - actualPlanCost;
+
+            $('#progression-table-rows tr').each(function(){
+                var row = $(this);
+                $(this).find('.discount-price-column').text('$' + actualPlanCost.toFixed(2));
+                $(this).find('.profit-per-location-column:first').text('$' + profit.toFixed(2));
+            });
+        }
+
         var smsMessagesSlider = null;
 
         function refreshSmsSliderControls(val) {
@@ -501,10 +526,6 @@
                 smsMessagesSlider.on('change', function () {
                     var sliderValue = smsMessagesSlider.getValue();
                     $('#slider-messages').text(smsMessagesSlider.getValue());
-                    $('#max-sms-messages-control').val(smsMessagesSlider.getValue());
-                    $('#progression-table-rows').find('tr td.sms-messages-column span.value').each(function (index) {
-                        $(this).text(sliderValue);
-                    });
                 });
 
 
@@ -515,10 +536,6 @@
 
             if (smsMessagesSlider) {
                 smsMessagesSlider.destroy();
-            }
-
-            if (max < 1000) {
-                max = 1000;
             }
 
             // Compute ticks scales
@@ -557,6 +574,7 @@
                 recalculateTotalCharge();
                 refreshAllLocationDiscounts();
                 recalculateAllDiscountedPrices();
+                refreshDisplayPrices();
             });
 
             // Charge per sms control
@@ -565,17 +583,20 @@
                 recalculateTotalCharge();
                 refreshAllLocationDiscounts();
                 recalculateAllDiscountedPrices();
+                refreshDisplayPrices();
             });
 
             // Upgrade discount control
             $('select[id="upgrade-discount-control"]').on('change', function (event) {
                 recalculateAllUpgradeDiscounts();
                 recalculateAllDiscountedPrices();
+                refreshDisplayPrices();
             });
 
             // Cost per sms control
             $('input[id="cost-per-sms-control"]').on('change', function (event) {
                 recalculateAllSmsCost();
+                refreshDisplayPrices();
             });
 
             // Max sms messages control
@@ -594,6 +615,7 @@
                 var messages = $(event.currentTarget).val();
                 rebuildSmsSlider(messages, 50);
                 refreshSmsSliderControls(messages);
+                refreshDisplayPrices();
 
             });
             if(upgradeDiscount && upgradeDiscount !== '') $('#upgrade-discount-control').val(parseInt(upgradeDiscount,10));
@@ -685,11 +707,11 @@
 
             /* Init value field bindings */
             initValueBindings(options);
-
-            /* Rebuild slider */
-            rebuildSmsSlider(1000, 50);
-            //right here
             var val = document.getElementById('max-sms-messages-control').value;
+            /* Rebuild slider */
+            rebuildSmsSlider(val, 50);
+            //right here
+
             refreshSmsSliderControls(val);
 
         }
@@ -747,7 +769,6 @@
             /* Init progression controls */
             initProgressionControls(options);
 
-
             //this sets the dropdown value from the passed in value..after the options are added to the dropdown
             //I could have done this in the template too.. but this seems cleaner since the options aren't rendered from an
             //each statement above
@@ -755,6 +776,21 @@
             $('#free-sms-messages-control option').each(function(){
                 if(parseInt($(this).attr('value'),10) == parseInt(initialFreeSMSValue)) $(this).attr('selected','selected');
             });
+
+            $('#max-sms-messages-control').bind('change blur',function(){
+                //set the steps
+                rebuildSmsSlider(parseInt($(this).val()),parseInt($(this).attr('step')));
+                //set the value
+                refreshSmsSliderControls(parseInt($(this).val()));
+            });
+
+            $('#max-sms-messages-control').trigger('change');
+
+            $('#sms-messages-slider').bind('input propertychange paste change',function(){
+                refreshDisplayPrices();
+            });
+            //initially refresh the prices
+            refreshDisplayPrices();
 
 
         }

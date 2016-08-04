@@ -210,6 +210,10 @@ class BusinessPricingPlanController extends ControllerBase {
                 throw new \Exception('Another pricing profile with that name already exists! Please choose a unique name and try again.');
             }
 
+            if($validatedParams) foreach($validatedParams as $key => $value) if($key !== 'name'){
+            $validatedParams[$key] = str_replace('$','',$value);
+            }
+
             /* Save the profile */
             $this->db->begin();
             if(!$subscriptionManager->savePricingProfile($validatedParams, $isUpdate)) {
