@@ -4,6 +4,8 @@ namespace Vokuro\Controllers;
 
 use Exception;
 use Phalcon\Filter;
+use Vokuro\Models\Agency;
+use Vokuro\Services\Container;
 use Vokuro\Utils;
 use Vokuro\Forms\SignUpForm;
 use Vokuro\Forms\CreditCardForm;
@@ -77,6 +79,15 @@ class BusinessPricingPlanController extends ControllerBase {
     }
 
     public function editExistingPricingPlanAction($pricingPlanId) {
+
+        $agency = new Agency();
+        $records = $agency->findBySubscriptionId($pricingPlanId);
+        if($records){
+            $this->view->attached_agencies = $records;
+            $this->view->pick('businessPricingPlan/attached');
+            return;
+        }
+
 
         /* Get services */
         $subscriptionManager = $this->di->get('subscriptionManager');

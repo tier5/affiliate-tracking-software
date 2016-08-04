@@ -220,6 +220,8 @@ class SubscriptionManager extends BaseService {
             ->bind(["subscription_pricing_plan_id" => intval($pricingPlanId)])
             ->execute()
             ->getFirst();
+
+
         if(!$subscriptionPlan) {
             return false;
         }
