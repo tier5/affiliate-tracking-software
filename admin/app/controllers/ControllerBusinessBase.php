@@ -140,8 +140,11 @@ class ControllerBusinessBase extends ControllerBase {
             $this->view->agency = $age2;
         }
 
+
+        if($this->request->isPost()){
         $this->flash->success('User Saved');
         return $this->response->redirect('/?saved=1');
+    }
     }
 
     /**
