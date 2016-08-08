@@ -16,9 +16,11 @@
                             <i class="fa fa-money"></i>
                             <span class="caption-subject bold uppercase">Subscriptions</span>
                         </div>
-                        <div class="caption font-dark subscription-name">
-                            <span class="caption-subject bold uppercase subscription-name-caption">Subscription Name:    </span>
-                            <input id="name-control" type="text" value="{{ name }}" class="caption-subject" placeholder="Subscription Name">
+                        <div class="caption font-dark">
+                            <div class="form-group">
+                            <label>Subscription Name</label>
+                            <input id="name-control" type="text" value="{{ name }}" class="caption-subject form-control input-medium" placeholder="Subscription Name" />
+                                <hr>
                         </div>
                     </div>
                     <div class="portlet-body">
