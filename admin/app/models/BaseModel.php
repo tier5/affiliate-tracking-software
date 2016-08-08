@@ -42,4 +42,21 @@
             return $errors;
         }
 
+        public function findWhere($params)
+        {
+            $queries = [];
+            $bind = [];
+            foreach ($params as $key => $value) {
+                $queries[] = $key . ' = :' . $key . ':';
+                $bind[$key] = $value;
+            }
+            $query = implode(' AND ', $queries);
+            return $this->find([$query, 'bind' => $bind]);
+        }
+
+        public function findBy($params)
+        {
+            return $this->findWhere($params);
+        }
+
     }

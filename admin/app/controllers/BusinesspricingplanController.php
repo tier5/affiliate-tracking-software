@@ -82,9 +82,7 @@ class BusinessPricingPlanController extends ControllerBase {
         if(!is_numeric($pricingPlanId)) throw new \Exception("Invalid pricing plan id");
 
         $agency = new Agency();
-        $records = $agency->find(['subscription_id = :pricingPlanId: and agency_type_id = 2',
-            'bind'=>['pricingPlanId'=>$pricingPlanId]
-        ]);
+        $records = $agency->findBy(['subscription_id'=>$pricingPlanId, 'agency_type_id'=>2]);
 
 
         if($records){
