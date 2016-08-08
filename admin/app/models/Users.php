@@ -29,6 +29,7 @@
         public $subscription_valid;
         public $phone;
         public $send_confirmation;
+        public $is_employee;
 
         /**
          * @return mixed
@@ -77,6 +78,24 @@
         {
             $this->name = $name;
         }
+
+        /**
+         * @return mixed
+         */
+        public function getIsEmployee()
+        {
+            return $this->is_employee;
+        }
+
+        /**
+         * @param mixed $is_employee
+         */
+        public function setIsEmployee($is_employee)
+        {
+            $this->is_employee = $is_employee;
+        }
+
+
 
         public function getFirstName(){
             $first_name = null;

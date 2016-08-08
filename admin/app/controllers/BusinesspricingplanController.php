@@ -242,6 +242,8 @@ class BusinessPricingPlanController extends ControllerBase {
 
         }  catch(Exception $e) {
 
+            dd($e);
+
             /*
              * Failure :(
              */

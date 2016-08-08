@@ -20,7 +20,7 @@
         public function validation() {
             $this->validate(new Regex([
                 'field'   => 'name',
-                'pattern' => '/^[a-zA-Z.\' ]+$/',
+                'pattern' => '/^[a-zA-Z\.0-9 ]+$/',
                 'message' => 'Name is in the wrong format (letters, period, and apostrophe)'
             ]));
 
