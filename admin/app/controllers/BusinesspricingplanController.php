@@ -79,9 +79,14 @@ class BusinessPricingPlanController extends ControllerBase {
     }
 
     public function editExistingPricingPlanAction($pricingPlanId) {
+        if(!is_numeric($pricingPlanId)) throw new \Exception("Invalid pricing plan id");
 
         $agency = new Agency();
-        $records = $agency->findBySubscriptionId($pricingPlanId);
+        $records = $agency->find(['subscription_id = :pricingPlanId: and agency_type_id = 2',
+            'bind'=>['pricingPlanId'=>$pricingPlanId]
+        ]);
+
+
         if($records){
             $this->view->attached_agencies = $records;
             $this->view->pick('businessPricingPlan/attached');
