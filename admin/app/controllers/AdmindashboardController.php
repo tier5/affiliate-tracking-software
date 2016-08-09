@@ -269,7 +269,7 @@ class AdmindashboardController extends ControllerBusinessBase {
     /**
      * agencies action.
      */
-    public function listAction($agency_type_id) {
+    public function listAction($agency_type_id = 1) {
         $this->tag->setTitle('Review Velocity | See All ' . ($agency_type_id == 1 ? 'Agencies' : 'Businesses'));
 
         $this->findAgencies($agency_type_id);
