@@ -85,11 +85,11 @@ class BusinessPricingPlanController extends ControllerBase {
         $records = $agency->findBy(['subscription_id'=>$pricingPlanId, 'agency_type_id'=>2]);
 
 
-        if($records){
+        /*if($records){
             $this->view->attached_agencies = $records;
             $this->view->pick('businessPricingPlan/attached');
             return;
-        }
+        } */
 
 
         /* Get services */
