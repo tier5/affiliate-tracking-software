@@ -438,7 +438,6 @@ class SubscriptionManager extends BaseService {
     }
 
     private function createPricingParameterList($id, $parameters) {
-
         $subscriptionPricingPlanParameterList = new SubscriptionPricingPlanParameterList();
         $subscriptionPricingPlanParameterList->subscription_pricing_plan_id = intval($id);
         $subscriptionPricingPlanParameterList->min_locations = intval($parameters['minLocations']);

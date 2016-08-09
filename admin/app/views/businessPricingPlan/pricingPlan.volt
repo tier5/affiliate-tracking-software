@@ -246,7 +246,7 @@
                                                                 </form>
                                                             </td>
                                                             <td>
-                                                                <select class="form-control input-small location-discount-control"></select>
+                                                                <select value="{{progression['location_discount_percentage'] }}" class="form-control input-small location-discount-control"></select>
                                                             </td>
                                                             <td class="base-price-column">${{ progression['base_price'] }}</td>
                                                             <td class="sms-charge-column">${{ progression['sms_charge'] }}</td>
@@ -622,7 +622,15 @@
             });
             if(upgradeDiscount && upgradeDiscount !== '') $('#upgrade-discount-control').val(parseInt(upgradeDiscount,10));
             if(annualDiscount && annualDiscount !== '') $('#annual-discount-control').val(parseInt(annualDiscount,10));
-
+            setTimeout(function() {
+                $('.location-discount-control').each(function () {
+                    var value = null;
+                    var value = $(this).attr('value');
+                    $(this).find('option').each(function () {
+                        if (parseInt($(this).val()) === parseInt(value)) $(this).attr('selected', 'selected');
+                    });
+                });
+            },1);
         }
 
         function addSegment(min, max, options) {
@@ -719,7 +727,6 @@
         }
 
         function initProgressionControls(options) {
-
             appendDiscountPercentage(options);
 
             /* Init progression button controls */

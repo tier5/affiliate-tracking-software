@@ -119,8 +119,17 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->gridEditStatus = "";
         $this->view->isCreateMode = false;
 
-        $this->view->progressions =
-            $subscriptionManager->getPricingParameterListsByPricingPlanId($pricingPlanId);
+        //$this->view->progressions = $subscriptionManager->getPricingParameterListsByPricingPlanId($pricingPlanId);
+
+        $progressions = $subscriptionManager->getPricingParameterListsByPricingPlanId($pricingPlanId);
+
+        foreach($progressions as $key => $list){
+            $progressions[$key]['location_discount_percentage'] = (int)$list['location_discount_percentage'];
+
+        }
+
+        $this->view->progressions = $progressions;
+
 
         $pricingPlanLocked = $subscriptionManager->isPricingPlanLocked($pricingPlanId);
         if($pricingPlanLocked) {
@@ -220,7 +229,7 @@ class BusinessPricingPlanController extends ControllerBase {
 
             /* If we are creating a new plan, ensure the name of the pricing profile is unique for this user */
             $pricingPlan = $subscriptionManager->getPricingPlanByName($validatedParams['userId'], $validatedParams['name']);
-            if($pricingPlan && !$isUpdate) {
+            if($pricingPlan && !$isUpdate && $pricingPlan->id !== 55) {
                 throw new \Exception('Another pricing profile with that name already exists! Please choose a unique name and try again.');
             }
 
@@ -242,7 +251,6 @@ class BusinessPricingPlanController extends ControllerBase {
 
         }  catch(Exception $e) {
 
-            dd($e);
 
             /*
              * Failure :(
