@@ -16,7 +16,6 @@ class ControllerBusinessBase extends ControllerBase {
      * Creates business / agencies
      */
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
-
         $this->view->agency_type_id = $agency_type_id;
         $this->view->agency_id = $agency_id;
 
@@ -31,10 +30,10 @@ class ControllerBusinessBase extends ControllerBase {
             $age = new Agency();
         }
 
+
         if ($this->request->isPost()) {
-
-            try {
-
+            $errors = [];
+            $messages = [];
                 $IsEmailUnique = true;
                 $IsEmailValid = true;
                 $IsNameValid = true;
@@ -46,10 +45,10 @@ class ControllerBusinessBase extends ControllerBase {
                     'profilesId' => 1, //All new users will be "Agency Admin"
                     ));
                     $IsEmailUnique = $user->validation();
+
                     $IsEmailValid = ($this->request->getPost('admin_email') != '');
                     $IsNameValid = ($this->request->getPost('admin_name') != '');
                 }
-
                 /* Form valid? (Refactored from a maze of "nested ifs".  This is the best I could do on short notice) */
                 $messages = [];
                 if (!$form->isValid($this->request->getPost())) {
@@ -65,8 +64,10 @@ class ControllerBusinessBase extends ControllerBase {
                     $messages[] = 'Please enter an Admin Full Name.';
                 }
                 if (count($messages) > 0) {
-                    throw new ArrayException("", 0, null, $messages);
+                   $error = true;
                 }
+
+
 
 
                 $db = $this->di->get('db');
@@ -81,7 +82,7 @@ class ControllerBusinessBase extends ControllerBase {
                     'locality'           => $this->request->getPost('locality', 'striptags'),
                     'state_province'     => $this->request->getPost('state_province', 'striptags'),
                     'postal_code'        => $this->request->getPost('postal_code', 'striptags'),
-                    'country'            => $this->request->getPost('country', 'striptags'),
+                    'country'            => ($this->request->getPost('country', 'striptags')) ? $this->request->getPost('country', 'striptags'): 'n/a',
                     'phone'              => $this->request->getPost('phone', 'striptags'),
                     'date_created'       => (isset($age->date_created) ? $age->date_created : date('Y-m-d H:i:s')),
                     'subscription_id'    => $this->request->getPost('subscription_pricing_plan_id', 'striptags'),
@@ -92,8 +93,10 @@ class ControllerBusinessBase extends ControllerBase {
                 ];
 
                 if (!$age->createOrUpdateBusiness($params)) {
-                    throw new ArrayException("", 0, null, $age->getMessages());
+                   $error = true;
+                    foreach($age->getMessages() as $error_message) $errors[] = $error_message;
                 }
+
 
                 /* Create an admin for this new agency */
                 $user = new Users();
@@ -105,27 +108,20 @@ class ControllerBusinessBase extends ControllerBase {
                     'profilesId' => $agency_type_id, // 1 = Agency User, 2 = Business User
                 ));
                 if (!$user->save()) {
-                    throw new ArrayException("", 0, null, $user->getMessages());
+                    $error = true;
+                    foreach ($user->getMessages() as $error_message) $errors[] = $error_message;
                 }
 
                 $result = $this->createSubscriptionPlan($user, $this->request);
                 if($result !== true) {
                     $this->flash->error($messages);
                 }
-
                 $this->flash->success("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was " . ($agency_id > 0 ? 'edited' : 'created') . " successfully");
                 $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
-
-                $db->commit();
-
-            } catch(ArrayException $e) {
-
-                if(isset($db)) { $db->rollback(); }
-                $this->flash->error($e->getOptions());
-
-            }
+                if(!$errors) $db->commit();
+                if($errors) $db->rollback();
         }
-        $sub_selected = $age->subscription_id;
+        $sub_selected = ($age && isset($age->subscription_id)) ? $age->subscription_id : null;
         if(!$sub_selected) $sub_selected = 0;
             $markup = $this->buildSubsriptionPricingPlanMarkUp($sub_selected);
         $this->view->setVar("subscriptionPricingPlans", $markup);
@@ -139,6 +135,14 @@ class ControllerBusinessBase extends ControllerBase {
             $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
             $this->view->agency = $age2;
         }
+        if($errors){
+            dd($errors);
+        }
+
+        if($this->request->isPost() && $this->view->agency){
+        $this->flash->success('User Saved');
+        return $this->response->redirect('/?saved=1');
+    }
     }
 
     /**

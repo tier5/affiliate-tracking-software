@@ -246,9 +246,6 @@
       });
     });
 
-
-
-
     $('#urllink, #urllinkyelp').on('click', function(e) {
       e.preventDefault();
       $('#page-wrapper').show();
@@ -259,5 +256,8 @@
       $('#page-wrapper').hide();
       $('.overlay').hide();
     });
+
   });
+
+
 </script>

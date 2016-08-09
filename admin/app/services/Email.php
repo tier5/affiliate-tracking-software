@@ -1,4 +1,5 @@
 <?php namespace Vokuro\Services;
+use Vokuro\Models\Agency;
 use Vokuro\Models\EmailConfirmations;
 use Vokuro\Models\Users;
 
@@ -72,6 +73,50 @@ class Email{
             ->send($user->email, "Reset your password", 'reset', array(
                 'resetUrl' => '/reset-password/' . $this->code . '/' . $user->email
             ));
+    }
+
+    public function sendActivationEmailToEmployee(Users $u,$from = null){
+        $confirmationModel = new EmailConfirmations();
+        $record = $confirmationModel->getByUserId($u->getId());
+
+        if (!$record){
+            //we don't have a confirmation
+            $confirmationModel->send_email = false;
+            $confirmationModel->usersId = $u->getId();
+            $confirmationModel->save();
+            $record = $confirmationModel;
+        }
+        //get the email from address
+        $code = $record->code;
+        $agency = new Agency();
+        $record = $agency->findFirst('agency_id = '.$u->agency_id);
+        if($record) {
+            $email = $record->email;
+            $domain = $record->custom_domain;
+            if(!$email && $domain){
+                //we set the domain to no-reply
+                $this->from = 'no-reply@'.$domain;
+            }
+            $this->from = $email;
+        }
+
+
+        if(!$this->from) $from = 'no-reply@reputationloop.com';
+        if(!$u->is_employee){
+            throw new \Exception('Cannot send an employee activation email to someone that is not an employee');
+        }
+        $mail = $this->getDI()->getMail();
+        $mail->setFrom($from);
+        $params = [];
+        $params['confirmUrl'] = '/confirm/' . $code . '/' . $u->email;
+        $mail->send($u->email, "Employee subject", 'employee', $params);
+
+    }
+
+    public function sendActivationEmailToEmployeeById($user_id){
+        $users = new Users();
+        $record = $users->getById($user_id);
+        if ($record) return $this->sendActivationEmailToEmployee($record);
     }
 
     /**

@@ -10,6 +10,7 @@
     use Vokuro\Models\Users;
     use Vokuro\Models\UsersLocation;
     use Vokuro\Models\PasswordChanges;
+    use Vokuro\Services\Email;
 
     /**
      * Vokuro\Controllers\UsersController
@@ -167,14 +168,14 @@
         /**
          * Creates a User
          */
-        public function createFunction($profilesId, $location_id = 0)
+        public function createFunction($profilesId, $location_id = 0,$data = [])
         {
             $this->view->profilesId = $profilesId;
 
             //get the user id
-            $identity = $this->auth->getIdentity();
+            if(!defined('RV_TESTING')) $identity = $this->auth->getIdentity();
             // If there is no identity available the user is redirected to index/index
-            if (!is_array($identity)) {
+            if (!is_array($identity) && !defined('RV_TESTING')) {
                 $this->response->redirect('/session/login?return=/users/'.($profilesId==3?'':'admin'));
                 $this->view->disable();
                 return;
@@ -185,20 +186,24 @@
             $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
             //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
 
-            if ($this->request->isPost()) {
+            if (defined('RV_TESTING') || $this->request->isPost()) {
+                if(defined('RV_TESTING')) $_POST = $data;
 
                 $user = new Users();
+
+                $agency_id = defined('RV_TESTING') ? $data['agency_id'] : $userObj->agency_id;
+
+
 
                 $user->assign(array(
                     'name' => $this->request->getPost('name', 'striptags'),
                     'profilesId' => $profilesId,
                     'email' => $this->request->getPost('email', 'email'),
                     'phone' => $this->request->getPost('phone'),
-                    'agency_id' => $userObj->agency_id,
+                    'agency_id' => $agency_id,
                     'create_time' => date('Y-m-d H:i:s'),
                 ));
-                //echo '<pre>$user:'.print_r($user,true).'</pre>';
-
+                //echo '<pre>$user:'.print_r($user,true).'</pre>';;
                 if (isset($_POST['type']) && $_POST['type']=='1') {
                     $user->is_employee=1;
                 } else {
@@ -213,7 +218,7 @@
                         }
                     }
                 }
-                $user->is_all_locations=($isall?1:0);
+                $user->is_all_locations=($isall) ? 1 : 0;
 
                 if (!$user->save()) {
                     $messages = array();
@@ -247,6 +252,11 @@
                         $locInsert->location_id = $this->session->get('auth-identity')['location_id'];
                         $locInsert->user_id = $user->id;
                         $locInsert->save();
+                    }
+
+                    if($user->is_employee){
+                        $mail = new Email();
+                        $mail->sendActivationEmailToEmployee($user);
                     }
 
                     $this->flash->success("The ".($profilesId==3?'employee':'admin user')." was created successfully");
@@ -335,9 +345,18 @@
             //end making sure the user should be here
 
             if ($this->request->isPost()) {
+                $name = $this->request->getPost('name','striptags');
+                if(strpos($name,' ') > -1){
+                    //explode on space
+                    $exploded = explode(' ',$name);
+                    $first_name = $exploded[0];
+                    $last_name = $exploded[1];
+                }
+                if(!$last_name) $last_name = "";
                 $user->assign(array(
-                    'name' => $this->request->getPost('name', 'striptags'),
+                    'name' => $name,
                     //'profilesId' => $profilesId,
+                    'last_name'=>$last_name,
                     'email' => $this->request->getPost('email', 'email'),
                     'phone' => $this->request->getPost('phone'),
                     //'banned' => $this->request->getPost('banned'),
@@ -506,7 +525,7 @@
                     } else {
 
                         $this->flash->success('Your password was successfully changed');
-                        
+
                         //if ($this->session->has('auth-identity')) {
                         //  Tag::resetInput();
                         //} else {
@@ -521,5 +540,5 @@
             $this->view->form = $form;
         }
     }
-    
-    
+
+

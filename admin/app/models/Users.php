@@ -29,6 +29,7 @@
         public $subscription_valid;
         public $phone;
         public $send_confirmation;
+        public $is_employee;
 
         /**
          * @return mixed
@@ -77,6 +78,24 @@
         {
             $this->name = $name;
         }
+
+        /**
+         * @return mixed
+         */
+        public function getIsEmployee()
+        {
+            return $this->is_employee;
+        }
+
+        /**
+         * @param mixed $is_employee
+         */
+        public function setIsEmployee($is_employee)
+        {
+            $this->is_employee = $is_employee;
+        }
+
+
 
         public function getFirstName(){
             $first_name = null;
@@ -133,7 +152,19 @@
          */
         public function afterSave()
         {
-            if ($this->active == 'N' || $this->send_confirmation) {
+            if($this->is_employee && $this->send_confirmation){
+                $emailConfirmation = new EmailConfirmations();
+                $emailConfirmation->usersId = $this->id;
+                $emailConfirmation->template = 'employee';
+                if ($emailConfirmation->save()) {
+                    $this->getDI()
+                        ->getFlash()
+                        ->notice('A confirmation email has been sent to ' . $this->email);
+                }
+
+            }
+
+            if ($this->active == 'N' && $this->send_confirmation) {
             //dd('we should send an email');
 
                 $emailConfirmation = new EmailConfirmations();

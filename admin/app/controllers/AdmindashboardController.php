@@ -14,6 +14,7 @@ use Vokuro\Models\ReviewsMonthly;
 use Vokuro\Models\SharingCode;
 use Vokuro\Models\Subscription;
 use Vokuro\Models\Users;
+use Vokuro\Services\UserManager;
 
 /**
  * Display the default index page.
@@ -25,7 +26,7 @@ class AdmindashboardController extends ControllerBusinessBase {
         $this->assets->addCss('/css/subscription.css');
 
         $logged_in = is_array($this->auth->getIdentity());
-        if ($logged_in && isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0) {
+        if ($logged_in || (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0)) {
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
         } else {
@@ -268,7 +269,7 @@ class AdmindashboardController extends ControllerBusinessBase {
     /**
      * agencies action.
      */
-    public function listAction($agency_type_id) {
+    public function listAction($agency_type_id = 1) {
         $this->tag->setTitle('Review Velocity | See All ' . ($agency_type_id == 1 ? 'Agencies' : 'Businesses'));
 
         $this->findAgencies($agency_type_id);
@@ -319,11 +320,17 @@ class AdmindashboardController extends ControllerBusinessBase {
     /**
      * Logs in as the user
      */
-    public function loginAction($agency_type_id, $agency_id, $user_id) {
-        $conditions = "id = :id:";
-        $parameters = array("id" => $user_id);
-        $user = Users::findFirst(array($conditions, "bind" => $parameters));
-        $this->auth->login($user);
+    public function loginAction($agency_type_id, $agency_id = null, $user_id = null) {
+        $usermanager = new UserManager();
+        try{
+            $usermanager->sudoAsUserId($user_id);
+            $this->response->redirect('/');
+        }catch(\Exception $e){
+            $this->flash->error('You cannot login as an inactivated user');
+            exit('exiting: line '.__LINE__.' of file:'.__FILE__);
+            $this->response->redirect('/admindashboard');
+            return;
+        }
 
         $this->response->redirect('/');
         $this->view->disable();

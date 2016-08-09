@@ -18,5 +18,4 @@ $router->add('/dashboard/css', array(
     'controller' => 'admindashboard',
     'action' => 'css'
 ));
-
 return $router;

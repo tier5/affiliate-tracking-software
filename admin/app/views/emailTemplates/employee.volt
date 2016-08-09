@@ -1,0 +1,2 @@
+Employee email
+{{ publicUrl }}{{ confirmUrl }}

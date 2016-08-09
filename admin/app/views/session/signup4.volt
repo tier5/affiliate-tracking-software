@@ -95,6 +95,7 @@
     </div>
     <input type="hidden" name="reviewgoal" id="reviewgoal" value="" />
     <input type="hidden" name="lifetimevalue" id="lifetimevalue" value="" />
+    <input type="hidden" name="type" value="1" />
   </form>
 </div>
 <div id="page-wrapper2" class="create" style="display: none;">

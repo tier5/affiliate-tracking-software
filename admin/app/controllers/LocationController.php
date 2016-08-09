@@ -793,7 +793,7 @@
             $lrs->delete();
 
             if (!$loc->delete()) {
-                $this->flash->error($user->getMessages());
+                $this->flash->error($loc->getMessages());
             } else {
                 $this->auth->setLocationList();
                 $this->flash->success("The location was deleted");

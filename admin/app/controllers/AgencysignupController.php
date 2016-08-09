@@ -452,7 +452,7 @@
 
                 $objAgency->agency_type_id = 1; // REFACTOR:  Drop this column
                 $objAgency->subscription_id = '';
-                $objAgency->parent_id = -1;
+                $objAgency->parent_id = \Vokuro\Models\Agency::AGENCY;
 
 
                 if (!$objAgency->create()) {

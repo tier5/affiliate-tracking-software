@@ -77,7 +77,7 @@
             }
             .page-content-wrapper{
                 margin-top:-95px;
-                padding-top:75px;
+                padding-top:75px;n
             }
         </style>
     {% endif %}

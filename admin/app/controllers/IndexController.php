@@ -58,9 +58,8 @@ class IndexController extends ControllerBase {
 
             $identity = $this->session->get('auth-identity');
 
-            if ($identity['is_admin'] > 0) {
-                $this->response->redirect('/admindashboard/');
-            } else if ($identity['agencytype'] == 'agency') {
+            if ($identity['is_admin'] > 0 && !$identity['agencytype'] == 'agency') {
+            } else if ($identity['agencytype'] == 'agency' && 1 == 2) {
                 $this->response->redirect('/agency/');
             }
 
