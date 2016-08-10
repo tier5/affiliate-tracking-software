@@ -256,7 +256,7 @@
                                                             <td class="discount-price-column">${{ progression['discount_price'] }}</td>
                                                             <td class="sms-messages-column"><span class="value">{{ progression['sms_messages'] }}</span></td>
                                                             <td class="sms-cost-column">${{ progression['sms_cost'] }}</td>
-                                                            <td class="profit-per-location-column">${{ progression['profit_per_location'] }}</td>
+                                                            <td class="profit-per-location-column">{{ progression['profit_per_location'] }}</td>
                                                         </tr>
                                                         {% endfor %}
                                                     </tbody>
@@ -356,7 +356,7 @@
                     upgradeDiscount: $(this).find('td.upgrade-discount-control').first().text(),
                     smsMessages: $(this).find('td.sms-messages-column span.value').text(),
                     smsCost: $(this).find('td.sms-cost-column').first().text(),
-                    profitPerLocation: $(this).find('td.profit-per-location-column').first().text()
+                    profitPerLocation: $(this).find('td.profit-per-location-column').first().text().replace('$','')
                 };
             });
 
@@ -484,23 +484,75 @@
                 $(this).text(total.toFixed(2));
                 var profitElement = $(this).siblings(".profit-per-location-column");
                 recalculateProfits(profitElement);
+                setTimeout(function(){
+                    recalculateProfits(profitElement);
+                },2);
             });
         }
 
         function recalculateProfits(profitElement) {
-            var locationDiscount = parseFloat($(profitElement).siblings(".discount-price-column").text());
-            var smsCost = parseFloat($(profitElement).siblings(".sms-cost-column").text());
-            var profit = locationDiscount - smsCost;
-            $(profitElement).text(profit.toFixed(2));
+            var smsCharge = parseFloat($(profitElement).parent().find('.sms-charge-column').text().replace('$',''));
+
+            var sliderSMSAmount = $('#sms-messages-slider').val();
+
+            console.log('sliderSMSAmount',sliderSMSAmount);
+
+            var smsTotalCharge = sliderSMSAmount * parseFloat($('#charge-per-sms-control').val());
+
+            var smsTotalChargeActualCost = sliderSMSAmount * parseFloat($('#cost-per-sms-control').val());
+
+            console.log('smsTotalCharge',smsTotalCharge,'smsTotalChargeActualCost',smsTotalChargeActualCost);
+
+
+
+
+            var locationDiscountPercentage = parseInt($(profitElement).parent().find('.location-discount-control').val());
+            var basePrice = parseFloat($(profitElement).parent().find('.base-price-column').text().replace('$',''));
+            var locationDiscount = parseFloat(basePrice * (locationDiscountPercentage / 100));
+            console.log('the locaiton discount is',locationDiscount);
+            $(profitElement).parent().find('.location-discount-column').text('$' + locationDiscount.toFixed(2).toString());
+            //upgrade discount
+            var upgradeDiscountPercentage = parseInt($('#upgrade-discount-control').val(),10);
+            console.log('upgradeDiscountPercentage',upgradeDiscountPercentage);
+            //set the display discount
+            var upgradeDiscount = basePrice * (upgradeDiscountPercentage / 100);
+
+            var discountPrice = basePrice - locationDiscount + smsCharge - upgradeDiscount;
+
+            $(profitElement).parent().find('.discount-price-column').text('$' + discountPrice.toFixed(2).toString());
+
+            console.log('the upgrade discount is:',upgradeDiscount);
+            $(profitElement).parent().find('.upgrade-discount-column').text('$' + upgradeDiscount.toFixed(2).toString());
+
+            console.log('the upgrade discount is:',upgradeDiscount);
+            var priceUpgradeDiscount = parseFloat(basePrice - (basePrice * (upgradeDiscountPercentage / 100))).toFixed(2);
+            $(profitElement).parent().find('.discount-price-column').text('$' + discountPrice.toFixed(2).toString());
+
+            var totalPrice = smsCharge + basePrice;
+            console.log('totalPrice',totalPrice);
+            console.log('the total price is',totalPrice);
+
+            console.log('discountPrice',discountPrice);
+
+            var smsCost = smsTotalChargeActualCost.toFixed(2);
+
+            $(profitElement).parent().find('.sms-cost-column').text('$' + smsCost);
+
+            var smsCost = parseFloat(smsCost);
+            console.log()
+            console.log('the sms cost is',smsCost);
+
+            var totalProfit = discountPrice - smsCost;
+
+            $(profitElement).parent().find('.profit-per-location-column').text('$' + parseInt(totalProfit,10).toString());
         }
 
         function getPlanCostPerSMSMessage(){
-            return parseFloat(document.getElementById('charge-per-sms-control').value);
-
+            return parseFloat(document.getElementById('charge-per-sms-control').value,10);
         }
 
         function getActualCostPerSMSMessage(){
-            return parseFloat(document.getElementById('cost-per-sms-control').value);
+            return parseFloat(document.getElementById('cost-per-sms-control').value,10);
         }
 
         function refreshDisplayPrices(){
@@ -513,10 +565,11 @@
             var profit = totalPlanCost - actualPlanCost;
 
             $('#progression-table-rows tr').each(function(){
-                var row = $(this);
-                $(this).find('.discount-price-column').text('$' + actualPlanCost.toFixed(2));
-                $(this).find('.profit-per-location-column:first').text('$' + profit.toFixed(2));
+                //var row = $(this);
+                //$(this).find('.discount-price-column').text('$' + actualPlanCost.toFixed(2));
+                //$(this).find('.profit-per-location-column:first').text('$' + profit.toFixed(2));
             });
+            recalculateAllDiscountedPrices();
         }
 
         var smsMessagesSlider = null;
@@ -527,6 +580,8 @@
                 smsMessagesSlider.setValue(parseInt(val), true, true);
                 smsMessagesSlider.on('change', function () {
                     var sliderValue = smsMessagesSlider.getValue();
+                    recalculateAllDiscountedPrices();
+                    console.log('we got a change in the value of the slider');
                     $('#slider-messages').text(smsMessagesSlider.getValue());
                 });
 
@@ -618,6 +673,7 @@
                 rebuildSmsSlider(messages, 50);
                 refreshSmsSliderControls(messages);
                 refreshDisplayPrices();
+                recalculateAllDiscountedPrices();
 
             });
             if(upgradeDiscount && upgradeDiscount !== '') $('#upgrade-discount-control').val(parseInt(upgradeDiscount,10));
