@@ -107,13 +107,16 @@
     </header>
 {% endif %}
 
+<?php
+?>
+
 <div class="container">
     {{ flashSession.output() }}
     {{ content() }}
     </div>
 <div style="clear: both;"></div>
 <footer>
-    <div class="copyright PrimaryColor"> &copy; Copyright Review Velocity.  All Rights Reserved.  <a data-toggle="modal" data-target="#Terms">Terms of Service</a> | <a data-toggle="modal" data-target="#Privacy">Privacy Policy</a></div>
+    <div class="copyright PrimaryColor"> &copy; Copyright {{agency_name}}.  All Rights Reserved.  <a data-toggle="modal" data-target="#Terms">Terms of Service</a> | <a data-toggle="modal" data-target="#Privacy">Privacy Policy</a></div>
 </footer>
 
     <div id="Terms" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="TermsTitle">

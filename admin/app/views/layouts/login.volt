@@ -38,7 +38,7 @@
 
         <link href="/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
         <?php
-        if (isset($main_color_setting) && false) {
+        if (isset($main_color_setting) && 1 == 1 && $agency_white_label) {
         list($r, $g, $b) = sscanf($main_color_setting, "#%02x%02x%02x");
         //echo "$main_color_setting -> $r $g $b";
         ?>
@@ -63,9 +63,14 @@
             .login {
                 background-color: <?=$main_color_setting?> !important;
             }
+
+            .btnsignup{
+                background-color: <?=$main_color_setting ?>;
+            }
         </style>
         <?php
         }
+
         ?>
         <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
         <script type="text/javascript" src="/js/jquery.validate.js"></script>
@@ -95,7 +100,7 @@
         </div>
         <!-- END LOGO -->
         <?php } ?>
-        <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. Review Velocity. <a href="/session/privacy">Privacy</a> | <a href="/session/terms">Terms</a></div>
+        <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. {{ (agency_name) ? agency_name : 'Review Velocity' }} <a href="/session/privacy">Privacy</a> | <a href="/session/terms">Terms</a></div>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>

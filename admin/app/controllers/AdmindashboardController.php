@@ -44,6 +44,7 @@ class AdmindashboardController extends ControllerBusinessBase {
     public function indexAction() {
         $this->tag->setTitle('Review Velocity | Dashboard');
 
+
         //start of the month date
         $now = new \DateTime('now');
         $start_time = $now->format('Y') . '-' . $now->format('m') . '-01 00:00:00';

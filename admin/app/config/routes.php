@@ -1,6 +1,6 @@
 <?php
 /*
- * Define custom routes. File gets included in the router service definition.
+ * Define custom routes. File gets included in the router service definition.65
  */
 $router = new Phalcon\Mvc\Router();
 
@@ -18,4 +18,6 @@ $router->add('/dashboard/css', array(
     'controller' => 'admindashboard',
     'action' => 'css'
 ));
+
+$router->add('/signup',['controller'=>'session','action'=>'signup']);
 return $router;

@@ -11,6 +11,24 @@
 
     class Agency extends BaseModel {
 
+        public $id;
+
+        /**
+         * @return mixed
+         */
+        public function getId()
+        {
+            return $this->agency_id;
+        }
+
+        /**
+         * @param mixed $id
+         */
+        public function setId($id)
+        {
+            $this->agency_id = $id;
+        }
+
         const AGENCY = 0;
         const BUSINESS_UNDER_RV = -1;
 

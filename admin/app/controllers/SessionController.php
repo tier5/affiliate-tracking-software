@@ -132,6 +132,25 @@ class SessionController extends ControllerBase {
     }
 
     public function signupAction($subscriptionToken = '0') {
+        $host = $_SERVER['HTTP_HOST'];
+        $ex = explode(".", $host);
+        $pi = array_shift($ex);
+
+        $agency = new Agency();
+        $record = $agency->findOneBy(['custom_domain'=>$pi]);
+
+        if($record){
+            $this->view->agencyId = $record->agency_id;
+
+            if($record->logo_path) $this->view->logo_path = $record->logo_path;
+            if($record->name){
+                $this->view->agency_name = $record->name;
+                $this->view->agency_name = $record->name;
+            }
+            $this->view->agency_white_label = true;
+            if($record->main_color) $this->view->main_color_setting = $record->main_color;
+        }
+
         $this->tag->setTitle('Review Velocity | Sign Up');
         $this->view->setTemplateBefore('login');
 

@@ -59,4 +59,10 @@
             return $this->findWhere($params);
         }
 
+        public function findOneBy($params){
+            $records = $this->findwhere($params);
+            if($records) $first = $records[0];
+            return $first;
+        }
+
     }

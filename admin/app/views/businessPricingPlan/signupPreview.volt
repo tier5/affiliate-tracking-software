@@ -9,7 +9,7 @@
     <div class="content">
         <!-- BEGIN REGISTRATION FORM -->
         <form class="register-form" action="" method="post" style="display: block;">
-            <h3>Account Details</h3>  
+            <h3>Account Details</h3>
             <p class="hint"> Enter your account details below: </p>
             <div class="form-group">
                 <label class="control-label">Full Name:</label>

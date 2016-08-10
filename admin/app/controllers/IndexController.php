@@ -57,20 +57,15 @@ class IndexController extends ControllerBase {
             }
 
             $identity = $this->session->get('auth-identity');
-
-            if ($identity['is_admin'] > 0 && !$identity['agencytype'] == 'agency') {
-            } else if ($identity['agencytype'] == 'agency' && 1 == 2) {
-                $this->response->redirect('/agency/');
-            }
-
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
+            $this->view->pick('admindashboard/index');
+
         } else {
             $this->response->redirect('/session/login');
             $this->view->disable();
             return;
         }
-
         //get the location and calculate the review total and avg.
         if ($identity['location_id'] > 0) {
             $conditions = "location_id = :location_id:";
