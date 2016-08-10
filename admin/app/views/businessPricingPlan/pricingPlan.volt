@@ -509,41 +509,25 @@
             var locationDiscountPercentage = parseInt($(profitElement).parent().find('.location-discount-control').val());
             var basePrice = parseFloat($(profitElement).parent().find('.base-price-column').text().replace('$',''));
             var locationDiscount = parseFloat(basePrice * (locationDiscountPercentage / 100));
-            console.log('the locaiton discount is',locationDiscount);
             $(profitElement).parent().find('.location-discount-column').text('$' + locationDiscount.toFixed(2).toString());
             //upgrade discount
             var upgradeDiscountPercentage = parseInt($('#upgrade-discount-control').val(),10);
-            console.log('upgradeDiscountPercentage',upgradeDiscountPercentage);
             //set the display discount
             var upgradeDiscount = basePrice * (upgradeDiscountPercentage / 100);
-
+            //this is the actual discount price
             var discountPrice = basePrice - locationDiscount + smsCharge - upgradeDiscount;
 
             $(profitElement).parent().find('.discount-price-column').text('$' + discountPrice.toFixed(2).toString());
 
-            console.log('the upgrade discount is:',upgradeDiscount);
+            //set the upgrade discount
             $(profitElement).parent().find('.upgrade-discount-column').text('$' + upgradeDiscount.toFixed(2).toString());
 
-            console.log('the upgrade discount is:',upgradeDiscount);
             var priceUpgradeDiscount = parseFloat(basePrice - (basePrice * (upgradeDiscountPercentage / 100))).toFixed(2);
             $(profitElement).parent().find('.discount-price-column').text('$' + discountPrice.toFixed(2).toString());
-
-            var totalPrice = smsCharge + basePrice;
-            console.log('totalPrice',totalPrice);
-            console.log('the total price is',totalPrice);
-
-            console.log('discountPrice',discountPrice);
-
             var smsCost = smsTotalChargeActualCost.toFixed(2);
-
             $(profitElement).parent().find('.sms-cost-column').text('$' + smsCost);
-
             var smsCost = parseFloat(smsCost);
-            console.log()
-            console.log('the sms cost is',smsCost);
-
             var totalProfit = discountPrice - smsCost;
-
             $(profitElement).parent().find('.profit-per-location-column').text('$' + parseInt(totalProfit,10).toString());
         }
 
