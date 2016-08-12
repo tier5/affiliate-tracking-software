@@ -16,3 +16,8 @@ print $decrypted.PHP_EOL;
 
 
 if($yesh !== $decrypted) throw new \Exception("Encryption Failed");
+
+
+print "encrypthing 3".PHP_EOL;
+
+print $crypt->encrypt(3);

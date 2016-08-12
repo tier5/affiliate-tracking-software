@@ -12,7 +12,7 @@ use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 
 class SubscriptionManager extends BaseService {
 
-    function __construct($config, $di) {
+    function __construct($config = null, $di = null) {
         parent::__construct($config, $di);
     }
 
@@ -44,6 +44,21 @@ class SubscriptionManager extends BaseService {
             ->where("enabled = true")
             ->andWhere("deleted_at = '0000-00-00 00:00:00'")
             ->execute();
+    }
+
+    public function getActiveSubscriptionPlans($user_id = null){
+        $plans = SubscriptionPricingPlan::query()
+            ->where('enabled = true');
+        if($user_id) $plans->andWhere('user_id = :user_id',['user_id'=>$user_id]);
+            $plans->order('id');
+            return $plans->execute();
+    }
+
+    public function getActiveSubscriptionPlan(){
+        $results = $this->getActiveSubscriptionPlans();
+        //if we only have one active.. or the one with the latest id.. then we return that one
+        if($results && $results[0]) return $results[0];
+        throw new \Exception('No active subscription plans found');
     }
 
     public function createSubscriptionPlan($newSubscriptionParameters) {

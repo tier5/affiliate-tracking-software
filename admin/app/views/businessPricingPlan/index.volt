@@ -50,12 +50,12 @@
                                                 <td>Paid</td>
                                             {% endif %}
                                             {% if pricingProfile.enabled == true %}
-                                                <td><input id="update-enable-pricing-plan-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info"></td>
+                                                <td><input id="subscription{{ pricingProfile.id }}" class="update-enable-pricing-plan-control make-switch" type="checkbox" checked data-on-color="primary" data-off-color="info"></td>
                                             {% else %}
-                                                <td><input id="update-enable-pricing-plan-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info"></td>
+                                                <td><input id="subscription{{ pricingProfile.id }}" class="update-enable-pricing-plan-control make-switch" type="checkbox" data-on-color="primary" data-off-color="info"></td>
                                             {% endif %}
                                             <td><button class="btn default btn-lg apple-backgound subscription-btn" disabled>View Page</button></td>
-                                            <td class="hide-small"><a href="/businessPricingPlan/previewSignUpPage" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
+                                            <td class="hide-small"><a href="/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
                                             <td><a href="/businessPricingPlan/editExistingPricingPlan/{{ pricingProfile.id }}" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
                                             <td><button id="delete-pricing-plan-control" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></button></td>
                                         </tr>
@@ -133,10 +133,9 @@
 
         function refreshSwitchHandlers() {
 
-            $('input[id="update-enable-pricing-plan-control"]').on('switchChange.bootstrapSwitch', function (event, state) {
-
+            $('input.update-enable-pricing-plan-control').on('switchChange.bootstrapSwitch', function (event, state) {
+                console.log('the state is',state);
                 var id = $(event.currentTarget).closest('tr').attr('id');
-
                 $.ajax({
                     url: "/businessPricingPlan/updateEnablePricingPlan/" + id + "/" + state,
                     type: 'PUT',
@@ -152,9 +151,7 @@
                 });
 
             });
-
         }
-
         refreshDeleteHandlers();
         refreshSwitchHandlers();
 

@@ -12,12 +12,15 @@ class Encryption extends BaseService{
 
 
     public function encrypt($value){
-        return $this->crypt->encryptBase64($value,$this->key);
-
+        $value = (string)$value;
+        $str = $this->crypt->encryptBase64($value,$this->key);
+        $str = str_replace('/','*',$str);
+        return $str;
     }
 
     public function decrypt($value){
-        return trim($this->crypt->decryptBase64($value,$this->key));
+        $value = str_replace('*','/',$value);
+        return (string)trim($this->crypt->decryptBase64($value,$this->key));
     }
 
 }
