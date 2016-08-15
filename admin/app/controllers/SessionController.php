@@ -61,10 +61,23 @@ class SessionController extends ControllerBase {
 
             }
 
-
-
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
+
+            if(!$subscription_id){
+                //here we are going to get the default subscription id
+                /**
+                 * @var $subscriptionManager \Vokuro\Services\SubscriptionManager
+                 */
+                $default = $subscriptionManager->getActiveSubscriptionPlan();
+                if($default){
+                   /**
+                    * @var $default \Vokuro\Models\SubscriptionPricingPlan
+                    */
+                    $short_code = $default->getShortCode();
+                    $subscription_id = $default->id;
+                }
+            }
 
 
             // Start transaction
