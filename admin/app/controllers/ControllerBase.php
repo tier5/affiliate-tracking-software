@@ -26,6 +26,18 @@ use Services_Twilio_RestException;
  * This is the base controller for all controllers in the application
  */
 class ControllerBase extends Controller {
+    public function checkIntegerOrThrowException($int,$message = null){
+        if(!is_int($int)){
+            var_dump($int);
+            throw new \Exception(($message) ? $message : 'Invalid parameter provided, expected integer');
+        }
+
+    }
+
+    public function clean($val){
+        return strip_tags($val,['<p><a><br><hr><h1><h2><h3><h4><h5><h6><b>']);
+        return $val;
+    }
 
     public function initialize() {
         error_reporting(E_ALL ^ E_NOTICE);
@@ -56,10 +68,10 @@ class ControllerBase extends Controller {
             );
 
             $agency = Agency::findFirst(
-                            array(
-                                $conditions,
-                                "bind" => $parameters
-                            )
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
             );
 
             if ($agency) {
@@ -162,10 +174,10 @@ class ControllerBase extends Controller {
             );
 
             $agency = Agency::findFirst(
-                            array(
-                                $conditions,
-                                "bind" => $parameters
-                            )
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
             );
 
             if ($agency) {
@@ -254,17 +266,17 @@ class ControllerBase extends Controller {
         );
 
         $share = SharingCode::findFirst(
-                        array(
-                            $conditions,
-                            "bind" => $parameters)
+            array(
+                $conditions,
+                "bind" => $parameters)
         );
 
         if (!(isset($share) && isset($share->sharecode))) {
             //we don't have a share code, so get one now
             $share = SharingCode::findFirst(
-                            array(
-                                'order' => 'RAND()'
-                            )
+                array(
+                    'order' => 'RAND()'
+                )
             );
 
             $share->agency_id = $agency->agency_id;
@@ -290,10 +302,10 @@ class ControllerBase extends Controller {
         $base_sms_allowed = 100;
         $additional_allowed = 25;
         $num_signed_up = Agency::count(
-                        array(
-                            "column" => "agency_id",
-                            "conditions" => "referrer_code = '" . $share->sharecode . "' ",
-                        )
+            array(
+                "column" => "agency_id",
+                "conditions" => "referrer_code = '" . $share->sharecode . "' ",
+            )
         );
         $num_discount = (int) ($num_signed_up / 3); //find how many three
         $total_sms_month = $base_sms_allowed + ($num_discount * $additional_allowed);
@@ -326,10 +338,10 @@ class ControllerBase extends Controller {
                 );
 
                 $subscriptionobj = Subscription::findFirst(
-                                array(
-                                    $conditions,
-                                    "bind" => $parameters
-                                )
+                    array(
+                        $conditions,
+                        "bind" => $parameters
+                    )
                 );
 
                 if (!($subscriptionobj->amount > 0)) {
@@ -354,10 +366,10 @@ class ControllerBase extends Controller {
                 );
 
                 $userObj = Users::findFirst(
-                                array(
-                                    $conditions,
-                                    "bind" => $parameters
-                                )
+                    array(
+                        $conditions,
+                        "bind" => $parameters
+                    )
                 );
 
                 //find the agency
@@ -368,10 +380,10 @@ class ControllerBase extends Controller {
                 );
 
                 $agency = Agency::findFirst(
-                                array(
-                                    $conditions,
-                                    "bind" => $parameters
-                                )
+                    array(
+                        $conditions,
+                        "bind" => $parameters
+                    )
                 );
 
                 //get total sent
@@ -390,10 +402,10 @@ class ControllerBase extends Controller {
             $sms_sent_last_month = 0;
             if ($this->session->get('auth-identity')['location_id']) {
                 $sms_sent_last_month = ReviewInvite::count(
-                                array(
-                                    "column" => "review_invite_id",
-                                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
-                                )
+                    array(
+                        "column" => "review_invite_id",
+                        "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
+                    )
                 );
             }
             $this->view->sms_sent_last_month = $sms_sent_last_month;
@@ -405,10 +417,10 @@ class ControllerBase extends Controller {
             $sms_sent_this_month = 0;
             if ($this->session->get('auth-identity')['location_id']) {
                 $sms_sent_this_month = ReviewInvite::count(
-                                array(
-                                    "column" => "review_invite_id",
-                                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
-                                )
+                    array(
+                        "column" => "review_invite_id",
+                        "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
+                    )
                 );
             }
             $this->view->sms_sent_this_month = $sms_sent_this_month;
@@ -419,17 +431,17 @@ class ControllerBase extends Controller {
             $this->view->num_reviews_two_months_ago = 0;
             if ($this->session->get('auth-identity')['location_id']) {
                 $this->view->num_reviews_last_month = ReviewsMonthly::sum(
-                                array(
-                                    "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                    "conditions" => "month = " . date("m", strtotime("first day of previous month")) . " AND year = '" . date("Y", strtotime("first day of previous month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                                )
+                    array(
+                        "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
+                        "conditions" => "month = " . date("m", strtotime("first day of previous month")) . " AND year = '" . date("Y", strtotime("first day of previous month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
+                    )
                 );
 
                 $this->view->num_reviews_two_months_ago = ReviewsMonthly::sum(
-                                array(
-                                    "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                    "conditions" => "month = " . date("m", strtotime("-2 months", time())) . " AND year = '" . date("Y", strtotime("-2 months", time())) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                                )
+                    array(
+                        "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
+                        "conditions" => "month = " . date("m", strtotime("-2 months", time())) . " AND year = '" . date("Y", strtotime("-2 months", time())) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
+                    )
                 );
             }
             $this->view->total_reviews_last_month = $this->view->num_reviews_last_month - $this->view->num_reviews_two_months_ago;
@@ -439,10 +451,10 @@ class ControllerBase extends Controller {
             $this->view->num_reviews_this_month = 0;
             if ($this->session->get('auth-identity')['location_id']) {
                 $this->view->num_reviews_this_month = ReviewsMonthly::sum(
-                                array(
-                                    "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                    "conditions" => "month = " . date("m", strtotime("first day of this month")) . " AND year = '" . date("Y", strtotime("first day of this month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                                )
+                    array(
+                        "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
+                        "conditions" => "month = " . date("m", strtotime("first day of this month")) . " AND year = '" . date("Y", strtotime("first day of this month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
+                    )
                 );
             }
             $this->view->total_reviews_this_month = $this->view->num_reviews_this_month - $this->view->total_reviews_last_month;
@@ -560,8 +572,8 @@ class ControllerBase extends Controller {
                 if ($an->email_alert == 1 && isset($user->email)) {
                     //the user wants an email, so send it now
                     $this->getDI()
-                            ->getMail()
-                            ->send('kevin_revie@hotmail.com', $subject, '', '', $message);
+                        ->getMail()
+                        ->send('kevin_revie@hotmail.com', $subject, '', '', $message);
                     //->send($user->email, 'Notification: New Review', '', '', $message);
                 }
                 if ($an->sms_alert == 1 && isset($user->phone) && $user->phone != '') {
@@ -651,10 +663,10 @@ class ControllerBase extends Controller {
             );
 
             $loc = Location::findFirst(
-                            array(
-                                $conditions,
-                                "bind" => $parameters
-                            )
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
             );
 
             //default this month
@@ -1081,9 +1093,9 @@ class ControllerBase extends Controller {
 
         // GARY_TODO Determine if the comment below is accurate.
         $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] &&
-                ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
-                ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
-                $userManager->hasLocation($this->session);
+            ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
+            ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
+            $userManager->hasLocation($this->session);
 
         $internalNavParams['hasPricingPlans'] = $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];
 
@@ -1144,7 +1156,7 @@ class ControllerBase extends Controller {
 
     public function getLocationId(){
         $identity = $this->getIdentity();
-       return $identity['location_id'];
+        return $identity['location_id'];
     }
 
     public function getIdentity(){

@@ -224,6 +224,7 @@ class AdmindashboardController extends ControllerBusinessBase {
      * This find the agencies for the agencies and businesses actions
      */
     public function findAgencies($agency_type_id) {
+        $this->checkIntegerOrThrowException($agency_type_id,'$agency type id must be an integer');
         //get the user id
         $identity = $this->auth->getIdentity();
         // If there is no identity available the user is redirected
@@ -250,6 +251,10 @@ class AdmindashboardController extends ControllerBusinessBase {
      * status action
      */
     public function statusAction($agency_type_id, $agency_id, $status) {
+        $this->checkIntegerOrThrowException($agency_type_id,'$agency_type_id must be an integer');
+        $this->checkIntegerOrThrowException($agency_id,'$agency_id must be an integer');
+
+
         $age2 = new Agency();
         if ($agency_id > 0) {
             $conditions = "agency_id = :agency_id:";
@@ -271,6 +276,7 @@ class AdmindashboardController extends ControllerBusinessBase {
      * agencies action.
      */
     public function listAction($agency_type_id = 1) {
+        if(!is_numeric($agency_type_id)) throw new \Exception('Invalid agency type id specified');
         $this->tag->setTitle('Review Velocity | See All ' . ($agency_type_id == 1 ? 'Agencies' : 'Businesses'));
 
         $this->findAgencies($agency_type_id);
@@ -283,8 +289,12 @@ class AdmindashboardController extends ControllerBusinessBase {
      * @param int $id
      */
     public function deleteAction($agency_type_id, $agency_id) {
-        $conditions = "agency_id = :agency_id:";
-        $parameters = array("agency_id" => $agency_id);
+        $conditions = "agency_id = :agency_id: AND user_id = :user_id:";
+        //
+        //
+        //
+        //
+        $parameters = array("agency_id" => $agency_id,'user_id');
         $age = Agency::findFirst(array($conditions, "bind" => $parameters));
         if (!$age) {
             $this->flash->error("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was not found");
@@ -309,6 +319,9 @@ class AdmindashboardController extends ControllerBusinessBase {
      * Sends confirmation email
      */
     public function confirmationAction($agency_type_id, $agency_id, $user_id) {
+
+
+
         $emailConfirmation = new EmailConfirmations();
         $emailConfirmation->usersId = $user_id;
         $emailConfirmation->save();
@@ -322,12 +335,14 @@ class AdmindashboardController extends ControllerBusinessBase {
      * Logs in as the user
      */
     public function loginAction($agency_type_id, $agency_id = null, $user_id = null) {
+        if($agency_type_id && !is_numeric($agency_type_id)) throw new \Exception('invalid agency type id provided');
+        if ($agency_id && !is_numeric($agency_id)) throw new \Exception('invalid agency id provided');
         $usermanager = new UserManager();
         try{
             $usermanager->sudoAsUserId($user_id);
             $this->response->redirect('/');
         }catch(\Exception $e){
-            $this->flash->error('You cannot login as an inactivated user');
+            $this->flash->error('You cannot login as an inactivated user, or there was an error sudoing as a user');
             exit('exiting: line '.__LINE__.' of file:'.__FILE__);
             $this->response->redirect('/admindashboard');
             return;
@@ -339,7 +354,8 @@ class AdmindashboardController extends ControllerBusinessBase {
     }
 
     public function editAction($agency_id,$agency_type_id = null){
-
+        if($agency_type_id && !is_numeric($agency_type_id)) throw new \Exception('Invalid agency type provided, expected integer');
+        if (!is_numeric($agency_id)) throw new \Exception('Invalid agency id provided, expected integer');
         $this->createAction($agency_type_id,$agency_id);
     }
 

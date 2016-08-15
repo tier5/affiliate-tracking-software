@@ -342,6 +342,8 @@ class ReviewsController extends ControllerBase
      */
     public function sent_message_viewAction($id = 0)
     {
+      $this->checkIntegerOrThrowException($id);
+
       //get the user id
       $identity = $this->auth->getIdentity();
       // If there is no identity available the user is redirected to index/index

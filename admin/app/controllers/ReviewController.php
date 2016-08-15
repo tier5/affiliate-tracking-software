@@ -241,11 +241,12 @@ class ReviewController extends ControllerBase
       $review_invite_id = $_GET['i'];
       $review_site_id = $_GET['d'];
 
+      $this->checkIntegerOrThrowException($review_invite_id);
+      $this->checkIntegerOrThrowException($review_site_id);
       $rirs = new ReviewInviteReviewSite();
       $rirs->review_invite_id = $review_invite_id;
       $rirs->review_site_id = $review_site_id;
       $rirs->save();
-
       $this->view->disable();
       echo 'true';
     }

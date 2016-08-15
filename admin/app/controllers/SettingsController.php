@@ -409,6 +409,9 @@
         }
 
         public function siteaddAction($location_id = 0, $review_site_id = 0) {
+            $this->checkIntegerOrThrowException($location_id,'$location_id');
+            $this->checkIntegerOrThrowException($review_site_id,'$review_site_id');
+
             if ($location_id > 0 && $review_site_id > 0) {
                 $lrs = new LocationReviewSite();
                 $lrs->location_id = $location_id;
@@ -434,10 +437,10 @@
 
 
         public function onAction($id = 0) {
+            $this->checkIntegerOrThrowException($id,'$id was invalid');
             $conditions = "location_review_site_id = :location_review_site_id:";
             $parameters = array("location_review_site_id" => $id);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-
             $Obj->is_on = 0;
             $Obj->save();
 
@@ -446,6 +449,7 @@
         }
 
         public function offAction($id = 0) {
+            $this->checkIntegerOrThrowException($id);
             $conditions = "location_review_site_id = :location_review_site_id:";
             $parameters = array("location_review_site_id" => $id);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));

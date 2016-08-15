@@ -79,8 +79,8 @@ class ReviewInvite extends Model
 	{
 		$this->setSource('review_invite');
 	}
-    
-    
+
+
   /*
     * Find the data for the report
     */
@@ -153,19 +153,19 @@ class ReviewInvite extends Model
       return false;
     }
   }
-    
-    
+
+
   /*
     * Find the data for the report
     */
   public static function getInvitesPending()
   {
       // A raw SQL statement
-      $sql   = "SELECT ri.* 
+      $sql   = "SELECT ri.*
               FROM review_invite ri
                 INNER JOIN location l ON ri.location_id = l.location_id
                 INNER JOIN agency a ON l.agency_id = a.agency_id
-              WHERE a.message_frequency > 0 AND a.message_tries > 0 AND ri.times_sent < a.message_tries 
+              WHERE a.message_frequency > 0 AND a.message_tries > 0 AND ri.times_sent < a.message_tries
                 #verify this isn't an old message
                 AND ri.date_last_sent IS NOT NULL AND ri.date_sent > DATE_SUB(NOW(), INTERVAL ((a.message_frequency * a.message_tries)+1) HOUR)
                 AND ri.date_last_sent < DATE_ADD(ri.date_sent, INTERVAL (a.message_frequency * ri.times_sent) HOUR)
@@ -178,16 +178,17 @@ class ReviewInvite extends Model
       $params = null;
       return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
   }
-    
-    
+
+
   /*
     * Find the data for the report
     */
   public static function getReviewReport($location_id)
   {
+    if(!is_int($location_id)) throw new \Exception('Invalid $location_id specified, expected integer');
       // A raw SQL statement
       $sql   = "SELECT COUNT(review_invite.review_invite_id) AS daily_num
-                FROM review_invite 
+                FROM review_invite
                 WHERE review_invite.location_id = ".$location_id." AND MONTH(review_invite.date_sent) = MONTH(NOW()) AND YEAR(review_invite.date_sent) = YEAR(NOW())";
 
       // Base model
@@ -197,21 +198,22 @@ class ReviewInvite extends Model
       $params = null;
       return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
   }
-    
-    
+
+
   /*
     * Find the data for the report
-    * 
-    *  Review Invitations list (search bar above list) 
-    *  (invites have the following fields: 
-    *  Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)  
+    *
+    *  Review Invitations list (search bar above list)
+    *  (invites have the following fields:
+    *  Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)
     *  Can respond to reviews by clicking the "Respond" button)
     */
   public static function getReviewInvitesByLocation($location_id)
   {
+    if (!is_int($location_id)) throw new \Exception('Invalid $location_id specified, expected integer');
       // A raw SQL statement
       $sql   = "SELECT users.name AS sent_by, review_invite.*
-                FROM review_invite 
+                FROM review_invite
                   INNER JOIN users ON review_invite.sent_by_user_id = users.id
                 WHERE review_invite.location_id = ".$location_id."
                 ORDER BY review_invite.date_sent DESC";
@@ -223,6 +225,6 @@ class ReviewInvite extends Model
       $params = null;
       return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
   }
-  
+
 
 }
