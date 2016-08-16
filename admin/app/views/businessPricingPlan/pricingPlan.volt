@@ -1,4 +1,19 @@
 {{ content() }}
+
+<style type="text/css">
+    td.hide-large.show-small{
+        font-weight:bold;
+    }
+    @media(min-width: 600px) {
+        td.hide-large{
+            display:none !important;
+        }
+        td.show-small{
+            display:block;
+        }
+    }
+</style>
+
 <header class="jumbotron subhead" id="reviews">
     <div class="hero-unit">
         <div class="row">
@@ -234,6 +249,7 @@
                                                     <tbody id="progression-table-rows">
                                                         {% for progression in progressions %}
                                                         <tr role="row" class="odd">
+                                                            <td class="show-small hide-large">Locations</td>
                                                             <td>
                                                                 <form class="form-inline" role="form">
                                                                     <div class="form-group">
@@ -245,17 +261,27 @@
                                                                     </div>
                                                                 </form>
                                                             </td>
+                                                            <td class="show-small hide-large">Discount</td>
                                                             <td>
                                                                 <select value="{{progression['location_discount_percentage'] }}" class="form-control input-small location-discount-control"></select>
                                                             </td>
+                                                            <td class="show-small hide-large">Base Price</td>
                                                             <td class="base-price-column">${{ progression['base_price'] }}</td>
+                                                            <td class="show-small hide-large">SMS Charge</td>
                                                             <td class="sms-charge-column">${{ progression['sms_charge'] }}</td>
+                                                            <td class="show-small hide-large">Total Price</td>
                                                             <td class="total-price-column">${{ progression['total_price'] }}</td>
+                                                            <td class="show-small hide-large">Location Discount</td>
                                                             <td class="location-discount-column">${{ progression['location_discount'] }}</td>
+                                                            <td class="show-small hide-large">Upgrade Discount</td>
                                                             <td class="upgrade-discount-column">${{ progression['upgrade_discount'] }}</td>
+                                                            <td class="show-small hide-large">Discount Price</td>
                                                             <td class="discount-price-column">${{ progression['discount_price'] }}</td>
+                                                            <td class="show-small hide-large">SMS Messages</td>
                                                             <td class="sms-messages-column"><span class="value">{{ progression['sms_messages'] }}</span></td>
+                                                            <td class="show-small hide-large">SMS Cost</td>
                                                             <td class="sms-cost-column">${{ progression['sms_cost'] }}</td>
+                                                            <td class="show-small hide-large">Profit Per Location</td>
                                                             <td class="profit-per-location-column">{{ progression['profit_per_location'] }}</td>
                                                         </tr>
                                                         {% endfor %}
@@ -677,6 +703,7 @@
 
             var row = "";
             row += "<tr role=\"row\" class=\"odd\">";
+            row += '<td class="show-small hide-large">Base Price</td>';
             row += "    <td>";
             row += "        <form class=\"form-inline\" role=\"form\">";
             row += "            <div class=\"form-group\">";
@@ -688,17 +715,27 @@
             row += "            </div>";
             row += "        </form>";
             row += "    </td>";
+            row += '<td class="show-small hide-large">Location Discount</td>';
             row += "    <td>";
             row += "        <select class=\"form-control input-small location-discount-control\"></select>";
             row += "    </td>";
+            row += '<td class="show-small hide-large">Base Price</td>';
             row += "    <td class=\"base-price-column\">0</td>";
+            row += '<td class="show-small hide-large">SMS Charge</td>';
             row += "    <td class=\"sms-charge-column\">0</td>";
+            row += '<td class="show-small hide-large">Total Price</td>';
             row += "    <td class=\"total-price-column\">0</td>";
+            row += '<td class="show-small hide-large">Location Discount</td>';
             row += "    <td class=\"location-discount-column\">0</td>";
+            row += '<td class="show-small hide-large">Upgrade Discount</td>';
             row += "    <td class=\"upgrade-discount-column\">0</td>";
+            row += '<td class="show-small hide-large">Discount Price</td>';
             row += "    <td class=\"discount-price-column\">0</td>";
+            row += '<td class="show-small hide-large">SMS Messages</td>';
             row += "    <td class=\"sms-messages-column\"><span class=\"value\">0</td>";
+            row += '<td class="show-small hide-large">SMS Cost</td>';
             row += "    <td class=\"sms-cost-column\">0</td>";
+            row += '<td class="show-small hide-large">Profit Per Location</td>';
             row += "    <td class=\"profit-per-location-column\">0</td>";
             row += "</tr>";
 
