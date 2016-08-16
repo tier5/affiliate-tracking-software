@@ -350,6 +350,7 @@ class SubscriptionManager extends BaseService {
         if (!$subscriptionPricingPlan) {
             return false;
         }
+        $subscriptionPricingPlan->getShortCode();
         $subscriptionPricingPlan->user_id = $parameters["userId"];
         $subscriptionPricingPlan->name = $parameters["name"];
         $subscriptionPricingPlan->enabled = $isUpdate ? $subscriptionPricingPlan->enabled : true;
