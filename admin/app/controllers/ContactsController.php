@@ -28,6 +28,10 @@ class ContactsController extends ControllerBase
     $logged_in = is_array($this->auth->getIdentity());
     if ($logged_in) {
       if (isset($_POST['locationselect'])) {
+        $user = $this->getUserObject();
+        if(!$this->getPermissions()->canUserSetLocationId($user,$_POST['locationselect'])) throw new \Exception("
+        User cannot set the location of {$_POST['locationselect']} for user id of: {$user->getId()}
+        ");
        if(is_numeric($_POST['locationselect'])) $this->auth->setLocation($_POST['locationselect']);
       }
 

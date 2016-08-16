@@ -210,10 +210,6 @@ class AdmindashboardController extends ControllerBusinessBase {
     }
 
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
-	    $Identity = $this->auth->getIdentity();
-	    $UserID = $Identity['id'];
-	    $objLoggedInUser = Users::findFirst("id = {$UserID}");
-
 	    // Businesses under Review Velocity have a parent_id of -1
 	    $Ret =  parent::createAction($agency_type_id, $agency_id, $agency_type_id == 1 ? 0 : -1);
 	    $this->view->pick("admindashboard/create");
@@ -294,8 +290,17 @@ class AdmindashboardController extends ControllerBusinessBase {
         //
         //
         //
-        $parameters = array("agency_id" => $agency_id,'user_id');
+        $parameters = array("agency_id" => $agency_id,'user_id'=>$this->getUserObject()->id);
+
+
         $age = Agency::findFirst(array($conditions, "bind" => $parameters));
+        if($age){
+            $user_id = $this->getUserObject()->id;
+            if (!$this->getPermissions()->canUserEditAgency($this->getUserObject(),$age)){
+                throw new \Exception("You do not have permissions to edit/delete this agency with the id of:
+                {$agency_id} with the user id of{$user_id}" );
+            }
+        }
         if (!$age) {
             $this->flash->error("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was not found");
 

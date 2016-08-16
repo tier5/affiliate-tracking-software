@@ -35,6 +35,29 @@ try {
      */
     $application = new \Phalcon\Mvc\Application($di);
 
+    /**
+     * sanitize post
+     */
+
+    if(!function_exists('sanitizeArray')){
+        function sanitizeArray($array){
+            $arr = ['a', 'b', 'iframe', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6','span','ul','li','ol','table','tr','td',
+            'tbody','thead','strong'];
+            $tags = '<' . implode('><', $arr) . '>';
+            foreach ($array as &$value) {
+                if(is_array($value)){
+                $value = sanitizeArray($value);
+                }else {
+                    $value = strip_tags($value, $tags);
+                }
+            }
+            return $array;
+        }
+    }
+    $_POST = sanitizeArray($_POST);
+
+
+
     if (APPLICATION_ENV === 'testing') {
 
         return $application;

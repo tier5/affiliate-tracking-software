@@ -17,6 +17,7 @@ use Vokuro\Models\SharingCode;
 use Vokuro\Models\Users;
 use Vokuro\Models\UsersSubscription;
 use Vokuro\Models\YelpScanning;
+use Vokuro\Services\Permissions;
 use Vokuro\Services\ServicesConsts;
 use Services_Twilio;
 use Services_Twilio_RestException;
@@ -26,6 +27,11 @@ use Services_Twilio_RestException;
  * This is the base controller for all controllers in the application
  */
 class ControllerBase extends Controller {
+
+    protected $permissions;
+    protected $user_object;
+
+
     public function checkIntegerOrThrowException($int,$message = null){
         if(!is_int($int)){
             var_dump($int);
@@ -42,24 +48,14 @@ class ControllerBase extends Controller {
     public function initialize() {
         error_reporting(E_ALL ^ E_NOTICE);
         //get the user id, to find the settings
+        $this->permissions = new Permissions();
+        $this->user_object = $this->getUserObject();
         $identity = $this->auth->getIdentity();
         // If there is no identity available the user is redirected to index/index
         //KT WHERE?
 
         if (is_array($identity)) {
-            $conditions = 'id = :id:';
-
-            $parameters = array(
-                "id" => $identity['id']
-            );
-
-            $userObj = Users::findFirst(
-                array(
-                    $conditions,
-                    "bind" => $parameters
-                )
-            );
-
+            $userObj = $this->getUserObject();
             //find the agency
             $conditions = "agency_id = :agency_id:";
 
@@ -1161,6 +1157,13 @@ class ControllerBase extends Controller {
 
     public function getIdentity(){
         return $this->auth->getIdentity();
+    }
+
+
+    public function getPermissions(){
+        if($this->permissions) return $this->permissions;
+        $this->permissions = new Permissions();
+        return $this->permissions;
     }
 
     public function getUserObject(){
