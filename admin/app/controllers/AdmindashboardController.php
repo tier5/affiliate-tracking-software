@@ -272,7 +272,8 @@ class AdmindashboardController extends ControllerBusinessBase {
      * agencies action.
      */
     public function listAction($agency_type_id = 1) {
-        if(!is_numeric($agency_type_id)) throw new \Exception('Invalid agency type id specified');
+        $agency_type_id = (int)$agency_type_id;
+        if($agency_type_id && !is_int($agency_type_id)) throw new \Exception('Invalid agency type id specified');
         $this->tag->setTitle('Review Velocity | See All ' . ($agency_type_id == 1 ? 'Agencies' : 'Businesses'));
 
         $this->findAgencies($agency_type_id);
