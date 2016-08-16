@@ -441,6 +441,13 @@
             $conditions = "location_review_site_id = :location_review_site_id:";
             $parameters = array("location_review_site_id" => $id);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+            $location_id = $Obj->location_id;
+            $edit_permissions = $this->getPermissions()->canUserEditLocationId($this->getUserObject(),$location_id);
+            if(!$edit_permissions) throw new \Exception("You cannot edit the parent location for id of:{$location_id}, so you cannot
+            turn off or on a location review site belonging to this location");
+
+
             $Obj->is_on = 0;
             $Obj->save();
 
@@ -454,9 +461,13 @@
             $parameters = array("location_review_site_id" => $id);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
+            $location_id = $Obj->location_id;
+            $edit_permissions = $this->getPermissions()->canUserEditLocationId($this->getUserObject(), $location_id);
+            if (!$edit_permissions) throw new \Exception("You cannot edit the parent location for id of:{$location_id}, so you cannot
+            turn off or on a location review site belonging to this location");
+
             $Obj->is_on = 1;
             $Obj->save();
-
             $this->view->disable();
             echo 'true';
         }
