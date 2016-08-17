@@ -38,7 +38,7 @@
       <div class="title">GOOGLE: <span class="title-answer">Found</span></div>
       <div class="field"><span class="name">Business Name:</span> <span id="googleName"></span></div>
       <div class="field bottom"><span class="name">Location:</span> <span id="googleAddress"></span></div>
-      <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=" target="_blank"><img src="/img/icon-eye.gif" /> View</a> <a class="btnLink" href="#" onclick="changeLocation();$('#locationform1').show();return false;"><img src="/img/icon-pencil.gif" /> Change Location</a></div>
+      <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=" target="_blank"><img src="/img/icon-eye.gif" /> View</a> <a class="btnLink" href="#" onclick="changeLocation();$('#locationform1').show();return false;"><img src="/img/icon-pencil.gif" /> Change Location</a><br>Have a google my business account? <a href="/test" target="_blank" id="gmb_signin">Sign In</a></div>
     </div>
 
     <div class="pnlAddLocation short col-md-4">

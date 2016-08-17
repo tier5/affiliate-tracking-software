@@ -25,7 +25,101 @@ class GoogleScanning extends Model {
       return $arrResultFindPlaceDetail['result'];
     }
 
+    public function get_business2($credentials, $google_place_id) {
+        $accesstoken = 'ya29.CjHyAmLqCZj4E7jRKIXpFg8DmWnNnVtUFPYmjoJps6tRtnbeh10uT00M8LeMwiXa3LAc';
+        $business = '102349924484707315378';
+        $location = '6499404716422624595';
 
+        $client = new Google_Client();
+        //$apiClient->setUseObjects(true);
+        $client->setAuthConfigFile(dirname(__FILE__) . '/googlesecrets.json');
+        $client->setAccessToken($credentials);
+
+        //$api = new Google_Service_Mybusiness_AccountsLocationsReviews_Resource($apiClient);
+        //$reviews = $api->listAccountsLocationsReviews($location);
+
+        //$service = new Google_Service_Mybusiness($client);
+        //$reviews = $service->accounts_locations_reviews->listAccountsLocationsReviews($location);
+
+        //$strFindPlaceDetail = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" . $google_place_id . "&key=" . $this->googleApiKey;
+        $strFindPlaceDetail = 'https://mybusiness.googleapis.com/v3/accounts/' . $business . '/locations/'.$location.'/reviews';//?placeid=' . $google_place_id;// . '&key=' . $this->googleApiKey;
+        echo '<pre>$strFindPlaceDetail:'.print_r($strFindPlaceDetail,true).'</pre>';
+
+        $request = new Google_Http_Request($strFindPlaceDetail, 'GET', null, null);
+        $httpRequest = $client->getAuth()->authenticatedRequest($request);
+        if ($httpRequest->getResponseHttpCode() == 200) {
+            $response = $httpRequest->getResponseBody();
+            echo '<pre>$response:'.print_r($response,true).'</pre>';
+            //return $httpRequest->getResponseBody();
+        } else {
+            // An error occurred.
+            echo '<pre>Nothing Here!:'.$httpRequest->getResponseHttpCode().'</pre>';
+        }
+
+
+//echo '<pre>$reviews:'.print_r($reviews,true).'</pre>';
+
+        /*
+        $resultFindPlaceDetail = file_get_contents($strFindPlaceDetail);
+        $arrResultFindPlaceDetail = json_decode($resultFindPlaceDetail, true);
+
+  echo '<pre>$arrResultFindPlaceDetail[result]:'.print_r($arrResultFindPlaceDetail,true).'</pre>';
+        return $arrResultFindPlaceDetail['result'];
+        */
+    }
+
+
+
+
+    public function getLocations($credentials) {
+        //first connect to Google
+        $client = new Google_Client();
+        $client->setAuthConfigFile(dirname(__FILE__) . '/googlesecrets.json');
+        $client->setAccessToken($credentials);
+
+        //first find all accounts
+        $strFindPlaceDetail = 'https://mybusiness.googleapis.com/v3/accounts/';
+        echo '<pre>$strFindPlaceDetail:'.print_r($strFindPlaceDetail,true).'</pre>';
+
+        $request = new Google_Http_Request($strFindPlaceDetail, 'GET', null, null);
+        $httpRequest = $client->getAuth()->authenticatedRequest($request);
+        if ($httpRequest->getResponseHttpCode() == 200) {
+            $response = $httpRequest->getResponseBody();
+            echo '<pre>$response:'.print_r($response,true).'</pre>';
+            //now lets loop through those accounts and find all locations
+            foreach($response as $business) {
+                $strFindPlaceDetail = 'https://mybusiness.googleapis.com/v3/'.$business->name;
+                echo '<pre>$strFindPlaceDetail:'.print_r($strFindPlaceDetail,true).'</pre>';
+            }
+        } else {
+            // An error occurred.
+            echo '<pre>Nothing Here!:'.$httpRequest->getResponseHttpCode().'</pre>';
+            return false;
+        }
+    }
+
+
+
+
+    public function authenticate() {
+        $client = new Google_Client();
+        $client->setAuthConfigFile(dirname(__FILE__) . '/googlesecrets.json');
+        //$client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
+        $client->addScope('https://www.googleapis.com/auth/plus.business.manage');
+        $client->setAccessType("offline");
+        $client->setApprovalPrompt("force");
+        $client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] . '/admin/location/oauth2callback');
+
+
+        if (!isset($_GET['code'])) {
+            $auth_url = $client->createAuthUrl();
+            //echo '<p>$auth_url:'.$auth_url.'</p>';
+            return $auth_url;
+        } else {
+            $client->authenticate($_GET['code']);
+            return $client->getAccessToken();
+        }
+    }
 
      /**
      * This function finds the google lrd field which is used to find the review url.

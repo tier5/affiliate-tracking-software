@@ -87,7 +87,7 @@
           <div class="title">GOOGLE: <span class="title-answer">Found</span></div>
           <div class="field"><span class="name">Business Name:</span> <span id="googleName"><?=$location->name?></span></div>
           <div class="field bottom"><span class="name">Location:</span> <span class="googleAddress" id="googleAddress"><?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?></span></div>
-          <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=<?=$google->external_id?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a> <a class="btnLink" href="#" onclick="$('#relevant-result-list').hide();$('#hiddenForm').hide();$('#locationform1').show();return false;"><img src="/img/icon-pencil.gif" /> Change Location</a></div>
+          <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=<?=$google->external_id?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a> <a class="btnLink" href="#" onclick="$('#relevant-result-list').hide();$('#hiddenForm').hide();$('#locationform1').show();return false;"><img src="/img/icon-pencil.gif" /> Change Location</a><br>Have a google my business account? <a href="#">Sign In</a></div>
         </div>
 
         <div class="pnlAddLocation short col-md-4">
