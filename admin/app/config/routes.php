@@ -19,5 +19,5 @@ $router->add('/dashboard/css', array(
     'action' => 'css'
 ));
 
-$router->add('/signup',['controller'=>'session','action'=>'signup']);
+$router->add('/session/invite/:subscription_id',['controller'=>'session','action'=>'subscriptionSignupAction']);
 return $router;

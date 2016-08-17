@@ -322,6 +322,8 @@ class BusinessPricingPlanController extends ControllerBase {
     }
 
     public function deletePricingPlanAction($pricingPlanId) {
+
+        if(!is_numeric($pricingPlanId)) throw new \Exception('$pricingPlanId is expected to be an integer');
         $this->view->disable();
 
         $responseParameters['status'] = false;
@@ -369,7 +371,7 @@ class BusinessPricingPlanController extends ControllerBase {
      * REFACTOR
      * Needs to moved into a generic request validation systems
      */
-    private function validatePricingPlanInput($request) {
+    private function validatePricingPlanInput() {
 
         $validated = [];
 

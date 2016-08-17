@@ -9,7 +9,7 @@
      * Vokuro\Models\Location
      * The Locations
      */
-    class Location extends Model
+    class Location extends BaseModel
     {
 
 

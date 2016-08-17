@@ -15,7 +15,15 @@
     {% else %}
 
     <!-- BEGIN REGISTRATION FORM -->
-    <form class="register-form" action="/session/submitSignup/{{token}}" method="post" style="display: block;">
+    <form class="register-form" action="/session/submitSignup/{{ subscription_id ? subscription_id : token}}" method="post" style="display: block;">
+        {% if subscription_id %}
+            <input type="hidden" name="subscription_id" value="{{ subscription_id }}"/>
+        {% endif %}
+
+        {% if short_code %}
+            <input type="hidden" name="short_code" value="{{ short_code }}"/>
+        {% endif %}
+
         <h3>Account Details</h3>
         <p class="hint"> Enter your account details below: </p>
         <div class="form-group">

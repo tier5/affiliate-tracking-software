@@ -237,6 +237,7 @@ class BusinessSubscriptionController extends ControllerBase {
 
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
+            //these are fine from a security standpoint because they are pulled from the session, and not the request
             $objUser = \Vokuro\Models\Users::findFirst("id = {$userId}");
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
 

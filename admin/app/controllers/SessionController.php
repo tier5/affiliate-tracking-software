@@ -1,6 +1,9 @@
 <?php
 
 namespace Vokuro\Controllers;
+use Vokuro\Models\SubscriptionPricingPlan;
+use Vokuro\Services\Encryption;
+use Vokuro\Services\SubscriptionManager;
 use Vokuro\Utils;
 use Vokuro\ArrayException;
 use Phalcon\Tag;
@@ -25,6 +28,7 @@ class SessionController extends ControllerBase {
 
     public $facebook_access_token;
 
+
     /**
      * Default action. Set the public layout (layouts/private.volt)
      */
@@ -43,9 +47,38 @@ class SessionController extends ControllerBase {
 
     public function submitSignupAction() {
         try {
+            $subscription_id = null;
+            $short_code = $this->request->getPost('short_code');
+            $ssp = new SubscriptionPricingPlan();
+            if ($short_code) {
+                $subscription_pricing_plan = $ssp->findOneBy(['short_code' => $short_code]);
+                if($subscription_pricing_plan){
+                    /**
+                     * @var $subscription_pricing_plan \Vokuro\Models\SubscriptionPricingPlan
+                     */
+                    $subscription_id = $subscription_pricing_plan->id;
+                }
+
+            }
 
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
+
+            if(!$subscription_id){
+                //here we are going to get the default subscription id
+                /**
+                 * @var $subscriptionManager \Vokuro\Services\SubscriptionManager
+                 */
+                $default = $subscriptionManager->getActiveSubscriptionPlan();
+                if($default){
+                   /**
+                    * @var $default \Vokuro\Models\SubscriptionPricingPlan
+                    */
+                    $short_code = $default->getShortCode();
+                    $subscription_id = $default->id;
+                }
+            }
+
 
             // Start transaction
             $this->db->begin();
@@ -93,14 +126,21 @@ class SessionController extends ControllerBase {
             $agency_name = $this->request->getPost('agency_name', 'striptags');
             if(!$agency_name) $agency_name = $this->request->getPost('name','striptags');
             $agency = new Agency();
-            $agency->assign(array(
+
+            $agency_save_arr = [
                 'name' => $agency_name,
                 'referrer_code' => $this->request->getPost('sharecode'),
                 'date_created' => date('Y-m-d H:i:s'),
                 'signup_page' => 2, //go to the next page,
                 'agency_type_id' => 2,
-                'email'=>$this->request->getPost('email')
-            ));
+                'email' => $this->request->getPost('email'),
+            ];
+
+            if($subscription_id){
+                $agency_save_arr['subscription_id'] = $subscription_id;
+            }
+
+            $agency->assign($agency_save_arr);
 
             if (!$agency->save()) {
                 throw new ArrayException('Could not save Agency', 0, null, $agency->getMessages());
@@ -131,6 +171,44 @@ class SessionController extends ControllerBase {
 
     }
 
+    public function inviteAction($short_code = null){
+        //dd($subscription_id);
+        //$this->view->setTemplateBefore('login');
+        $this->view->short_code = $short_code;
+        $this->signupAction();
+        $this->view->pick('session/signup');
+        $subscription = new SubscriptionPricingPlan();
+        if($short_code) {
+            $plan = $subscription->findOneBy(['short_code' => $this->view->short_code]);
+            if ($plan) {
+                /**
+                 * @var $plan \Vokuro\Models\SubscriptionPricingPlan
+                 */
+                $status = $plan->enabled;
+                if(!$status){
+                    //get the active plan
+                    $service = new SubscriptionManager();
+                    $active = $service->getActiveSubscriptionPlan();
+                    if($active){
+                        $this->view->short_code = $active->getShortCode();
+                        $this->view->setTemplateBefore('login');
+
+                        $this->view->pick('businessPricingPlan/inactive');
+                        return;
+                    }
+
+
+                }
+
+
+        }
+        }
+
+
+
+
+    }
+
     public function signupAction($subscriptionToken = '0') {
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
@@ -138,7 +216,7 @@ class SessionController extends ControllerBase {
 
         $agency = new Agency();
         $record = $agency->findOneBy(['custom_domain'=>$pi]);
-
+        $white_label = 'Sign Up';
         if($record){
             $this->view->agencyId = $record->agency_id;
 
@@ -150,8 +228,22 @@ class SessionController extends ControllerBase {
             $this->view->agency_white_label = true;
             if($record->main_color) $this->view->main_color_setting = $record->main_color;
         }
+        //see invite action above
+        if($this->view->short_code){
+            $subscription = new SubscriptionPricingPlan();
+            $plan = $subscription->findOneBy(['short_code' => $this->view->short_code]);
+            if($plan){
+                /**
+                 * @var $plan \Vokuro\Models\SubscriptionPricingPlan
+                 */
+                $this->view->subscription_plan_name = $plan->name;
+                $white_label = 'Sign Up '.$plan->name;
 
-        $this->tag->setTitle('Review Velocity | Sign Up');
+            }
+        }
+
+
+        $this->tag->setTitle('Review Velocity | Plan: '.$white_label);
         $this->view->setTemplateBefore('login');
 
             /* Get services */
@@ -167,13 +259,10 @@ class SessionController extends ControllerBase {
             /* Simply redirect to the home if we are logged in or the form is invalid  */
             if ($userId || (!$isValid && $this->request->isPost())) {
                 //$this->response->redirect('/');
-                return;
                 // $this->view->setTemplateBefore('private');
             }
 
-            Utils::noSubDomains(1, $this->validSubDomains, $subscriptionToken);
-            $this->view->setTemplateBefore('login');
-            $this->tag->setTitle('Review Velocity | Sign up');
+            //Utils::noSubDomains(1, $this->validSubDomains, $subscriptionToken);
             $form = new SignUpForm();
             $ccform = new CreditCardForm();
 
@@ -187,9 +276,6 @@ class SessionController extends ControllerBase {
             $this->view->form = $form;
             $this->view->ccform = $ccform;
             $this->view->current_step = 1;
-
-            $this->view->pick('session/signup');
-
     }
 
     /**
@@ -199,8 +285,9 @@ class SessionController extends ControllerBase {
     public function signup2Action($pricingProfileToken = 0) {
 
         /* $this->noSubDomains(2, $subscription_id); */
-        Utils::noSubDomains(2, $this->validSubDomains, $pricingProfileToken);
-
+        if($this->request->getPost('short_code')){
+            $short_code = $this->request->getPost('short_code');
+        }
         $this->view->setTemplateBefore('signup');
         $this->tag->setTitle('Review Velocity | Sign up | Step 2 | Add Location');
 
@@ -328,8 +415,6 @@ class SessionController extends ControllerBase {
     /* public function signup3Action($subscription_id = 0) { */
     public function signup3Action($pricingProfileToken = 0) {
 
-        /* $this->noSubDomains(3, $subscription_id); */
-        Utils::noSubDomains(3, $this->validSubDomains, $pricingProfileToken);
 
         $this->view->setTemplateBefore('signup');
         $this->tag->setTitle('Review Velocity | Sign up | Step 3 | Customize Survey');
@@ -812,6 +897,7 @@ class SessionController extends ControllerBase {
         $name = $_GET['name'];
         $cell_phone = $_GET['cell_phone'];
         $id = $_GET['id'];
+        $this->checkIntegerOrThrowException($id);
         $message = str_replace("%7D", "}", $message);
         $message = str_replace("%7B", "{", $message);
         $message = str_replace("{business-name}", $name, $message);

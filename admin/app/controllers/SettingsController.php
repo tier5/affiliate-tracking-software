@@ -409,6 +409,9 @@
         }
 
         public function siteaddAction($location_id = 0, $review_site_id = 0) {
+            $this->checkIntegerOrThrowException($location_id,'$location_id');
+            $this->checkIntegerOrThrowException($review_site_id,'$review_site_id');
+
             if ($location_id > 0 && $review_site_id > 0) {
                 $lrs = new LocationReviewSite();
                 $lrs->location_id = $location_id;
@@ -434,9 +437,16 @@
 
 
         public function onAction($id = 0) {
+            $this->checkIntegerOrThrowException($id,'$id was invalid');
             $conditions = "location_review_site_id = :location_review_site_id:";
             $parameters = array("location_review_site_id" => $id);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+            $location_id = $Obj->location_id;
+            $edit_permissions = $this->getPermissions()->canUserEditLocationId($this->getUserObject(),$location_id);
+            if(!$edit_permissions) throw new \Exception("You cannot edit the parent location for id of:{$location_id}, so you cannot
+            turn off or on a location review site belonging to this location");
+
 
             $Obj->is_on = 0;
             $Obj->save();
@@ -446,13 +456,18 @@
         }
 
         public function offAction($id = 0) {
+            $this->checkIntegerOrThrowException($id);
             $conditions = "location_review_site_id = :location_review_site_id:";
             $parameters = array("location_review_site_id" => $id);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
+            $location_id = $Obj->location_id;
+            $edit_permissions = $this->getPermissions()->canUserEditLocationId($this->getUserObject(), $location_id);
+            if (!$edit_permissions) throw new \Exception("You cannot edit the parent location for id of:{$location_id}, so you cannot
+            turn off or on a location review site belonging to this location");
+
             $Obj->is_on = 1;
             $Obj->save();
-
             $this->view->disable();
             echo 'true';
         }
