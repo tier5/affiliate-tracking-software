@@ -2,6 +2,13 @@
 use Vokuro\Models\Location;
 
 class GoogleMyBusiness implements IProvider{
+
+    public function __construct(){
+        print realpath(__DIR__.'/../../');
+
+    }
+
+
     public function setLocation(Location $location)
     {
         // TODO: Implement setLocation() method.

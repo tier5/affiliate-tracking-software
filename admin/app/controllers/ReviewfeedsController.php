@@ -54,19 +54,43 @@ class ReviewfeedsController extends ControllerBase
         $myBusiness = new \Google_Service_Mybusiness($client);
         $accounts = $myBusiness->accounts->listAccounts()->getAccounts();
         if($accounts) foreach($accounts as $account){
+            /**
+             * @var $account \Google_Service_Mybusiness_Account
+             */
+            $account_id = str_replace('accounts/','',$account->getName());
+            print '<h1>'.$account->accountName.'</h1>';
             $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
             if($locations) foreach($locations as $location){
-                $reviews = $myBusiness->accounts_locations_reviews->listAccountsLocationsReviews($location->name)->getReviews();
+                print '<h1>Location:'.$location->locationName.'</h1>';
+                /**
+                 * @var $location \Google_Service_Mybusiness_Location
+                 */
+                $location_id = str_replace('locations/','',$location->getName());
+                $lr = $myBusiness->accounts_locations_reviews->listAccountsLocationsReviews($location->name);
+                $reviews = $lr->getReviews();
+                $reviewCount = $lr->getTotalReviewCount();
+                $avg = $lr->getAverageRating();
+                print "<p>review count {$reviewCount}</p>";
+                print "<p>average: {$avg}</p>";
                 if($reviews) foreach($reviews as $review){
                     /**
                      * @var $review \Google_Service_Mybusiness_Review Object
                      */
-                    print "<h1>reviewer</h1>";
+                    $review_id = str_replace('/reviews','',$review->getReviewId());
+                    $reviewer = $review->getReviewer();
+                    /**
+                     * @var $reviewer \Google_Service_Mybusiness_Reviewer
+                     */
                     print '<pre>';
-                    print_r($review->getReviewer());
                     print '</pre>';
                     print "<h4>Comment: {$review->comment}</h4>";
-                    print 'Review id: '.$review->getReviewId();
+
+
+
+
+                    print 'link<br />';
+                    print_r([$account_id,$location_id,$review_id]);
+                    print sprintf('https://business.google.com/u/4/b/%s/reviews/l/%s/r/%s',$account_id,$location_id,$review_id);
                 }
 
 
@@ -152,13 +176,10 @@ class ReviewfeedsController extends ControllerBase
             }
             foreach($locations as $location){
                 print '<h1>'.$location->name.'</h1>';
-
                 $reviewObject = $googleBusinessService->accounts_locations_reviews->listAccountsLocationsReviews($location->name);
                 $reviewCount = $reviewObject->getTotalReviewCount();
                 $reviews = $reviewObject->getReviews();
-
                 print '<h1>'.$reviewCount.'</h1>';
-
             }
 
         }
