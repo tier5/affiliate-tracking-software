@@ -17,9 +17,6 @@ class ReviewfeedsController extends ControllerBase
         define('APPLICATION_NAME', 'User Query - Google My Business API');
         define('CLIENT_SECRET_PATH', $path_to_admin . '/app/models/client_secrets.json');
         $this->tag->setTitle('Review Velocity | Dashboard');
-        if($_GET['code']){
-            $this->googleAction();
-        }
     }
 
     protected function getAccessToken(){
@@ -38,7 +35,6 @@ class ReviewfeedsController extends ControllerBase
     }
 
     protected function getRefreshToken(){
-        print_r($_SESSION['google_refresh_token']);
         $length = sizeof($_SESSION['google_refresh_token']);
         if ($length) {
             return $_SESSION['google_refresh_token'][$length - 1];
@@ -129,19 +125,11 @@ class ReviewfeedsController extends ControllerBase
         $authUrl = $client->createAuthUrl();
         $this->view->authUrl = $authUrl;
         $this->view->setMainView('google/auth');
-
-            if (!$accessToken['error']) {
-                $refreshToken = $accessToken['refresh_token'];
-                $accessToken = $accessToken['access_token'];
-            }
+        print_r($accessToken);
             if (!$accessToken) return;
             //$client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
-            $client->setAccessToken($accessToken);
+            $client->setAccessToken($accessToken['access_token']);
             // Refresh the token if it's expired.
-
-            if ($client->isAccessTokenExpired()) {
-                $client->refreshToken($refreshToken);
-            }
             $access_token = $client->getAccessToken();
             $refreshToken = $client->getRefreshToken();
             $_SESSION['google_access_token'][] = $access_token;
@@ -152,7 +140,7 @@ class ReviewfeedsController extends ControllerBase
     protected function getReviewsFromToken($access_token)
     {
         $client = $this->getGoogleClient();
-        $client->setAccessToken($access_token);
+        $client->setAccessToken($access_token['access_token']);
         $googleBusinessService = new \Google_Service_Mybusiness($client);
         $accounts = $googleBusinessService->accounts->listAccounts();
         foreach ($accounts as $account) {

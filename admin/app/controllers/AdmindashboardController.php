@@ -220,7 +220,7 @@ class AdmindashboardController extends ControllerBusinessBase {
      * This find the agencies for the agencies and businesses actions
      */
     public function findAgencies($agency_type_id) {
-        $this->checkIntegerOrThrowException($agency_type_id,'$agency type id must be an integer');
+        //$this->checkIntegerOrThrowException($agency_type_id,'$agency type id must be an integer');
         //get the user id
         $identity = $this->auth->getIdentity();
         // If there is no identity available the user is redirected
@@ -247,8 +247,8 @@ class AdmindashboardController extends ControllerBusinessBase {
      * status action
      */
     public function statusAction($agency_type_id, $agency_id, $status) {
-        $this->checkIntegerOrThrowException($agency_type_id,'$agency_type_id must be an integer');
-        $this->checkIntegerOrThrowException($agency_id,'$agency_id must be an integer');
+        //$this->checkIntegerOrThrowException($agency_type_id,'$agency_type_id must be an integer');
+        //$this->checkIntegerOrThrowException($agency_id,'$agency_id must be an integer');
 
 
         $age2 = new Agency();
