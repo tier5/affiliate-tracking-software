@@ -2,6 +2,6 @@
 <head>
 </head>
 <body>
-<a href="" class="btn">Sign in with google</a>
+<a href="{{ authUrl }}" class="btn">Sign in with google</a>
 </body>
 </html>
