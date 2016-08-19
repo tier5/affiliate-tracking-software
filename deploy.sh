@@ -5,7 +5,7 @@ clear
 cd admin
 
 # Pull the latest
-git pull origin develop
+git pull origin master
 
 # Run migrations
 vendor/bin/phinx migrate -e development
