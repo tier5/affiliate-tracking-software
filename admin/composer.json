@@ -25,5 +25,10 @@
   "repositories": [{
       "type": "vcs",
       "url": "https://github.com/goetas/serializer.git"
-      }]
+      }],
+  "autoload": {
+    "psr-0": {
+      "ReviewVelocity\\": "src/"
+    }
+  }
 }

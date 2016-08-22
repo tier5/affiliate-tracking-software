@@ -16,7 +16,7 @@ class Reviews extends BaseService
 {
     protected $const_class;
     protected $types = [];
-    function __construct($config, $di){
+    public function __construct($config = null, $di = null){
         parent::__construct($config, $di);
         $this->types[] = ServicesConsts::$GOOGLE_REVIEW_TYPE;
         $this->types[] = ServicesConsts::$FACEBOOK_REVIEW_TYPE;
@@ -61,5 +61,37 @@ class Reviews extends BaseService
      */
     public function updateReviewCountsForLocationById($location_id){
         foreach($this->types  as $type_id) $this->updateCount($type_id,$location_id);
+    }
+
+
+    /**
+     * @param array $data
+     * @throws \Exception
+     */
+    public function saveReviewFromData($data)
+    {
+        if (!is_array($data)) throw new \Exception("Invalid data specified, expected array");
+        if (!isset($data['rating_type_id'])) throw new \Exception('Invalid rating_type_id');
+        $review = new Review();
+        $record = $review->findOneBy([
+            'rating_type_id'=>$data['rating_type_id'],
+            'location_id'=>$data['location_id'],
+            'rating_type_review_id'=>$data['rating_type_review_id']
+        ]);
+        if(!$record){
+            $record = new Review();
+        }
+        /**
+         * @var $record \Vokuro\Models\Review
+         */
+        $record->external_id = $data['review_type_id'];
+        $record->review_text = $data['review_text'];
+        $record->rating = $data['rating'];
+        $record->rating_type_id = $data['rating_type_id'];
+        $record->location_id = $data['location_id'];
+        $record->rating_type_review_id = $data['rating_type_review_id'];
+        $record->save();
+        $messages = $record->getMessages();
+        if($messages) print_r($messages);
     }
 }

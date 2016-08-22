@@ -4,6 +4,7 @@ namespace Vokuro\Controllers;
 use Phalcon\Mvc\Controller;
 use Services\Facebook\Facebook;
 use Vokuro\Models\Review;
+use Vokuro\Services\Reviews;
 
 
 class ReviewfeedsController extends ControllerBase
@@ -42,6 +43,9 @@ class ReviewfeedsController extends ControllerBase
     }
 
     public function googleReviewsAction(){
+
+        $reviewService = new Reviews();
+
         $client = $this->getGoogleClient();
         try {
             //if we don't have a token, it will complain.. in that case we catch the error, and in our case
@@ -57,7 +61,6 @@ class ReviewfeedsController extends ControllerBase
             /**
              * @var $account \Google_Service_Mybusiness_Account
              */
-            $account_id = str_replace('accounts/','',$account->getName());
             print '<h1>'.$account->accountName.'</h1>';
             $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
             if($locations) foreach($locations as $location){
@@ -65,7 +68,6 @@ class ReviewfeedsController extends ControllerBase
                 /**
                  * @var $location \Google_Service_Mybusiness_Location
                  */
-                $location_id = str_replace('locations/','',$location->getName());
                 $lr = $myBusiness->accounts_locations_reviews->listAccountsLocationsReviews($location->name);
                 $reviews = $lr->getReviews();
                 $reviewCount = $lr->getTotalReviewCount();
@@ -76,6 +78,9 @@ class ReviewfeedsController extends ControllerBase
                     /**
                      * @var $review \Google_Service_Mybusiness_Review Object
                      */
+                    $rating = $review->getStarRating();
+                    $ratings = ['ZERO' => 0,'ONE' => 1,'TWO' => 2,'THREE'=> 3 ,'FOUR' => 4,'FIVE' => 5];
+                    $rating = $ratings[$rating];
                     $review_id = str_replace('/reviews','',$review->getReviewId());
                     $reviewer = $review->getReviewer();
                     /**
@@ -84,21 +89,19 @@ class ReviewfeedsController extends ControllerBase
                     print '<pre>';
                     print '</pre>';
                     print "<h4>Comment: {$review->comment}</h4>";
-
-
-
-
                     print 'link<br />';
-                    print_r([$account_id,$location_id,$review_id]);
-                    print sprintf('https://business.google.com/u/4/b/%s/reviews/l/%s/r/%s',$account_id,$location_id,$review_id);
+                    $arr = [
+                        'rating_type_id' => 3,
+                        'review_text' => $review->comment,
+                        'rating_type_review_id' => $review_id,
+                        'external_id' => $review_id,
+                        'rating' => $rating,
+                        'location_id' => 1
+                    ];
+                    $reviewService->saveReviewFromData($arr);
                 }
-
-
             }
-
-
         }
-
     }
 
     protected function getGoogleClient(){

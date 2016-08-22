@@ -8,7 +8,7 @@
      * Vokuro\Models\Review
      * The Reviews
      */
-    class Review extends Model
+    class Review extends BaseModel
     {
 
         /**
@@ -31,6 +31,7 @@
         public $user_image;
         public $external_id;
         public $location_id;
+        public $rating_type_id;
 
 
 

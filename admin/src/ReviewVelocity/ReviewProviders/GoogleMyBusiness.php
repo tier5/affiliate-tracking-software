@@ -1,5 +1,6 @@
 <?php namespace ReviewVelocity\ReviewProviders;
 use Vokuro\Models\Location;
+use Vokuro\Models\Review;
 
 class GoogleMyBusiness implements IProvider{
 
@@ -28,6 +29,5 @@ class GoogleMyBusiness implements IProvider{
     {
         // TODO: Implement importReviews() method.
     }
-
 
 }
