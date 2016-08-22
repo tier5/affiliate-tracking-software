@@ -15,7 +15,7 @@
         <input class="form-control placeholder-no-fix" type="text" placeholder="Postal Code" id="zip_code" name="zip_code" value="<?=(isset($_POST['zip_code'])?$_POST["zip_code"]:'')?>" />
       </div>
       <div class="search_name_btn">
-        <button type="submit" id="register-submit-btn" class="btnsignup uppercase">Scan Now</button>
+        <button type="submit" id="register-submit-btn" class="btnsignup uppercase">Search</button>
       </div>
     </div>
   </div>

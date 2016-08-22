@@ -124,7 +124,7 @@ class ControllerBase extends Controller {
             $this->view->ShowAgencyStripePopup = false;
 
             if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
-                if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret) {
+                if ((!$agency->stripe_publishable_keys || !$agency->stripe_account_secret) && !$userObj->is_admin) {
                     $this->view->AgencyInvalidStripe = true;
                     $this->view->ShowAgencyStripePopup = true;
                 }
