@@ -835,8 +835,12 @@ class SessionController extends ControllerBase {
                                 //check to see if this location is already in the database, by checking the place id
                                 $conditions = "api_id = :api_id: AND review_site_id = 3";
                                 $parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
+                                // Skip duplicate check if we're dev environment.
+                                $SkipCheck = $this->config->application->environment == 'dev' ? true : false;
+
+
                                 $loc = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-                                if (!$loc) {
+                                if (!$loc || $SkipCheck) {
                                     $strURL = "onclick=\"selectLocation('" . $this->encode(@$arrResultFindPlaceDetail['result']['place_id']) . "', '" .
                                       $this->encode(@$arrResultFindPlaceDetail['result']['url']) . "', '" . $this->encode($returnBusinessName) . "', '" .
                                       $this->encode($street_number) . "', '" . $this->encode($route) . "', '" . $this->encode($locality) . "', '" .
