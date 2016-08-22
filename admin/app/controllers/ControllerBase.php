@@ -85,8 +85,6 @@ class ControllerBase extends Controller {
             //internal navigation parameters
             $this->configureNavigation($identity);
 
-            $haspaid = true;
-
             /*
              * Has this user provided their credit card info?
              */
@@ -99,18 +97,31 @@ class ControllerBase extends Controller {
 
             // Check if business should be disabled
             $this->view->BusinessDisableBecauseOfStripe = false;
-            if($agency->parent_id > 0 && (!$objStripeSubscription || !$objStripeSubscription->stripe_subscription_id || $objStripeSubscription->stripe_subscription_id == 'N')) {
-                $haspaid = false;
+            $this->view->invalidBusinessSubscription = false;
 
-                if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret)
+            // Are we a business without an active subscription plan?
+            if($agency->parent_id > 0 && (!$objStripeSubscription || !$objStripeSubscription->stripe_subscription_id || $objStripeSubscription->stripe_subscription_id == 'N')) {
+                $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+
+                $this->view->invalidBusinessSubscription = true;
+
+                // Disable business if agency has no stripe keys enabled.
+                if (!$objParentAgency->stripe_publishable_keys || !$objParentAgency->stripe_account_secret)
                     $this->view->BusinessDisableBecauseOfStripe = true;
+                else {
+                    // Ask for credit information only if there is no subscription or customer_id.  GARY_TODO:  Probalby should be done in cron script.  Remove customer_id if invalid.
+                    if(!$objStripeSubscription || !$objStripeSubscription->stripe_customer_id)
+                        $this->view->ccInfoRequired = "open";
+                    else
+                        $this->view->ccInfoRequired = "closed";
+                    $this->view->stripePublishableKey = $objParentAgency->stripe_publishable_keys;
+                }
             }
             // End disabled check
 
             // Should popup agency stripe modal?
             $this->AgencyInvalidStripe = false;
             $this->view->ShowAgencyStripePopup = false;
-
 
             if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                 if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret) {
@@ -124,10 +135,6 @@ class ControllerBase extends Controller {
                 $this->view->stripePublishableKey = $this->config->stripe->publishable_key;
             }
             // End stripe modal
-
-
-            $this->view->haspaid = $haspaid;
-            //###  END: check to see if this user has paid   #####
 
             $conditions = "location_id = :location_id:";
 

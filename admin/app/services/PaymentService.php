@@ -193,10 +193,9 @@ class PaymentService extends BaseService {
                 ->execute()
                 ->getFirst();
 
-            $objAgency = Agency::findFirst("parent_id = {$objBusiness->parent_id}");
+            $objAgency = Agency::findFirst("agency_id = {$objBusiness->parent_id}");
 
             $StripeSecretKey = $objBusiness->parent_id == -1 ? $this->config->stripe->secret_key : $objAgency->stripe_account_secret;
-
         } else {
              $StripeSecretKey = $this->config->stripe->secret_key;
         }
@@ -264,12 +263,18 @@ class PaymentService extends BaseService {
             ->execute()
             ->getFirst();
 
+        // Is a business
+        if($agency->parent_id > 0) {
+            $objParentAgency = Agency::findFirst("agency_id = {$agency->parent_id}");
+        }
+
         $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
         if(!$objStripeSubscription->stripe_customer_id)
             return false;
 
         //TODO: This needs to change, saving for last.  Not sure on behavior if stripe key not available.
-        $StripeSecretKey = $agency->parent_id > 0 ? $agency->stripe_account_secret : $this->config->stripe->secret_key;
+        $StripeSecretKey = $agency->parent_id > 0 ? $objParentAgency->stripe_account_secret : $this->config->stripe->secret_key;
+
         try {
             \Stripe\Stripe::setApiKey($StripeSecretKey);
 

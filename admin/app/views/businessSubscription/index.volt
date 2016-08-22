@@ -486,6 +486,7 @@
         function changePlan() {
             $.post('/businessSubscription/changePlan', getSubscriptionParams())
                     .done(function (data) {
+                        console.log(data);
                         if (data.status === true) {
                             $('#current-locations').text(smsLocationSlider.getValue());
                             $('#current-messages').text(smsMessagesSlider.getValue());

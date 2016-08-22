@@ -116,54 +116,52 @@
         <!-- BEGIN TOP NAVIGATION MENU -->
         <div class="top-menu">
             <ul class="nav navbar-nav pull-right">
-                {% if haspaid %}
-                    {% if not is_admin and agencytype != 'agency' %}
-                        <li class="" id="">
-                            <a href="#sendreviewinvite" class="fancybox"><img src="/img/btn_send_review_invite.png" alt="Send Review Invite"/></a>
-                        </li>
-                    {% endif %}
-                    {% if location_id %}
-                        {% if locations %}
-                            <li class="location-header" id="">
-                            <span id="locationset">
-                                Location: {{ location.name }}
-                                {% if locations|length > '1' %}
-                                    <a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a>
-                                {% endif %}
-                            </span>
-                            <span id="locationnotset" style="display: none;"><form action="/" method="post">
-                                    Location:
-                                    <select name="locationselect" id="locationselect">
-                                        {% if locations|length > '1' %}
-                                            {% for loc in locations %}
-                                                <option value='{{ loc.location_id }}'>{{ loc.name }}</option>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </select>
-                                    <input type="submit" class="btn red" value="Change"></form>
-                            </span>
-                            </li>
-                        {% endif %}
-                    {% endif %}
-                    <li class="dropdown dropdown-user" style="margin-left: 20px;">
-                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                            <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> {{ name }} </span>
-                            <i class="fa fa-angle-down" style="color: #484848;"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-default">
-                            <li>
-                                <a href="#">
-                                    <i class="icon-user"></i> My Profile </a>
-                            </li>
-                            <li>
-                                <a href="/session/logout">
-                                    <i class="icon-key"></i>
-                                    <span class="title">Log Out</span>
-                                </a>
-                            </li>
-                        </ul>
+                {% if not is_admin and agencytype != 'agency' %}
+                    <li class="" id="">
+                        <a href="#sendreviewinvite" class="fancybox"><img src="/img/btn_send_review_invite.png" alt="Send Review Invite"/></a>
                     </li>
                 {% endif %}
+                {% if location_id %}
+                    {% if locations %}
+                        <li class="location-header" id="">
+                        <span id="locationset">
+                            Location: {{ location.name }}
+                            {% if locations|length > '1' %}
+                                <a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a>
+                            {% endif %}
+                        </span>
+                        <span id="locationnotset" style="display: none;"><form action="/" method="post">
+                                Location:
+                                <select name="locationselect" id="locationselect">
+                                    {% if locations|length > '1' %}
+                                        {% for loc in locations %}
+                                            <option value='{{ loc.location_id }}'>{{ loc.name }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                                <input type="submit" class="btn red" value="Change"></form>
+                        </span>
+                        </li>
+                    {% endif %}
+                {% endif %}
+                <li class="dropdown dropdown-user" style="margin-left: 20px;">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> {{ name }} </span>
+                        <i class="fa fa-angle-down" style="color: #484848;"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-default">
+                        <li>
+                            <a href="#">
+                                <i class="icon-user"></i> My Profile </a>
+                        </li>
+                        <li>
+                            <a href="/session/logout">
+                                <i class="icon-key"></i>
+                                <span class="title">Log Out</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </div>
         <!-- END TOP NAVIGATION MENU -->
@@ -188,9 +186,54 @@
                     <div class="sidebar-toggler"></div>
                     <!-- END SIDEBAR TOGGLER BUTTON -->
                 </li>
-
-                {% if haspaid %}
-                    {% if is_admin %}
+                {% if is_admin %}
+                    <li class="nav-item start">
+                        <a href="/admindashboard" class="nav-link nav-toggle">
+                            <i class="icon-home"></i>
+                            <span class="title">Dashboard</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item start">
+                        <a href="/admindashboard/list/2" class="nav-link nav-toggle">
+                            <i class="icon-pointer"></i>
+                            <span class="title">See All Businesses</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item start">
+                        <a href="/admindashboard/list/1" class="nav-link nav-toggle">
+                            <i class="icon-pointer"></i>
+                            <span class="title">See All Agencies</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    {% if internalNavParams['hasPricingPlans'] %}
+                        <li class="nav-item">
+                            <a href='/businessPricingPlan' class="nav-link nav-toggle">
+                                <i class="icon-list"></i>
+                                <span class="title">Business Subscriptions</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item start">
+                        <a href="/admindashboard/settings" class="nav-link nav-toggle">
+                            <i class="icon-settings"></i>
+                            <span class="title">Settings</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                {% else %}
+                    {% if agencytype == "agency" %}
+                        <li class="nav-item start">
+                            <a href="/agency" class="nav-link nav-toggle">
+                                <i class="icon-home"></i>
+                                <span class="title">Manage Businesses</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    {% else %}
                         <li class="nav-item start">
                             <a href="/admindashboard" class="nav-link nav-toggle">
                                 <i class="icon-home"></i>
@@ -198,142 +241,94 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
-                        <li class="nav-item start">
-                            <a href="/admindashboard/list/2" class="nav-link nav-toggle">
-                                <i class="icon-pointer"></i>
-                                <span class="title">See All Businesses</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item start">
-                            <a href="/admindashboard/list/1" class="nav-link nav-toggle">
-                                <i class="icon-pointer"></i>
-                                <span class="title">See All Agencies</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        {% if internalNavParams['hasPricingPlans'] %}
+                    {% endif %}
+                    {% if location_id %}
+                        {% if agencytype != "agency" %}
                             <li class="nav-item">
-                                <a href='/businessPricingPlan' class="nav-link nav-toggle">
-                                    <i class="icon-list"></i>
-                                    <span class="title">Business Subscriptions</span>
+                                <a href="/reviews" class="nav-link nav-toggle">
+                                    <i class="icon-diamond"></i>
+                                    <span class="title">Reviews</span>
                                     <span class="selected"></span>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="/analytics" class="nav-link nav-toggle">
+                                    <i class="icon-bar-chart"></i>
+                                    <span class="title">Analytics</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+
+                            {% if is_business_admin %}
+                                <li class="nav-item">
+                                    <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
+                                        <i class="icon-envelope"></i>
+                                        <span class="title">SMS Broadcast</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/contacts" class="nav-link nav-toggle">
+                                        <i class="icon-users"></i>
+                                        <span class="title">Contacts</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/users/" class="nav-link nav-toggle">
+                                        <i class="icon-user"></i>
+                                        <span class="title">Employees</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/stripe/updatePayment" class="nav-link nav-toggle">
+                                        <i class="icon-credit-card"></i>
+                                        <span class="title">Update Payment Info</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                            {% endif %}
                         {% endif %}
-                        <li class="nav-item start">
-                            <a href="/admindashboard/settings" class="nav-link nav-toggle">
+                    {% endif %}
+                    {% if profile == "Business Admin" and agencytype == "business" %}
+                        <li class="nav-item">
+                            <a href="/location/" class="nav-link nav-toggle">
+                                <i class="icon-pointer"></i>
+                                <span class="title">Locations</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if profile != "Employee" %}
+                        {% if agencytype == "agency" %}
+                            {% set SettingsLocation = "agency" %}
+                        {% else %}
+                            {% set SettingsLocation = "location" %}
+                        {% endif %}
+                        <li class="nav-item">
+                            <a href="/settings/{{ SettingsLocation }}/" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
                                 <span class="title">Settings</span>
                                 <span class="selected"></span>
                             </a>
                         </li>
-                    {% else %}
-                        {% if agencytype == "agency" %}
-                            <li class="nav-item start">
-                                <a href="/agency" class="nav-link nav-toggle">
-                                    <i class="icon-home"></i>
-                                    <span class="title">Manage Businesses</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item start">
-                                <a href="/admindashboard" class="nav-link nav-toggle">
-                                    <i class="icon-home"></i>
-                                    <span class="title">Dashboard</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% if location_id %}
-                            {% if agencytype != "agency" %}
-                                <li class="nav-item">
-                                    <a href="/reviews" class="nav-link nav-toggle">
-                                        <i class="icon-diamond"></i>
-                                        <span class="title">Reviews</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/analytics" class="nav-link nav-toggle">
-                                        <i class="icon-bar-chart"></i>
-                                        <span class="title">Analytics</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
+                        <li class="nav-item">
+                            <a href="/users/" class="nav-link nav-toggle">
+                                <i class="icon-user"></i>
+                                <span class="title">Admin Users</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
 
-                                {% if is_business_admin %}
-                                    <li class="nav-item">
-                                        <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
-                                            <i class="icon-envelope"></i>
-                                            <span class="title">SMS Broadcast</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/contacts" class="nav-link nav-toggle">
-                                            <i class="icon-users"></i>
-                                            <span class="title">Contacts</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/users/" class="nav-link nav-toggle">
-                                            <i class="icon-user"></i>
-                                            <span class="title">Employees</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/stripe/updatePayment" class="nav-link nav-toggle">
-                                            <i class="icon-credit-card"></i>
-                                            <span class="title">Update Payment Info</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            {% endif %}
-                        {% endif %}
-                        {% if profile == "Agency Admin" and agencytype == "business" %}
+                        {% if internalNavParams['hasSubscriptions'] %}
                             <li class="nav-item">
-                                <a href="/location/" class="nav-link nav-toggle">
-                                    <i class="icon-pointer"></i>
-                                    <span class="title">Locations</span>
+                                <a href="{{ internalNavParams['subscriptionController'] }}" class="nav-link nav-toggle">
+                                    <i class="icon-wallet"></i>
+                                    <span class="title">Subscriptions</span>
                                     <span class="selected"></span>
                                 </a>
                             </li>
-                        {% endif %}
-                        {% if profile != "Employee" %}
-                            {% if agencytype == "agency" %}
-                                {% set SettingsLocation = "agency" %}
-                            {% else %}
-                                {% set SettingsLocation = "location" %}
-                            {% endif %}
-                            <li class="nav-item">
-                                <a href="/settings/{{ SettingsLocation }}/" class="nav-link nav-toggle">
-                                    <i class="icon-settings"></i>
-                                    <span class="title">Settings</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="/users/" class="nav-link nav-toggle">
-                                    <i class="icon-user"></i>
-                                    <span class="title">Admin Users</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-
-                            {% if internalNavParams['hasSubscriptions'] %}
-                                <li class="nav-item">
-                                    <a href="{{ internalNavParams['subscriptionController'] }}" class="nav-link nav-toggle">
-                                        <i class="icon-wallet"></i>
-                                        <span class="title">Subscriptions</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
-                            {% endif %}
                         {% endif %}
                     {% endif %}
                 {% endif %}
@@ -385,7 +380,7 @@
         </div>
     </div>
 {% endif %}
-{% if haspaid %}
+
     {% if not is_admin and agencytype != "agency" %}
         {% if location_id %}
             <div id="sendreviewinvite" style="width:400px; display: none; color: #7A7A7A;">
@@ -563,19 +558,20 @@
                     $('.fancybox').fancybox();
 
                     var bodyElem = document.getElementsByTagName("body")[0];
+                    console.log(bodyElem);
                     if (bodyElem.dataset.ccprompt === "open") {
                         if(bodyElem.dataset.paymentprovider === "AuthorizeDotNet")
                             $('#updateCardModal').modal('show');
                         else if(bodyElem.dataset.paymentprovider === "Stripe") {
                             var handler = StripeCheckout.configure({
-                                key: '{{ stripePublishableKey }}',
-                                /* TODO: Replace with agency logo */
-                                /*image: '/img/documentation/checkout/marketplace.png',*/
-                                locale: 'auto',
-                                token: function(token) {
-                                // You can access the token ID with `token.id`.
-                                // Get the token ID to your server-side code for use.
-                                updateStripeCard(token);
+                                    key: '{{ stripePublishableKey }}',
+                                    /* GARY_TODO: Replace with agency logo */
+                                    /*image: '/img/documentation/checkout/marketplace.png',*/
+                                    locale: 'auto',
+                                    token: function(token) {
+                                    // You can access the token ID with `token.id`.
+                                    // Get the token ID to your server-side code for use.
+                                    updateStripeCard(token);
                                 }
                             });
 
@@ -631,8 +627,8 @@
             </script>
         {% endif %}
     {% endif %}
-{% endif %}
-{% if agencytype == "agency" AND AgencyInvalidStripe AND ShowAgencyStripPopup %}
+
+{% if agencytype == "agency" AND AgencyInvalidStripe AND ShowAgencyStripePopup %}
     <script>
         $(function(){
                 $('#updateStripeModal').modal('show');
