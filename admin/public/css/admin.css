@@ -915,7 +915,7 @@ body { background-color: #FFFFFF; color: #484848; }
   vertical-align: middle;
 }
 
-.page-logo img { max-width: 100%;}
+.page-logo img { max-height: 39px; }
 
 @media (max-width: 1267px) {
   .upgrade-top {
