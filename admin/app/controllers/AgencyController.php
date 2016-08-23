@@ -15,8 +15,9 @@
     class AgencyController extends ControllerBusinessBase {
         public function initialize() {
 
-            $logged_in = is_array($this->auth->getIdentity());
-            if ($logged_in) {
+            $tUser = $this->auth->getIdentity();
+            $logged_in = is_array($tUser);
+            if ($logged_in && $tUser['profile'] == 'Agency Admin') {
                 if (isset($_POST['locationselect'])) {
                     $this->auth->setLocation($_POST['locationselect']);
                 }

@@ -61,13 +61,13 @@ if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
           <div class="table-header">
             <div class="title reporttitle"><img src="/img/icon_bargraph.gif" /> REPORTING PERIOD</div>
             <div class="header-buttons">
-              <a class="btnLink <?=(!isset($_GET['t']) || (isset($_GET['t']) && $_GET['t'] == 'm')?'':'off')?>" href="/<?=($profilesId==3?'':'admin')?>users?t=m">Current Month</a>
-              <a class="btnLink <?=(isset($_GET['t']) && $_GET['t'] == 'lm'?'':'off')?>" href="/<?=($profilesId==3?'':'admin')?>users?t=lm">Last Month</a>
-              <a class="btnLink <?=(isset($_GET['t']) && $_GET['t'] == 'l'?'':'off')?>" href="/<?=($profilesId==3?'':'admin')?>users?t=l">Lifetime</a>
+              <a class="btnLink <?=(!isset($_GET['t']) || (isset($_GET['t']) && $_GET['t'] == 'm')?'btnSecondary':'off')?>" href="/<?=($profilesId==3?'':'admin')?>users?t=m">Current Month</a>
+              <a class="btnLink <?=(isset($_GET['t']) && $_GET['t'] == 'lm'?'btnSecondary':'off')?>" href="/<?=($profilesId==3?'':'admin')?>users?t=lm">Last Month</a>
+              <a class="btnLink <?=(isset($_GET['t']) && $_GET['t'] == 'l'?'btnSecondary':'off')?>" href="/<?=($profilesId==3?'':'admin')?>users?t=l">Lifetime</a>
               <form id="reviewreportform" action="/<?=($profilesId==3?'':'admin')?>users?t=c" method="post" >
                 Custom <input class="form-control" type="name" value="<?=(isset($_POST['start'])?$_POST['start']:'')?>" name="start" id="start" />
                 To <input class="form-control" type="name" value="<?=(isset($_POST['end'])?$_POST['end']:'')?>" name="end" id="end" />
-                <input type="submit" class="btnLink" value="Go" />
+                <input type="submit" class="btnLink btnSecondary" value="Go" />
               </form>
             </div>
           </div>
@@ -181,7 +181,7 @@ if (isset($users) && $users) {
                 <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
               </div>
             </div>
-            <div class="search-btn" style="width: 136px !important;"><a class="btnLink" style="width: 134px !important;text-align: center;" href="/users/<?=($profilesId==3?'':'admin')?>create">Create <?=($profilesId==3?'Employee':'Admin')?></a></div>
+            <div class="search-btn" style="width: 136px !important;"><a class="btnLink btnSecondary" style="width: 134px !important;text-align: center;" href="/users/<?=($profilesId==3?'':'admin')?>create">Create <?=($profilesId==3?'Employee':'Admin')?></a></div>
           </div>
 
           <!-- Start .panel -->
@@ -259,8 +259,8 @@ foreach($users as $user) {
                   <?php
     }
     ?>
-                  <td><a href="/users/<?=($profilesId==3?'':'admin')?>edit/<?=$user->id?>" class="btnLink"><img src="/img/icon-pencil.gif" /></a></td>
-                  <td><a href="/users/<?=($profilesId==3?'':'admin')?>delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink"><img src="/img/icon-delete.gif" /></a></td>
+                  <td><a href="/users/<?=($profilesId==3?'':'admin')?>edit/<?=$user->id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.gif" /></a></td>
+                  <td><a href="/users/<?=($profilesId==3?'':'admin')?>delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink btnSecondary"><img src="/img/icon-delete.gif" /></a></td>
                 </tr>
                 <?php
 }

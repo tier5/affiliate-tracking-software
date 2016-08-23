@@ -26,7 +26,7 @@ class AdmindashboardController extends ControllerBusinessBase {
         $this->assets->addCss('/css/subscription.css');
 
         $logged_in = is_array($this->auth->getIdentity());
-        if ($logged_in || (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0)) {
+        if ($logged_in && (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0)) {
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
         } else {

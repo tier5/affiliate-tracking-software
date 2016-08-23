@@ -34,7 +34,9 @@ class IndexController extends ControllerBase {
      * Default action. Set the public layout (layouts/private.volt)
      */
     public function indexAction() {
-        $logged_in = is_array($this->auth->getIdentity());
+        $tUser = $this->auth->getIdentity();
+        $logged_in = is_array($tUser);
+
         if ($logged_in) {
 
             /*
@@ -59,7 +61,9 @@ class IndexController extends ControllerBase {
             $identity = $this->session->get('auth-identity');
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
-            $this->view->pick('admindashboard/index');
+
+            if($tUser['is_admin'])
+                $this->view->pick('admindashboard/index');
 
         } else {
             $this->response->redirect('/session/login');

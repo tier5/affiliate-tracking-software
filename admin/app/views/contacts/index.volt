@@ -136,7 +136,7 @@
                     <?php
                       }
                       ?></td>
-                  <td style="min-width: 86px; width: 86px;"><a href="/contacts/view/<?=$invite->review_invite_id?>" class="btnLink" style="display: block;white-space: nowrap;"><img src="/img/icon-eye.gif"> View</a></td>
+                  <td style="min-width: 86px; width: 86px;"><a href="/contacts/view/<?=$invite->review_invite_id?>" class="btnLink btnSecondary" style="display: block;white-space: nowrap;"><img src="/img/icon-eye.gif"> View</a></td>
                 </tr>
                 <?php
                   endforeach;

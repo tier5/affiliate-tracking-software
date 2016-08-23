@@ -159,7 +159,7 @@
                         </div>
                         <div class="bottom-part">
                             <span class="text-wrapper">
-                                You Must Send <span class="fontred"><?=$total_sms_needed?></span> Feedback Requests To Reach Your Goal Of <span class="fontred"><?=$review_goal?></span> New Reviews
+                                You Must Send <span class="feedback_requests"><?=$total_sms_needed?></span> Feedback Requests To Reach Your Goal Of <span class="feedback_requests"><?=$review_goal ?: 0; ?></span> New Reviews
                             </span>
                         </div>
                     </div>
@@ -415,7 +415,7 @@
             $('.overlay').hide();
         });
 
-        var barColor = primary_color ? '#' + primary_color : '#F8CB00';
+        var barColor = primary_color ? primary_color : '#F8CB00';
         $('.easy-pie-chart .number.monthly-review').easyPieChart({
             animate: 1000,
             size: 100,
@@ -438,7 +438,7 @@
             google.charts.setOnLoadCallback(drawBasic);
 
             function drawBasic() {
-                var color = primary_color ? primary_color : '#67cd4d';
+                var color = secondary_color ? secondary_color : '#67cd4d';
                 var data = google.visualization.arrayToDataTable([
                     ['Month', 'Density', { role: 'style' }],
                 <?php

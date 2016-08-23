@@ -22,11 +22,11 @@
 
   <div class="col-md-12 employeetable">
     <div class="middle-row" style="border-bottom: 1px solid #E7ECF0;">
-      <a href="#" id="createlink" class="btnLink" style="height: 32px !important; line-height: 16px; padding-left: 15px; padding-right: 15px;">Create Employee</a>
+      <a href="#" id="createlink" class="btnLink btnSecondary" style="height: 32px !important; line-height: 16px; padding-left: 15px; padding-right: 15px;">Create Employee</a>
       <?php
   if (strpos($_SERVER['REQUEST_URI'],'location')>0 && isset($employees) && count($employees) > 0) {
       ?>
-      <a href="#" id="selectlink" class="btnLink" style="height: 32px !important; line-height: 16px; padding-left: 15px; padding-right: 15px; margin-right: 20px;">Select Employees</a>
+      <a href="#" id="selectlink" class="btnLink btnSecondary" style="height: 32px !important; line-height: 16px; padding-left: 15px; padding-right: 15px; margin-right: 20px;">Select Employees</a>
       <?php
   }
   ?>
@@ -89,7 +89,7 @@
         </div>
       </div>
       <div class="row" style="clear: both;">
-        <div class="field"><button id="createuser" type="submit" class="btnLink">Save</button></div>
+        <div class="field"><button id="createuser" type="submit" class="btnLink btnSecondary">Save</button></div>
       </div>
       <div style="clear: both;">&nbsp;</div>
     </div>
@@ -125,7 +125,7 @@
     ?>
       </div>
       <div class="row" style="clear: both;">
-        <div class="field"><button id="selectuser" type="submit" class="btnLink">Save</button></div>
+        <div class="field"><button id="selectuser" type="submit" class="btnLink btnSecondary">Save</button></div>
       </div>
       <div style="clear: both;">&nbsp;</div>
     </div>

@@ -2,7 +2,7 @@
 <div class="portlet light bordered">
   <div class="portlet-title">
     <div class="">
-      <a href="/location" class="btnLink" style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;">Back</a>
+      <a href="/location" class="btnLink btnSecondary" style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;">Back</a>
       <i class="icon-pencil fa-user"></i>
       <span class="caption-subject bold uppercase" style="display: inline-block; margin-left: 8px; margin-top: 11px;"> Edit </span>
     </div>
@@ -29,10 +29,10 @@
           }
           ?>
           </select>&nbsp;&nbsp;
-          <a href="#createregion" class="fancybox btnLink">Create Region</a>
+          <a href="#createregion" class="fancybox btnLink btnSecondary">Create Region</a>
           <div id="createregion" style="width:400px;display: none;">
             Region Name: <input type="text" placeholder="Name" class="form-control" name="regionname" id="regionname" />
-            <div style="margin-top: 10px;"><input id="btnCreateRegion" type="button btnLink" class="btn btn-big btn-success" value="Save" /></div>
+            <div style="margin-top: 10px;"><input id="btnCreateRegion" type="button btnLink btnSecondary" class="btn btn-big btn-success" value="Save" /></div>
           </div>
         </div>
       </div>
@@ -72,7 +72,7 @@
             <div class="title">GOOGLE: <span class="title-answer">Found</span></div>
             <div class="field"><span class="name">Business Name:</span> <span id="googleName"><?=$location->name?></span></div>
             <div class="field bottom"><span class="name">Location:</span> <span id="googleAddress"><?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?></span></div>
-            <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=<?=$google->external_id?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a> <a class="btnLink" href="#" onclick="changeLocation();$('#locationform1').show();return false;"><img src="/img/icon-pencil.gif" /> Change Location</a></div>
+            <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=<?=$google->external_id?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a> <a class="btnLink btnSecondary" href="#" onclick="changeLocation();$('#locationform1').show();return false;"><img src="/img/icon-pencil.gif" /> Change Location</a></div>
             <br>Have a google my business account? <a href="#">Sign In</a></div>
           </div>
 
@@ -80,8 +80,8 @@
             <div class="title">FACEBOOK: <span class="title-answer"><span class="facebooknotfound">Not </span>Found</span></div>
             <div class="field"><span class="name">Business Name:</span> <span id="facebookName" class="facebookfound"><?=$location->name?></span><input class="facebooknotfound" id="facebooksearchfield" type="name" value="<?=str_replace("\"","&quot;",$location->name)?>" /></div>
             <div class="field bottom"><span class="name">Location:</span> <span id="facebookLocation" class="facebookfound"><?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?></span><input id="facebooksearchfield2" type="name" value="<?=str_replace("\"","&quot;",$location->postal_code)?>" class="facebooknotfound" /></div>
-            <div class="buttons facebookfound" <?=($facebook->external_id?'':' style="display: none;"')?>><a id="facebookLink" href="http://facebook.com/" target="_blank"><img src="/img/icon-eye.gif" />  View</a> <a class="btnLink" href="#" onclick="$('.facebookfound').hide();$('.facebooknotfound').show();return false;"><img src="/img/icon-pencil.gif" />  Update Location</a></div>
-          <div class="buttons facebooknotfound" <?=($facebook->external_id?' style="display: none;"':'')?>><a class="btnLink" href="#" onclick="findBusiness('<?=$facebook->external_id?>');return false;"><img src="/img/icon-maglass.gif" />  Search For Business</a> <a class="btnLink" href="#" id="urllink" onclick="$('#urltype').val('facebook');"><img src="/img/icon-link.gif" /> Enter URL</a></div>
+            <div class="buttons facebookfound" <?=($facebook->external_id?'':' style="display: none;"')?>><a id="facebookLink" href="http://facebook.com/" target="_blank"><img src="/img/icon-eye.gif" />  View</a> <a class="btnLink btnSecondary" href="#" onclick="$('.facebookfound').hide();$('.facebooknotfound').show();return false;"><img src="/img/icon-pencil.gif" />  Update Location</a></div>
+          <div class="buttons facebooknotfound" <?=($facebook->external_id?' style="display: none;"':'')?>><a class="btnLink" href="#" onclick="findBusiness('<?=$facebook->external_id?>');return false;"><img src="/img/icon-maglass.gif" />  Search For Business</a> <a class="btnLink btnSecondary" href="#" id="urllink" onclick="$('#urltype').val('facebook');"><img src="/img/icon-link.gif" /> Enter URL</a></div>
         <div class="facebook-results facebooknotfound">
 
         </div>
@@ -92,8 +92,8 @@
         <div class="title">YELP: <span class="title-answer"><span class="yelpnotfound" <?=($yelp->external_id?' style="display: none;"':'')?>>Not </span>Found</span></div>
         <div class="field"><span class="name">Business Name:</span> <span id="yelpName" class="yelpfound" <?=($yelp->external_id?'':' style="display: none;"')?>><?=$location->name?></span><input id="yelpsearchfield" class="yelpnotfound" <?=($yelp->external_id?' style="display: none;"':'')?> type="name" value="<?=str_replace("\"","&quot;",$location->name)?>" /></div>
         <div class="field bottom"><span class="name">Location:</span> <span id="yelpLocation" class="yelpfound" <?=($yelp->external_id?'':' style="display: none;"')?>><?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?></span><input id="yelpsearchfield2" type="name" value="<?=str_replace("\"","&quot;",$location->postal_code)?>" class="yelpnotfound" <?=($yelp->external_id?' style="display: none;"':'')?> /></div>
-        <div class="buttons yelpfound" <?=($yelp->external_id?'':' style="display: none;"')?>><a id="yelpLink" href="http://yelp.com/biz/" target="_blank"><img src="/img/icon-eye.gif" />  View</a> <a class="btnLink" href="#" onclick="$('.yelpfound').hide();$('.yelpnotfound').show();return false;"><img src="/img/icon-pencil.gif" />  Update Location</a></div>
-      <div class="buttons yelpnotfound" <?=($yelp->external_id?' style="display: none;"':'')?>><a class="btnLink" href="#" onclick="findBusinessYelp();return false;"><img src="/img/icon-maglass.gif" />  Search For Business</a> <a class="btnLink" href="#" id="urllinkyelp" onclick="$('#urltype').val('yelp');"><img src="/img/icon-link.gif" /> Enter URL</a></div>
+        <div class="buttons yelpfound" <?=($yelp->external_id?'':' style="display: none;"')?>><a id="yelpLink" href="http://yelp.com/biz/" target="_blank"><img src="/img/icon-eye.gif" />  View</a> <a class="btnLink btnSecondary" href="#" onclick="$('.yelpfound').hide();$('.yelpnotfound').show();return false;"><img src="/img/icon-pencil.gif" />  Update Location</a></div>
+      <div class="buttons yelpnotfound" <?=($yelp->external_id?' style="display: none;"':'')?>><a class="btnLink btnSecondary" href="#" onclick="findBusinessYelp();return false;"><img src="/img/icon-maglass.gif" />  Search For Business</a> <a class="btnLink btnSecondary" href="#" id="urllinkyelp" onclick="$('#urltype').val('yelp');"><img src="/img/icon-link.gif" /> Enter URL</a></div>
   <div class="yelp-results yelpnotfound">
 
   </div>
@@ -126,7 +126,7 @@
 
     </div>
     <div class="title"><h3>Enter URL</h3></div>
-    <div class="field"><span class="name">Enter URL:</span> <input type="text" value="" name="url" id="url" /> <a class="btnLink" href="#" onclick="searchByURL();return false;">Save</a></div>
+    <div class="field"><span class="name">Enter URL:</span> <input type="text" value="" name="url" id="url" /> <a class="btnLink btnSecondary" href="#" onclick="searchByURL();return false;">Save</a></div>
   </div>
 </div><input type="hidden" name="urltype" id="urltype" value="" />
 <!-- END FORM -->
@@ -135,7 +135,7 @@
 
 <div class="form-group">
   <div class="col-md-offset-2 col-md-10">
-    {{ submit_button("Save", "class": "btnLink") }}
+    {{ submit_button("Save", "class": "btnLink btnSecondary") }}
   </div>
 </div>
 </form>

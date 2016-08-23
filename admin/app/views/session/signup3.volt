@@ -23,10 +23,10 @@
       <div class="form-group">
         <div class="image-upload">
           <label for="sms_message_logo_path">
-            <img src="/img/file-upload.gif" style="margin-left: -12px; cursor: pointer;" />
+            <a class="btnLink btnSecondary">Add Logo</a>
           </label>
           <input type="file" id="sms_message_logo_path" name="sms_message_logo_path" style="display: none;">
-          <span class="help-block" style="display: none;">PNG, JPG or GIF</span>
+          <span class="help-block" style="">PNG, JPG or GIF</span>
         </div>
       </div>
 
@@ -49,7 +49,7 @@
 
       <div class="form-group">
         <label class="control-label" style="width: 100%;">Send Test Text Message:</label>
-        <input class="form-control placeholder-no-fix" type="name" autocomplete="off" placeholder="Cell Phone" name="cell_phone" id="cell_phone" value="<?=(isset($_POST['cell_phone'])?$_POST["cell_phone"]:'')?>" style="float: left; width: 40%; margin-right: 15px;" /> <a href="#" class="btnLink" id="sendsmslink" style="float: left;line-height: 19px;">Send</a>
+        <input class="form-control placeholder-no-fix" type="name" autocomplete="off" placeholder="Cell Phone" name="cell_phone" id="cell_phone" value="<?=(isset($_POST['cell_phone'])?$_POST["cell_phone"]:'')?>" style="float: left; width: 40%; margin-right: 15px;" /> <a href="#" class="btnLink btnSecondary" id="sendsmslink" style="float: left;line-height: 19px;">Send</a>
       </div>
 
       <div id="divSMSResults" class="form-group" style="clear: both;">

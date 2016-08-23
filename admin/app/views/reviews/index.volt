@@ -343,8 +343,8 @@
                         <td>
                           <div class="review <?=$rowclass?>">
                             <div class="rowbuttons">
-                              <a class="btnLink" href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank">View</a>
-                              <a class="btnLink" href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank">Respond</a>
+                              <a class="btnLink btnSecondary" href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank">View</a>
+                              <a class="btnLink btnPrimary" href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank">Respond</a>
                             </div>
                             <div class="rowwrapper">
                               <div class="top">
@@ -685,9 +685,9 @@
 
 
       // The color of the curcular bar. You can pass either a css valid color string like rgb, rgba hex or string colors. But you can also pass a function that accepts the current percentage as a value to return a dynamically generated color.
-      barColor: '#31C5D1',
+      barColor: '{{ secondary_color }}',
       // The color of the track for the bar, false to disable rendering.
-      trackColor: '#E75059',
+      trackColor: '{{ primary_color }}',
       // The color of the scale lines, false to disable rendering.
       scaleColor: false,
       // Defines how the ending of the bar line looks like. Possible values are: butt, round and square.

@@ -124,6 +124,17 @@ class AnalyticsController extends ControllerBase
               );
 
       }
+
+      $this->view->sms_click_this_month = 10;
+      $this->view->sms_click_all_time = 100;
+      $this->view->sms_click_last_month = 9;
+      $this->view->sms_converted_all_time = 60;
+      $this->view->sms_converted_this_month = 6;
+      $this->view->sms_converted_last_month = 5;
+      $this->view->review_count_all_time = 20;
+      $this->view->clicktotal = 22;
+      $this->view->clicklargest = 30;
+      $this->view->sms_sent_all_time = 300;
       
       $this->getSMSReport();
 

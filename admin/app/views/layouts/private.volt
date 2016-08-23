@@ -9,6 +9,32 @@
 <!-- BEGIN HEAD -->
 
 <head>
+    <!-- Begin primary / secondary color css.  Should probably move -->
+    <style type="text/css">
+        .page-sidebar .page-sidebar-menu > li.active > a {
+            background: {{ primary_color }} none repeat scroll 0 0 !important;
+        }
+
+        .btnSecondary, .sms-chart-wrapper .bar-filled, .backgroundSecondary {
+            background-color: {{ secondary_color }} !important;
+        }
+        .sms-chart-wrapper .bar-number .ball, .table-bottom, #reviews .pagination > li > a, .pagination > li > span, .growth-bar, .btnPrimary, .referral-link, .backgroundPrimary {
+            background-color: {{ primary_color }} !important;
+        }
+        #reviews .pagination .active > a, .pagination .active > a:hover {
+            color: {{ secondary_color }} !important;
+        }
+        .feedback_requests {
+            color: {{ secondary_color }} !important;
+        }
+        .nav-tabs .active > a {
+            border-top: 4px solid {{ primary_color }} !important;
+        }
+
+        div#image_container img.selected, div#image_container img:hover {
+            border-color: {{ secondary_color }} !important;
+        }
+    </style>
     <meta charset="utf-8"/>
     {{ get_title() }}
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -77,7 +103,7 @@
             }
             .page-content-wrapper{
                 margin-top:-95px;
-                padding-top:75px;n
+                padding-top:75px;
             }
         </style>
     {% endif %}
@@ -96,8 +122,8 @@
     </div>
     <?php die(); ?>
 {% endif %}
-<input type="hidden" id="primary_color" value="#{{primary_color }}" />
-<input type="hidden" id="secondary_color" value="#{{secondary_color}}" />
+<input type="hidden" id="primary_color" value="{{ primary_color }}" />
+<input type="hidden" id="secondary_color" value="{{ secondary_color}}" />
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
     <!-- BEGIN HEADER INNER -->
@@ -233,6 +259,14 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
+                    {% elseif agencytype == "business" %}
+                        <li class="nav-item start">
+                            <a href="/" class="nav-link nav-toggle">
+                                <i class="icon-home"></i>
+                                <span class="title">Dashboard</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     {% else %}
                         <li class="nav-item start">
                             <a href="/admindashboard" class="nav-link nav-toggle">
@@ -281,16 +315,10 @@
                                         <span class="selected"></span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="/stripe/updatePayment" class="nav-link nav-toggle">
-                                        <i class="icon-credit-card"></i>
-                                        <span class="title">Update Payment Info</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
                             {% endif %}
                         {% endif %}
                     {% endif %}
+
                     {% if profile == "Business Admin" and agencytype == "business" %}
                         <li class="nav-item">
                             <a href="/location/" class="nav-link nav-toggle">

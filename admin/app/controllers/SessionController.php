@@ -848,7 +848,7 @@ class SessionController extends ControllerBase {
                                       $this->encode($country) . "', '" . $this->encode(@$arrResultFindPlaceDetail['result']['formatted_phone_number']) . "', '" .
                                       $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lat']) . "', '" .
                                       $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng']) . "');return false;\" href=\"javascript:void(0);\"";
-                                    $strButton = "<a class=\"business-name-link btnLink\" id=\"business-name-link\" " . $strURL . " style=\"float: right; height: 40px; line-height: 24px;\" class=\"btnLink\" >Choose This Listing</a>";
+                                    $strButton = "<a class=\"business-name-link btnLink btnSecondary\" id=\"business-name-link\" " . $strURL . " style=\"float: right; height: 40px; line-height: 24px;\" >Choose This Listing</a>";
                                 } else {
                                     //the location was found, so tell the user that
                                     $strURL = "href=\"javascript:void(0);\"";

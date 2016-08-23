@@ -573,8 +573,8 @@ div#image_container img.selected, div#image_container img:hover{
 #reviews .fade { display: none; }
 #reviews .active { display: block; }
 #reviews .user-data .active { display: inline; }
-#reviews .nav-tabs a { background-color: #f6f6f6; border: 1px solid #e7ecf0 !important; color: #293543; font-weight: bold; height: 53px; line-height: 36px; margin: 0; text-transform: uppercase; }
-#reviews .nav-tabs .active > a { border-top: 4px solid #283643 !important; background-color: #FFFFFF; height: 53px; line-height: 29px; }
+#reviews .nav-tabs a { background-color: #f6f6f6; border: 1px solid #e7ecf0; color: #293543; font-weight: bold; height: 53px; line-height: 36px; margin: 0; text-transform: uppercase; }
+#reviews .nav-tabs .active > a { border-top: 4px solid #283643; background-color: #FFFFFF; height: 53px; line-height: 29px; }
 #reviews .nav-tabs > li { margin-bottom: -4px; }
 #reviews .nav.nav-tabs { overflow: hidden; }
 

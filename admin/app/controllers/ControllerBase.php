@@ -77,9 +77,17 @@ class ControllerBase extends Controller {
                     'main_color_setting' => $agency->main_color,
                     'rgb' => $rgb,
                     'main_color'=>$agency->main_color,
+                    'primary_color' => $agency->main_color,
                     'secondary_color'=>$agency->secondary_color,
                     'logo_setting' => $agency->logo_path
                 ]);
+
+            }
+
+            if($agency->parent_id > 0) {
+                $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+                $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
+                $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
             }
 
             //internal navigation parameters
@@ -101,7 +109,6 @@ class ControllerBase extends Controller {
 
             // Are we a business without an active subscription plan?
             if($agency->parent_id > 0 && (!$objStripeSubscription || !$objStripeSubscription->stripe_subscription_id || $objStripeSubscription->stripe_subscription_id == 'N')) {
-                $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
 
                 $this->view->invalidBusinessSubscription = true;
 

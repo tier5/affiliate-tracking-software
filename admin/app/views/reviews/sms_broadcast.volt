@@ -57,7 +57,7 @@
         <div class="portlet-body" id="reportwrapperreview">
 
           <ul class="nav nav-tabs" style="margin-bottom: 25px;">
-            <li class="active"><a style="border-top: 8px solid #283643 !important; padding: 14px 69px 53px;" href="/reviews/sms_broadcast"> NEW MESSAGES </a></li>
+            <li class="active"><a style="padding: 14px 69px 53px;" href="/reviews/sms_broadcast"> NEW MESSAGES </a></li>
             <li><a style="border-top: 8px solid #F6F6F6 !important; padding: 14px 69px 53px;" href="/reviews/sent_message"> SENT MESSAGE </a></li>
           </ul>
 
@@ -200,7 +200,7 @@
 
                             <div class="form-group">
                               <div class="col-md-12">
-                                <input type="submit" id="searchbutton" class="btnLink" value="Search" style="width: 100%; height: 43px; padding: 12px;" />
+                                <input type="submit" id="searchbutton" class="btnLink btnSecondary" value="Search" style="width: 100%; height: 43px; padding: 12px;" />
                               </div>
                             </div>
 
@@ -317,7 +317,7 @@
                         <input type="text" placeholder="Link" class="form-control" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" />
                       </div>
                       <div class="col-md-4">
-                        <input type="submit" class="btnLink" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" id="sendbutton" />
+                        <input type="submit" class="btnLink btnSecondary" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" id="sendbutton" />
                       </div>
                     </div>
                     <div class="form-group">
@@ -330,7 +330,7 @@
                         <input type="text" placeholder="Phone" class="form-control" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" />
                       </div>
                       <div class="col-md-4">
-                        <button id="testbutton" type="submit" class="btnLink" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" >Send Test SMS Message</button>
+                        <button id="testbutton" type="submit" class="btnLink btnSecondary" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" >Send Test SMS Message</button>
                       </div>
                     </div>
                     <div class="form-group error" id="testerror" style="display: none;">

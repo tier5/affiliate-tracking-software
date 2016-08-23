@@ -444,9 +444,9 @@
 
 
       // The color of the curcular bar. You can pass either a css valid color string like rgb, rgba hex or string colors. But you can also pass a function that accepts the current percentage as a value to return a dynamically generated color.
-      barColor: '#2E5390',
+      barColor: '{{ secondary_color }}',
       // The color of the track for the bar, false to disable rendering.
-      trackColor: '#D7DFED',
+      trackColor: '{{ primary_color }}',
       // The color of the scale lines, false to disable rendering.
       scaleColor: false,
       // Defines how the ending of the bar line looks like. Possible values are: butt, round and square.
@@ -466,9 +466,9 @@
 
 
       // The color of the curcular bar. You can pass either a css valid color string like rgb, rgba hex or string colors. But you can also pass a function that accepts the current percentage as a value to return a dynamically generated color.
-      barColor: '#2E5390',
+      barColor: '{{ secondary_color }}',
       // The color of the track for the bar, false to disable rendering.
-      trackColor: '#D7DFED',
+      trackColor: '{{ primary_color }}',
       // The color of the scale lines, false to disable rendering.
       scaleColor: false,
       // Defines how the ending of the bar line looks like. Possible values are: butt, round and square.

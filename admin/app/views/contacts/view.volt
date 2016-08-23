@@ -188,7 +188,7 @@
 
           </div>
           <div style="width: 50%; float: left;">
-            <a style="float: right; margin-top: 25px; margin-right: 20px;" class="fancybox btnLink send-review-invite" href="#sendreviewinvite" onclick="$('#smsrequestformname').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->name))?>');$('#smsrequestformphone').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->phone))?>');">Send Review Invite</a>
+            <a style="float: right; margin-top: 25px; margin-right: 20px;" class="fancybox btnLink btnSecondary send-review-invite" href="#sendreviewinvite" onclick="$('#smsrequestformname').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->name))?>');$('#smsrequestformphone').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->phone))?>');">Send Review Invite</a>
             <form action="/contacts/view/<?=$review_invite->review_invite_id?>" method="Post" >
 
               <?php
@@ -223,7 +223,7 @@
               </div>
               <div class="form-group" style="padding-top: 5px; clear: both;">
                 <div class="col-md-offset-2 col-md-10">
-                  <input type="submit" style="height: 42px; line-height: 14px; margin-left: 20%; padding: 15px 36px; text-align: right;" value="Save" class="btnLink" />
+                  <input type="submit" style="height: 42px; line-height: 14px; margin-left: 20%; padding: 15px 36px; text-align: right;" value="Save" class="btnLink btnSecondary" />
                 </div>
               </div>
 

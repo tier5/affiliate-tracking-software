@@ -59,7 +59,7 @@
             <div class="table-header">
               <div class="title reporttitle"><i class="icon-envelope"></i> SENT MESSAGES</div>
               <div class="header-buttons">
-                <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink" href="/reviews/sent_message">Back</a>
+                <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink btnSecondary" href="/reviews/sent_message">Back</a>
               </div>
             </div>
           </div>

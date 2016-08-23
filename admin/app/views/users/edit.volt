@@ -6,7 +6,7 @@
 <div class="portlet light bordered">
   <div class="portlet-title">
     <div class="">
-      <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink" href="/users<?=($profilesId==3?'':'/admin')?>">Back</a>
+      <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink btnSecondary" href="/users<?=($profilesId==3?'':'/admin')?>">Back</a>
       <i class="icon-pencil fa-user"></i>
       <span style="display: inline-block; margin-left: 8px; margin-top: 11px;" class="caption-subject bold uppercase"> Edit </span>
     </div>
@@ -104,7 +104,7 @@
           Invalid email.
         </div>
         <div class="col-md-offset-2 col-md-10">
-          <input type="submit" class="btnLink" value="Save" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: right;" />
+          <input type="submit" class="btnLink btnSecondary" value="Save" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: right;" />
         </div>
       </div>
       {{ form.render("id") }}

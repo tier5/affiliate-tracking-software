@@ -167,8 +167,8 @@
                       <span class="site-wrapper"><img src="<?=$rsl->review_site->icon_path?>" class="imgicon" /> <?=$rsl->review_site->name?></span>
                     <span class="review_site-buttons">
                       <?php if ($rsl->review_site_id <= 3) { ?>
-                        <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a>
-                        <a class="btnLink" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/img/icon-pencil.gif" /> Update Location</a>
+                        <a class="btnLink btnSecondary" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a>
+                        <a class="btnLink btnSecondary" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/img/icon-pencil.gif" /> Update Location</a>
                       <?php } else { ?>
                       <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a>
                       <?php } ?>
@@ -190,7 +190,7 @@
                 <label class="col-md-4 control-label">
                 </label>
                 <div class="col-md-8">
-                  <a class="btnLink" id="btnAddReviewSite" href="" target="_blank">Add Review Site</a>
+                  <a class="btnLink btnSecondary" id="btnAddReviewSite" href="" target="_blank">Add Review Site</a>
                 </div>
               </div>
             </div>
@@ -201,7 +201,7 @@
               <div class="row">
                 <label for="rating_threshold_star" class="col-md-4 control-label">Authenticate Facebook</label>
                 <div class="col-md-8">
-                  <a href="/location/getAccessToken" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
+                  <a href="/location/getAccessToken" id="btnAuthenticateFacebook" class="btnLink btnSecondary">Authenticate Facebook</a>
                 </div>
               </div>
               <div class="row">
@@ -590,7 +590,7 @@
             Invalid file type.  Only gif, png, jpg  or jpeg file extensions are allowed.
           </div>
           <div class="col-md-offset-4 col-md-8">
-            {{ submit_button("Save", "class": "btn btn-big btn-success btnLink") }}
+            {{ submit_button("Save", "class": "btn btn-big btn-success btnLink btnSecondary") }}
           </div>
         </div>
         {{ form.render("agency_id") }}
@@ -645,7 +645,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         </div>
       </div>
       <div class="row">
-        <div class="field"><button id="createsite" type="submit" class="btnLink">Save</button></div>
+        <div class="field"><button id="createsite" type="submit" class="btnLink btnSecondary">Save</button></div>
       </div>
       <div style="clear: both;">&nbsp;</div>
     </div>
