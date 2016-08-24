@@ -158,7 +158,7 @@
                             </div>
                         </div>
                         <div class="bottom-part">
-                            <span class="text-wrapper">
+                            <span class="text-wrapper text-center" style="width: 100%">
                                 You Must Send <span class="feedback_requests"><?=$total_sms_needed?></span> Feedback Requests To Reach Your Goal Of <span class="feedback_requests"><?=$review_goal ?: 0; ?></span> New Reviews
                             </span>
                         </div>
