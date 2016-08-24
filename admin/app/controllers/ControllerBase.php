@@ -76,9 +76,6 @@ class ControllerBase extends Controller {
                 $this->view->setVars([
                     'main_color_setting' => $agency->main_color,
                     'rgb' => $rgb,
-                    'main_color'=>$agency->main_color,
-                    'primary_color' => $agency->main_color,
-                    'secondary_color'=>$agency->secondary_color,
                     'logo_setting' => $agency->logo_path
                 ]);
 
@@ -88,6 +85,9 @@ class ControllerBase extends Controller {
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
                 $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
+            } else {
+                $this->view->primary_color = "#2a3644";
+                $this->view->secondary_color = "#2eb82e";
             }
 
             //internal navigation parameters
@@ -583,8 +583,7 @@ class ControllerBase extends Controller {
                     //the user wants an email, so send it now
                     $this->getDI()
                         ->getMail()
-                        ->send('kevin_revie@hotmail.com', $subject, '', '', $message);
-                    //->send($user->email, 'Notification: New Review', '', '', $message);
+                        ->send($user->email, 'Notification: New Review', '', '', $message);
                 }
                 if ($an->sms_alert == 1 && isset($user->phone) && $user->phone != '') {
                     //the user wants a text message
