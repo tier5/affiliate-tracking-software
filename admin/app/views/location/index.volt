@@ -93,8 +93,8 @@ foreach($locs as $location) {
                     <td><?=$location->locality?></td>
                     <td><?=($location->review_count > 0?$location->review_count:0)?></td>
                     <td><?=($location->review_count > 0?number_format((float)($location->rating / $location->review_count), 1, '.', ''):'0.0')?></td>
-                    <td><a href="/location/edit/<?=$location->location_id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.gif" /></a></td>
-                    <td><a href="/location/delete/<?=$location->location_id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink btnSecondary"><img src="/img/icon-delete.gif" /></a></td>
+                    <td><a href="/location/edit/<?=$location->location_id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.png" /></a></td>
+                    <td><a href="/location/delete/<?=$location->location_id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink btnSecondary"><img src="/img/icon-delete.png" /></a></td>
                   </tr>
                   <?php
     //if ($rowclass == '') { $rowclass = 'darker'; } else { $rowclass = ''; }

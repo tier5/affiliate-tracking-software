@@ -40,7 +40,7 @@ class UserManager extends BaseService {
 
     public function isEmployee($session) {
         $identity = $session->get('auth-identity');
-        return $identity && $identity['profile'] === 'Employee';
+        return $identity && $identity['is_employee'];
     }
 
     public function hasLocation($session) {

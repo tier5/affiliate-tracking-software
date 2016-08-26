@@ -2,7 +2,7 @@
 
   <div class="row">
     <div class="col-md-5 col-sm-5">
-      <h3 class="page-title"><?=($profilesId==3?'Employee':'Admin Users')?></h3>
+      <h3 class="page-title">All Users</h3>
     </div>
     <?php
   if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
@@ -59,7 +59,7 @@ if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
         ?>
         <div class="reportheader">
           <div class="table-header">
-            <div class="title reporttitle"><img src="/img/icon_bargraph.gif" /> REPORTING PERIOD</div>
+            <div class="title reporttitle"><img src="/img/icon_bargraph.png" /> REPORTING PERIOD</div>
             <div class="header-buttons">
               <a class="btnLink <?=(!isset($_GET['t']) || (isset($_GET['t']) && $_GET['t'] == 'm')?'btnSecondary':'off')?>" href="/<?=($profilesId==3?'':'admin')?>users?t=m">Current Month</a>
               <a class="btnLink <?=(isset($_GET['t']) && $_GET['t'] == 'lm'?'btnSecondary':'off')?>" href="/<?=($profilesId==3?'':'admin')?>users?t=lm">Last Month</a>
@@ -172,7 +172,7 @@ if (isset($users) && $users) {
 
         <div class="portlet light bordered dashboard-panel">
           <div class="table-header">
-            <div class="title"><?=($profilesId==3?'Employee':'Admin User')?> List</div>
+            <div class="title">User List</div>
             <div class="flexsearch">
               <div class="flexsearch--wrapper">
                 <div class="flexsearch--input-wrapper">
@@ -181,7 +181,7 @@ if (isset($users) && $users) {
                 <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
               </div>
             </div>
-            <div class="search-btn" style="width: 136px !important;"><a class="btnLink btnSecondary" style="width: 134px !important;text-align: center;" href="/users/<?=($profilesId==3?'':'admin')?>create">Create <?=($profilesId==3?'Employee':'Admin')?></a></div>
+            <div class="search-btn" style="width: 136px !important;"><a class="btnLink btnSecondary" style="width: 134px !important;text-align: center;" href="/users/<?=($profilesId==3?'':'admin')?>create">Create User</a></div>
           </div>
 
           <!-- Start .panel -->
@@ -195,7 +195,8 @@ if (isset($users) && $users) {
       if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
                   ?>
                   <th>Email</th>
-                  <th>Type</th>
+                  <th>Role</th>
+                  <th>Employee?</th>
                   <th>Location</th>
                   <?php
       } else {
@@ -206,8 +207,11 @@ if (isset($users) && $users) {
                   <?php
       }
       ?>
+
+                {% if profilesId == 1 OR profilesId == 2 %}
                   <th>Edit</th>
                   <th>Delete</th>
+                {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -221,8 +225,9 @@ foreach($users as $user) {
                   <?php
     if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
                   ?>
-                  <td><?=$user->email?></td>
-                  <td><?=($user->is_employee==1?'Admin & Employee':'Admin')?></td>
+                  <td><?=$user->email;?></td>
+                  <td><?=$user->role; ?></td>
+                  <td><?php if($user->is_employee) echo "Yes"; else echo "No"; ?></td>
                   <td>
                     <?=($user->is_all_locations==1?'<div>All</div>':'')?>
                     <?php foreach($user->locations as $location) { ?>
@@ -259,8 +264,11 @@ foreach($users as $user) {
                   <?php
     }
     ?>
-                  <td><a href="/users/<?=($profilesId==3?'':'admin')?>edit/<?=$user->id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.gif" /></a></td>
-                  <td><a href="/users/<?=($profilesId==3?'':'admin')?>delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink btnSecondary"><img src="/img/icon-delete.gif" /></a></td>
+                {% if profilesId == 1 OR profilesId == 2 %}
+                  <td><a href="/users/adminedit/<?=$user->id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.png" /></a></td>
+
+                  <td><a href="/users/delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink btnSecondary"><img src="/img/icon-delete.png" /></a></td>
+                {% endif %}
                 </tr>
                 <?php
 }

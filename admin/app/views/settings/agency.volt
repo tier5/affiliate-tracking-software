@@ -200,7 +200,7 @@
                     <span class="review_site-buttons">
                       <?php if ($rsl->review_site_id <= 3) { ?>
                         <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/img/icon-eye.gif"/> View</a>
-                        <a class="btnLink" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/img/icon-pencil.gif"/> Update Location</a>
+                        <a class="btnLink" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/img/icon-pencil.png"/> Update Location</a>
                         <?php } else { ?>
                         <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/img/icon-eye.gif"/> View</a>
                         <?php } ?>

@@ -199,7 +199,7 @@
       <div class="portlet light bordered">
         <div class="portlet-title">
           <div class="caption">
-            <img src="/img/icon-arrow.gif" />
+            <img src="/img/icon-arrow.png" />
             <span class="caption-subject bold uppercase">CLICK THROUGH RATE</span>
           </div>
         </div>

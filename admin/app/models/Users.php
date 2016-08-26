@@ -12,8 +12,6 @@
      */
     class Users extends BaseModel
     {
-
-
         public $id;
         public $name;
         public $email;
@@ -30,6 +28,7 @@
         public $phone;
         public $send_confirmation;
         public $is_employee;
+        public $role;
 
         /**
          * @return mixed
@@ -93,6 +92,20 @@
         public function setIsEmployee($is_employee)
         {
             $this->is_employee = $is_employee;
+        }
+
+        /**
+         * @param $role
+         */
+        public function setRole($role) {
+            $this->role = $role;
+        }
+
+        /**
+         * @return mixed
+         */
+        public function getRole() {
+            return $this->role;
         }
 
 
@@ -250,8 +263,23 @@
         /*
          * This function pull up a report of the top employees
          */
-        public static function getEmployeeListReport($agency_id, $start_time, $end_time, $location_id, $review_invite_type_id, $profilesId)
+        public static function getEmployeeListReport($agency_id, $start_time, $end_time, $location_id, $review_invite_type_id, $profilesId, $employees_only)
         {
+            $ProfileWhere = '';
+            switch($profilesId) {
+                case 1:
+                case 2:
+                case 4:
+                    break;
+
+                case 3:
+                    $ProfileWhere = ' AND profilesID = 4 ';
+                    break;
+            }
+
+            if($employees_only)
+                $ProfileWhere .= ' AND is_employee = 1';
+
             // A raw SQL statement
             $sql   = "SELECT users.*,
                   (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS sms_sent_all_time,
@@ -260,8 +288,7 @@
                     "(SELECT AVG(rating) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL  AND review_invite.review_invite_type_id = ".($review_invite_type_id > 0?$review_invite_type_id:1)." AND rating IS NOT NULL AND rating != '' AND users.id = review_invite.sent_by_user_id AND recommend = 'Y'".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") AS avg_feedback")
                 .($review_invite_type_id > 0?", ".$review_invite_type_id." AS review_invite_type_id":", 1 AS review_invite_type_id")."
                 FROM users
-                WHERE users.agency_id = ".$agency_id."
-                  ".($profilesId?($profilesId!=1?" AND users.profilesId != 1 AND users.profilesId != 4 AND users.profilesId = ".$profilesId."":" AND users.profilesId = 1"):" AND (users.profilesId = 3 OR users.is_employee = 1) ")."
+                WHERE users.agency_id = ".$agency_id.$ProfileWhere."                  
                 ORDER BY (SELECT COUNT(*) FROM review_invite WHERE review_invite.location_id = ".$location_id." AND sms_broadcast_id IS NULL AND users.id = review_invite.sent_by_user_id".($start_time?" AND review_invite.date_sent >= '".$start_time."' AND review_invite.date_sent <= '".$end_time."'":'').") DESC;";
             //echo '<p>sql:'.$sql.'</p>';
 

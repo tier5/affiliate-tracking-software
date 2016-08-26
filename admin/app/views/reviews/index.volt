@@ -168,7 +168,7 @@
       <div class="portlet light bordered" id="pnlSMSSent">
         <div class="portlet-title">
           <div class="caption">
-            <img src="/img/icon_bargraph.gif" />
+            <img src="/img/icon_bargraph.png" />
             <span class="caption-subject bold uppercase">Review Count By Site</span>
           </div>
         </div>
@@ -292,7 +292,7 @@
   <div class="row">
     <div class="col-md-12 col-sm-12">
       <div class="growth-bar">
-        <img src="/img/icon_reviews.gif" /> Reviews &amp; Feedback
+        <img src="/img/icon_reviews.png" /> Reviews &amp; Feedback
       </div>
     </div>
   </div>
@@ -567,7 +567,7 @@
   <div class="row">
     <div class="col-md-12 col-sm-12">
       <div class="growth-bar">
-        <img src="/img/icon_reviews.gif" /> Review Invite List
+        <img src="/img/icon_reviews.png" /> Review Invite List
       </div>
     </div>
   </div>

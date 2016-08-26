@@ -17,7 +17,7 @@ class BusinessSubscriptionController extends ControllerBase {
     public function initialize() {
 
         $identity = $this->session->get('auth-identity');
-        if ($identity && $identity['profile'] != 'Employee') {
+        if ($identity && $identity['profile'] != 'User') {
             $this->tag->setTitle('Review Velocity | Subscription');
             $this->view->setTemplateBefore('private');
         } else {

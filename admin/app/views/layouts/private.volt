@@ -328,7 +328,7 @@
                             </a>
                         </li>
                     {% endif %}
-                    {% if profile != "Employee" %}
+                    {% if profile != "User" %}
                         {% if agencytype == "agency" %}
                             {% set SettingsLocation = "agency" %}
                         {% else %}
@@ -342,9 +342,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/users/" class="nav-link nav-toggle">
+                            <a href="/users/admin" class="nav-link nav-toggle">
                                 <i class="icon-user"></i>
-                                <span class="title">Admin Users</span>
+                                <span class="title">Users</span>
                                 <span class="selected"></span>
                             </a>
                         </li>

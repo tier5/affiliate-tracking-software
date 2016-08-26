@@ -2,7 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class AddHashToSubscription extends AbstractMigration
+class AddRoleToUser extends AbstractMigration
 {
     /**
      * Change Method.
@@ -28,16 +28,17 @@ class AddHashToSubscription extends AbstractMigration
     public function up()
     {
 
-        $table = $this->table('subscription_pricing_plan');
-        $table->addColumn('short_code', 'string', array('limit' => 12))
-            ->update();
+        $table = $this->table('users');
+        $table->addColumn('role', 'string', array('limit' => 255,'null'=>true, 'default' => 'Admin'))->update();
 
+        $this->query("UPDATE profiles SET name='User' WHERE name='Employee'");
 
     }
 
     public function down() {
-        $this->query("ALTER TABLE subscription_pricing_plan 
-          DROP COLUMN short_code
+        $this->query("UPDATE profiles SET name='Employee' WHERE name='User'");
+        $this->query("ALTER TABLE users 
+          DROP COLUMN role
         ");
     }
 }

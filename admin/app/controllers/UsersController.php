@@ -35,6 +35,10 @@
          */
         public function indexAction()
         {
+            $identity = $this->auth->getIdentity();
+//            echo "<PRE>";
+            //print_r($identity['profilesId']);
+  //          die();
             $this->usersFunctionality(3);
             $this->getSMSReport();
         }
@@ -45,7 +49,8 @@
          */
         public function adminAction()
         {
-            $this->usersFunctionality(1);
+            $identity = $this->auth->getIdentity();
+            $this->usersFunctionality($identity['profilesId']);
             $this->getSMSReport();
             try {
                 $this->view->render('users', 'index');
@@ -64,7 +69,8 @@
          */
         public function createAction()
         {
-            $this->createFunction(3);
+            $identity = $this->auth->getIdentity();
+            $this->createFunction($identity['profilesId']);
         }
 
 
@@ -175,7 +181,7 @@
             //get the user id
             if(!defined('RV_TESTING')) $identity = $this->auth->getIdentity();
             // If there is no identity available the user is redirected to index/index
-            if (!is_array($identity) && !defined('RV_TESTING')) {
+            if (!is_array($identity) && !defined('RV_TESTING') || $profilesId == 3) {
                 $this->response->redirect('/session/login?return=/users/'.($profilesId==3?'':'admin'));
                 $this->view->disable();
                 return;
@@ -184,7 +190,6 @@
             $conditions = "id = :id:";
             $parameters = array("id" => $identity['id']);
             $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-            //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
 
             if (defined('RV_TESTING') || $this->request->isPost()) {
                 if(defined('RV_TESTING')) $_POST = $data;
@@ -192,8 +197,6 @@
                 $user = new Users();
 
                 $agency_id = defined('RV_TESTING') ? $data['agency_id'] : $userObj->agency_id;
-
-
 
                 $user->assign(array(
                     'name' => $this->request->getPost('name', 'striptags'),
@@ -203,12 +206,11 @@
                     'agency_id' => $agency_id,
                     'create_time' => date('Y-m-d H:i:s'),
                 ));
-                //echo '<pre>$user:'.print_r($user,true).'</pre>';;
-                if (isset($_POST['type']) && $_POST['type']=='1') {
-                    $user->is_employee=1;
-                } else {
-                    $user->is_employee=0;
-                }
+
+                $user->is_employee = isset($_POST['is_employee']) && $_POST['is_employee'] == 'Yes' ? 1 : 0;
+
+                $user->profilesId = $_POST['type'] == 'User' ? 3 : 2;
+                $user->role = $_POST['type'];
 
                 $isall = false;
                 if(!empty($_POST['locations'])) {
@@ -259,7 +261,7 @@
                         $mail->sendActivationEmailToEmployee($user);
                     }
 
-                    $this->flash->success("The ".($profilesId==3?'employee':'admin user')." was created successfully");
+                    $this->flash->success("The user was created successfully");
 
                     Tag::resetInput();
                 }
@@ -317,7 +319,7 @@
 
             $user = Users::findFirstById($id);
             if (!$user) {
-                $this->flash->error("The ".($profilesId==3?'employee':'admin user')." was not found");
+                $this->flash->error("The ".($profilesId==3?'user':'admin user')." was not found");
                 return $this->dispatcher->forward(array(
                     'action' => 'index'
                 ));
@@ -364,11 +366,16 @@
                     //'active' => $this->request->getPost('active')
                 ));
 
-                if (isset($_POST['type']) && $_POST['type']=='1') {
+                if (isset($_POST['is_employee']) && $_POST['is_employee']=='Yes') {
                     $user->is_employee=1;
                 } else {
                     $user->is_employee=0;
                 }
+
+
+
+                $user->profilesId = $_POST['type'] == 'User' ? 3 : 2;
+                $user->role = $_POST['type'];
 
                 //delete all locations for this user
                 //$conditions = "user_id = :user_id:";
@@ -402,7 +409,7 @@
                 if (!$user->save()) {
                     $this->flash->error($user->getMessages());
                 } else {
-                    $this->flash->success("The ".($profilesId==3?'employee':'admin user')." was updated successfully");
+                    $this->flash->success("The ".($user->profilesId==3?'user':'admin user')." was updated successfully");
 
                     //Tag::resetInput();
                 }
@@ -451,7 +458,7 @@
 
             $user = Users::findFirstById($id);
             if (!$user) {
-                $this->flash->error("The ".($profilesId==3?'employee':'admin user')." was not found");
+                $this->flash->error("The ".($profilesId==3?'user':'admin user')." was not found");
                 return $this->dispatcher->forward(array(
                     'action' => 'index'
                 ));
@@ -481,7 +488,7 @@
             if (!$user->delete()) {
                 $this->flash->error($user->getMessages());
             } else {
-                $this->flash->success("The ".($profilesId==3?'employee':'admin user')." was deleted");
+                $this->flash->success("The ".($profilesId==3?'user':'admin user')." was deleted");
             }
 
             return $this->dispatcher->forward(array(

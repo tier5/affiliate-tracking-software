@@ -697,16 +697,19 @@ class ControllerBase extends Controller {
             }
 
             if (strpos($_SERVER['REQUEST_URI'], 'users/admin') > 0) {
-
+                if ($loc) {
+                    $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId, false);
+                }
             } else {
                 $users_report = null;
-                if ($loc)
-                    $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false);
+                if ($loc) {
+                    $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
+                    $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
+                }
                 $this->view->users_report = $users_report;
             }
 
-            if ($loc)
-                $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId);
+
             //} else {
             //else only show the user the employees from the locations that they have access to
             //  $users = Users::getEmployeesByUser($userObj, $profilesId);
