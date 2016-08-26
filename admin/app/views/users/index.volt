@@ -172,7 +172,7 @@ if (isset($users) && $users) {
 
         <div class="portlet light bordered dashboard-panel">
           <div class="table-header">
-            <div class="title">Employee List</div>
+            <div class="title">User List</div>
             <div class="flexsearch">
               <div class="flexsearch--wrapper">
                 <div class="flexsearch--input-wrapper">
