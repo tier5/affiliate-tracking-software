@@ -1412,11 +1412,7 @@
 
         protected function getAccessToken($LocationID) {
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
-            return json_decode($objLocation->json_access_token, true);
-            /*$length = sizeof($_SESSION['google_access_token']);
-            if($length){
-                return $_SESSION['google_access_token'][$length - 1];
-            }*/
+            return $objLocation->json_access_token;
         }
 
         protected function setAccessToken($access_token, $LocationID) {
@@ -1427,13 +1423,7 @@
                 $objLocation->review_site_id = 3;
             }
 
-
-            /*$objLocation->access_token = $access_token['access_token'];
-            $objLocation->access_expires_in = $access_token['expires_in'];
-            $objLocation->access_created_at = $access_token['created'];
-            $objLocation->refresh_token = $access_token['refresh_token'];*/
             $objLocation->json_access_token = json_encode($access_token);
-
             $objLocation->save();
 
             //$_SESSION['google_access_token'][] = $access_token;
@@ -1448,20 +1438,15 @@
                 $objLocation->review_site_id = 3;
             }
 
+            $objLocation->json_access_token = json_encode($refresh_token);
 
-            //$objLocation->access_token = $refresh_token['refresh_token'];
             $objLocation->save();
 
-            //$_SESSION['google_refresh_token'][] = $refresh_token;
         }
 
         protected function getRefreshToken($LocationID){
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
-            return json_decode($objLocation->json_access_token, true);
-            /*$length = sizeof($_SESSION['google_refresh_token']);
-            if ($length) {
-                return $_SESSION['google_refresh_token'][$length - 1];
-            }*/
+            return $objLocation->json_access_token;
         }
 
         public function googleReviewsAction() {
