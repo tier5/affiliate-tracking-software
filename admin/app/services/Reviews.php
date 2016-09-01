@@ -90,6 +90,11 @@ class Reviews extends BaseService
         $record->rating_type_id = $data['rating_type_id'];
         $record->location_id = $data['location_id'];
         $record->rating_type_review_id = $data['rating_type_review_id'];
+        if($data['time_created'])
+            $record->time_created = date("Y-m-d H:i:s", strtotime($data['time_created']));
+
+        if($data['user_id'])
+            $record->user_id = $data['user_id'];
         $record->save();
         $messages = $record->getMessages();
         if($messages) print_r($messages);

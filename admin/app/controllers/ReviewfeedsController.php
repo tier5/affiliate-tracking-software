@@ -10,7 +10,7 @@ use Vokuro\Services\Reviews;
 class ReviewfeedsController extends ControllerBase
 {
 
-    public function initialize()
+    /*public function initialize()
     {
         parent::initialize();
         $path_to_admin = realpath(__DIR__ . '/../../');
@@ -61,14 +61,14 @@ class ReviewfeedsController extends ControllerBase
             /**
              * @var $account \Google_Service_Mybusiness_Account
              */
-            print '<h1>'.$account->accountName.'</h1>';
+            /*print '<h1>'.$account->accountName.'</h1>';
             $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
             if($locations) foreach($locations as $location){
                 print '<h1>Location:'.$location->locationName.'</h1>';
                 /**
                  * @var $location \Google_Service_Mybusiness_Location
                  */
-                $lr = $myBusiness->accounts_locations_reviews->listAccountsLocationsReviews($location->name);
+                /*$lr = $myBusiness->accounts_locations_reviews->listAccountsLocationsReviews($location->name);
                 $reviews = $lr->getReviews();
                 $reviewCount = $lr->getTotalReviewCount();
                 $avg = $lr->getAverageRating();
@@ -78,7 +78,7 @@ class ReviewfeedsController extends ControllerBase
                     /**
                      * @var $review \Google_Service_Mybusiness_Review Object
                      */
-                    $rating = $review->getStarRating();
+                    /*$rating = $review->getStarRating();
                     $ratings = ['ZERO' => 0,'ONE' => 1,'TWO' => 2,'THREE'=> 3 ,'FOUR' => 4,'FIVE' => 5];
                     $rating = $ratings[$rating];
                     $review_id = str_replace('/reviews','',$review->getReviewId());
@@ -86,7 +86,7 @@ class ReviewfeedsController extends ControllerBase
                     /**
                      * @var $reviewer \Google_Service_Mybusiness_Reviewer
                      */
-                    print '<pre>';
+                    /*print '<pre>';
                     print '</pre>';
                     print "<h4>Comment: {$review->comment}</h4>";
                     print 'link<br />';
@@ -137,7 +137,7 @@ class ReviewfeedsController extends ControllerBase
         service, and query it.
 
          ************************************************/
-        $credentialsPath = CREDENTIALS_PATH;
+        /*$credentialsPath = CREDENTIALS_PATH;
 
         if (isset($_GET['code'])) {
             // Exchange authorization code for an access token.
@@ -147,20 +147,20 @@ class ReviewfeedsController extends ControllerBase
         }
 
 
-
-// Load previously authorized credentials from a file.
+        // Load previously authorized credentials from a file.
         $authUrl = $client->createAuthUrl();
         $this->view->authUrl = $authUrl;
         $this->view->setMainView('google/auth');
-        print_r($accessToken);
-            if (!$accessToken) return;
-            //$client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
-            $client->setAccessToken($accessToken['access_token']);
-            // Refresh the token if it's expired.
-            $access_token = $client->getAccessToken();
-            $refreshToken = $client->getRefreshToken();
-            $_SESSION['google_access_token'][] = $access_token;
-            $_SESSION['google_refresh_token'][] = $refreshToken;
+
+        if (!$accessToken)
+            return;
+        //$client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
+        $client->setAccessToken($accessToken['access_token']);
+        // Refresh the token if it's expired.
+        $access_token = $client->getAccessToken();
+        $refreshToken = $client->getRefreshToken();
+        $_SESSION['google_access_token'][] = $access_token;
+        $_SESSION['google_refresh_token'][] = $refreshToken;
         return $this->response->redirect('/reviewfeeds/googlereviews');
     }
 
@@ -187,7 +187,7 @@ class ReviewfeedsController extends ControllerBase
 
         }
 
-    }
+    }*/
 
     /* old google code worked and saved reviews to DB now does not work
             public function googleAction(){
