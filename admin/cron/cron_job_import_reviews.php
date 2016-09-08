@@ -13,7 +13,7 @@
             define('CLIENT_SECRET_PATH', $path_to_admin . '/app/models/client_secrets.json');
         }
 
-        function ImportGoogleReviews() {
+        function ImportGoogleMyBusinessReviews() {
             $dbLocations = \Vokuro\Models\LocationReviewSite::find("review_site_id = 3 AND json_access_token IS NOT NULL");
             foreach ($dbLocations as $objLocation) {
                 $LocationID = $objLocation->location_id;
@@ -49,7 +49,7 @@
                             $avg = $lr->getAverageRating();
                             $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
                             // GARY_TODO:  This is simply a guess of what this field means
-                            $objLocationReviewSite->original_review_count = $objLocationReviewSite->review_count;
+                            //$objLocationReviewSite->original_review_count = $objLocationReviewSite->review_count;
                             $objLocationReviewSite->review_count = $reviewCount;
 
                             // Seems to be a bug with google not including the average (the field is blank as of 08/31/2016)
@@ -98,8 +98,19 @@
                 }
             }
         }
+
+        public function ImportFacebookReviews() {
+            $LocationID = 64;
+            $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 1");
+            $objLocation = \Vokuro\Models\Location::findFirst("location_id = {$LocationID}");
+            $FoundAgency = [];
+
+            $objReviewService = new \Vokuro\Services\Reviews();
+            $objReviewService->importFacebook($objLocationReviewSite, $objLocation, $FoundAgency);
+        }
     }
 
     $objImporter = new LocationImporter();
     $objImporter->initialize();
-    $objImporter->ImportGoogleReviews();
+    //$objImporter->ImportGoogleMyBusinessReviews();
+    $objImporter->ImportFacebookReviews();

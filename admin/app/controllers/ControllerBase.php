@@ -54,8 +54,10 @@ class ControllerBase extends Controller {
         // If there is no identity available the user is redirected to index/index
         //KT WHERE?
 
+
         if (is_array($identity)) {
             $userObj = $this->getUserObject();
+            $this->view->loggedUser = $userObj;
             //find the agency
             $conditions = "agency_id = :agency_id:";
 

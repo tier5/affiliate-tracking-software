@@ -50,10 +50,6 @@
                 $this->view->disable();
                 return;
             }
-            if (!$this->facebook_access_token) {
-                $face = new FacebookScanning();
-                $this->facebook_access_token = $face->getAccessToken();
-            }
 
             $path_to_admin = realpath(__DIR__ . '/../../');
             include_once $path_to_admin . '/app/library/Google/mybusiness/Mybusiness.php';
@@ -62,6 +58,26 @@
 
 
             parent::initialize();
+        }
+
+        public function getFacebookPagesAction() {
+            $identity = $this->auth->getIdentity();
+            $LocationID = $identity['location_id'];
+            $objFacebookReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 1");
+            if(!$objFacebookReviewSite->access_token) {
+                $face = new FacebookScanning();
+                $objFacebookReviewSite->access_token = str_replace("access_token=", "", $face->getAccessToken());
+                $objFacebookReviewSite->save();
+            }
+
+            $this->facebook_access_token = $objFacebookReviewSite->access_token;
+
+            $fb = \Services\Facebook\Authentication\AccessToken($this->facebook_access_token);
+
+            echo "<PRE>";
+
+            print_r($fb);
+            die();
         }
 
 
@@ -295,8 +311,8 @@
                             'is_on' => 1,
                         ));
 
-                        //find the review info
-                        $this->importFacebook($lrs, $loc, $foundagency);
+                        $objReviewService = new \Vokuro\Services\Reviews();
+                        $objReviewService->importFacebook($lrs, $loc, $foundagency);
                     }
 
                     $agency->assign(array(
@@ -688,7 +704,7 @@
                     }
 
                     //check for google
-                    /*$google_place_id = $this->request->getPost('google_place_id', 'striptags');
+                    $google_place_id = $this->request->getPost('google_place_id', 'striptags');
                     $google_api_id = $this->request->getPost('google_api_id', 'striptags');
                     $googleScan = new GoogleScanning();
                     if ($google_place_id != '') {
@@ -718,7 +734,7 @@
                     } else {
                         //else we need to delete the google configuration
                         if (isset($google) && isset($google->location_review_site_id) && $google->location_review_site_id > 0) $google->delete();
-                    }*/
+                    }
 
 
 
@@ -729,7 +745,8 @@
                             $facebook->external_id = $facebook_page_id;
                             $facebook->save();
                             //find the review info
-                            $this->importFacebook($facebook, $loc, $foundagency);
+                            $objReviewService = new \Vokuro\Services\Reviews();
+                            $objReviewService->importFacebook($facebook, $loc, $foundagency);
                         } else {
                             $lrs = new LocationReviewSite();
                             $lrs->assign(array(
@@ -740,7 +757,8 @@
                                 'is_on' => 1,
                             ));
                             //find the review info
-                            $this->importFacebook($lrs, $loc, $foundagency);
+                            $objReviewService = new \Vokuro\Services\Reviews();
+                            $objReviewService->importFacebook($lrs, $loc, $foundagency);
                         }
                     } else {
                         //else we need to delete the facebook configuration
@@ -1045,7 +1063,6 @@
                             //$this->flash->success("The SMS was sent successfully");
                             //Tag::resetInput();
                         }
-
                     }
                 }
             }
@@ -1124,9 +1141,9 @@
                     $location = Location::findFirst(array($conditions, "bind" => $parameters));
 
                     $foundagency = array();
-                    $this->importFacebook($Obj, $location, $foundagency);
+                    $objReviewService = new \Vokuro\Services\Reviews();
+                    $objReviewService->importFacebook($Obj, $location, $foundagency);
 
-                    //
                     $this->response->redirect('/settings/location/');
                 } catch (\Services\Facebook\Exceptions\FacebookSDKException $e) {
                     $this->flash->error($e->getMessage());
@@ -1483,12 +1500,11 @@
                     $avg = $lr->getAverageRating();
                     $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
                     // GARY_TODO:  This is simply a guess of what this field means
-                    $objLocationReviewSite->original_review_count = $objLocationReviewSite->review_count;
+//                    $objLocationReviewSite->original_review_count = $objLocationReviewSite->review_count;
                     $objLocationReviewSite->review_count = $reviewCount;
                     // Seems to be a bug with google not including the average (the field is blank as of 08/31/2016)
                     $TotalRating = 0;
                     $TotalReviews = 0;
-
 
                     if($reviews) {
                         /**
@@ -1554,6 +1570,20 @@
             return $client;
         }
 
+        /**
+         * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface|void
+         *
+         * List of categories in csv format (Yext)
+         * Look for businesses that are in Financial Advisor category, financial planners, financial services, financial planning including agency if they are under one.
+         * In agency 1468, myreputation protected account CSV raw data of the entire account (emails, templates, contact records).
+         * In agency 153, 9 that are financial planner that are disabled, all data for those too.
+         *
+
+
+         1059511 - Financial Planners
+         378 - Financial Services
+         2119 - Financial planning
+         */
         public function googlemybusinessAction() {
             $identity = $this->auth->getIdentity();
             $LocationID = $identity['location_id'];

@@ -177,7 +177,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-default">
                         <li>
-                            <a href="#">
+                            <a href="/users/adminedit/<?=$loggedUser->id ?>">
                                 <i class="icon-user"></i> My Profile </a>
                         </li>
                         <li>
