@@ -408,7 +408,6 @@
         </div>
     </div>
 {% endif %}
-
     {% if not is_admin and agencytype != "agency" %}
         {% if location_id %}
             <div id="sendreviewinvite" style="width:400px; display: none; color: #7A7A7A;">
@@ -420,10 +419,12 @@
                         </div>
                     </div>
                     <div class="portlet-body form">
-                        {% if (agency.twilio_api_key != ''
-                        and agency.twilio_auth_token != ''
-                        and (agency.twilio_auth_messaging_sid != '' or agency.twilio_from_phone != '' ))
-                        or (agency.parent_agency_id and agency.agency_type_id == '2') %}
+                        {%
+                            if (twilio_auth_token != ''
+                            and twilio_auth_messaging_sid != ''
+                            and twilio_from_phone != '')
+                        %}
+
 
                             {% if num_signed_up %}d
                                 <div class="row" style="margin-bottom: 10px;">
@@ -630,18 +631,9 @@
                                     type: "POST",
                                     data: postData,
                                     success: function (data, textStatus, jqXHR) {
-                                        //data: return data from server
-                                        //console.log(data);
-                                        if (data == 'true') {
-                                            //$('#smsrequestformsuccess').show();
-                                            $('#smsrequestformerror').hide();
-                                            $('.fancybox-overlay').hide();
-                                        } else {
-                                            //if fails
-                                            $('#smsrequestformerror').text(data);
-                                            $('#smsrequestformsuccess').hide();
-                                            $('#smsrequestformerror').show();
-                                        }
+                                        $('#smsrequestformerror').html(data);
+                                        $('#smsrequestformsuccess').hide();
+                                        $('#smsrequestformerror').show();
                                     },
                                     error: function (jqXHR, textStatus, errorThrown) {
                                         //if fails

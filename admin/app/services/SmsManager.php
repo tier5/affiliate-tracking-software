@@ -11,6 +11,40 @@ class SmsManager extends BaseService {
         parent::__construct($config);
     }
 
+    public function getTwilioKeys($AgencyID) {
+        if(!$AgencyID)
+            return [];
+        $TwilioSID = '';
+        $TwilioToken = '';
+        $TwilioFrom = '';
+        $TwilioAPI = '';
+
+        $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$AgencyID}");
+        // Are we a business?
+        if($objAgency->parent_id > 0) {
+            // Return parent's keys.
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = " . $objAgency->parent_id);
+            $TwilioSID = $objParentAgency->twilio_auth_messaging_sid;
+            $TwilioToken = $objParentAgency->twilio_auth_token;
+            // We use the businesses' from number if it exists, otherwise use the agency's.
+            $TwilioFrom = $objAgency->twilio_from_phone ?: $objParentAgency->twilio_from_phone;
+            $TwilioAPI = $objParentAgency->twilio_api_key;
+        } elseif($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            // Business under RV.  Return default from config.
+            $TwilioSID = $this->config->twilio->twilio_auth_messaging_sid;
+            $TwilioToken = $this->config->twilio->twilio_auth_token;
+            $TwilioFrom = $this->config->twilio->twilio_from_phone;
+            $TwilioAPI = $this->config->twilio->twilio_api_key;
+        }
+
+        return [
+            'twilio_auth_messaging_sid' => $TwilioSID,
+            'twilio_auth_token'         => $TwilioToken,
+            'twilio_from_phone'         => $TwilioFrom,
+            'twilio_api_key'            => $TwilioAPI,
+        ];
+    }
+
     /**
      * @param int $reviewPercentage
      */

@@ -135,14 +135,15 @@ class ControllerBusinessBase extends ControllerBase {
             $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
             $this->view->agency = $age2;
         }
+
         if($errors){
             dd($errors);
         }
 
-        if($this->request->isPost() && $this->view->agency){
-        $this->flash->success('User Saved');
-        return $this->response->redirect('/?saved=1');
-    }
+        if($this->request->isPost() && $this->view->agency) {
+            $this->flash->success('User Saved');
+            return $this->response->redirect('/?saved=1');
+        }
     }
 
     /**

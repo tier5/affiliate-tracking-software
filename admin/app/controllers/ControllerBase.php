@@ -92,6 +92,14 @@ class ControllerBase extends Controller {
                 $this->view->secondary_color = "#2eb82e";
             }
 
+            $objSMSManager = $this->di->get('smsManager');
+            $tTwilioKeys = $objSMSManager->getTwilioKeys($agency->agency_id);
+
+            $this->view->twilio_auth_messaging_sid = $this->twilio_auth_messaging_sid = $tTwilioKeys['twilio_auth_messaging_sid'];
+            $this->view->twilio_auth_token = $this->twilio_auth_token = $tTwilioKeys['twilio_auth_token'];
+            $this->view->twilio_from_phone = $this->twilio_from_phone = $tTwilioKeys['twilio_from_phone'];
+            $this->view->twilio_api_key = $this->twilio_api_key = $tTwilioKeys['twilio_api_key'];
+
             //internal navigation parameters
             $this->configureNavigation($identity);
 
@@ -516,32 +524,16 @@ class ControllerBase extends Controller {
     }
 
     public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_auth_messaging_sid, $twilio_from_phone, $agency) {
-        // this line loads the library
-
-        // set your AccountSid and AuthToken from www.twilio.com/user/account
-        //new tokens
-        //$AccountSid = "AC68cd1cc8fe2ad03d2aa4d388b270577d";
-        //$AuthToken = "42334ec4880d850d6c9683a4cd9d94b8";
-        //old tokens
-        //$AccountSid = "AC42c4f42d8076602844b3b226bdf74fd8";
-        //$AuthToken = "09d64c23112f28d29ac1ded2fd61672c";
-        //if this is a business not under a custom agency, then use global twillio settings
-        if ((!isset($agency->parent_agency_id) || $agency->parent_agency_id == '') && $agency->agency_type_id = 2) {
-            $AccountSid = "AC68cd1cc8fe2ad03d2aa4d388b270577d";
-            $AuthToken = "42334ec4880d850d6c9683a4cd9d94b8";
-            $twilio_auth_messaging_sid = 'MGa8510e68cd75433880ba6ea48c0bd81e';
-            $twilio_from_phone = '+16197363100';
+        if(!$AccountSid || !$AuthToken || !$twilio_from_phone) {
+            $this->flash->error("Missing twilio configuration.");
+            return false;
         }
-        //echo '<p>$AccountSid:'.$AccountSid.':$AuthToken:'.$AuthToken.':$twilio_auth_messaging_sid:'.$twilio_auth_messaging_sid.':$twilio_from_phone:'.$twilio_from_phone.'</p>';
-        //prepare twilio to send the message
+
         $client = new Services_Twilio($AccountSid, $AuthToken);
 
-        //send the message now
         try {
             if (isset($twilio_auth_messaging_sid) && $twilio_auth_messaging_sid != '') {
                 $message = $client->account->messages->create(array(
-                    //"From" => $this->formatTwilioPhone("213-725-2500"),
-                    //'MessagingServiceSid' => "MGa8510e68cd75433880ba6ea48c0bd81e",
                     "MessagingServiceSid" => $twilio_auth_messaging_sid,
                     "To" => $phone,
                     "Body" => $smsBody,

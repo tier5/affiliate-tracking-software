@@ -1059,8 +1059,8 @@
                         return;
                     } else {
                         //The message is saved, so send the SMS message now
-                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
-                            //$this->flash->success("The SMS was sent successfully");
+                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone, $agency)) {
+                            $this->flash->success("The SMS was sent successfully");
                             //Tag::resetInput();
                         }
                     }
@@ -1068,7 +1068,6 @@
             }
             //$this->getTotalSMSSent($agency);
             $this->view->disable();
-            echo 'true';
             return;
         }
 

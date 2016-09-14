@@ -53,4 +53,9 @@ return new \Phalcon\Config(array(
         'secret_key'        => '',
         'publishable_key'   => '',
     ],
+    'twilio' => [
+        'twilio_auth_token'         => '',
+        'twilio_auth_messaging_sid' => '',
+        'twilio_from_phone'         => '',
+    ],
 ));
