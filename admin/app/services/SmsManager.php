@@ -11,7 +11,7 @@ class SmsManager extends BaseService {
         parent::__construct($config);
     }
 
-    public function getTwilioKeys($AgencyID) {
+    public function getTwilioKeys($AgencyID, $IsAdmin = false) {
         if(!$AgencyID)
             return [];
         $TwilioSID = '';
@@ -29,7 +29,7 @@ class SmsManager extends BaseService {
             // We use the businesses' from number if it exists, otherwise use the agency's.
             $TwilioFrom = $objAgency->twilio_from_phone ?: $objParentAgency->twilio_from_phone;
             $TwilioAPI = $objParentAgency->twilio_api_key;
-        } elseif($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+        } elseif($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $IsAdmin) {
             // Business under RV.  Return default from config.
             $TwilioSID = $this->config->twilio->twilio_auth_messaging_sid;
             $TwilioToken = $this->config->twilio->twilio_auth_token;

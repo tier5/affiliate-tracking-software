@@ -423,15 +423,11 @@
          * Creates a Location, step 3
          */
         public function create3Action($location_id) {
-
-            //add needed css
             $this->assets
                 ->addCss('css/main.css')
                 ->addCss('css/signup.css');
 
-            //get the user id, to find the settings
             $identity = $this->auth->getIdentity();
-            //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
             // If there is no identity available the user is redirected to index/index
             if (!is_array($identity)) {
                 $this->response->redirect('/session/login?return=/location/');
@@ -442,14 +438,12 @@
             $conditions = "id = :id:";
             $parameters = array("id" => $identity['id']);
             $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-            //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
 
-            //find the agency
+
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $userObj->agency_id);
             $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
-            //find the location
             $conditions = "location_id = :location_id: AND agency_id = :agency_id:";
             $parameters = array("location_id" => $location_id, "agency_id" => $userObj->agency_id);
             $location = Location::findFirst(array($conditions, "bind" => $parameters));
@@ -470,7 +464,7 @@
             }
 
             // Query binding parameters with string placeholders
-            $conditions = "agency_id = :agency_id: AND profilesId = 3";
+            $conditions = "agency_id = :agency_id: AND is_employee = 1";
             $parameters = array("agency_id" => $userObj->agency_id);
             $this->view->employees = Users::find(array($conditions, "bind" => $parameters));
 

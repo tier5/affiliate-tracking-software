@@ -12,7 +12,7 @@
         <input class="form-control placeholder-no-fix" type="text" placeholder="Location Name" id="location_name" name="location_name" value="<?=(isset($_POST['location_name'])?$_POST["location_name"]:'')?>" />
       </div>
       <div class="search_name_location">
-        <input class="form-control placeholder-no-fix" type="text" placeholder="Postal Code" id="zip_code" name="zip_code" value="<?=(isset($_POST['zip_code'])?$_POST["zip_code"]:'')?>" />
+        <input class="form-control placeholder-no-fix" type="text" placeholder="Postal Code or City, State" id="zip_code" name="zip_code" value="<?=(isset($_POST['zip_code'])?$_POST["zip_code"]:'')?>" />
       </div>
       <div class="search_name_btn">
         <button type="submit" id="register-submit-btn" class="btnsignup uppercase">Search</button>
@@ -38,7 +38,7 @@
       <div class="title">GOOGLE: <span class="title-answer">Found</span></div>
       <div class="field"><span class="name">Business Name:</span> <span id="googleName"></span></div>
       <div class="field bottom"><span class="name">Location:</span> <span id="googleAddress"></span></div>
-      <div class="buttons"><a class="btnLink btnSecondary" id="googleLink" href="https://maps.google.com/?cid=" target="_blank"><img src="/img/icon-eye.gif" /> View</a> <a class="btnLink btnSecondary" href="#" onclick="changeLocation();$('#locationform1').show();return false;"><img src="/img/icon-pencil.png" /> Change Location</a><br>Have a google my business account? <a href="/test" class="btnSecondary" target="_blank" id="gmb_signin">Sign In</a></div>
+      <div class="buttons"><a class="btnLink btnSecondary" id="googleLink" href="https://maps.google.com/?cid=" target="_blank"><img src="/img/icon-eye.gif" /> View</a> <a class="btnLink btnSecondary" href="#" onclick="changeLocation();$('#locationform1').show();return false;"><img src="/img/icon-pencil.png" /> Change Location</a><br><a href="/test" class="btnSecondary" target="_blank" id="gmb_signin">Connect Google My Business account</a></div>
     </div>
 
     <div class="pnlAddLocation short col-md-4">

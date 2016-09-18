@@ -979,3 +979,7 @@ body { background-color: #FFFFFF; color: #484848; }
 .free_subscription_pricing_plan.show {
     display: block;
 }
+
+.feedback_requests {
+    font-weight: bold;
+}

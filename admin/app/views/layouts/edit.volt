@@ -73,7 +73,7 @@
             <div class="field"><span class="name">Business Name:</span> <span id="googleName"><?=$location->name?></span></div>
             <div class="field bottom"><span class="name">Location:</span> <span id="googleAddress"><?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?></span></div>
             <div class="buttons"><a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=<?=$google->external_id?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a> <a class="btnLink btnSecondary" href="#" onclick="changeLocation();$('#locationform1').show();return false;"><img src="/img/icon-pencil.png" /> Change Location</a></div>
-            <br>Have a google my business account? <a href="#">Sign In</a></div>
+            <br /><br /><a href="#">Connect Google My Business account</a></div>
           </div>
 
           <div class="pnlAddLocation short col-md-4">

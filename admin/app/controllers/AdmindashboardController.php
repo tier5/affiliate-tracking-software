@@ -210,8 +210,8 @@ class AdmindashboardController extends ControllerBusinessBase {
     }
 
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
-	    // Businesses under Review Velocity have a parent_id of -1
-	    $Ret =  parent::createAction($agency_type_id, $agency_id, $agency_type_id == 1 ? 0 : -1);
+	    // Businesses under Review Velocity have a parent_id of -1.  agency_type_id == 1 means Agency.  I do want to get rid of this field.
+	    $Ret =  parent::createAction($agency_type_id, $agency_id, $agency_type_id == 1 ? \Vokuro\Models\Agency::AGENCY : \Vokuro\Models\Agency::BUSINESS_UNDER_RV);
 	    $this->view->pick("admindashboard/create");
 	    return $Ret;
 	}
@@ -220,8 +220,6 @@ class AdmindashboardController extends ControllerBusinessBase {
      * This find the agencies for the agencies and businesses actions
      */
     public function findAgencies($agency_type_id) {
-        //$this->checkIntegerOrThrowException($agency_type_id,'$agency type id must be an integer');
-        //get the user id
         $identity = $this->auth->getIdentity();
         // If there is no identity available the user is redirected
         if (!is_array($identity)) {
@@ -233,9 +231,9 @@ class AdmindashboardController extends ControllerBusinessBase {
         $conditions = "id = :id:";
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-        //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+
         // Query binding parameters with string placeholders
-        $conditions = "agency_type_id = " . $agency_type_id; //parent_agency_id = :parent_agency_id: AND
+        $conditions = "agency_type_id = " . $agency_type_id;
         $parameters = null;
         array("parent_agency_id" => $userObj->agency_id);
         $agencies = Agency::find(array($conditions, "bind" => $parameters));
@@ -247,17 +245,12 @@ class AdmindashboardController extends ControllerBusinessBase {
      * status action
      */
     public function statusAction($agency_type_id, $agency_id, $status) {
-        //$this->checkIntegerOrThrowException($agency_type_id,'$agency_type_id must be an integer');
-        //$this->checkIntegerOrThrowException($agency_id,'$agency_id must be an integer');
-
-
         $age2 = new Agency();
         if ($agency_id > 0) {
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $agency_id);
             $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
             if ($age2) {
-                //
                 $age2->status = $status;
                 $age2->save();
                 $this->flash->error("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " status was updated.");
@@ -278,6 +271,15 @@ class AdmindashboardController extends ControllerBusinessBase {
 
         $this->findAgencies($agency_type_id);
         $this->view->agency_type_id = $agency_type_id;
+
+        $dbAllParentAgencies = \Vokuro\Models\Agency::find('parent_id = ' . \Vokuro\Models\Agency::AGENCY);
+        $tAllParentAgencies = [];
+
+        foreach($dbAllParentAgencies as $objParentAgency)
+            $tAllParentAgencies[$objParentAgency->agency_id] = $objParentAgency->toArray();
+
+
+        $this->view->tAllParentAgencies = $tAllParentAgencies;
     }
 
     /**

@@ -93,7 +93,7 @@ class ControllerBase extends Controller {
             }
 
             $objSMSManager = $this->di->get('smsManager');
-            $tTwilioKeys = $objSMSManager->getTwilioKeys($agency->agency_id);
+            $tTwilioKeys = $objSMSManager->getTwilioKeys($agency->agency_id, $userObj->is_admin);
 
             $this->view->twilio_auth_messaging_sid = $this->twilio_auth_messaging_sid = $tTwilioKeys['twilio_auth_messaging_sid'];
             $this->view->twilio_auth_token = $this->twilio_auth_token = $tTwilioKeys['twilio_auth_token'];

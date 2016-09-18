@@ -318,7 +318,6 @@
                             {% endif %}
                         {% endif %}
                     {% endif %}
-
                     {% if profile == "Business Admin" and agencytype == "business" %}
                         <li class="nav-item">
                             <a href="/location/" class="nav-link nav-toggle">

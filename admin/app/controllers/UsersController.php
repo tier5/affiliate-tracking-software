@@ -36,9 +36,6 @@
         public function indexAction()
         {
             $identity = $this->auth->getIdentity();
-//            echo "<PRE>";
-            //print_r($identity['profilesId']);
-  //          die();
             $this->usersFunctionality(3);
             $this->getSMSReport();
         }
@@ -70,6 +67,7 @@
         public function createAction()
         {
             $identity = $this->auth->getIdentity();
+            $this->view->is_employee = isset($_GET['create_employee']) && $_GET['create_employee'] == 1 ? 1 : 0;
             $this->createFunction($identity['profilesId']);
         }
 
@@ -90,9 +88,6 @@
         }
 
 
-
-
-
         /**
          * Searches for users
          */
@@ -105,26 +100,17 @@
             echo $validate->validation();
         }
 
-
-
-
-
         /**
-         * Searches for users
+         * @param int $subscription_id
          */
         public function createemployeeAction($subscription_id = 0)
         {
-            //$('#reviewgoal').val($('#review_goal').val());
-            //$('#lifetimevalue').val($('#lifetime_value_customer').val());
             $reviewgoal = $this->request->getPost('reviewgoal');
             $lifetimevalue = $this->request->getPost('lifetimevalue');
             $querystring = '?review_goal='.$reviewgoal.'&lifetime_value_customer='.$lifetimevalue;
             $url = '/session/signup4/'.($subscription_id > 0?$subscription_id:'').$querystring;
-//echo '<pre>post:'.print_r($_POST,true).'</pre>';
 
-            //get the user id, to find the settings
             $identity = $this->auth->getIdentity();
-            // If there is no identity available the user is redirected to index/index
             if (!is_array($identity)) {
                 $this->response->redirect('/session/login?return=/session/signup4/'.($subscription_id > 0?$subscription_id:''));
                 $this->view->disable();
@@ -139,25 +125,17 @@
         }
 
 
-
-
-
         /**
          * Searches for users
          */
         public function createemployee2Action($location_id)
         {
-            //$('#reviewgoal').val($('#review_goal').val());
-            //$('#lifetimevalue').val($('#lifetime_value_customer').val());
             $reviewgoal = $this->request->getPost('reviewgoal');
             $lifetimevalue = $this->request->getPost('lifetimevalue');
             $querystring = '?review_goal='.$reviewgoal.'&lifetime_value_customer='.$lifetimevalue;
             $url = '/location/create3/'.($location_id > 0?$location_id:'').$querystring;
-//echo '<pre>post:'.print_r($_POST,true).'</pre>';
 
-            //get the user id, to find the settings
             $identity = $this->auth->getIdentity();
-            // If there is no identity available the user is redirected to index/index
             if (!is_array($identity)) {
                 $this->response->redirect('/session/login?return=/location/create3/'.($location_id > 0?$location_id:''));
                 $this->view->disable();
@@ -176,12 +154,12 @@
          */
         public function createFunction($profilesId, $location_id = 0,$data = [])
         {
-            $this->view->profilesId = $profilesId;
 
-            //get the user id
-            if(!defined('RV_TESTING')) $identity = $this->auth->getIdentity();
+            $this->view->profilesId = $profilesId;
+            $identity = $this->auth->getIdentity();
+
             // If there is no identity available the user is redirected to index/index
-            if (!is_array($identity) && !defined('RV_TESTING') || $profilesId == 3) {
+            if (!is_array($identity) && $profilesId == 3) {
                 $this->response->redirect('/session/login?return=/users/'.($profilesId==3?'':'admin'));
                 $this->view->disable();
                 return;
@@ -225,18 +203,11 @@
                 if (!$user->save()) {
                     $messages = array();
                     foreach ($user->getMessages() as $message) {
-                        /*echo "<p>";
-                        echo "Message: ", $message->getMessage(), "\n";
-                        echo "Field: ", $message->getField(), "\n";
-                        echo "Type: ", $message->getType(), "\n";
-                        echo "</p>";*/
                         $messages[] = str_replace("profilesId", "role", $message->getMessage());//'The field ' . $message->getField() . ' is required';
                     }
 
                     $this->flash->error($messages);
                 } else {
-                    //echo '<pre>$_POST[locations]:'.print_r($_POST['locations'],true).'</pre>';
-                    //set locations on the user object after saving
                     if(!empty($_POST['locations'])) {
                         foreach($_POST['locations'] as $check) {
                             $locInsert = new UsersLocation();
@@ -299,8 +270,6 @@
             $this->view->disable();
             return;
         }
-
-
 
         /**
          * Saves the user from the 'edit' action

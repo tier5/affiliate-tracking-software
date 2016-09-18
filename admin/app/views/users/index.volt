@@ -2,7 +2,7 @@
 
   <div class="row">
     <div class="col-md-5 col-sm-5">
-      <h3 class="page-title">All Users</h3>
+      <h3 class="page-title">All Employees</h3>
     </div>
     <?php
   if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
@@ -172,7 +172,7 @@ if (isset($users) && $users) {
 
         <div class="portlet light bordered dashboard-panel">
           <div class="table-header">
-            <div class="title">User List</div>
+            <div class="title">Employee List</div>
             <div class="flexsearch">
               <div class="flexsearch--wrapper">
                 <div class="flexsearch--input-wrapper">
@@ -181,7 +181,7 @@ if (isset($users) && $users) {
                 <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
               </div>
             </div>
-            <div class="search-btn" style="width: 136px !important;"><a class="btnLink btnSecondary" style="width: 134px !important;text-align: center;" href="/users/<?=($profilesId==3?'':'admin')?>create">Create User</a></div>
+            <div class="search-btn" style="width: 136px !important;"><a class="btnLink btnSecondary" style="width: 134px !important;text-align: center;" href="/users/<?=($profilesId==3?'':'admin')?>create?create_employee=1">Create Employee</a></div>
           </div>
 
           <!-- Start .panel -->

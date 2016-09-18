@@ -28,6 +28,13 @@
                     {{ form.render("phone", ['class': 'form-control', 'placeholder': 'Cell Phone', 'type': 'tel']) }}
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Password:</label>
+                <div class="col-md-4" style="padding-top: 7px;">
+                    <a href="/users/changePassword">Click here to change your password</a>
+                </div>
+            </div>
+
             <?php
     if ($profilesId!=3) {
       ?>

@@ -44,9 +44,9 @@
             </div>
             <div class="form-group">
                 <label class="col-md-2 control-label">Is Employee?</label>
-                <?php $Selected = $_POST['is_employee'] == 'Yes' ? 'checked="checked"' : ''; ?>
+                <?php $Selected = $_POST['is_employee'] == 'Yes' || $_GET['create_employee'] ? 'checked="checked"' : ''; ?>
                 <label class="radio-inline">Yes <input type="radio" value="Yes" name="is_employee" {{ Selected }} /></label>
-                <?php $Selected = $_POST['is_employee'] == 'No' || !$_POST['is_employee'] ? 'checked="checked"' : ''; ?>
+                <?php $Selected = ($_POST['is_employee'] == 'No' || !$_POST['is_employee']) && !$_GET['create_employee'] ? 'checked="checked"' : ''; ?>
                 <label class="radio-inline">No <input type="radio" value="No" name="is_employee" {{ Selected }} /></label>
             </div>
 

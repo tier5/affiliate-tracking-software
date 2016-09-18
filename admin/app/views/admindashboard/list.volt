@@ -25,6 +25,9 @@ if ($agencies) {
                     <table id="basic-datatables" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                         <tr>
+                            <?php if($loggedUser->is_admin && $agency_type_id != 1) { ?>
+                            <th>Agency</th>
+                            <?php } ?>
                             <th>Name</th>
                             <th>Email Address</th>
                             <th>Date Created</th>
@@ -39,6 +42,12 @@ if ($agencies) {
 foreach($agencies as $agency) {
 ?><!--Business Name, Email Address, Date Created, Plan Name, Account Type (Free/Paid), Status (can turn on and off from here - Active/Inactive), Action -->
                         <tr>
+                            <?php
+
+                            if($loggedUser->is_admin && $agency_type_id != 1) {
+                                    echo "<td>" . $tAllParentAgencies[$agency->parent_id]['name'] . "</td>";
+                                }
+                            ?>
                             <td><?=($agency->name) ? $agency->name : 'n/a'?></td>
                             <td><?=$agency->email?></td>
                             <td><?=date("Y-m-d",strtotime($agency->date_created))?></td>
