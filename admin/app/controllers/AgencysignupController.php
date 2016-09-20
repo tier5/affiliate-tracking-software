@@ -697,6 +697,12 @@
         public function step2Action() {
             $this->ValidateFields('Step1');
             $this->StoreLogo();
+            $this->view->Subdomain = $this->session->AgencySignup['URL'];
+            $this->view->Name = $this->session->AgencySignup['BusinessName'];
+            $this->view->Phone = $this->session->AgencySignup['Phone'];
+            $this->view->PrimaryColorNohash = str_replace('#', '', $this->session->AgencySignup['PrimaryColor']);
+            $this->view->SecondaryColorNohash = str_replace('#', '', $this->session->AgencySignup['SecondaryColor']);
+            $this->view->LogoFilename = !empty($this->session->AgencySignup['LogoFilename']) ? $this->session->AgencySignup['LogoFilename'] : '';
         }
 
         protected function StoreLogo() {
@@ -719,10 +725,10 @@
             }
         }
 
-        public function salesAction () {
-            $this->view->LogoSource = (isset($this->session->AgencySignup['LogoFilename']) && $this->session->AgencySignup['LogoFilename']) ? '/img/agency_logos/' . $this->session->AgencySignup['LogoFilename'] : '/img/logo-white.gif';
-            $this->view->setLayout('agencysignup');
-        }
+//        public function salesAction () { // Moved to indexController indexAction; shown in getmobilereviews subdomains
+//            $this->view->LogoSource = (isset($this->session->AgencySignup['LogoFilename']) && $this->session->AgencySignup['LogoFilename']) ? '/img/agency_logos/' . $this->session->AgencySignup['LogoFilename'] : '/img/logo-white.gif';
+//            $this->view->setLayout('agencysignup');
+//        }
 
         public function step3Action() {
             $this->StoreLogo();
