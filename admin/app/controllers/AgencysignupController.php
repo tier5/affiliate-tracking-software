@@ -595,7 +595,7 @@
 
             $this->view->tMonths = $tMonths;
             $this->view->tYears = $tYears;
-            $this->view->tCardTypes = $this->tAcceptedCardTypes;
+            //$this->view->tCardTypes = $this->tAcceptedCardTypes;
             $this->view->setLayout('agencysignup');
         }
 

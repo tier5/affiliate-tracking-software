@@ -205,6 +205,13 @@
             'secondary_color'               => 'string',
         ];
 
+        public function dismissstripeAction() {
+            $this->session->StripePopupDisabled = 1;
+
+            $this->view->disable();
+            return "SUCCESS";
+        }
+
         protected function storeSettings($entity, $type) {
             if ($this->request->isPost()) {
                 $form = new SettingsForm($entity);

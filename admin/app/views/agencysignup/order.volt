@@ -91,17 +91,6 @@
                         <div class="col-xs-12 col-lg-9"><input type="text" class="form-control" required data-stripe="number" /></div>
                     </div>
                     <div class="row contact-row">
-                        <div class="col-xs-12 col-lg-3"><label>Card Type</label><span class="required">*</span></div>
-                        <div class="col-xs-12 col-lg-9">
-                            <select name="CardType" class="form-control">
-                                <option value="0">Please select card type</option>
-                                {% for Card in tCardTypes %}
-                                    <option value="{{ Card }}">{{ Card }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row contact-row">
                         <div class="col-xs-12 col-lg-3"><label>Exp. Date</label><span class="required">*</span></div>
                         <div class="col-xs-6 col-lg-5">
                             <select class="form-control" data-stripe="exp_month">

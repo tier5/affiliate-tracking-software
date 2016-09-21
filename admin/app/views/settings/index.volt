@@ -512,6 +512,7 @@
                         <th>SMS Alert</th>
                         <th>All Reviews</th>
                         <th>Individual Reviews</th>
+                        <th>Employee Leaderboards</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -526,12 +527,14 @@
               $is_sms_alert_on = false;
               $is_all_reviews_on = false;
               $is_individual_reviews_on = false;
+              $is_employee_report_on = false;
               foreach($agencynotifications as $an) {
                 if ($an->user_id == $data->id) {
                       $is_email_alert_on = ($an->email_alert==1?true:false);
                       $is_sms_alert_on = ($an->sms_alert==1?true:false);
                       $is_all_reviews_on = ($an->all_reviews==1?true:false);
                       $is_individual_reviews_on = ($an->individual_reviews==1?true:false);
+                      $is_employee_report_on = ($an->employee_leaderboards==1?true:false);
                       }
                       }
 
@@ -560,6 +563,12 @@
                 <span class="on-off-buttons">
                   <a data-id="<?=$data->id?>" data-type="ir" data-value="0" id="iron<?=$data->id?>" href="#" class="individual_reviews_on" style="<?=($is_individual_reviews_on?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
                   <a data-id="<?=$data->id?>" data-type="ir" data-value="1" id="iroff<?=$data->id?>" href="#" class="individual_reviews_off" style="<?=($is_individual_reviews_on?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
+                </span>
+                        </td>
+                        <td>
+                <span class="on-off-buttons">
+                  <a data-id="<?=$data->id?>" data-type="el" data-value="0" id="elon<?=$data->id?>" href="#" class="employee_report_on" style="<?=($is_employee_report_on?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
+                  <a data-id="<?=$data->id?>" data-type="el" data-value="1" id="eloff<?=$data->id?>" href="#" class="employee_report_off" style="<?=($is_employee_report_on?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
                 </span>
                         </td>
                       </tr>

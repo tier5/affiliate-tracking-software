@@ -62,8 +62,14 @@ class IndexController extends ControllerBase {
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
 
-            if($tUser['is_admin'])
+            if($tUser['is_admin']) {
                 $this->view->pick('admindashboard/index');
+            } else {
+                if(!$isBusiness) {
+                    $this->response->redirect('/agency');
+                    return;
+                }
+            }
 
         } else {
             // Check for use of whitelabel domain

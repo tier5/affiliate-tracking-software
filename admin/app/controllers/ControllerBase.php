@@ -47,13 +47,10 @@ class ControllerBase extends Controller {
 
     public function initialize() {
         error_reporting(E_ALL ^ E_NOTICE);
-        //get the user id, to find the settings
+
         $this->permissions = new Permissions();
         $this->user_object = $this->getUserObject();
         $identity = $this->auth->getIdentity();
-        // If there is no identity available the user is redirected to index/index
-        //KT WHERE?
-
 
         if (is_array($identity)) {
             $userObj = $this->getUserObject();
@@ -152,6 +149,9 @@ class ControllerBase extends Controller {
                 $this->view->stripePublishableKey = $this->config->stripe->publishable_key;
             }
             // End stripe modal
+
+            if($this->session->StripePopupDisabled)
+                $this->view->ShowAgencyStripePopup = false;
 
             $conditions = "location_id = :location_id:";
 
@@ -690,7 +690,7 @@ class ControllerBase extends Controller {
                 $end_time = date("Y-m-d H:i:s", strtotime($end_time));
             }
 
-            if (strpos($_SERVER['REQUEST_URI'], 'users/admin') > 0) {
+            if (strpos($_SERVER['REQUEST_URI'], 'users/admin') !== false) {
                 if ($loc) {
                     $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId, false);
                 }
@@ -702,7 +702,6 @@ class ControllerBase extends Controller {
                 }
                 $this->view->users_report = $users_report;
             }
-
 
             //} else {
             //else only show the user the employees from the locations that they have access to

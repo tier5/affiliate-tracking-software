@@ -385,29 +385,34 @@
         </div>-->
                         <hr>
                         <h4>Color Theme</h4>
+
                         <div class="form-group">
                             <div class="col-md-6" style="border-right: 1px silver solid;">
                                     <div id="primary-color-picker" style="height:50px; color:white;"></div>
                                     <input type="color" id="main_color_chooser" pattern="#[a-f0-9]{6}" name="main_color"
-                                           value="<?=(isset($_POST['main_color'])?$_POST['main_color']:(isset($agency->main_color)?$agency->main_color:''))?>"
+                                           value="<?=$objAgency->main_color; ?>"
                                     style="margin: 4px;" /> Primary Color
-                                <input type="hidden" id="main_color" value="<?=$agency->main_color; ?>"/>
+                                <input type="hidden" id="main_color" value="<?=$objAgency->main_color; ?>"/>
                             </div>
                             <div class="col-md-6">
 
                                     <div id="secondary-color-picker" style="height:50px; color:white;"></div>
                                     <input type="color" id="secondary_color_chooser" pattern="#[a-f0-9]{6}" name="secondary_color" style="margin: 4px;"
-                                           value="<?=(isset($_POST['main_color'])?$_POST['secondary_color']:(isset($agency->secondary_color)?$agency->secondary_color:''))?>"
+                                           value="<?=$objAgency->secondary_color; ?>"
                                     />
 
-                                <input type="hidden" id="secondary_color" value="<?=$agency->secondary_color; ?>"/>
+                                <input type="hidden" id="secondary_color" value="<?=$objAgency->secondary_color; ?>"/>
                                     Secondary Color
                             </div>
                         </div>
                         <hr>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a href="/" target="_blank"><button class="btn btn-primary" type="button" style="margin-top: 20px;">Preview Landing Page</button></a>
+                            </div>
+                        </div>
                     </div>
                     <!-- END White Label Settings  -->
-
 
                     <!-- START Twilio Settings  -->
                     <div class="tab-pane fade" id="tab_twilio">

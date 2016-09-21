@@ -400,7 +400,16 @@
                     </div>
                 </div>
                 <div class="modal-body center-block">
-                    <a href="/settings/agency?tab=Stripe" style="text-decoration:none;" ><button type="button" class="btn btn-warning btn-lg center-block">Click here to update Stripe Information</button></a>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a href="/settings/agency?tab=Stripe" style="text-decoration:none;" ><button type="button" class="btn btn-warning btn-lg center-block">Click here to update Stripe information</button></a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12" style="margin-top: 30px;">
+                            <a onclick="DismissStripe();" style="text-decoration:none;" ><button type="button" class="btn btn-link btn-lg center-block">Dismiss message</button></a>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer"></div>
             </div>
@@ -660,6 +669,17 @@
         $('#piechart > div > div').hide();
 
     });
+
+
+    function DismissStripe() {
+        $.ajax({
+            url: '/settings/dismissstripe'
+        }).done(function() {
+            $('#updateStripeModal').modal('hide');
+        });
+    }
+
+
 </script>
 </body>
 </html>
