@@ -45,6 +45,43 @@ class SessionController extends ControllerBase {
         $this->tag->setTitle('Review Velocity | Subscription');
     }
 
+    // Also will 404 on invalid subdomain
+    protected function DetermineParentIDAndSetViewVars() {
+        // Determine if business under an agency or review velocity
+            $parts = explode(".", $_SERVER['SERVER_NAME']);
+            if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
+                $subdomain = $parts[0];
+
+                $objParentAgency = Agency::findFirst([
+                        "custom_domain = :custom_domain:",
+                        "bind" => ["custom_domain" => $subdomain]
+                    ]);
+
+                // Subdomain must exist
+                if(!$objParentAgency) {
+                    $this->response->setStatusCode(404, "Not Found");
+                    echo "<h1>404 Page Not Found</h1>";
+                    $this->view->disable();
+                    return;
+                }
+
+                $ParentID = $objParentAgency->agency_id;
+
+                $this->view->main_color_setting = $this->view->PrimaryColor = !empty($objParentAgency->main_color) ? $objParentAgency->main_color : '#2a3644';
+                $this->view->SecondaryColor = !empty($objParentAgency->secondary_color) ? $objParentAgency->secondary_color : '#65CE4D';
+                $this->view->logo_setting = $this->view->LogoPath = !empty($objParentAgency->logo_path) ? '/img/agency_logos/'.$objParentAgency->logo_path : '';
+
+            } else {
+                // Review velocity
+                $ParentID = \Vokuro\Models\Agency::BUSINESS_UNDER_RV;
+                $this->view->main_color_setting = $this->view->PrimaryColor = '#2a3644';
+                $this->view->SecondaryColor = '#65CE4D';
+                $this->view->logo_setting = $this->view->LogoPath = '';
+            }
+
+        return $ParentID;
+    }
+
     public function submitSignupAction() {
         try {
             $subscription_id = null;
@@ -125,8 +162,11 @@ class SessionController extends ControllerBase {
             // First create an agency
             $agency_name = $this->request->getPost('agency_name', 'striptags');
             if(!$agency_name) $agency_name = $this->request->getPost('name','striptags');
-            $agency = new Agency();
 
+            // Also will 404 on invalid subdomain
+            $ParentID = $this->DetermineParentIDAndSetViewVars();
+
+            $agency = new Agency();
             $agency_save_arr = [
                 'name' => $agency_name,
                 'referrer_code' => $this->request->getPost('sharecode'),
@@ -134,6 +174,7 @@ class SessionController extends ControllerBase {
                 'signup_page' => 2, //go to the next page,
                 'agency_type_id' => 2,
                 'email' => $this->request->getPost('email'),
+                'parent_id' => $ParentID,
             ];
 
             if($subscription_id){
@@ -176,6 +217,7 @@ class SessionController extends ControllerBase {
         //$this->view->setTemplateBefore('login');
         $this->view->short_code = $short_code;
         $this->signupAction();
+
         $this->view->pick('session/signup');
         $subscription = new SubscriptionPricingPlan();
         if($short_code) {
@@ -196,23 +238,18 @@ class SessionController extends ControllerBase {
                         $this->view->pick('businessPricingPlan/inactive');
                         return;
                     }
-
-
                 }
-
-
+            }
         }
-        }
-
-
-
-
     }
 
     public function signupAction($subscriptionToken = '0') {
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
         $pi = array_shift($ex);
+
+        // Also will 404 on invalid subdomain
+        $this->DetermineParentIDAndSetViewVars();
 
         $agency = new Agency();
         $record = $agency->findOneBy(['custom_domain'=>$pi]);
@@ -242,40 +279,39 @@ class SessionController extends ControllerBase {
             }
         }
 
-
         $this->tag->setTitle('Review Velocity | Plan: '.$white_label);
         $this->view->setTemplateBefore('login');
 
-            /* Get services */
-            $userManager = $this->di->get('userManager');
-            $subscriptionManager = $this->di->get('subscriptionManager');
+        /* Get services */
+        $userManager = $this->di->get('userManager');
+        $subscriptionManager = $this->di->get('subscriptionManager');
 
-            /* Are we are logged in? */
-            $userId = $userManager->getUserId($this->session);
+        /* Are we are logged in? */
+        $userId = $userManager->getUserId($this->session);
 
-            /* Is this a valid subscription? */
-            $isValid = $subscriptionManager->isValidInvitation($subscriptionToken);
+        /* Is this a valid subscription? */
+        $isValid = $subscriptionManager->isValidInvitation($subscriptionToken);
 
-            /* Simply redirect to the home if we are logged in or the form is invalid  */
-            if ($userId || (!$isValid && $this->request->isPost())) {
-                //$this->response->redirect('/');
-                // $this->view->setTemplateBefore('private');
-            }
+        /* Simply redirect to the home if we are logged in or the form is invalid  */
+        if ($userId || (!$isValid && $this->request->isPost())) {
+            //$this->response->redirect('/');
+            // $this->view->setTemplateBefore('private');
+        }
 
-            //Utils::noSubDomains(1, $this->validSubDomains, $subscriptionToken);
-            $form = new SignUpForm();
-            $ccform = new CreditCardForm();
+        //Utils::noSubDomains(1, $this->validSubDomains, $subscriptionToken);
+        $form = new SignUpForm();
+        $ccform = new CreditCardForm();
 
-            $this->view->userId = $userId;
-            $this->view->maxLimitReached = false;
-            $this->view->token = $subscriptionToken;
-            if (!$userId) {
-                $this->view->maxLimitReached = $userManager->isMaxLimitReached();
-            }
+        $this->view->userId = $userId;
+        $this->view->maxLimitReached = false;
+        $this->view->token = $subscriptionToken;
+        if (!$userId) {
+            $this->view->maxLimitReached = $userManager->isMaxLimitReached();
+        }
 
-            $this->view->form = $form;
-            $this->view->ccform = $ccform;
-            $this->view->current_step = 1;
+        $this->view->form = $form;
+        $this->view->ccform = $ccform;
+        $this->view->current_step = 1;
     }
 
     /**
