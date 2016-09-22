@@ -340,6 +340,8 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
+
+                        {% if agencytype != "agency" %}
                         <li class="nav-item">
                             <a href="/users/admin" class="nav-link nav-toggle">
                                 <i class="icon-user"></i>
@@ -347,6 +349,7 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
+                        {% endif %}
 
                         {% if internalNavParams['hasSubscriptions'] %}
                             <li class="nav-item">

@@ -48,7 +48,6 @@
             'FirstName',
             'LastName',
             'OwnerEmail',
-            'OwnerPhone',
             'URL',
         ];
 
@@ -88,7 +87,6 @@
             'FirstName'             => 'name',
             'LastName'              => 'last_name',
             'OwnerEmail'            => 'email',
-            'OwnerPhone'            => 'phone',
             'URL'                   => 'custom_domain',
         ];
 
@@ -119,7 +117,6 @@
                 'FirstName',
                 'LastName',
                 'OwnerEmail',
-                'OwnerPhone',
                 'URL',
             ],
         ];

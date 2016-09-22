@@ -75,28 +75,38 @@ class IndexController extends ControllerBase {
             // Check for use of whitelabel domain
             // Moved to here from AgencySignupController::salesAction (agencysignup/sales)
             // The best way to fully test this is to use your local hosts file to treat your local reviewvelocity server as getmobilereiews.com
+
+
             $parts = explode(".", $_SERVER['SERVER_NAME']);
             if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
                 $subdomain = $parts[0];
 
-                if(!empty($_GET['name']) && !empty($_GET['phone'])){ // Loaded from GET for preview page
+                $agency = Agency::findFirst([
+                        "custom_domain = :custom_domain:",
+                        "bind" => ["custom_domain" => $subdomain]
+                    ]);
+
+                if(!$agency) {
+                    $this->response->setStatusCode(404, "Not Found");
+                    return;
+                }
+
+
+                /*if(!empty($_GET['name']) && !empty($_GET['phone'])){ // Loaded from GET for preview page
                     $this->view->Name = $_GET['name'];
                     $this->view->Phone = $_GET['phone'];
                     $this->view->PrimaryColor = '#'.$_GET['primary_color'];
                     $this->view->SecondaryColor = '#'.$_GET['secondary_color'];
                     $this->view->LogoPath = !empty($_GET['logo_path']) ? '/img/agency_logos/'.$_GET['logo_path'] : '';
                     $this->view->CleanUrl = true;
-                } else { // Loaded from DB for subdomain
-                    $agency = Agency::findFirst([
-                        "custom_domain = :custom_domain:",
-                        "bind" => ["custom_domain" => $subdomain]
-                    ]);
+                } else {*/ // Loaded from DB for subdomain
+
                     $this->view->Name = !empty($agency->name) ? $agency->name : (!empty($_SESSION['demo_name']) ? $_SESSION['demo_name'] : 'Agency');
                     $this->view->Phone = !empty($agency->phone) ? $agency->phone : '(888) 555-1212';
                     $this->view->PrimaryColor = !empty($agency->main_color) ? $agency->main_color : '#2a3644';
                     $this->view->SecondaryColor = !empty($agency->secondary_color) ? $agency->secondary_color : '#65CE4D';
                     $this->view->LogoPath = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
-                }
+                //}
 
                 $this->view->pick('agencysignup/sales');
                 return;

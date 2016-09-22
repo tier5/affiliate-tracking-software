@@ -37,6 +37,7 @@ class ControllerBusinessBase extends ControllerBase {
                 $IsEmailUnique = true;
                 $IsEmailValid = true;
                 $IsNameValid = true;
+                // If is agency...
                 if ($agency_id == 0) {
                     $user = new Users();
                     $user->assign(array(
@@ -106,6 +107,7 @@ class ControllerBusinessBase extends ControllerBase {
                     'email' => $this->request->getPost('admin_email'),
                     'agency_id' => $age->agency_id,
                     'profilesId' => $agency_type_id, // 1 = Agency User, 2 = Business User
+                    'is_employee' => 1,
                 ));
                 if (!$user->save()) {
                     $error = true;

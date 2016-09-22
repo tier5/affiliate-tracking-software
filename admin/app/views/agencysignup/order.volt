@@ -35,12 +35,8 @@
                         <div class="col-xs-7 col-lg-9"><input type="email" class="form-control" placeholder="Please enter your email" name="OwnerEmail" value="{{ OwnerEmail }}" required /></div>
                     </div>
                     <div class="row contact-row">
-                        <div class="col-xs-5 col-lg-3"><label>Phone</label><span class="required">*</span></div>
-                        <div class="col-xs-7 col-lg-9"><input type="text" class="form-control" placeholder="Please enter your phone" name="OwnerPhone" value="{{ OwnerPhone }}" required /></div>
-                    </div>
-                    <div class="row contact-row">
                         <div class="col-xs-5 col-lg-3"><label class="hidden-xs">Get A Company URL</label><label class="hidden-sm hidden-md hidden-lg">Domain</label><span class="required">*</span></div>
-                        <div class="col-xs-7 col-lg-9"><input type="text" id="URL" class="form-control website-url" name="URL" value="{{ URL }}" required /><span class="append_content">.getmobilereviews.com</span></div>
+                        <div class="col-xs-7 col-lg-9"><input type="text" id="URL" class="form-control website-url" name="URL" value="{{ URL }}" required /><span class="append_content hidden-xs">.getmobilereviews.com</span></div>
                     </div>
                 </div>
             </div>
