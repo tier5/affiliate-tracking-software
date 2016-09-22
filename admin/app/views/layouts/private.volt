@@ -131,7 +131,7 @@
         <!-- BEGIN LOGO -->
         <div class="page-logo" style="margin-top: 0;">
             <a href="/">
-                <img src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/assets/layouts/layout/img/logo.png')?>" alt="logo" class="logo-default"/>
+                <img src="<?=(isset($logo_setting) && $logo_setting != ''? '/img/agency_logos/' . $logo_setting:'/assets/layouts/layout/img/logo.png')?>" alt="logo" class="logo-default"/>
             </a>
             <div class="menu-toggler sidebar-toggler"></div>
         </div>

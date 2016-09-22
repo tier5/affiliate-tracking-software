@@ -171,8 +171,6 @@
                                 {{ agencyform.render("email_from_address", ["class": 'form-control', 'placeholder': 'From Email Address', 'type': 'name']) }}
                             </div>
                         </div>
-
-
                     </div>
                     <!-- END General Settings  -->
 
