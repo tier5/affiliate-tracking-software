@@ -100,45 +100,75 @@
 
 
                         <div class="form-group">
-                            <label for="name" class="col-md-4 control-label">Name</label>
+                            <label for="name" class="col-md-4 control-label">Business Name</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="email" class="col-md-4 control-label">Email</label>
+                            <label for="email" class="col-md-4 control-label">Business Email</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("email", ["class": 'form-control', 'placeholder': 'Email', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="phone" class="col-md-4 control-label">Phone</label>
+                            <label for="phone" class="col-md-4 control-label">Business Phone</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("phone", ["class": 'form-control', 'placeholder': 'Phone', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="address" class="col-md-4 control-label">Address</label>
+                            <label for="address" class="col-md-4 control-label">Business Address</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("address", ["class": 'form-control', 'placeholder': 'Address', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="locality" class="col-md-4 control-label">City</label>
+                            <label for="address" class="col-md-4 control-label">Business Address 2</label>
+                            <div class="col-md-8">
+                                {{ agencyform.render("address2", ["class": 'form-control', 'placeholder': 'Address2', 'type': 'name']) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="locality" class="col-md-4 control-label">Business City</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("locality", ["class": 'form-control', 'placeholder': 'City', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="state_province" class="col-md-4 control-label">State/Province</label>
+                            <label for="state_province" class="col-md-4 control-label">Business State/Province</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("state_province", ["class": 'form-control', 'placeholder': 'State/Province', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="postal_code" class="col-md-4 control-label">Postal Code</label>
+                            <label for="state_province" class="col-md-4 control-label">Business Country</label>
+                            <div class="col-md-8">
+                                {{ agencyform.render("country", ["class": 'form-control', 'placeholder': 'Country', 'type': 'name']) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="postal_code" class="col-md-4 control-label">Business Zip / Postal Code</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("postal_code", ["class": 'form-control', 'placeholder': 'Postal Code', 'type': 'name']) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="postal_code" class="col-md-4 control-label">Business Website</label>
+                            <div class="col-md-8">
+                                {{ agencyform.render("website", ["class": 'form-control', 'placeholder': 'Website', 'type': 'name']) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="postal_code" class="col-md-4 control-label">Email From Name</label>
+                            <div class="col-md-8">
+                                {{ agencyform.render("email_from_name", ["class": 'form-control', 'placeholder': 'Email From Name', 'type': 'name']) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="postal_code" class="col-md-4 control-label">From Email Address</label>
+                            <div class="col-md-8">
+                                {{ agencyform.render("email_from_address", ["class": 'form-control', 'placeholder': 'From Email Address', 'type': 'name']) }}
                             </div>
                         </div>
 
