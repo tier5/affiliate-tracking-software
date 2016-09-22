@@ -88,6 +88,8 @@ class IndexController extends ControllerBase {
 
                 if(!$agency) {
                     $this->response->setStatusCode(404, "Not Found");
+                    echo "<h1>404 Page Not Found</h1>";
+                    $this->view->disable();
                     return;
                 }
 
