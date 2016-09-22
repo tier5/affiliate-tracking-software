@@ -86,6 +86,7 @@ class IndexController extends ControllerBase {
                         "bind" => ["custom_domain" => $subdomain]
                     ]);
 
+                // Subdomain must exist
                 if(!$agency) {
                     $this->response->setStatusCode(404, "Not Found");
                     echo "<h1>404 Page Not Found</h1>";
@@ -94,21 +95,20 @@ class IndexController extends ControllerBase {
                 }
 
 
-                /*if(!empty($_GET['name']) && !empty($_GET['phone'])){ // Loaded from GET for preview page
+                if(!empty($_GET['name']) && !empty($_GET['phone'])){ // Loaded from GET for preview page from agency signup process
                     $this->view->Name = $_GET['name'];
                     $this->view->Phone = $_GET['phone'];
                     $this->view->PrimaryColor = '#'.$_GET['primary_color'];
                     $this->view->SecondaryColor = '#'.$_GET['secondary_color'];
                     $this->view->LogoPath = !empty($_GET['logo_path']) ? '/img/agency_logos/'.$_GET['logo_path'] : '';
                     $this->view->CleanUrl = true;
-                } else {*/ // Loaded from DB for subdomain
-
+                } else { // Loaded from DB for subdomain
                     $this->view->Name = !empty($agency->name) ? $agency->name : (!empty($_SESSION['demo_name']) ? $_SESSION['demo_name'] : 'Agency');
                     $this->view->Phone = !empty($agency->phone) ? $agency->phone : '(888) 555-1212';
                     $this->view->PrimaryColor = !empty($agency->main_color) ? $agency->main_color : '#2a3644';
                     $this->view->SecondaryColor = !empty($agency->secondary_color) ? $agency->secondary_color : '#65CE4D';
                     $this->view->LogoPath = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
-                //}
+                }
 
                 $this->view->pick('agencysignup/sales');
                 return;
