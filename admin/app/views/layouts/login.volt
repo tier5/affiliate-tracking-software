@@ -96,7 +96,7 @@
         !(strpos($_SERVER['REQUEST_URI'],'login')>0)) { ?>
         <!-- BEGIN LOGO -->
         <div class="logo">
-            <a href="/"><img src="<?=(isset($logo_setting) && $logo_setting != ''? '/img/agency_logos/' . $logo_setting:'/img/logo-gray.gif')?>" alt="" /></a>
+            <a href="/"><img src="<?=(isset($logo_setting) && $logo_setting != ''? $logo_setting:'/img/logo-gray.gif')?>" alt="" /></a>
         </div>
         <!-- END LOGO -->
         <?php } ?>

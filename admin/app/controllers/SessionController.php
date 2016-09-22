@@ -692,6 +692,8 @@ class SessionController extends ControllerBase {
         $email = $this->dispatcher->getParam('email');
         $this->view->email = $email;
 
+        $this->DetermineParentIDAndSetViewVars();
+
         try {
             if (!$this->request->isPost()) {
                 if ($this->auth->hasRememberMe()) {
