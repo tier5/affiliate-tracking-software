@@ -106,7 +106,7 @@ class SessionController extends ControllerBase {
                 'last_name'=>$last_name,
                 'email' => $this->request->getPost('email'),
                 'password' => $this->security->hash($this->request->getPost('password')),
-                'profilesId' => 1, //All new users will be "Agency Admin"
+                'profilesId' => 2,
             ));
 
             $isemailunuique = $user->validation();
