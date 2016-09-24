@@ -212,8 +212,30 @@
             return "SUCCESS";
         }
 
+        protected function storeLogo($objAgency) {
+            if($this->request->hasFiles()) {
+                foreach ($this->request->getUploadedFiles() as $file) {
+                    // This is for handling page reloads.
+                    if($file->getTempName()) {
+                        if(isset($objAgency->logo_path) && $objAgency->logo_path) {
+                            unlink(__DIR__ . "/../../public/img/agency_logos/" . $this->session->AgencySignup['LogoFilename']);
+                            $objAgency->logo_path = '';
+                            $objAgency->save();
+                        }
+
+                        $FileName = uniqid('logo') . '.' . $file->getExtension();
+                        file_put_contents(__DIR__ . "/../../public/img/agency_logos/{$FileName}", file_get_contents($file->getTempName()));
+                        $objAgency->logo_path = $FileName;
+                        $objAgency->save();
+                        break;
+                    }
+                }
+            }
+        }
+
         protected function storeSettings($entity, $type) {
             if ($this->request->isPost()) {
+
                 $form = new SettingsForm($entity);
                 $agencyform = new AgencyForm($entity);
                 $form->bind($_POST, $entity);
@@ -221,6 +243,7 @@
 
                 $formvalid = $form->isValid($_POST);
                 $agencyformvalid = $agencyform->isValid($_POST);
+
 
                 if (!$formvalid || !$agencyformvalid) {
                     foreach ($agencyform->getMessages() as $message) {
@@ -397,6 +420,7 @@
                 if (!$this->storeSettings($objAgency, 'agency')) {
                     $this->flash->error($objAgency->getMessages());
                 } else {
+                    $this->storeLogo($objAgency);
                     $this->flash->success("The settings were updated successfully");
                     Tag::resetInput();
                 }

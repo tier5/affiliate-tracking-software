@@ -400,10 +400,10 @@
                             <label class="col-md-4 control-label" for="logo_path" value="<?=$objAgency->logo_path; ?>">Logo</label>
                             <div class="col-md-8">
                                 <input type="file" id="logo_path" name="logo_path">
-                                <p class="help-block">(max width: 200 pixels, max height: 30 pixels) (only: gif, png,
-                                    jpg or jpeg) </p>
+                                <p class="help-block">(max width: 200 pixels, max height: 30 pixels) (only: gif, png, jpg or jpeg) </p>
                             </div>
-                        </div><!--
+                        </div>
+        <!--
         <div class="form-group">
           <label class="col-md-4 control-label" for="sms_message_logo_path">SMS Message Logo</label>
           <div class="col-md-8">
