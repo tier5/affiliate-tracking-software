@@ -33,9 +33,11 @@
     <div class="row small-vertical-margins">
 
         <div class="col-xs-10 col-xs-offset-1">
-            <button class="big-green-button thin-white-text SecondaryColor center-block">
-                Click Here To Sign Up Today
-            </button>
+            <a href="http://{{ SubDomain }}/session/sales">
+                <button class="big-green-button thin-white-text SecondaryColor center-block">
+                    Click Here To Sign Up Today
+                </button>
+            </a>
         </div>
         <div class="col-xs-2"></div>
     </div>

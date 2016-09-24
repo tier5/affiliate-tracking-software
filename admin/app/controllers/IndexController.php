@@ -94,6 +94,7 @@ class IndexController extends ControllerBase {
                     return;
                 }
 
+                $this->view->SubDomain = $subdomain;
 
                 if(!empty($_GET['name']) && !empty($_GET['phone'])){ // Loaded from GET for preview page from agency signup process
                     $this->view->Name = $_GET['name'];
