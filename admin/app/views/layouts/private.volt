@@ -360,6 +360,18 @@
                                 </a>
                             </li>
                         {% endif %}
+
+                        {% if internalNavParams['hasAgencySubscriptions'] and 1==2 %}
+                            <li class="nav-item">
+                                <a href="{{ internalNavParams['subscriptionController'] }}" class="nav-link nav-toggle">
+                                    <i class="icon-wallet"></i>
+                                    <span class="title">Subscriptions</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        {% endif %}
+
+
                     {% endif %}
                 {% endif %}
             </ul>

@@ -1100,16 +1100,16 @@ class ControllerBase extends Controller {
         $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] &&
             ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
             ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
-            $userManager->hasLocation($this->session);
+            ($userManager->hasLocation($this->session) && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
+
 
         $internalNavParams['hasPricingPlans'] = $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];
-
 
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isBusinessAdmin']) {
             $internalNavParams['subscriptionController'] = '/businessSubscription';
         }
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isAgencyAdmin']) {
-            $internalNavParams['subscriptionController'] = '';
+            $internalNavParams['subscriptionController'] = '/businessPricingPlan';
         }
 
         $this->view->internalNavParams = $internalNavParams;

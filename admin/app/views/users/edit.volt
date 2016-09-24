@@ -38,6 +38,7 @@
             <?php
     if ($profilesId!=3) {
       ?>
+            {% if profilesId != 1 %}
             <div class="form-group">
                 <label for="profilesId" class="col-md-2 control-label">Role:</label>
                 <div class="col-md-4">
@@ -51,18 +52,21 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="col-md-2 control-label">Is Employee?</label>
-                <?php $Selected = $user->is_employee == 1 ? 'checked="checked"' : ''; ?>
-                <label class="radio-inline">Yes <input type="radio" value="Yes" name="is_employee" {{ Selected }} /></label>
-                <?php $Selected = $user->is_employee == 0 ? 'checked="checked"' : ''; ?>
-                <label class="radio-inline">No <input type="radio" value="No" name="is_employee" {{ Selected }} /></label>
-            </div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Is Employee?</label>
+                    <?php $Selected = $user->is_employee == 1 ? 'checked="checked"' : ''; ?>
+                    <label class="radio-inline">Yes <input type="radio" value="Yes" name="is_employee" {{ Selected }} /></label>
+                    <?php $Selected = $user->is_employee == 0 ? 'checked="checked"' : ''; ?>
+                    <label class="radio-inline">No <input type="radio" value="No" name="is_employee" {{ Selected }} /></label>
+                </div>
+            {% endif %}
 
 
             <?php
     }
     ?>
+            {% if profilesId != 1 %}
             <div class="form-group">
                 <label for="locations" class="col-md-2 control-label">Location:</label>
                 <div class="col-md-8">
@@ -117,6 +121,7 @@
                     <div id="userlocationall" style="display: none;">All</div>
                 </div>
             </div>
+            {% endif %}
             <div class="form-group">
                 <div class="error" id="emailerror" style="display: none;">
                     Invalid email.

@@ -1,11 +1,16 @@
+<?php
+    $CreateType = $agency_type_id == 1 ? 'Agency' : 'Business';
+    $BackUrl = $agency_type_id == 1 ? '/agency' : '/admindashboard/list/2';
+
+?>
 <ul class="pager">
     <li class="previous pull-left">
-        <a href="/admindashboard/list/<?=$agency_type_id?>" class="btn red btn-outline">&larr; Go Back</a>
+        <a href="<?=$BackUrl; ?>" class="btn red btn-outline">&larr; Go Back</a>
     </li>
 </ul>
 
 {{ content() }}
-<?php $CreateType = $agency_type_id == 1 ? 'Agency' : 'Business'; ?>
+
 <!-- BEGIN SAMPLE FORM PORTLET-->
 <div class="portlet light bordered">
     <div class="portlet-title">

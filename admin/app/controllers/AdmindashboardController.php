@@ -347,7 +347,7 @@ class AdmindashboardController extends ControllerBusinessBase {
         if ($agency_id && !is_numeric($agency_id)) throw new \Exception('invalid agency id provided');
         $usermanager = new UserManager();
         try{
-            $usermanager->sudoAsUserId($user_id);
+            $objUser = $usermanager->sudoAsUserId($user_id);
             $this->response->redirect('/');
         }catch(\Exception $e){
             $this->flash->error('You cannot login as an inactivated user, or there was an error sudoing as a user');
@@ -356,7 +356,23 @@ class AdmindashboardController extends ControllerBusinessBase {
             return;
         }
 
-        $this->response->redirect('/');
+        $RedirectUrl = '/';
+        $objEntity = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+        if($objUser->is_admin || $objEntity->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $this->config->application['environment'] == 'dev')
+            $RedirectUrl = '/';
+        else {
+            if($objEntity->parent_id == \Vokuro\Models\Agency::AGENCY) {
+                // All agencies should have a custom_domain, but I don't want the site breaking in the event that they don't for some weird reason.
+                $RedirectUrl = $objEntity->custom_domain ? 'http://' . $objEntity->custom_domain . '.getmobilereviews.com/' : '/';
+            } elseif($objEntity->parent_id > 0) {
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objEntity->parent_id}");
+                // All agencies should have a custom_domain, but I don't want the site breaking in the event that they don't for some weird reason.
+                $RedirectUrl = $objAgency->custom_domain ? 'http://' . $objAgency->custom_domain . '.getmobilereviews.com/' : '/';
+            }
+        }
+
+
+        $this->response->redirect($RedirectUrl);
         $this->view->disable();
         return;
     }

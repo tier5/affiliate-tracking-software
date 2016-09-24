@@ -21,7 +21,7 @@ class UserManager extends BaseService {
 
     public function isAgency($session) {
         $identity = $session->get('auth-identity');
-        return $identity && ($identity['agencytype'] === 'Agency');
+        return $identity && (intval($identity['parent_id']) === \Vokuro\Models\Agency::AGENCY);
     }
 
     public function isBusiness($session) {

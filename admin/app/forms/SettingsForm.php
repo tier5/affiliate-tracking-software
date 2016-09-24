@@ -70,7 +70,7 @@ class SettingsForm extends Form
         $this->add($name);
 
         $review_goal = new Text('review_goal', array(
-            'placeholder' => 'Review Goal'
+            'placeholder'   => 'Review Goal',
         ));
 
         $this->add($review_goal);
