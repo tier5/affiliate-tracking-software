@@ -713,7 +713,6 @@
                         }
 
                         $FileName = uniqid('logo') . '.' . $file->getExtension();
-                        echo $FileName;
                         file_put_contents(__DIR__ . "/../../public/img/agency_logos/{$FileName}", file_get_contents($file->getTempName()));
                         $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['LogoFilename' => $FileName]);
                         break;

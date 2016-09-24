@@ -11,7 +11,7 @@
         </div>
     </div>
     <div class="row medium-vertical-margins">
-        <div class="col-xs-4 col-xs-offset-2"><a href="//{{Subdomain}}.getmobilereviews.com/?name={{Name|url_encode}}&phone={{Phone|url_encode}}&logo_path={{LogoFilename|url_encode}}&primary_color={{PrimaryColorNohash|url_encode}}&secondary_color={{SecondaryColorNohash|url_encode}}" target="_blank"><button class="btn btn-primary center-block" type="button" id="PreviewButton">Preview Landing Page</button></a></div>
+        <div class="col-xs-4 col-xs-offset-2"><a href="//{{Subdomain}}.getmobilereviews.com/?name={{Name|url_encode}}&phone={{Phone|url_encode}}&logo_path={{LogoPath|url_encode}}&primary_color={{PrimaryColorNohash|url_encode}}&secondary_color={{SecondaryColorNohash|url_encode}}" target="_blank"><button class="btn btn-primary center-block" type="button" id="PreviewButton">Preview Landing Page</button></a></div>
         <div class="col-xs-4"><button class="btn btn-primary center-block" type="button" id="SaveButton">Save Changes</button></div>
     </div>
 
@@ -39,7 +39,7 @@
             <div class="col-xs-8">
                 <input type="text" class="form-control" id="upload-file-info"
                         {% if LogoFilename %}
-                            value="{{  LogoFilename }}"
+                            value="{{ LogoPath }}"
                         {% else %}
                             value="No file chosen"
                         {% endif %}
