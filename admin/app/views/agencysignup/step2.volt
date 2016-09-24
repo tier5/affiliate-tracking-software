@@ -84,7 +84,7 @@
             $('#PrimarySquare').css('background-color', $(this).val());
             $('#PrimarySquare').css('border-color', $(this).val());
         });
-
+1
         $('#SecondaryColor').change(function() {
             $('#SecondarySquare').css('background-color', $(this).val());
             $('#SecondarySquare').css('border-color', $(this).val());

@@ -474,6 +474,7 @@
                 $objUser->create_time = date("Y-m-d H:i:s");
                 $objUser->is_employee = 0;
                 $objUser->is_all_locations = 0;
+                $objUser->send_confirmation = true;
                 $objUser->profilesId = 1; // Agency Admin
 
                 if(!$objUser->create()) {

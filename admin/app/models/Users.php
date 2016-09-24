@@ -182,7 +182,7 @@
 
                 $emailConfirmation = new EmailConfirmations();
                 $emailConfirmation->usersId = $this->id;
-                 if($emailConfirmation->save()) {
+                if($emailConfirmation->save()) {
                   $this->getDI()
                       ->getFlash()
                       ->notice('A confirmation email has been sent to ' . $this->email);
