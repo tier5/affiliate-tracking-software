@@ -33,7 +33,7 @@
     <div class="row small-vertical-margins">
 
         <div class="col-xs-10 col-xs-offset-1">
-            <a href="http://{{ SubDomain }}/session/sales">
+            <a href="http://{{ SubDomain }}.getmobilereviews.com/session/signup" style="text-decoration: none;">
                 <button class="big-green-button thin-white-text SecondaryColor center-block">
                     Click Here To Sign Up Today
                 </button>
