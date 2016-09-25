@@ -21,7 +21,11 @@ class UserManager extends BaseService {
 
     public function isAgency($session) {
         $identity = $session->get('auth-identity');
-        return $identity && (intval($identity['parent_id']) === \Vokuro\Models\Agency::AGENCY);
+        // GARY_TODO:  Refactor this.  I dont want to make a db call every page reload
+        $objUser = \Vokuro\Models\Users::findFirst('id = ' . $identity['id']);
+        $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
+
+        return $identity && ($objAgency->parent_id === \Vokuro\Models\Agency::AGENCY);
     }
 
     public function isBusiness($session) {
@@ -32,7 +36,6 @@ class UserManager extends BaseService {
     public function isWhiteLabeledBusiness($session) {
         $identity = $session->get('auth-identity');
         // GARY_TODO:  Refactor this.  I dont want to make a db call every page reload
-
         $objUser = \Vokuro\Models\Users::findFirst('id = ' . $identity['id']);
         $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
         return $identity && ($identity['agencytype'] === 'business') && (intval($objAgency->parent_id) !== -1);

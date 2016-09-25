@@ -346,7 +346,13 @@ class ControllerBase extends Controller {
         //check if the user should get the upgrade message (Only "business" agency_types who are signed up for Free accounts,
         //get the upgrade message)
         $is_upgrade = false;
-        if ($this->session->get('auth-identity')['agencytype'] == 'agency') {
+
+        if ($this->session->get('auth-identity')['agencytype'] == 'business') {
+            // GARY_TODO:  Refactor.  The agency_id I would think would be in the auth-identity, but it appears not to be.
+
+            $objUser = \Vokuro\Models\Users::findFirst("id = " . $this->session->get('auth-identity')['id']);
+            $agency = \Vokuro\Models\Agency::findFirst("agency_id = " . $objUser->agency_id);
+
 
             //we have a business, so check if free
             if ($agency->subscription_id > 0) {
@@ -357,7 +363,7 @@ class ControllerBase extends Controller {
                     "subscription_id" => $agency->subscription_id
                 );
 
-                $subscriptionobj = Subscription::findFirst(
+                $subscriptionobj = \Vokuro\Models\Subscription::findFirst(
                     array(
                         $conditions,
                         "bind" => $parameters
@@ -1108,6 +1114,7 @@ class ControllerBase extends Controller {
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isBusinessAdmin']) {
             $internalNavParams['subscriptionController'] = '/businessSubscription';
         }
+
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isAgencyAdmin']) {
             $internalNavParams['subscriptionController'] = '/businessPricingPlan';
         }

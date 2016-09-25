@@ -92,7 +92,7 @@
             <div class="row" style="clear: both;">
                 <div class="field">
                     <span class="name" style="display: inline-block; min-width: 100px;">Full Name:</span>
-                    <input type="text" name="name" id="name" value="" required="required" style="min-width: 200px;padding: 0 0 0 5px;"/>
+                    <input type="text" name="name" id="name" value="" required="required" style="min-width: 200px;padding: 0 0 0 5px; margin-left: 13px;"/>
                 </div>
             </div>
             <div class="row" style="clear: both;">
@@ -104,7 +104,7 @@
             <div class="row" style="clear: both;">
                 <div class="field">
                     <span class="name" style="display: inline-block; min-width: 100px;">Cell Phone:</span>
-                    <input type="tel" name="phone" id="phone" value="" style="min-width: 200px;padding: 0 0 0 5px;"/>
+                    <input type="tel" name="phone" id="phone" value="" style="min-width: 200px;padding: 0 0 0 5px; margin-left: 13px;"/>
                 </div>
             </div>
             <div class="row" style="clear: both;">

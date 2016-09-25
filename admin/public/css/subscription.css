@@ -369,7 +369,7 @@
 }
 
 .portlet.light.bordered{
-    min-height:215px;
+    /*min-height:215px;*/
 }
 
 .portlet-body .easy-pie-chart .number > span, .portlet-body .easy-pie-chart-big .number > span{

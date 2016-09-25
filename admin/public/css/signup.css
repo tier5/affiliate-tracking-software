@@ -501,7 +501,7 @@ a.btnLink
 #createregion label.error { display: inline !important; background-color: transparent; border: medium none; }
 #page-wrapper input.error,
 #createregion input.error { padding: 0 !important; }
-#signup5submitbtn { clear: both; display: block; margin-bottom: 25px; padding: 11px 21px; width: 290px; }
+#signup5submitbtn { clear: both; display: block; margin-bottom: 25px; padding: 11px 21px; width: 325px; text-decoration: none;}
 #signup5submitbtn:hover { color: #FFFFFF; }
 
 #btnCreateRegion { border: medium none !important; line-height: 12px; width: 100px !important; }

@@ -527,11 +527,15 @@ class SessionController extends ControllerBase {
             $this->view->disable();
             return;
         }
+
         // Query binding parameters with string placeholders
         $conditions = 'id = :id:';
         $parameters = array('id' => $identity['id']);
         $userObj = Users::findFirst(array($conditions, 'bind' => $parameters));
-        //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+
+        // Get employees
+        $this->view->employees = Users::find("agency_id = {$userObj->agency_id} AND is_employee = 1");
+
         //find the agency
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
@@ -633,7 +637,8 @@ class SessionController extends ControllerBase {
                 'signup_page' => '', //go to the next page
             ));
 
-            if ($this->request->isPost() && !$agency->save()) {
+
+            if (!$agency->save()) {
                 $this->flash->error($agency->getMessages());
             } else {
                 return $this->response->redirect('/');
