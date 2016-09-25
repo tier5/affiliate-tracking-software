@@ -220,7 +220,6 @@
             );
 
 
-            //find the agency
             $conditions = "agency_id = :agency_id:";
 
             $parameters = array(
@@ -232,6 +231,36 @@
                     $conditions, "bind" => $parameters
                 )
             );
+
+            $client = $this->getGoogleClient();
+            $credentialsPath = CREDENTIALS_PATH;
+
+            if (isset($_GET['code'])) {
+                // Exchange authorization code for an access token.
+                $client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
+
+                $accessToken = $client->authenticate($_GET['code']);
+                $this->setAccessToken($accessToken, $loc->location_id);
+            }
+
+
+            // Load previously authorized credentials from a file.
+            $authUrl = $client->createAuthUrl();
+            $this->view->authUrl = $authUrl;
+            //$this->view->setMainView('google/auth');
+
+            if ($accessToken) {
+                //return;
+                //$client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
+                $client->setAccessToken($accessToken['access_token']);
+                // Refresh the token if it's expired.
+                $access_token = $client->getAccessToken();
+                $refreshToken = $client->getRefreshToken();
+                //$_SESSION['google_access_token'][] = $access_token;
+                //$_SESSION['google_refresh_token'][] = $refreshToken;
+
+                return $this->response->redirect('/reviewfeeds/googlereviews');
+            }
 
             if ($this->request->isPost()) {
                 $loc = new Location();
@@ -332,7 +361,7 @@
                     $this->flash->success("The location was created successfully");
 
                     $this->updateSubscriptionPlan();
-                    //we are done, go to the next page
+
                     return $this->response->redirect('/location/create2/' . ($loc->location_id > 0 ? $loc->location_id : ''));
                 }
             }

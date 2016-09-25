@@ -67,6 +67,28 @@ class Email{
         return true;
     }
 
+    public function sendEmployeeReport($dbEmployees, $objAgency, $objBusiness) {
+        try {
+            $mail = $this->getDI()->getMail();
+            $mail->setFrom('zacha@reputationloop.com');
+            $Params = [
+                'dbEmployees'       => $dbEmployees,
+                'objBusiness'       => $objBusiness,
+                'objAgency'         => $objAgency,
+            ];
+            foreach($dbEmployees as $objUser) {
+                $mail->send($objUser->email, "Your monthly employee report!", 'employee_report', $Params);
+                die();
+            }
+        } catch (Exception $e) {
+            // GARY_TODO: Add logging!
+            print $e;
+            throw new \Exception('Not able to send email in:'.__CLASS__.'::'.__FUNCTION__);
+        }
+
+        return true;
+    }
+
     public function sendResetPasswordEmailToUser(Users $user){
         $this->getDI()
             ->getMail()
