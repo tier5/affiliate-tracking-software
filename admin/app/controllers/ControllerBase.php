@@ -108,6 +108,8 @@ class ControllerBase extends Controller {
 
             $this->view->paymentService = 'Stripe';
 
+
+            $objPricingPlan = $agency->subscription_id ? \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $agency->subscription_id) : '';
             $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = '. $identity['id']);
 
             // Check if business should be disabled
@@ -116,7 +118,6 @@ class ControllerBase extends Controller {
 
             // Are we a business without an active subscription plan?
             if($agency->parent_id > 0 && (!$objStripeSubscription || !$objStripeSubscription->stripe_subscription_id || $objStripeSubscription->stripe_subscription_id == 'N')) {
-
                 $this->view->invalidBusinessSubscription = true;
 
                 // Disable business if agency has no stripe keys enabled.
@@ -124,7 +125,7 @@ class ControllerBase extends Controller {
                     $this->view->BusinessDisableBecauseOfStripe = true;
                 else {
                     // Ask for credit information only if there is no subscription or customer_id.  GARY_TODO:  Probalby should be done in cron script.  Remove customer_id if invalid.
-                    if(!$objStripeSubscription || !$objStripeSubscription->stripe_customer_id)
+                    if((!$objStripeSubscription || !$objStripeSubscription->stripe_customer_id || !$objPricingPlan->enable_trial_account))
                         $this->view->ccInfoRequired = "open";
                     else
                         $this->view->ccInfoRequired = "closed";

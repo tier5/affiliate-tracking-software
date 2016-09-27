@@ -3,19 +3,14 @@
         body {
             background: white;
         }
-        .even_row {
-            background-color: rgb(239,239,239);
-        }
-        .odd_row {
-            background-color: rgb(250,250,250);
-        }
+
         .header_row {
             background-color: rgb(239,239,239);
         }
 
         .container {
             width: 1024px;
-            border: 1px solid black;
+            border: 1px solid rgba(0,0,0,.04);
             margin-left: auto;
             margin-right: auto;
         }
@@ -36,6 +31,7 @@
         .logo {
             float: left;
             display: block;
+            max-height: 50px;
         }
 
         .title {
@@ -44,15 +40,83 @@
 
         .employee_table {
             margin-top: 20px;
-            margin-left: 20px;
             margin-bottom: 20px;
-            margin-right: 20px;
         }
 
         .table_header {
             margin-left: 20px;
             margin-right: 20px;
+            text-align: center;
         }
+
+        .table_cell {
+            text-align: center;
+            font-size: 16px;
+            font-family: "Open Sans";
+            color: rgb(71, 71, 71);
+            line-height: 1.25;
+        }
+
+        table {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        tr {
+            height: 60px;
+        }
+
+        td, th {
+            text-align: center;
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+
+        td.total_feedback, td.rank {
+            width: 57px;
+            /*font-size: 12px;*/
+        }
+
+        td.total_feedback, td.total_feedback {
+            width: 57px;
+            /*font-size: 12px;*/
+        }
+
+        td.average_satisfaction, td.average_satisfaction {
+            width: 57px;
+            /*font-size: 12px;*/
+        }
+
+        tbody > tr:nth-child(1) {
+            font-size: 36px !important;
+            height: 120px;
+        }
+
+        tbody > tr:nth-child(2) {
+            font-size: 30px !important;
+            height: 100px;
+        }
+
+        tbody > tr:nth-child(3) {
+            height: 80px;
+            font-size: 24px !important;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgb(239,239,239);
+        }
+        tr:nth-child(odd) {
+            background-color: rgb(250,250,250);
+        }
+        th > tr {
+            background-color: rgb(250,250,250);
+        }
+        td.employee, th.employee {
+            width: 94px;
+            font-size: 14px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -69,9 +133,9 @@
             <thead>
                 <tr>
                     <th>Rank</th>
-                    <th>Employee</th>
-                    <th>Total Feedback</th>
-                    <th>Average Satisfaction</th>
+                    <th class="employee">Employee</th>
+                    <th class="total_feedback">Total Feedback</th>
+                    <th class="total_feedback">Average Satisfaction</th>
                 </tr>
             </thead>
             <tbody>
@@ -80,13 +144,13 @@
                 <?php
                     switch($Count) {
                         case 1:
-                            $Icon = "<img src='" . $objBusiness->custom_domain . ".getmobilereviews.com/img/gold_medal.png' />";
+                            $Icon = "<img src='http://" . $objBusiness->custom_domain . ".getmobilereviews.com/img/gold_medal.png' />";
                             break;
                         case 2:
-                                $Icon = "<img src='" . $objBusiness->custom_domain . ".getmobilereviews.com/img/silver_medal.png' />";
+                                $Icon = "<img src='http://" . $objBusiness->custom_domain . ".getmobilereviews.com/img/silver_medal.png' />";
                             break;
                         case 3:
-                                $Icon = "<img src='" . $objBusiness->custom_domain . ".getmobilereviews.com/img/bronze_medal.png' />";
+                                $Icon = "<img src='http://" . $objBusiness->custom_domain . ".getmobilereviews.com/img/bronze_medal.png' />";
                             break;
                         default:
                             // Fully aware this only works up to 110 employees.  GARY_TODO:  Fix this if it becomes an issue.
@@ -104,10 +168,10 @@
                 ?>
 
                 <tr>
-                    <td><?=$Icon; ?></td>
-                    <td><?=$Employee->name; ?></td>
-                    <td><?=$Employee->sms_sent_all_time ?: 0; ?></td>
-                    <td><?=$Employee->avg_feedback ?: 0; ?></td>
+                    <td class="rank"><?=$Icon; ?></td>
+                    <td class="employee"><?=$Employee->name; ?></td>
+                    <td class="total_feedback"><?=$Employee->sms_sent_all_time ?: 0; ?></td>
+                    <td class="average_satisfaction"><?=$Employee->avg_feedback ?: 0; ?></td>
                 </tr>
                 <?php $Count++; ?>
             {% endfor %}

@@ -82,8 +82,20 @@ class BusinessSubscriptionController extends ControllerBase {
         /* Set pricing plan details to empty so it doesn't display when attaching the json string to the data attribute */
         $subscriptionPlanData['pricingPlan']['pricing_details'] = '';
         $this->view->subscriptionPlanData = $subscriptionPlanData;
-        $this->view->paymentPlan =
-            $this->view->subscriptionPlanData['subscriptionPlan']['payment_plan'] === ServicesConsts::$PAYMENT_PLAN_TRIAL ? 'TRIAL' : 'PAID';
+        switch($this->view->subscriptionPlanData['subscriptionPlan']['payment_plan']) {
+            case ServicesConsts::$PAYMENT_PLAN_TRIAL :
+                $this->view->paymentPlan = "TRIAL";
+                break;
+            case ServicesConsts::$PAYMENT_PLAN_FREE :
+                $this->view->paymentPlan = "FREE";
+                break;
+            case ServicesConsts::$PAYMENT_PLAN_PAID :
+                $this->view->paymentPlan = "PAID";
+                break;
+            default:
+                $this->view->paymentPlan = "FREE";
+                break;
+        }
 
         /* Payments paramaters */
         $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;

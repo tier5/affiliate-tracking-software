@@ -77,7 +77,7 @@
                         <div class="">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="share-text"><b>Get <?=$additional_allowed?> additional SMS messages for every 3 referrals that sign up.</b>  Use the following links to share your referral URL: </div>
+                                    <div class="share-text"><b>Get <?=$additional_allowed?> additional SMS messages for every 1 referral that sign up.</b>  Use the following links to share your referral URL: </div>
                                     <?php
                                     if ($num_signed_up > 0) {
                                     ?>

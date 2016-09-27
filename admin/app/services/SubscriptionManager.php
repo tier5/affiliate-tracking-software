@@ -24,7 +24,7 @@ class SubscriptionManager extends BaseService {
         $subscriptionPlan = $this->getSubscriptionPlan($userId);
         $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
 
-        if (!$subscriptionPlan  || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE) {
+        if (!$subscriptionPlan || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE || $payment_plan == ServicesConsts::$PAYMENT_PLAN_TRIAL) {
             return false;
         }
 
@@ -32,7 +32,6 @@ class SubscriptionManager extends BaseService {
         $paymentProfile = $paymentService->getPaymentProfile([ 'userId' => $userId, 'provider' => $provider ]);
 
         // GARY_TODO:  Add cron script to reset customer_id on expired / invalid cards.
-
         if(!$paymentProfile || !$paymentProfile['customer_id'])
             return true;
 
