@@ -43,8 +43,12 @@
                 <label for="profilesId" class="col-md-2 control-label">Role:</label>
                 <div class="col-md-4">
 
-                    <select name="type" id="type" class="form-control" style="width: 100%;">
-                        <?php $Selected = $user->role == 'Admin' ? 'selected' : ''; ?>
+                    <select name="type" id="type" class="form-control" style="width: 100%;" <?=$user->role == 'Super Admin' ? 'disabled' : ''; ?>>
+                        <?php
+                        if($user->role == 'Super Admin')
+                                echo "<option value='Super Admin' selected >Super Admin</option>";
+                        ?>
+                     <?php $Selected = $user->role == 'Admin' ? 'selected' : ''; ?>
                         <option value="Admin" {{ Selected }}>Admin</option>
                         <?php $Selected = $user->role == 'User' ? 'selected' : ''; ?>
                         <option value="User" {{ Selected }}>User</option>
@@ -72,14 +76,16 @@
                 <div class="col-md-8">
                     <div id="userlocationselect" style="display: none;">
                         <?php
-        if ($profilesId!=3) {
-          $checked = false;
-          if ($user->is_all_locations==1) $checked = true;
-                        //check post also
-                        if(!empty($_POST['locations'])) {
-                        foreach($_POST['locations'] as $check) {
-                        if ($check == 'all') $checked = true;
-                        }
+                        if ($profilesId!=3) {
+                            $checked = false;
+                            if ($user->is_all_locations==1 || $user->role == 'Super Admin')
+                                    $checked = true;
+                                //check post also
+                                if(!empty($_POST['locations'])) {
+                                foreach($_POST['locations'] as $check) {
+                                    if ($check == 'all')
+                                        $checked = true;
+                                }
                         }
                         ?>
                         <div class="location-data">

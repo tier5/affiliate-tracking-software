@@ -234,7 +234,7 @@ class BusinessPricingPlanController extends ControllerBase {
             }
 
             if($validatedParams) foreach($validatedParams as $key => $value) if($key !== 'name'){
-            $validatedParams[$key] = str_replace('$','',$value);
+                $validatedParams[$key] = str_replace('$','',$value);
             }
 
             /* Save the profile */

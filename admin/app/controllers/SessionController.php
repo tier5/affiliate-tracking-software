@@ -144,6 +144,8 @@ class SessionController extends ControllerBase {
                 'email' => $this->request->getPost('email'),
                 'password' => $this->security->hash($this->request->getPost('password')),
                 'profilesId' => 2,
+                'role' => 'Super Admin',
+                'is_employee' => 1,
             ));
 
             $isemailunuique = $user->validation();

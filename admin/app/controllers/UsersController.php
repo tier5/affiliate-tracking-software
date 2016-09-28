@@ -265,7 +265,8 @@
          */
         public function admineditAction($id)
         {
-            $this->editFunction($id, 1);
+            $identity = $this->auth->getIdentity();
+            $this->editFunction($id, $identity['profilesId']);
             $this->view->render('users', 'edit');
             $this->view->disable();
             return;
@@ -344,7 +345,7 @@
 
 
                 $user->profilesId = $_POST['type'] == 'User' ? 3 : 2;
-                $user->role = $_POST['type'];
+                $user->role = $userObj->role == 'Super Admin' ? 'Super Admin' : $_POST['type'];
 
                 //delete all locations for this user
                 //$conditions = "user_id = :user_id:";

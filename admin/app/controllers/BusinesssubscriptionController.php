@@ -3,6 +3,7 @@
 namespace Vokuro\Controllers;
 
 use Exception;
+use Vokuro\Models\BusinessSubscriptionPlan;
 use Vokuro\Utils;
 use Vokuro\Models\Users;
 use Vokuro\Models\Agency;
@@ -72,9 +73,20 @@ class BusinessSubscriptionController extends ControllerBase {
 
         /* Get subscription paramaters */
         $userId = $userManager->getUserId($this->session);
+        $objUser = \Vokuro\Models\Users::findFirst('id = ' . $userId);
+        $objSuperUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $objUser->agency_id . ' AND role="Super Admin"');
+        $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
+
+        $Provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
+        $paymentParams = [
+            'userId' => $objSuperUser->id,
+            'provider' => $Provider
+        ];
+
+        $this->view->hasPaymentProfile = $paymentService->hasPaymentProfile($paymentParams);
 
         /* Get the subscription plan */
-        $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($userId);
+        $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
 
         /* Filter out the pricing plan details into its own view because it contains markup */
         $this->view->pricingDetails = $subscriptionPlanData['pricingPlan']['pricing_details'];
@@ -82,6 +94,7 @@ class BusinessSubscriptionController extends ControllerBase {
         /* Set pricing plan details to empty so it doesn't display when attaching the json string to the data attribute */
         $subscriptionPlanData['pricingPlan']['pricing_details'] = '';
         $this->view->subscriptionPlanData = $subscriptionPlanData;
+
         switch($this->view->subscriptionPlanData['subscriptionPlan']['payment_plan']) {
             case ServicesConsts::$PAYMENT_PLAN_TRIAL :
                 $this->view->paymentPlan = "TRIAL";
@@ -93,7 +106,8 @@ class BusinessSubscriptionController extends ControllerBase {
                 $this->view->paymentPlan = "PAID";
                 break;
             default:
-                $this->view->paymentPlan = "FREE";
+                // No subscription currently in use.
+                $this->view->paymentPlan = "UNPAID";
                 break;
         }
 
@@ -125,8 +139,16 @@ class BusinessSubscriptionController extends ControllerBase {
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
 
+            $agency = Agency::query()
+                ->where("agency_id = :agency_id:")
+                ->bind(["agency_id" => $user->agency_id])
+                ->execute()
+                ->getFirst();
+
+            $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$agency->agency_id} AND role='Super Admin'");
+
             $paymentParams = [
-                'userId' => $userId,
+                'userId' => $objSuperUser->id,
                 'provider' => ServicesConsts::$PAYMENT_PROVIDER_STRIPE
             ];
 
@@ -177,6 +199,8 @@ class BusinessSubscriptionController extends ControllerBase {
                 ->execute()
                 ->getFirst();
 
+            $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$agency->agency_id} AND role='Super Admin'");
+
 
             $Provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
 
@@ -185,16 +209,16 @@ class BusinessSubscriptionController extends ControllerBase {
             $tokenID = $this->request->getPost('tokenID', 'striptags');
 
             /* Create the payment profile */
-            $paymentParams = [ 'userId' => $userId, 'provider' => $Provider];
+            $paymentParams = [ 'userId' => $objSuperUser->id, 'provider' => $Provider];
             $ccParameters = [
-                'userId'                => $userId,
-                'cardNumber'            => str_replace(' ', '', $cardNumber),
+                'userId'                => $objSuperUser->id,
+                //'cardNumber'            => str_replace(' ', '', $cardNumber),
                 'provider'              => $Provider,
                 'userEmail'             => $user->email,
                 'userName'              => $user->name,
                 'agencyName'            => $agency->name,
                 'agencyAddress'         => $agency->address,
-                'agencyCity'            => '', //$agency->city,  This field doesn't exist yet.  Will add later  TODO:  Fix this!
+                'agencyCity'            => '', //$agency->city,  This field doesn't exist yet.  Will add later  GARY_TODO:  Fix this!
                 'agencyStateProvince'   => $agency->state_province,
                 'agencyPostalCode'      => $agency->postal_code,
                 'agencyCountry'         => $agency->country,
@@ -237,7 +261,6 @@ class BusinessSubscriptionController extends ControllerBase {
         $responseParameters['status'] = false;
 
         try {
-
             if (!$this->request->isPost()) {
                 throw new \Exception('POST request is required!');
             }
@@ -252,13 +275,18 @@ class BusinessSubscriptionController extends ControllerBase {
             //these are fine from a security standpoint because they are pulled from the session, and not the request
             $objUser = \Vokuro\Models\Users::findFirst("id = {$userId}");
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+            $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
 
+            $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst('user_id = ' . $objSuperUser->id);
+            if(!$objSubscriptionPlan)
+                $objSubscriptionPlan = new \Vokuro\Models\BusinessSubscriptionPlan();
 
-            $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst('user_id = ' . $userId);
+            $objSubscriptionPlan->user_id = $objSuperUser->id;
             $objSubscriptionPlan->sms_messages_per_location = $this->request->getPost('messages', 'striptags');
             $objSubscriptionPlan->locations = $this->request->getPost('locations', 'striptags');
-            if(!$objSubscriptionPlan->update())
-                throw new \Exception('Could not update subscription plan.');
+            $objSubscriptionPlan->subscription_pricing_plan_id = $objAgency->subscription_id;
+            if(!$objSubscriptionPlan->save())
+                throw new \Exception('Could not save subscription plan.');
 
             /*
              * If they don't have a customer profile, then create one (they shouldn't have one if calling this action,
@@ -266,7 +294,7 @@ class BusinessSubscriptionController extends ControllerBase {
              */
             $Provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
             $paymentParams = [
-                'userId' => $userId,
+                'userId' => $objSuperUser->id,
                 'provider' => $Provider
             ];
 

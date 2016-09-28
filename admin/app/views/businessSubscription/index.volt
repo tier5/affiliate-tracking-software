@@ -79,7 +79,7 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="form-group">
-                                            <button type="button" class="btn default btn-lg apple-backgound subscription-btn" data-target="#updateCardModal" id="UpdateCard">Update Card</button>
+                                            <button type="button" class="btn default btn-lg apple-backgound subscription-btn UpdateCard" data-target="#updateCardModal" id="UpdateCard">Update Card</button>
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +232,7 @@
                                                     {% set MonthlyActive = 'active' %}
                                                     {% set ButtonDisabled = 'disabled' %}
 
-                                                    {% if subscriptionPlanData['subscriptionPlan'] %}
+                                                    {% if subscriptionPlanData['subscriptionPlan']['payment_plan'] and subscriptionPlanData['subscriptionPlan']['payment_plan'] != 'none' %}
                                                         {% set PlanVerbage = "Change" %}
                                                     {% else %}
                                                         {% set PlanVerbage = "Begin" %}
@@ -249,16 +249,21 @@
                                                         {% set MonthlyActive = 'active' %}
                                                     {% endif %}
                                                 {% endif %}
-
+                                                {% if hasPaymentProfile %}
                                                 <button {{ ButtonDisabled }} class="btn {{ MonthlyActive }} btn-primary" data-subscription='M'>Monthly</button>
                                                 <button {{ ButtonDisabled }} class="btn {{ AnnuallyActive }} btn-default" data-subscription='Y'>Annually</button>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 col-sm-12">
                                             <div class="growth-bar transparent center">
+                                                {% if hasPaymentProfile %}
                                                 <button id="submit-change-plan-btn" class="btn btn-block subscription-btn golden-poppy-backgound">{{ PlanVerbage }} Plan</button>
+                                                {% else %}
+                                                <button type="button" class="btn default btn-lg apple-backgound subscription-btn UpdateCard" data-target="#updateCardModal" id="UpdateCard2">Update Card</button>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -308,7 +313,7 @@
 <script type="text/javascript">
 
     jQuery(document).ready(function ($) {
-        $("#UpdateCard").click(function() {
+        $(".UpdateCard").click(function() {
             var bodyElem = document.getElementsByTagName("body")[0];
             if(bodyElem.dataset.paymentprovider === "AuthorizeDotNet") {
                 $('#updateCardModal').modal('show');
@@ -316,7 +321,7 @@
             else if(bodyElem.dataset.paymentprovider === "Stripe") {
                 var handler = StripeCheckout.configure({
                     key: '{{ stripePublishableKey }}',
-                    /* TODO: Replace with agency logo */
+                    /* GARY_TODO: Replace with agency logo */
                     /*image: '/img/documentation/checkout/marketplace.png',*/
                     locale: 'auto',
                     token: function(token) {
@@ -331,7 +336,7 @@
                             /*if (data.status !== true) {
                                 alert("Update card failed!!!")
                             }*/
-                            console.log(data);
+                            window.location.reload();
                         })
                         .fail(function () {
                         })
@@ -392,6 +397,8 @@
             /* Calculate the plan value */
             var subscriptionData = getSubscriptionData();
 
+            console.log(subscriptionData);
+
             /* Get number of locations and messages  */
             var locations = smsLocationSlider.getValue();
             var messages = smsMessagesSlider.getValue();
@@ -421,13 +428,14 @@
                 } else {
                     locations -= nextBatchOfLocations;
                 }
-                
+
                 var cost = parseFloat(nextBatchOfLocations * parameterList.base_price + nextBatchOfLocations * messages * parameterList.sms_cost);
                 cost *= ((100 - parseFloat(parameterList.location_discount_percentage)) * 0.01);
                         
                 planCost += cost;
                 
                 if(breakOnNextIteration) {
+                    console.log(planCost);
                     break;
                 }
                

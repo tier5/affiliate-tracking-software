@@ -1100,8 +1100,16 @@ class ControllerBase extends Controller {
         $internalNavParams['isBusinessAdmin'] = $userManager->isBusiness($this->session);
         $internalNavParams['isEmployee'] = $userManager->isEmployee($this->session);
 
+        $userId = $userManager->getUserId($this->session);
+        $objUser = \Vokuro\Models\Users::findFirst('id = ' . $userId);
+
+        // Get super admin user id
+        $objSuperUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $objUser->agency_id . ' AND role="Super Admin"');
+
+        $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
+
         // Subscriptions
-        $userSubscription = $subscriptionManager->getSubscriptionPlan($userManager->getUserId($this->session));
+        $userSubscription = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
 
         // GARY_TODO Determine if the comment below is accurate.
         $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] &&

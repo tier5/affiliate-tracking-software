@@ -348,23 +348,21 @@
         }
 
         function getValueParameters() {
-
             return {
                 name: $('input[id="name-control"]').val(),
-                enableTrialAccount: $('input[id="enable-trial-account-control"]').val() === "on" ? true : false,
-                enableDiscountOnUpgrade: $('input[id="enable-discount-on-upgrade-control"]').val() === "on" ? true : false,
+                enableTrialAccount: $('input[id="enable-trial-account-control"]').bootstrapSwitch('state') ? true : false,
+                enableDiscountOnUpgrade: $('input[id="enable-discount-on-upgrade-control"]').bootstrapSwitch('state') ? true : false,
                 basePrice: $('input[id="base-price-control"]').val(),
                 costPerSms: $('input[id="cost-per-sms-control"]').val(),
                 maxMessagesOnTrialAccount: $('select[id="free-sms-messages-control"]').val(),
                 upgradeDiscount: $('select[id="upgrade-discount-control"]').val(),
                 chargePerSms: $('input[id="charge-per-sms-control"]').val(),
                 maxSmsMessages: $('input[id="max-sms-messages-control"]').val(),
-                enableAnnualDiscount: $('input[id="enable-annual-discount-control"]').val() === "on" ? true : false,
+                enableAnnualDiscount: $('input[id="enable-annual-discount-control"]').bootstrapSwitch('state') ? true : false,
                 annualDiscount: $('select[id="annual-discount-control"]').val(),
                 upgradeDiscount: $('select[id="upgrade-discount-control"]').val(),
                 pricingDetails: $('#summernote_1').code()
             };
-
         }
 
         function getProgressionDetails() {
@@ -591,7 +589,6 @@
                 smsMessagesSlider.on('change', function () {
                     var sliderValue = smsMessagesSlider.getValue();
                     recalculateAllDiscountedPrices();
-                    console.log('we got a change in the value of the slider');
                     $('#slider-messages').text(smsMessagesSlider.getValue());
                 });
 

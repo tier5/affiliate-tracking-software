@@ -21,15 +21,23 @@ class SubscriptionManager extends BaseService {
         $paymentService = $this->di->get('paymentService');
 
         $userId = $userManager->getUserId($session);
-        $subscriptionPlan = $this->getSubscriptionPlan($userId);
+
+        $objUser = \Vokuro\Models\Users::findFirst('id = ' . $userId);
+
+        // Get super admin user id
+        $objSuperUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $objUser->agency_id . ' AND role="Super Admin"');
+
+        $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
+
+        $subscriptionPlan = $this->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
         $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
 
-        if (!$subscriptionPlan || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE || $payment_plan == ServicesConsts::$PAYMENT_PLAN_TRIAL) {
+        if (!$payment_plan || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE || $payment_plan == ServicesConsts::$PAYMENT_PLAN_TRIAL) {
             return false;
         }
 
         $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
-        $paymentProfile = $paymentService->getPaymentProfile([ 'userId' => $userId, 'provider' => $provider ]);
+        $paymentProfile = $paymentService->getPaymentProfile([ 'userId' => $objSuperUser->id, 'provider' => $provider ]);
 
         // GARY_TODO:  Add cron script to reset customer_id on expired / invalid cards.
         if(!$paymentProfile || !$paymentProfile['customer_id'])
@@ -143,7 +151,7 @@ class SubscriptionManager extends BaseService {
         return true;
     }
 
-    public function getSubscriptionPlan($userId) {
+    public function getSubscriptionPlan($userId, $subscription_pricing_plan_id) {
 
         /* Get subscription plan */
         $subscriptionPlan = BusinessSubscriptionPlan::query()
@@ -151,14 +159,14 @@ class SubscriptionManager extends BaseService {
             ->bind(["user_id" => intval($userId)])
             ->execute()
             ->getFirst();
-        if(!$subscriptionPlan) {
+        /*if(!$subscriptionPlan) {
             return false;
-        }
+        }*/
 
         /* Get the pricing plan */
         $pricingPlan = SubscriptionPricingPlan::query()
             ->where("id = :id:")
-            ->bind(["id" => intval($subscriptionPlan->subscription_pricing_plan_id)])
+            ->bind(["id" => intval($subscription_pricing_plan_id)])
             ->execute()
             ->getFirst();
         if (!$pricingPlan) {
@@ -176,7 +184,7 @@ class SubscriptionManager extends BaseService {
 
         /* Build the plan data */
         $subscriptionPlanData = [];
-        $subscriptionPlanData['subscriptionPlan'] = $subscriptionPlan->toArray();
+        $subscriptionPlanData['subscriptionPlan'] = $subscriptionPlan ? $subscriptionPlan->toArray() : [];
         $subscriptionPlanData['pricingPlan'] = $pricingPlan->toArray();
 
 
