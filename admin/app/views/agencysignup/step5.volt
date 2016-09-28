@@ -34,12 +34,12 @@
 <script type="text/javascript">
     $( document ).ready(function() {
         $('#UpgradeButton').click(function() {
-            $('#Upgrade').val(1)
+            $('#Upgrade').val(1);
             $('#Step5Form').submit();
         });
 
         $('#NoThanks').click(function() {
-            $('#Upgrade').val(0)
+            $('#Upgrade').val(0);
             $('#Step5Form').submit();
         });
     });

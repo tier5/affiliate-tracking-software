@@ -25,7 +25,6 @@
             'Website',
             'EmailFromName',
             'EmailFromAddress',
-            'Password',
 
             /* Step 2 Fields */
             'LogoFilename',
@@ -49,6 +48,7 @@
             'LastName',
             'OwnerEmail',
             'URL',
+            'Password',
         ];
 
         protected $tAgencyFieldTranslation = [
@@ -75,11 +75,11 @@
             'TwilioSID'             => 'twilio_auth_messaging_sid',
             'TwilioToken'           => 'twilio_auth_token',
             'TwilioFromNumber'      => 'twilio_from_phone',
-            // TODO Remove twilio_api_key from database?
+            // GARY_TODO Remove twilio_api_key from database?
 
             /* Step 4 Fields */
 
-            // TODO:  Where is stripe_account_id in form?
+            // GARY_TODO:  Where is stripe_account_id in form?
             'AgencyStripeSecretKey'       => 'stripe_account_secret',
             'AgencyStripePublishableKey'  => 'stripe_publishable_keys',
 
@@ -90,7 +90,7 @@
             'URL'                   => 'custom_domain',
         ];
 
-        protected $tUserFieldTranslaction = [
+        protected $tUserFieldTranslation = [
             /* Order form Fields */
             'FirstName'             => 'name',
             'LastName'              => 'last_name',
@@ -118,6 +118,7 @@
                 'LastName',
                 'OwnerEmail',
                 'URL',
+                'Password',
             ],
         ];
 
@@ -451,16 +452,14 @@
                 $objAgency->subscription_id = '';
                 $objAgency->parent_id = \Vokuro\Models\Agency::AGENCY;
 
-
                 if (!$objAgency->create()) {
                     $this->flashSession->error($objAgency->get_val_errors());
                     return false;
                 }
 
-
                 $objUser = new Users();
                 $objUser->agency_id = $objAgency->agency_id;
-                foreach ($this->tUserFieldTranslaction as $FormField => $dbField) {
+                foreach ($this->tUserFieldTranslation as $FormField => $dbField) {
                     if($dbField) {
                         if ($FormField == 'Password')
                             $objUser->password = $this->security->hash($tData[$FormField]);
@@ -476,6 +475,7 @@
                 $objUser->is_all_locations = 0;
                 $objUser->send_confirmation = true;
                 $objUser->profilesId = 1; // Agency Admin
+                $objUser->role = "Super Admin";
 
                 if(!$objUser->create()) {
                     $this->flashSession->error($objUser->getMessages());
@@ -653,16 +653,7 @@
                 return false;
             }
 
-            $this->response->redirect('/agencysignup/step1');
-            return true;
-        }
-
-        protected function GetAgencyUrl() {
-            return "http://" . $this->session->AgencySignup['custom_domain'] . ".getmobilereviews.com";
-        }
-
-        public function thankyouAction() {
-            $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? 'Twenty for eight' : 'Ten for ten';
+            $SubscriptionPlan = 'Ten for ten';
             $this->view->TodayYear = date("Y");
 
             try {
@@ -674,15 +665,49 @@
 
                     if (!$UserID = $this->CreateSubscription($this->session->AgencySignup)) {
                         $this->flashSession->error('Could not create subscription.  Contact customer support.');
-                        $this->response->redirect('/agencysignup/step5');
+                        $this->response->redirect('/agencysignup/order');
                     }
 
                     $this->db->commit();
-
                 }
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 $this->db->rollback();
+                $this->response->redirect('/agencysignup/order');
                 return false;
+            }
+
+            $this->response->redirect('/agencysignup/step1');
+            return true;
+        }
+
+        protected function GetAgencyUrl() {
+            return "http://" . $this->session->AgencySignup['custom_domain'] . ".getmobilereviews.com";
+        }
+
+        public function thankyouAction() {
+            if($this->session->AgencySignup['Upgrade']) {
+                $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? 'Twenty for eight' : 'Ten for ten';
+                $this->view->TodayYear = date("Y");
+
+                try {
+                    if ($this->request->isPost() && $this->ValidateFields('Order')) {
+                        $this->db->begin();
+
+                        $Price = $this->GetSubscriptionPrice($SubscriptionPlan);
+                        $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['Price' => $Price]);
+
+                        if (!$UserID = $this->CreateSubscription($this->session->AgencySignup)) {
+                            $this->flashSession->error('Could not create subscription.  Contact customer support.');
+                            $this->response->redirect('/agencysignup/step5');
+                        }
+
+                        $this->db->commit();
+
+                    }
+                } catch (Exception $e) {
+                    $this->db->rollback();
+                    return false;
+                }
             }
 
             $this->view->setLayout('agencysignup');

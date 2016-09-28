@@ -72,46 +72,12 @@
         </div>
     </div>
 
-    <div class="row small-vertical-margins">
-        <div class="col-xs-12">
-            <span class="sub-section-header">Password&nbsp;&nbsp;</span><span class="sub-section-description">(Please enter your password here)</span>
-        </div>
-    </div>
-    <hr>
-
-    <div class="row form-group small-vertical-margins">
-        <div class="col-xs-6">
-            <label>Password</label><span class="required">*</span><input class="form-control" type="password" id="Password" name="Password" value="" />
-        </div>
-        <div class="col-xs-6">
-            <label>Confirm Password</label><span class="required">*</span><input class="form-control" type="Password" id="ConfirmPassword" name="ConfirmPassword" value="" />
-        </div>
-    </div>
-
     <div class="row form-group small-vertical-margins">
         <div class="col-xs-10">
         </div>
         <div class="col-xs-2">
-            <button class="btn btn-primary" type="button" style="width: 100%" id="NextStep">Next Step</button>
+            <button class="btn btn-primary" style="width: 100%" id="NextStep">Next Step</button>
         </div>
     </div>
 </form>
 
-<script type="text/javascript">
-    $( document ).ready(function() {
-        $('#NextStep').click(function() {
-            if ($('#Password').val() != $('#ConfirmPassword').val()) {
-                alert('Password do not match');
-                return;
-            }
-
-            if ($('#Password').val().length < 6) {
-                alert('Password must be 6 characters or more.');
-                return;
-            }
-
-            $('#Step1Form').submit();
-        });
-    });
-
-</script>

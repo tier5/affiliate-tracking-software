@@ -38,6 +38,14 @@
                         <div class="col-xs-5 col-lg-3"><label class="hidden-xs">Get A Company URL</label><label class="hidden-sm hidden-md hidden-lg">Domain</label><span class="required">*</span></div>
                         <div class="col-xs-7 col-lg-9"><input type="text" id="URL" class="form-control website-url" name="URL" value="{{ URL }}" required /><span class="append_content hidden-xs">.getmobilereviews.com</span></div>
                     </div>
+                    <div class="row contact-row">
+                        <div class="col-xs-5 col-lg-3"><label class="hidden-xs">Password</label><label class="hidden-sm hidden-md hidden-lg"></label><span class="required">*</span></div>
+                        <div class="col-xs-7 col-lg-9"><input id="Password" class="form-control" name="Password" type="password" required /></div>
+                    </div>
+                    <div class="row contact-row">
+                        <div class="col-xs-5 col-lg-3"><label class="hidden-xs">Confirm Password</label><label class="hidden-sm hidden-md hidden-lg"></label><span class="required">*</span></div>
+                        <div class="col-xs-7 col-lg-9"><input id="ConfirmPassword" class="form-control" name="ConfirmPassword"  type="password" required /></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -124,7 +132,7 @@
             </div>
 
             <div class="col-xs-12 col-xs-offset-1 submit-section">
-                <button class="big-green-button submit">
+                <button class="big-green-button submit" id="BigGreenSubmit">
                     Submit Order
                 </button>
             </div>
@@ -214,6 +222,22 @@
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script type="text/javascript">
   Stripe.setPublishableKey('{{ StripePublishableKey }}');
+
+  $( document ).ready(function() {
+        $('#BigGreenSubmit').click(function() {
+            if ($('#Password').val() != $('#ConfirmPassword').val()) {
+                alert('Password do not match');
+                return;
+            }
+
+            if ($('#Password').val().length < 6) {
+                alert('Password must be 6 characters or more.');
+                return;
+            }
+
+            $('#payment-form').submit();
+        });
+    });
 
   $(function () {
       var $form = $('#payment-form');
