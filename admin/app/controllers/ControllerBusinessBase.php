@@ -108,6 +108,7 @@ class ControllerBusinessBase extends ControllerBase {
                     'agency_id' => $age->agency_id,
                     'profilesId' => $agency_type_id, // 1 = Agency User, 2 = Business User
                     'is_employee' => 1,
+                    'role' => 'Super Admin',
                 ));
                 if (!$user->save()) {
                     $error = true;
