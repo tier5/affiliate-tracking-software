@@ -201,9 +201,9 @@
             $review_invite = new ReviewInvite();
             $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
 
+            if((!$invite || $invite->rating) && !$this->request->isPost())
+                $this->response->redirect('/review/expired');
 
-
-            //save the rating
             $invite->rating = $rating;
             $invite->recommend = 'N';
             $invite->save();
@@ -219,11 +219,10 @@
             $this->view->sms_button_color = $location->sms_button_color;
             $this->view->logo_setting = $location->sms_message_logo_path;
             $this->view->name = $location->name;
-            //echo '<pre>$agency:'.print_r($agency,true).'</pre>';
 
+            // Negative feedback comments are being posted
             if ($this->request->isPost()) {
-                //update the comments
-                if($invite->comments)
+                if ($invite->comments)
                     $this->response->redirect('/review/expired');
 
                 $invite->comments = htmlspecialchars($_POST["comments"]);
@@ -240,11 +239,7 @@
                 //send the notification about the feedback
                 $message = 'Notification: Review invite feedback has been posted for ' . $location->name . ': http://' . $_SERVER['HTTP_HOST'] . '/reviews/';
                 parent::sendFeedback($agency, $message, $location->location_id, 'Notification: Review invite feedback', $invite->sent_by_user_id);
-            } else {
-                if($invite->rating)
-                    $this->response->redirect('/review/expired');
             }
-
         }
 
 
