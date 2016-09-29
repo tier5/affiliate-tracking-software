@@ -424,7 +424,7 @@ class SessionController extends ControllerBase {
                         'is_on' => 1,
                     ));
 
-                    //find the review info
+
                     $this->importFacebook($lrs);
                 }
 

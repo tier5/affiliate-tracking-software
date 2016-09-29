@@ -65,7 +65,6 @@ function initMap() {
 
 
 function selectLocation(googleid, url, name, street_number, route, locality, administrative_area_level_1, postal_code, country, formatted_phone_number, lat, lng) {
-    //un-encode everything!
     var googleid = unencode(googleid);
     var url = unencode(url);
     var cid = url.replace("https://maps.google.com/?cid=", "");
@@ -81,7 +80,6 @@ function selectLocation(googleid, url, name, street_number, route, locality, adm
     var lng = unencode(lng);
     ReputationLoop.location.name = name;
 
-    //making this use jQuery
     $("#name").val(name);
     $("#phone").val(formatted_phone_number);
     $("#address").val(street_number + ' ' + route);
@@ -110,11 +108,7 @@ function selectLocation(googleid, url, name, street_number, route, locality, adm
     $('#yelpLocation').text(street_number + ' ' + route + ' ' + locality + ', ' + administrative_area_level_1 + ' ' + postal_code);
     document.getElementById("yelpsearchfield2").value = postal_code;
     findBusinessYelp();
-    //show the form
-    $('#select-google-maps').hide();
-    $('#locationform1').hide();
-    $('#hiddenForm').show();
-
+    $('#hiddenForm').submit();
 }
 function changeLocation() {
 
@@ -135,7 +129,7 @@ function unencode(val){
 function replaceAll(str, find, replace) {
     return str.replace(new RegExp(find, 'g'), replace);
 }
-function extractFromAdress(components, type){
+function extractFromAdress(components, type) {
     for (var i=0; i<components.length; i++)
         for (var j=0; j<components[i].types.length; j++)
             if (components[i].types[j]==type) return components[i].short_name;

@@ -24,6 +24,12 @@ class Reviews extends BaseService
         $this->types[] = 0; //this is the internal review type
     }
 
+    public function DeleteGoogleReviews($LocationID) {
+        $dbReviews = \Vokuro\Models\Reviews::find("rating_type_id = 3 AND location_id = {$LocationID}");
+        foreach($dbReviews as $objReview)
+            $objReview->delete();
+    }
+
     /**
      * @param int $rating_type_id the same as the type of review, 1,2,3 etc based off of source
      * @param int $location_id

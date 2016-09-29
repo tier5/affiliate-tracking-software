@@ -232,7 +232,7 @@
                 )
             );
 
-            $client = $this->getGoogleClient();
+            /*$client = $this->getGoogleClient();
             $credentialsPath = CREDENTIALS_PATH;
 
             if (isset($_GET['code'])) {
@@ -260,7 +260,7 @@
                 //$_SESSION['google_refresh_token'][] = $refreshToken;
 
                 return $this->response->redirect('/reviewfeeds/googlereviews');
-            }
+            }*/
 
             if ($this->request->isPost()) {
                 $loc = new Location();
@@ -362,7 +362,8 @@
 
                     $this->updateSubscriptionPlan();
 
-                    return $this->response->redirect('/location/create2/' . ($loc->location_id > 0 ? $loc->location_id : ''));
+                    return $this->response->redirect('/location/edit/' . $loc->location_id . '/1');
+                    //return $this->response->redirect('/location/create2/' . ($loc->location_id > 0 ? $loc->location_id : ''));
                 }
             }
 
@@ -391,7 +392,6 @@
          * Creates a Location, step 2
          */
         public function create2Action($location_id) {
-
             //add needed css
             $this->assets
                 ->addCss('css/main.css')
@@ -402,7 +402,6 @@
             //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
             // If there is no identity available the user is redirected to index/index
             if (!is_array($identity)) {
-                $this->response->redirect('/session/login?return=/location/');
                 $this->view->disable();
                 return;
             }
@@ -410,7 +409,6 @@
             $conditions = "id = :id:";
             $parameters = array("id" => $identity['id']);
             $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-            //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
 
             //find the agency
             $conditions = "agency_id = :agency_id:";
@@ -571,9 +569,9 @@
         /**
          * Saves the location from the 'edit' action
          */
-        public function editAction($location_id) {
+        public function editAction($location_id, $include_customize_survey = 0) {
+            $this->view->include_customize_survey = $include_customize_survey;
 
-            //add needed css
             $this->assets
                 ->addCss('css/main.css')
                 ->addCss('css/signup.css');
@@ -599,6 +597,8 @@
                 ));
             }
 
+            $this->view->location_id = $location_id;
+
             //verify that the user is supposed to be here, by checking to make sure that
             //their agency_id matches the agency_id of the location they are trying to edit
             $agency_id_to_check = $loc->agency_id;
@@ -615,10 +615,7 @@
                 $conditions = "id = :id:";
                 $parameters = array("id" => $identity['id']);
                 $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-                //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
 
-                //if the agency id numbers do not match, log them out
-//echo '<pre>$agency_id_to_check:'.$agency_id_to_check.':$userObj->agency_id:'.$userObj->agency_id.'</pre>';
                 if ($agency_id_to_check != $userObj->agency_id) {
                     $userObj->suspended = 'Y';
                     $userObj->save();
@@ -647,19 +644,13 @@
             //$this->view->setMainView('google/auth');
 
             if ($accessToken) {
-                //return;
-                //$client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
                 $client->setAccessToken($accessToken['access_token']);
                 // Refresh the token if it's expired.
                 $access_token = $client->getAccessToken();
                 $refreshToken = $client->getRefreshToken();
-                //$_SESSION['google_access_token'][] = $access_token;
-                //$_SESSION['google_refresh_token'][] = $refreshToken;
 
                 return $this->response->redirect('/reviewfeeds/googlereviews');
             }
-
-
 
             if ($this->request->isPost()) {
 
@@ -790,6 +781,10 @@
 
 
                     $this->auth->setLocationList();
+
+                    if($this->request->getPost('GoToNextStep'))
+                        return $this->response->redirect('/location/create2/' . $loc->location_id);
+
                     $this->flash->success("The location was updated successfully");
                     Tag::resetInput();
                 }
@@ -1464,8 +1459,6 @@
 
             $objLocation->json_access_token = json_encode($access_token);
             $objLocation->save();
-
-            //$_SESSION['google_access_token'][] = $access_token;
         }
 
         protected function setRefreshToken($refresh_token, $LocationID) {
@@ -1478,9 +1471,7 @@
             }
 
             $objLocation->json_access_token = json_encode($refresh_token);
-
             $objLocation->save();
-
         }
 
         protected function getRefreshToken($LocationID){
@@ -1496,10 +1487,9 @@
             $client = $this->getGoogleClient();
 
             try {
-                //if we don't have a token, it will complain.. in that case we catch the error, and in our case
-                //redirect back over to where they can click the link to get the new token
                 $client->setAccessToken($this->getAccessToken($LocationID));
             } catch(\Exception $e){
+                $this->flash->error("Please reconnect your google my business account.  Your token has expired.");
                 return $this->response->redirect("/location/edit/{$LocationID}");
                 exit();
             }
@@ -1641,12 +1631,17 @@
             // Refresh the token if it's expired.
             $access_token = $client->getAccessToken();
             $refreshToken = $client->getRefreshToken();
-            //$_SESSION['google_access_token'][] = $access_token;
+
             $this->setAccessToken($accessToken, $LocationID);
             $this->setRefreshToken($accessToken, $LocationID);
-            //$_SESSION['google_refresh_token'][] = $refreshToken;
+
+            // We're successfully using google my business.  Remove current google reviews.
+            $objReviewService = new \Vokuro\Services\Reviews();
+            $objReviewService->DeleteGoogleReviews($LocationID);
+
             return $this->response->redirect('/location/googlereviews');
         }
+
 
         protected function getReviewsFromToken($access_token)
         {
