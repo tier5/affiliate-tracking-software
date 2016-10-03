@@ -25,7 +25,7 @@ class UserManager extends BaseService {
         $objUser = \Vokuro\Models\Users::findFirst('id = ' . $identity['id']);
         $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
 
-        return $identity && ($objAgency->parent_id === \Vokuro\Models\Agency::AGENCY);
+        return $identity && ($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY);
     }
 
     public function isBusiness($session) {

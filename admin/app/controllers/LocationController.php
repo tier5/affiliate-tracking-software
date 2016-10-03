@@ -1474,7 +1474,7 @@
             $objLocation->save();
         }
 
-        protected function getRefreshToken($LocationID){
+        protected function getRefreshToken($LocationID) {
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
             return $objLocation->json_access_token;
         }
