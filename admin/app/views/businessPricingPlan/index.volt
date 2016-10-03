@@ -55,7 +55,7 @@
                                                 <td><input id="subscription{{ pricingProfile.id }}" class="update-enable-pricing-plan-control make-switch" type="checkbox" data-on-color="primary" data-off-color="info"></td>
                                             {% endif %}
                                             <td><button class="btn default btn-lg apple-backgound subscription-btn" disabled>View Page</button></td>
-                                            <td class="hide-small"><a href="/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
+                                            <td class="hide-small"><a href="http://{{ custom_domain }}.getmobilereviews.com/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
                                             <td><a href="/businessPricingPlan/editExistingPricingPlan/{{ pricingProfile.id }}" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
                                             <td><button id="delete-pricing-plan-control" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></button></td>
                                         </tr>

@@ -591,8 +591,6 @@
                     recalculateAllDiscountedPrices();
                     $('#slider-messages').text(smsMessagesSlider.getValue());
                 });
-
-
             }
         }
 

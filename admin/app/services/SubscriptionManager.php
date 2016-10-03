@@ -46,10 +46,11 @@ class SubscriptionManager extends BaseService {
         return false;
     }
 
-    public function getSubscriptionPricingPlans() {
+    public function getSubscriptionPricingPlans($tUserIDs = []) {
         return $subscriptionPricingPlans = SubscriptionPricingPlan::query()
             ->where("enabled = true")
             ->andWhere("deleted_at = '0000-00-00 00:00:00'")
+
             ->execute();
     }
 

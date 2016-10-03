@@ -65,10 +65,14 @@ class BusinessPricingPlanController extends ControllerBase {
             /* Get the user id */
             $userId = $userManager->getUserId($this->session);
 
+            $objUser = \Vokuro\Models\Users::findFirst("id = {$userId}");
+            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+
             /* Get pricing profiles */
             $pricingProfiles = $subscriptionManager->getAllPricingPlansByUserId($userId);
 
             $this->view->pricingProfiles = $pricingProfiles;
+            $this->view->custom_domain = $objAgency->custom_domain;
 
         }  catch(Exception $e) {
 

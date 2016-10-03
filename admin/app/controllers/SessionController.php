@@ -95,8 +95,8 @@ class SessionController extends ControllerBase {
                      */
                     $subscription_id = $subscription_pricing_plan->id;
                 }
-
             }
+
 
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
@@ -214,7 +214,7 @@ class SessionController extends ControllerBase {
 
     }
 
-    public function inviteAction($short_code = null){
+    public function inviteAction($short_code = null) {
         //dd($subscription_id);
         //$this->view->setTemplateBefore('login');
         $this->view->short_code = $short_code;
@@ -228,7 +228,13 @@ class SessionController extends ControllerBase {
                 /**
                  * @var $plan \Vokuro\Models\SubscriptionPricingPlan
                  */
+                $objUser = \Vokuro\Models\Users::findFirst("id = {$plan->user_id}");
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+                //$this->view->LogoPath = $objAgency->logo_path;
+                $this->view->logo_setting = "/img/agency_logos/{$objAgency->logo_path}";
+                $this->view->agency_name = $objAgency->name;
                 $status = $plan->enabled;
+
                 if(!$status){
                     //get the active plan
                     $service = new SubscriptionManager();

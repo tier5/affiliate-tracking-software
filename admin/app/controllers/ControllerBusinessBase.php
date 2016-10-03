@@ -124,9 +124,31 @@ class ControllerBusinessBase extends ControllerBase {
                 if(!$errors) $db->commit();
                 if($errors) $db->rollback();
         }
+
+        $identity = $this->getIdentity();
+
+        $tUserIDs = [];
+        // Get all user IDs for agency
+        if($agency_type_id != 1) {
+            // Creating a business
+            // Are we a super user?
+            if($identity['is_admin']) {
+                $dbUsers = \Vokuro\Models\Users::find("is_admin = 1");
+                foreach ($dbUsers as $objUser)
+                    $tUserIDs[] = $objUser->id;
+                unset($objUser);
+            } else {
+                $objLoggedInUser = \Vokuro\Models\Users::findFirst("id = " . $identity['id']);
+                $dbUsers = \Vokuro\Models\Users::find("agency_id = " . $objLoggedInUser->agency_id);
+                foreach ($dbUsers as $objUser)
+                    $tUserIDs[] = $objUser->id;
+                unset($objUser);
+            }
+        }
+
         $sub_selected = ($age && isset($age->subscription_id)) ? $age->subscription_id : null;
         if(!$sub_selected) $sub_selected = 0;
-            $markup = $this->buildSubsriptionPricingPlanMarkUp($sub_selected);
+            $markup = $this->buildSubsriptionPricingPlanMarkUp($sub_selected, $tUserIDs);
         $this->view->setVar("subscriptionPricingPlans", $markup);
 
         $this->view->agency = new Agency();
@@ -176,8 +198,8 @@ class ControllerBusinessBase extends ControllerBase {
 
     }
 
-    private function buildSubsriptionPricingPlanMarkUp($selected_subscription_id = null) {
-        $subscriptionPricingPlans = $this->di->get('subscriptionManager')->getSubscriptionPricingPlans();
+    private function buildSubsriptionPricingPlanMarkUp($selected_subscription_id = null, $tUserIDs) {
+        $subscriptionPricingPlans = $this->di->get('subscriptionManager')->getSubscriptionPricingPlans($tUserIDs);
         $selected_subscription_id = (int)$selected_subscription_id;
 
         $markup = "<select id=\"subscription_pricing_plan_id\" name=\"subscription_pricing_plan_id\">";
