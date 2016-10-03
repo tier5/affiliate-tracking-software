@@ -38,7 +38,7 @@
             </div>
             <div class="col-xs-8">
                 <input type="text" class="form-control" id="upload-file-info"
-                        {% if LogoFilename %}
+                        {% if LogoPath %}
                             value="{{ LogoPath }}"
                         {% else %}
                             value="No file chosen"

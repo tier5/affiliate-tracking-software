@@ -438,6 +438,18 @@
             return true;
         }
 
+        protected function UpdateAgency($AgencyID) {
+            $objAgency = Agency::findFirst("agency_id = {$AgencyID}");
+            foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
+                if($dbField) {
+                    $objAgency->$dbField = isset($this->session->AgencySignup[$FormField]) ? $this->session->AgencySignup[$FormField] : '';
+                }
+            }
+            unset($dbField);
+
+            $objAgency->save();
+        }
+
         protected function CreateAgency($tData) {
             try {
                 $objAgency = new Agency();
@@ -703,6 +715,8 @@
 
                         $this->db->commit();
 
+                        $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+                        $this->UpdateAgency($objUser->agency_id);
                     }
                 } catch (Exception $e) {
                     $this->db->rollback();
