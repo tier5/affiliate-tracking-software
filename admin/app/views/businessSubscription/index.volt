@@ -470,7 +470,7 @@
              */
             var subscriptionData = getSubscriptionData();
 
-            return monthlyPlanCost * ((100 - parseFloat(subscriptionData.pricingPlan.annual_discount)) * 0.01);
+            return Math.round(monthlyPlanCost * ((100 - parseFloat(subscriptionData.pricingPlan.annual_discount)) * 0.01));
         }
         
         function refreshPlanValue() {
@@ -490,8 +490,8 @@
                 $('#paid-annually-caption').hide();
             }
             
-            $(priceDisplay).text(monthlyPlanCost.toFixed(2));
-            $(modalPriceDisplay).text(monthlyPlanCost.toFixed(2));
+            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
+            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
             
         };
 
