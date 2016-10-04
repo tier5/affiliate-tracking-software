@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-           
+
             <div class="col-md-12 col-lg-4">
                 <div class="portlet light bordered dashboard-panel payment-info">
                     <div class="portlet-title">

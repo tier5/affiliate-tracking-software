@@ -439,7 +439,8 @@
         function recalculateTotalCharge() {
             var basePrice = $('input[id="base-price-control"]').val();
             var chargePerSms = $('input[id="charge-per-sms-control"]').val();
-            var smsMessages = $('input[id="max-sms-messages-control"]').val();
+            //var smsMessages = $('input[id="max-sms-messages-control"]').val();
+            var smsMessages = $('#sms-messages-slider').val();
             var smsCharge = parseFloat(chargePerSms) * parseInt(smsMessages);
             var totalCharge = parseFloat(basePrice) + parseFloat(smsCharge);
 
@@ -544,9 +545,12 @@
             $(profitElement).parent().find('.discount-price-column').text('$' + discountPrice.toFixed(2).toString());
             var smsCost = smsTotalChargeActualCost.toFixed(2);
             $(profitElement).parent().find('.sms-cost-column').text('$' + smsCost);
+            var smsCharge = smsTotalCharge.toFixed(2);
+            $(profitElement).parent().find('.sms-charge-column').text('$' + smsCharge);
             var smsCost = parseFloat(smsCost);
             var totalProfit = discountPrice - smsCost;
             $(profitElement).parent().find('.profit-per-location-column').text('$' + parseInt(totalProfit,10).toString());
+            recalculateTotalCharge();
         }
 
         function getPlanCostPerSMSMessage(){
