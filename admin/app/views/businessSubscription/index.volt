@@ -310,6 +310,24 @@
     </div>
 </header>
 
+<?php
+
+    $MaxSMS = $subscriptionPlanData['pricingPlan']['max_sms_messages'];
+
+    $TickDivText = '';
+    $Ticks = [];
+    // Gonna split the slider in 10 ticks.
+    for($c = 1 ; $c < (int)$MaxSMS ; $c += round($MaxSMS / 10)) {
+        $TickDivText .= "'<div>$c</div><div class=\"tick-marker\">|</div>',";
+         $Ticks[] = $c;
+     }
+
+     $TickDivText .= "'<div>{$MaxSMS}</div><div class=\"tick-marker\">|</div>',";
+     $Ticks[] = $MaxSMS;
+     $TickArrayText = '[' . implode(',', $Ticks) . ']';
+?>
+
+
 <script type="text/javascript">
 
     jQuery(document).ready(function ($) {
@@ -397,8 +415,6 @@
             /* Calculate the plan value */
             var subscriptionData = getSubscriptionData();
 
-            console.log(subscriptionData);
-
             /* Get number of locations and messages  */
             var locations = smsLocationSlider.getValue();
             var messages = smsMessagesSlider.getValue();
@@ -429,7 +445,9 @@
                     locations -= nextBatchOfLocations;
                 }
 
-                var cost = parseFloat(nextBatchOfLocations * parameterList.base_price + nextBatchOfLocations * messages * parameterList.sms_cost);
+                //console.log(parameterList);
+
+                var cost = parseFloat(nextBatchOfLocations * parameterList.base_price + nextBatchOfLocations * messages * parameterList.sms_charge / 100);
                 cost *= ((100 - parseFloat(parameterList.location_discount_percentage)) * 0.01);
                         
                 planCost += cost;
@@ -472,8 +490,8 @@
                 $('#paid-annually-caption').hide();
             }
             
-            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
-            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
+            $(priceDisplay).text(monthlyPlanCost.toFixed(2));
+            $(modalPriceDisplay).text(monthlyPlanCost.toFixed(2));
             
         };
 
@@ -502,6 +520,7 @@
                             $('#updatePlanModal').modal('show');
                         } else {
                             alert("Change plan failed!!!");
+                            console.log(data);
                         }
                     })
                     .fail(function () {})
@@ -519,6 +538,9 @@
                 $('#submit-change-plan-btn').prop('disabled', false);
             }
         }
+
+
+
 
         var smsLocationSlider = new Slider("#smsLocationSlider", {
             tooltip: 'show',
@@ -546,28 +568,10 @@
             tooltip: 'show',
             min: 100,
             max: maxMessages + 1,
-            step: 50,
-            ticks: [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1001],
+            step: <?=round($MaxSMS / 10); ?>,
+            ticks: <?=$TickArrayText; ?>,
             ticks_labels: [
-                '<div>100</div><div class="tick-marker">|</div>',
-                '<div>150</div><div class="tick-marker">|</div>',
-                '<div>200</div><div class="tick-marker">|</div>',
-                '<div>250</div><div class="tick-marker">|</div>',
-                '<div>300</div><div class="tick-marker">|</div>',
-                '<div>350</div><div class="tick-marker">|</div>',
-                '<div>400</div><div class="tick-marker">|</div>',
-                '<div>450</div><div class="tick-marker">|</div>',
-                '<div>500</div><div class="tick-marker">|</div>',
-                '<div>550</div><div class="tick-marker">|</div>',
-                '<div>600</div><div class="tick-marker">|</div>',
-                '<div>650</div><div class="tick-marker">|</div>',
-                '<div>700</div><div class="tick-marker">|</div>',
-                '<div>750</div><div class="tick-marker">|</div>',
-                '<div>800</div><div class="tick-marker">|</div>',
-                '<div>850</div><div class="tick-marker">|</div>',
-                '<div>900</div><div class="tick-marker">|</div>',
-                '<div>950</div><div class="tick-marker">|</div>',
-                '<div>1000</div><div class="tick-marker">|</div>'
+                <?=$TickDivText; ?>
             ],
             ticks_snap_bounds: 0
         });

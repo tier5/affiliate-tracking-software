@@ -428,7 +428,8 @@ class SubscriptionManager extends BaseService {
         $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $objSubscriptionPlan->subscription_pricing_plan_id);
 
         $Locations = $objSubscriptionPlan->locations;
-        $Messages = $objSubscriptionPricingPlan->max_sms_messages;
+        $Messages = $objSubscriptionPlan->sms_messages_per_location;
+
         $PlanCost = 0;
 
         foreach($objSubscriptionParameters as $objParameter) {
@@ -451,7 +452,7 @@ class SubscriptionManager extends BaseService {
                 $Locations -= $NextBatchOfLocations;
             }
 
-            $Cost = $NextBatchOfLocations * $objParameterList->base_price + $NextBatchOfLocations * $Messages * $objParameterList->sms_cost;
+            $Cost = $NextBatchOfLocations * $objParameterList->base_price + $NextBatchOfLocations * $Messages * $objParameterList->sms_charge / 100;
             $Cost *= ((100 - $objParameterList->location_discount_percentage)) * 0.01;
 
             $PlanCost += $Cost;

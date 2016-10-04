@@ -14,9 +14,9 @@ class ServicesConsts {
 
     static $PAYMENT_PLAN_PAID = "PD";
 
-    static $PAYMENT_PLAN_MONTHLY = 'M';
+    static $PAYMENT_PLAN_MONTHLY = 'Monthly';
 
-    static $PAYMENT_PLAN_YEARLY = 'Y';
+    static $PAYMENT_PLAN_YEARLY = 'Annually';
 
     static $TRIAL_PLAN_LOCATIONS = 1;
 

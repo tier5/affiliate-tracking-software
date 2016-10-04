@@ -105,6 +105,10 @@ class BusinessSubscriptionController extends ControllerBase {
             case ServicesConsts::$PAYMENT_PLAN_PAID :
                 $this->view->paymentPlan = "PAID";
                 break;
+            case ServicesConsts::$PAYMENT_PLAN_MONTHLY :
+            case ServicesConsts::$PAYMENT_PLAN_YEARLY :
+                $this->view->paymentPlan = $subscriptionManager->getSubscriptionPrice($objSuperUser->id, $this->view->subscriptionPlanData['subscriptionPlan']['payment_plan']);
+                break;
             default:
                 // No subscription currently in use.
                 $this->view->paymentPlan = "UNPAID";
