@@ -47,11 +47,18 @@ class SubscriptionManager extends BaseService {
     }
 
     public function getSubscriptionPricingPlans($tUserIDs = []) {
-        return $subscriptionPricingPlans = SubscriptionPricingPlan::query()
+        if(count($tUserIDs) > 0) {
+            return $subscriptionPricingPlans = SubscriptionPricingPlan::query()
             ->where("enabled = true")
             ->andWhere("deleted_at = '0000-00-00 00:00:00'")
-
+            ->andWhere("user_id IN (" . implode(',', $tUserIDs) . ")")
             ->execute();
+        } else {
+            return $subscriptionPricingPlans = SubscriptionPricingPlan::query()
+            ->where("enabled = true")
+            ->andWhere("deleted_at = '0000-00-00 00:00:00'")
+            ->execute();
+        }
     }
 
     public function getActiveSubscriptionPlans($user_id = null){
