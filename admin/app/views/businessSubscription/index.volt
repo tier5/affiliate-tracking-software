@@ -470,7 +470,7 @@
              */
             var subscriptionData = getSubscriptionData();
 
-            return Math.round(monthlyPlanCost * ((100 - parseFloat(subscriptionData.pricingPlan.annual_discount)) * 0.01)); 
+            return monthlyPlanCost * ((100 - parseFloat(subscriptionData.pricingPlan.annual_discount)) * 0.01);
         }
         
         function refreshPlanValue() {
