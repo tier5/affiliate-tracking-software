@@ -232,36 +232,6 @@
                 )
             );
 
-            /*$client = $this->getGoogleClient();
-            $credentialsPath = CREDENTIALS_PATH;
-
-            if (isset($_GET['code'])) {
-                // Exchange authorization code for an access token.
-                $client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
-
-                $accessToken = $client->authenticate($_GET['code']);
-                $this->setAccessToken($accessToken, $loc->location_id);
-            }
-
-
-            // Load previously authorized credentials from a file.
-            $authUrl = $client->createAuthUrl();
-            $this->view->authUrl = $authUrl;
-            //$this->view->setMainView('google/auth');
-
-            if ($accessToken) {
-                //return;
-                //$client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
-                $client->setAccessToken($accessToken['access_token']);
-                // Refresh the token if it's expired.
-                $access_token = $client->getAccessToken();
-                $refreshToken = $client->getRefreshToken();
-                //$_SESSION['google_access_token'][] = $access_token;
-                //$_SESSION['google_refresh_token'][] = $refreshToken;
-
-                return $this->response->redirect('/reviewfeeds/googlereviews');
-            }*/
-
             if ($this->request->isPost()) {
                 $loc = new Location();
                 $loc->assign(array(
@@ -307,7 +277,7 @@
                     }
 
                     //check for google
-                    $google_place_id = $this->request->getPost('google_place_id', 'striptags');
+                    /*$google_place_id = $this->request->getPost('google_place_id', 'striptags');
                     $google_api_id = $this->request->getPost('google_api_id', 'striptags');
                     if ($google_place_id != '') {
                         $googleScan = new GoogleScanning();
@@ -342,7 +312,7 @@
 
                         $objReviewService = new \Vokuro\Services\Reviews();
                         $objReviewService->importFacebook($lrs, $loc, $foundagency);
-                    }
+                    }*/
 
                     $agency->assign(array(
                         'signup_page' => 0, //go to the next page
@@ -625,8 +595,13 @@
             }
             //end making sure the user should be here
 
+            $objGoogleReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = 3");
 
-            $client = $this->getGoogleClient();
+            $this->view->GoogleMyBusinessConnected = $objGoogleReviewSite && $objGoogleReviewSite->json_access_token ? true : false;
+
+            $objReviewService = new \Vokuro\Services\Reviews();
+
+            $client = $objReviewService->getGoogleClient($location_id);
             $credentialsPath = CREDENTIALS_PATH;
 
             if (isset($_GET['code'])) {
@@ -728,7 +703,7 @@
                             $google->lrd = $googleScan->getLRD($google_place_id);
                             $google->save();
                             //find the review info
-                            $this->importGoogle($google, $loc, $foundagency);
+                            //$this->importGoogle($google, $loc, $foundagency);
                         } else {
                             //$google_reviews = $google->getLRD('15803962018122969779');
 
@@ -743,7 +718,7 @@
                                 'lrd' => $googleScan->getLRD($google_place_id),
                             ));
                             //find the review info
-                            $this->importGoogle($lrs, $loc, $foundagency);
+                            //$this->importGoogle($lrs, $loc, $foundagency);
                         }
                     } else {
                         //else we need to delete the google configuration
@@ -1247,7 +1222,7 @@
                 $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
                 //Finaly lets import the Google reviews, if configured
-                if (isset($Obj) && isset($Obj->api_id) && $Obj->api_id) {
+                /*if (isset($Obj) && isset($Obj->api_id) && $Obj->api_id) {
                     //import reviews
                     $Obj = $this->importGoogle($Obj, $location, $foundagency);
 
@@ -1255,7 +1230,7 @@
                     $rev_monthly->google_review_count = $Obj->review_count - $Obj->original_review_count;
                 } else {
                     echo '<p>google api_id NOT CONFIGURED!</p>';
-                }
+                }*/
 
                 $location->date_reviews_checked = date('Y-m-d H:i:s');
                 $location->save();
@@ -1438,148 +1413,11 @@
          * Begin google my business implementation
          */
 
-         //public function initialize()
-        //{
+        public function googleReviewsAction($LocationID) {
+            $objReviewsService = new \Vokuro\Services\Reviews();
+            $objReviewsService->importGoogleMyBusinessReviews($LocationID);
 
-            //$this->tag->setTitle('Review Velocity | Dashboard');
-        //}
-
-        protected function getAccessToken($LocationID) {
-            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
-            return $objLocation->json_access_token;
-        }
-
-        protected function setAccessToken($access_token, $LocationID) {
-            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
-            if(!$objLocation) {
-                $objLocation = new \Vokuro\Models\LocationReviewSite();
-                $objLocation->location_id = $LocationID;
-                $objLocation->review_site_id = 3;
-            }
-
-            $objLocation->json_access_token = json_encode($access_token);
-            $objLocation->save();
-        }
-
-        protected function setRefreshToken($refresh_token, $LocationID) {
-            return;
-            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
-            if(!$objLocation) {
-                $objLocation = new \Vokuro\Models\LocationReviewSite();
-                $objLocation->location_id = $LocationID;
-                $objLocation->review_site_id = 3;
-            }
-
-            $objLocation->json_access_token = json_encode($refresh_token);
-            $objLocation->save();
-        }
-
-        protected function getRefreshToken($LocationID) {
-            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
-            return $objLocation->json_access_token;
-        }
-
-        public function googleReviewsAction() {
-            $identity = $this->auth->getIdentity();
-            $LocationID = $identity['location_id'];
-            $reviewService = new Reviews();
-
-            $client = $this->getGoogleClient();
-
-            try {
-                $client->setAccessToken($this->getAccessToken($LocationID));
-            } catch(\Exception $e){
-                $this->flash->error("Please reconnect your google my business account.  Your token has expired.");
-                return $this->response->redirect("/location/edit/{$LocationID}");
-                exit();
-            }
-
-            $myBusiness = new \Google_Service_Mybusiness($client);
-            $accounts = $myBusiness->accounts->listAccounts()->getAccounts();
-            if($accounts) foreach($accounts as $account){
-                /**
-                 * @var $account \Google_Service_Mybusiness_Account
-                 */
-                //print '<h1>'.$account->accountName.'</h1>';
-                $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
-                if($locations) foreach($locations as $location){
-                    /**
-                     * @var $location \Google_Service_Mybusiness_Location
-                     */
-                    $lr = $myBusiness->accounts_locations_reviews->listAccountsLocationsReviews($location->name);
-                    $reviews = $lr->getReviews();
-                    $reviewCount = $lr->getTotalReviewCount();
-                    $avg = $lr->getAverageRating();
-                    $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
-                    // GARY_TODO:  This is simply a guess of what this field means
-//                    $objLocationReviewSite->original_review_count = $objLocationReviewSite->review_count;
-                    $objLocationReviewSite->review_count = $reviewCount;
-                    // Seems to be a bug with google not including the average (the field is blank as of 08/31/2016)
-                    $TotalRating = 0;
-                    $TotalReviews = 0;
-
-                    if($reviews) {
-                        /**
-                         * @var $review \Google_Service_Mybusiness_Review Object
-                         */
-                        foreach ($reviews as $review) {
-                            $TotalReviews++;
-                            /**
-                             * @var $reviewer \Google_Service_Mybusiness_Reviewer
-                             */
-                            $reviewer = $review->getReviewer();
-                            $rating = $review->getStarRating();
-                            $ratings = ['ZERO' => 0, 'ONE' => 1, 'TWO' => 2, 'THREE' => 3, 'FOUR' => 4, 'FIVE' => 5];
-                            $rating = $ratings[$rating];
-                            $TotalRating += $rating;
-                            $review_id = str_replace('/reviews', '', $review->getReviewId());
-
-                            try {
-                                $arr = [
-                                    'rating_type_id' => 3,
-                                    'review_text' => $review->comment,
-                                    'rating_type_review_id' => $review_id,
-                                    'external_id' => $review_id,
-                                    'rating' => $rating,
-                                    'location_id' => $LocationID,
-                                    'time_created' => $review['createTime'],
-                                    'user_id' => $reviewer->displayName,
-                                ];
-                                $reviewService->saveReviewFromData($arr);
-
-                            } catch (Exception $e) {
-                                continue;
-                            }
-                        }
-                    }
-                    $objLocationReviewSite->rating = $TotalReviews > 0 ? $TotalRating / $TotalReviews : 0;
-                    $objLocationReviewSite->save();
-                }
-            }
             return $this->response->redirect("/location/edit/{$LocationID}");
-        }
-
-        protected function getGoogleClient(){
-
-            $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/location/googlemybusiness';
-
-            $client = new \Google_Client();
-
-            $client->setApplicationName(APPLICATION_NAME);
-
-            $client->setAuthConfigFile(CLIENT_SECRET_PATH);
-
-            $client->addScope("https://www.googleapis.com/auth/plus.business.manage");
-
-            $client->setRedirectUri($redirect_uri);
-
-
-            // For retrieving the refresh token
-
-            $client->setAccessType('offline');
-
-            $client->setApprovalPrompt("force");
-            return $client;
         }
 
         /**
@@ -1597,10 +1435,13 @@
          2119 - Financial planning
          */
         public function googlemybusinessAction() {
-            $identity = $this->auth->getIdentity();
-            $LocationID = $identity['location_id'];
+            /*$identity = $this->auth->getIdentity();
+            $LocationID = $identity['location_id'];*/
 
-            $client = $this->getGoogleClient();
+            $LocationID = $_GET['state'];
+            $objReviewService = new \Vokuro\Services\Reviews();
+            $client = $objReviewService->getGoogleClient($LocationID);
+
 
             /************************************************
 
@@ -1632,20 +1473,23 @@
             $access_token = $client->getAccessToken();
             $refreshToken = $client->getRefreshToken();
 
-            $this->setAccessToken($accessToken, $LocationID);
-            $this->setRefreshToken($accessToken, $LocationID);
+            $objReviewService = new \Vokuro\Services\Reviews();
+
+            $objReviewService->setGoogleAccessToken($accessToken, $LocationID);
+            $objReviewService->setGoogleRefreshToken($accessToken, $LocationID);
 
             // We're successfully using google my business.  Remove current google reviews.
             $objReviewService = new \Vokuro\Services\Reviews();
             $objReviewService->DeleteGoogleReviews($LocationID);
 
-            return $this->response->redirect('/location/googlereviews');
+            return $this->response->redirect("/location/googlereviews/{$LocationID}");
         }
 
 
-        protected function getReviewsFromToken($access_token)
+        /*protected function getReviewsFromToken($access_token)
         {
-            $client = $this->getGoogleClient();
+            $objReviewService = new \Vokuro\Services\Reviews();
+            $client = $objReviewService->getGoogleClient();
             $client->setAccessToken($access_token['access_token']);
             $googleBusinessService = new \Google_Service_Mybusiness($client);
             $accounts = $googleBusinessService->accounts->listAccounts();
@@ -1666,5 +1510,5 @@
 
             }
 
-        }
+        }*/
     } // end LocationController class

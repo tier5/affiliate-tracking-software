@@ -104,8 +104,12 @@
                             View</a>
                         <a class="btnLink" href="#" onclick="$('#relevant-result-list').hide();$('#hiddenForm').hide();$('#locationform1').show();return false;"><img src="/img/icon-pencil.png"/>
                             Change
-                            Location</a><br/><br/><a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Connect
-                            Google My Business account</a></div>
+                            Location</a><br/><br/>
+                            {% if GoogleMyBusinessConnected %}
+                                Successfully connected Google My Business Account!  <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Reconnect?</a></div>
+                            {% else %}
+                                <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Connect Google My Business account</a></div>
+                            {% endif %}
                 </div>
 
                 <div class="pnlAddLocation short col-md-4">
