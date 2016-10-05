@@ -600,7 +600,7 @@
                             <div class="row">
                                 <label for="intercom_security_hash" class="col-md-4 control-label">Secret Key</label>
                                 <div class="col-md-8">
-                                    {{ form.render("intercom_security_hash", ["class": 'form-control', 'placeholder': 'Security Hash']) }}
+                                    {{ form.render("intercom_security_hash", ["class": 'form-control', 'placeholder': 'Secret Key']) }}
                                 </div>
                             </div>
                             <div class="row">
