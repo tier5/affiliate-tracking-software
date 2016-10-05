@@ -89,6 +89,10 @@
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
                         Stripe </a></li>
+                    <li class=""><a href="#tab_intercom" data-toggle="tab" <?=(isset($this->
+                        session->get('auth-identity')['agencytype']) &&
+                        $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
+                        Intercom </a></li>
                     <li><a href="#tab_notification" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>>
@@ -566,6 +570,47 @@
                         </div>
                     </div>
                     <!-- END Stripe Settings  -->
+
+                    <!-- START Intercom Settings  -->
+                    <div class="tab-pane fade in" id="tab_intercom">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i>
+                                        Support desk is done by using
+                                        <a href="https://www.intercom.com/" target="_blank">Intercom</a>.
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="intercom_api_id" class="col-md-4 control-label">API ID</label>
+                                <div class="col-md-8">
+                                    {{ form.render("intercom_api_id", ["class": 'form-control', 'placeholder': 'API ID']) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="intercom_security_hash" class="col-md-4 control-label">Security Hash</label>
+                                <div class="col-md-8">
+                                    {{ form.render("intercom_security_hash", ["class": 'form-control', 'placeholder': 'Security Hash']) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END Intercom Settings  -->
 
 
                     <!-- START Notification Settings  -->

@@ -151,7 +151,11 @@ class SettingsForm extends Form
         
         $stripe_publishable_keys = new Text('stripe_publishable_keys', array());
         $this->add($stripe_publishable_keys);
-        
 
+        $intercom_api_id = new Text('intercom_api_id', array());
+        $this->add($intercom_api_id);
+
+        $intercom_security_hash = new Text('intercom_security_hash', array());
+        $this->add($intercom_security_hash);
     }
 }

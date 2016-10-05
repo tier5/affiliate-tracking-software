@@ -84,9 +84,11 @@ class ControllerBase extends Controller {
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
                 $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
+                $this->view->objParentAgency = $objParentAgency;
             } else {
                 $this->view->primary_color = "#2a3644";
                 $this->view->secondary_color = "#2eb82e";
+                $this->view->objParentAgency = null;
             }
 
             $objSMSManager = $this->di->get('smsManager');
