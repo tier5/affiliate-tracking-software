@@ -722,7 +722,7 @@
                             //$this->importGoogle($lrs, $loc, $foundagency);
                         }
                     }
-                    
+
                     //check for facebook
                     $facebook_page_id = $this->request->getPost('facebook_page_id', 'striptags');
                     if ($facebook_page_id != '') {
