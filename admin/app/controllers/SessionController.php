@@ -415,7 +415,7 @@ class SessionController extends ControllerBase {
                     ));
 
                     //find the review info
-                    $this->importGoogle($lrs, $loc, $foundagency);
+                    //$this->importGoogle($lrs, $loc, $foundagency);
                 }
 
                 //check for facebook

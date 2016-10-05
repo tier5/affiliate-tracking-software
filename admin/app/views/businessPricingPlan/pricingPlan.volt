@@ -227,17 +227,17 @@
                                                 <table class="table table-striped table-bordered table-hover dataTable no-footer collapsed" width="100%" id="sample_1" role="grid" aria-describedby="sample_1_info" style="width: 100%;">
                                                     <thead>
                                                     <tr role="row">
-                                                        <th>Locations</th>
-                                                        <th>Discount %</th>
-                                                        <th>Base Price</th>
-                                                        <th>SMS Charge</th>
-                                                        <th>Total Price</th>
-                                                        <th>Location Discount</th>
-                                                        <th>Upgrade Discount</th>
-                                                        <th>Discount Price</th>
-                                                        <th>SMS Messages</th>
-                                                        <th>SMS Cost</th>
-                                                        <th>Profit Per Location</th>
+                                                        <th>Number of <br />Locations</th>
+                                                        <th>Discount <br /> Percentage</th>
+                                                        <th>Base<br />Price</th>
+                                                        <th>SMS<br />Charge</th>
+                                                        <th>Total<br />Price</th>
+                                                        <th>Location<br />Discount</th>
+                                                        <th>Upgrade<br />Discount</th>
+                                                        <th>Discount<br />Price</th>
+                                                        <th>SMS<br />Messages</th>
+                                                        <th>SMS<br />Cost</th>
+                                                        <th>Profit Per<br />Location</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody id="progression-table-rows">
