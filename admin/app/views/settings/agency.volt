@@ -585,7 +585,7 @@
                         </div>
                         <div class="form-group">
                             <div class="row">
-                                <label for="intercom_api_id" class="col-md-4 control-label">API ID</label>
+                                <label for="intercom_api_id" class="col-md-4 control-label">App ID</label>
                                 <div class="col-md-8">
                                     {{ form.render("intercom_api_id", ["class": 'form-control', 'placeholder': 'API ID']) }}
                                 </div>
@@ -598,7 +598,7 @@
                         </div>
                         <div class="form-group">
                             <div class="row">
-                                <label for="intercom_security_hash" class="col-md-4 control-label">Security Hash</label>
+                                <label for="intercom_security_hash" class="col-md-4 control-label">Secret Key</label>
                                 <div class="col-md-8">
                                     {{ form.render("intercom_security_hash", ["class": 'form-control', 'placeholder': 'Security Hash']) }}
                                 </div>
