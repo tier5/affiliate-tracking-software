@@ -141,6 +141,7 @@
                                     'location_id' => $LocationID,
                                     'time_created' => $review['createTime'],
                                     'user_id' => $reviewer->displayName,
+                                    'user_name' => $review->displayName,
                                 ];
                                 $reviewService->saveReviewFromData($arr);
 
