@@ -355,7 +355,6 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
-
         if ($this->request->isPost()) {
             $loc = new Location();
             $loc->assign(array(
@@ -449,6 +448,7 @@ class SessionController extends ControllerBase {
             }
         }
 
+        $this->view->SignupProcess = true;
         $this->view->facebook_access_token = $this->facebook_access_token;
         $this->view->current_step = 2;
     }

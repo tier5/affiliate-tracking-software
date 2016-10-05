@@ -108,7 +108,14 @@ function selectLocation(googleid, url, name, street_number, route, locality, adm
     $('#yelpLocation').text(street_number + ' ' + route + ' ' + locality + ', ' + administrative_area_level_1 + ' ' + postal_code);
     document.getElementById("yelpsearchfield2").value = postal_code;
     findBusinessYelp();
-    $('#hiddenForm').submit();
+    if(Signup) {
+        $('#select-google-maps').hide();
+        $('#locationform1').hide();
+        $('#hiddenForm').show();
+    } else {
+        $('#hiddenForm').submit();
+    }
+
 }
 function changeLocation() {
 

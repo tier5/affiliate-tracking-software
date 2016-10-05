@@ -339,6 +339,7 @@
 
             $this->view->facebook_access_token = $this->facebook_access_token;
             $this->view->form = new LocationForm(null);
+            $this->view->SignupProcess = false;
             $this->view->pick("session/signup2");
 
         }

@@ -42,8 +42,10 @@
                 <a class="btnLink btnSecondary" id="googleLink" href="https://maps.google.com/?cid=" target="_blank"><img src="/img/icon-eye.gif"/>
                     View</a>
                 <a class="btnLink btnSecondary" href="#" onclick="changeLocation();$('#locationform1').show();return false;"><img src="/img/icon-pencil.png"/>
-                    Change Location</a><br><a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Connect
-                    Google My Business account</a></div>
+                    Change Location</a><br>
+                    <!--<a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Connect
+                    Google My Business account</a>-->
+                   </div>
         </div>
 
         <div class="pnlAddLocation short col-md-4">
@@ -130,6 +132,13 @@
     </div>
 </div><input type="hidden" name="urltype" id="urltype" value=""/>
 <!-- END FORM -->
+<script>
+    {% if SignupProcess %}
+        var Signup=true;
+    {% else %}
+        var Signup=false;
+    {% endif %}
+</script>
 <script src="/js/location.js" type="text/javascript"></script>
 
 <script type="text/javascript">
