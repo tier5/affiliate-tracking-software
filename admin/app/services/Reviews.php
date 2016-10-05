@@ -228,6 +228,10 @@
 
             if ($data['user_id'])
                 $record->user_id = $data['user_id'];
+
+            if($data['user_name'])
+                $record->user_name = $data['user_name'];
+                
             $record->save();
             $messages = $record->getMessages();
             if ($messages) print_r($messages);
