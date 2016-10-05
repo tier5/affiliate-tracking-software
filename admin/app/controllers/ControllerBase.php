@@ -134,6 +134,8 @@ class ControllerBase extends Controller {
             }
             // End disabled check
 
+            $this->view->objAgency = $agency;
+
             // Should popup agency stripe modal?
             $this->AgencyInvalidStripe = false;
             $this->view->ShowAgencyStripePopup = false;
