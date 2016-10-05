@@ -543,13 +543,13 @@
             // Check if the user has uploaded files
             if ($this->request->hasFiles() == true) {
                 //echo '<p>hasFiles() == true!</p>';
-                $baseLocation = __DIR__ . '/../../public/img/upload/';
+                $baseLocation = __DIR__ . '/../../public/img/agency_logos/';
 
                 // Print the real file names and sizes
                 foreach ($this->request->getUploadedFiles() as $file) {
                     if ($file->getName() != '') {
                         //Move the file into the application
-                        $filepath = $baseLocation . $agencyid . '-' . $file->getName();
+                        $filepath = $baseLocation . uniqid('logo');
                         $file->moveTo($filepath);
 
                         //resize
@@ -557,7 +557,7 @@
                         $image->resize(200, 30)->save($filepath);
 
                         $tFilepath = explode('/', $filepath);
-                        $filepath = "/img/upload/" . array_pop($tFilepath);
+                        $filepath = "/img/agency_logos/" . array_pop($tFilepath);
 
                         $this->view->logo_setting = $filepath;
                         return $filepath;

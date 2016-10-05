@@ -174,7 +174,7 @@ class IndexController extends ControllerBase {
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             //start with google reviews, if configured
-            if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
+            if (isset($Obj)) {
                 $this->view->google_place_id = $Obj->external_id;
                 $google_review_count = $Obj->review_count;
                 $google_rating = $Obj->rating;

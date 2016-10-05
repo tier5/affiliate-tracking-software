@@ -1059,14 +1059,14 @@ class ControllerBase extends Controller {
         if ($this->request->hasFiles() == true) {
             //echo '<p>hasFiles() == true!</p>';
             try {
-                $baseLocation = '/var/www/html/' . $this->config->webpathfolder->path . '/public/img/upload/';
+                $baseLocation = '/var/www/html/' . $this->config->webpathfolder->path . '/public/img/agency_logo/';
 
 
                 // Print the real file names and sizes
                 foreach ($this->request->getUploadedFiles() as $file) {
                     if ($file->getName() != '') {
                         //Move the file into the application
-                        $filepath = $baseLocation . $agencyid . '-' . $file->getName();
+                        $filepath = $baseLocation . uniqid('logo');
                         $file->moveTo($filepath);
 
                         //resize
@@ -1079,7 +1079,7 @@ class ControllerBase extends Controller {
                         return $filepath;
                     }
                 }
-            }catch(\Exception $e){
+            } catch(\Exception $e) {
                 //here we explicitly do nothing
             }
         } else {
