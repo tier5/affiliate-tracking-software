@@ -721,13 +721,8 @@
                             //find the review info
                             //$this->importGoogle($lrs, $loc, $foundagency);
                         }
-                    } else {
-                        //else we need to delete the google configuration
-                        if (isset($google) && isset($google->location_review_site_id) && $google->location_review_site_id > 0) $google->delete();
                     }
-
-
-
+                    
                     //check for facebook
                     $facebook_page_id = $this->request->getPost('facebook_page_id', 'striptags');
                     if ($facebook_page_id != '') {
@@ -735,8 +730,8 @@
                             $facebook->external_id = $facebook_page_id;
                             $facebook->save();
                             //find the review info
-                            $objReviewService = new \Vokuro\Services\Reviews();
-                            $objReviewService->importFacebook($facebook, $loc, $foundagency);
+                            //$objReviewService = new \Vokuro\Services\Reviews();
+                            //$objReviewService->importFacebook($facebook, $loc, $foundagency);
                         } else {
                             $lrs = new LocationReviewSite();
                             $lrs->assign(array(
@@ -747,8 +742,8 @@
                                 'is_on' => 1,
                             ));
                             //find the review info
-                            $objReviewService = new \Vokuro\Services\Reviews();
-                            $objReviewService->importFacebook($lrs, $loc, $foundagency);
+                            //$objReviewService = new \Vokuro\Services\Reviews();
+                            //$objReviewService->importFacebook($lrs, $loc, $foundagency);
                         }
                     } else {
                         //else we need to delete the facebook configuration
