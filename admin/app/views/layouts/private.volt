@@ -687,7 +687,9 @@
     app_id: "c8xufrxd",
     name: "<?php echo $loggedUser->name ?>", // Full name
     email: "<?php echo $loggedUser->email ?>", // Email address
-    created_at: <?php echo strtotime($loggedUser->create_time) ?>, // Signup date as a Unix timestamp
+    <?php if($loggedUser->created_at) {
+        created_at: <?php echo strtotime($loggedUser->create_time) ?>, // Signup date as a Unix timestamp
+    <? } ?>
     user_hash: "<?php
       echo hash_hmac(
         'sha256',
