@@ -1,6 +1,7 @@
 <?php
     $CreateType = $agency_type_id == 1 ? 'Agency' : 'Business';
     $BackUrl = $agency_type_id == 1 ? '/agency' : '/admindashboard/list/2';
+    $BackUrl = $loggedUser->is_admin ? "/admindashboard/list/1" : $BackUrl;
 
 ?>
 <ul class="pager">
