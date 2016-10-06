@@ -445,7 +445,7 @@
             var totalCharge = parseFloat(basePrice) + parseFloat(smsCharge);
 
             $('#progression-table-rows').find('tr td.total-price-column').each(function (index) {
-                $(this).text(totalCharge.toFixed(2)); // Update the cell value
+                $(this).text("$" + totalCharge.toFixed(2)); // Update the cell value
             });
         }
 
