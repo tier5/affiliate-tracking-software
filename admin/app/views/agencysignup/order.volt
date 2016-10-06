@@ -39,11 +39,11 @@
                         <div class="col-xs-7 col-lg-9"><input type="text" id="URL" class="form-control website-url" name="URL" value="{{ URL }}" required /><span class="append_content hidden-xs">.getmobilereviews.com</span></div>
                     </div>
                     <div class="row contact-row">
-                        <div class="col-xs-5 col-lg-3"><label class="hidden-xs">Password</label><label class="hidden-sm hidden-md hidden-lg"></label><span class="required">*</span></div>
+                        <div class="col-xs-5 col-lg-3"><label class="">Password</label><label class=""></label><span class="required">*</span></div>
                         <div class="col-xs-7 col-lg-9"><input id="Password" class="form-control" name="Password" type="password" required /></div>
                     </div>
                     <div class="row contact-row">
-                        <div class="col-xs-5 col-lg-3"><label class="hidden-xs">Confirm Password</label><label class="hidden-sm hidden-md hidden-lg"></label><span class="required">*</span></div>
+                        <div class="col-xs-5 col-lg-3"><label class="">Confirm Password</label><label class=""></label><span class="required">*</span></div>
                         <div class="col-xs-7 col-lg-9"><input id="ConfirmPassword" class="form-control" name="ConfirmPassword"  type="password" required /></div>
                     </div>
                 </div>
