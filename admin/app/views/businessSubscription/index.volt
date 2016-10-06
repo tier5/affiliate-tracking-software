@@ -260,9 +260,9 @@
                                         <div class="col-md-12 col-sm-12">
                                             <div class="growth-bar transparent center">
                                                 {% if hasPaymentProfile %}
-                                                <button id="submit-change-plan-btn" class="btn btn-block subscription-btn golden-poppy-backgound">{{ PlanVerbage }} Plan</button>
+                                                <button id="submit-change-plan-btn" class="btn btn-block subscription-btn golden-poppy-backgound" >{{ PlanVerbage }} Plan</button>
                                                 {% else %}
-                                                <button type="button" class="btn default btn-lg apple-backgound subscription-btn UpdateCard" data-target="#updateCardModal" id="UpdateCard2">Update Card</button>
+                                                <button type="button" class="btn btn-block subscription-btn golden-poppy-backgound UpdateCard" data-target="#updateCardModal" id="UpdateCard2">{{ PlanVerbage }} Plan</button>
                                                 {% endif %}
                                             </div>
                                         </div>
