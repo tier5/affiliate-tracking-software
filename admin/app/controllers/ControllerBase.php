@@ -85,10 +85,12 @@ class ControllerBase extends Controller {
                 $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
                 $this->view->objParentAgency = $objParentAgency;
+                $this->view->LogoPath = "/img/agency_logos/{$agency->logo_path}" ?: "/img/agency_logos/{$objParentAgency->logo_path}";
             } else {
                 $this->view->primary_color = "#2a3644";
                 $this->view->secondary_color = "#2eb82e";
                 $this->view->objParentAgency = null;
+                $this->view->LogoPath = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
             }
 
             $objSMSManager = $this->di->get('smsManager');

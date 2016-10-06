@@ -111,7 +111,7 @@
                         'country' => $this->request->getPost('country', 'striptags'),
                         'phone' => $this->request->getPost('phone', 'striptags'),
                     ));
-                    $file_location = $this->uploadAction($agency->agency_id);
+                    //$file_location = $this->uploadAction($agency->agency_id);
                     if ($file_location != '') $agency->logo_path = $file_location;
 
                     //delete all notification users for this agency
@@ -227,6 +227,7 @@
                         file_put_contents(__DIR__ . "/../../public/img/agency_logos/{$FileName}", file_get_contents($file->getTempName()));
                         $objAgency->logo_path = $FileName;
                         $objAgency->save();
+                        $this->view->LogoPath = "/img/agency_logos/{$FileName}";
                         break;
                     }
                 }
@@ -278,7 +279,7 @@
                     // Don't hate me for this -- GG
                     $PrimaryID = $type == 'agency' ? 'agency_id' : 'location_id';
                     $Prefix = $type == 'agency' ? 'a' : 'l';
-                    $file_location = $this->uploadAction($Prefix . $entity->$PrimaryID);
+                    //$file_location = $this->uploadAction($Prefix . $entity->$PrimaryID);
                     // This works because agencies and locations have the same column.
                     if ($file_location != '')
                         $entity->sms_message_logo_path = $file_location;
@@ -420,7 +421,10 @@
                 if (!$this->storeSettings($objAgency, 'agency')) {
                     $this->flash->error($objAgency->getMessages());
                 } else {
-                    $this->storeLogo($objAgency);
+                    // Only agencies can store logos
+                    if($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY)
+                        $this->storeLogo($objAgency);
+
                     $this->flash->success("The settings were updated successfully");
                     Tag::resetInput();
                 }
