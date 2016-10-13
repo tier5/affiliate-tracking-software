@@ -46,7 +46,12 @@ class SessionController extends ControllerBase {
     }
 
     // Also will 404 on invalid subdomain
-    protected function DetermineParentIDAndSetViewVars() {
+    protected function DetermineParentIDAndSetViewVars($objPricingPlan = null) {
+        // First try to determine parent id from pricing plan if present
+        if($objPricingPlan) {
+            $objUser = \Vokuro\Models\Users::findFirst("id = {$objPricingPlan->user_id}");
+            return $objUser->agency_id;
+        }
         // Determine if business under an agency or review velocity
             $parts = explode(".", $_SERVER['SERVER_NAME']);
             if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
@@ -89,14 +94,13 @@ class SessionController extends ControllerBase {
             $ssp = new SubscriptionPricingPlan();
             if ($short_code) {
                 $subscription_pricing_plan = $ssp->findOneBy(['short_code' => $short_code]);
-                if($subscription_pricing_plan){
+                if($subscription_pricing_plan) {
                     /**
                      * @var $subscription_pricing_plan \Vokuro\Models\SubscriptionPricingPlan
                      */
                     $subscription_id = $subscription_pricing_plan->id;
                 }
             }
-
 
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
@@ -166,7 +170,7 @@ class SessionController extends ControllerBase {
             if(!$agency_name) $agency_name = $this->request->getPost('name','striptags');
 
             // Also will 404 on invalid subdomain
-            $ParentID = $this->DetermineParentIDAndSetViewVars();
+            $ParentID = $this->DetermineParentIDAndSetViewVars($subscription_pricing_plan);
 
             $agency = new Agency();
             $agency_save_arr = [
@@ -215,15 +219,15 @@ class SessionController extends ControllerBase {
     }
 
     public function inviteAction($short_code = null) {
-        //dd($subscription_id);
-        //$this->view->setTemplateBefore('login');
         $this->view->short_code = $short_code;
         $this->signupAction();
 
         $this->view->pick('session/signup');
         $subscription = new SubscriptionPricingPlan();
+
         if($short_code) {
             $plan = $subscription->findOneBy(['short_code' => $this->view->short_code]);
+
             if ($plan) {
                 /**
                  * @var $plan \Vokuro\Models\SubscriptionPricingPlan
@@ -235,7 +239,7 @@ class SessionController extends ControllerBase {
                 $this->view->agency_name = $objAgency->name;
                 $status = $plan->enabled;
 
-                if(!$status){
+                if(!$status) {
                     //get the active plan
                     $service = new SubscriptionManager();
                     $active = $service->getActiveSubscriptionPlan();

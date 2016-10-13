@@ -15,7 +15,7 @@
     {% else %}
 
     <!-- BEGIN REGISTRATION FORM -->
-    <form class="register-form" action="/session/submitSignup/{{ subscription_id ? subscription_id : token}}" method="post" style="display: block;">
+    <form class="register-form" id="register-form" action="/session/submitSignup/{{ subscription_id ? subscription_id : token}}" method="post" style="display: block;">
         {% if subscription_id %}
             <input type="hidden" name="subscription_id" value="{{ subscription_id }}"/>
         {% endif %}
@@ -28,25 +28,25 @@
         <p class="hint"> Enter your account details below: </p>
         <div class="form-group">
             <label class="control-label">Full Name:</label>
-            <input class="form-control placeholder-no-fix" type="text" placeholder="Full Name" name="name" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" />
+            <input class="form-control placeholder-no-fix" type="text" placeholder="Full Name" name="name" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" required />
         </div>
         <div class="form-group">
             <label class="control-label">Email:</label>
-            <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" value="<?=(isset($_POST['email'])?$_POST["email"]:'')?>" />
+            <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" value="<?=(isset($_POST['email'])?$_POST["email"]:'')?>" required />
         </div>
         <div class="form-group">
             <label class="control-label">Password:</label>
-            <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="register_password" placeholder="Password" name="password" value="<?=(isset($_POST['password'])?$_POST["password"]:'')?>" />
+            <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="register_password" placeholder="Password" name="password" value="<?=(isset($_POST['password'])?$_POST["password"]:'')?>" required />
         </div>
         <div class="form-group">
             <label class="control-label">Re-type Your Password:</label>
-            <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" name="confirmPassword" value="<?=(isset($_POST['confirmPassword'])?$_POST["confirmPassword"]:'')?>" />
+            <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" id="confirmPassword" name="confirmPassword" value="<?=(isset($_POST['confirmPassword'])?$_POST["confirmPassword"]:'')?>" required />
         </div>
 
         <!-- <div class="card-js"></div> -->
 
         <div class="form-actions">
-            <button type="submit" id="register-submit-btn" class="btnsignup uppercase">CREATE MY ACCOUNT</button>
+            <button type="button" id="register-submit-btn" class="btnsignup uppercase">CREATE MY ACCOUNT</button>
             <div class="signup-footer">By clicking this button, you agree to {{ agency_name }}'s
                 <a href="#">Anti-span Policy</a> &amp; <a href="#">Terms of Use</a>.
             </div>
@@ -57,3 +57,12 @@
     <script type="text/javascript"></script>
     {% endif %}
 </div>
+
+<script>
+    $('#register-submit-btn').click(function() {
+        if($('#register_password').val() != $('#confirmPassword').val())
+            alert("Your passwords do not match.  Please try again.");
+        else
+            $('#register-form').submit();
+    });
+</script>
