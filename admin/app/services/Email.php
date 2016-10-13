@@ -130,8 +130,8 @@ class Email{
         $mail = $this->getDI()->getMail();
         $mail->setFrom($from);
         $params = [];
-        $params['confirmUrl'] = '/confirm/' . $code . '/' . $u->email;
-        $mail->send($u->email, "Employee subject", 'employee', $params);
+        $params['confirmUrl'] = '/admin/admin/confirmEmail/' . $code . '/' . $u->email;
+        $mail->send($u->email, "Welcome aboard!", 'employee', $params);
 
     }
 
