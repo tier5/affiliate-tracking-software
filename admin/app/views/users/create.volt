@@ -34,7 +34,7 @@
                 <label for="profilesId" class="col-md-2 control-label">Role:</label>
                 <div class="col-md-4">
 
-                    <select name="type" id="type" class="form-control" style="width: 100%;">
+                    <select name="type" id="role" id="type" class="form-control" style="width: 100%;">
                         <?php $Selected = $_POST['type'] == 'Admin' ? 'selected' : ''; ?>
                         <option value="Admin" {{ Selected }}>Admin</option>
                         <?php $Selected = $_POST['type'] == 'User' ? 'selected' : ''; ?>
@@ -45,9 +45,9 @@
             <div class="form-group">
                 <label class="col-md-2 control-label">Is Employee?</label>
                 <?php $Selected = $_POST['is_employee'] == 'Yes' || $_GET['create_employee'] ? 'checked="checked"' : ''; ?>
-                <label class="radio-inline">Yes <input type="radio" value="Yes" name="is_employee" {{ Selected }} /></label>
+                <label class="radio-inline">Yes <input id="radio_yes" type="radio" value="Yes" name="is_employee" {{ Selected }} /></label>
                 <?php $Selected = ($_POST['is_employee'] == 'No' || !$_POST['is_employee']) && !$_GET['create_employee'] ? 'checked="checked"' : ''; ?>
-                <label class="radio-inline">No <input type="radio" value="No" name="is_employee" {{ Selected }} /></label>
+                <label class="radio-inline">No <input id="radio_no" type="radio" value="No" name="is_employee" {{ Selected }} /></label>
             </div>
 
             <div class="form-group">
@@ -132,6 +132,17 @@
             }
             $('#emailerror').hide();
             return true;
+        });
+        $('#role').change(function () {
+            elem = $(this);
+            if(elem.val() == "User") {
+                $('#radio_no').prop('checked', false);
+                $('#radio_yes').prop("checked", true);
+
+                $('input[name=is_employee]').attr('disabled', true);
+            } else {
+                $('input[name=is_employee]').attr('disabled', false);
+            }
         });
     });
 </script>

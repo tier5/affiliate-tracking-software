@@ -78,14 +78,25 @@ class FacebookScanning extends Model {
      * @param   string $strPageId
      * @return  String
      */
-    public function getBusinessReviews($facebook_page_id, $facebook_access_token) {
+    /*public function getBusinessReviews($facebook_page_id, $facebook_access_token) {
 
         //$strDetailsUrl = "https://graph.facebook.com/v2.5/" . $facebook_page_id . "/ratings?x=x&{$facebook_access_token}";
         $strDetailsUrl = "https://graph.facebook.com/v2.5/" . $facebook_page_id . "/ratings?limit=10000&access_token=".$facebook_access_token;
         //echo '<p>$strDetailsUrl:'.$strDetailsUrl.'</p>';
         return $this->file_get_contents_curl($strDetailsUrl);
+    }*/
+
+    function getBusinessAccounts() {
+        $strSearchUrl = "https://graph.facebook.com/me/accounts?access_token={$this->_access_token}";
+        $Result = $this->file_get_contents_curl($strSearchUrl);
+        return json_decode($Result)->data;
     }
-    
+
+    function getReviews() {
+        $strSearchUrl = "https://graph.facebook.com/me/ratings?access_token={$this->_access_token}";
+        $Result = $this->file_get_contents_curl($strSearchUrl);
+        return json_decode($Result)->data;
+    }
 
     /**
      * Fetch Businesses
@@ -137,7 +148,7 @@ class FacebookScanning extends Model {
             //iteratively get phone no
             foreach ($arrBusiness->data as $business) {
 
-                if (strtolower($business->name) == $paramBusinessDetails['businessName']) {
+                if (strtolower(trim($business->name)) == strtolower(trim($paramBusinessDetails['businessName']))) {
                     $arrBusinessList['name'] = $business->name;
                     $arrBusinessList['pageId'] = $business->id;
                     break;
@@ -147,9 +158,16 @@ class FacebookScanning extends Model {
                 }
             }
 
+            /*echo "<PRE>";
+                print_r($arrBusiness);
+                die();*/
+
             if (!empty($arrBusinessList['pageId'])) {
                 $arrBusinessDetails = $this->getBusinessDetails($arrBusinessList);
                 $arrBusinessDetail = json_decode($arrBusinessDetails);
+                echo "<PRE>";
+                print_r($arrBusinessDetail);
+                die();
 
                 $responseArr['city'] = @$arrBusinessDetail->location->city;
                 $responseArr['state'] = @$arrBusinessDetail->location->state;
@@ -159,9 +177,9 @@ class FacebookScanning extends Model {
                 $responseArr['businessName']['status'] = true;
                 $strAddress = @$arrBusinessDetail->location->street.', '.$responseArr['city'].', '.$responseArr['state'].' '.$responseArr['zip'].', '.$responseArr['country'];
                 $responseArr['address']['value'] = $strAddress;
-                $responseArr['address']['status'] = @$this->objCommonFunc->stringMatching($paramBusinessDetails['completeAddress'], $arrBusinessDetail->location->street);
+                //$responseArr['address']['status'] = @$this->objCommonFunc->stringMatching($paramBusinessDetails['completeAddress'], $arrBusinessDetail->location->street);
                 $responseArr['phoneNumber']['value'] = @$arrBusinessDetail->phone;
-                $responseArr['phoneNumber']['status'] = @$this->objCommonFunc->phoneNumberMatching($paramBusinessDetails['phoneNumber'], $arrBusinessDetail->phone);
+                //$responseArr['phoneNumber']['status'] = @$this->objCommonFunc->phoneNumberMatching($paramBusinessDetails['phoneNumber'], $arrBusinessDetail->phone);
                 $responseArr['averageRating'] = 0;
                 $responseArr['totalReviews'] = 0;
                 $responseArr['customerReviewDetails']['happy_customer'] = array();
@@ -188,7 +206,7 @@ class FacebookScanning extends Model {
                 $objBusiness->strCountryLong         = $responseArr['country'];
                 $objBusiness->enmIsAddressMatch      = $responseArr['address']['status'];
                 $objBusiness->strZipCode             = $responseArr['zip'];
-                $objBusiness->strPhoneNumber         = $this->objCommonFunc->stringFormat($responseArr['phoneNumber']['value'], "phone");
+                //$objBusiness->strPhoneNumber         = $this->objCommonFunc->stringFormat($responseArr['phoneNumber']['value'], "phone");
                 $objBusiness->strDisplayPhoneNumber  = $responseArr['phoneNumber']['value'];
                 $objBusiness->enmIsPhoneNumberMatch  = $responseArr['phoneNumber']['status'];
                 $objBusiness->strWebsiteUrl          = $responseArr['businessUrl'];
@@ -199,10 +217,10 @@ class FacebookScanning extends Model {
                 $intDirectoryId                      = $BusinessTable->fncDIRAddDirectory($objBusiness);
             } else {
 
-               $responseArr = $this->objCommonFunc->blankArrayOutput();
+               //$responseArr = $this->objCommonFunc->blankArrayOutput();
             }
         } else {
-           $responseArr = $this->objCommonFunc->blankArrayOutput();
+           //$responseArr = $this->objCommonFunc->blankArrayOutput();
         }
         return $responseArr;
     }

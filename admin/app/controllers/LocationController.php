@@ -60,24 +60,45 @@
             parent::initialize();
         }
 
-        public function getFacebookPagesAction() {
-            $identity = $this->auth->getIdentity();
-            $LocationID = $identity['location_id'];
-            $objFacebookReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 1");
-            if(!$objFacebookReviewSite->access_token) {
-                $face = new FacebookScanning();
-                $objFacebookReviewSite->access_token = str_replace("access_token=", "", $face->getAccessToken());
-                $objFacebookReviewSite->save();
+        public function pickFacebookBusinessAction($BusinessID, $LocationID) {
+            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 2");
+
+            $face = new FacebookScanning();
+            $tResults = [];
+            $face->setAccessToken($objLocation->access_token);
+
+            // I get the business from facebook again because I don't want the client to see the access token so I use the business_id
+            $tobjBusinesses = $face->getBusinessAccounts();
+            $Picked = false;
+            foreach($tobjBusinesses as $objBusiness) {
+                if($objBusiness->id = $BusinessID) {
+                    $Picked = true;
+                    $objLocation->access_token = $objBusiness->access_token;
+                    if($objLocation->save()) {
+                        $this->flash->success("Your business has been successfully synced with our system.");
+                        $objReviewService = new \Vokuro\Services\Reviews();
+                        $objReviewService->DeleteFacebookReviews($LocationID);
+                        $objReviewService->importFacebook($LocationID);
+                    }
+                }
             }
 
-            $this->facebook_access_token = $objFacebookReviewSite->access_token;
+            if(!$Picked)
+                $this->flash->error("Your business could not be found in the subsequent facebook search.  Please contact customer support.");
 
-            $fb = \Services\Facebook\Authentication\AccessToken($this->facebook_access_token);
+            $this->response->redirect("/location/edit/{$LocationID}");
+        }
 
-            echo "<PRE>";
+        public function getFacebookPagesAction($LocationID) {
+            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 1");
 
-            print_r($fb);
-            die();
+            $face = new FacebookScanning();
+            $tResults = [];
+            $face->setAccessToken($objLocation->access_token);
+
+            $tobjBusinesses = $face->getBusinessAccounts();
+            $this->view->tobjBusinesses = $tobjBusinesses;
+            $this->view->LocationID = $LocationID;
         }
 
 
@@ -276,44 +297,6 @@
                         $this->importYelp($lrs, $loc, $foundagency);
                     }
 
-                    //check for google
-                    /*$google_place_id = $this->request->getPost('google_place_id', 'striptags');
-                    $google_api_id = $this->request->getPost('google_api_id', 'striptags');
-                    if ($google_place_id != '') {
-                        $googleScan = new GoogleScanning();
-                        //$google_reviews = $google->getLRD('15803962018122969779');
-
-                        $lrs = new LocationReviewSite();
-                        $lrs->assign(array(
-                            'location_id' => $loc->location_id,
-                            'review_site_id' => 3, // google = 3
-                            'external_id' => $google_place_id,
-                            'api_id' => $google_api_id,
-                            'date_created' => date('Y-m-d H:i:s'),
-                            'is_on' => 1,
-                            'lrd' => $googleScan->getLRD($google_place_id),
-                        ));
-
-                        //find the review info
-                        $this->importGoogle($lrs, $loc, $foundagency);
-                    }
-
-                    //check for facebook
-                    $facebook_page_id = $this->request->getPost('facebook_page_id', 'striptags');
-                    if ($facebook_page_id != '') {
-                        $lrs = new LocationReviewSite();
-                        $lrs->assign(array(
-                            'location_id' => $loc->location_id,
-                            'review_site_id' => 1, // facebook = 1
-                            'external_id' => $facebook_page_id,
-                            'date_created' => date('Y-m-d H:i:s'),
-                            'is_on' => 1,
-                        ));
-
-                        $objReviewService = new \Vokuro\Services\Reviews();
-                        $objReviewService->importFacebook($lrs, $loc, $foundagency);
-                    }*/
-
                     $agency->assign(array(
                         'signup_page' => 0, //go to the next page
                     ));
@@ -329,7 +312,6 @@
                         $this->auth->setLocation($loc->location_id) / me;
                     }
                     $this->flash->success("The location was created successfully");
-
                     $this->updateSubscriptionPlan();
 
                     return $this->response->redirect('/location/edit/' . $loc->location_id . '/1');
@@ -536,6 +518,10 @@
             return;
         }
 
+        public function fbLoginAction() {
+
+        }
+
 
         /**
          * Saves the location from the 'edit' action
@@ -650,12 +636,12 @@
                     $foundagency = array();
 
                     //look for a yelp review configuration
-                    $conditions = "location_id = :location_id: AND review_site_id =  2";
+                    $conditions = "location_id = :location_id: AND review_site_id =  1";
                     $parameters = array("location_id" => $loc->location_id);
                     $yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
                     //look for a facebook review configuration
-                    $conditions = "location_id = :location_id: AND review_site_id =  1";
+                    $conditions = "location_id = :location_id: AND review_site_id =  2";
                     $parameters = array("location_id" => $loc->location_id);
                     $facebook = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
@@ -771,14 +757,16 @@
             $this->view->facebook_access_token = $this->facebook_access_token;
 
             //look for a yelp review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  2";
+            $conditions = "location_id = :location_id: AND review_site_id =  1";
             $parameters = array("location_id" => $loc->location_id);
             $this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
+
             //look for a facebook review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  1";
+            $conditions = "location_id = :location_id: AND review_site_id =  2";
             $parameters = array("location_id" => $loc->location_id);
             $this->view->facebook = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+            $this->view->FacebookConnected = $this->view->facebook->access_token ? true : false;
 
             //look for a google review configuration
             $conditions = "location_id = :location_id: AND review_site_id =  3";
@@ -1092,23 +1080,28 @@
             require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookAuthenticationException.php";
             require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookResponseException.php";
 
+            $LocationID = $_GET['location_id'];
             /*$this->fb = new \Services\Facebook\Facebook(array(
               'app_id' => '628574057293652',
               'app_secret' => '95e89ebac7173ba0980c36d8aa5777e4'
             ));*/
 
-            $this->fb = new \Services\Facebook\Facebook(array(
+            /*$this->fb = new \Services\Facebook\Facebook(array(
                 'app_id' => '1650142038588223',
                 'app_secret' => 'b1c2cb9c1cbb774ea35eb68de725ee45'
-            ));
+            ));*/
 
+            $this->fb = new \Services\Facebook\Facebook(array(
+                'app_id' => '1923583701202687',
+                'app_secret' => '7682cb496e086c19bff195edf300dbae'
+            ));
             //check for a code
             if (isset($_GET['code']) && $_GET['code'] != '') {
                 //we have a code, so proccess it now
                 try {
                     $accessToken = $this->fb->getOAuth2Client()->getAccessTokenFromCode(
                         $_GET['code'],
-                        $this->getRedirectUrl()
+                        $this->getRedirectUrl($LocationID)
                     );
                     $accessTokenLong = $this->fb->getOAuth2Client()->getLongLivedAccessToken($accessToken);
 
@@ -1117,22 +1110,30 @@
 
                     //look for a facebook review configuration
                     $conditions = "location_id = :location_id: AND review_site_id =  1";
-                    $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+                    $LocationID = $this->session->get('auth-identity')['location_id'];
+                    $parameters = array("location_id" => $LocationID);
                     $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                    if(!$Obj) {
+                        $Obj = new LocationReviewSite();
+                        $Obj->location_id = $LocationID;
+                        $Obj->review_site_id = 1;
+                    }
                     $Obj->access_token = $accessToken;
                     $Obj->save();
                     $this->flash->success("The Facebook code was saved");
 
+                    $this->response->redirect("/location/getFacebookPages/{$LocationID}");
+
                     //look for a facebook review configuration
-                    $conditions = "location_id = :location_id:";
+                    /*$conditions = "location_id = :location_id:";
                     $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-                    $location = Location::findFirst(array($conditions, "bind" => $parameters));
+                    $location = Location::findFirst(array($conditions, "bind" => $parameters));*/
 
-                    $foundagency = array();
-                    $objReviewService = new \Vokuro\Services\Reviews();
-                    $objReviewService->importFacebook($Obj, $location, $foundagency);
+                    //$foundagency = array();
+                    //$objReviewService = new \Vokuro\Services\Reviews();
+                    //$objReviewService->importFacebook($Obj, $location, $foundagency);
 
-                    $this->response->redirect('/settings/location/');
+                    //$this->response->redirect('/settings/location/');
                 } catch (\Services\Facebook\Exceptions\FacebookSDKException $e) {
                     $this->flash->error($e->getMessage());
                 }
@@ -1140,7 +1141,7 @@
                 //else we have no code, so redirect the user to get one
                 $helper = $this->fb->getRedirectLoginHelper();
 
-                $url = $helper->getLoginUrl($this->getRedirectUrl(), array('manage_pages')) . '&auth_type=reauthenticate';
+                $url = $helper->getLoginUrl($this->getRedirectUrl($LocationID), array('manage_pages')) . '&auth_type=reauthenticate';
                 echo '<p>' . $url . '</p>';
 
                 $this->response->redirect($url);
@@ -1152,10 +1153,8 @@
             //exit;
         }
 
-        protected function getRedirectUrl() {
-            // TODO:  What is with the hardcoding of URLS?!?!  Fix this
-            //return 'http://velocity.dev/location/getAccessToken';
-            return 'http://reviewvelocity.co/location/getAccessToken';
+        protected function getRedirectUrl($LocationID) {
+            return 'http://' . $_SERVER['HTTP_HOST'] . "/location/getAccessToken?location_id={$LocationID}";
         }
 
 

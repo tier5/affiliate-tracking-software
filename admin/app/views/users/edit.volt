@@ -57,12 +57,13 @@
             </div>
 
 
+                <?php $Disabled = $user->role == 'User' ? 'disabled' : ''; ?>
                 <div class="form-group">
                     <label class="col-md-2 control-label">Is Employee?</label>
                     <?php $Selected = $user->is_employee == 1 ? 'checked="checked"' : ''; ?>
-                    <label class="radio-inline">Yes <input type="radio" value="Yes" name="is_employee" {{ Selected }} /></label>
+                    <label class="radio-inline">Yes <input type="radio" value="Yes" name="is_employee" {{ Selected }} {{ Disabled }} /></label>
                     <?php $Selected = $user->is_employee == 0 ? 'checked="checked"' : ''; ?>
-                    <label class="radio-inline">No <input type="radio" value="No" name="is_employee" {{ Selected }} /></label>
+                    <label class="radio-inline">No <input type="radio" value="No" name="is_employee" {{ Selected }} {{ Disabled }} /></label>
                 </div>
             {% endif %}
 
@@ -158,6 +159,19 @@
             }
             $('#emailerror').hide();
             return true;
+        });
+
+        $('#type').change(function () {
+            elem = $(this);
+            console.log(elem.val());
+            if(elem.val() == "User") {
+                $('#radio_no').prop('checked', false);
+                $('#radio_yes').prop("checked", true);
+
+                $('input[name=is_employee]').attr('disabled', true);
+            } else {
+                $('input[name=is_employee]').attr('disabled', false);
+            }
         });
     });
 </script>

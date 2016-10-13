@@ -50,10 +50,11 @@
             ?>
         </div>
 
-        <?php
-        //check if the user should upgrade
-        if ($is_upgrade) {
-        ?>
+
+
+        <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) {
+
+            if ($is_upgrade) { ?>
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="portlet dark bordered discount">
@@ -67,8 +68,8 @@
             </div>
         </div>
         <?php
-        } // end checking for need to upgrade
-        ?>
+            }
+        } ?>
 
         <div class="row">
             <div class="col-md-12 col-sm-12">
