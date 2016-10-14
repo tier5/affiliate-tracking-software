@@ -375,7 +375,6 @@
                     }
                 }
                 $user->is_all_locations=($isall?1:0);
-
                 if (!$user->save()) {
                     $this->flash->error($user->getMessages());
                 } else {
@@ -517,5 +516,3 @@
             $this->view->form = $form;
         }
     }
-
-

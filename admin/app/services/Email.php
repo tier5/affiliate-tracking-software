@@ -67,19 +67,24 @@ class Email{
         return true;
     }
 
-    public function sendEmployeeReport($dbEmployees, $objAgency, $objBusiness) {
+    public function sendEmployeeReport($dbEmployees, $objBusiness) {
         try {
+
             $mail = $this->getDI()->getMail();
             $mail->setFrom('zacha@reputationloop.com');
-            $Params = [
-                'dbEmployees'       => $dbEmployees,
-                'objBusiness'       => $objBusiness,
-                'objAgency'         => $objAgency,
-            ];
-            foreach($dbEmployees as $objUser) {
-                $mail->send($objUser->email, "Your monthly employee report!", 'employee_report', $Params);
-                die();
+            $objEmployees = $dbEmployees;
+
+            $Params = array(
+              'dbEmployees'       => $dbEmployees,
+              'objBusiness'       => $objBusiness
+            );
+
+            for ($i = 0; $i < count($dbEmployees); ++$i) {
+                echo $mail->send($dbEmployees[$i]->email, "Your monthly employee report!", 'employee_report', $Params);
+                sleep(1);
+
             }
+
         } catch (Exception $e) {
             // GARY_TODO: Add logging!
             print $e;

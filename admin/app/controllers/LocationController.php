@@ -40,6 +40,7 @@
         public $facebook_access_token;
 
         public function initialize() {
+			
             $this->tag->setTitle('Review Velocity | Locations');
             if ($this->session->has('auth-identity')) {
                 $this->view->setTemplateBefore('private');

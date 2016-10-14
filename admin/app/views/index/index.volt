@@ -294,9 +294,9 @@
                                 <tr class="uppercase">
                                     <th>Rank</th>
                                     <th>Name</th>
-                                    <th>This Month</th>
-                                    <th>Total</th>
-                                    <th>Positive Feedback</th>
+                                    <th>Reviews Sent</th>
+                                    <th>Reviews Received</th>
+                                    <th>Customer Satisfaction</th>
                                 </tr>
                             </thead>
                             <?php
@@ -305,13 +305,13 @@
                             foreach($employee_conversion_report as $data) {
                             $i++;
                             if ($class == '') { $class = 'darker'; } else { $class = ''; }
-                            ?>
+                          	?>
                             <tr>
                                 <td class="<?=$class?>"><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
                                 <td class="<?=$class?>"><?=$data->name?></td>
                                 <td class="<?=$class?>"><?=$data->sms_sent_this_month?></td>
-                                <td class="<?=$class?>"><?=($data->sms_sent_all_time)?></td>
-                                <td class="<?=$class?>"><?=($data->sms_sent_all_time > 0?(number_format(($data->positive_feedback / $data->sms_sent_all_time) * 100, 1) . '%'):'0.0%')?></td>
+                                <td class="<?=$class?>"><?=($data->sms_received_this_month)?></td>
+                                <td class="<?=$class?>"><?=($data->sms_sent_this_month > 0?(number_format(($data->positive_feedback_this_month / $data->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
                             </tr>
                             <?php } ?>
                         </table>
