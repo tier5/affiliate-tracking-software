@@ -32,19 +32,19 @@ if ($maxlimitreached) {
     <p class="hint"> Enter your account details below: </p>
     <div class="form-group">
       <label class="control-label visible-ie8 visible-ie9">Email</label>
-      <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" value="<?=(isset($_POST['email'])?$_POST["email"]:'')?>" />
+      <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" value="<?=(isset($_POST['email'])?$_POST["email"]:'')?>" required />
     </div>
     <div class="form-group">
       <label class="control-label visible-ie8 visible-ie9">Password</label>
-      <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="register_password" placeholder="Password" name="password" value="<?=(isset($_POST['password'])?$_POST["password"]:'')?>" />
+      <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="register_password" placeholder="Password" name="password" value="<?=(isset($_POST['password'])?$_POST["password"]:'')?>" required />
     </div>
     <div class="form-group">
       <label class="control-label visible-ie8 visible-ie9">Re-type Your Password</label>
-      <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" name="confirmPassword" value="<?=(isset($_POST['confirmPassword'])?$_POST["confirmPassword"]:'')?>" />
+      <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" name="confirmPassword" value="<?=(isset($_POST['confirmPassword'])?$_POST["confirmPassword"]:'')?>" required />
     </div>
     <div class="form-group">
       <label class="control-label visible-ie8 visible-ie9">Agency Name</label>
-      <input class="form-control placeholder-no-fix" type="name" autocomplete="off" placeholder="Agency Name" name="agency_name" value="<?=(isset($_POST['agency_name'])?$_POST["agency_name"]:'')?>" />
+      <input class="form-control placeholder-no-fix" type="name" autocomplete="off" placeholder="Agency Name" name="agency_name" value="<?=(isset($_POST['agency_name'])?$_POST["agency_name"]:'')?>" required />
     </div>
 
     <div class="form-actions">

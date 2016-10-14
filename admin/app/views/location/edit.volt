@@ -102,9 +102,6 @@
                     <div class="buttons">
                         <a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=<?=$google->external_id?>" target="_blank"><img src="/img/icon-eye.gif"/>
                             View</a>
-                        <a class="btnLink" href="#" onclick="$('#relevant-result-list').hide();$('#hiddenForm').hide();$('#locationform1').show();return false;"><img src="/img/icon-pencil.png"/>
-                            Change
-                            Location</a><br/><br/>
                             {% if GoogleMyBusinessConnected %}
                                 Successfully connected Google My Business Account!  <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Reconnect?</a></div>
                             {% else %}
@@ -114,40 +111,31 @@
 
                 <div class="pnlAddLocation short col-md-4">
                     <div class="title">FACEBOOK:
-                        <span class="title-answer"><span class="facebooknotfound" <?=(isset($facebook) && isset($facebook->
-                            external_id) && $facebook->external_id != ''?' style="display: none;"':'')?>>Not </span>Found</span>
+                        <span class="title-answer">
+                            {% if !FacebookConnected %}
+                            <span class="facebooknotfound">Not Found</span>
+                            {% else %}
+                            <span class="facebooknotfound">Successfully connected</span>
+                            {% endif %}
+
+                        </span>
                     </div>
                     <div class="field"><span class="name">Business Name:</span>
-                        <span id="facebookName" class="facebookfound" <?=(isset($facebook) && isset($facebook->
-                        external_id) && $facebook->external_id != ''?'':' style="display: none;"')?>><?=$location->
-                        name?></span><input class="facebooknotfound" <?=(isset($facebook) && isset($facebook->
-                        external_id) && $facebook->external_id != ''?' style="display: none;"':'')?>
-                        id="facebooksearchfield" type="name" value="<?=str_replace("\"","&quot;",$location->name)?>" />
+                        <span id="facebookName" class="facebookfound"><?=$location->name; ?></span>
                     </div>
-                    <div class="field bottom"><span class="name">Location:</span>
-                        <span id="facebookLocation" class="facebookfound" <?=(isset($facebook) && isset($facebook->
-                        external_id) && $facebook->external_id != ''?'':' style="display: none;"')?>><?=$location->
-                        address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->
-                        postal_code?></span><input id="facebooksearchfield2" type="name" value="<?=str_replace(" \"","&quot;",$location->postal_code)?>"
-                        class="facebooknotfound" <?=(isset($facebook) && isset($facebook->external_id) &&
-                        $facebook->external_id != ''?' style="display: none;"':'')?> />
+                    <div class="field bottom">
+                        <span class="name">Location:</span>
+                        <span id="facebookLocation" class="facebookfound" ><?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?></span>
                     </div>
-                    <div class="buttons facebookfound"
-                    <?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?'':'
-                    style="display:
-                    none;"')?>><a id="facebookLink" href="http://facebook.com/<?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?$facebook->external_id:'')?>" target="_blank"><img src="/img/icon-eye.gif"/>
-                        View</a>
-                    <a class="btnLink" href="#" onclick="$('.facebookfound').hide();$('.facebooknotfound').show();return false;"><img src="/img/icon-pencil.png"/>
-                        Update Location</a> <?php if (isset($facebook) && isset($facebook->external_id) &&
-                    $facebook->external_id != '') { ?>
-                    <!--<a href="/location/getAccessToken" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>--><?php } ?>
+                    <?php
+                    $FacebookText = $FacebookConnected ? 'Re-' : '';
+                  ?>
+                  <div class="buttons">
+                    <a href="/location/getAccessToken?location_id=<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">{{ FacebookText }}Authenticate Facebook</a>
+                    </div>
                 </div>
-                <div class="buttons facebooknotfound"
-                <?=(isset($facebook) && isset($facebook->external_id) && $facebook->external_id != ''?' style="display:
-                none;"':'')?>><a class="btnLink" href="#" onclick="findBusiness('<?=$facebook_access_token?>');return false;"><img src="/img/icon-maglass.gif"/>
-                    Search For Business</a>
-                <a class="btnLink" href="#" id="urllink" onclick="$('#urltype').val('facebook');"><img src="/img/icon-link.gif"/>
-                    Enter URL</a></div>
+
+
             <div class="facebook-results facebooknotfound">
 
             </div>

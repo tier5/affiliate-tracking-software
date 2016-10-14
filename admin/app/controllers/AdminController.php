@@ -182,7 +182,7 @@ class AdminController extends ControllerBase {
      * Confirms an e-mail, if the user must change its password then changes it
      */
     public function confirmEmailAction($code) {
-        $confirmation = UserEmailConfirmations::findFirstByCode($code);
+        $confirmation = \Vokuro\Models\EmailConfirmations::findFirstByCode($code);
 
         if (!$confirmation) {
             $this->flash->error('Invalid or expired code');
@@ -192,7 +192,7 @@ class AdminController extends ControllerBase {
             ));
         }
 
-        if ($confirmation->getConfirmed() <> 0) {
+        if ($confirmation->isConfirmed()) {
             $this->flash->notice('This account is already activated. You can login.');
             return $this->dispatcher->forward(array(
                         'controller' => 'user',
@@ -200,11 +200,10 @@ class AdminController extends ControllerBase {
             ));
         }
 
-        $confirmation->setConfirmed(1);
-        $confirmation->user->setActive(1);
+        $confirmation->setConfirmed();
+        $confirmation->user->active = 'Y';
 
         if (!$confirmation->save()) {
-
             foreach ($confirmation->getMessages() as $message) {
                 $this->flash->error($message);
             }
@@ -217,10 +216,9 @@ class AdminController extends ControllerBase {
 
         $this->auth->authUserById($confirmation->user->getId());
 
-        if ($confirmation->user->getMustChangePassword() == 1) {
-
+        if ($confirmation->user->mustChangePassword == 'Y') {
             $this->flash->success('The email was successfully confirmed. Now you must change your password');
-            return $this->response->redirect($this->_activeLanguage . '/user/changePassword');
+            return $this->response->redirect($this->_activeLanguage . '/users/changePassword');
         }
 
         $this->flash->success('The email was successfully confirmed');

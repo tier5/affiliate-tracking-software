@@ -33,17 +33,18 @@
         }
 
         public function ImportFacebookReviews() {
-            $LocationID = 64;
-            $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 1");
-            $objLocation = \Vokuro\Models\Location::findFirst("location_id = {$LocationID}");
+            $LocationID = 98;
+            //$objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 1");
+            //$objLocation = \Vokuro\Models\Location::findFirst("location_id = {$LocationID}");
             $FoundAgency = [];
 
             $objReviewService = new \Vokuro\Services\Reviews();
-            $objReviewService->importFacebook($objLocationReviewSite, $objLocation, $FoundAgency);
+            $objReviewService->importFacebook($LocationID);
+            //$objReviewService->importFacebook($objLocationReviewSite, $objLocation, $FoundAgency);
         }
     }
 
     $objImporter = new LocationImporter();
     $objImporter->initialize();
-    $objImporter->ImportGoogleMyBusinessReviews();
-    //$objImporter->ImportFacebookReviews();
+    //$objImporter->ImportGoogleMyBusinessReviews();
+    $objImporter->ImportFacebookReviews();
