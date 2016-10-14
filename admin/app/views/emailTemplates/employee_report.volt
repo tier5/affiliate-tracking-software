@@ -1,7 +1,10 @@
 <head>
     <style type="text/css">
         body {
-            background: white;
+            background-color: rgb(239,239,239);
+            border: 2px solid rgba(0,0,0,.1);
+            width: 600px;
+            font-family: "Tahoma, Geneva, sans-serif;
         }
 
         .header_row {
@@ -9,44 +12,49 @@
         }
 
         .container {
-            width: 1024px;
-            border: 1px solid rgba(0,0,0,.04);
+            width: 97%;
+            border: 1px solid rgba(0,0,0,.1);
             margin-left: auto;
             margin-right: auto;
+            background-color: rgb(250,250,250);
         }
 
         .header {
-            width: 1024px;
+            width: 95%;
             margin-left: auto;
             margin-right: auto;
         }
 
         .footer {
-            width: 1024px;
+            width: 95%;
             margin-left: auto;
             margin-right: auto;
             text-align: center;
         }
 
         .logo {
-            float: left;
+            float: center;
             display: block;
             max-height: 50px;
+            text-align: center;
         }
 
         .title {
-            float: right;
+            text-align: center;
         }
 
         .employee_table {
             margin-top: 20px;
             margin-bottom: 20px;
+            width: 500px;
         }
 
         .table_header {
             margin-left: 20px;
             margin-right: 20px;
             text-align: center;
+            background-color: rgb(250,250,250);
+
         }
 
         .table_cell {
@@ -60,6 +68,8 @@
         table {
             margin-left: auto;
             margin-right: auto;
+            border: 1px solid rgba(0,0,0,.1);
+            width: 500px;
         }
 
         tr {
@@ -72,19 +82,28 @@
             padding-right: 25px;
         }
 
-        td.total_feedback, td.rank {
+        td.rank {
             width: 57px;
             /*font-size: 12px;*/
         }
 
-        td.total_feedback, td.total_feedback {
+        td.total_positive_feedback {
             width: 57px;
             /*font-size: 12px;*/
         }
 
-        td.average_satisfaction, td.average_satisfaction {
+        td.total_sent {
             width: 57px;
             /*font-size: 12px;*/
+        }
+
+        td.customer_satisfaction {
+            width: 57px;
+            /*font-size: 12px;*/
+        }
+
+        tbody > tr:nth-child(0) {
+          background-color: rgb(239,239,239);
         }
 
         tbody > tr:nth-child(1) {
@@ -105,18 +124,26 @@
         tr:nth-child(even) {
             background-color: rgb(239,239,239);
         }
+
         tr:nth-child(odd) {
             background-color: rgb(250,250,250);
         }
-        th > tr {
-            background-color: rgb(250,250,250);
-        }
+
         td.employee, th.employee {
             width: 94px;
             font-size: 14px;
         }
+        th {
+          background-color: rgb(239,239,239);
+        }
 
+        hr {
+          height: 2px;
+          width: 97%;
+          border: 0;
+          background-color: rgb(219,219,219);
 
+        }
     </style>
 </head>
 <body>
@@ -124,7 +151,7 @@
         <img class="logo" src="http://<?=$objBusiness->custom_domain; ?>.getmobilereviews.com/img/agency_logos/<?=$objBusiness->logo_path;?>" />
         <div class="title"><h3><?=$objBusiness->name; ?></h3></div>
     </div>
-    <div style="clear: both;"></div>
+
     <div class="container">
         <div class="table_header">
             <h4><?=date('F'); ?> Employee Ranking Report<br />As Of <?=date("m/d/Y"); ?></h4><br />
@@ -134,8 +161,9 @@
                 <tr>
                     <th>Rank</th>
                     <th class="employee">Employee</th>
-                    <th class="total_feedback">Total Feedback</th>
-                    <th class="total_feedback">Average Satisfaction</th>
+                    <th class="total_sent">Total Sent</th>
+                    <th class="total_positive_feedback">Total Received</th>
+                    <th class="customer_satisfaction">Customer Satisfaction</th>
                 </tr>
             </thead>
             <tbody>
@@ -166,23 +194,25 @@
                             break;
                     }
                 ?>
-
                 <tr>
                     <td class="rank"><?=$Icon; ?></td>
                     <td class="employee"><?=$Employee->name; ?></td>
-                    <td class="total_feedback"><?=$Employee->sms_sent_all_time ?: 0; ?></td>
-                    <td class="average_satisfaction"><?=$Employee->avg_feedback ?: 0; ?></td>
+                    <td class="total_sms_sent"><?=($Employee->sms_sent_this_month ?: 0); ?></td>
+                    <td class="total_positive_feedback"><?=$Employee->positive_feedback_this_month ?: 0; ?></td>
+                    <td class="customer_satisfaction"><?=($Employee->sms_received_this_month > 0?(number_format(($Employee->positive_feedback_this_month / $Employee->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
+
                 </tr>
                 <?php $Count++; ?>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    <div ><br /><hr class="horizontalline"></div>
     <div class="footer">
         <p><b><?=$objBusiness->name; ?></b> | <a href="<?=$objBusiness->website; ?>"><?=$objBusiness->website; ?></a> | Like us on Facebook</p>
         <p><?=$objBusiness->address; ?> <?=$objBusiness->address2; ?>, <?=$objBusiness->state_province; ?>, <?=$objBusiness->postal_code; ?></p>
         <p><?=$objBusiness->phone; ?></p>
         <br />
-        Powered by <?=$objAgency->name; ?>
+        Powered by: <?=$objBusiness->name; ?>
     </div>
 </body>

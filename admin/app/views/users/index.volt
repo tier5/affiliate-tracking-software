@@ -87,10 +87,11 @@ if ($users_report) {
               <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                 <tr>
-                  <th>Rank</th>
-                  <th>Name</th>
-                  <th>Total</th>
-                  <th>Average Feedback</th>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Reviews Sent</th>
+                <th>Reviews Received</th>
+                <th>Customer Satisfaction</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -102,26 +103,11 @@ foreach($users_report as $user) {
   $i++;
   ?>
                 <tr>
-                  <td><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
-                  <td><?=$user->name?></td>
-                  <td><?=$user->sms_sent_all_time?></td>
-                  <td>
-                    <?php
-      if ($user->review_invite_type_id == 1) {
-                    ?>
-                    <?=($user->avg_feedback?round($user->avg_feedback).'% - <span class="greenfont">Yes</span>':'')?>
-                    <?php
-      } else if ($user->review_invite_type_id == 2) {
-                    ?><input value="<?=$user->avg_feedback?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /> <span style="margin-left: 5px;"><?=$user->avg_feedback?></span><?php
-      } else {
-        if ($user->avg_feedback > 0) {
-                    if ($user->avg_feedback <= 5) {
-                    ?><span class="review_invite_type_id_3 redfont"><?=$user->avg_feedback?></span><?php
-        } else {
-          ?><span class="review_invite_type_id_3 greenfont"><?=$user->avg_feedback?></span><?php
-        }}
-      }
-      ?>
+                  <td class="<?=$class?>"><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
+                  <td class="<?=$class?>"><?=$user->name?></td>
+                  <td class="<?=$class?>"><?=$user->sms_sent_this_month?></td>
+                  <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>
+                  <td class="<?=$class?>"><?=($user->sms_received_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
                   </td>
                 </tr>
                 <?php
@@ -167,7 +153,9 @@ foreach($users_report as $user) {
 ?>
 
         <?php
+
 if (isset($users) && $users) {
+
 ?>
 
         <div class="portlet light bordered dashboard-panel">
@@ -190,6 +178,7 @@ if (isset($users) && $users) {
               <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                 <tr>
+                  <th>Rank</th>
                   <th>Name</th>
                   <?php
       if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
@@ -197,13 +186,12 @@ if (isset($users) && $users) {
                   <th>Email</th>
                   <th>Role</th>
                   <th>Employee?</th>
-                  <th>Location</th>
                   <?php
       } else {
         ?>
-                  <th>Location</th>
-                  <th>Feedback Sent</th>
-                  <th>Average Feedback</th>
+                  <th>Reviews Sent</th>
+                  <th>Reviews Received</th>
+                  <th>Customer Satisfaction</th>
                   <?php
       }
       ?>
@@ -218,9 +206,12 @@ if (isset($users) && $users) {
 
                 <?php
 $rowclass = '';
+$i=0;
 foreach($users as $user) {
+$i++;
   ?>
                 <tr>
+                  <td class="<?=$class?>"><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
                   <td><?=$user->name?></td>
                   <?php
     if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
@@ -237,30 +228,11 @@ foreach($users as $user) {
                   <?php
     } else {
       ?>
-                  <td>
-                    <?php foreach($user->locations as $location) { ?>
-                    <div><?=$location->name?></div>
-                    <?php }  ?>
-                  </td>
-                  <td><?=$user->sms_sent_all_time?></td>
-                  <td>
-                    <?php
-        if ($user->review_invite_type_id == 1) {
-                    ?>
-                    <?=($user->avg_feedback?round($user->avg_feedback).'% - <span class="greenfont">Yes</span>':'')?>
-                    <?php
-        } else if ($user->review_invite_type_id == 2) {
-                    ?><input value="<?=$user->avg_feedback?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /> <span style="margin-left: 5px;"><?=$user->avg_feedback?></span><?php
-        } else {
-          if ($user->avg_feedback > 0) {
-                    if ($user->avg_feedback <= 5) {
-                    ?><span class="review_invite_type_id_3 redfont"><?=$user->avg_feedback?></span><?php
-          } else {
-            ?><span class="review_invite_type_id_3 greenfont"><?=$user->avg_feedback?></span><?php
-          }}
-        }
-        ?>
-                  </td>
+      <td class="<?=$class?>"><?=$user->sms_sent_this_month?></td>
+      <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>
+      <td class="<?=$class?>"><?=($user->sms_sent_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
+
+
                   <?php
     }
     ?>

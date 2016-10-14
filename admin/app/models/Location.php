@@ -32,7 +32,7 @@
         public function initialize()
         {
             $this->setSource('location');
-
+			$this->skipAttributes(['region_id']);
             $this->belongsTo('region_id', __NAMESPACE__ . '\Region', 'region_id', array(
                 'alias' => 'region',
                 'reusable' => true
