@@ -373,7 +373,7 @@
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
 
            $agencynotifications = $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
-           echo count($agencynotifications);
+
             $this->view->agency = $agency;
             $this->view->location = $location;
 
