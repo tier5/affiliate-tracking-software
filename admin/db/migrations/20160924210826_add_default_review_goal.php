@@ -35,7 +35,7 @@ class AddDefaultReviewGoal extends AbstractMigration
     public function down()
     {
         $table = $this->table('agency');
-        $table->changeColumn('review_goal', 'integer', ['null' => false, 'default' => ""])
+        $table->changeColumn('review_goal', 'integer', ['null' => false, 'default' => "10"])
             ->update();
     }
 }
