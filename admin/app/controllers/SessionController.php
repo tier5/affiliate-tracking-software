@@ -42,6 +42,7 @@ class SessionController extends ControllerBase {
 
     public function indexAction() {
         $this->view->setTemplateBefore('login');
+
         $this->tag->setTitle('Review Velocity | Subscription');
     }
 
@@ -702,15 +703,12 @@ class SessionController extends ControllerBase {
      * Starts a session in the admin backend
      */
     public function loginAction() {
-
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Review Velocity | Login');
         $form = new LoginForm();
         $email = $this->dispatcher->getParam('email');
         $this->view->email = $email;
-
         $this->DetermineParentIDAndSetViewVars();
-
         try {
             if (!$this->request->isPost()) {
                 if ($this->auth->hasRememberMe()) {

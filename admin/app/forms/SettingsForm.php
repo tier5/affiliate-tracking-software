@@ -45,22 +45,22 @@ class SettingsForm extends Form
 
         $rating_threshold_star = new Numeric('rating_threshold_star', array(
             'placeholder' => 'Name',
-            'min' => '1',
+            'min' => '0',
             'max' => '5'
         ));
-        $rating_threshold_star->addValidator(new PresenceOf(array(
-            'message' => 'The Rating Threshold (Star Rating) is required'
-        )));
+      //  $rating_threshold_star->addValidator(new PresenceOf(array(
+      //      'message' => 'The Rating Threshold (Star Rating) is required'
+      //  )));
         $this->add($rating_threshold_star);
 
         $rating_threshold_nps = new Numeric('rating_threshold_nps', array(
             'placeholder' => 'The Rating Threshold (NPS Rating) is required',
-            'min' => '1',
+            'min' => '0',
             'max' => '10'
         ));
-        $rating_threshold_nps->addValidator(new PresenceOf(array(
-            'message' => 'The Rating Threshold (NPS Rating) is required'
-        )));
+      //  $rating_threshold_nps->addValidator(new PresenceOf(array(
+      //      'message' => 'The Rating Threshold (NPS Rating) is required'
+      //  )));
         $this->add($rating_threshold_nps);
 
         $name = new Text('name', array(
@@ -95,7 +95,7 @@ class SettingsForm extends Form
 
         $message_tries = new Numeric('message_tries', array(
             'placeholder' => 'SMS Message Tries',
-            'min' => '1',
+            'min' => '0',
             'max' => '3'
         ));
 
@@ -142,13 +142,13 @@ class SettingsForm extends Form
             'placeholder' => 'Twilio Phone Number'
         ));
         $this->add($twilio_from_phone);
-        
+
         $stripe_account_id = new Text('stripe_account_id', array());
         $this->add($stripe_account_id);
-        
+
         $stripe_account_secret = new Text('stripe_account_secret', array());
         $this->add($stripe_account_secret);
-        
+
         $stripe_publishable_keys = new Text('stripe_publishable_keys', array());
         $this->add($stripe_publishable_keys);
 

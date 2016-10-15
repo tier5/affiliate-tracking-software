@@ -29,6 +29,7 @@
             $this->tag->setTitle('Review Velocity | Settings');
             $this->view->setTemplateBefore('private');
             parent::initialize();
+
         }
 
 
@@ -36,6 +37,7 @@
          * Searches for users
          */
         public function indexAction() {
+
             //get the user id, to find the settings
             $identity = $this->auth->getIdentity();
             // If there is no identity available the user is redirected to index/index
@@ -59,6 +61,7 @@
                     $this->flash->error("No settings were found");
                 }
             }
+
 
             if ($this->request->isPost()) {
                 $form = new SettingsForm($agency);
@@ -118,7 +121,7 @@
                     $conditions = "location_id = :location_id:";
                     $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
                     $notificationdelete = LocationNotifications::find(array($conditions, "bind" => $parameters));
-                    $notificationdelete->delete();
+                    //$notificationdelete->delete();
 
                     if (!empty($_POST['users'])) {
                         foreach ($_POST['users'] as $check) {
@@ -148,7 +151,7 @@
 
                 $conditions = "location_id = :location_id:";
                 $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-                $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
 
                 $this->view->agency = $agency;
                 $this->view->location = $agency;
@@ -235,6 +238,7 @@
         }
 
         protected function storeSettings($entity, $type) {
+
             if ($this->request->isPost()) {
 
                 $form = new SettingsForm($entity);
@@ -261,6 +265,7 @@
                     foreach($this->$tFieldArray as $Field => $DataType) {
                         switch($DataType) {
                             case 'int':
+                                //$tEntityArray[$Field] = (is_int($this->request->getPost($Field, 'int')) ?$this->request->getPost($Field, 'int'): 0  );
                                 $tEntityArray[$Field] = $this->request->getPost($Field, 'int');
                                 break;
                             case 'string':
@@ -274,7 +279,7 @@
                                 break;
                         }
                     }
-
+//print_r($tEntityArray);
                     $entity->assign($tEntityArray);
                     // Don't hate me for this -- GG
                     $PrimaryID = $type == 'agency' ? 'agency_id' : 'location_id';
@@ -283,7 +288,7 @@
                     // This works because agencies and locations have the same column.
                     if ($file_location != '')
                         $entity->sms_message_logo_path = $file_location;
-
+//print_r($entity);
                     return $entity->save();
                 }
             }
@@ -295,6 +300,7 @@
          * Updates settings for locations
          */
         public function locationAction() {
+            //echo "locationAction";
             $location_id = $this->getLocationId();
             $userObj = $this->getUserObject();
             // If there is no identity available the user is redirected to index/index
@@ -331,7 +337,7 @@
             }
             if($location_id) {
                 $notificationdelete = LocationNotifications::find("location_id = " . $location_id);
-                $notificationdelete->delete();
+                //$notificationdelete->delete();
             }
             if (!empty($_POST['users'])) {
                 foreach ($_POST['users'] as $check) {
@@ -365,8 +371,9 @@
 
             $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
 
+           $agencynotifications = $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+           echo count($agencynotifications);
             $this->view->agency = $agency;
             $this->view->location = $location;
 
@@ -392,6 +399,7 @@
         }
 
         public function agencyAction() {
+        // echo "agencyAction";
             $Identity = $this->auth->getIdentity();
             if (!is_array($Identity)) {
                 $this->response->redirect('/session/login?return=/settings/agency/');
@@ -491,7 +499,6 @@
         }
 
         public function offAction($id = 0) {
-            $this->checkIntegerOrThrowException($id);
             $conditions = "location_review_site_id = :location_review_site_id:";
             $parameters = array("location_review_site_id" => $id);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
@@ -501,6 +508,8 @@
             if (!$edit_permissions) throw new \Exception("You cannot edit the parent location for id of:{$location_id}, so you cannot
             turn off or on a location review site belonging to this location");
 
+
+
             $Obj->is_on = 1;
             $Obj->save();
             $this->view->disable();
@@ -509,33 +518,36 @@
 
 
         public function notificationAction($id = 0, $fieldname, $value) {
+
             $conditions = "location_id = :location_id: AND user_id = :user_id:";
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id'], "user_id" => $id);
-            $Obj = LocationNotifications::findFirst(array($conditions, "bind" => $parameters));
 
+            $Obj = LocationNotifications::findFirst(array($conditions, "bind" => $parameters));
             if (isset($Obj) && isset($Obj->user_id) && $Obj->user_id == $id) {
                 //lets edit the field and save the changes
                 if ($fieldname == 'ea') $Obj->email_alert = $value;
                 if ($fieldname == 'sa') $Obj->sms_alert = $value;
                 if ($fieldname == 'ar') $Obj->all_reviews = $value;
                 if ($fieldname == 'ir') $Obj->individual_reviews = $value;
+                if ($fieldname == 'el') $Obj->employee_leaderboards = $value;
+
                 $Obj->save();
             } else {
                 //else we need to create a record
-                $loc = new LocationNotifications();
-                $loc->assign(array(
-                    'location_id' => $this->session->get('auth-identity')['location_id'],
+                $locationNotification = new LocationNotifications();
+
+                $loc_array = array(
+                    'location_id' => $parameters['location_id'],
                     'user_id' => $id,
-                    'email_alert' => 0,
-                    'sms_alert' => 0,
-                    'all_reviews' => 0,
-                    'individual_reviews' => 0,
-                ));
-                if ($fieldname == 'ea') $loc->email_alert = $value;
-                if ($fieldname == 'sa') $loc->sms_alert = $value;
-                if ($fieldname == 'ar') $loc->all_reviews = $value;
-                if ($fieldname == 'ir') $loc->individual_reviews = $value;
-                $loc->save();
+                );
+                if ($fieldname == 'ea') { $loc_array['email_alert'] = $value; }
+                if ($fieldname == 'sa') { $loc_array['sms_alert'] = $value; }
+                if ($fieldname == 'ar') { $loc_array['all_reviews'] = $value; }
+                if ($fieldname == 'ir') { $loc_array['individual_reviews'] = $value; }
+                if ($fieldname == 'el') { $loc_array['employee_leaderboards'] = $value; }
+                //print_r($loc_array);
+                $locationNotification->assign($loc_array);
+                $locationNotification->save();
             }
 
             $this->view->disable();
@@ -570,5 +582,3 @@
             }
         }
     }
-
-
