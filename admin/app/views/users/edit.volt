@@ -90,8 +90,8 @@
                         }
                         ?>
                         <div class="location-data">
-                            <input type="checkbox" name="locations[]" value="all" <?=($checked?'checked="checked"':'')?>
-                            /> All
+                            <input type="hidden" name="locations[]" value="all" <?=($checked?'checked="checked"':'')?>
+                            /> 
                         </div>
                         <?php
         }

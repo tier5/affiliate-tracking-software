@@ -186,6 +186,7 @@ if (isset($users) && $users) {
                   <th>Email</th>
                   <th>Role</th>
                   <th>Employee?</th>
+                  <th>Locations</th>
                   <?php
       } else {
         ?>

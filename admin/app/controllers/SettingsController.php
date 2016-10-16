@@ -10,6 +10,7 @@
     use Vokuro\Forms\SettingsForm;
     use Vokuro\Models\Agency;
     use Vokuro\Models\Location;
+    use Vokuro\Models\UsersLocation;
     use Vokuro\Models\LocationNotifications;
     use Vokuro\Models\LocationReviewSite;
     use Vokuro\Models\PasswordChanges;
@@ -364,7 +365,16 @@
 
 
             // Query binding parameters with string placeholders
-            $conditions = "agency_id = :agency_id:";
+            $conditions = "location_id = :location_id:";
+            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+            $Userslocations = UsersLocation::find(array($conditions, "bind" => $parameters));
+            $UserslocationsIds =array();
+            foreach ($Userslocations as $Userslocation) {
+              array_push($UserslocationsIds,$Userslocation->user_id);
+
+            }
+
+            $conditions = "agency_id = :agency_id: AND id IN (" . implode(", ",$UserslocationsIds) . ")";
             $parameters = array("agency_id" => $userObj->agency_id);
             $users = Users::find(array($conditions, "bind" => $parameters));
             $this->view->users = $users;
