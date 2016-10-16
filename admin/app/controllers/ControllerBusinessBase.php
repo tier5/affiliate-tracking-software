@@ -68,9 +68,6 @@ class ControllerBusinessBase extends ControllerBase {
                    $error = true;
                 }
 
-
-
-
                 $db = $this->di->get('db');
                 $db->begin();
 
@@ -101,7 +98,8 @@ class ControllerBusinessBase extends ControllerBase {
 
                 /* Create an admin for this new agency */
                 $user = new Users();
-                $user->send_confirmation = $this->request->getPost('send_registration_email', 'striptags') === "on " ? true : false;
+                $user->send_confirmation = $this->request->getPost('send_registration_email', 'striptags') === "on" ? true : false;
+
                 $user->assign(array(
                     'name' => $this->request->getPost('admin_name', 'striptags'),
                     'email' => $this->request->getPost('admin_email'),

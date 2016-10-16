@@ -48,17 +48,41 @@ class Email{
     /**
      * @param Users $user
      */
-    public function sendActivationEmailToUser(Users $user){
+    public function sendActivationEmailToUser(Users $user) {
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($user->getId());
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
+
+        $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
+        if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            $AgencyName = "Review Velocity";
+            $AgencyUser = "Zach";
+            $EmailFrom = "zacha@reputationloop.com";
+        }
+        elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
+            $AgencyUser = $objAgencyUser->name;
+            $AgencyName = $objAgency->name;
+            $EmailFrom = $objAgencyUser->email;
+        }
+        elseif($objAgency->parent_id > 0) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+            $AgencyName = $objParentAgency->name;
+            $AgencyUser = $objAgencyUser->name;
+            $EmailFrom = $objAgencyUser->email;
+        }
+
         $params = [
             'confirmUrl'=> '/confirm/' . $record->code . '/' . $user->email,
-            'firstName' => $user->getFirstName()
+            'firstName' => $user->getFirstName(),
+            'AgencyName' => $AgencyName,
+            'AgencyUser' => $AgencyUser,
         ];
+        
         try {
             $mail = $this->getDI()->getMail();
-            $mail->setFrom('zacha@reputationloop.com');
+            $mail->setFrom($EmailFrom);
             $mail->send($user->email, "You’re in :) | PLUS, a quick question...", 'confirmation', $params);
         } catch (Exception $e) {
             print $e;
