@@ -61,8 +61,20 @@
             parent::initialize();
         }
 
+        public function pickGoogleBusinessAction($BusinessID, $LocationID) {
+            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
+            $objLocation->external_location_id = $BusinessID;
+            $objLocation->save();
+
+            $objReviewService = new \Vokuro\Services\Reviews();
+            $objReviewService->DeleteGoogleReviews($LocationID);
+            $objReviewService->importGoogleMyBusinessReviews($LocationID);
+
+            $this->response->redirect("/location/edit/{$LocationID}");
+        }
+
         public function pickFacebookBusinessAction($BusinessID, $LocationID) {
-            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 2");
+            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
 
             $face = new FacebookScanning();
             $tResults = [];
@@ -90,14 +102,25 @@
             $this->response->redirect("/location/edit/{$LocationID}");
         }
 
+        public function getGooglePagesAction($LocationID) {
+            $objReviewsService = new \Vokuro\Services\Reviews();
+
+            $this->view->tobjBusinesses = $objReviewsService->getGoogleMyBusinessLocations($LocationID);
+            $this->view->LocationID = $LocationID;
+            $this->view->pick('location/getFacebookPages');
+        }
+
         public function getFacebookPagesAction($LocationID) {
-            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 1");
+            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
 
             $face = new FacebookScanning();
             $tResults = [];
             $face->setAccessToken($objLocation->access_token);
 
             $tobjBusinesses = $face->getBusinessAccounts();
+            foreach($tobjBusinesses as &$objBusiness)
+                $objBusiness->type = 'Facebook';
+
             $this->view->tobjBusinesses = $tobjBusinesses;
             $this->view->LocationID = $LocationID;
         }
@@ -190,10 +213,10 @@
             if ($objLocation->agency_id != $objUser->agency_id)
                 die("ERROR:  Invalid user ID");
 
-            $objLocationReviewSite = LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = 2");
+            $objLocationReviewSite = LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP);
             if (!$objLocationReviewSite) {
                 $objLocationReviewSite = new LocationReviewSite();
-                $objLocationReviewSite->review_site_id = 2;
+                $objLocationReviewSite->review_site_id = \Vokuro\Models\Location::TYPE_YELP;
             }
 
             $objLocationReviewSite->external_id = $this->yelpId($yelp_api_id);
@@ -277,24 +300,21 @@
                 } else {
                     $foundagency = array();
 
-                    //print '<pre>' . print_r($_POST, true) . '</pre>';
 
-                    //check for yelp
+                    // Check for Yelp
                     $yelp_api_id = $this->request->getPost('yelp_id', 'striptags');
                     $yelp_id = $this->yelpId($yelp_api_id);
-                    //print '<pre>$yelp_api_id: ' . print_r($yelp_api_id, true) . '</pre>';
                     if ($yelp_api_id != '' && !(strpos($yelp_api_id, '>') !== false)) {
                         $lrs = new LocationReviewSite();
                         $lrs->assign(array(
                             'location_id' => $loc->location_id,
-                            'review_site_id' => 2, // yelp = 2
+                            'review_site_id' => \Vokuro\Models\Location::TYPE_YELP,
                             'external_id' => $yelp_id,
                             'api_id' => $yelp_api_id,
                             'date_created' => date('Y-m-d H:i:s'),
                             'is_on' => 1,
                         ));
 
-                        //find the review info
                         $this->importYelp($lrs, $loc, $foundagency);
                     }
 
@@ -583,7 +603,7 @@
             }
             //end making sure the user should be here
 
-            $objGoogleReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = 3");
+            $objGoogleReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
 
             $this->view->GoogleMyBusinessConnected = $objGoogleReviewSite && $objGoogleReviewSite->json_access_token ? true : false;
 
@@ -637,17 +657,17 @@
                     $foundagency = array();
 
                     //look for a yelp review configuration
-                    $conditions = "location_id = :location_id: AND review_site_id =  1";
+                    $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
                     $parameters = array("location_id" => $loc->location_id);
                     $yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
                     //look for a facebook review configuration
-                    $conditions = "location_id = :location_id: AND review_site_id =  2";
+                    $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
                     $parameters = array("location_id" => $loc->location_id);
                     $facebook = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
                     //look for a google review configuration
-                    $conditions = "location_id = :location_id: AND review_site_id =  3";
+                    $conditions = "location_id = :location_id: AND review_site_id = " .  \Vokuro\Models\Location::TYPE_GOOGLE;
                     $parameters = array("location_id" => $loc->location_id);
                     $google = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
@@ -666,7 +686,7 @@
                             $lrs = new LocationReviewSite();
                             $lrs->assign(array(
                                 'location_id' => $loc->location_id,
-                                'review_site_id' => 2, // yelp = 2
+                                'review_site_id' => \Vokuro\Models\Location::TYPE_YELP,
                                 'external_id' => $yelp_id,
                                 'api_id' => $yelp_api_id,
                                 'date_created' => date('Y-m-d H:i:s'),
@@ -680,37 +700,7 @@
                         if (isset($yelp) && isset($yelp->location_review_site_id) && $yelp->location_review_site_id > 0) $yelp->delete();
                     }
 
-                    //check for google
-                    $google_place_id = $this->request->getPost('google_place_id', 'striptags');
-                    $google_api_id = $this->request->getPost('google_api_id', 'striptags');
-                    $googleScan = new GoogleScanning();
-                    if ($google_place_id != '') {
-                        if (isset($google) && isset($google->location_review_site_id) && $google->location_review_site_id > 0) {
-                            $google->external_id = $google_place_id;
-                            $google->api_id = $google_api_id;
-                            $google->lrd = $googleScan->getLRD($google_place_id);
-                            $google->save();
-                            //find the review info
-                            //$this->importGoogle($google, $loc, $foundagency);
-                        } else {
-                            //$google_reviews = $google->getLRD('15803962018122969779');
-
-                            $lrs = new LocationReviewSite();
-                            $lrs->assign(array(
-                                'location_id' => $loc->location_id,
-                                'review_site_id' => 3, // google = 3
-                                'external_id' => $google_place_id,
-                                'api_id' => $google_api_id,
-                                'date_created' => date('Y-m-d H:i:s'),
-                                'is_on' => 1,
-                                'lrd' => $googleScan->getLRD($google_place_id),
-                            ));
-                            //find the review info
-                            //$this->importGoogle($lrs, $loc, $foundagency);
-                        }
-                    }
-
-                    //check for facebook
+                    // Check for Facebook
                     $facebook_page_id = $this->request->getPost('facebook_page_id', 'striptags');
                     if ($facebook_page_id != '') {
                         if (isset($facebook) && isset($facebook->location_review_site_id) && $facebook->location_review_site_id > 0) {
@@ -723,7 +713,7 @@
                             $lrs = new LocationReviewSite();
                             $lrs->assign(array(
                                 'location_id' => $loc->location_id,
-                                'review_site_id' => 1, // facebook = 1
+                                'review_site_id' => \Vokuro\Models\Location::TYPE_FACEBOOK,
                                 'external_id' => $facebook_page_id,
                                 'date_created' => date('Y-m-d H:i:s'),
                                 'is_on' => 1,
@@ -758,19 +748,19 @@
             $this->view->facebook_access_token = $this->facebook_access_token;
 
             //look for a yelp review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  1";
+            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
             $parameters = array("location_id" => $loc->location_id);
             $this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
 
             //look for a facebook review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  2";
+            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
             $parameters = array("location_id" => $loc->location_id);
             $this->view->facebook = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             $this->view->FacebookConnected = $this->view->facebook->access_token ? true : false;
 
             //look for a google review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  3";
+            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
             $parameters = array("location_id" => $loc->location_id);
             $this->view->google = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
@@ -1110,14 +1100,14 @@
                     //save the access token in the database
 
                     //look for a facebook review configuration
-                    $conditions = "location_id = :location_id: AND review_site_id =  1";
+                    $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
                     $LocationID = $this->session->get('auth-identity')['location_id'];
                     $parameters = array("location_id" => $LocationID);
                     $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
                     if(!$Obj) {
                         $Obj = new LocationReviewSite();
                         $Obj->location_id = $LocationID;
-                        $Obj->review_site_id = 1;
+                        $Obj->review_site_id = \Vokuro\Models\Location::TYPE_FACEBOOK;
                     }
                     $Obj->access_token = $accessToken;
                     $Obj->save();
@@ -1182,7 +1172,7 @@
                 echo '<p><b>Location: ' . $location->name . '</b></p>';
 
                 //look for a yelp review configuration
-                $conditions = "location_id = :location_id: AND review_site_id = 2";
+                $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
                 $parameters = array("location_id" => $location->location_id);
                 $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
@@ -1198,7 +1188,7 @@
                 }
 
                 //look for a facebook review configuration
-                $conditions = "location_id = :location_id: AND review_site_id =  1";
+                $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
                 $parameters = array("location_id" => $location->location_id);
                 $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
@@ -1211,25 +1201,6 @@
                 } else {
                     echo '<p>facebook page_id NOT CONFIGURED!</p>';
                 }
-
-                //look for a facebook review configuration
-                $conditions = "location_id = :location_id: AND review_site_id =  3";
-                $parameters = array("location_id" => $location->location_id);
-                $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-
-                //Finaly lets import the Google reviews, if configured
-                /*if (isset($Obj) && isset($Obj->api_id) && $Obj->api_id) {
-                    //import reviews
-                    $Obj = $this->importGoogle($Obj, $location, $foundagency);
-
-                    $rev_monthly->google_rating = $Obj->rating;
-                    $rev_monthly->google_review_count = $Obj->review_count - $Obj->original_review_count;
-                } else {
-                    echo '<p>google api_id NOT CONFIGURED!</p>';
-                }*/
-
-                $location->date_reviews_checked = date('Y-m-d H:i:s');
-                $location->save();
 
                 //find if we should insert or update our monthly review record
 
@@ -1478,33 +1449,6 @@
             $objReviewService = new \Vokuro\Services\Reviews();
             $objReviewService->DeleteGoogleReviews($LocationID);
 
-            return $this->response->redirect("/location/googlereviews/{$LocationID}");
+            return $this->response->redirect("/location/getGooglePages/{$LocationID}");
         }
-
-
-        /*protected function getReviewsFromToken($access_token)
-        {
-            $objReviewService = new \Vokuro\Services\Reviews();
-            $client = $objReviewService->getGoogleClient();
-            $client->setAccessToken($access_token['access_token']);
-            $googleBusinessService = new \Google_Service_Mybusiness($client);
-            $accounts = $googleBusinessService->accounts->listAccounts();
-            foreach ($accounts as $account) {
-                print '<h1>Account: '.$account->name.'</h1>';
-                print '<h2>Locations</h2>';
-                $locations = $googleBusinessService->accounts_locations->listAccountsLocations($account->name)->getLocations();
-                if(!is_array($locations)){
-                    $locations = [$locations];
-                }
-                foreach($locations as $location){
-                    print '<h1>'.$location->name.'</h1>';
-                    $reviewObject = $googleBusinessService->accounts_locations_reviews->listAccountsLocationsReviews($location->name);
-                    $reviewCount = $reviewObject->getTotalReviewCount();
-                    $reviews = $reviewObject->getReviews();
-                    print '<h1>'.$reviewCount.'</h1>';
-                }
-
-            }
-
-        }*/
-    } // end LocationController class
+    }

@@ -55,7 +55,7 @@
                 $yelp_rating = 0;
 
                 //look for a yelp review configuration
-                $conditions = "location_id = :location_id: AND review_site_id =  1";
+                $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
                 $parameters = array("location_id" => $location_id);
 
 
@@ -70,7 +70,7 @@
                 }
 
                 //look for a facebook review configuration
-                $conditions = "location_id = :location_id: AND review_site_id =  2";
+                $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
                 $parameters = array("location_id" => $location_id);
                 $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
                 //start with Facebook reviews, if configured
@@ -83,7 +83,7 @@
                 //###  END: find review site config info ###
 
                 //look for a google review configuration
-                $conditions = "location_id = :location_id: AND review_site_id =  3";
+                $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
                 $parameters = array("location_id" => $location_id);
 
                 $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));

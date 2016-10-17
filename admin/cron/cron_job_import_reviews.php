@@ -21,7 +21,7 @@
         }
 
         function ImportGoogleMyBusinessReviews() {
-            $dbLocations = \Vokuro\Models\LocationReviewSite::find("review_site_id = 3 AND json_access_token IS NOT NULL");
+            $dbLocations = \Vokuro\Models\LocationReviewSite::find("review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE . " AND json_access_token IS NOT NULL");
             $objReviewService = new \Vokuro\Services\Reviews();
             foreach ($dbLocations as $objLocation) {
                 try {
@@ -34,7 +34,7 @@
 
         public function ImportFacebookReviews() {
             $LocationID = 98;
-            //$objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 1");
+            //$objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
             //$objLocation = \Vokuro\Models\Location::findFirst("location_id = {$LocationID}");
             $FoundAgency = [];
 

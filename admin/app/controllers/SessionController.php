@@ -391,7 +391,7 @@ class SessionController extends ControllerBase {
                     $lrs = new LocationReviewSite();
                     $lrs->assign(array(
                         'location_id' => $loc->location_id,
-                        'review_site_id' => 2, // yelp = 2
+                        'review_site_id' => \Vokuro\Models\Location::TYPE_YELP,
                         'external_id' => $yelp_id,
                         'api_id' => $yelp_api_id,
                         'date_created' => date('Y-m-d H:i:s'),
@@ -410,7 +410,7 @@ class SessionController extends ControllerBase {
                     $lrs = new LocationReviewSite();
                     $lrs->assign(array(
                         'location_id' => $loc->location_id,
-                        'review_site_id' => 3, // google = 3
+                        'review_site_id' => \Vokuro\Models\Location::TYPE_GOOGLE,
                         'external_id' => $google_place_id,
                         'api_id' => $google_api_id,
                         'date_created' => date('Y-m-d H:i:s'),
@@ -428,7 +428,7 @@ class SessionController extends ControllerBase {
                     $lrs = new LocationReviewSite();
                     $lrs->assign(array(
                         'location_id' => $loc->location_id,
-                        'review_site_id' => 1, // facebook = 1
+                        'review_site_id' => \Vokuro\Models\Location::TYPE_FACEBOOK,
                         'external_id' => $facebook_page_id,
                         'date_created' => date('Y-m-d H:i:s'),
                         'is_on' => 1,
@@ -886,7 +886,7 @@ class SessionController extends ControllerBase {
                             if (isset($returnBusinessName) && $returnBusinessName != '') {
 
                                 //check to see if this location is already in the database, by checking the place id
-                                $conditions = "api_id = :api_id: AND review_site_id = 3";
+                                $conditions = "api_id = :api_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
                                 $parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
                                 // Skip duplicate check if we're dev environment.
                                 $SkipCheck = $this->config->application->environment == 'dev' ? true : false;

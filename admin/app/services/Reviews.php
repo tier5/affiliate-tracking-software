@@ -54,11 +54,11 @@
 
         public function setGoogleRefreshToken($refresh_token, $LocationID) {
             return;
-            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
+            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
             if (!$objLocation) {
                 $objLocation = new \Vokuro\Models\LocationReviewSite();
                 $objLocation->location_id = $LocationID;
-                $objLocation->review_site_id = 3;
+                $objLocation->review_site_id = \Vokuro\Models\Location::TYPE_GOOGLE;
             }
 
             $objLocation->json_access_token = json_encode($refresh_token);
@@ -66,25 +66,58 @@
         }
 
         public function getGoogleRefreshToken($LocationID) {
-            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
+            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
             return $objLocation->json_access_token;
         }
 
         public function getGoogleAccessToken($LocationID) {
-            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
+            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
             return $objLocation->json_access_token;
         }
 
         public function setGoogleAccessToken($access_token, $LocationID) {
-            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
+            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
             if (!$objLocation) {
                 $objLocation = new \Vokuro\Models\LocationReviewSite();
                 $objLocation->location_id = $LocationID;
-                $objLocation->review_site_id = 3;
+                $objLocation->review_site_id = \Vokuro\Models\Location::TYPE_GOOGLE;
             }
 
             $objLocation->json_access_token = json_encode($access_token);
             $objLocation->save();
+        }
+
+        public function getGoogleMyBusinessLocations($LocationID) {
+            $client = $this->getGoogleClient($LocationID);
+
+            try {
+                $client->setAccessToken($this->getGoogleAccessToken($LocationID));
+            } catch (\Exception $e) {
+                echo $e->getMessage();
+                exit();
+            }
+
+            $myBusiness = new \Google_Service_Mybusiness($client);
+            $accounts = $myBusiness->accounts->listAccounts()->getAccounts();
+
+            $tobjBusinesses = [];
+            if ($accounts) {
+                foreach ($accounts as $account) {
+                    $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
+                    if ($locations) {
+                        foreach ($locations as $location) {
+                            $objBusiness = new \stdClass();
+                            $objBusiness->name = $location->locationName;
+                            $objBusiness->type = 'Google';
+                            $objBusiness->id = $location->locationKey->placeId;
+                            $objBusiness->mapsUrl = $location->metadata->mapsUrl;
+                            $tobjBusinesses[] = $objBusiness;
+
+                        }
+                    }
+                }
+            }
+            return $tobjBusinesses;
         }
 
         public function importGoogleMyBusinessReviews($LocationID) {
@@ -95,71 +128,85 @@
             try {
                 $client->setAccessToken($this->getGoogleAccessToken($LocationID));
             } catch (\Exception $e) {
-                $this->flash->error("Please reconnect your google my business account.  Your token has expired.");
                 return $this->response->redirect("/location/edit/{$LocationID}");
                 exit();
             }
 
+
+
             $myBusiness = new \Google_Service_Mybusiness($client);
             $accounts = $myBusiness->accounts->listAccounts()->getAccounts();
-            if ($accounts) foreach ($accounts as $account) {
-                /**
-                 * @var $account \Google_Service_Mybusiness_Account
-                 */
-                $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
-                if ($locations) foreach ($locations as $location) {
+            if ($accounts) {
+                foreach ($accounts as $account) {
                     /**
-                     * @var $location \Google_Service_Mybusiness_Location
+                     * @var $account \Google_Service_Mybusiness_Account
                      */
-                    $lr = $myBusiness->accounts_locations_reviews->listAccountsLocationsReviews($location->name);
-                    $reviews = $lr->getReviews();
-                    $reviewCount = $lr->getTotalReviewCount();
-                    $avg = $lr->getAverageRating();
-                    $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 3");
+                    $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
+                    if ($locations) {
+                        $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
+                        if(!$objLocationReviewSite->external_location_id)
+                            return false;
 
-                    // Seems to be a bug with google not including the average (the field is blank as of 08/31/2016)
-                    $TotalRating = 0;
-                    $TotalReviews = 0;
-
-                    if ($reviews) {
-                        /**
-                         * @var $review \Google_Service_Mybusiness_Review Object
-                         */
-                        foreach ($reviews as $review) {
-                            $TotalReviews++;
-                            /**
-                             * @var $reviewer \Google_Service_Mybusiness_Reviewer
-                             */
-                            $reviewer = $review->getReviewer();
-                            $rating = $review->getStarRating();
-                            $ratings = ['ZERO' => 0, 'ONE' => 1, 'TWO' => 2, 'THREE' => 3, 'FOUR' => 4, 'FIVE' => 5];
-                            $rating = $ratings[$rating];
-                            $TotalRating += $rating;
-                            $review_id = str_replace('/reviews', '', $review->getReviewId());
-
-                            try {
-                                $arr = [
-                                    'rating_type_id' => 3,
-                                    'review_text' => $review->comment,
-                                    'rating_type_review_id' => $review_id,
-                                    'external_id' => $review_id,
-                                    'rating' => $rating,
-                                    'location_id' => $LocationID,
-                                    'time_created' => $review['createTime'],
-                                    'user_id' => $reviewer->displayName,
-                                    'user_name' => $reviewer->displayName,
-                                ];
-                                $reviewService->saveReviewFromData($arr);
-
-                            } catch (Exception $e) {
+                        foreach ($locations as $location) {
+                            if($location->locationKey->placeId != $objLocationReviewSite->external_location_id)
                                 continue;
+
+                            /**
+                             * @var $location \Google_Service_Mybusiness_Location
+                             */
+                            $lr = $myBusiness->accounts_locations_reviews->listAccountsLocationsReviews($location->name);
+                            $reviews = $lr->getReviews();
+                            $reviewCount = $lr->getTotalReviewCount();
+                            $avg = $lr->getAverageRating();
+
+                            // Seems to be a bug with google not including the average (the field is blank as of 08/31/2016)
+                            $TotalRating = 0;
+                            $TotalReviews = 0;
+
+                            if ($reviews) {
+                                /**
+                                 * @var $review \Google_Service_Mybusiness_Review Object
+                                 */
+                                foreach ($reviews as $review) {
+                                    $TotalReviews++;
+                                    /**
+                                     * @var $reviewer \Google_Service_Mybusiness_Reviewer
+                                     */
+                                    $reviewer = $review->getReviewer();
+                                    $rating = $review->getStarRating();
+                                    $ratings = ['ZERO' => 0, 'ONE' => 1, 'TWO' => 2, 'THREE' => 3, 'FOUR' => 4, 'FIVE' => 5];
+                                    $rating = $ratings[$rating];
+                                    echo $rating . ' - ';
+                                    $TotalRating += $rating;
+                                    $review_id = str_replace('/reviews', '', $review->getReviewId());
+
+                                    try {
+                                        $arr = [
+                                            'rating_type_id' => 3,
+                                            'review_text' => $review->comment,
+                                            'rating_type_review_id' => $review_id,
+                                            'external_id' => $review_id,
+                                            'rating' => $rating,
+                                            'location_id' => $LocationID,
+                                            'time_created' => $review['createTime'],
+                                            'user_id' => $reviewer->displayName,
+                                            'user_name' => $reviewer->displayName,
+                                        ];
+                                        $reviewService->saveReviewFromData($arr);
+
+                                    } catch (Exception $e) {
+                                        continue;
+                                    }
+                                }
                             }
+                            $dbReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
+                            $objLocationReviewSite->review_count = count($dbReviews);
+                            $objLocationReviewSite->rating = $TotalReviews > 0 ? $TotalRating / $TotalReviews : 0;
+                            echo $objLocationReviewSite->rating;
+                            $objLocationReviewSite->save();
+
                         }
                     }
-                    $dbReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = 3");
-                    $objLocationReviewSite->review_count = count($dbReviews);
-                    $objLocationReviewSite->rating = $TotalReviews > 0 ? $TotalRating / $TotalReviews : 0;
-                    $objLocationReviewSite->save();
                 }
             }
         }
@@ -246,7 +293,7 @@
         public function importFacebook($LocationID) {
             $reviewService = new Reviews();
             $FB = new \Vokuro\Models\FacebookScanning();
-            $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = 2");
+            $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
             if(!$objLocationReviewSite->access_token)
                 return false;
 

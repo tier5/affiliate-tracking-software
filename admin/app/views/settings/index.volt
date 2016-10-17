@@ -174,7 +174,7 @@
                     <?php
                   if (isset($review_site_lists)) {
                   foreach($review_site_lists as $review_site_list) {
-                  if ($review_site_list->review_site_id == 1) $has_facebook = true;
+                  if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
                     ?>
                     <li class="ui-state-default" id='<?=$review_site_list->location_review_site_id?>'>
                       <span class="site-wrapper">

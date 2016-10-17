@@ -155,7 +155,7 @@ class IndexController extends ControllerBase {
             $original_yelp_rating = 0;
 
             //look for a yelp review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  2";
+            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             //start with Yelp reviews, if configured
@@ -170,7 +170,7 @@ class IndexController extends ControllerBase {
             }
 
             //look for a google review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  3";
+            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             //start with google reviews, if configured
@@ -185,11 +185,11 @@ class IndexController extends ControllerBase {
             }
 
             //look for a facebook review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  1";
+            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             //start with Facebook reviews, if configured
-            if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
+            if (isset($Obj) && isset($Obj->access_token) && $Obj->access_token) {
                 $this->view->facebook_page_id = $Obj->external_id;
                 $facebook_review_count = $Obj->review_count;
                 $facebook_rating = $Obj->rating;
@@ -355,7 +355,7 @@ class IndexController extends ControllerBase {
             //end getting the sharing code
             //###  START: find review site config info ###
             //look for a yelp review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  2";
+            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             //start with Yelp reviews, if configured
@@ -366,7 +366,7 @@ class IndexController extends ControllerBase {
             }
 
             //look for a google review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  3";
+            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             //start with google reviews, if configured
@@ -377,7 +377,7 @@ class IndexController extends ControllerBase {
             }
 
             //look for a facebook review configuration
-            $conditions = "location_id = :location_id: AND review_site_id =  1";
+            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             //start with Facebook reviews, if configured
