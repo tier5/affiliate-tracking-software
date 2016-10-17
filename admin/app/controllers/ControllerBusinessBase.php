@@ -12,6 +12,130 @@ class ControllerBusinessBase extends ControllerBase {
      * BEGIN BUSINESS COMMON FUNCTIONS
      */
 
+public function editAction($agency_id = 0) {
+    $this->view->agency_id = $agency_id;
+
+    $form = new AgencyForm(null);
+    if ($agency_id) {
+        $age = Agency::findFirst("agency_id = {$agency_id}");
+        if (!$age) {
+            $this->flash->error("The Entity with id:>" . $agency_id . "<:was not found");
+        }
+        $form = new AgencyForm($age);
+    } else {
+      $this->flash->error("The Entity with id:>" . $agency_id . "<:is not valid");
+    }
+
+
+    if ($this->request->isPost()) {
+        $errors = [];
+        $messages = [];
+            $IsEmailUnique = true;
+            $IsEmailValid = true;
+            $IsNameValid = true;
+            // If is agency...
+            if ($agency_id == 0) {
+                $user = new Users();
+                $user->assign(array(
+                'name' => $this->request->getPost('admin_name', 'striptags'),
+                'email' => $this->request->getPost('admin_email'),
+                'profilesId' => 1, //All new users will be "Agency Admin"
+                ));
+                $IsEmailUnique = $user->validation();
+
+                $IsEmailValid = ($this->request->getPost('admin_email') != '');
+                $IsNameValid = ($this->request->getPost('admin_name') != '');
+            }
+            /* Form valid? (Refactored from a maze of "nested ifs".  This is the best I could do on short notice) */
+            $messages = [];
+            if (!$form->isValid($this->request->getPost())) {
+                $messages[] = $form->getMessages();
+            }
+
+            if (count($messages) > 0) {
+               $error = true;
+            }
+
+
+            $db = $this->di->get('db');
+            $db->begin();
+
+            /* Attempt to create our new business */
+            $params = [
+                'agency_id'          => $agency_id,
+                'name'               => $this->request->getPost('name', 'striptags'),
+                'email'              => $this->request->getPost('email', 'striptags'),
+                'address'            => $this->request->getPost('address', 'striptags'),
+                'locality'           => $this->request->getPost('locality', 'striptags'),
+                'state_province'     => $this->request->getPost('state_province', 'striptags'),
+                'postal_code'        => $this->request->getPost('postal_code', 'striptags'),
+                'country'            => ($this->request->getPost('country', 'striptags')) ? $this->request->getPost('country', 'striptags'): 'n/a',
+                'phone'              => $this->request->getPost('phone', 'striptags'),
+                'date_created'       => (isset($age->date_created) ? $age->date_created : date('Y-m-d H:i:s')),
+                'subscription_id'    => $this->request->getPost('subscription_pricing_plan_id', 'striptags'),
+                'deleted'            => (isset($age->deleted) ? $age->deleted : 0),
+                'status'             => (isset($age->status) ? $age->status : 1),
+                'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
+
+            ];
+//print_r($params);
+            if (!$age->createOrUpdateBusiness($params)) {
+               $error = true;
+                foreach($age->getMessages() as $error_message) $errors[] = $error_message;
+            }
+
+            $this->flash->success("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was " . ($agency_id > 0 ? 'edited' : 'created') . " successfully");
+            $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
+            if(!$errors) $db->commit();
+            if($errors) $db->rollback();
+    }
+
+    $identity = $this->getIdentity();
+
+    $tUserIDs = [];
+    // Get all user IDs for agency
+    if($agency_type_id != 1) {
+        // Creating a business
+        // Are we a super user?
+        if($identity['is_admin']) {
+            $dbUsers = \Vokuro\Models\Users::find("is_admin = 1");
+            foreach ($dbUsers as $objUser)
+                $tUserIDs[] = $objUser->id;
+            unset($objUser);
+        } else {
+            $objLoggedInUser = \Vokuro\Models\Users::findFirst("id = " . $identity['id']);
+            $dbUsers = \Vokuro\Models\Users::find("agency_id = " . $objLoggedInUser->agency_id);
+            foreach ($dbUsers as $objUser)
+                $tUserIDs[] = $objUser->id;
+            unset($objUser);
+        }
+    }
+
+    $sub_selected = ($age && isset($age->subscription_id)) ? $age->subscription_id : null;
+    if(!$sub_selected) $sub_selected = 0;
+        $markup = $this->buildSubsriptionPricingPlanMarkUp($sub_selected, $tUserIDs);
+    $this->view->setVar("subscriptionPricingPlans", $markup);
+
+    $this->view->agency = new Agency();
+    $this->view->form = $form;
+
+    if ($agency_id > 0) {
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency_id);
+        $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->agency = $age2;
+    }
+
+    if($errors){
+        dd($errors);
+    }
+
+    if($this->request->isPost() && $this->view->agency) {
+        $this->flash->success('Entity Saved');
+        return $this->response->redirect('/?saved=1');
+    }
+}
+
     /**
      * Creates business / agencies
      */
@@ -20,15 +144,9 @@ class ControllerBusinessBase extends ControllerBase {
         $this->view->agency_id = $agency_id;
 
         $form = new AgencyForm(null);
-        if ($agency_id) {
-            $age = Agency::findFirst("agency_id = {$agency_id}");
-            if (!$age) {
-                $this->flash->error("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was not found");
-            }
-            $form = new AgencyForm($age);
-        } else {
-            $age = new Agency();
-        }
+
+        $age = new Agency();
+
 
 
         if ($this->request->isPost()) {
@@ -92,7 +210,7 @@ class ControllerBusinessBase extends ControllerBase {
                     'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
                     'parent_id'          => $parent_id,
                 ];
-
+print_r($params);
                 if (!$age->createOrUpdateBusiness($params)) {
                    $error = true;
                     foreach($age->getMessages() as $error_message) $errors[] = $error_message;

@@ -377,10 +377,12 @@ class AdmindashboardController extends ControllerBusinessBase {
         return;
     }
 
-    public function editAction($agency_id,$agency_type_id = null){
+    public function editAction($agency_id) {
         if($agency_type_id && !is_numeric($agency_type_id)) throw new \Exception('Invalid agency type provided, expected integer');
         if (!is_numeric($agency_id)) throw new \Exception('Invalid agency id provided, expected integer');
-        $this->createAction($agency_type_id,$agency_id);
+        $Ret =  parent::editAction($agency_id);
+  	    $this->view->pick("admindashboard/edit");
+  	    return $Ret;
     }
 
     /**

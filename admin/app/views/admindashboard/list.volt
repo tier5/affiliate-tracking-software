@@ -7,7 +7,7 @@
 
     <ul class="pager">
         <li class="pull-right">
-            <a href="/admindashboard/create/<?=$agency_type_id?>" class="btn red btn-outline">Create <?=($agency_type_id==1?'Agency':'Business')?></a>
+            <a href="/admindashboard/create/<?=$this->view->agency_type_id?>/<?=$loggedUser->agency_id?>/<?=$agency->parent_id?>" class="btn red btn-outline">Create <?=($agency_type_id==1?'Agency':'Business')?></a>
         </li>
     </ul>
     <?php

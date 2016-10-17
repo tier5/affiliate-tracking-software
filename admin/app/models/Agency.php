@@ -11,7 +11,8 @@
 
     class Agency extends BaseModel {
 
-        public $id;
+        //public $id;
+        public $agency_id;
 
         /**
          * @return mixed
