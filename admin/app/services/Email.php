@@ -79,7 +79,7 @@ class Email{
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
         ];
-        
+
         try {
             $mail = $this->getDI()->getMail();
             $mail->setFrom($EmailFrom);
