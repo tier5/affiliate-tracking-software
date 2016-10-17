@@ -314,13 +314,18 @@ class Auth extends Component {
      * @param Vokuro\Models\Users $user
      */
     public function checkUserFlags(Users $user) {
-        //check to make sure the user matches the agency
-        //echo '<p>$this->view->agency_id:'.$this->view->agency_id.'</p>';
-      //  echo '<p>$this->view->agency_id:'.$user->agency_id.'</p>';
-        if ( (isset($this->view->agency_id)) &&
-             ($this->view->agency_id > 0) &&
-             ($user->agency_id != $this->view->agency_id) &&
-             ($user->agency_id) ) {
+        // I have no idea where the agency_id in the view is getting set so I'm just going to query the db to make this check proper.
+        $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
+        $AgencyID = 0;
+        if($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY)
+            $AgencyID = $objAgency->agency_id;
+        else {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+            $AgencyID = $objParentAgency->agency_id;
+        }
+
+
+        if ($objAgency->parent_id != \Vokuro\Models\Agency::BUSINESS_UNDER_RV && !$user->is_admin && $this->view->agency_id != $AgencyID) {
             throw new Exception('Your account does not belong to this site.');
         }
         if ($user->active != 'Y') {

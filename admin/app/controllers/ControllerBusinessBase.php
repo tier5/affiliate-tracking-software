@@ -186,9 +186,6 @@ public function editAction($agency_id = 0) {
                    $error = true;
                 }
 
-
-
-
                 $db = $this->di->get('db');
                 $db->begin();
 
@@ -219,7 +216,8 @@ print_r($params);
 
                 /* Create an admin for this new agency */
                 $user = new Users();
-                $user->send_confirmation = $this->request->getPost('send_registration_email', 'striptags') === "on " ? true : false;
+                $user->send_confirmation = $this->request->getPost('send_registration_email', 'striptags') === "on" ? true : false;
+
                 $user->assign(array(
                     'name' => $this->request->getPost('admin_name', 'striptags'),
                     'email' => $this->request->getPost('admin_email'),

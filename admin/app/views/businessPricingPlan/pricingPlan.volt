@@ -76,7 +76,7 @@
                                         <label class="control-label">Base Price $</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="base-price-control" type="number" value="{{ basePrice }}" step="0.01" min="0.00" class="form-control" placeholder="0.00">
+                                        <input id="base-price-control" type="number" value="{{ basePrice }}" step="0.01" min="0.00" class="form-control" placeholder="29.00">
                                     </div>
                                 </div>
                             </div>

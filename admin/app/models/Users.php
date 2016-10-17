@@ -159,7 +159,7 @@
          * Send a confirmation e-mail to the user if the account is not active
          */
         public function afterSave() {
-            if($this->is_employee && $this->send_confirmation){
+            if($this->is_employee && $this->send_confirmation && $this->role != 'Super Admin') {
                 $emailConfirmation = new EmailConfirmations();
                 $emailConfirmation->usersId = $this->id;
                 $emailConfirmation->template = 'employee';
@@ -172,8 +172,6 @@
             }
 
             if ($this->active == 'N' && $this->send_confirmation) {
-            //dd('we should send an email');
-
                 $emailConfirmation = new EmailConfirmations();
                 $emailConfirmation->usersId = $this->id;
                 if($emailConfirmation->save()) {

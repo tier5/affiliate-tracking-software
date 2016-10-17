@@ -110,7 +110,7 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->name = $pricingPlan->name;
         $this->view->enableTrialAccount = $pricingPlan->enable_trial_account;
         $this->view->enableDiscountOnUpgrade = $pricingPlan->enable_discount_on_upgrade;
-        $this->view->basePrice = $pricingPlan->base_price;
+        $this->view->basePrice = $pricingPlan->base_prices;
         $this->view->costPerSms = $pricingPlan->cost_per_sms;
         $this->view->maxMessagesOnTrialAccount = $pricingPlan->max_messages_on_trial_account;
         $this->view->upgradeDiscount = $pricingPlan->updgrade_discount;
@@ -149,14 +149,14 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->name = "My New Subscription";
         $this->view->enableTrialAccount = true;
         $this->view->enableDiscountOnUpgrade = true;
-        $this->view->basePrice = "0.00";
-        $this->view->costPerSms = "0.00";
-        $this->view->maxMessagesOnTrialAccount = "10";
-        $this->view->updgradeDiscount = "1";
-        $this->view->chargePerSms = "0.00";
-        $this->view->maxSmsMessages = "100";
+        $this->view->basePrice = "29.00";
+        $this->view->costPerSms = "0.0075";
+        $this->view->maxMessagesOnTrialAccount = "100";
+        $this->view->upgradeDiscount = "10";
+        $this->view->chargePerSms = "0.10";
+        $this->view->maxSmsMessages = "1000";
         $this->view->enableAnnualDiscount = true;
-        $this->view->annualDiscount = "1";
+        $this->view->annualDiscount = "10";
         $this->view->pricingDetails = "";
         $this->view->canEdit = true;
         $this->view->gridEditStatus = "";
@@ -172,15 +172,16 @@ class BusinessPricingPlanController extends ControllerBase {
                 [
                     "min_locations" => $min,
                     "max_locations" => $max,
-                    "base_price" => 0,
-                    "sms_charge" => 0,
-                    "total_price" => 0,
+                    "base_price" => 29,
+                    "sms_charge" => 100,
+                    "total_price" => 129,
                     "location_discount" => 0,
                     "upgrade_discount" => 0,
                     "discount_price" => 0,
                     "sms_messages" => 0,
                     "sms_cost" => 0,
-                    "profit_per_location" => 0
+                    "profit_per_location" => 0,
+                    "location_discount_percentage" => $i * 5
                 ];
         }
         $this->view->progressions = $progressions;
