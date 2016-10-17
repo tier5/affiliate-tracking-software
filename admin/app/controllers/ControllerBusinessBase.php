@@ -144,12 +144,11 @@ public function editAction($agency_id = 0) {
         $this->view->agency_id = $agency_id;
 
         $form = new AgencyForm(null);
-
         $age = new Agency();
 
-
-
         if ($this->request->isPost()) {
+
+
             $errors = [];
             $messages = [];
                 $IsEmailUnique = true;
@@ -207,9 +206,10 @@ public function editAction($agency_id = 0) {
                     'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
                     'parent_id'          => $parent_id,
                 ];
-print_r($params);
+
+
                 if (!$age->createOrUpdateBusiness($params)) {
-                   $error = true;
+                    $error = true;
                     foreach($age->getMessages() as $error_message) $errors[] = $error_message;
                 }
 
@@ -226,19 +226,32 @@ print_r($params);
                     'is_employee' => 1,
                     'role' => 'Super Admin',
                 ));
+
                 if (!$user->save()) {
                     $error = true;
                     foreach ($user->getMessages() as $error_message) $errors[] = $error_message;
                 }
 
-                $result = $this->createSubscriptionPlan($user, $this->request);
-                if($result !== true) {
+                if(!$errors) {
+                  $db->commit();
+                }
+
+                $dbUsers = \Vokuro\Models\Users::find('email = "' .  $this->request->getPost('admin_email') . '"');
+                foreach ($dbUsers as $objUser) {
+                      $newAdmin = $objUser;
+                }
+                unset($objUser);
+
+                $result = $this->createSubscriptionPlan($newAdmin, $this->request);
+                if($result != true) {
                     $this->flash->error($messages);
                 }
-                $this->flash->success("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was " . ($agency_id > 0 ? 'edited' : 'created') . " successfully");
+
+                $this->flash->success("The " . ($age->agency_type_id == 1 ? 'agency' : 'business') . " was created successfully");
                 $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
-                if(!$errors) $db->commit();
+                //if(!$errors) $db->commit();
                 if($errors) $db->rollback();
+
         }
 
         $identity = $this->getIdentity();
@@ -270,12 +283,11 @@ print_r($params);
         $this->view->agency = new Agency();
         $this->view->form = $form;
 
-        if ($agency_id > 0) {
+
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $agency_id);
             $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
             $this->view->agency = $age2;
-        }
 
         if($errors){
             dd($errors);
@@ -283,8 +295,10 @@ print_r($params);
 
         if($this->request->isPost() && $this->view->agency) {
             $this->flash->success('User Saved');
+
             return $this->response->redirect('/?saved=1');
         }
+
     }
 
     /**

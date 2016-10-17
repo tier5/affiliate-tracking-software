@@ -42,6 +42,8 @@ class AdmindashboardController extends ControllerBusinessBase {
      * Default action. Set the public layout (layouts/private.volt)
      */
     public function indexAction() {
+echo "FDS";
+
         $this->tag->setTitle('Review Velocity | Dashboard');
 
 
@@ -288,12 +290,8 @@ class AdmindashboardController extends ControllerBusinessBase {
      * @param int $id
      */
     public function deleteAction($agency_type_id, $agency_id) {
-        $conditions = "agency_id = :agency_id: AND user_id = :user_id:";
-        //
-        //
-        //
-        //
-        $parameters = array("agency_id" => $agency_id,'user_id'=>$this->getUserObject()->id);
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency_id);
 
 
         $age = Agency::findFirst(array($conditions, "bind" => $parameters));
