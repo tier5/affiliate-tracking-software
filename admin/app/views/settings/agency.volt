@@ -224,7 +224,7 @@
                                     <ul id="sortable">
                                         <?php
                 foreach($review_site_list as $rsl) {
-                  if ($rsl->review_site_id == 1) $has_facebook = true;
+                  if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
                                         ?>
                                         <li class="ui-state-default" id='<?=$rsl->location_review_site_id?>'>
                                             <span class="site-wrapper"><img src="<?=$rsl->review_site->icon_path?>" class="imgicon"/> <?=$rsl->

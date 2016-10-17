@@ -324,7 +324,6 @@ class Auth extends Component {
             $AgencyID = $objParentAgency->agency_id;
         }
 
-
         if ($objAgency->parent_id != \Vokuro\Models\Agency::BUSINESS_UNDER_RV && !$user->is_admin && $this->view->agency_id != $AgencyID) {
             throw new Exception('Your account does not belong to this site.');
         }

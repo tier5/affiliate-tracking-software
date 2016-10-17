@@ -31,7 +31,7 @@
                 $rowclass = '';
                 foreach($tobjBusinesses as $objBusiness) { ?>
                     <tr class="review <?=$rowclass?>">
-                        <?php echo "<td><a href=\"/location/pickFacebookBusiness/{$objBusiness->id}/{$LocationID}\">{$objBusiness->name}</a></td>
+                        <?php echo "<td><a href=\"/location/pick{$objBusiness->type}Business/{$objBusiness->id}/{$LocationID}\">{$objBusiness->name}</a></td>
                         "; ?>
                     </tr>
                     <?php } ?>
