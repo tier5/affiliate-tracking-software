@@ -83,13 +83,25 @@
                     <div class="col-md-8">
                         <input
                           class="form-control"
-                          type="number" min="0" value="<?=(!$free_locations) ? 1 : $free_locations ; ?>" placeholder="Number of locations" required name="free_locations" />
+                          type="number"
+                          min="0" 
+                          value="<?=(!$free_locations) ? 1 : $free_locations ;?>"
+                          placeholder="Number of locations"
+                          required name="free_locations"
+                          readonly/>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="sms_messages" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> SMS Messages</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="number" min="0" placeholder="Number of messages" value="<?=$_POST['sms_messages'] ? $_POST['sms_messages'] : 100; ?>" required name="sms_messages" />
+                        <input
+                          class="form-control"
+                          type="number"
+                          min="0"
+                          placeholder="Number of messages"
+                          value="<?=$_POST['sms_messages'] ? $_POST['sms_messages'] : 100; ?>"
+                          required name="sms_messages"
+                          readonly/>
                     </div>
                 </div>
             </div>

@@ -42,7 +42,6 @@ class AdmindashboardController extends ControllerBusinessBase {
      * Default action. Set the public layout (layouts/private.volt)
      */
     public function indexAction() {
-echo "FDS";
 
         $this->tag->setTitle('Review Velocity | Dashboard');
 
@@ -349,7 +348,7 @@ echo "FDS";
             $this->response->redirect('/');
         }catch(\Exception $e){
             $this->flash->error('You cannot login as an inactivated user, or there was an error sudoing as a user');
-            exit('exiting: line '.__LINE__.' of file:'.__FILE__);
+            //exit('exiting: line '.__LINE__.' of file:'.__FILE__);
             $this->response->redirect('/admindashboard');
             return;
         }
