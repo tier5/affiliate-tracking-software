@@ -112,7 +112,6 @@
                             $objBusiness->id = $location->locationKey->placeId;
                             $objBusiness->mapsUrl = $location->metadata->mapsUrl;
                             $tobjBusinesses[] = $objBusiness;
-
                         }
                     }
                 }

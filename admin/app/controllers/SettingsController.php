@@ -301,7 +301,6 @@
          * Updates settings for locations
          */
         public function locationAction() {
-            //echo "locationAction";
             $location_id = $this->getLocationId();
             $userObj = $this->getUserObject();
             // If there is no identity available the user is redirected to index/index
@@ -311,7 +310,6 @@
                 return;
             }
             // Query binding parameters with string placeholders
-            //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
 
             //find the agency
             $conditions = "agency_id = :agency_id:";
@@ -370,28 +368,30 @@
             $Userslocations = UsersLocation::find(array($conditions, "bind" => $parameters));
             $UserslocationsIds =array();
             foreach ($Userslocations as $Userslocation) {
-              array_push($UserslocationsIds,$Userslocation->user_id);
-
+                array_push($UserslocationsIds,$Userslocation->user_id);
             }
 
-            $conditions = "agency_id = :agency_id: AND id IN (" . implode(", ",$UserslocationsIds) . ")";
-            $parameters = array("agency_id" => $userObj->agency_id);
-            $users = Users::find(array($conditions, "bind" => $parameters));
-            $this->view->users = $users;
+            if(count($UserslocationsIds)) {
+                $conditions = "agency_id = :agency_id: AND id IN (" . implode(", ", $UserslocationsIds) . ")";
+                $parameters = array("agency_id" => $userObj->agency_id);
+                $users = Users::find(array($conditions, "bind" => $parameters));
+                $this->view->users = $users;
 
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+                $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
 
-           $agencynotifications = $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                $agencynotifications = $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
 
-            $this->view->agency = $agency;
-            $this->view->location = $location;
 
-            //find the location review sites
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
-            $this->view->review_site_list = $review_site_list;
+                $this->view->agency = $agency;
+                $this->view->location = $location;
+
+                //find the location review sites
+                $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+                $review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
+                $this->view->review_site_list = $review_site_list;
+            }
 
             $this->view->review_sites = ReviewSite::find();
 
@@ -402,7 +402,6 @@
             $this->view->agencyform = new AgencyForm($location, array(
                 'edit' => true
             ));
-
 
             $this->getSMSReport();
             $this->view->pick("settings/index");
