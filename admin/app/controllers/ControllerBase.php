@@ -45,6 +45,15 @@ class ControllerBase extends Controller {
         return $val;
     }
 
+    public function RedirectDomain($Domain) {
+        $PageURL = 'http';
+        if($_SERVER['SERVER_PORT'] === 443)
+            $PageURL .= 's';
+        $PageURL .= "://{$Domain}.getmobilereviews.com/" . $_SERVER['REQUEST_URI'];
+        
+        return $this->redirect($PageURL);
+    }
+
     public function initialize() {
         error_reporting(E_ALL ^ E_NOTICE);
 
@@ -86,8 +95,8 @@ class ControllerBase extends Controller {
             if($agency->parent_id > 0) {
                 // We're a business
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
-                if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $Subdomain != $objParentAgency->custom_domain)
-                    return $this->redirect("http://{$objParentAgency->custom_domain}.getmobilereviews.com");
+                if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $objParentAgency->custom_domain && $Subdomain != $objParentAgency->custom_domain)
+                    return $this->RedirectDomain($objParentAgency->custom_domain);
 
                 $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
@@ -95,8 +104,8 @@ class ControllerBase extends Controller {
                 $this->view->LogoPath = "/img/agency_logos/{$objParentAgency->logo_path}";
             } else {
                 // We're an agency
-                if(!$userObj->is_admin && $this->config->application['env'] == 'prod' && $Subdomain != $objParentAgency->custom_domain)
-                    return $this->redirect("http://{$agency->custom_domain}.getmobilereviews.com");
+                if(!$userObj->is_admin && $this->config->application['env'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
+                    return $this->RedirectDomain($agency->custom_domain);
 
                 $this->view->primary_color = "#2a3644";
                 $this->view->secondary_color = "#2eb82e";
