@@ -46,6 +46,49 @@ class SubscriptionManager extends BaseService {
         return false;
     }
 
+    public function ReachedMaxSMS($BusinessID, $LocationID) {
+        $objSuperAdmin = \Vokuro\Models\Users::findFirst("agency_id = {$BusinessID} and role='Super Admin'");
+        $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
+
+        $start_time = date("Y-m-d", strtotime("first day of this month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+        $sms_sent_this_month = 0;
+        if ($LocationID) {
+            $CurrentCount = \Vokuro\Models\ReviewInvite::count(
+                array(
+                    "column" => "review_invite_id",
+                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = {$LocationID} AND sms_broadcast_id IS NULL",
+                )
+            );
+        } else {
+            return false;
+        }
+
+        if(!$objBusiness->subscription_id)
+            $MaxAllowed = 100;
+        else {
+            $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
+            $MaxAllowed = $objSubscriptionPlan->sms_messages_per_location;
+        }
+
+        return $CurrentCount >= $MaxAllowed;
+    }
+
+    public function ReachedMaxLocations($BusinessID) {
+        $objSuperAdmin = \Vokuro\Models\Users::findFirst("agency_id = {$BusinessID} and role='Super Admin'");
+        $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
+        $dbLocations = \Vokuro\Models\Location::find("agency_id = {$BusinessID}");
+        $CurrentCount = count($dbLocations);
+        if(!$objBusiness->subscription_id)
+            $MaxAllowed = 1;
+        else {
+            $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
+            $MaxAllowed = $objSubscriptionPlan->locations;
+        }
+
+        return $CurrentCount >= $MaxAllowed;
+    }
+
     public function getSubscriptionPricingPlans($tUserIDs = []) {
         if(count($tUserIDs) > 0) {
             return $subscriptionPricingPlans = SubscriptionPricingPlan::query()
@@ -61,7 +104,7 @@ class SubscriptionManager extends BaseService {
         }
     }
 
-    public function getActiveSubscriptionPlans($user_id = null){
+    public function getActiveSubscriptionPlans($user_id = null) {
         $plans = SubscriptionPricingPlan::query()
             ->where('enabled = true');
         if($user_id) $plans->andWhere('user_id = :user_id',['user_id'=>$user_id]);
@@ -69,7 +112,7 @@ class SubscriptionManager extends BaseService {
             return $plans->execute();
     }
 
-    public function getActiveSubscriptionPlan(){
+    public function getActiveSubscriptionPlan() {
         $results = $this->getActiveSubscriptionPlans();
         //if we only have one active.. or the one with the latest id.. then we return that one
         if($results && $results[0]) return $results[0];
