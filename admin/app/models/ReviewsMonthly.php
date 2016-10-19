@@ -56,4 +56,5 @@
             $params = null;
             return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
         }
+
     }
