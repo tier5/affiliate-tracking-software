@@ -7,7 +7,7 @@
                 {{ partial("shared/smsQuota", smsQuotaParams) }}
             {% endif %}
         </div>
-        
+
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <div class="growth-bar transparent pull-right">
@@ -385,7 +385,7 @@
 
         function initSubscriptionParameters() {
             var subscriptionData = getSubscriptionData();
-        
+
             var currentPlanLocations = parseInt(subscriptionData.subscriptionPlan.locations);
             var currentPlanMessages = parseInt(subscriptionData.subscriptionPlan.sms_messages_per_location);
 
@@ -407,22 +407,22 @@
 
             /* Calculate the initial plan value */
             refreshPlanValue();
-            
+
         }
 
         function calculateMonthlyPlanCost() {
-            
+
             /* Calculate the plan value */
             var subscriptionData = getSubscriptionData();
 
             /* Get number of locations and messages  */
             var locations = smsLocationSlider.getValue();
             var messages = smsMessagesSlider.getValue();
-            
-            /* 
-             * Fetch the applicbale ranges for the calculations - we need the maximum values in an ordered sequence 
-             * so we can limit to O(n) complexity and any complex branching. 
-             *  
+
+            /*
+             * Fetch the applicbale ranges for the calculations - we need the maximum values in an ordered sequence
+             * so we can limit to O(n) complexity and any complex branching.
+             *
              */
             var range_maximums = Object.keys(subscriptionData.pricingPlanParameterLists);
 
@@ -430,17 +430,17 @@
             var planCost = 0.00;
             var breakOnNextIteration = false;
             for (var i = 0; i < range_maximums.length; i++) {
-            
-                /* 
-                 * Charge the next batch of locations, based on the current range, 
+
+                /*
+                 * Charge the next batch of locations, based on the current range,
                  * and add it to the total
                  */
                 var parameterList = subscriptionData.pricingPlanParameterLists[range_maximums[i]];
                 var nextBatchOfLocations = (parameterList.max_locations - parameterList.min_locations + 1);
-                
-                if ((locations - nextBatchOfLocations) <= 0) {  
+
+                if ((locations - nextBatchOfLocations) <= 0) {
                     nextBatchOfLocations = locations;
-                    breakOnNextIteration = true; 
+                    breakOnNextIteration = true;
                 } else {
                     locations -= nextBatchOfLocations;
                 }
@@ -449,38 +449,38 @@
 
                 var cost = parseFloat(nextBatchOfLocations * parameterList.base_price + nextBatchOfLocations * messages * parameterList.sms_charge / 100);
                 cost *= ((100 - parseFloat(parameterList.location_discount_percentage)) * 0.01);
-                        
+
                 planCost += cost;
-                
+
                 if(breakOnNextIteration) {
                     console.log(planCost);
                     break;
                 }
-               
+
             }
-            
+
             return planCost;
         }
-        
+
         function applyAnnualDiscount(monthlyPlanCost) {
             /*
              * If the yearly plan is selected, calculate the current plan cost over 12 months, apply the annual
-             * discount, and divide by 12 to get the monthly payment. 
-             * 
+             * discount, and divide by 12 to get the monthly payment.
+             *
              */
             var subscriptionData = getSubscriptionData();
 
             return Math.round(monthlyPlanCost * ((100 - parseFloat(subscriptionData.pricingPlan.annual_discount)) * 0.01));
         }
-        
+
         function refreshPlanValue() {
-            
+
             /* Get elements */
             var priceDisplay = document.getElementById("change-plan-final-price");
             var modalPriceDisplay = document.getElementById("modal-price");
 
             var monthlyPlanCost = calculateMonthlyPlanCost();
-            
+
             var planType = $("#plan-type > button.active").text();
             if (planType === 'Annually') {
                 monthlyPlanCost = applyAnnualDiscount(monthlyPlanCost);
@@ -489,10 +489,10 @@
             } else {
                 $('#paid-annually-caption').hide();
             }
-            
-            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
+
+            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(0));
             $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
-            
+
         };
 
         function getSubscriptionParams() {
@@ -579,7 +579,7 @@
         smsLocationSlider.on('change', function (values) {
             updateLargeCaption(values.newValue, maxLocations);
             refreshPlanValue();
-            
+
             if (values.newValue > maxLocations) {
                 values.newValue = maxLocations + '+';
             }
@@ -596,12 +596,12 @@
             $('#change-plan-messages').text(values.newValue);
             $('#slider-messages').text(values.newValue);
             $('#modal-messages').text(values.newValue);
-            
+
         });
 
         $('.subscription-toggle').click(function () {
             $(this).find('.btn').toggleClass('active');
-            
+
             if ($(this).find('.btn-primary').size() > 0) {
                 $(this).find('.btn').toggleClass('btn-primary');
             }
@@ -610,7 +610,7 @@
 
             refreshPlanValue();
         });
-        
+
         $('#submit-change-plan-btn').click(function () {
             changePlan();
         });
