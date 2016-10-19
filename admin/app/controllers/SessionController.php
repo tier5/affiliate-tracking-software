@@ -953,7 +953,7 @@ class SessionController extends ControllerBase {
         $message = $_GET['body'];
         $name = $_GET['name'];
         $cell_phone = $_GET['cell_phone'];
-        $id = $_GET['id'];
+        $id = intval($_GET['id']);
         $this->checkIntegerOrThrowException($id);
         $message = str_replace("%7D", "}", $message);
         $message = str_replace("%7B", "{", $message);
