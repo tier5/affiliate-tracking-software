@@ -86,9 +86,9 @@ class ControllerBase extends Controller {
             if($agency->parent_id > 0) {
                 // We're a business
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
-                if(!$userObj->is_admin && $this->config->application['env'] == 'prod' && $Subdomain != $objParentAgency->custom_domain)
+                if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $Subdomain != $objParentAgency->custom_domain)
                     return $this->redirect("http://{$objParentAgency->custom_domain}.getmobilereviews.com");
-                
+
                 $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
                 $this->view->objParentAgency = $objParentAgency;
