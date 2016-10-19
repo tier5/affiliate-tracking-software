@@ -33,12 +33,19 @@
             <div class="form-group">
                 <label for="profilesId" class="col-md-2 control-label">Role:</label>
                 <div class="col-md-4">
-
+  <?=print_r($_POST);?><?=print_r($_GET);?>
                     <select name="type" id="role" id="type" class="form-control" style="width: 100%;">
-                        <?php $Selected = $_POST['type'] == 'Admin' ? 'selected' : ''; ?>
-                        <option value="Admin" {{ Selected }}>Admin</option>
-                        <?php $Selected = $_POST['type'] == 'User' ? 'selected' : ''; ?>
-                        <option value="User" {{ Selected }}>User</option>
+                    <?php
+if ($_POST) {
+  $AdminSelected = $_POST['type'] == 'Admin' ? 'selected' : '';
+  $UserSelected = $_POST['type'] == 'User' ? 'selected' : '';
+} else {
+  $UserSelected = $_GET['create_employee'] == '1' ? 'selected' : '';
+}
+        ?>                
+
+                         <option value="Admin" {{ AdminSelected }}>Admin</option>
+                         <option value="User" {{ UserSelected }}>User</option>
                     </select>
                 </div>
             </div>
@@ -65,8 +72,8 @@
             }
             ?>
                         <div class="location-data">
-                            <input type="checkbox" name="locations[]" value="all" <?=($checked?'checked="checked"':'')?>
-                            /> All
+                            <input type="hidden" type="checkbox" name="locations[]" value="all" <?=($checked?'checked="checked"':'')?>
+                            />
                         </div>
                         <?php
           }
