@@ -80,13 +80,24 @@ class ControllerBase extends Controller {
 
             }
 
+            $SD_Parts = explode('.', $_SERVER['HTTP_HOST']);
+            $Subdomain = $SD_Parts[0];
+
             if($agency->parent_id > 0) {
+                // We're a business
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+                if(!$userObj->is_admin && $this->config->application['env'] == 'prod' && $Subdomain != $objParentAgency->custom_domain)
+                    return $this->redirect("http://{$objParentAgency->custom_domain}.getmobilereviews.com");
+                
                 $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
                 $this->view->objParentAgency = $objParentAgency;
                 $this->view->LogoPath = "/img/agency_logos/{$objParentAgency->logo_path}";
             } else {
+                // We're an agency
+                if(!$userObj->is_admin && $this->config->application['env'] == 'prod' && $Subdomain != $objParentAgency->custom_domain)
+                    return $this->redirect("http://{$agency->custom_domain}.getmobilereviews.com");
+
                 $this->view->primary_color = "#2a3644";
                 $this->view->secondary_color = "#2eb82e";
                 $this->view->objParentAgency = null;
