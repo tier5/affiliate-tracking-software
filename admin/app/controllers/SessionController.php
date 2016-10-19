@@ -19,6 +19,8 @@ use Vokuro\Models\Location;
 use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\ResetPasswords;
 use Vokuro\Models\Users;
+use Vokuro\Models\EmailConfirmations;
+
 /**
  * Controller used handle non-authenticated session actions like login/logout, user signup, and forgotten passwords
  */
@@ -762,6 +764,7 @@ class SessionController extends ControllerBase {
      * Shows the forgot password form
      */
     public function forgotPasswordAction() {
+
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Review Velocity | Forgot password');
         $form = new ForgotPasswordForm();
@@ -776,14 +779,21 @@ class SessionController extends ControllerBase {
                 if (!$user) {
                     $this->flash->success('There is no account associated with this email');
                 } else {
-                    $resetPassword = new ResetPasswords();
-                    $resetPassword->usersId = $user->id;
-                    if ($resetPassword->save()) {
-                        $this->flash->success('Success! Please check your messages for an email reset password');
+                    if ($user->active == 'N') {
+                      $email = new \Vokuro\Services\Email();
+                      $email->sendActivationEmailByUserId($user->id);
+                      $this->flash->success('Success! Please check your messages for a confirmation email');
+
                     } else {
-                        foreach ($resetPassword->getMessages() as $message) {
-                            $this->flash->error($message);
-                        }
+                      $resetPassword = new ResetPasswords();
+                      $resetPassword->usersId = $user->id;
+                      if ($resetPassword->save()) {
+                          $this->flash->success('Success! Please check your messages for an email reset password');
+                      } else {
+                          foreach ($resetPassword->getMessages() as $message) {
+                              $this->flash->error($message);
+                          }
+                      }
                     }
                 }
             }
