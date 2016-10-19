@@ -317,7 +317,7 @@
     $TickDivText = '';
     $Ticks = [];
     // Gonna split the slider in 10 ticks.
-    for($c = 1 ; $c < (int)$MaxSMS ; $c += round($MaxSMS / 10)) {
+    for($c = 0 ; $c < (int)$MaxSMS ; $c += round($MaxSMS / 10)) {
         $TickDivText .= "'<div>$c</div><div class=\"tick-marker\">|</div>',";
          $Ticks[] = $c;
      }
@@ -354,6 +354,7 @@
                             /*if (data.status !== true) {
                                 alert("Update card failed!!!")
                             }*/
+                            //console.log(data);
                             window.location.reload();
                         })
                         .fail(function () {
@@ -445,15 +446,13 @@
                     locations -= nextBatchOfLocations;
                 }
 
-                //console.log(parameterList);
-
-                var cost = parseFloat(nextBatchOfLocations * parameterList.base_price + nextBatchOfLocations * messages * parameterList.sms_charge / 100);
+                var cost = parseFloat(nextBatchOfLocations * parameterList.base_price + nextBatchOfLocations * messages * subscriptionData.pricingPlan.charge_per_sms);
                 cost *= ((100 - parseFloat(parameterList.location_discount_percentage)) * 0.01);
                         
                 planCost += cost;
                 
                 if(breakOnNextIteration) {
-                    console.log(planCost);
+                    //console.log(planCost);
                     break;
                 }
                
@@ -512,7 +511,7 @@
         function changePlan() {
             $.post('/businessSubscription/changePlan', getSubscriptionParams())
                     .done(function (data) {
-                        console.log(data);
+                        //console.log(data);
                         if (data.status === true) {
                             $('#current-locations').text(smsLocationSlider.getValue());
                             $('#current-messages').text(smsMessagesSlider.getValue());
@@ -520,7 +519,7 @@
                             $('#updatePlanModal').modal('show');
                         } else {
                             alert("Change plan failed!!!");
-                            console.log(data);
+                            //console.log(data);
                         }
                     })
                     .fail(function () {})
