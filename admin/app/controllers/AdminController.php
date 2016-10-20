@@ -182,6 +182,7 @@ class AdminController extends ControllerBase {
      * Confirms an e-mail, if the user must change its password then changes it
      */
     public function confirmEmailAction($code) {
+
         $confirmation = \Vokuro\Models\EmailConfirmations::findFirstByCode($code);
 
         if (!$confirmation) {
@@ -192,7 +193,7 @@ class AdminController extends ControllerBase {
             ));
         }
 
-        if ($confirmation->isConfirmed()) {
+        if ($confirmation->isConfirmed() && $confirmation->user->mustChangePassword == 'N')) {
             $this->flash->notice('This account is already activated. You can login.');
             return $this->dispatcher->forward(array(
                         'controller' => 'user',

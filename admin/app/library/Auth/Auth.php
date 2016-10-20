@@ -393,10 +393,14 @@ class Auth extends Component {
         }
 
         $this->checkUserFlags($user);
-
+        $locs = null;
         $locs = $this->getLocationList($user); //set the location list in the identity
-        $location_id = ($locs && $locs[0]) ? $locs[0]->location_id : '';
-        $location_name = ($locs && $locs[0]) ? $locs[0]->name : '';
+        if (isset($locs[0])) {
+          //print_r($locs);
+          $location_id = ($locs && $locs[0]) ? $locs[0]->location_id : '';
+          $location_name = ($locs && $locs[0]) ? $locs[0]->name : '';
+        }
+
         $this->session->set('auth-identity', array(
             'id' => $user->id,
             'name' => $user->name,
