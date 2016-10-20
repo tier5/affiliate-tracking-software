@@ -61,8 +61,8 @@
                     <img src="/img/20-percent-off.gif" id="percentoff" alt="20% Off" />
                     <a href="#"><img src="/img/btn-upgrade-now.gif" id="btnupgradenow" alt="Upgrade Now" /></a>
                     <div class="upgrade-middle">
-                        <div class="upgrade-top">Hey <?=$this->session->get('auth-identity')['name']?>!  Upgrade Your Account Today To Send Unlimited Text Message</div>
-                        <div class="upgrade-bottom">Add unlimited text message so you can send out unlimited feedback request each month.  Save 20% today!</div>
+                        <div class="upgrade-top">Hey <?=$this->session->get('auth-identity')['name']?>!  Upgrade Your Account Today and Boost Results!</div>
+                        <div class="upgrade-bottom">Increasing the number of feedback messages sent each month helps turbo charge your results.</div>
                     </div>
                 </div>
             </div>
