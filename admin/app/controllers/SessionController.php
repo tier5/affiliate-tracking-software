@@ -488,6 +488,7 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
+
         //find the location
         $conditions = "location_id = :location_id:";
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
@@ -510,7 +511,6 @@ class SessionController extends ControllerBase {
                 //increment signup page value
                 $agency->signup_page = 4; //go to the next page
                 $agency->save();
-
                 return $this->response->redirect('/session/signup4/' . ($subscription_id > 0 ? $subscription_id : ''));
             }
         }
@@ -561,7 +561,6 @@ class SessionController extends ControllerBase {
         $conditions = "location_id = :location_id:";
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
         $location = Location::findFirst(array($conditions, "bind" => $parameters));
-
 
         if ($this->request->isPost()) {
             $agency->assign(array(
@@ -648,10 +647,10 @@ class SessionController extends ControllerBase {
         }
 
         if (isset($_GET['q']) && $_GET['q'] == 's') {
+          print_r($_GET);
             $agency->assign(array(
                 'signup_page' => '', //go to the next page
             ));
-
 
             if (!$agency->save()) {
                 $this->flash->error($agency->getMessages());

@@ -222,13 +222,13 @@
                     // This is for handling page reloads.
                     if($file->getTempName()) {
                         if(isset($objAgency->logo_path) && $objAgency->logo_path) {
-                            unlink(__DIR__ . "/../../public/img/agency_logos/" . $this->session->AgencySignup['LogoFilename']);
+                            unlink(__DIR__ . DIRECTORY_SEPARATOR . "..". DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR  . $this->session->AgencySignup['LogoFilename']);
                             $objAgency->logo_path = '';
                             $objAgency->save();
                         }
 
                         $FileName = uniqid('logo') . '.' . $file->getExtension();
-                        file_put_contents(__DIR__ . "/../../public/img/agency_logos/{$FileName}", file_get_contents($file->getTempName()));
+                        file_put_contents(__DIR__ .  DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR . "{$FileName}", file_get_contents($file->getTempName()));
                         $objAgency->logo_path = $FileName;
                         $objAgency->save();
                         $this->view->LogoPath = "/img/agency_logos/{$FileName}";
