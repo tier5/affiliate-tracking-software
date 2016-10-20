@@ -97,8 +97,9 @@ class ControllerBase extends Controller {
             if($agency->parent_id > 0) {
                 // We're a business
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
-                if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $objParentAgency->custom_domain && $Subdomain != $objParentAgency->custom_domain)
-                    return $this->RedirectDomain($objParentAgency->custom_domain);
+                // Commenting this out until we can figure out how to get sessions to last across subdomains.  
+                /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $objParentAgency->custom_domain && $Subdomain != $objParentAgency->custom_domain)
+                    return $this->RedirectDomain($objParentAgency->custom_domain);*/
 
                 $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
@@ -106,8 +107,8 @@ class ControllerBase extends Controller {
                 $this->view->LogoPath = "/img/agency_logos/{$objParentAgency->logo_path}";
             } else {
                 // We're an agency
-                if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
-                    return $this->RedirectDomain($agency->custom_domain);
+                /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
+                    return $this->RedirectDomain($agency->custom_domain);*/
 
                 $this->view->primary_color = "#2a3644";
                 $this->view->secondary_color = "#2eb82e";

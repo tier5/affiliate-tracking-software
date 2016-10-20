@@ -167,7 +167,7 @@
         /**
          * Default index view
          */
-        public function indexAction($DisplayLocationsPopup) {
+        public function indexAction($DisplayLocationsPopup = Null) {
             $this->view->DisplayLocationsPopup = $DisplayLocationsPopup;
 
             //get the user id
