@@ -51,7 +51,7 @@ class ControllerBase extends Controller {
             $PageURL .= 's';
         $PageURL .= "://{$Domain}.getmobilereviews.com/" . $_SERVER['REQUEST_URI'];
         
-        return $this->redirect($PageURL);
+        return $this->response->redirect($PageURL);
     }
 
     public function initialize() {
@@ -104,7 +104,7 @@ class ControllerBase extends Controller {
                 $this->view->LogoPath = "/img/agency_logos/{$objParentAgency->logo_path}";
             } else {
                 // We're an agency
-                if(!$userObj->is_admin && $this->config->application['env'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
+                if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
                     return $this->RedirectDomain($agency->custom_domain);
 
                 $this->view->primary_color = "#2a3644";
