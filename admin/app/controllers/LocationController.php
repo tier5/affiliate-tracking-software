@@ -1093,8 +1093,8 @@
             ));*/
 
             $this->fb = new \Services\Facebook\Facebook(array(
-                'app_id' => '1110236422392790',
-                'app_secret' => '7b602bd7038acd4a30a77f5c85935f6d'
+                'app_id' => '1923583701202687',
+                'app_secret' => '7682cb496e086c19bff195edf300dbae'
             ));
             //check for a code
             if (isset($_GET['code']) && $_GET['code'] != '') {

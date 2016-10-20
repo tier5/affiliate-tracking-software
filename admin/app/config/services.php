@@ -89,6 +89,7 @@ $di->set('modelsMetadata', function () use ($config) {
  * Start the session the first time some component request the session service
  */
 $di->set('session', function () {
+    session_set_cookie_params(0, '/', '.getmobilereviews.com');
     $session = new SessionAdapter();
     $session->start();
     return $session;
