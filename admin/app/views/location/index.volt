@@ -176,4 +176,3 @@ foreach($locs as $location) {
 
 
 </div>
-

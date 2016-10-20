@@ -40,7 +40,7 @@
         public $facebook_access_token;
 
         public function initialize() {
-			
+
             $this->tag->setTitle('Review Velocity | Locations');
             if ($this->session->has('auth-identity')) {
                 $this->view->setTemplateBefore('private');
@@ -149,7 +149,7 @@
         public function yelpurlAction() {
             //yelp web service api call
             $id = $_GET['i'];
-
+//echo $id;
             $yelp = new YelpScanning();
             $yelp->construct();
             $results = $yelp->get_business($id);
@@ -348,6 +348,7 @@
                     //return $this->response->redirect('/location/create2/' . ($loc->location_id > 0 ? $loc->location_id : ''));
                 }
             }
+
 
             $this->view->facebook_access_token = $this->facebook_access_token;
             $this->view->form = new LocationForm(null);
@@ -1092,8 +1093,8 @@
             ));*/
 
             $this->fb = new \Services\Facebook\Facebook(array(
-                'app_id' => '1923583701202687',
-                'app_secret' => '7682cb496e086c19bff195edf300dbae'
+                'app_id' => '1110236422392790',
+                'app_secret' => '7b602bd7038acd4a30a77f5c85935f6d'
             ));
             //check for a code
             if (isset($_GET['code']) && $_GET['code'] != '') {

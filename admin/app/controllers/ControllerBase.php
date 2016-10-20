@@ -37,7 +37,6 @@ class ControllerBase extends Controller {
             var_dump($int);
             throw new \Exception(($message) ? $message : 'Invalid parameter provided, expected integer');
         }
-
     }
 
     public function clean($val){
@@ -50,8 +49,8 @@ class ControllerBase extends Controller {
         if($_SERVER['SERVER_PORT'] === 443)
             $PageURL .= 's';
         $PageURL .= "://{$Domain}.getmobilereviews.com/" . $_SERVER['REQUEST_URI'];
-
-        return $this->redirect($PageURL);
+        
+        return $this->response->redirect($PageURL);
     }
 
     public function initialize() {
@@ -106,8 +105,8 @@ class ControllerBase extends Controller {
                 $this->view->objParentAgency = $objParentAgency;
                 $this->view->LogoPath = "/img/agency_logos/{$objParentAgency->logo_path}";
             } else {
-                // We're an agency or a business under RV.
-                if($agency->parent_id == \Vokuro\Models\Agency::AGENCY && !$userObj->is_admin && $this->config->application['env'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
+                // We're an agency
+                if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
                     return $this->RedirectDomain($agency->custom_domain);
 
                 $this->view->primary_color = "#2a3644";

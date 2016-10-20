@@ -2,11 +2,15 @@
 
 
 <!-- BEGIN FORM -->
-<form class="register-form" id="signup3form" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/location/create2/'.$location_id:'/session/signup3/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block;" enctype="multipart/form-data">
+<form
+  class="register-form"
+  id="signup3form"
+  action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/location/create2/'.$location_id:'/session/signup3/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>"
+  method="post"
+  style="display: block;"
+  enctype="multipart/form-data">
     <h3>Customize Survey</h3>
     <p class="hint">This is the survey your recent customers will see.</p>
-
-
     <ul class="nav nav-tabs">
         <li><a href="#tab_sms" data-toggle="tab"> Text Message Preview </a></li>
         <li class="active"><a href="#tab_survey" data-toggle="tab"> Survey Preview </a></li>
@@ -16,7 +20,15 @@
         <div class="col-md-6 col-sm-6" style="margin-top: 30px;">
             <div class="form-group">
                 <label class="control-label">Business Name:</label>
-                <input class="form-control placeholder-no-fix" type="name" required autocomplete="off" placeholder="Business Name" id="name" name="agency_name" value="<?=(isset($_POST['agency_name'])?$_POST[" agency_name"]:(isset($location->name)?$location->name:''))?>"
+                <input
+                  class="form-control placeholder-no-fix"
+                  type="name"
+                  required
+                  autocomplete="off"
+                  placeholder="Business Name"
+                  id="name"
+                  name="agency_name"
+                  value="<?=(isset($_POST['agency_name'])?$_POST[" agency_name"]:(isset($location->name)?$location->name:''))?>"
                 />
             </div>
 
@@ -29,43 +41,78 @@
                     <span class="help-block" style="">PNG, JPG or GIF</span>
                 </div>
             </div>
-
-            <div class="row"><!--
-      <div class="form-group col-md-6 ">
-        <label class="control-label" for="sms_top_bar">Top Bar:</label>
-        <div class="color-select"><input type="text" id="sms_top_bar" name="sms_top_bar" class="form-control" data-control="hue" value="<?=(isset($_POST['sms_top_bar'])?$_POST["sms_top_bar"]:(isset($location->sms_top_bar)?$location->sms_top_bar:'#454545'))?>" style="margin: 4px;"  /> </div>
-      </div>-->
-                <div class="form-group col-md-6">
-                    <label class="control-label" for="sms_button_color">Button Color:</label>
-                    <div class="color-select">
-                        <input type="text" id="sms_button_color" name="sms_button_color" class="form-control" data-control="hue" value="<?=(isset($_POST['sms_button_color'])?$_POST[" sms_button_color"]:(isset($location->sms_button_color)?$location->sms_button_color:'#454545'))?>"
-                        style="margin: 4px;" />
-                    </div>
+            <div class="row">
+<!--
+<div class="form-group col-md-6 ">
+<label class="control-label" for="sms_top_bar">Top Bar:</label>
+<div class="color-select">
+<input
+type="text"
+id="sms_top_bar"
+name="sms_top_bar"
+class="form-control"
+data-control="hue"
+value="<?=(isset($_POST['sms_top_bar'])?$_POST["sms_top_bar"]:(isset($location->sms_top_bar)?$location->sms_top_bar:'#454545'))?>"
+style="margin: 4px;"
+/>
+</div>
+</div>-->
+              <div class="form-group col-md-6">
+                <label class="control-label" for="sms_button_color">Button Color:</label>
+                <div class="color-select">
+                    <input
+                      type="text"
+                      id="sms_button_color"
+                      name="sms_button_color"
+                      class="form-control"
+                      data-control="hue"
+                      value="<?=(isset($_POST['sms_button_color'])?$_POST[" sms_button_color"]:(isset($location->sms_button_color)?$location->sms_button_color:'#454545'))?>"
+                      style="margin: 4px;"
+                    />
                 </div>
+              </div>
             </div>
 
             <div class="form-group">
-                <label class="control-label">Text Message Preview:</label>
-                <textarea class="form-control placeholder-no-fix" autocomplete="off" name="sms_text_message_default" id="sms_text_message_default"><?=(isset($_POST['sms_text_message_default'])?$_POST["sms_text_message_default"]:(isset($location->
-                    sms_text_message_default)?$location->sms_text_message_default:'{name}, thank you for visiting {business-name} we\'d appreciate your feedback please click the link below.  Thanks! {link}'))?></textarea>
-                <p class="help-block">This is the default content of the text message you send to your customers, the
-                    max characters is 166.</p>
+              <label class="control-label">Text Message Preview:</label>
+              <textarea
+                  class="form-control
+                  placeholder-no-fix"
+                  autocomplete="off"
+                  name="sms_text_message_default"
+                  id="sms_text_message_default"
+                ><?php
+                  if (isset($_POST['sms_text_message_default']))  {
+                    echo $_POST["sms_text_message_default"];
+                  } else {
+                    if ( (isset($location->sms_text_message_default)) ) {
+                      echo $location->sms_text_message_default;
+                    } else {
+                      echo "{name}, thank you for visiting {business-name} we'd appreciate your feedback please click the link below.  Thanks! {link}";
+                    }
+                  }
+                ?></textarea>
+                <p class="help-block">This is the default content of the text message you send to your customers, the max characters is 166.</p>
             </div>
 
             <div class="form-group">
                 <label class="control-label" style="width: 100%;">Send Test Text Message:</label>
-                <input class="form-control placeholder-no-fix" type="name" autocomplete="off" placeholder="Cell Phone" name="cell_phone" id="cell_phone" value="<?=(isset($_POST['cell_phone'])?$_POST[" cell_phone"]:'')?>"
-                style="float: left; width: 40%; margin-right: 15px;" />
+                <input
+                  class="form-control
+                  placeholder-no-fix"
+                  type="name"
+                  autocomplete="off"
+                  placeholder="Cell Phone"
+                  name="cell_phone"
+                  id="cell_phone"
+                  value="<?=(isset($_POST['cell_phone'])?$_POST[" cell_phone"]:'')?>"
+                  style="float: left; width: 40%; margin-right: 15px;"
+                />
                 <a href="#" class="btnLink btnSecondary" id="sendsmslink" style="float: left;line-height: 19px;">Send</a>
             </div>
-
-            <div id="divSMSResults" class="form-group" style="clear: both;">
-
-            </div>
-
-        </div>
-
-        <div class="col-md-6 col-sm-6">
+            <div id="divSMSResults" class="form-group" style="clear: both;"></div>
+          </div>
+          <div class="col-md-6 col-sm-6">
             <div class="tab-content">
 
                 <!-- START Survey Preview  -->
@@ -73,23 +120,20 @@
                     <div class="phone-wrapper">
                         <div class="phone">
                             <div class="phone-content">
-
                                 <div class="review index">
                                     <div class="rounded-wrapper">
                                         <div class="rounded">
                                             <div class="page-logo business-name">
-
                                             </div>
                                             <div class="question">Would You Recommend Us?</div>
                                             <div class="row text-center">
-                                                <a href="#" class="btn-lg btn-recommend">Yes</a></div>
-                                            <div class="row text-center last"><a href="#" class="btn-lg btn-nothanks">No
-                                                    Thanks</a></div>
+                                                <a href="#" class="btn-lg btn-recommend">Yes</a>
+                                            </div>
+                                            <div class="row text-center last"><a href="#" class="btn-lg btn-nothanks">No Thanks</a></div>
                                         </div>
                                         <div class="subtext text-center">Next Step, Write A Review</div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -105,8 +149,7 @@
                                     <img src="/img/phone-sms.png"/>
                                 </div>
                                 <div class="content-top">{name}, thank you for visiting
-                                    <span class="business-name"></span> we'd appreciate your feedback please click the
-                                    link below. Thanks! {link}
+                                    <span class="business-name"></span> we'd appreciate your feedback please click the link below. Thanks! {link}
                                 </div>
                             </div>
                         </div>
@@ -179,6 +222,10 @@
         $(document).ready(function () {
             $('#name').on('keyup paste', namechange);
             $('#sms_text_message_default').on('keyup paste', namechange);
+            $('#sms_text_message_default').click(function() {
+              var activeTab = $('[href=#tab_sms]');
+              activeTab && activeTab.tab('show');
+            });
         });
 
 

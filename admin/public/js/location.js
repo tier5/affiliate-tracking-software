@@ -317,39 +317,41 @@ function findFacebookByURL() {
 function findYelpByURL() {
     $('.yelp-results').html('Searching...');
     var url = document.getElementById("url").value;
+    var e = document.getElementById("locationselect");
+    var location_id = e.options[e.selectedIndex].value;
     var id = getId(url);
+
     var url = "/location/yelpurl?i=" + encodeURIComponent(id);
     var http_request = new XMLHttpRequest();
     http_request.open("GET", url, true);
     http_request.onreadystatechange = function () {
-        var done = 4, ok = 200;
-        if (http_request.readyState == done && http_request.status == ok) {
-            obj = JSON.parse(http_request.responseText);
-            if(obj.error) {
-                $('.yelp-results').html('No match found.');
-                $('.yelpfound').hide();
-                $('.yelpnotfound').show();
-            }
-            else {
-                $.ajax({
-                    url: "/admin/location/updateLocation?location_id=61&yelp_id=" + obj.id,
-                }).done(function (data) {
-                    if(data == "SUCCESS") {
-                        $("#yelpLink").attr("href", 'http://www.yelp.com/biz/' + obj.id);
-                        document.getElementById("yelp_id").value = obj.id;
-                        $('.yelpfound').show();
-                        $('.yelpnotfound').hide();
-                        $('#page-wrapper').hide();
-                        $('.overlay').hide();
-                    } else {
-                        $('.yelp-results').html('No match found.');
-                        $('.yelpfound').hide();
-                        $('.yelpnotfound').show();
-                    }
-                });
-                return true;
-            }
-        }
+      var done = 4, ok = 200;
+      if (http_request.readyState == done && http_request.status == ok) {
+          obj = JSON.parse(http_request.responseText);
+          if (obj.error) {
+              $('.yelp-results').html('No match found.');
+              $('.yelpfound').hide();
+              $('.yelpnotfound').show();
+          } else {
+              $.ajax({
+                  url: "/admin/location/updateLocation?location_id=" + location_id + "&yelp_id=" + obj.id,
+              }).done(function (data) {
+                  if(data == "SUCCESS") {
+                      $("#yelpLink").attr("href", 'http://www.yelp.com/biz/' + obj.id);
+                      document.getElementById("yelp_id").value = obj.id;
+                      $('.yelpfound').show();
+                      $('.yelpnotfound').hide();
+                      $('#page-wrapper').hide();
+                      $('.overlay').hide();
+                  } else {
+                      $('.yelp-results').html('No match found.');
+                      $('.yelpfound').hide();
+                      $('.yelpnotfound').show();
+                  }
+              });
+              return true;
+          }
+       }
     }
     http_request.send(null);
 }
