@@ -33,6 +33,7 @@ class UserControlController extends ControllerBase
      */
     public function confirmEmailAction()
     {
+
         $this->tag->setTitle('Review Velocity | Confirm email');
         $code = $this->dispatcher->getParam('code');
         $email = $this->dispatcher->getParam('email');
@@ -70,12 +71,15 @@ class UserControlController extends ControllerBase
                 'action' => 'index'
             ));
         }
-        if ($confirmation->confirmed == 'Y') {
+
+        if ($confirmation->confirmed == 'Y' && $confirmation->user->mustChangePassword == 'N') {
+
             return $this->dispatcher->forward(array(
                 'controller' => 'session',
                 'action' => 'login',
                 'params'=>['email'=>$email]
             ));
+
         }
 
         $confirmation->confirmed = 'Y';
@@ -85,6 +89,7 @@ class UserControlController extends ControllerBase
         /**
          * Change the confirmation to 'confirmed' and update the user to 'active'
          */
+
         $confirmation->save();
         if (!$confirmation->save()) {
 
@@ -106,6 +111,7 @@ class UserControlController extends ControllerBase
         /**
          * Check if the user must change his/her password
          */
+
         if ($confirmation->user->mustChangePassword == 'Y') {
 
             $this->flash->success('The email was successfully confirmed. Now you must change your password');
