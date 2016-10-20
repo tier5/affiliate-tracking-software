@@ -223,27 +223,29 @@
                                 <div class="col-md-8">
                                     <ul id="sortable">
                                         <?php
-                foreach($review_site_list as $rsl) {
-                  if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
-                                        ?>
-                                        <li class="ui-state-default" id='<?=$rsl->location_review_site_id?>'>
-                                            <span class="site-wrapper"><img src="<?=$rsl->review_site->icon_path?>" class="imgicon"/> <?=$rsl->
-                                                review_site->name?></span>
-                    <span class="review_site-buttons">
-                      <?php if ($rsl->review_site_id <= 3) { ?>
-                        <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/img/icon-eye.gif"/> View</a>
-                        <a class="btnLink" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/img/icon-pencil.png"/> Update Location</a>
-                        <?php } else { ?>
-                        <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/img/icon-eye.gif"/> View</a>
-                        <?php } ?>
-                    </span>
-                    <span class="on-off-buttons">
-                      <a data-id="<?=$rsl->location_review_site_id?>" id="on<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'':'display: none;')?>"><img src="/img/btn_on.gif" class="sort-icon"/></a>
-                      <a data-id="<?=$rsl->location_review_site_id?>" id="off<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'display: none;':'')?>"><img src="/img/btn_off.gif" class="sort-icon"/></a>
-                    </span>
-                                            <img src="/img/btn_sort.gif" class="sort-icon"/>
-                                        </li>
-                                        <?php
+                if (isset($review_site_list)) {
+                  foreach($review_site_list as $rsl) {
+                    if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
+                                          ?>
+                        <li class="ui-state-default" id='<?=$rsl->location_review_site_id?>'>
+                            <span class="site-wrapper"><img src="<?=$rsl->review_site->icon_path?>" class="imgicon"/> <?=$rsl->
+                                review_site->name?></span>
+                      <span class="review_site-buttons">
+                        <?php if ($rsl->review_site_id <= 3) { ?>
+                          <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/img/icon-eye.gif"/> View</a>
+                          <a class="btnLink" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/img/icon-pencil.png"/> Update Location</a>
+                          <?php } else { ?>
+                          <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/img/icon-eye.gif"/> View</a>
+                          <?php } ?>
+                      </span>
+                      <span class="on-off-buttons">
+                        <a data-id="<?=$rsl->location_review_site_id?>" id="on<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'':'display: none;')?>"><img src="/img/btn_on.gif" class="sort-icon"/></a>
+                        <a data-id="<?=$rsl->location_review_site_id?>" id="off<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'display: none;':'')?>"><img src="/img/btn_off.gif" class="sort-icon"/></a>
+                      </span>
+                                              <img src="/img/btn_sort.gif" class="sort-icon"/>
+                                          </li>
+                                          <?php
+                  }
                 }
                 ?>
                                     </ul>
