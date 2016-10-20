@@ -51,6 +51,25 @@ if ($locs) {
           <script async defer
                   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPisblAqZJJ7mGWcORf4FBjNMQKV20J20&signed_in=true&callback=initMapList"></script>
 
+                  <div class="modal fade" id="IncreaseLocations" tabindex="-1" role="dialog" aria-labelledby="increaseLocationsModalLabel">
+        <div class="credit-card-details modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="growth-bar">
+                        <div>Increase Locations</div>
+                    </div>
+                </div>
+                <div class="modal-body center-block">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a href="/businessSubscription" style="text-decoration:none;" ><button type="button" class="btn btn-warning btn-lg center-block">Click here to increase your locations</button></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
 
           <div class="portlet light bordered dashboard-panel">
             <div class="table-header">
@@ -108,6 +127,13 @@ foreach($locs as $location) {
             </div>
             <!-- End .panel -->
 
+            {% if DisplayLocationsPopup %}
+            <script>
+        $(function(){
+                $('#IncreaseLocations').modal('show');
+        });
+    </script>
+    {% endif %}
             <script type="text/javascript">
               jQuery(document).ready(function($){
 

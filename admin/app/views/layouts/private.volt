@@ -145,9 +145,16 @@
         <div class="top-menu">
             <ul class="nav navbar-nav pull-right">
                 {% if not is_admin and agencytype != 'agency' %}
+
+                    {% if ReachedMaxSMS %}
+                    <li class="" id="">
+                        <a href="" onclick="$('#IncreaseSMS').modal('show');" class=""><img src="/img/btn_send_review_invite.png" alt="Send Review Invite"/></a>
+                    </li>
+                    {% else %}
                     <li class="" id="">
                         <a href="#sendreviewinvite" class="fancybox"><img src="/img/btn_send_review_invite.png" alt="Send Review Invite"/></a>
                     </li>
+                    {% endif %}
                 {% endif %}
                 {% if location_id %}
                     {% if locations %}
@@ -431,6 +438,25 @@
     </div>
 {% endif %}
     {% if not is_admin and agencytype != "agency" %}
+         <div class="modal fade" id="IncreaseSMS" tabindex="-1" role="dialog" aria-labelledby="increaseSMSModalLabel">
+        <div class="credit-card-details modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="growth-bar">
+                        <div>Increase SMS</div>
+                    </div>
+                </div>
+                <div class="modal-body center-block">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a href="/businessSubscription" style="text-decoration:none;" ><button type="button" class="btn btn-warning btn-lg center-block">Click here to increase your sms amount</button></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
         {% if location_id %}
             <div id="sendreviewinvite" style="width:400px; display: none; color: #7A7A7A;">
                 <!-- BEGIN SAMPLE FORM PORTLET-->
@@ -448,7 +474,7 @@
                         %}
 
 
-                            {% if num_signed_up %}d
+                            {% if num_signed_up %}
                                 <div class="row" style="margin-bottom: 10px;">
                                     <div class="col-md-12">
                                         <i>You are entitled to {{ total_sms_month }} SMS messages per month. You have
@@ -692,6 +718,7 @@
         });
     }
 </script>
+
 <?php
    if($objAgency->parent_id > 0) {
         $IntercomAPIID = $objParentAgency->intercom_api_id && $objParentAgency->intercom_security_hash ? $objParentAgency->intercom_api_id : '';

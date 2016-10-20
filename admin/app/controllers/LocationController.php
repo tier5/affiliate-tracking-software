@@ -167,7 +167,9 @@
         /**
          * Default index view
          */
-        public function indexAction() {
+        public function indexAction($DisplayLocationsPopup) {
+            $this->view->DisplayLocationsPopup = $DisplayLocationsPopup;
+
             //get the user id
             $identity = $this->auth->getIdentity();
             // If there is no identity available the user is redirected to index/index
@@ -234,8 +236,7 @@
         /**
          * Creates a Location
          */
-        public function createAction() {
-
+        public function createAction($DisplayLocationsPopup = false) {
             //add needed css
             $this->assets
                 ->addCss('css/main.css')
@@ -243,7 +244,7 @@
 
             //get the user id, to find the settings
             $identity = $this->auth->getIdentity();
-            //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
+
             // If there is no identity available the user is redirected to index/index
             if (!is_array($identity)) {
                 $this->response->redirect('/session/login?return=/location/create');
@@ -276,6 +277,14 @@
                     $conditions, "bind" => $parameters
                 )
             );
+
+            $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+            if($objSubscriptionManager->ReachedMaxLocations($userObj->agency_id)) {
+                return $this->response->redirect('/location/index/1');
+            }
+
+            $dbLocations = \Vokuro\Models\Location::find('agency_id = ' . $userObj->agency_id);
+
 
             if ($this->request->isPost()) {
                 $loc = new Location();
@@ -1084,8 +1093,8 @@
             ));*/
 
             $this->fb = new \Services\Facebook\Facebook(array(
-                'app_id' => '1923583701202687',
-                'app_secret' => '7682cb496e086c19bff195edf300dbae'
+                'app_id' => '1110236422392790',
+                'app_secret' => '7b602bd7038acd4a30a77f5c85935f6d'
             ));
             //check for a code
             if (isset($_GET['code']) && $_GET['code'] != '') {

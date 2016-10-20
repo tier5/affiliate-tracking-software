@@ -37,7 +37,6 @@ class ControllerBase extends Controller {
             var_dump($int);
             throw new \Exception(($message) ? $message : 'Invalid parameter provided, expected integer');
         }
-
     }
 
     public function clean($val){
@@ -51,7 +50,7 @@ class ControllerBase extends Controller {
             $PageURL .= 's';
         $PageURL .= "://{$Domain}.getmobilereviews.com/" . $_SERVER['REQUEST_URI'];
         
-        return $this->redirect($PageURL);
+        return $this->response->redirect($PageURL);
     }
 
     public function initialize() {
@@ -92,6 +91,9 @@ class ControllerBase extends Controller {
             $SD_Parts = explode('.', $_SERVER['HTTP_HOST']);
             $Subdomain = $SD_Parts[0];
 
+            $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+            $this->view->ReachedMaxSMS = $objSubscriptionManager->ReachedMaxSMS($agency->agency_id, $this->session->get('auth-identity')['location_id']);
+
             if($agency->parent_id > 0) {
                 // We're a business
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
@@ -104,7 +106,7 @@ class ControllerBase extends Controller {
                 $this->view->LogoPath = "/img/agency_logos/{$objParentAgency->logo_path}";
             } else {
                 // We're an agency
-                if(!$userObj->is_admin && $this->config->application['env'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
+                if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
                     return $this->RedirectDomain($agency->custom_domain);
 
                 $this->view->primary_color = "#2a3644";
