@@ -37,7 +37,8 @@
         }
 
         public function getGoogleClient($LocationID) {
-            $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . "/location/googlemybusiness";
+            $Domain = $this->config->application['environment'] == 'dev' ? $_SERVER['HTTP_HOST'] : 'getmobilereviews.com';
+            $redirect_uri = "http://{$Domain}/location/googlemybusiness";
 
             $client = new \Google_Client();
             $client->setApplicationName(APPLICATION_NAME);
