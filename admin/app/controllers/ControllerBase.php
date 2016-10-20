@@ -97,7 +97,7 @@ class ControllerBase extends Controller {
             if($agency->parent_id > 0) {
                 // We're a business
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
-                // Commenting this out until we can figure out how to get sessions to last across subdomains.  
+                // Commenting this out until we can figure out how to get sessions to last across subdomains.
                 /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $objParentAgency->custom_domain && $Subdomain != $objParentAgency->custom_domain)
                     return $this->RedirectDomain($objParentAgency->custom_domain);*/
 

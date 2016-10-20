@@ -366,6 +366,8 @@ class AdmindashboardController extends ControllerBusinessBase {
                 // All agencies should have a custom_domain, but I don't want the site breaking in the event that they don't for some weird reason.
                 $RedirectUrl = $objAgency->custom_domain ? 'http://' . $objAgency->custom_domain . '.getmobilereviews.com/' : '/';
             }
+            // GARY_TODO:  Temporarily not using custom_domain due to session problem
+            $RedirectUrl = '/';
         }
 
 
