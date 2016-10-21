@@ -105,6 +105,10 @@
                 margin-top:-95px;
                 padding-top:75px;
             }
+
+            .icon-settings {
+                color: #6b788b !important;
+            }
         </style>
     {% endif %}
     <style type="text/css">
