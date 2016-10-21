@@ -35,7 +35,7 @@
                                         <th>Subscription Type</th>
                                         <th>Active/Inactive</th>
                                         <th>Pricing Page</th>
-                                        <th class="hide-small">Free Sign Up Link</th>
+                                        <th class="hide-small">Sign Up Link</th>
                                         <th>Edit</th>
                                         <th class="hide-small">Delete</th>
                                     </tr>

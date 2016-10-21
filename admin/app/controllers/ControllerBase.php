@@ -151,11 +151,6 @@ class ControllerBase extends Controller {
                 if (!$objParentAgency->stripe_publishable_keys || !$objParentAgency->stripe_account_secret)
                     $this->view->BusinessDisableBecauseOfStripe = true;
                 else {
-                    // Ask for credit information only if there is no subscription or customer_id.  GARY_TODO:  Probalby should be done in cron script.  Remove customer_id if invalid.
-                    if((!$objStripeSubscription || !$objStripeSubscription->stripe_customer_id || !$objPricingPlan->enable_trial_account))
-                        $this->view->ccInfoRequired = "open";
-                    else
-                        $this->view->ccInfoRequired = "closed";
                     $this->view->stripePublishableKey = $objParentAgency->stripe_publishable_keys;
                 }
             }

@@ -32,9 +32,13 @@ class SubscriptionManager extends BaseService {
         $subscriptionPlan = $this->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
         $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
 
-        if (!$payment_plan || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE || $payment_plan == ServicesConsts::$PAYMENT_PLAN_TRIAL) {
+
+
+        // GARY_TODO:  Somehow all payment_plans are getting started at Monthly.
+        if (!$payment_plan || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE || $payment_plan == ServicesConsts::$PAYMENT_PLAN_TRIAL || $subscriptionPlan['pricing_plan']['enable_trial_account']) {
             return false;
         }
+
 
         $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
         $paymentProfile = $paymentService->getPaymentProfile([ 'userId' => $objSuperUser->id, 'provider' => $provider ]);
@@ -64,11 +68,20 @@ class SubscriptionManager extends BaseService {
             return false;
         }
 
-        if(!$objBusiness->subscription_id)
+        if(!$objBusiness->subscription_id) {
+            // This mean plan is "Unpaid"
             $MaxAllowed = 100;
+        }
         else {
             $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
-            $MaxAllowed = $objSubscriptionPlan->sms_messages_per_location;
+            if($objSubscriptionPlan) {
+                // We are a paid member, get subscription details.
+                $MaxAllowed = $objSubscriptionPlan->sms_messages_per_location;
+            } else {
+                // We're in a trial state, use trial numbers
+                $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("id = {$objBusiness->subscription_id}");
+                $MaxAllowed = $objSubscriptionPricingPlan->max_messages_on_trial_account;
+            }
         }
 
         return $CurrentCount >= $MaxAllowed;

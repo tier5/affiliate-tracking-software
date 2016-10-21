@@ -96,6 +96,7 @@ class BusinessSubscriptionController extends ControllerBase {
         $this->view->subscriptionPlanData = $subscriptionPlanData;
 
         switch($this->view->subscriptionPlanData['subscriptionPlan']['payment_plan']) {
+            // GARY_TODO:  Pretty sure this doesn't work the way it was supposed to due to handoff from Michael.
             case ServicesConsts::$PAYMENT_PLAN_TRIAL :
                 $this->view->paymentPlan = "TRIAL";
                 break;
@@ -111,7 +112,7 @@ class BusinessSubscriptionController extends ControllerBase {
                 break;
             default:
                 // No subscription currently in use.
-                $this->view->paymentPlan = "UNPAID";
+                $this->view->paymentPlan = $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? "TRIAL" : "UNPAID";
                 break;
         }
 

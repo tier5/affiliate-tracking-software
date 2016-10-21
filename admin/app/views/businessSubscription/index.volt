@@ -392,7 +392,7 @@
 
             /* Slider initializations */
             smsLocationSlider.setValue(currentPlanLocations, true, true);
-            smsMessagesSlider.setValue(currentPlanMessages, true, true);
+            smsMessagesSlider.setValue(currentPlanMessages ? currentPlanMessages : 100, true, true);
 
             /* Message init */
             $('#current-locations').text(smsLocationSlider.getValue());

@@ -81,24 +81,26 @@
         <div class="menu-toggler sidebar-toggler"></div>
         <!-- END SIDEBAR TOGGLER BUTTON -->
         <!-- BEGIN LOGIN -->
-
         <?php if(!(strpos($_SERVER['REQUEST_URI'],'thankyou')>0 || strpos($_SERVER['REQUEST_URI'],'signup')>0) ||
         strpos($_SERVER['REQUEST_URI'],'login')>0) { ?>
-        <!-- BEGIN LOGO -->
-        <div class="logo">
-            <a href="/"><img src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/img/logo-gray.gif')?>" alt="" /></a>
-        </div>
-        <!-- END LOGO -->
+
+            <?php if(strpos($_SERVER['REQUEST_URI'], 'invite') === false) { ?>
+                <!-- BEGIN LOGO -->
+                <div class="logo">
+                    <a href="/"><img style="max-width: 625px;" src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/img/logo-gray.gif')?>" alt="" /></a>
+                </div>
+                <!-- END LOGO -->
+            <?php } ?>
+
         <?php } ?>
         {{ content() }}
-
         <?php if((strpos($_SERVER['REQUEST_URI'],'thankyou')>0 || strpos($_SERVER['REQUEST_URI'],'signup')>0) &&
-        !(strpos($_SERVER['REQUEST_URI'],'login')>0)) { ?>
-        <!-- BEGIN LOGO -->
-        <div class="logo">
-            <a href="/"><img src="<?=(isset($logo_setting) && $logo_setting != ''? $logo_setting:'/img/logo-gray.gif')?>" alt="" /></a>
-        </div>
-        <!-- END LOGO -->
+        !(strpos($_SERVER['REQUEST_URI'],'login')>0) || strpos($_SERVER['REQUEST_URI'], 'invite') !== false) { ?>
+            <!-- BEGIN LOGO -->
+            <div class="logo">
+                <a href="/"><img style="max-width: 625px;" src="<?=(isset($logo_setting) && $logo_setting != ''? $logo_setting:'/img/logo-gray.gif')?>" alt="" /></a>
+            </div>
+            <!-- END LOGO -->
         <?php } ?>
         <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. {{ (agency_name) ? agency_name : 'Review Velocity' }} <a href="/session/privacy">Privacy</a> | <a href="/session/terms">Terms</a></div>
         <!--[if lt IE 9]>
