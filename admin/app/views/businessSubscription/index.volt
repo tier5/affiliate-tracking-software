@@ -518,8 +518,7 @@
                             $('.subscription-panel-large-caption').text("PAID");
                             $('#updatePlanModal').modal('show');
                         } else {
-                            alert("Change plan failed!!!");
-                            //console.log(data);
+                            alert('Change plan failed - ' + data.error);
                         }
                     })
                     .fail(function () {})

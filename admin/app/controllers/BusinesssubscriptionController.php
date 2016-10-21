@@ -286,6 +286,29 @@ class BusinessSubscriptionController extends ControllerBase {
             if(!$objSubscriptionPlan)
                 $objSubscriptionPlan = new \Vokuro\Models\BusinessSubscriptionPlan();
 
+            // Current location count
+            $dbLocations = \Vokuro\Models\Location::find("agency_id = {$objAgency->agency_id}");
+            if(count($dbLocations) > $this->request->getPost('locations', 'striptags'))
+                throw new \Exception('New location count (' . $this->request->getPost('locations', 'striptags') . ') is lower than current number of locations (' . count($dbLocations) . ')');
+
+            $sms_sent_this_month = 0;
+            if(count($dbLocations)) {
+                foreach ($dbLocations as $objLocation) {
+                    $start_time = date("Y-m-d", strtotime("first day of this month"));
+                    $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+
+                    $CurrentCount = \Vokuro\Models\ReviewInvite::count(
+                        array(
+                            "column" => "review_invite_id",
+                            "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = {$objLocation->location_id} AND sms_broadcast_id IS NULL",
+                        )
+                    );
+                    if($CurrentCount > $this->request->getPost('messages', 'striptags')) {
+                        throw new \Exception('New messages count (' . $this->request->getPost('messages', 'striptags') . ') is lower than the number of current messages (' . $CurrentCount . ') sent for Location (' . $objLocation->location_id . ' - ' . $objLocation->name . ')');
+                    }
+                }
+            }
+
             $objSubscriptionPlan->user_id = $objSuperUser->id;
             $objSubscriptionPlan->sms_messages_per_location = $this->request->getPost('messages', 'striptags');
             $objSubscriptionPlan->locations = $this->request->getPost('locations', 'striptags');
