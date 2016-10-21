@@ -508,7 +508,7 @@ class SubscriptionManager extends BaseService {
                 $Locations -= $NextBatchOfLocations;
             }
 
-            $Cost = $NextBatchOfLocations * $objParameterList->base_price + $NextBatchOfLocations * $Messages * $objParameterList->sms_charge / 100;
+            $Cost = $NextBatchOfLocations * $objParameterList->base_price + $NextBatchOfLocations * $Messages * $objSubscriptionPricingPlan->charge_per_sms;
             $Cost *= ((100 - $objParameterList->location_discount_percentage)) * 0.01;
 
             $PlanCost += $Cost;
