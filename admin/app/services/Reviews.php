@@ -25,13 +25,19 @@
         }
 
         public function DeleteGoogleReviews($LocationID) {
-            $dbReviews = \Vokuro\Models\Review::find("rating_type_id = 3 AND location_id = {$LocationID}");
+            $dbReviews = \Vokuro\Models\Review::find("rating_type_id = " . \Vokuro\Models\Location::TYPE_GOOGLE . " AND location_id = {$LocationID}");
             foreach ($dbReviews as $objReview)
                 $objReview->delete();
         }
 
         public function DeleteFacebookReviews($LocationID) {
-            $dbReviews = \Vokuro\Models\Review::find("rating_type_id = 2 AND location_id = {$LocationID}");
+            $dbReviews = \Vokuro\Models\Review::find("rating_type_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK . "  AND location_id = {$LocationID}");
+            foreach ($dbReviews as $objReview)
+                $objReview->delete();
+        }
+
+        public function DeleteYelpReviews($LocationID) {
+            $dbReviews = \Vokuro\Models\Review::find("rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}");
             foreach ($dbReviews as $objReview)
                 $objReview->delete();
         }

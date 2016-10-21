@@ -819,6 +819,7 @@ class ControllerBase extends Controller {
 
         $yelp_reviews = $yelp->get_business($Obj->api_id);
         $yelpreviews = json_decode($yelp_reviews);
+
         //echo '<pre>$yelpreviews:'.print_r($yelpreviews,true).'</pre>';
         //import data from the feed into the database, first update the location
         $Obj->rating = $yelpreviews->rating;
@@ -827,7 +828,10 @@ class ControllerBase extends Controller {
             $Obj->original_rating = $yelpreviews->rating;
             $Obj->original_review_count = $yelpreviews->review_count;
         }
+
         $Obj->save();
+
+
 
         //now import the review (if not already in the database)
         //loop through reviews
@@ -869,7 +873,7 @@ class ControllerBase extends Controller {
             /**
              * @var $s \Vokuro\Services\Reviews
              */
-            if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(1, $location->location_id);
+            //if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(1, $location->location_id);
 
         } catch (\Exception $e) {
         }
