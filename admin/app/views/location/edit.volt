@@ -94,19 +94,29 @@
             <div class="register-form" id="hiddenForm" style="display: block;">
                 <div class="pnlAddLocation short col-md-4">
                     <div class="title">GOOGLE: <span class="title-answer">Found</span></div>
-                    <div class="field"><span class="name">Business Name:</span> <span id="googleName"><?=$location->
-                            name?></span></div>
-                    <div class="field bottom"><span class="name">Location:</span>
-                        <span class="googleAddress" id="googleAddress"><?=$location->address?> <?=$location->
-                            locality?>, <?=$location->state_province?> <?=$location->postal_code?></span></div>
+                    <div class="field"><span class="name">Business Name:</span> <span id="googleName">
+                        <?=$objGoogleReviewSite->name ?: $location->name; ?>
+
+                        </span></div>
+                    <div class="field bottom">
+                        <span class="name">
+                            Location:
+                        </span>
+                        <span class="googleAddress" id="googleAddress">
+                            <?=$objGoogleReviewSite->address ?: $location->address?>
+                            <?=$objGoogleReviewSite->locality ?: $location->locality?>,
+                            <?=$objGoogleReviewSite->state_province ?: $location->state_province?>
+                            <?=$objGoogleReviewSite->postal_code ?: $location->postal_code?>
+                        </span>
+                    </div>
                     <div class="buttons">
-                        <a class="btnLink" id="googleLink" href="https://maps.google.com/?cid=<?=$google->external_id?>" target="_blank"><img src="/img/icon-eye.gif"/>
-                            View</a>
-                            {% if GoogleMyBusinessConnected %}
-                                Successfully connected Google My Business Account!  <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Reconnect?</a></div>
-                            {% else %}
-                                <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Connect Google My Business account</a></div>
-                            {% endif %}
+                        <a class="btnLink" id="googleLink" href="<?=$objGoogleReviewSite->url ?: 'https://maps.google.com/?cid={$google->external_id}'; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
+                        {% if GoogleMyBusinessConnected %}
+                            Successfully connected Google My Business Account!  <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Reconnect?</a><a href="/location/disconnectGoogle/<?=$location->location_id; ?>" class="btnSecondary" target="_blank" id="gmb_signin">Disconnect?</a>
+                        {% else %}
+                            <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Connect Google My Business account</a>
+                        {% endif %}
+                    </div>
                 </div>
 
                 <div class="pnlAddLocation short col-md-4">
@@ -132,6 +142,9 @@
                   ?>
                   <div class="buttons">
                     <a href="/location/getAccessToken?location_id=<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">{{ FacebookText }}Authenticate Facebook</a>
+                    {% if FacebookConnected %}
+                        <a href="/location/disconnectFacebook/<?=$location->location_id; ?>" class="btnSecondary" target="_blank" id="gmb_signin">Disconnect?</a>
+                    {% endif %}
                     </div>
                 </div>
 
@@ -165,16 +178,19 @@
         none;"')?>><a id="yelpLink" href="http://yelp.com/biz/<?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?$yelp->external_id:'')?>" target="_blank"><img src="/img/icon-eye.gif"/>
             View</a>
         <a class="btnLink" href="#" onclick="$('.yelpfound').hide();$('.yelpnotfound').show();return false;"><img src="/img/icon-pencil.png"/>
-            Update Location</a></div>
+            Update Location</a>
+
+            {% if YelpConnected %}
+                <a href="/location/disconnectYelp/<?=$location->location_id; ?>" class="btnSecondary" target="_blank" id="gmb_signin">Disconnect?</a>
+            {% endif %}
+
+            </div>
     <div class="buttons yelpnotfound"
     <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?' style="display:
     none;"':'')?>><a class="btnLink" href="#" onclick="findBusinessYelp();return false;"><img src="/img/icon-maglass.gif"/>
         Search For Business</a>
     <a class="btnLink" href="#" id="urllinkyelp" onclick="$('#urltype').val('yelp');"><img src="/img/icon-link.gif"/>
         Enter URL</a></div>
-<div class="yelp-results yelpnotfound">
-
-</div>
 </div>
 </div>
 

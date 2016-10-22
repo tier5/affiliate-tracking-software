@@ -61,9 +61,70 @@
             parent::initialize();
         }
 
+        protected function disconnectReviewSite($LocationID, $Type) {
+            $MethodName = null;
+            switch($Type) {
+                case  \Vokuro\Models\Location::TYPE_YELP:
+                    $MethodName = "DeleteYelpReviews";
+                    break;
+                case  \Vokuro\Models\Location::TYPE_FACEBOOK:
+                    $MethodName = "DeleteFacebookReviews";
+                    break;
+                case  \Vokuro\Models\Location::TYPE_GOOGLE:
+                    $MethodName = "DeleteGoogleReviews";
+                    break;
+            }
+            $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = {$Type}");
+            if($objLocationReviewSite) {
+                $objLocationReviewSite->json_access_token = null;
+                $objLocationReviewSite->external_location_id = null;
+                $objLocationReviewSite->external_id = null;
+                $objLocationReviewSite->api_id = null;
+                $objLocationReviewSite->review_count = 0;
+                $objLocationReviewSite->original_count = 0;
+                $objLocationReviewSite->date_created = null;
+                $objLocationReviewSite->is_on = 0;
+                $objLocationReviewSite->lrd = null;
+                $objLocationReviewSite->name = null;
+                $objLocationReviewSite->url = null;
+                $objLocationReviewSite->rating = 0;
+                $objLocationReviewSite->address = '';
+                $objLocationReviewSite->postal_code = '';
+                $objLocationReviewSite->country = '';
+                $objLocationReviewSite->state_province = '';
+                $objLocationReviewSite->phone = '';
+                $objLocationReviewSite->save();
+            }
+            if($MethodName) {
+                $objReviewService = new \Vokuro\Services\Reviews();
+                $objReviewService->$MethodName($LocationID);
+            }
+        }
+
+        public function disconnectYelpAction($LocationID) {
+            $this->disconnectReviewSite($LocationID, \Vokuro\Models\Location::TYPE_YELP);
+            $this->response->redirect("/location/edit/{$LocationID}");
+        }
+
+        public function disconnectFacebookAction($LocationID) {
+            $this->disconnectReviewSite($LocationID, \Vokuro\Models\Location::TYPE_FACEBOOK);
+            $this->response->redirect("/location/edit/{$LocationID}");
+        }
+
+        public function disconnectGoogleAction($LocationID) {
+            $this->disconnectReviewSite($LocationID, \Vokuro\Models\Location::TYPE_GOOGLE);
+            $this->response->redirect("/location/edit/{$LocationID}");
+        }
+
         public function pickGoogleBusinessAction($BusinessID, $LocationID) {
+            $objReviewsService = new \Vokuro\Services\Reviews();
+            $this->view->objGoogleBusiness = $objReviewsService->getGoogleMyBusinessData($LocationID, $BusinessID);
+
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
-            $objLocation->external_location_id = $BusinessID;
+            $tFields = ['name', 'external_location_id', 'url', 'address', 'postal_code', 'locality', 'country', 'state_province', 'phone'];
+            foreach($tFields as $Field)
+                $objLocation->$Field = $this->view->objGoogleBusiness->$Field;
+
             $objLocation->save();
 
             $objReviewService = new \Vokuro\Services\Reviews();
@@ -616,6 +677,7 @@
             $objGoogleReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
 
             $this->view->GoogleMyBusinessConnected = $objGoogleReviewSite && $objGoogleReviewSite->json_access_token ? true : false;
+            $this->view->objGoogleReviewSite = $objGoogleReviewSite;
 
             $objReviewService = new \Vokuro\Services\Reviews();
 
@@ -761,6 +823,7 @@
             $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
             $parameters = array("location_id" => $loc->location_id);
             $this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+            $this->view->YelpConnected = isset($this->view->yelp->external_id) && $this->view->yelp->external_id && $this->view->yelp->external_id != '';
 
 
             //look for a facebook review configuration
