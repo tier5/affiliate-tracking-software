@@ -213,8 +213,7 @@ class AdmindashboardController extends ControllerBusinessBase {
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
 	    // Businesses under Review Velocity have a parent_id of -1.  agency_type_id == 1 means Agency.  I do want to get rid of this field.
 	    $Ret =  parent::createAction($agency_type_id, $agency_id, $agency_type_id == 1 ? \Vokuro\Models\Agency::AGENCY : \Vokuro\Models\Agency::BUSINESS_UNDER_RV);
-	    $this->view->pick("admindashboard/create");
-	    return $Ret;
+	    return $this->view->pick("admindashboard/create");
 	}
 
     /**

@@ -145,10 +145,9 @@ public function editAction($agency_id = 0) {
 
         $form = new AgencyForm(null);
         $age = new Agency();
+        $this->view->form = $form;
 
         if ($this->request->isPost()) {
-
-
             $errors = [];
             $messages = [];
                 $IsEmailUnique = true;
@@ -166,6 +165,9 @@ public function editAction($agency_id = 0) {
 
                     $IsEmailValid = ($this->request->getPost('admin_email') != '');
                     $IsNameValid = ($this->request->getPost('admin_name') != '');
+                    $CreateType = 'agency';
+                } else {
+                    $CreateType = 'business';
                 }
                 /* Form valid? (Refactored from a maze of "nested ifs".  This is the best I could do on short notice) */
                 $messages = [];
@@ -213,6 +215,11 @@ public function editAction($agency_id = 0) {
                     foreach($age->getMessages() as $error_message) $errors[] = $error_message;
                 }
 
+                if($errors) {
+                    $db->rollback();
+                    $this->flash->error("There was an error creating the {$CreateType}<BR />" . implode("<BR />", $errors));
+                    return false;
+                }
 
                 /* Create an admin for this new agency */
                 $user = new Users();
@@ -231,9 +238,12 @@ public function editAction($agency_id = 0) {
                     $error = true;
                     foreach ($user->getMessages() as $error_message) $errors[] = $error_message;
                 }
-
-                if(!$errors) {
-                  $db->commit();
+                if($errors) {
+                    $db->rollback();
+                    $this->flash->error("There was an error creating the {$CreateType}<BR />" . implode("<BR />", $errors));
+                    return false;
+                } else {
+                    $db->commit();
                 }
 
                 $dbUsers = \Vokuro\Models\Users::find('email = "' .  $this->request->getPost('admin_email') . '"');
@@ -250,7 +260,11 @@ public function editAction($agency_id = 0) {
                 $this->flash->success("The " . ($age->agency_type_id == 1 ? 'agency' : 'business') . " was created successfully");
                 $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
                 //if(!$errors) $db->commit();
-                if($errors) $db->rollback();
+                if($errors) {
+                    $db->rollback();
+                    $this->flash->error("There was an error creating <BR />" . implode("<BR />", $errors));
+                    return false;
+                }
 
         }
 
@@ -282,8 +296,6 @@ public function editAction($agency_id = 0) {
 
         $this->view->agency = new Agency();
         $this->view->form = $form;
-
-
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $agency_id);
             $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));

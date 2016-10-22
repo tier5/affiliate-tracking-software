@@ -11,9 +11,7 @@
         <a href="<?=$BackUrl; ?>" class="btn red btn-outline">&larr; Go Back</a>
     </li>
 </ul>
-
 {{ content() }}
-
 <!-- BEGIN SAMPLE FORM PORTLET-->
 <div class="portlet light bordered">
     <div class="portlet-title">
@@ -88,7 +86,7 @@
                           value="<?=(!$free_locations) ? 1 : $free_locations ;?>"
                           placeholder="Number of locations"
                           required name="free_locations"
-                          readonly/>
+                          />
                     </div>
                 </div>
                 <div class="form-group">
@@ -101,7 +99,7 @@
                           placeholder="Number of messages"
                           value="<?=$_POST['sms_messages'] ? $_POST['sms_messages'] : 100; ?>"
                           required name="sms_messages"
-                          readonly/>
+                          />
                     </div>
                 </div>
             </div>
