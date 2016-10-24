@@ -240,7 +240,7 @@
                     </div>
                     <div class="portlet-body">
                         <?php
-                        if ($new_reviews->count() > 0) {
+                        if (count($new_reviews) > 0) {
                         ?>
                         <div id="barchart_div"></div>
                         <?php
@@ -442,16 +442,15 @@
                 var data = google.visualization.arrayToDataTable([
                     ['Month', 'Density', { role: 'style' }],
                 <?php
-                    $prevmonth = 0;
                     $count = 0;
                     $strarray = '';
                     $color = ($primary_color) ? $primary_color : '';
                     foreach ($new_reviews as $data) {
-                        if ($new_reviews->count() > 6 && $count == 0) {
-                        } else {
-                            $strarray = $strarray."['".date("M", mktime(0, 0, 0, $data-> month, 1, 2011))."', ".($data-> reviewcount - $prevmonth).", '".$color."'],\n";
-                        }
-                        $prevmonth = $data->reviewcount;
+                        /*if (count($new_reviews) > 6 && $count == 0) {
+                        } else {*/
+                            $strarray = $strarray."['".date("M", mktime(0, 0, 0, $data['month'], 1, 2011))."', ".($data['reviewcount']).", '".$color."'],\n";
+                        //}
+
                         $count++;
                     }
                     echo $strarray;

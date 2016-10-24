@@ -19,42 +19,86 @@
         }
 
 
-        /*
-          * This function pull up a report of the top employees
-          */
         public static function newReviewReport($location_id)
         {
-            //loop for last seven months
-            $end = strtotime("first day of next month");
-            $start = $month = strtotime("-7 month", $end);
-            $strSQL = "";
-            while($month < $end)
-            {
-                if ($strSQL != '') $strSQL .= " UNION ";
-                $strSQL .= "SELECT ".date('m', $month)." AS monthval, ".date('Y', $month)." AS yearval ".PHP_EOL;
-                $month = strtotime("+1 month", $month);
-            }
+            $MonthsBack = 5;
+            $StartMonth = date('n', strtotime("-{$MonthsBack} month"));
+            $StartYear = date('Y', strtotime("-{$MonthsBack} month"));
 
-            // A raw SQL statement
-            $sql   = "SELECT COALESCE(temp.reviewcount,0) AS reviewcount, dates.monthval AS month, dates.yearval AS year
-              FROM (
-                  ".$strSQL."
-                ) AS dates
-                LEFT OUTER JOIN (
-                  SELECT COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0) AS reviewcount, month, year
-                  FROM reviews_monthly
-                  WHERE location_id = ".$location_id."
-                  ORDER BY YEAR DESC, MONTH DESC LIMIT 7
-                ) AS temp  ON temp.month = dates.monthval AND temp.year = dates.yearval
-              ORDER BY year ASC, month ASC";
-            //echo '<p>sql:'.$sql.'</p>';
+            $sql   = "
+                SELECT COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0) AS reviewcount, month, year
+                FROM reviews_monthly
+                WHERE location_id = {$location_id}
+                GROUP BY month, year
+                ORDER BY month, year
+            ";
 
             // Base model
             $list = new ReviewsMonthly();
 
             // Execute the query
             $params = null;
-            return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
-        }
+            $TotalResults = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
 
+            $tFilteredResults = [];
+            $Count = 0;
+            $Prev = 0;
+
+            // Initialize all values to 0
+            $CurrentMonth = $StartMonth;
+            for($c = 0 ; $c <= $MonthsBack ; $c++) {
+                if ($c + $StartMonth > 12) {
+                    if($CurrentMonth == 12)
+                        $CurrentMonth = 1;
+                    else {
+                        $CurrentMonth++;
+                        $CurrentYear = $StartYear + 1;
+                    }
+                }
+                else {
+                    $CurrentMonth = $c + $StartMonth;
+                    $CurrentYear = $StartYear;
+                }
+
+                $tFilteredResults[$CurrentMonth] = [
+                    'reviewcount' => 0,
+                    'month' => $CurrentMonth,
+                    'year' => $CurrentYear
+                ];
+            }
+            foreach($TotalResults->toArray() as $tResult) {
+                if(strtotime("{$StartYear}-{$StartMonth}-01") <= strtotime("{$tResult['year']}-{$tResult['month']}-01")) {
+                    if($Count == 0) {
+                        $Prev = $tResult['reviewcount'];
+                    } else {
+                        $Prev += $tResult['reviewcount'];
+                        $tResult['reviewcount'] = $Prev;
+                    }
+
+
+
+                    $tFilteredResults[$tResult['month']] = $tResult;
+                    $Count++;
+                }
+            }
+
+            // Fill in correct values for empty months (must retain value of previous month)
+            $Count = 0;
+            foreach($tFilteredResults as $Index => &$tResult) {
+                if($Count == 0) {
+                    $Prev = 0;
+                } else {
+                    $Prev = $Index > 1 ? $tFilteredResults[$Index-1]['reviewcount'] : $tFilteredResults[1]['reviewcount'];
+                }
+
+                $Current = $Index > 12 ? $tFilteredResults[$Index - 12]['reviewcount'] : $tFilteredResults[$Index]['reviewcount'];
+
+                if($Current <= $Prev)
+                    $tResult['reviewcount'] = $Prev;
+
+                $Count++;
+            }
+
+            return $tFilteredResults;
+        }
     }

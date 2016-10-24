@@ -120,7 +120,7 @@ class IndexController extends ControllerBase {
                 return;
             }
         }
-        //get the location and calculate the review total and avg.
+
         if ($identity['location_id'] > 0) {
             $conditions = "location_id = :location_id:";
 
@@ -135,108 +135,75 @@ class IndexController extends ControllerBase {
             );
 
             $this->view->location = $loc;
-            $this->view->location_id = $identity['location_id'];
+            $this->view->location_id = $LocationID = $identity['location_id'];
+            $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$loc->agency_id}");
 
+            $dbYelpReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP);
+            $dbFacebookReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
+            $dbGoogleReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
 
+            $YelpSinceCreate = 0;
+            $FacebookSinceCreate = 0;
+            $GoogleSinceCreate = 0;
+            $TotalYelpRating = 0;
+            $TotalFacebookRating = 0;
+            $TotalGoogleRating = 0;
 
-            //###  START: find review site config info ###
-            $facebook_review_count = 0;
-            $google_review_count = 0;
-            $yelp_review_count = 0;
-            $facebook_rating = 0;
-            $google_rating = 0;
-            $yelp_rating = 0;
+            $this->view->new_reviews = ReviewsMonthly::newReviewReport($this->session->get('auth-identity')['location_id']);
 
-            $original_facebook_review_count = 0;
-            $original_google_review_count = 0;
-            $original_yelp_review_count = 0;
-            $original_facebook_rating = 0;
-            $original_google_rating = 0;
-            $original_yelp_rating = 0;
-
-            //look for a yelp review configuration
-            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-            //start with Yelp reviews, if configured
-            if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
-                $this->view->yelp_id = $Obj->external_id;
-                $yelp_review_count = $Obj->review_count;
-                $yelp_rating = $Obj->rating;
-                $original_yelp_review_count = $Obj->original_review_count;
-                $original_yelp_rating = $Obj->original_rating;
-            } else {
-                $this->view->yelp_id = '';
+            foreach($dbYelpReviews as $objYelpReview) {
+                if(strtotime($objBusiness->date_created) < strtotime($objYelpReview->time_created))
+                    $YelpSinceCreate++;
+                $TotalYelpRating += $objYelpReview->rating;
             }
 
-            //look for a google review configuration
-            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-            //start with google reviews, if configured
-            if (isset($Obj)) {
-                $this->view->google_place_id = $Obj->external_id;
-                $google_review_count = $Obj->review_count;
-                $google_rating = $Obj->rating;
-                $original_google_review_count = $Obj->original_review_count;
-                $original_google_rating = $Obj->original_rating;
-            } else {
-                $this->view->google_place_id = '';
+            foreach($dbFacebookReviews as $objFacebookReview) {
+                if(strtotime($objBusiness->date_created) < strtotime($objFacebookReview->time_created))
+                    $FacebookSinceCreate++;
+
+                $TotalFacebookRating += $objFacebookReview->rating;
             }
 
-            //look for a facebook review configuration
-            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-            //start with Facebook reviews, if configured
-            if (isset($Obj) && isset($Obj->access_token) && $Obj->access_token) {
-                $this->view->facebook_page_id = $Obj->external_id;
-                $facebook_review_count = $Obj->review_count;
-                $facebook_rating = $Obj->rating;
-                $original_facebook_review_count = $Obj->original_review_count;
-                $original_facebook_rating = $Obj->original_rating;
-            } else {
-                $this->view->facebook_page_id = '';
+            foreach($dbGoogleReviews as $objGoogleReview) {
+                if(strtotime($objBusiness->date_created) < strtotime($objGoogleReview->time_created))
+                    $GoogleSinceCreate++;
+                $TotalGoogleRating += $objGoogleReview->rating;
             }
-            //###  END: find review site config info ###
-            //calculate the total reviews
-            $total_reviews = $facebook_review_count + $google_review_count + $yelp_review_count;
-            $original_total_reviews = $original_facebook_review_count + $original_google_review_count + $original_yelp_review_count;
-            $this->view->facebook_review_count = $facebook_review_count;
-            $this->view->google_review_count = $google_review_count;
-            $this->view->yelp_review_count = $yelp_review_count;
-            $this->view->total_reviews = $total_reviews;
-            //calculate the average rating
-            if ($total_reviews > 0) {
-                $average_rating = (($yelp_rating * $yelp_review_count) + ($google_rating * $google_review_count) + ($facebook_rating * $facebook_review_count)) / $total_reviews;
-            } else {
-                $average_rating = 0;
-            }
-            $this->view->yelp_rating = $yelp_rating;
-            $this->view->google_rating = $google_rating;
-            $this->view->facebook_rating = $facebook_rating;
-            $this->view->average_rating = $average_rating;
+
+            $this->view->yelp_review_count = $YelpReviewCount = count($dbYelpReviews);
+            $this->view->facebook_review_count = $FacebookReviewCount = count($dbFacebookReviews);
+            $this->view->google_review_count = $GoogleReviewCount = count($dbGoogleReviews);
+            $this->view->total_reviews = $TotalReviews = $FacebookReviewCount + $GoogleReviewCount + $YelpReviewCount;
+
+            $this->view->yelp_rating = $YelpReviewCount > 0 ? $TotalYelpRating / $YelpReviewCount : 0;
+            $this->view->facebook_rating = $FacebookReviewCount > 0 ? $TotalFacebookRating / $FacebookReviewCount : 0;
+            $this->view->google_rating = $GoogleReviewCount > 0 ? $TotalGoogleRating / $GoogleReviewCount : 0;
+            $this->view->average_rating = $AverageRating = $TotalReviews > 0 ? ($TotalYelpRating + $TotalFacebookRating + $TotalGoogleRating ) / $TotalReviews : 0;
+
+            // New Reviews Since Joining Review Velocity
+            $this->view->total_reviews_location = $YelpSinceCreate + $FacebookSinceCreate + $GoogleSinceCreate;
+
+            // New Reviews By Month Graph
+            //$this->view->new_reviews = ReviewsMonthly::newReviewReport($this->session->get('auth-identity')['location_id']);
 
             $negative_total = ReviewInvite::count(
-                            array(
-                                "column" => "review_invite_id",
-                                "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND recommend = 'N' AND sms_broadcast_id IS NULL ",
-                            //"group"  => "location_id",
-                            )
+                    array(
+                        "column" => "review_invite_id",
+                        "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND recommend = 'N' AND sms_broadcast_id IS NULL ",
+                    )
             );
-//echo '<pre>$negative_total:'.print_r($negative_total,true).'</pre>';
-            $this->view->negative_total = $negative_total;
 
+            $this->view->negative_total = $negative_total;
             $positive_total = ReviewInvite::count(
-                            array(
-                                "column" => "review_invite_id",
-                                "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND recommend = 'Y' AND sms_broadcast_id IS NULL ",
-                            )
+                array(
+                    "column" => "review_invite_id",
+                    "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND recommend = 'Y' AND sms_broadcast_id IS NULL ",
+                )
             );
             $this->view->positive_total = $positive_total;
 
-            //calculate Revenue Retained
-            //look in settings for the "Lifetime Value of the Customer"
+            // Calculate Revenue Retained
+            // Look in settings for the "Lifetime Value of the Customer"
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $loc->agency_id);
             $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -245,12 +212,9 @@ class IndexController extends ControllerBase {
                 $this->view->agency = $agency;
             }
 
-
             $this->getSMSReport();
 
-
-
-            //find the employee conversion report type
+            // Find the employee conversion report type
             $conversion_report_type = 'this_month'; //default this month
             if (isset($_GET['crt'])) {
                 if ($_GET['crt'] == 2)
@@ -260,29 +224,27 @@ class IndexController extends ControllerBase {
             }
             $this->view->conversion_report_type = $conversion_report_type;
 
-            //default this month
+            // Default this month
             $now = new \DateTime('now');
             $start_time = $now->format('Y') . '-' . $now->format('m') . '-01';
             $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
 
-            //get the employee conversion reports
+            // Get the employee conversion reports
             $this->view->employee_conversion_report = Users::getEmployeeConversionReport($loc->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], 'DESC');
 
-            //we need to find the most recent reviews
+            // We need to find the most recent reviews
             $start_time = date("Y-m-d", strtotime("first day of previous month"));
             $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
             $review_report = Review::find(
-                            array(
-                                "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'],
-                                "limit" => 3,
-                                "order" => "time_created DESC"
-                            )
+                array(
+                    "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'],
+                    "limit" => 3,
+                    "order" => "time_created DESC"
+                )
             );
             $this->view->review_report = $review_report;
 
-
-
-            //Last month!
+            // Last month!
             $start_time = date("Y-m-d", strtotime("first day of previous month"));
             $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
             $sms_sent_last_month = ReviewInvite::count(
@@ -293,7 +255,7 @@ class IndexController extends ControllerBase {
             );
             $this->view->sms_sent_last_month = $sms_sent_last_month;
 
-            //This month!
+            // This month!
             $start_time = date("Y-m-d", strtotime("first day of this month"));
             $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
             $sms_sent_this_month = ReviewInvite::count(
@@ -305,14 +267,11 @@ class IndexController extends ControllerBase {
             $this->view->sms_sent_this_month = $sms_sent_this_month;
 
 
-            //Reviews
-            //Total New Reviews (overall, last month, this month, monthly growth)
-            $this->view->total_prev_reviews = $original_total_reviews;
-            $this->view->total_reviews_location = $total_reviews;
-            $this->view->total_reviews_location = $this->view->total_reviews_location - $this->view->total_prev_reviews;
+            // Reviews GARY_START
 
-
-            //Last month!
+/*
+ * Not on the dashboard page.  MOVE PLZ
+            // Last month!
             $this->view->num_reviews_last_month = ReviewsMonthly::sum(
                             array(
                                 "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
@@ -337,6 +296,9 @@ class IndexController extends ControllerBase {
             //echo '<p>num_reviews_this_month:'.$this->view->num_reviews_this_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
             $this->view->total_reviews_this_month = $this->view->num_reviews_this_month - $this->view->total_reviews_last_month;
 
+
+*/
+
             //set the agency SMS limit
             $this->view->review_goal = $loc->review_goal;
             //calculate how many sms messages we need to send to meet this goal.
@@ -348,7 +310,9 @@ class IndexController extends ControllerBase {
             //echo '<p>percent_needed:'.$percent_needed.':review_goal:'.$loc->review_goal.'</p>';
             $this->view->total_sms_needed = round($loc->review_goal / ($percent_needed / 100));
 
-            $this->view->new_reviews = ReviewsMonthly::newReviewReport($this->session->get('auth-identity')['location_id']);
+            //echo "<PRE>";
+            //print_r($this->view->new_reviews->toArray());
+            //die();
 //echo '<pre>new_reviews:'.print_r($this->view->new_reviews,true).'</pre>';
             //Get the sharing code
             $this->getShareInfo($agency);
