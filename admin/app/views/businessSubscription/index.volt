@@ -39,7 +39,7 @@
                                     <div><span id="current-locations" class="bold">{{ subscriptionPlanData['subscriptionPlan']['locations'] }}</span> Location(s)</div>
                                     <div><span id="current-messages" class="bold">{{ subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] }}</span> Text Messages</div>
                                 </div>
-                                <div class="responsive-float-right subscription-panel-large-caption">{{ paymentPlan }}</div>
+                                <div class="responsive-float-right subscription-panel-large-caption"><sup class="subscription-panel-default-caption">$</sup>{{ paymentPlan }}<sub class="subscription-panel-default-caption">/mo</sub></div>
                             </div>
                         </div>
                         <div class="panel panel-default">
@@ -483,14 +483,14 @@
             var planType = $("#plan-type > button.active").text();
             if (planType === 'Annually') {
                 monthlyPlanCost = applyAnnualDiscount(monthlyPlanCost);
-                $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(2));
+                $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(0));
                 $('#paid-annually-caption').show()
             } else {
                 $('#paid-annually-caption').hide();
             }
 
             $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(0));
-            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
+            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(0));
 
         };
 
