@@ -91,20 +91,43 @@
             <div class="title"><h3>Create Employee</h3></div>
             <div class="row" style="clear: both;">
                 <div class="field">
-                    <span class="name" style="display: inline-block; min-width: 100px;">Full Name:</span>
-                    <input type="text" name="name" id="name" value="" required="required" style="min-width: 200px;padding: 0 0 0 5px; margin-left: 13px;"/>
+                    <span 
+                    	class="name" 
+                    	style="display: inline-block; min-width: 123px; ">Full Name:</span>
+                    <input 
+                    	type="text" 
+                    	name="name" 
+                    	id="name" 
+                    	value="" 
+                    	required="required" 
+                    	style="min-width: 200px; padding: 0 0 0 5px; margin-left: 2px;"/>
                 </div>
             </div>
             <div class="row" style="clear: both;">
                 <div class="field">
-                    <span class="name" style="display: inline-block; min-width: 100px;">Email Address:</span>
-                    <input type="email" name="email" id="email" value="" required="required" data-control="mycitycontrol" style="min-width: 200px;padding: 0 0 0 5px;"/>
+                    <span 
+                    	class="name" 
+                    	style="display: inline-block; min-width: 100px;">Email Address:</span>
+                    <input 
+                    	type="email" 
+                    	name="email" 
+                    	id="email" 
+                    	value="" 
+                    	required="required" 
+                    	style="min-width: 200px;padding: 0 0 0 5px; margin-left: 13px;"/>
                 </div>
             </div>
             <div class="row" style="clear: both;">
                 <div class="field">
-                    <span class="name" style="display: inline-block; min-width: 100px;">Cell Phone:</span>
-                    <input type="tel" name="phone" id="phone" value="" style="min-width: 200px;padding: 0 0 0 5px; margin-left: 13px;"/>
+                    <span 
+                    	class="name" 
+                    	style="display: inline-block; min-width: 113px;">Cell Phone:</span>
+                    <input 
+                    	type="tel" 
+                    	name="phone" 
+                    	id="phone" 
+                    	value="" 
+                    	style="min-width: 200px;padding: 0 0 0 5px; margin-left: 13px;"/>
                 </div>
             </div>
             <div class="row" style="clear: both;">

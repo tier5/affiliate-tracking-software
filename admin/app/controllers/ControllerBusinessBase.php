@@ -337,6 +337,9 @@ public function editAction($agency_id = 0) {
 
         if (isset($_GET['s']) && $_GET['s'] == 2)
             $this->flash->success('Success! Have the employee check their email for a confirmation message');
+        if (isset($_GET['s']) && $_GET['s'] == 3)
+            $this->flash->success('This user has not activated their account, please activate or resend the confirmation email');
+            
 
     }
 

@@ -94,7 +94,6 @@ class BusinessSubscriptionController extends ControllerBase {
         /* Set pricing plan details to empty so it doesn't display when attaching the json string to the data attribute */
         $subscriptionPlanData['pricingPlan']['pricing_details'] = '';
         $this->view->subscriptionPlanData = $subscriptionPlanData;
-
         switch($this->view->subscriptionPlanData['subscriptionPlan']['payment_plan']) {
             // GARY_TODO:  Pretty sure this doesn't work the way it was supposed to due to handoff from Michael.
             case ServicesConsts::$PAYMENT_PLAN_TRIAL :
@@ -108,7 +107,12 @@ class BusinessSubscriptionController extends ControllerBase {
                 break;
             case ServicesConsts::$PAYMENT_PLAN_MONTHLY :
             case ServicesConsts::$PAYMENT_PLAN_YEARLY :
-                $this->view->paymentPlan = "$" . $subscriptionManager->getSubscriptionPrice($objSuperUser->id, $this->view->subscriptionPlanData['subscriptionPlan']['payment_plan']);
+                $this->view->paymentPlan = 
+                number_format(
+                			floatval($subscriptionManager->getSubscriptionPrice(
+                				$objSuperUser->id, 
+                				$this->view->subscriptionPlanData['subscriptionPlan']['payment_plan'])
+                			), 0, '', ',');
                 break;
             default:
                 // No subscription currently in use.
