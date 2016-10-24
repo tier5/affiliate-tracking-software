@@ -67,6 +67,7 @@ class Auth extends Component {
             'location_name' => $location_name,
             'is_admin' => $user->is_admin,
             'is_employee' => $user->is_employee,
+        	'role' => $user->role,
             'agencytype' => $this->getAgencyType($user->agency_id),
             'parent_id' => $this->getAgencyParentId($user->agency_id),
             'signup_page' => $this->getCurrentSignupPage($user->agency_id)
@@ -134,6 +135,7 @@ class Auth extends Component {
             'location_name' => $this->session->get('auth-identity')['location_name'],
             'is_admin' => $this->session->get('auth-identity')['is_admin'],
             'is_employee' => $this->session->get('auth-identity')['is_employee'],
+        	'role' => $this->session->get('auth-identity')['role'],
             'agencytype' => $this->session->get('auth-identity')['agencytype']
         ));
     }
@@ -265,6 +267,7 @@ class Auth extends Component {
                             'location_name' => $location_name,
                             'is_admin' => $user->is_admin,
                             'is_employee' => $user->is_employee,
+                        	'role' => $user->role,
                             'agencytype' => $this->getAgencyType($user->agency_id)
                         ));
 
@@ -304,6 +307,7 @@ class Auth extends Component {
             'location_name' => $loc->name,
             'is_admin' => $iden['is_admin'],
             'is_employee' => $iden['is_employee'],
+        	'role' => $iden['role'],
             'agencytype' => $iden['agencytype']
         ));
     }
@@ -410,6 +414,7 @@ class Auth extends Component {
             'location_id' => $location_id,
             'location_name' => $location_name,
             'is_admin' => $user->is_admin,
+        	'role' => $user->role,
             'is_employee' => $user->is_employee,
             'agencytype' => $this->getAgencyType($user->agency_id),
         ));

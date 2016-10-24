@@ -263,7 +263,7 @@
                             <span class="selected"></span>
                         </a>
                     </li>
-                {% else %}
+                {% else %}     
                     {% if agencytype == "agency" %}
                         <li class="nav-item start">
                             <a href="/agency" class="nav-link nav-toggle">
@@ -289,6 +289,7 @@
                             </a>
                         </li>
                     {% endif %}
+
                     {% if location_id %}
                         {% if agencytype != "agency" %}
                             <li class="nav-item">
@@ -306,8 +307,9 @@
                                 </a>
                             </li>
 
-                            {% if is_business_admin %}
-                                <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
+                            {% if is_business_admin or (profile == "User") %}
+                                <?php if(strpos($userLogged->role, "Admin") !== false || !$this->view->is_employee) { ?>
+                               {% if is_business_admin %} 
                                 <li class="nav-item">
                                     <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
                                         <i class="icon-envelope"></i>
@@ -315,6 +317,7 @@
                                         <span class="selected"></span>
                                     </a>
                                 </li>
+                                {% endif %}
                                 <?php } ?>
                                 <li class="nav-item">
                                     <a href="/contacts" class="nav-link nav-toggle">
@@ -333,7 +336,8 @@
                             {% endif %}
                         {% endif %}
                     {% endif %}
-                    <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
+                        <?php         
+                    if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
                     {% if profile == "Business Admin" and agencytype == "business" %}
                         <li class="nav-item">
                             <a href="/location/" class="nav-link nav-toggle">
@@ -350,7 +354,9 @@
                         {% else %}
                             {% set SettingsLocation = "location" %}
                         {% endif %}
-                        <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
+                        <?php 
+                         
+                        if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
                         <li class="nav-item">
                             <a href="/settings/{{ SettingsLocation }}/" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
@@ -724,6 +730,7 @@
 </script>
 
 <?php
+
    if($objAgency->parent_id > 0) {
         $IntercomAPIID = $objParentAgency->intercom_api_id && $objParentAgency->intercom_security_hash ? $objParentAgency->intercom_api_id : '';
         $IntercomSecurityHash = $objParentAgency->intercom_api_id && $objParentAgency->intercom_security_hash ? $objParentAgency->intercom_security_hash : '';

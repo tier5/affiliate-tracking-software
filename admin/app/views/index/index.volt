@@ -50,9 +50,8 @@
             ?>
         </div>
 
-
-
-        <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) {
+		<?php
+         if(strpos($userLogged->role, "Admin") !== false || !$this->session->get('auth-identity')['is_employee']) {
 
             if ($is_upgrade) { ?>
         <div class="row">
