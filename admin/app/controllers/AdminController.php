@@ -193,7 +193,7 @@ class AdminController extends ControllerBase {
             ));
         }
 
-        if ($confirmation->isConfirmed() && $confirmation->user->mustChangePassword == 'N')) {
+        if ($confirmation->isConfirmed() && $confirmation->user->mustChangePassword == 'N') {
             $this->flash->notice('This account is already activated. You can login.');
             return $this->dispatcher->forward(array(
                         'controller' => 'user',
