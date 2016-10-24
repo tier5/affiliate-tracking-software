@@ -346,9 +346,9 @@ class AdmindashboardController extends ControllerBusinessBase {
             $objUser = $usermanager->sudoAsUserId($user_id);
             $this->response->redirect('/');
         }catch(\Exception $e){
-            $this->flash->error('You cannot login as an inactivated user, or there was an error sudoing as a user');
+            $this->flash->success('You cannot login as an inactivated user, or there was an error sudoing as a user');
             //exit('exiting: line '.__LINE__.' of file:'.__FILE__);
-            $this->response->redirect('/admindashboard');
+            $this->response->redirect('/admindashboard/view/' . $agency_type_id . '/' . $agency_id . '?s=3');
             return;
         }
 
