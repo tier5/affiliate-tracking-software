@@ -149,14 +149,11 @@ foreach($users_report as $user) {
         </div>
 
         <?php
-}
-?>
-
-        <?php
-
-if (isset($users) && $users) {
-
-?>
+		  }
+		  
+		if ($this->session->get('auth-identity')['role'] != "User") {
+		  if (isset($users) && $users) {
+		?>
 
         <div class="portlet light bordered dashboard-panel">
           <div class="table-header">
@@ -181,41 +178,35 @@ if (isset($users) && $users) {
                   <th>Rank</th>
                   <th>Name</th>
                   <?php
-      if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
+      				if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
                   ?>
                   <th>Email</th>
                   <th>Role</th>
                   <th>Employee?</th>
                   <th>Locations</th>
                   <?php
-      } else {
-        ?>
+     				 } else {
+        		  ?>
                   <th>Reviews Sent</th>
                   <th>Reviews Received</th>
                   <th>Customer Satisfaction</th>
                   <?php
-      }
-      ?>
-
-                {% if profilesId == 1 OR profilesId == 2 %}
-                  <th>Edit</th>
-                  <th>Delete</th>
-                {% endif %}
+      				}
+      			  ?>
                 </tr>
-                </thead>
-                <tbody>
-
-                <?php
-$rowclass = '';
-$i=0;
-foreach($users as $user) {
-$i++;
-  ?>
+              </thead>
+              <tbody>
+              <?php
+				$rowclass = '';
+				$i=0;
+				foreach($users as $user) {
+					$i++;
+			  ?>
                 <tr>
                   <td class="<?=$class?>"><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
                   <td><?=$user->name?></td>
                   <?php
-    if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
+   					 if (strpos($_SERVER['REQUEST_URI'],'users/admin')>0) {
                   ?>
                   <td><?=$user->email;?></td>
                   <td><?=$user->role; ?></td>
@@ -227,66 +218,65 @@ $i++;
                     <?php }  ?>
                   </td>
                   <?php
-    } else {
-      ?>
-      <td class="<?=$class?>"><?=$user->sms_sent_this_month?></td>
-      <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>
-      <td class="<?=$class?>"><?=($user->sms_sent_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
-
-
-                  <?php
-    }
-    ?>
-                {% if profilesId == 1 OR profilesId == 2 %}
+				    } else {
+				  ?>
+				      <td class="<?=$class?>"><?=$user->sms_sent_this_month?></td>
+				      <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>
+				      <td class="<?=$class?>"><?=($user->sms_sent_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
+				
+				
+				  <?php
+				    }
+				  ?>
+                  {% if profilesId == 1 OR profilesId == 2 %}
                   <td><a href="/users/adminedit/<?=$user->id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.png" /></a></td>
-
                   <td><a href="/users/delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink btnSecondary"><img src="/img/icon-delete.png" /></a></td>
                 {% endif %}
                 </tr>
                 <?php
-}
-?>
+				  }
+				?>
 
-                </tbody>
-              </table>
-              <div class="table-bottom"></div>
-            </div>
-            <!-- end customdatatable-wrapper -->
+              </tbody>
+            </table>
+            <div class="table-bottom"></div>
           </div>
-          <!-- End .panel -->
+          <!-- end customdatatable-wrapper -->
+        </div>
+      <!-- End .panel -->
+    
+      <script type="text/javascript">
+        jQuery(document).ready(function($){
 
-          <script type="text/javascript">
-            jQuery(document).ready(function($){
-
-              $('.starfield').rating({displayOnly: true, step: 0.5});
+          $('.starfield').rating({displayOnly: true, step: 0.5});
 
 
-              var locationlist_table = $('#locationlist .customdatatable').DataTable( {
-                "paging": true,
-                "ordering": false,
-                "info": false,
-                "language": {
-                  "search": "",
-                  "lengthMenu": "\_MENU_",
-                  paginate: {
-                    "next": "NEXT",
-                    "previous": "PREV"
-                  },
-                },
-                "pageLength": 25,
-                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
-                //"pageLength": 5
-              });
-              $('.flexsearch--submit').click(function(e){
-                locationlist_table.search($("input.flexsearch--input").val()).draw();
-              });
+          var locationlist_table = $('#locationlist .customdatatable').DataTable( {
+            "paging": true,
+            "ordering": false,
+            "info": false,
+            "language": {
+              "search": "",
+              "lengthMenu": "\_MENU_",
+              paginate: {
+                "next": "NEXT",
+                "previous": "PREV"
+              },
+            },
+            "pageLength": 25,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            //"pageLength": 5
+          });
+          $('.flexsearch--submit').click(function(e){
+            locationlist_table.search($("input.flexsearch--input").val()).draw();
+          });
 
-            });
-          </script>
+        });
+      </script>
 
-          <?php } else { ?>
-          No <?=($profilesId==3?'Employees':'Admin Users')?>
-          <?php }  ?>
+      <?php } else { ?>
+      No <?=($profilesId==3?'Employees':'Admin Users')?>
+      <?php } } ?>
 
 
 
