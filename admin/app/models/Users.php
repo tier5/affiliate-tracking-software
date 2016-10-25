@@ -270,7 +270,7 @@
                     LEFT OUTER join users_location
                     ON users.id = users_location.user_id
                     WHERE (users_location.location_id = ".$location_id."  OR
-                          users.is_all_locations = 1) AND
+                          users.is_all_locations = 1 ) AND users.agency_id = {$agency_id} AND
                       (users.profilesId = 3 OR users.is_employee = 1)
                     ORDER BY positive_feedback_this_month desc
                   ;";
