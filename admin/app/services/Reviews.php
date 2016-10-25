@@ -94,6 +94,46 @@
             $objLocation->save();
         }
 
+        public function getGoogleMyBusinessData($LocationID, $BusinessID) {
+            $client = $this->getGoogleClient($LocationID);
+
+            try {
+                $client->setAccessToken($this->getGoogleAccessToken($LocationID));
+            } catch (\Exception $e) {
+                echo $e->getMessage();
+                exit();
+            }
+
+            $myBusiness = new \Google_Service_Mybusiness($client);
+            $accounts = $myBusiness->accounts->listAccounts()->getAccounts();
+
+            if ($accounts) {
+                foreach ($accounts as $account) {
+                    $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
+                    if ($locations) {
+                        foreach($locations as $location) {
+                            if($location->locationKey->placeId == $BusinessID) {
+                                $objBusiness = new \stdClass();
+                                $objBusiness->name = $location->locationName;
+                                $objBusiness->external_location_id = $BusinessID;
+                                $objBusiness->url = $location->metadata->mapsUrl;
+                                $objBusiness->address = implode ("\r\n", (array)$location->address->addressLines);
+                                $objBusiness->postal_code = $location->address->postalCode;
+                                $objBusiness->locality = $location->address->locality;
+                                $objBusiness->country = $location->address->country;
+                                $objBusiness->state_province = $location->address->administrativeArea;
+                                $objBusiness->phone = $location->primaryPhone;
+
+                                break 2;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return $objBusiness;
+        }
+
         public function getGoogleMyBusinessLocations($LocationID) {
             $client = $this->getGoogleClient($LocationID);
 
