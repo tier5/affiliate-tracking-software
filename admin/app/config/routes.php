@@ -9,7 +9,7 @@ $router->add('/confirm/{code}/{email}', array(
     'action' => 'confirmEmail'
 ));
 
-$router->add('/reset-password/{code}/{email}', array(
+$router->add('/session/changePassword/{code}/{email}', array(
     'controller' => 'user_control',
     'action' => 'resetPassword'
 ));

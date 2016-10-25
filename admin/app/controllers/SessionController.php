@@ -647,9 +647,9 @@ class SessionController extends ControllerBase {
         }
 
         if (isset($_GET['q']) && $_GET['q'] == 's') {
-          print_r($_GET);
+          //print_r($_GET);
             $agency->assign(array(
-                'signup_page' => '', //go to the next page
+                'signup_page' => '0', //go to the next page
             ));
 
             if (!$agency->save()) {
@@ -684,6 +684,16 @@ class SessionController extends ControllerBase {
         $this->tag->setTitle('Review Velocity | Privacy');
     }
 
+
+    /**
+     * privacy page
+     */
+    public function changePasswordAction() {
+    	$this->view->setTemplateBefore('login');
+    	$this->tag->setTitle('Review Velocity | Change Password');
+    }
+    
+    
     /**
      * terms page
      */

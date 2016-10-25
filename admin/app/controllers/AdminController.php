@@ -219,7 +219,7 @@ class AdminController extends ControllerBase {
 
         if ($confirmation->user->mustChangePassword == 'Y') {
             $this->flash->success('The email was successfully confirmed. Now you must change your password');
-            return $this->response->redirect($this->_activeLanguage . '/users/changePassword');
+            return $this->response->redirect($this->_activeLanguage . '/session/changePassword');
         }
 
         $this->flash->success('The email was successfully confirmed');
