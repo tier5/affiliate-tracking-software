@@ -112,7 +112,7 @@
                     <div class="buttons">
                         <a class="btnLink" id="googleLink" href="<?=$objGoogleReviewSite->url ?: 'https://maps.google.com/?cid={$google->external_id}'; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
                         {% if GoogleMyBusinessConnected %}
-                            Successfully connected Google My Business Account!  <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Reconnect?</a><a href="/location/disconnectGoogle/<?=$location->location_id; ?>" class="btnSecondary" target="_blank" id="gmb_signin">Disconnect?</a>
+                            Successfully connected Google My Business Account!  <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Reconnect?</a><a href="/location/disconnectGoogle/<?=$location->location_id; ?>" class="btnSecondary" id="gmb_signin">Disconnect?</a>
                         {% else %}
                             <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Connect Google My Business account</a>
                         {% endif %}
@@ -131,19 +131,21 @@
                         </span>
                     </div>
                     <div class="field"><span class="name">Business Name:</span>
-                        <span id="facebookName" class="facebookfound"><?=$location->name; ?></span>
+                        <span id="facebookName" class="facebookfound"><?=$facebook->name ?: $location->name; ?></span>
                     </div>
-                    <div class="field bottom">
+                    <br />
+<!--                    <div class="field bottom">
                         <span class="name">Location:</span>
-                        <span id="facebookLocation" class="facebookfound" ><?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?></span>
+                        <span id="facebookLocation" class="facebookfound" ><?=$facebook->name ? $facebook->address : $location->address?> <?=$facebook->name ? $facebook->locality . ', ' : $location->locality . ', '?><?=$facebook->name ? $facebook->state_province : $location->state_province?> <?=$facebook->name ? $facebook->postal_code : $location->postal_code?></span>
                     </div>
+-->
                     <?php
                     $FacebookText = $FacebookConnected ? 'Re-' : '';
                   ?>
                   <div class="buttons">
                     <a href="/location/getAccessToken?location_id=<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">{{ FacebookText }}Authenticate Facebook</a>
                     {% if FacebookConnected %}
-                        <a href="/location/disconnectFacebook/<?=$location->location_id; ?>" class="btnSecondary" target="_blank" id="gmb_signin">Disconnect?</a>
+                        <a href="/location/disconnectFacebook/<?=$location->location_id; ?>" class="btnSecondary" id="gmb_signin">Disconnect?</a>
                     {% endif %}
                     </div>
                 </div>
@@ -181,7 +183,7 @@
             Update Location</a>
 
             {% if YelpConnected %}
-                <a href="/location/disconnectYelp/<?=$location->location_id; ?>" class="btnSecondary" target="_blank" id="gmb_signin">Disconnect?</a>
+                <a href="/location/disconnectYelp/<?=$location->location_id; ?>" class="btnSecondary" id="gmb_signin">Disconnect?</a>
             {% endif %}
 
             </div>

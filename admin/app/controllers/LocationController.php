@@ -75,10 +75,12 @@
                     break;
             }
             $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = {$Type}");
+
             if($objLocationReviewSite) {
                 $objLocationReviewSite->json_access_token = null;
                 $objLocationReviewSite->external_location_id = null;
                 $objLocationReviewSite->external_id = null;
+                $objLocationReviewSite->access_token = null;
                 $objLocationReviewSite->api_id = null;
                 $objLocationReviewSite->review_count = 0;
                 $objLocationReviewSite->original_count = 0;
@@ -95,6 +97,7 @@
                 $objLocationReviewSite->phone = '';
                 $objLocationReviewSite->save();
             }
+
             if($MethodName) {
                 $objReviewService = new \Vokuro\Services\Reviews();
                 $objReviewService->$MethodName($LocationID);
@@ -143,17 +146,24 @@
 
             // I get the business from facebook again because I don't want the client to see the access token so I use the business_id
             $tobjBusinesses = $face->getBusinessAccounts();
+
             $Picked = false;
+
             foreach($tobjBusinesses as $objBusiness) {
-                if($objBusiness->id = $BusinessID) {
+                if($objBusiness->id == $BusinessID) {
+
                     $Picked = true;
                     $objLocation->access_token = $objBusiness->access_token;
+                    $objLocation->name = $objBusiness->name;
+                    $objLocation->external_location_id = $objBusiness->id;
+
                     if($objLocation->save()) {
                         $this->flash->success("Your business has been successfully synced with our system.");
                         $objReviewService = new \Vokuro\Services\Reviews();
                         $objReviewService->DeleteFacebookReviews($LocationID);
                         $objReviewService->importFacebook($LocationID);
                     }
+                    break;
                 }
             }
 

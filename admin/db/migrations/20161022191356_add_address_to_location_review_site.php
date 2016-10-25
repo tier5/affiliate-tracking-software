@@ -28,12 +28,12 @@ class AddAddressToLocationReviewSite extends AbstractMigration
     public function up()
     {
         $table = $this->table('location_review_site');
-        $table->addColumn('address', 'string', array('limit' => 255))
-        ->addColumn('postal_code', 'string', array('limit' => 255))
-        ->addColumn('locality', 'string', array('limit' => 255))
-        ->addColumn('country', 'string', array('limit' => 255))
-        ->addColumn('state_province', 'string', array('limit' => 255))
-        ->addColumn('phone', 'string', array('limit' => 255))
+        $table->addColumn('address', 'string', array('limit' => 255, 'null' => true))
+        ->addColumn('postal_code', 'string', array('limit' => 255, 'null' => true))
+        ->addColumn('locality', 'string', array('limit' => 255, 'null' => true))
+        ->addColumn('country', 'string', array('limit' => 255, 'null' => true))
+        ->addColumn('state_province', 'string', array('limit' => 255, 'null' => true))
+        ->addColumn('phone', 'string', array('limit' => 255, 'null' => true))
 
             ->update();
     }
