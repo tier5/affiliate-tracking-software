@@ -85,7 +85,7 @@
 <div id="page-wrapper" class="create" style="display: none;">
     <form id="createemployeeform" class="register-form4" action="<?=((strpos($_SERVER['REQUEST_URI'],'location')>0)?'/users/createemployee2/'.$location_id:'/users/createemployee/'.(isset($subscription->subscription_id)?$subscription->subscription_id:'').(isset($_GET['code'])?'?code='.$_GET['code']:''))?>" method="post" style="display: block; padding-top: 0;">
         <input type="hidden" name="is_employee" value="Yes" />
-        <input type="hidden" name="type" value="User" />
+        <input type="hidden" name="userType" value="User" />
         <div class="closelink close"></div>
         <div class="col-md-12">
             <div class="title"><h3>Create Employee</h3></div>

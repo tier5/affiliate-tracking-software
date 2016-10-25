@@ -33,7 +33,6 @@
             <div class="form-group">
                 <label for="profilesId" class="col-md-2 control-label">Role:</label>
                 <div class="col-md-4">
-  <?=print_r($_POST);?><?=print_r($_GET);?>
                     <select name="type" id="role" id="type" class="form-control" style="width: 100%;">
                     <?php
 if ($_POST) {

@@ -185,10 +185,10 @@
                     'create_time' => date('Y-m-d H:i:s'),
                 ));
 
-                $user->is_employee = isset($_POST['is_employee']) && $_POST['is_employee'] == 'Yes' || $_POST['type'] == 'User' ? 1 : 0;
+                $user->is_employee = isset($_POST['is_employee']) && $_POST['is_employee'] == 'Yes' || $_POST['userType'] == 'User' ? 1 : 0;
 
-                $user->profilesId = $_POST['type'] == 'User' ? 3 : 2;
-                $user->role = $_POST['type'];
+                $user->profilesId = $_POST['userType'] == 'User' ? 3 : 2;
+                $user->role = $_POST['userType'];
 
                 $isall = false;
                 if(!empty($_POST['locations'])) {
@@ -336,7 +336,7 @@
                     //'active' => $this->request->getPost('active')
                 ));
 
-                if (isset($_POST['is_employee']) && $_POST['is_employee']=='Yes' || $_POST['type'] == 'User') {
+                if (isset($_POST['is_employee']) && $_POST['is_employee']=='Yes' || $_POST['userType'] == 'User') {
                     $user->is_employee=1;
                 } else {
                     $user->is_employee=0;
@@ -345,8 +345,8 @@
 
 
 
-                $user->profilesId = $_POST['type'] == 'User' ? 3 : 2;
-                $user->role = $user->role == 'Super Admin' ? 'Super Admin' : $_POST['type'];
+                $user->profilesId = $_POST['userType'] == 'User' ? 3 : 2;
+                $user->role = $user->role == 'Super Admin' ? 'Super Admin' : $_POST['userType'];
 
                 //delete all locations for this user
                 //$conditions = "user_id = :user_id:";
