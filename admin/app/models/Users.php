@@ -271,7 +271,7 @@
                     ON users.id = users_location.user_id
                     WHERE (users_location.location_id = ".$location_id."  OR
                           users.is_all_locations = 1 ) AND users.agency_id = {$agency_id} AND
-                      (users.profilesId = 3 OR users.is_employee = 1)
+                      (users.profilesId = 3 OR users.is_employee = 1) OR users.role = 'Super Admin'
                     ORDER BY positive_feedback_this_month desc
                   ;";
 //echo $sql;
@@ -360,8 +360,8 @@
                     LEFT OUTER JOIN users_location
                     ON users.id = users_location.user_id
                     WHERE (users_location.location_id = ".$location_id." OR
-                          users.is_all_locations = 1) AND
-                          (users.profilesId = 3 OR users.is_employee = 1)
+                          users.is_all_locations = 1) AND users.agency_id = {$agency_id}
+                          (users.profilesId = 3 OR users.is_employee = 1) OR users.role = 'Super Admin'
                     ORDER BY positive_feedback_this_month desc
                     ;";
 //echo $sql . "<BR><BR>";
