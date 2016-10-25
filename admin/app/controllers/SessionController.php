@@ -984,7 +984,15 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
+		if (isset($agency) && $agency->twilio_api_key == "") {
+			$conditions = "agency_id = :agency_id:";
+			$parameters = array("agency_id" => abs($agency->parent_id));
+			echo $parentAgencyId;
+			$agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+			$results = 'Using Parents twillio ID.';
+		} else {
+			$results = 'Twillio account not found.';
+		}
         //The message is saved, so send the SMS message now
         if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
             $results = 'The message was sent.';
