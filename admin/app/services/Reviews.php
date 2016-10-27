@@ -42,7 +42,7 @@
                 $objReview->delete();
         }
 
-        public function getGoogleClient($LocationID) {
+        public function getGoogleClient($LocationID, $RedirectToSession = 0) {
             $Domain = $this->config->application['environment'] == 'dev' ? $_SERVER['HTTP_HOST'] : 'getmobilereviews.com';
             $redirect_uri = "http://{$Domain}/location/googlemybusiness";
 
@@ -51,7 +51,7 @@
             $client->setAuthConfigFile(CLIENT_SECRET_PATH);
             $client->addScope("https://www.googleapis.com/auth/plus.business.manage");
             $client->setRedirectUri($redirect_uri);
-            $client->setState($LocationID);
+            $client->setState($LocationID . '|' . $RedirectToSession);
 
             // For retrieving the refresh token
             $client->setAccessType('offline');

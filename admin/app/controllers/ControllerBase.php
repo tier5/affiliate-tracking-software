@@ -508,7 +508,7 @@ class ControllerBase extends Controller {
                     )
                 );
             }
-            $this->view->total_reviews_this_month = $this->view->num_reviews_this_month - $this->view->total_reviews_last_month;
+            //$this->view->total_reviews_this_month = $this->view->num_reviews_this_month - $this->view->total_reviews_last_month;
 
 
             //find the location

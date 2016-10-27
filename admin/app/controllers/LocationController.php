@@ -104,22 +104,22 @@
             }
         }
 
-        public function disconnectYelpAction($LocationID) {
+        public function disconnectYelpAction($LocationID, $RedirectToSession) {
             $this->disconnectReviewSite($LocationID, \Vokuro\Models\Location::TYPE_YELP);
-            $this->response->redirect("/location/edit/{$LocationID}");
+            $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
         }
 
-        public function disconnectFacebookAction($LocationID) {
+        public function disconnectFacebookAction($LocationID, $RedirectToSession) {
             $this->disconnectReviewSite($LocationID, \Vokuro\Models\Location::TYPE_FACEBOOK);
-            $this->response->redirect("/location/edit/{$LocationID}");
+            $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
         }
 
-        public function disconnectGoogleAction($LocationID) {
+        public function disconnectGoogleAction($LocationID, $RedirectToSession) {
             $this->disconnectReviewSite($LocationID, \Vokuro\Models\Location::TYPE_GOOGLE);
-            $this->response->redirect("/location/edit/{$LocationID}");
+            $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
         }
 
-        public function pickGoogleBusinessAction($BusinessID, $LocationID) {
+        public function pickGoogleBusinessAction($BusinessID, $LocationID, $RedirectToSession = 0) {
             $objReviewsService = new \Vokuro\Services\Reviews();
             $this->view->objGoogleBusiness = $objReviewsService->getGoogleMyBusinessData($LocationID, $BusinessID);
 
@@ -134,10 +134,10 @@
             $objReviewService->DeleteGoogleReviews($LocationID);
             $objReviewService->importGoogleMyBusinessReviews($LocationID);
 
-            $this->response->redirect("/location/edit/{$LocationID}");
+            $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
         }
 
-        public function pickFacebookBusinessAction($BusinessID, $LocationID) {
+        public function pickFacebookBusinessAction($BusinessID, $LocationID, $RedirectToSession = 0) {
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
 
             $face = new FacebookScanning();
@@ -170,18 +170,27 @@
             if(!$Picked)
                 $this->flash->error("Your business could not be found in the subsequent facebook search.  Please contact customer support.");
 
-            $this->response->redirect("/location/edit/{$LocationID}");
+            if($RedirectToSession)
+                $this->response->redirect("/session/signup3");
+            else
+                $this->response->redirect("/location/edit/{$LocationID}");
         }
 
-        public function getGooglePagesAction($LocationID) {
+        public function getGooglePagesAction($LocationID, $RedirectToSession = 0) {
+            if($RedirectToSession) {
+                $this->view->setTemplateBefore('signup');
+                $this->tag->setTitle('Review Velocity | Sign up | Step 2 | Add Location');
+                $this->view->current_step = 2;
+            }
             $objReviewsService = new \Vokuro\Services\Reviews();
 
+            $this->view->RedirectToSession = $RedirectToSession;
             $this->view->tobjBusinesses = $objReviewsService->getGoogleMyBusinessLocations($LocationID);
             $this->view->LocationID = $LocationID;
             $this->view->pick('location/getFacebookPages');
         }
 
-        public function getFacebookPagesAction($LocationID) {
+        public function getFacebookPagesAction($LocationID, $RedirectToSession = 0) {
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
 
             $face = new FacebookScanning();
@@ -238,7 +247,7 @@
         /**
          * Default index view
          */
-        public function indexAction($DisplayLocationsPopup = Null) {
+        public function indexAction($DisplayLocationsPopup = null) {
             $this->view->DisplayLocationsPopup = $DisplayLocationsPopup;
 
             //get the user id
@@ -308,12 +317,10 @@
          * Creates a Location
          */
         public function createAction($DisplayLocationsPopup = false) {
-            //add needed css
             $this->assets
                 ->addCss('css/main.css')
                 ->addCss('css/signup.css');
 
-            //get the user id, to find the settings
             $identity = $this->auth->getIdentity();
 
             // If there is no identity available the user is redirected to index/index
@@ -414,6 +421,7 @@
                     }
                     $this->flash->success("The location was created successfully");
                     $this->updateSubscriptionPlan();
+
 
                     return $this->response->redirect('/location/edit/' . $loc->location_id . '/1');
                     //return $this->response->redirect('/location/create2/' . ($loc->location_id > 0 ? $loc->location_id : ''));
@@ -628,7 +636,13 @@
         /**
          * Saves the location from the 'edit' action
          */
-        public function editAction($location_id, $include_customize_survey = 0) {
+        public function editAction($location_id, $include_customize_survey = 0, $ComingFromSignup = 0) {
+            if($ComingFromSignup) {
+                $this->view->setTemplateBefore('signup');
+                $this->tag->setTitle('Review Velocity | Sign up | Step 2 | Add Location');
+                $this->view->current_step = 2;
+            }
+            $this->view->ComingFromSignup = $ComingFromSignup;
             $this->view->include_customize_survey = $include_customize_survey;
 
             $this->assets
@@ -691,7 +705,7 @@
 
             $objReviewService = new \Vokuro\Services\Reviews();
 
-            $client = $objReviewService->getGoogleClient($location_id);
+            $client = $objReviewService->getGoogleClient($location_id, $ComingFromSignup);
             $credentialsPath = CREDENTIALS_PATH;
 
             if (isset($_GET['code'])) {
@@ -812,8 +826,12 @@
 
                     $this->auth->setLocationList();
 
-                    if($this->request->getPost('GoToNextStep'))
-                        return $this->response->redirect('/location/create2/' . $loc->location_id);
+                    if($ComingFromSignup) {
+                        $this->response->redirect('/session/signup3');
+                    } else {
+                        if ($this->request->getPost('GoToNextStep'))
+                            return $this->response->redirect('/location/create2/' . $loc->location_id);
+                    }
 
                     $this->flash->success("The location was updated successfully");
                     Tag::resetInput();
@@ -1125,7 +1143,7 @@
 
         protected $fb;
 
-        public function getAccessTokenAction() {
+        public function getAccessTokenAction($LocationID, $RedirectToSession = 0) {
             require_once __DIR__ . "/../library/Facebook/autoload.php";
             require_once __DIR__ . "/../library/Facebook/Facebook.php";
             require_once __DIR__ . "/../library/Facebook/FacebookApp.php";
@@ -1154,7 +1172,6 @@
             require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookAuthenticationException.php";
             require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookResponseException.php";
 
-            $LocationID = $_GET['location_id'];
             /*$this->fb = new \Services\Facebook\Facebook(array(
               'app_id' => '628574057293652',
               'app_secret' => '95e89ebac7173ba0980c36d8aa5777e4'
@@ -1196,7 +1213,7 @@
                     $Obj->save();
                     $this->flash->success("The Facebook code was saved");
 
-                    $this->response->redirect("/location/getFacebookPages/{$LocationID}");
+                    $this->response->redirect("/location/getFacebookPages/{$LocationID}/{$RedirectToSession}");
 
                     //look for a facebook review configuration
                     /*$conditions = "location_id = :location_id:";
@@ -1228,7 +1245,7 @@
         }
 
         protected function getRedirectUrl($LocationID) {
-            return 'http://' . $_SERVER['HTTP_HOST'] . "/location/getAccessToken?location_id={$LocationID}";
+            return 'http://' . $_SERVER['HTTP_HOST'] . "/location/getAccessToken/{$LocationID}/1";
         }
 
 
@@ -1488,9 +1505,9 @@
             /*$identity = $this->auth->getIdentity();
             $LocationID = $identity['location_id'];*/
 
-            $LocationID = $_GET['state'];
+            list($LocationID, $RedirectSession) = explode('|', $_GET['state']);
             $objReviewService = new \Vokuro\Services\Reviews();
-            $client = $objReviewService->getGoogleClient($LocationID);
+            $client = $objReviewService->getGoogleClient($LocationID, $RedirectSession);
 
 
             /************************************************
@@ -1532,6 +1549,6 @@
             $objReviewService = new \Vokuro\Services\Reviews();
             $objReviewService->DeleteGoogleReviews($LocationID);
 
-            return $this->response->redirect("/location/getGooglePages/{$LocationID}");
+            return $this->response->redirect("/location/getGooglePages/{$LocationID}/{$RedirectSession}");
         }
     }

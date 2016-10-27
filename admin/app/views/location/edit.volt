@@ -1,65 +1,74 @@
 <!-- BEGIN SAMPLE FORM PORTLET-->
+<style type="text/css">
+    .pnlAddLocation.short {
+        min-height: 230px !important;
+    }
+</style>
 <div class="portlet light bordered">
-    <div class="portlet-title">
-        <div class="">
-            <a href="/location" class="btnLink" style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;">Back</a>
-            <i class="icon-pencil fa-user"></i>
-            <span class="caption-subject bold uppercase" style="display: inline-block; margin-left: 8px; margin-top: 11px;"> Edit </span>
+    {% if !ComingFromSignup %}
+        <div class="portlet-title">
+            <div class="">
+                <a href="/location" class="btnLink" style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;">Back</a>
+                <i class="icon-pencil fa-user"></i>
+                <span class="caption-subject bold uppercase" style="display: inline-block; margin-left: 8px; margin-top: 11px;"> Edit </span>
+            </div>
         </div>
-    </div>
+    {% endif %}
     <div class="portlet-body form">
         {{ content() }}
-        <form id="hiddenLocationForm" class="form-horizontal" role="form" method="post" autocomplete="off">
-
-            <div class="form-group">
-                <label for="name" class="col-md-2 control-label">Location Name:</label>
-                <div class="col-md-10" style="padding-top: 8px;">
-                    <input class="col-md-8 form-control" type="name" autocomplete="off" placeholder="Location Name" style="width: 40%;" id="name" name="name" value="<?=(isset($_POST['name'])?$_POST[" name"]:(isset($location->name)?$location->name:''))?>"
-                    />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="name" class="col-md-2 control-label">Region</label>
-                <div class="col-md-10" style="padding-top: 8px;">
-                    <select name="region_id" id="region_id" class="col-md-8 form-control" style="width: 40%;">
-                        <option value="">None</option>
-                        <?php
-          foreach($regions as $data) {
-            ?>
-                        <option value="<?=$data->region_id?>"
-                        <?=(isset($_POST['region_id']) && $_POST['region_id']==$data->
-                        region_id?'selected="selected"':($data->region_id==$location->region_id?'selected="selected"':''))?>><?=$data->
-                        name?></option>
-                        <?php
-          }
-          ?>
-                    </select>&nbsp;&nbsp;
-                    <a href="#" onclick="$('#createregion').show();$('.overlay').show();" class="btnLink">Create
-                        Region</a>
-                    <a href="#" id="btnDeleteRegion" class="btnLink">Delete Region</a>
-
-                    <div id="createregion" style="display: none;">
-                        <div class="closelink close" onclick="$('#createregion').hide();"></div>
-                        <div class="col-md-12">
-                            <div class="title"><h3>Create Region</h3></div>
-                            <div class="field"><span class="name">Region Name:</span>
-                                <input type="text" value="" name="regionname" id="regionname"/>
-                                <input id="btnCreateRegion" type="button" class="btnLink" value="Save"/></div>
-                        </div>
+        <form id="hiddenLocationForm" class="form-horizontal" role="form" method="post" autocomplete="off" {% if ComingFromSignup %} action="/session/signup3" {% endif %}>
+            {% if !ComingFromSignup %}
+                <div class="form-group">
+                    <label for="name" class="col-md-2 control-label">Location Name:</label>
+                    <div class="col-md-10" style="padding-top: 8px;">
+                        <input class="col-md-8 form-control" type="name" autocomplete="off" placeholder="Location Name" style="width: 40%;" id="name" name="name" value="<?=(isset($_POST['name'])?$_POST[" name"]:(isset($location->name)?$location->name:''))?>"
+                        />
                     </div>
-                    <!-- END FORM -->
-
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="name" class="col-md-2 control-label">Address:</label>
-                <div class="col-md-10" style="padding-top: 8px;">
-                    <span class="googleAddress"><?=$location->address?> <?=$location->locality?>, <?=$location->
-                        state_province?> <?=$location->postal_code?></span>
+                <div class="form-group">
+                    <label for="name" class="col-md-2 control-label">Region</label>
+                    <div class="col-md-10" style="padding-top: 8px;">
+                        <select name="region_id" id="region_id" class="col-md-8 form-control" style="width: 40%;">
+                            <option value="">None</option>
+                            <?php
+              foreach($regions as $data) {
+                ?>
+                            <option value="<?=$data->region_id?>"
+                            <?=(isset($_POST['region_id']) && $_POST['region_id']==$data->
+                            region_id?'selected="selected"':($data->region_id==$location->region_id?'selected="selected"':''))?>><?=$data->
+                            name?></option>
+                            <?php
+              }
+              ?>
+                        </select>&nbsp;&nbsp;
+                        <a href="#" onclick="$('#createregion').show();$('.overlay').show();" class="btnLink">Create
+                            Region</a>
+                        <a href="#" id="btnDeleteRegion" class="btnLink">Delete Region</a>
+
+                        <div id="createregion" style="display: none;">
+                            <div class="closelink close" onclick="$('#createregion').hide();"></div>
+                            <div class="col-md-12">
+                                <div class="title"><h3>Create Region</h3></div>
+                                <div class="field"><span class="name">Region Name:</span>
+                                    <input type="text" value="" name="regionname" id="regionname"/>
+                                    <input id="btnCreateRegion" type="button" class="btnLink" value="Save"/></div>
+                            </div>
+                        </div>
+                        <!-- END FORM -->
+
+                    </div>
                 </div>
-            </div>
+
+
+                <div class="form-group">
+                    <label for="name" class="col-md-2 control-label">Address:</label>
+                    <div class="col-md-10" style="padding-top: 8px;">
+                        <span class="googleAddress"><?=$location->address?> <?=$location->locality?>, <?=$location->
+                            state_province?> <?=$location->postal_code?></span>
+                    </div>
+                </div>
+            {% endif %}
 
             <!-- BEGIN FORM -->
             <div class="register-form" id="locationform1" style="display: none;">
@@ -93,7 +102,7 @@
 
             <div class="register-form" id="hiddenForm" style="display: block;">
                 <div class="pnlAddLocation short col-md-4">
-                    <div class="title">GOOGLE: <span class="title-answer">Found</span></div>
+                    <div class="title">GOOGLE: <span class="title-answer">Successfully connected</span></div>
                     <div class="field"><span class="name">Business Name:</span> <span id="googleName">
                         <?=$objGoogleReviewSite->name ?: $location->name; ?>
 
@@ -112,9 +121,9 @@
                     <div class="buttons">
                         <a class="btnLink" id="googleLink" href="<?=$objGoogleReviewSite->url ?: 'https://maps.google.com/?cid={$google->external_id}'; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
                         {% if GoogleMyBusinessConnected %}
-                            Successfully connected Google My Business Account!  <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Reconnect?</a><a href="/location/disconnectGoogle/<?=$location->location_id; ?>" class="btnSecondary" id="gmb_signin">Disconnect?</a>
+                             <a href="/location/disconnectGoogle/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
                         {% else %}
-                            <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Connect Google My Business account</a>
+                            <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Authenticate Google My Business</a>
                         {% endif %}
                     </div>
                 </div>
@@ -130,22 +139,23 @@
 
                         </span>
                     </div>
+                    {% if FacebookConnected %}
                     <div class="field"><span class="name">Business Name:</span>
-                        <span id="facebookName" class="facebookfound"><?=$facebook->name ?: $location->name; ?></span>
+                        <span id="facebookName" class="facebookfound"><?=$facebook->name; ?></span>
                     </div>
+                    {% endif %}
                     <br />
 <!--                    <div class="field bottom">
                         <span class="name">Location:</span>
                         <span id="facebookLocation" class="facebookfound" ><?=$facebook->name ? $facebook->address : $location->address?> <?=$facebook->name ? $facebook->locality . ', ' : $location->locality . ', '?><?=$facebook->name ? $facebook->state_province : $location->state_province?> <?=$facebook->name ? $facebook->postal_code : $location->postal_code?></span>
                     </div>
 -->
-                    <?php
-                    $FacebookText = $FacebookConnected ? 'Re-' : '';
-                  ?>
-                  <div class="buttons">
-                    <a href="/location/getAccessToken?location_id=<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">{{ FacebookText }}Authenticate Facebook</a>
+                  <div class="buttons" {% if FacebookConnected %} style="margin-top: 43px" {% else %} style="margin-top: 70px;" {% endif %}>
+                    {% if !FacebookConnected %}
+                    <a href="/location/getAccessToken?location_id=<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
+                    {% endif %}
                     {% if FacebookConnected %}
-                        <a href="/location/disconnectFacebook/<?=$location->location_id; ?>" class="btnSecondary" id="gmb_signin">Disconnect?</a>
+                        <a href="/location/disconnectFacebook/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
                     {% endif %}
                     </div>
                 </div>
@@ -159,7 +169,7 @@
 
     <div class="pnlAddLocation short col-md-4">
         <div class="title">YELP: <span class="title-answer"><span class="yelpnotfound" <?=(isset($yelp) && isset($yelp->
-                external_id) && $yelp->external_id != ''?' style="display: none;"':'')?>>Not </span>Found</span></div>
+                external_id) && $yelp->external_id != ''?' style="display: none;"':'')?>>Not </span>Successfully connected</span></div>
         <div class="field"><span class="name">Business Name:</span>
             <span id="yelpName" class="yelpfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id !=
             ''?'':' style="display: none;"')?>><?=$location->name?></span>
@@ -183,7 +193,7 @@
             Update Location</a>
 
             {% if YelpConnected %}
-                <a href="/location/disconnectYelp/<?=$location->location_id; ?>" class="btnSecondary" id="gmb_signin">Disconnect?</a>
+                <a href="/location/disconnectYelp/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
             {% endif %}
 
             </div>
@@ -233,9 +243,15 @@
             <button type="button" id="register-submit-btn" class="btnsignup uppercase" onclick="CustomizeButton();" style="width: 50% !important;">Next: Customize Survey</button>
         {%  endif %}
     </div>
-    <div class="col-xs-6">
-        <input type="submit" class="btnLink" value="Save" style="height: 42px; line-height: 14px; margin-left: 20%; padding: 15px 36px; text-align: center;"/>
-    </div>
+    {% if ComingFromSignup %}
+        <div class="form-actions col-md-12">
+            <button type="button" onclick="window.location.href = '/session/signup3';" id="register-submit-btn" class="btnsignup uppercase">Next: Customize Survey</button>
+        </div>
+    {% else %}
+        <div class="col-xs-6">
+            <input type="submit" class="btnLink" value="Save" style="height: 42px; line-height: 14px; margin-left: 20%; padding: 15px 36px; text-align: center;"/>
+        </div>
+    {% endif %}
 </div>
 <div style="clear: both;">&nbsp;</div>
 <input type="hidden" name="GoToNextStep" value="0" id="GoToNextStep"/>
@@ -299,10 +315,8 @@
     jQuery(document).ready(function ($) {
 
         // Scanning form validation and ajax submit
-
         $('#register-submit-btn').on('click', function (e) {
             e.preventDefault();
-//console.log('test');
             $.ajax({
                 type: 'POST',
                 beforeSend: function () {
