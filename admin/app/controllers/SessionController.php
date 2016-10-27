@@ -954,6 +954,21 @@ class SessionController extends ControllerBase {
         }
     }
 
+    
+    public function checkForAvailableEmailAction() {
+    	
+    	$testThisEmail =  $_POST['email'];
+    	//find the User
+    	$conditions = "email = :email:";
+    	$parameters = array("email" => $testThisEmail);
+    	$Users = Users::findfirst(array($conditions, "bind" => $parameters));
+    	if (isset($Users) && $Users->id > 0) {
+    		echo  0;
+    	} else {
+    		echo  1;
+    	}
+    }
+    
     /**
      * Sends a review invite to the selected location
      */

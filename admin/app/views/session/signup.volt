@@ -32,7 +32,8 @@
         </div>
         <div class="form-group">
             <label class="control-label">Email:</label>
-            <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" value="<?=(isset($_POST['email'])?$_POST["email"]:'')?>" required />
+            <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" id="email" name="email" value="<?=(isset($_POST['email'])?$_POST["email"]:'')?>" required />
+        	<div id='email_availability_result'></div>
         </div>
         <div class="form-group">
             <label class="control-label">Password:</label>
@@ -65,4 +66,9 @@
         else
             $('#register-form').submit();
     });
-</script>
+    
+
+
+
+  </script>
+  
