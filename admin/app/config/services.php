@@ -91,6 +91,7 @@ $di->set('modelsMetadata', function () use ($config) {
 $di->set('session', function () {
      // session_set_cookie_params(0, '/', '.getmobilereviews.com');
 	ini_set('session.cookie_domain', substr($_SERVER['SERVER_NAME'],strpos($_SERVER['SERVER_NAME'],"."),100));
+
     $session = new SessionAdapter();
     $session->start();
     return $session;

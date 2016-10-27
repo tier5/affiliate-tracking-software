@@ -153,6 +153,13 @@
             updateBusinessName(this);
         });
 
+        $(window).keydown(function(event) {
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
 
         // Scanning form validation and ajax submit
         $("#locationform1").validate({
@@ -173,7 +180,6 @@
                 }
             },
             submitHandler: function (form) {
-//console.log('test');
                 $.ajax({
                     type: 'POST',
                     beforeSend: function () {

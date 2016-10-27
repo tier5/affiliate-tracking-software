@@ -352,12 +352,10 @@ class SessionController extends ControllerBase {
             $this->view->disable();
             return;
         }
-        // Query binding parameters with string placeholders
         $conditions = "id = :id:";
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-        //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-        //find the agency
+
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -451,7 +449,7 @@ class SessionController extends ControllerBase {
 
                 $this->auth->setLocation($loc->location_id);
 
-                return $this->response->redirect('/session/signup3/' . ($subscription_id > 0 ? $subscription_id : ''));
+                return $this->response->redirect('/location/edit/' . $loc->location_id . '/0/1');
             }
         }
 
@@ -465,12 +463,9 @@ class SessionController extends ControllerBase {
      */
     /* public function signup3Action($subscription_id = 0) { */
     public function signup3Action($pricingProfileToken = 0) {
-
-
         $this->view->setTemplateBefore('signup');
         $this->tag->setTitle('Review Velocity | Sign up | Step 3 | Customize Survey');
 
-        //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
         // If there is no identity available the user is redirected to index/index
         if (!is_array($identity)) {
@@ -482,14 +477,11 @@ class SessionController extends ControllerBase {
         $conditions = "id = :id:";
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-        //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-        //find the agency
+
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
-
-        //find the location
         $conditions = "location_id = :location_id:";
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
         $location = Location::findFirst(array($conditions, "bind" => $parameters));
@@ -508,8 +500,7 @@ class SessionController extends ControllerBase {
             if (!$location->save()) {
                 $this->flash->error($location->getMessages());
             } else {
-                //increment signup page value
-                $agency->signup_page = 4; //go to the next page
+                $agency->signup_page = 4;
                 $agency->save();
                 return $this->response->redirect('/session/signup4/' . ($subscription_id > 0 ? $subscription_id : ''));
             }
