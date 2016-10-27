@@ -2,10 +2,60 @@
 
 <header class="jumbotron subhead" id="reviews">
     <div id="subscription-data" class="hero-unit" data-subscription="{{ subscriptionPlanData | json_encode | escape }}">
-        <div class="row">
-            {% if showSmsQuota %}
-                {{ partial("shared/smsQuota", smsQuotaParams) }}
-            {% endif %}
+            <div class="col-md-5 col-sm-5">
+                <!-- BEGIN PAGE TITLE-->
+                <h3 class="page-title"> Subscription </h3>
+                <!-- END PAGE TITLE-->
+            </div>
+            <?php
+      if (isset($this->session->get('auth-identity')['agencytype']) &&
+            $this->session->get('auth-identity')['agencytype'] == 'business') {
+            if ($is_upgrade) {
+            $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) *
+            100, 0, '.', ''):100);
+            if ($percent > 100) $percent = 100;
+            ?>
+            <div class="col-md-7 col-sm-7">
+                <div class="sms-chart-wrapper">
+                    <div class="title">SMS Messages Sent</div>
+                    <div class="bar-wrapper">
+                        <div class="bar-background"></div>
+                        <div class="bar-filled" style="width: {{ percent }}%;"></div>
+                        <div class="bar-percent" style="padding-left: {{ percent }}%;">{{ percent }}%</div>
+                        <div class="bar-number" style="margin-left: {{ percent }}%;">
+                            <div class="ball">{{ sms_sent_this_month_total }}</div>
+                            <div class="bar-text" {{ percent > 60 ? 'style="display: none;"':'' }} >This Month</div>
+                        </div>
+                    </div>
+                    <div class="end-title">{{ total_sms_month }}<br/><span class="goal">Allowed</span></div>
+                </div>
+            </div>
+            <?php
+        } else {
+          $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0,
+            '.', ''):100);
+            if ($percent > 100) $percent = 100;
+            ?>
+            <div class="col-md-7 col-sm-7">
+                <div class="sms-chart-wrapper">
+                    <div class="title">SMS Messages Sent</div>
+                    <div class="bar-wrapper">
+                        <div class="bar-background"></div>
+                        <div class="bar-filled" style="width: {{ percent }}%;"></div>
+                        <div class="bar-percent" style="padding-left: {{ percent }}%;"><?=$percent?>%</div>
+                        <div class="bar-number" style="margin-left: {{ percent }}%;">
+                            <div class="ball"><?=$sms_sent_this_month?></div>
+                            <div class="bar-text" {{ percent > 60 ? 'style="display: none;"':'' }}>This Month</div>
+                        </div>
+                    </div>
+                    <div class="end-title">{{ total_sms_needed }}<br/><span class="goal">Goal</span></div>
+                </div>
+            </div>
+            <?php
+        }
+      } //end checking for business vs agency
+      ?>
+
         </div>
 
         <div class="row">
