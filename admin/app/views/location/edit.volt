@@ -152,7 +152,7 @@
 -->
                   <div class="buttons" {% if FacebookConnected %} style="margin-top: 43px" {% else %} style="margin-top: 70px;" {% endif %}>
                     {% if !FacebookConnected %}
-                    <a href="/location/getAccessToken?location_id=<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
+                    <a href="/location/getAccessToken/<?=$location->location_id; ?>/{{ ComingFromSignup }}" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
                     {% endif %}
                     {% if FacebookConnected %}
                         <a href="/location/disconnectFacebook/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>

@@ -170,10 +170,8 @@
             if(!$Picked)
                 $this->flash->error("Your business could not be found in the subsequent facebook search.  Please contact customer support.");
 
-            if($RedirectToSession)
-                $this->response->redirect("/session/signup3");
-            else
-                $this->response->redirect("/location/edit/{$LocationID}");
+
+            $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
         }
 
         public function getGooglePagesAction($LocationID, $RedirectToSession = 0) {
@@ -203,6 +201,7 @@
 
             $this->view->tobjBusinesses = $tobjBusinesses;
             $this->view->LocationID = $LocationID;
+            $this->view->RedirectToSession = $RedirectToSession;
         }
 
 
@@ -1172,28 +1171,20 @@
             require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookAuthenticationException.php";
             require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookResponseException.php";
 
-            /*$this->fb = new \Services\Facebook\Facebook(array(
-              'app_id' => '628574057293652',
-              'app_secret' => '95e89ebac7173ba0980c36d8aa5777e4'
-            ));*/
-
-            /*$this->fb = new \Services\Facebook\Facebook(array(
-                'app_id' => '1650142038588223',
-                'app_secret' => 'b1c2cb9c1cbb774ea35eb68de725ee45'
-            ));*/
-
             $this->fb = new \Services\Facebook\Facebook(array(
-                'app_id' => '1923583701202687',
-                'app_secret' => '7682cb496e086c19bff195edf300dbae'
+                'app_id' => $this->config->facebook['app_id'],
+                'app_secret' => $this->config->facebook['app_secret']
             ));
             //check for a code
+
             if (isset($_GET['code']) && $_GET['code'] != '') {
                 //we have a code, so proccess it now
                 try {
                     $accessToken = $this->fb->getOAuth2Client()->getAccessTokenFromCode(
                         $_GET['code'],
-                        $this->getRedirectUrl($LocationID)
+                        $this->getRedirectUrl($LocationID, $RedirectToSession)
                     );
+
                     $accessTokenLong = $this->fb->getOAuth2Client()->getLongLivedAccessToken($accessToken);
 
                     $accessToken = $accessTokenLong->getValue();
@@ -1232,8 +1223,8 @@
                 //else we have no code, so redirect the user to get one
                 $helper = $this->fb->getRedirectLoginHelper();
 
-                $url = $helper->getLoginUrl($this->getRedirectUrl($LocationID), array('manage_pages')) . '&auth_type=reauthenticate';
-                echo '<p>' . $url . '</p>';
+                $url = $helper->getLoginUrl($this->getRedirectUrl($LocationID, $RedirectToSession), array('manage_pages'));// . '&auth_type=reauthenticate';
+                //echo '<p>' . $url . '</p>';
 
                 $this->response->redirect($url);
                 $this->view->disable();
@@ -1244,8 +1235,8 @@
             //exit;
         }
 
-        protected function getRedirectUrl($LocationID) {
-            return 'http://' . $_SERVER['HTTP_HOST'] . "/location/getAccessToken/{$LocationID}/1";
+        protected function getRedirectUrl($LocationID, $RedirectToSession=0) {
+            return 'http://' . $_SERVER['HTTP_HOST'] . "/location/getAccessToken/{$LocationID}/{$RedirectToSession}";
         }
 
 

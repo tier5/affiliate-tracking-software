@@ -53,6 +53,10 @@ return new \Phalcon\Config(array(
         'secret_key'        => '',
         'publishable_key'   => '',
     ],
+    'facebook' => [
+        'app_id'        => '',
+        'app_secret'    => ''
+    ],
     'twilio' => [
         'twilio_auth_token'         => '',
         'twilio_auth_messaging_sid' => '',
