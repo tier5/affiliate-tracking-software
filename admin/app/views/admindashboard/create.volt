@@ -136,7 +136,7 @@
     jQuery(document).ready(function ($) {
 
         $('#send-registration-email-control').change(function () {
-            if ($(this).val() === 'Unpaid') {
+            if ($(this).val() == 0) {
                 $(".free_subscription_pricing_plan").addClass('show');
             } else {
                 $(".free_subscription_pricing_plan").removeClass('show');
@@ -144,7 +144,7 @@
         });
 
         $('#subscription_pricing_plan_id').change(function () {
-            if ($(this).val() === 'Unpaid') {
+            if ($(this).val() == 0) {
                 $(".free_subscription_pricing_plan").addClass('show');
             } else {
                 $(".free_subscription_pricing_plan").removeClass('show');

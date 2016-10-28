@@ -88,9 +88,9 @@ class ControllerBase extends Controller {
 
             }
 
-            $SD_Parts = explode('.', $_SERVER['HTTP_HOST']);
-            $Subdomain = $SD_Parts[0];
-
+    //        $SD_Parts = explode('.', $_SERVER['HTTP_HOST']);
+         //   $Subdomain = $SD_Parts[0];
+//
             $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
             $this->view->ReachedMaxSMS = $objSubscriptionManager->ReachedMaxSMS($agency->agency_id, $this->session->get('auth-identity')['location_id']);
 

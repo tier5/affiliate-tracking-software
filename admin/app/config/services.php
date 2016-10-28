@@ -89,7 +89,9 @@ $di->set('modelsMetadata', function () use ($config) {
  * Start the session the first time some component request the session service
  */
 $di->set('session', function () {
-    //session_set_cookie_params(0, '/', '.getmobilereviews.com');
+     // session_set_cookie_params(0, '/', '.getmobilereviews.com');
+	ini_set('session.cookie_domain', substr($_SERVER['SERVER_NAME'],strpos($_SERVER['SERVER_NAME'],"."),100));
+
     $session = new SessionAdapter();
     $session->start();
     return $session;

@@ -19,7 +19,7 @@
     <div class="row" style="margin-left: 2px;">
         <div class="col-md-6 col-sm-6" style="margin-top: 30px;">
             <div class="form-group">
-                <label class="control-label">Business Name:</label>
+                <label class="control-label">Location Name:</label>
                 <input
                   class="form-control placeholder-no-fix"
                   type="name"
@@ -88,7 +88,7 @@ style="margin: 4px;"
                     if ( (isset($location->sms_text_message_default)) ) {
                       echo $location->sms_text_message_default;
                     } else {
-                      echo "{name}, thank you for visiting {business-name} we'd appreciate your feedback please click the link below.  Thanks! {link}";
+                      echo "{name}, thank you for visiting {location-name} we'd appreciate your feedback please click the link below.  Thanks! {link}";
                     }
                   }
                 ?></textarea>
@@ -267,7 +267,9 @@ style="margin: 4px;"
                 "body": $('#sms_text_message_default').val(),
                 "name": $('#name').val(),
                 "cell_phone": $('#cell_phone').val(),
-                "id": '<?=$id?>'
+                "id": '<?=$id?>',
+                "location_id": '<?=$location_id?>'
+                
             };
             $.ajax({
                 url: "/session/sendsms",

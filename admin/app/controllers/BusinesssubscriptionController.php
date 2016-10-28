@@ -70,7 +70,7 @@ class BusinessSubscriptionController extends ControllerBase {
             }
             $this->view->smsQuotaParams = $smsQuotaParams;
         }
-
+        $this->getSMSReport();
         /* Get subscription paramaters */
         $userId = $userManager->getUserId($this->session);
         $objUser = \Vokuro\Models\Users::findFirst('id = ' . $userId);

@@ -33,11 +33,11 @@
             <div class="form-group">
                 <label for="profilesId" class="col-md-2 control-label">Role:</label>
                 <div class="col-md-4">
-                    <select name="type" id="role" id="type" class="form-control" style="width: 100%;">
+                    <select name="userType" id="userType" class="form-control" style="width: 100%;">
                     <?php
 if ($_POST) {
-  $AdminSelected = $_POST['type'] == 'Admin' ? 'selected' : '';
-  $UserSelected = $_POST['type'] == 'User' ? 'selected' : '';
+  $AdminSelected = $_POST['userType'] == 'Admin' ? 'selected' : '';
+  $UserSelected = $_POST['userType'] == 'User' ? 'selected' : '';
 } else {
   $UserSelected = $_GET['create_employee'] == '1' ? 'selected' : '';
 }
