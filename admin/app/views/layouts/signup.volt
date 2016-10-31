@@ -114,7 +114,7 @@ if (isset($main_color_setting)) {
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script type="text/javascript" src="/js/vendor/minicolors/jquery.minicolors.js"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
-        <script src="/js/login.js"></script>
+        <script src="/js/signup.js"></script>
 </footer>
 </body>
 

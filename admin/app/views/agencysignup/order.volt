@@ -23,28 +23,65 @@
             <div class="col-xs-12">
                 <div class="portlet light bordered dashboard-panel">
                     <div class="row contact-row">
-                        <div class="col-xs-5 col-lg-3"><label>First Name</label><span class="required">*</span></div>
-                        <div class="col-xs-7 col-lg-9"><input type="text" class="form-control" placeholder="Please enter your first name" name="FirstName" value="{{ FirstName }}" required /></div>
+                        <div class="col-xs-5 col-lg-3">
+                        	<label>First Name</label>
+                        	<span class="required">*</span>
+                        </div>
+                        <div class="col-xs-7 col-lg-9">
+                        	<input type="text" maxlength="30" class="form-control" placeholder="Please enter your first name" name="FirstName" value="{{ FirstName }}" required />
+                        </div>
                     </div>
                     <div class="row contact-row">
-                        <div class="col-xs-5 col-lg-3"><label>Last Name</label><span class="required">*</span></div>
-                        <div class="col-xs-7 col-lg-9"><input type="text" class="form-control" placeholder="Please enter your last name" name="LastName" value="{{ LastName }}" required /></div>
+                        <div class="col-xs-5 col-lg-3">
+                        	<label>Last Name</label>
+                        	<span class="required">*</span>
+                        </div>
+                        <div class="col-xs-7 col-lg-9">
+                        	<input type="text" maxlength="30" class="form-control" placeholder="Please enter your last name" name="LastName" value="{{ LastName }}" required />
+                        </div>
                     </div>
                     <div class="row contact-row">
-                        <div class="col-xs-5 col-lg-3"><label>Email</label><span class="required">*</span></div>
-                        <div class="col-xs-7 col-lg-9"><input type="email" class="form-control" placeholder="Please enter your email" name="OwnerEmail" value="{{ OwnerEmail }}" required /></div>
+                        <div class="col-xs-5 col-lg-3">
+                        	<label class="hidden-xs" >Email
+                        		<span class="required">*</span></label>
+                        		<span style="color:red; font-size:80%; float: right,bottom;  white-space:nowrap;" id="Email_availability_result"></span>
+                      
+                        </div>
+                        <div class="col-xs-7 col-lg-9">
+                        	<input type="text" id="OwnerEmail" maxlength="50" class="form-control" placeholder="Please enter your email" name="OwnerEmail" value="{{ OwnerEmail }}" required />
+                        </div>
                     </div>
                     <div class="row contact-row">
-                        <div class="col-xs-5 col-lg-3"><label class="hidden-xs">Get A Company URL</label><label class="hidden-sm hidden-md hidden-lg">Domain</label><span class="required">*</span></div>
-                        <div class="col-xs-7 col-lg-9"><input type="text" id="URL" class="form-control website-url" name="URL" value="{{ URL }}" required /><span class="append_content hidden-xs">.getmobilereviews.com</span></div>
+                        <div class="col-xs-5 col-lg-3" >
+                        	<label class="hidden-xs" >
+                        		<span class="required">Get A Company URL*</span></label>
+                        		<span style="color:red; font-size:80%; float: right;  white-space:nowrap;" id="URL_availability_result"></span>
+                        </div>
+                        <div class="col-xs-7 col-lg-9">
+                        	<input type="text" id="URL" maxlength="30" class="form-control website-url" name="URL" value="{{ URL }}" required />
+                        	<span class="append_content hidden-xs">.getmobilereviews.com</span>
+                        </div>
                     </div>
                     <div class="row contact-row">
-                        <div class="col-xs-5 col-lg-3"><label class="">Password</label><label class=""></label><span class="required">*</span></div>
-                        <div class="col-xs-7 col-lg-9"><input id="Password" class="form-control" name="Password" type="password" required /></div>
+                        <div class="col-xs-5 col-lg-3">
+                        	<label class="">Password</label><label class=""></label>
+                        	<span class="required">*</span>
+                        </div>
+                        <div class="col-xs-7 col-lg-9">
+                        	<input id="Password" class="form-control"  maxlength="30" name="Password" type="password" required />
+                        </div>
                     </div>
                     <div class="row contact-row">
-                        <div class="col-xs-5 col-lg-3"><label class="">Confirm Password</label><label class=""></label><span class="required">*</span></div>
-                        <div class="col-xs-7 col-lg-9"><input id="ConfirmPassword" class="form-control" name="ConfirmPassword"  type="password" required /></div>
+                        <div class="col-xs-5 col-lg-3">
+                        	<label class="">Confirm Password</label><label class=""></label>
+                        	<span class="required">*</span>
+                        	<span style="color:red; font-size:80%; float: right;  white-space:nowrap;" id="Confirm_password_result"></span>	
+                        </div>
+                        <div id="Password_match_result"></div>
+                        <div class="col-xs-7 col-lg-9">
+                        	<input id="ConfirmPassword" class="form-control" maxlength="30"  name="ConfirmPassword" type="password" required />
+                        	
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,8 +128,14 @@
             <div class="col-xs-12 col-lg-9">
                 <div class="">
                     <div class="row contact-row">
-                        <div class="col-xs-12 col-lg-3"><label>Card Number</label><span class="required">*</span></div>
-                        <div class="col-xs-12 col-lg-9"><input type="text" class="form-control" required data-stripe="number" /></div>
+                        <div class="col-xs-12 col-lg-3">
+                        	<label>Card Number</label>
+                        	<span class="required">*</span>
+                        	<span style="color:red; font-size:80%; float: right;  white-space:nowrap;" id="Valid_credit_card_number_result"></span>	
+                        </div>
+                        <div class="col-xs-12 col-lg-9">
+                        	<input name="CreditCardNumber" id="CreditCardNumber" maxlength="16" size="16" type="text" class="form-control" required data-stripe="number" />
+                        </div>
                     </div>
                     <div class="row contact-row">
                         <div class="col-xs-12 col-lg-3"><label>Exp. Date</label><span class="required">*</span></div>
@@ -113,7 +156,7 @@
                     </div>
                     <div class="row contact-row">
                         <div class="col-xs-12 col-lg-3"><label>CVC</label></div>
-                        <div class="col-xs-12 col-lg-9"><input type="text" class="form-control" data-stripe="cvc" /></div>
+                        <div class="col-xs-12 col-lg-9"><input maxlength="4" size="4" type="text" class="form-control" data-stripe="cvc" /></div>
                     </div>
                 </div>
             </div>
@@ -219,62 +262,47 @@
         </div>
     </div>
 </form>
+<!-- BEGIN LOGIN -->
+<div class="content">
+    {{ content() }}
+</div>
+<footer>
+    <div class="copyright"> &copy; Copyright Review Velocity.  All Rights Reserved. </div>
+        <!--[if lt IE 9]>
+        <script src="/assets/global/plugins/respond.min.js"></script>
+        <script src="/assets/global/plugins/excanvas.min.js"></script>
+        <![endif]-->
+        <!-- BEGIN CORE PLUGINS -->
+        <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+        <!-- END CORE PLUGINS -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+        <!-- END PAGE LEVEL PLUGINS -->
+        <!-- BEGIN THEME GLOBAL SCRIPTS -->
+        <script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
+        <!-- END THEME GLOBAL SCRIPTS -->
+        <!-- BEGIN PAGE LEVEL SCRIPTS -->
+        <script src="/js/agencysignup.order.js" type="text/javascript"></script>
+        <!-- END PAGE LEVEL SCRIPTS -->
+        <!-- BEGIN THEME LAYOUT SCRIPTS -->
+        <script type="text/javascript" src="/js/vendor/minicolors/jquery.minicolors.js"></script>
+        <!-- END THEME LAYOUT SCRIPTS -->
+</footer>
+
+<!-- BEGIN LOGIN -->
+
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+
 <script type="text/javascript">
   Stripe.setPublishableKey('{{ StripePublishableKey }}');
-
-  $( document ).ready(function() {
-        $('#BigGreenSubmit').click(function() {
-            if ($('#Password').val() != $('#ConfirmPassword').val()) {
-                alert('Password do not match');
-                return;
-            }
-
-            if ($('#Password').val().length < 6) {
-                alert('Password must be 6 characters or more.');
-                return;
-            }
-
-            $('#payment-form').submit();
-        });
-    });
-
-  $(function () {
-      var $form = $('#payment-form');
-      $form.submit(function (event) {
-          // Disable the submit button to prevent repeated clicks:
-          $form.find('.submit').prop('disabled', true);
-
-          // Request a token from Stripe:
-          Stripe.card.createToken($form, stripeResponseHandler);
-
-          // Prevent the form from being submitted:
-          return false;
-      });
-      function stripeResponseHandler(status, response) {
-          // Grab the form:
-          var $form = $('#payment-form');
-
-          if (response.error) { // Problem!
-
-              // Show the errors on the form:
-              $form.find('.payment-errors').text(response.error.message);
-              $form.find('.submit').prop('disabled', false); // Re-enable submission
-
-          } else { // Token was created!
-
-              // Get the token ID:
-              var token = response.id;
-
-              // Insert the token ID into the form so it gets submitted to the server:
-              $form.append($('<input type="hidden" name="stripeToken">').val(token));
-
-              // Submit the form:
-              $form.get(0).submit();
-          }
-      };
-  });
-
 </script>
 
 <script>
@@ -282,4 +310,5 @@
     app_id: "c8xufrxd"
   };
 </script>
+
 <script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/c8xufrxd';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
