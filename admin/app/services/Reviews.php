@@ -158,6 +158,12 @@
                             $objBusiness->type = 'Google';
                             $objBusiness->id = $location->locationKey->placeId;
                             $objBusiness->mapsUrl = $location->metadata->mapsUrl;
+                            $objBusiness->address = implode ("\r\n", (array)$location->address->addressLines);
+                            $objBusiness->postal_code = $location->address->postalCode;
+                            $objBusiness->locality = $location->address->locality;
+                            $objBusiness->country = $location->address->country;
+                            $objBusiness->state_province = $location->address->administrativeArea;
+                            $objBusiness->phone = $location->primaryPhone;
                             $tobjBusinesses[] = $objBusiness;
                         }
                     }

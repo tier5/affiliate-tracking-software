@@ -581,7 +581,6 @@ class SessionController extends ControllerBase {
      */
     /* public function signup5Action($subscription_id = 0) { */
     public function signup5Action($pricingProfileToken = 0,$email = null) {
-
         /* $this->noSubDomains(5, $subscription_id); */
         Utils::noSubDomains(5, $this->validSubDomains, $pricingProfileToken);
 
@@ -590,12 +589,14 @@ class SessionController extends ControllerBase {
         $this->view->messages_sent = false;;
         //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
+
         // If there is no identity available the user is redirected to index/index
         if (!is_array($identity)) {
             $this->response->redirect('/session/login?return=/session/signup5/' . ($subscription_id > 0 ? $subscription_id : ''));
             $this->view->disable();
             return;
         }
+
         // Query binding parameters with string placeholders
         $conditions = "id = :id:";
         $parameters = array("id" => $identity['id']);
@@ -605,6 +606,10 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+        //echo "<PRE>";
+        //print_r($userObj->toArray());
+        //die();
 
         //Get the sharing code
         $this->getShareInfo($agency);
@@ -732,6 +737,7 @@ class SessionController extends ControllerBase {
 
                     //get the user id, to find the settings
                     $identity = $this->auth->getIdentity();
+
                     // If there is no identity available the user is redirected to index/index
                     if (is_array($identity)) {
                         // Query binding parameters with string placeholders

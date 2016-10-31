@@ -49,6 +49,7 @@ class IndexController extends ControllerBase {
 
             $isBusiness = $userManager->isBusiness($this->session);
             $signupPage = $userManager->currentSignupPage($this->session);
+
             if($isBusiness && $signupPage) {
                 $this->response->redirect('/session/signup' . $signupPage);
                 return;

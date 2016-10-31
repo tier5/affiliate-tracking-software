@@ -102,7 +102,12 @@
 
             <div class="register-form" id="hiddenForm" style="display: block;">
                 <div class="pnlAddLocation short col-md-4">
-                    <div class="title">GOOGLE: <span class="title-answer">Successfully connected</span></div>
+                    <div class="title">GOOGLE:
+                    {% if GoogleMyBusinessConnected %}
+                        <span class="title-answer">Successfully connected</span></div>
+                    {% else %}
+                        <span class="title-answer">Not connected</span></div>
+                    {% endif %}
                     <div class="field"><span class="name">Business Name:</span> <span id="googleName">
                         <?=$objGoogleReviewSite->name ?: $location->name; ?>
 
@@ -119,9 +124,9 @@
                         </span>
                     </div>
                     <div class="buttons">
-                        <a class="btnLink" id="googleLink" href="<?=$objGoogleReviewSite->url ?: 'https://maps.google.com/?cid={$google->external_id}'; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
                         {% if GoogleMyBusinessConnected %}
-                             <a href="/location/disconnectGoogle/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
+                            <a class="btnLink" id="googleLink" href="<?=$objGoogleReviewSite->url; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
+                            <a href="/location/disconnectGoogle/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
                         {% else %}
                             <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Authenticate Google My Business</a>
                         {% endif %}
@@ -132,7 +137,7 @@
                     <div class="title">FACEBOOK:
                         <span class="title-answer">
                             {% if !FacebookConnected %}
-                            <span class="facebooknotfound">Not Found</span>
+                            <span class="facebooknotfound">Not connected</span>
                             {% else %}
                             <span class="facebooknotfound">Successfully connected</span>
                             {% endif %}
@@ -152,7 +157,7 @@
 -->
                   <div class="buttons" {% if FacebookConnected %} style="margin-top: 43px" {% else %} style="margin-top: 70px;" {% endif %}>
                     {% if !FacebookConnected %}
-                    <a href="/location/getAccessToken?location_id=<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
+                    <a href="/location/getAccessToken/<?=$location->location_id; ?>/{{ ComingFromSignup }}" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
                     {% endif %}
                     {% if FacebookConnected %}
                         <a href="/location/disconnectFacebook/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
@@ -168,8 +173,16 @@
     <input type="hidden" id="facebook_access_token" value="<?=$facebook_access_token?>"/>
 
     <div class="pnlAddLocation short col-md-4">
-        <div class="title">YELP: <span class="title-answer"><span class="yelpnotfound" <?=(isset($yelp) && isset($yelp->
-                external_id) && $yelp->external_id != ''?' style="display: none;"':'')?>>Not </span>Successfully connected</span></div>
+        <div class="title">YELP:
+        <span class="title-answer">
+            <?php if((isset($yelp) && isset($yelp->external_id) && $yelp->external_id != '')) { ?>
+                <span class="yelpnotfound">Not Connected</span>
+            <?php } else { ?>
+                <span class="yelpnotfound">Not Connected</span>
+            <?php } ?>
+        </span>
+        </div>
+
         <div class="field"><span class="name">Business Name:</span>
             <span id="yelpName" class="yelpfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id !=
             ''?'':' style="display: none;"')?>><?=$location->name?></span>

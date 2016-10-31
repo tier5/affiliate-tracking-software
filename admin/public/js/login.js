@@ -19,7 +19,6 @@ jQuery(window).ready(function ($) {
 	if ( $('#expirationval-m') && $('#expirationval-m') ) {
 		var month = $('#expirationval-m').val();
 		var year = $('#expirationval-y').val();
-
 		
 		if (month != '') {
 			$('.expiry').val(month + ' / ' + year);
@@ -28,6 +27,7 @@ jQuery(window).ready(function ($) {
 			//console.log('month:' + $('.expiry-month').val() + ':year:' + $("input[name='expiry-year']").val());
 		}
 	 }
+
 
 	//the min chars for email  
 	var min_chars = 6; 
@@ -47,5 +47,6 @@ jQuery(window).ready(function ($) {
 	      checkEmailAvailability();  
 	    }
 	});
+
 
 });

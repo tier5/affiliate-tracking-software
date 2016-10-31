@@ -4,6 +4,7 @@
         border: 1px solid black !important;
     }
 </style>
+
 <div id="businessList">
     {{ content() }}
     <div class="portlet light bordered dashboard-panel">
@@ -23,6 +24,7 @@
                     <thead>
                     <tr>
                         <th>Business</th>
+                        <?php if(strpos($_SERVER['REQUEST_URI'], 'getGooglePages') !== false) { ?> <th>Address</th> <?php } ?>
                     </tr>
                     </thead>
                     <tbody>
@@ -31,8 +33,8 @@
                 $rowclass = '';
                 foreach($tobjBusinesses as $objBusiness) { ?>
                     <tr class="review <?=$rowclass?>">
-                        <?php echo "<td><a href=\"/location/pick{$objBusiness->type}Business/{$objBusiness->id}/{$LocationID}/{$RedirectToSession}\">{$objBusiness->name}</a></td>
-                        "; ?>
+                        <?php echo "<td><a href=\"/location/pick{$objBusiness->type}Business/{$objBusiness->id}/{$LocationID}/{$RedirectToSession}\">{$objBusiness->name}</a></td>"; ?>
+                        <?php if($objBusiness->type == 'Google') { echo "<td>{$objBusiness->address}, {$objBusiness->locality} {$objBusiness->state_province} {$objBusiness->country}</td>";  } ?>
                     </tr>
                     <?php } ?>
                     </tbody>
