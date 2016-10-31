@@ -30,6 +30,10 @@
         public $is_employee;
         public $role;
 
+        const ROLE_SUPER_ADMIN      = 'Super Admin';
+        const ROLE_ADMIN            = 'Admin';
+        const ROLE_USER             = 'User';
+
         /**
          * @return mixed
          */

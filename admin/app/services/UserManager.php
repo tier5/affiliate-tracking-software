@@ -62,7 +62,10 @@ class UserManager extends BaseService {
     public function currentSignupPage($session) {
         $identity = $session->get('auth-identity');
         if ($identity) {
-            return $identity['signup_page'];
+            // GARY_TODO:  Refactor this.  I dont want to make a db call every page reload
+            $objUser = \Vokuro\Models\Users::findFirst('id = ' . $identity['id']);
+            $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
+            return $objAgency->signup_page;
         }
         return 0;
     }

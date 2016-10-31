@@ -189,6 +189,11 @@
         }
 
         public function getFacebookPagesAction($LocationID, $RedirectToSession = 0) {
+            if($RedirectToSession) {
+                $this->view->setTemplateBefore('signup');
+                $this->tag->setTitle('Review Velocity | Sign up | Step 2 | Add Location');
+                $this->view->current_step = 2;
+            }
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
 
             $face = new FacebookScanning();
@@ -218,7 +223,7 @@
             $results = $yelp->search($term, $location);
 
             $this->view->disable();
-            echo $results;
+            echo json_decode($results);
         }
 
 
@@ -769,7 +774,7 @@
                     //check for yelp
                     $yelp_api_id = $this->request->getPost('yelp_id', 'striptags');
                     $yelp_id = $this->yelpId($yelp_api_id);
-                    //print '<pre>$yelp_api_id: ' . print_r($yelp_api_id, true) . '</pre>';
+
                     if ($yelp_api_id != '' && !(strpos($yelp_api_id, '>') !== false)) {
                         if (isset($yelp) && isset($yelp->location_review_site_id) && $yelp->location_review_site_id > 0) {
                             $yelp->external_id = $yelp_id;

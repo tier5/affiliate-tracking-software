@@ -38,10 +38,7 @@
          * Searches for users
          */
         public function indexAction() {
-
-            //get the user id, to find the settings
             $identity = $this->auth->getIdentity();
-            // If there is no identity available the user is redirected to index/index
             if (!is_array($identity)) {
                 $this->response->redirect('/session/login?return=/settings/');
                 $this->view->disable();
@@ -51,9 +48,7 @@
             $conditions = "id = :id:";
             $parameters = array("id" => $identity['id']);
             $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-            //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
 
-            //find the agency
             if($userObj->agency_id) {
                 $conditions = "agency_id = :agency_id:";
                 $parameters = array("agency_id" => $userObj->agency_id);
@@ -62,7 +57,6 @@
                     $this->flash->error("No settings were found");
                 }
             }
-
 
             if ($this->request->isPost()) {
                 $form = new SettingsForm($agency);
@@ -306,15 +300,18 @@
         public function locationAction() {
             $location_id = $this->getLocationId();
             $userObj = $this->getUserObject();
-            // If there is no identity available the user is redirected to index/index
+            // If there is no identity available the user is redirected to index/index.  User must be a super admin or admin to view settings page.
             if (!$userObj) {
                 $this->response->redirect('/session/login?return=/settings/location/');
                 $this->view->disable();
                 return;
             }
-            // Query binding parameters with string placeholders
 
-            //find the agency
+            if($userObj->role != \Vokuro\Models\Users::ROLE_SUPER_ADMIN && $userObj->role != \Vokuro\Models\Users::ROLE_ADMIN) {
+                $this->flash->error("You do not have permission to this page.");
+                $this->view->disable();
+            }
+
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $userObj->agency_id);
             $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -364,30 +361,15 @@
                 }
             }
 
+            $this->view->users = \Vokuro\Models\Users::find("agency_id = {$userObj->agency_id}");
+            $this->view->agency = $agency;
+            $this->view->location = $location;
 
-            // Query binding parameters with string placeholders
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $Userslocations = UsersLocation::find(array($conditions, "bind" => $parameters));
-            $UserslocationsIds =array();
-            foreach ($Userslocations as $Userslocation) {
-                array_push($UserslocationsIds,$Userslocation->user_id);
-            }
-
-            if(count($UserslocationsIds)) {
-                $conditions = "agency_id = :agency_id: AND id IN (" . implode(", ", $UserslocationsIds) . ")";
-                $parameters = array("agency_id" => $userObj->agency_id);
-                $users = Users::find(array($conditions, "bind" => $parameters));
-                $this->view->users = $users;
-
+            if($location) {
                 $conditions = "location_id = :location_id:";
                 $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
 
                 $agencynotifications = $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
-
-
-                $this->view->agency = $agency;
-                $this->view->location = $location;
 
                 //find the location review sites
                 $conditions = "location_id = :location_id:";
@@ -397,7 +379,6 @@
             }
 
             $this->view->review_sites = ReviewSite::find();
-
 
             $this->view->form = new SettingsForm($location, array(
                 'edit' => true

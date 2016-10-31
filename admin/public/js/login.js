@@ -4,7 +4,7 @@ jQuery(window).ready(function ($) {
     var month = $('#expirationval-m').val();
     var year = $('#expirationval-y').val();
 
-    document.getElementById('register-submit-btn').disabled = true;
+    //document.getElementById('register-submit-btn').disabled = true;
     if (month != '') {
       $('.expiry').val(month + ' / ' + year);
       $("input[name='expiry-month']").val(month);
@@ -50,11 +50,11 @@ jQuery(window).ready(function ($) {
   	                if(result == 1){  
   	                    //show that the email is available  
   	                    $('#email_availability_result').html(email + ' is Available'); 
-  	                    document.getElementById('register-submit-btn').disabled = false;
+  	                    //document.getElementById('register-submit-btn').disabled = false;
   	                }else{ 
   	                    //show that the email is NOT available  
   	                    $('#email_availability_result').html(email + ' is not Available');
-  	                    document.getElementById('register-submit-btn').disabled = true;
+  	                    //document.getElementById('register-submit-btn').disabled = true;
   	                  
   	                }  
   	        });  
