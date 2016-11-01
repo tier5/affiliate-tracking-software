@@ -91,7 +91,7 @@ class Email{
         return true;
     }
 
-    public function sendEmployeeReport($dbEmployees, $objBusiness) {
+    public function sendEmployeeReport($dbEmployees, $objBusiness, $tSendTo) {
         try {
 
             $mail = $this->getDI()->getMail();
@@ -108,12 +108,10 @@ class Email{
               'objBusiness'       => $objBusiness
             );
 
-            for ($i = 0; $i < count($dbEmployees); ++$i) {
-                echo $mail->send($dbEmployees[$i]->email, "Your monthly employee report!", 'employee_report', $Params);
+            foreach($tSendTo as $objRecipient) {
+                echo $mail->send($objRecipient->email, "Your monthly employee report!", 'employee_report', $Params);
                 sleep(1);
-
             }
-
         } catch (Exception $e) {
             // GARY_TODO: Add logging!
             print $e;
