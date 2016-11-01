@@ -728,7 +728,7 @@
                 </span>
               </td>
               <td>
-                <a class="btnLink btnSecondary" href="#" id="SendEmployeeEmail">Send Email</a>
+                <a class="btnLink btnSecondary SendEmployeeEmail" href="#" >Send Email</a>
               </td>
             </tr>
             <?php
@@ -826,7 +826,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
 <script type="text/javascript">
   jQuery(document).ready(function($) {
-    $('#SendEmployeeEmail').on('click', function(e) {
+    $('.SendEmployeeEmail').on('click', function(e) {
         var EmployeeID = $(this).parents('TR').children('TD:first-child').attr('ObjectID');
 
         $.ajax({
