@@ -58,7 +58,7 @@ if (isset($main_color_setting)) {
     <div class="headercontent">
         <!-- BEGIN LOGO -->
         <div class="logo">
-            <a href="/"><img src="<?=(false && isset($logo_setting) && $logo_setting != ''?$logo_setting:'/img/logo-white.gif')?>" alt="" /></a>
+            <a href="/"><img style="max-width: 200px; max-height:100px;"  src="<?=(isset($this->view->logo_setting) && $this->view->logo_setting != ''?'/img/agency_logos/'.$logo_setting:'/img/logo-white.gif')?>" alt="" /></a>
         </div>
         <!-- END LOGO -->
         <div class="steps">
@@ -86,7 +86,7 @@ if (isset($main_color_setting)) {
     {{ content() }}
 </div>
 <footer>
-    <div class="copyright"> &copy; Copyright Review Velocity.  All Rights Reserved. </div>
+    <div class="copyright"> &copy; Copyright <?php echo $this->view->parent_agency; ?>.  All Rights Reserved. </div>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
