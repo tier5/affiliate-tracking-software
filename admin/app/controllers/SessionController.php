@@ -363,7 +363,7 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
         $this->view->logo_setting = $parent_agency->logo_path;
-        $logo_setting = $parent_agency->logo_path;
+        $this->view->parent_agency = $parent_agency->name;
         
         if ($this->request->isPost()) {
             $loc = new Location();
@@ -492,7 +492,8 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
         $this->view->logo_setting = $parent_agency->logo_path;
-        $logo_setting = $parent_agency->logo_path;
+        $this->view->parent_agency = $parent_agency->name;
+        $this->view->parent_agency = $parent_agency->name;
         
         $conditions = "location_id = :location_id:";
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
@@ -563,7 +564,7 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
         $this->view->logo_setting = $parent_agency->logo_path;
-        $logo_setting = $parent_agency->logo_path;
+        $this->view->parent_agency = $parent_agency->name;
         
         //find the location
         $conditions = "location_id = :location_id:";
@@ -630,8 +631,7 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
         $this->view->logo_setting = $parent_agency->logo_path;
-        $logo_setting = $parent_agency->logo_path;
-
+        $this->view->parent_agency = $parent_agency->name;
         //Get the sharing code
         $this->getShareInfo($agency);
         //end getting the sharing code

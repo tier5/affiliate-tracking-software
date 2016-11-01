@@ -86,7 +86,7 @@ if (isset($main_color_setting)) {
     {{ content() }}
 </div>
 <footer>
-    <div class="copyright"> &copy; Copyright Review Velocity.  All Rights Reserved. </div>
+    <div class="copyright"> &copy; Copyright <?php echo $this->view->parent_agency; ?>.  All Rights Reserved. </div>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
