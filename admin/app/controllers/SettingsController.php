@@ -445,8 +445,8 @@
         }
 
         public function siteaddAction($location_id = 0, $review_site_id = 0) {
-            $this->checkIntegerOrThrowException($location_id,'$location_id');
-            $this->checkIntegerOrThrowException($review_site_id,'$review_site_id');
+           // $this->checkIntegerOrThrowException($location_id ,"not integer");
+           // $this->checkIntegerOrThrowException($review_site_id, "not integer");
 
             if ($location_id > 0 && $review_site_id > 0) {
                 $lrs = new LocationReviewSite();

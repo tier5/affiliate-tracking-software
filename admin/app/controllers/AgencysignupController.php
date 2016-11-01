@@ -401,6 +401,7 @@
                         $tData[$Field] = $this->request->getPost($Field, 'striptags');;
                 }
             }
+
             $this->session->AgencySignup = array_merge($this->session->AgencySignup, $tData);
 
             // Populate the view
@@ -410,8 +411,10 @@
                 else
                     $this->view->$Field = '';
             }
-
+           
             // Determine step from URI
+            
+
             preg_match("#agencysignup\/step(\d)+#", $_SERVER['REQUEST_URI'], $tMatches);
             if($tMatches) {
                 $this->view->current_step = $tMatches[1];
@@ -609,24 +612,34 @@
             $this->view->setLayout('agencysignup');
         }
 
-        protected function GetSubscriptionPrice($Name) {
-            $objPricingPlan = AgencyPricingPlan::findFirst("name='{$Name}'");
+        protected function GetSubscriptionPrice($Id) {
+            $objPricingPlan = AgencyPricingPlan::findFirst("id='{$Id}'");
             if(!$objPricingPlan)
                 $this->flashSession->error("Could not find subscription plan.  Contact customer support.");
 
             return $objPricingPlan->number_of_businesses * $objPricingPlan->price_per_business;
         }
 
-        protected function IsUniqueEmail($tData) {
-            return count(Users::find('email = "' . $tData['OwnerEmail'] . '"')) == 0;
+        protected function IsUniqueEmail() {
+        	$this->view->setLayout('');
+        	if (isset($this->session->AgencySignup['OwnerEmail'])) {
+            	return 4; 
+            	//count(Users::find('email = "' .$this->session->AgencySignup['OwnerEmail'] . '"')) == 0;
+        	} else {
+        		return -1;
+        	}
         }
 
-        protected function IsUniqueDomain($tData) {
-            return count(Agency::find('custom_domain = "' . $tData['URL'] . '"')) == 0;
+        protected function IsUniqueDomain() {
+        	if (isset($this->session->AgencySignup['custom_domain'])) {
+            	return count(Agency::find('custom_domain = "' . $this->session->AgencySignup['custom_domain'] . '"')) == 0;
+        	} else {
+        		return -1;
+        	}
         }
 
         public function submitorderAction() {
-
+/*
             if(!$this->IsUniqueEmail($this->session->AgencySignup)) {
                 $this->flashSession->error("This email address is already in use.  Please use another one.");
                 $this->response->redirect('/agencysignup/order');
@@ -638,7 +651,7 @@
                 $this->response->redirect('/agencysignup/order');
                 return false;
             }
-
+*/
             $Token = $this->request->getPost('stripeToken', 'striptags');
             if($Token) {
                 $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['StripeToken' => $Token]);
@@ -665,14 +678,14 @@
                 return false;
             }
 
-            $SubscriptionPlan = 'Ten for ten';
+            $SubscriptionPlanId = 1; // ten for 10
             $this->view->TodayYear = date("Y");
 
             try {
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
                     $this->db->begin();
 
-                    $Price = $this->GetSubscriptionPrice($SubscriptionPlan);
+                    $Price = $this->GetSubscriptionPrice($SubscriptionPlanId);
                     $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['Price' => $Price]);
 
                     if (!$UserID = $this->CreateSubscription($this->session->AgencySignup)) {

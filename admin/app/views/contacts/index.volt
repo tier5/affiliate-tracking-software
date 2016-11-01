@@ -132,11 +132,11 @@
                   <td><?php
                       foreach ($invite->review_sites as $rs) {
                     ?>
-                    <img src="<?=$rs->icon_path?>" />
+                    <img  src="<?=$rs->icon_path?>" />
                     <?php
                       }
                       ?></td>
-                  <td style="min-width: 86px; width: 86px;"><a href="/contacts/view/<?=$invite->review_invite_id?>" class="btnLink btnSecondary" style="display: block;white-space: nowrap;"> View</a></td>
+                  <td style="min-width: 86px; width: 86px;"><a href="/contacts/view/<?=$invite->review_invite_id?>" class="btnLink btnSecondary" > View</a></td>
                 </tr>
                 <?php
                   endforeach;

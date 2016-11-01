@@ -188,7 +188,7 @@
 
           </div>
           <div style="width: 50%; float: left;">
-            <a style="float: right; margin-top: 25px; margin-right: 20px;" class="fancybox btnLink btnSecondary send-review-invite" href="#sendreviewinvite" onclick="$('#smsrequestformname').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->name))?>');$('#smsrequestformphone').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->phone))?>');">Send Review Invite</a>
+            <a style="float: right; margin-top: 25px; margin-right: 20px;" class="fancybox btnLink btnSecondary send-review-invite" href="/reviews/#sendreviewinvite" onclick="$('#smsrequestformname').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->name))?>');$('#smsrequestformphone').val('<?=str_replace('"', "", str_replace("'", "", $review_invite->phone))?>');">Send Review Invite</a>
             <form action="/contacts/view/<?=$review_invite->review_invite_id?>" method="Post" >
 
               <?php

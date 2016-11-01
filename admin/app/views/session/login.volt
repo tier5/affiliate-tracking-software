@@ -33,3 +33,4 @@
     <!-- END LOGIN FORM -->
 
 </div>
+<script src="/js/login.js"></script>

@@ -843,7 +843,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         cache: false,
         success: function(data){
           //done!
-          //console.log('data:'+data);
+          console.log('data:'+data);
           //$.each(data, function(index, element) {
           var element = $.parseJSON(data);
           //first, remove the value we selected
@@ -906,7 +906,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       //console.log('id:'+id);
 
       $.ajax({
-        url: "/settings/off/"+id+"/"+type+"/",
+        url: "/settings/off/"+id+"/",
         cache: false,
         success: function(html){
           //done!
@@ -969,6 +969,23 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       }
       $('#fileerror').hide();
       return true;
+    });
+
+
+    $("#creastesite").on("submit", function(e) {
+    var url = document.getElementsByIdName('url');
+	    $.ajax({
+	        url: "/settings/addReviewSite/"+url+"/",
+	        cache: false,
+	        success: function(html){
+	        }
+	 	});
+		if (value == 1) {
+		
+		} else {
+		
+		}
+          
     });
 
 

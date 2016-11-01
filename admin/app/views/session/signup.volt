@@ -31,16 +31,16 @@
             <input class="form-control placeholder-no-fix" type="text" placeholder="Full Name" name="name" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" required />
         </div>
         <div class="form-group">
-            <label class="control-label">Email:</label>
+            <label class="control-label">Email:</label><span id="Email_availability_result"></span>
             <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" id="email" name="email" value="<?=(isset($_POST['email'])?$_POST["email"]:'')?>" required />
         	<div id='email_availability_result'></div>
         </div>
         <div class="form-group">
             <label class="control-label">Password:</label>
-            <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="register_password" placeholder="Password" name="password" value="<?=(isset($_POST['password'])?$_POST["password"]:'')?>" required />
+            <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="password" placeholder="Password" name="password" value="<?=(isset($_POST['password'])?$_POST["password"]:'')?>" required />
         </div>
         <div class="form-group">
-            <label class="control-label">Re-type Your Password:</label>
+            <label class="control-label">Re-type Your Password:</label><span id="Confirm_password_result"></span>
             <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" id="confirmPassword" name="confirmPassword" value="<?=(isset($_POST['confirmPassword'])?$_POST["confirmPassword"]:'')?>" required />
         </div>
 
@@ -55,20 +55,7 @@
         <div style="clear: both;">&nbsp;</div>
     </form>
     <!-- END REGISTRATION FORM -->
-    <script type="text/javascript"></script>
+
     {% endif %}
 </div>
-
-<script>
-    $('#register-submit-btn').click(function() {
-        if($('#register_password').val() != $('#confirmPassword').val())
-            alert("Your passwords do not match.  Please try again.");
-        else
-            $('#register-form').submit();
-    });
-    
-
-
-
-  </script>
-  
+<script src="/js/signup.js"></script>

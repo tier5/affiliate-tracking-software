@@ -376,8 +376,7 @@ class SessionController extends ControllerBase {
                 'region_id' => $this->request->getPost('region_id', 'striptags'),
                 'date_created' => date('Y-m-d H:i:s'),
             ));
-            //
-            //
+
 
             if (!$loc->save()) {
                 $this->flash->error($loc->getMessages());
@@ -452,10 +451,9 @@ class SessionController extends ControllerBase {
                 return $this->response->redirect('/location/edit/' . $loc->location_id . '/0/1');
             }
         }
-
         $this->view->SignupProcess = true;
         $this->view->facebook_access_token = $this->facebook_access_token;
-        $this->view->current_step = 2;
+        $this->view->current_step = 2;   
     }
 
     /**
@@ -967,10 +965,25 @@ class SessionController extends ControllerBase {
     	$conditions = "email = :email:";
     	$parameters = array("email" => $testThisEmail);
     	$Users = Users::findfirst(array($conditions, "bind" => $parameters));
-    	if (isset($Users) && $Users->id > 0) {
-    		echo  0;
+    	if ((isset($Users)) && ($Users->id > 0)) {
+    		echo  $Users->id;
     	} else {
+    		echo  $Users->id;
+    	}
+    }
+    
+    
+    public function checkForAvailableSubDomainAction() {
+    	 
+    	$testThisCustomDomain =  $_POST['custom_domain'];
+    	//find the User
+    	$conditions = "custom_domain = :custom_domain:";
+    	$parameters = array("custom_domain" => $testThisCustomDomain);
+    	$Agency = Agency::findfirst(array($conditions, "bind" => $parameters));
+    	if (isset($Agency) && $Agency->agency_id > 0) {
     		echo  1;
+    	} else {
+    		echo  0;
     	}
     }
     
