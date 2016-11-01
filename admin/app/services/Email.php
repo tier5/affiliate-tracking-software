@@ -95,7 +95,12 @@ class Email{
         try {
 
             $mail = $this->getDI()->getMail();
-            $mail->setFrom('zacha@reputationloop.com');
+            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+                $mail->setFrom('zacha@reputationloop.com');
+            else {
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+                $mail->setFrom($objAgency->email);
+            }
             $objEmployees = $dbEmployees;
 
             $Params = array(
