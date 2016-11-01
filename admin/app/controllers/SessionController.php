@@ -359,7 +359,12 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency->parent_id);
+        $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->logo_setting = $parent_agency->logo_path;
+        $logo_setting = $parent_agency->logo_path;
+        
         if ($this->request->isPost()) {
             $loc = new Location();
             $loc->assign(array(
@@ -445,14 +450,17 @@ class SessionController extends ControllerBase {
                 if (!$agency->save()) {
                     //$this->flash->error($agency->getMessages());
                 }
-
+                
                 $this->auth->setLocation($loc->location_id);
 
                 return $this->response->redirect('/location/edit/' . $loc->location_id . '/0/1');
             }
         }
+
+        
         $this->view->SignupProcess = true;
         $this->view->facebook_access_token = $this->facebook_access_token;
+
         $this->view->current_step = 2;   
     }
 
@@ -479,7 +487,13 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
+        
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency->parent_id);
+        $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->logo_setting = $parent_agency->logo_path;
+        $logo_setting = $parent_agency->logo_path;
+        
         $conditions = "location_id = :location_id:";
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
         $location = Location::findFirst(array($conditions, "bind" => $parameters));
@@ -545,7 +559,12 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
-
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency->parent_id);
+        $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->logo_setting = $parent_agency->logo_path;
+        $logo_setting = $parent_agency->logo_path;
+        
         //find the location
         $conditions = "location_id = :location_id:";
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
@@ -607,9 +626,11 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
-        //echo "<PRE>";
-        //print_r($userObj->toArray());
-        //die();
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency->parent_id);
+        $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->logo_setting = $parent_agency->logo_path;
+        $logo_setting = $parent_agency->logo_path;
 
         //Get the sharing code
         $this->getShareInfo($agency);
