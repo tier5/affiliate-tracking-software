@@ -151,6 +151,12 @@
             return $data;
         }
 
+        public function getBusinessInfoByID($ID) {
+            $test = $this->file_get_contents_curl("https://api.yelp.com/v2/business/{$ID}");
+            echo "<PRE>";
+            print_r($test);
+            die();
+        }
 
         public function customerReviewDetails($reviews) {
             $arrReview = array();

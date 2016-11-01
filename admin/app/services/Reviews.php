@@ -115,7 +115,7 @@
                             if($location->locationKey->placeId == $BusinessID) {
                                 $objBusiness = new \stdClass();
                                 $objBusiness->name = $location->locationName;
-                                $objBusiness->external_location_id = $BusinessID;
+                                $objBusiness->id = $objBusiness->external_location_id = $BusinessID;
                                 $objBusiness->url = $location->metadata->mapsUrl;
                                 $objBusiness->address = implode ("\r\n", (array)$location->address->addressLines);
                                 $objBusiness->postal_code = $location->address->postalCode;
@@ -132,6 +132,52 @@
             }
 
             return $objBusiness;
+        }
+
+        public function getYelpBusinessData($LocationID, $BusinessID) {
+            $Yelp = new \Vokuro\Models\YelpScanning();
+            $Yelp->construct();
+
+            $objYelpBusiness = json_decode($Yelp->get_business($BusinessID));
+            $objBusiness = new \stdClass();
+            $objBusiness->name = $objYelpBusiness->name;
+            $objBusiness->type = 'Yelp';
+            $objBusiness->id = $objBusiness->external_location_id = $objYelpBusiness->id;
+            $objBusiness->mapsUrl = $objYelpBusiness->url;
+            $objBusiness->address = implode("\r\n", $objYelpBusiness->location->display_address);
+            $objBusiness->postal_code = $objYelpBusiness->location->postal_code;
+            $objBusiness->locality = $objYelpBusiness->location->city;
+            $objBusiness->country = $objYelpBusiness->location->country_code;
+            $objBusiness->state_province = $objYelpBusiness->location->state_code;
+            $objBusiness->phone = $objYelpBusiness->display_phone;
+
+            return $objBusiness;
+        }
+
+        public function getYelpBusinessLocations($LocationID, $BusinessName, $PostalCode) {
+            $yelp = new \Vokuro\Models\YelpScanning();
+            $yelp->construct();
+            $results = $yelp->search($BusinessName, $PostalCode);
+
+            $YelpResults = json_decode($results);
+            $tobjBusinesses = [];
+
+            foreach($YelpResults->businesses as $objYelpBusiness) {
+                $objBusiness = new \stdClass();
+                $objBusiness->name = $objYelpBusiness->name;
+                $objBusiness->type = 'Yelp';
+                $objBusiness->id = $objBusiness->external_location_id = $objYelpBusiness->id;
+                $objBusiness->mapsUrl = $objYelpBusiness->url;
+                $objBusiness->address = implode("\r\n", $objYelpBusiness->location->display_address);
+                $objBusiness->postal_code = $objYelpBusiness->location->postal_code;
+                $objBusiness->locality = $objYelpBusiness->location->city;
+                $objBusiness->country = $objYelpBusiness->location->country_code;
+                $objBusiness->state_province = $objYelpBusiness->location->state_code;
+                $objBusiness->phone = $objYelpBusiness->display_phone;
+                $tobjBusinesses[] = $objBusiness;
+            }
+
+            return $tobjBusinesses;
         }
 
         public function getGoogleMyBusinessLocations($LocationID) {
@@ -156,7 +202,7 @@
                             $objBusiness = new \stdClass();
                             $objBusiness->name = $location->locationName;
                             $objBusiness->type = 'Google';
-                            $objBusiness->id = $location->locationKey->placeId;
+                            $objBusiness->id = $objBusiness->external_location_id = $location->locationKey->placeId;
                             $objBusiness->mapsUrl = $location->metadata->mapsUrl;
                             $objBusiness->address = implode ("\r\n", (array)$location->address->addressLines);
                             $objBusiness->postal_code = $location->address->postalCode;
@@ -170,6 +216,42 @@
                 }
             }
             return $tobjBusinesses;
+        }
+
+        public function importYelpReviews($LocationID) {
+            $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP);
+            if(!$objLocationReviewSite)
+                return false;
+
+            $Yelp = new \Vokuro\Models\YelpScanning();
+            $Yelp->construct();
+
+            $YelpReviews = json_decode($Yelp->get_business($objLocationReviewSite->external_location_id));
+
+            $objLocationReviewSite->rating = $YelpReviews->rating;
+            $objLocationReviewSite->review_count = $YelpReviews->review_count;
+            $objLocationReviewSite->save();
+
+            foreach($YelpReviews->reviews as $objYelpReview) {
+                $objReview = \Vokuro\Models\Review::findFirst("external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}");
+                if(!$objReview) {
+                    $objReview = new \Vokuro\Models\Review();
+                    $objReview->assign(array(
+                        'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
+                        'rating' => $objYelpReview->rating,
+                        'review_text' => $objYelpReview->excerpt,
+                        'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
+                        'user_name' => $objYelpReview->user->name,
+                        'user_id' => $objYelpReview->user->id,
+                        'user_image' => $objYelpReview->user->image_url,
+                        'external_id' => $objYelpReview->id,
+                        'location_id' => $LocationID,
+                    ));
+                    $objReview->save();
+                }
+                unset($objReview);
+            }
+            return true;
         }
 
         public function importGoogleMyBusinessReviews($LocationID) {

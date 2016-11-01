@@ -128,7 +128,7 @@
                             <a class="btnLink" id="googleLink" href="<?=$objGoogleReviewSite->url; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
                             <a href="/location/disconnectGoogle/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
                         {% else %}
-                            <a href="{{ authUrl }}" class="btnSecondary" target="_blank" id="gmb_signin">Authenticate Google My Business</a>
+                            <a href="{{ authUrl }}" class="btnSecondary" id="gmb_signin">Authenticate Google My Business</a>
                         {% endif %}
                     </div>
                 </div>
@@ -156,11 +156,10 @@
                     </div>
 -->
                   <div class="buttons" {% if FacebookConnected %} style="margin-top: 43px" {% else %} style="margin-top: 70px;" {% endif %}>
-                    {% if !FacebookConnected %}
-                    <a href="/location/getAccessToken/<?=$location->location_id; ?>/{{ ComingFromSignup }}" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
-                    {% endif %}
                     {% if FacebookConnected %}
                         <a href="/location/disconnectFacebook/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
+                    {% else %}
+                        <a href="/location/getAccessToken/<?=$location->location_id; ?>/{{ ComingFromSignup }}" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
                     {% endif %}
                     </div>
                 </div>
@@ -175,47 +174,50 @@
     <div class="pnlAddLocation short col-md-4">
         <div class="title">YELP:
         <span class="title-answer">
-            <?php if((isset($yelp) && isset($yelp->external_id) && $yelp->external_id != '')) { ?>
+            {% if YelpConnected %}
+                <span class="yelpnotfound">Successfully Connected</span>
+            {% else %}
                 <span class="yelpnotfound">Not Connected</span>
-            <?php } else { ?>
-                <span class="yelpnotfound">Not Connected</span>
-            <?php } ?>
+            {% endif %}
         </span>
         </div>
 
-        <div class="field"><span class="name">Business Name:</span>
-            <span id="yelpName" class="yelpfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id !=
-            ''?'':' style="display: none;"')?>><?=$location->name?></span>
-            <input id="yelpsearchfield" class="yelpnotfound" <?=(isset($yelp) && isset($yelp->external_id) &&
-            $yelp->external_id != ''?' style="display: none;"':'')?> type="name"
-            value="<?=str_replace("\"","&quot;",$location->name)?>" />
+        <div class="field">
+            <span class="name">Business Name:</span>
+            {% if YelpConnected %}
+            <span id="yelpName" class="yelpfound"><?=$location->name; ?></span>
+            {% else %}
+                <input id="yelpsearchfield" name="YelpBusinessName" class="yelpnotfound" type="name" value="<?=str_replace("\"","&quot;",$location->name)?>" />
+            {% endif %}
         </div>
+
         <div class="field bottom"><span class="name">Location:</span>
-            <span id="yelpLocation" class="yelpfound" <?=(isset($yelp) && isset($yelp->external_id) &&
-            $yelp->external_id != ''?'':' style="display: none;"')?>><?=$location->address?> <?=$location->
-            locality?>, <?=$location->state_province?> <?=$location->postal_code?></span>
-            <input id="yelpsearchfield2" type="name" value="<?=str_replace(" \"","&quot;",$location->postal_code)?>"
-            class="yelpnotfound" <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?'
-            style="display: none;"':'')?> />
+            {% if YelpConnected %}
+            <span id="yelpLocation" class="yelpfound">
+                <?=$location->address?> <?=$location->locality?>, <?=$location->state_province?> <?=$location->postal_code?>
+            </span>
+            {% else %}
+                <input id="yelpsearchfield2" name="YelpPostalCode" type="name" value="<?=str_replace(" \"","&quot;",$location->postal_code); ?>" class="yelpnotfound"  />
+            {% endif %}
         </div>
-        <div class="buttons yelpfound"
-        <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?'':' style="display:
-        none;"')?>><a id="yelpLink" href="http://yelp.com/biz/<?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?$yelp->external_id:'')?>" target="_blank"><img src="/img/icon-eye.gif"/>
-            View</a>
-        <a class="btnLink" href="#" onclick="$('.yelpfound').hide();$('.yelpnotfound').show();return false;"><img src="/img/icon-pencil.png"/>
-            Update Location</a>
+
+        <div class="buttons yelpfound">
+            {% if YelpConnected %}
+                <a id="yelpLink" href="http://yelp.com/biz/<?=$yelp->external_id; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
+            {% endif %}
 
             {% if YelpConnected %}
                 <a href="/location/disconnectYelp/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
             {% endif %}
 
-            </div>
-    <div class="buttons yelpnotfound"
-    <?=(isset($yelp) && isset($yelp->external_id) && $yelp->external_id != ''?' style="display:
-    none;"':'')?>><a class="btnLink" href="#" onclick="findBusinessYelp();return false;"><img src="/img/icon-maglass.gif"/>
-        Search For Business</a>
-    <a class="btnLink" href="#" id="urllinkyelp" onclick="$('#urltype').val('yelp');"><img src="/img/icon-link.gif"/>
-        Enter URL</a></div>
+        </div>
+    {% if !YelpConnected %}
+        <div class="buttons yelpnotfound">
+            <a class="btnLink" href="#" onclick="PickYelpBusiness();"><img src="/img/icon-maglass.gif"/> Connect Yelp Page</a>
+        <!--<a class="btnLink" href="#" id="urllinkyelp" onclick="$('#urltype').val('yelp');"><img src="/img/icon-link.gif"/>
+            Enter URL</a>-->
+        </div>
+    {% endif %}
 </div>
 </div>
 
@@ -260,10 +262,6 @@
         <div class="form-actions col-md-12">
             <button type="button" onclick="window.location.href = '/session/signup3';" id="register-submit-btn" class="btnsignup uppercase">Next: Customize Survey</button>
         </div>
-    {% else %}
-        <div class="col-xs-6">
-            <input type="submit" class="btnLink" value="Save" style="height: 42px; line-height: 14px; margin-left: 20%; padding: 15px 36px; text-align: center;"/>
-        </div>
     {% endif %}
 </div>
 <div style="clear: both;">&nbsp;</div>
@@ -276,7 +274,14 @@
         $('#GoToNextStep').val(1);
         $('#hiddenLocationForm').submit();
     }
+
+    function PickYelpBusiness() {
+        $('#hiddenLocationForm').attr('action', '/location/getYelpPages/<?=$location->location_id; ?>/{{ ComingFromSignup }}');
+        $('#hiddenLocationForm').submit();
+
+    }
     jQuery(document).ready(function ($) {
+
 
         $("#btnCreateRegion").click(function () {
             $.ajax({
