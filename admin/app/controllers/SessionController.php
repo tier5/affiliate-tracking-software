@@ -765,8 +765,7 @@ class SessionController extends ControllerBase {
                         $conditions = "id = :id:";
                         $parameters = array("id" => $identity['id']);
                         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-                        //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-                        //find the agency
+
                         $conditions = "agency_id = :agency_id:";
                         $parameters = array("agency_id" => $userObj->agency_id);
                         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));

@@ -24,7 +24,7 @@
                     <thead>
                     <tr>
                         <th>Business</th>
-                        <?php if(strpos($_SERVER['REQUEST_URI'], 'getGooglePages') !== false) { ?> <th>Address</th> <?php } ?>
+                        <?php if(strpos($_SERVER['REQUEST_URI'], 'getGooglePages') !== false || strpos($_SERVER['REQUEST_URI'], 'getYelpPages') !== false) { ?> <th>Address</th> <?php } ?>
                     </tr>
                     </thead>
                     <tbody>
@@ -34,7 +34,7 @@
                 foreach($tobjBusinesses as $objBusiness) { ?>
                     <tr class="review <?=$rowclass?>">
                         <?php echo "<td><a href=\"/location/pick{$objBusiness->type}Business/{$objBusiness->id}/{$LocationID}/{$RedirectToSession}\">{$objBusiness->name}</a></td>"; ?>
-                        <?php if($objBusiness->type == 'Google') { echo "<td>{$objBusiness->address}, {$objBusiness->locality} {$objBusiness->state_province} {$objBusiness->country}</td>";  } ?>
+                        <?php if($objBusiness->type == 'Google' || $objBusiness->type == 'Yelp') { echo "<td>{$objBusiness->address}, {$objBusiness->locality} {$objBusiness->state_province} {$objBusiness->country}</td>";  } ?>
                     </tr>
                     <?php } ?>
                     </tbody>
