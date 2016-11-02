@@ -409,7 +409,7 @@
 <!-- END CONTAINER -->
 <!-- BEGIN FOOTER -->
 <div class="page-footer">
-    <div class="page-footer-inner"> {{ date("Y") }} &copy; {{ agency.name }}</div>
+    <div class="page-footer-inner"> {{ date("Y") }} &copy; <?=(isset($this->view->objParentAgency->name))?$this->view->objParentAgency->name: "Review Velocity";?></div>
     <div class="scroll-to-top">
         <i class="icon-arrow-up"></i>
     </div>
