@@ -558,7 +558,7 @@ class ControllerBase extends Controller {
         $this->view->sms_sent_this_month_total = $rs->count();
     }
 
-    public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_auth_messaging_sid, $twilio_from_phone, $agency) {
+    public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_auth_messaging_sid, $twilio_from_phone) {
         if(!$AccountSid || !$AuthToken || !$twilio_from_phone) {
             $this->flash->error("Missing twilio configuration.");
             return false;
@@ -619,7 +619,7 @@ class ControllerBase extends Controller {
                     //echo '<pre>$user:'.print_r($user,true).'</pre>';
                     //if (isset($user->phone) && $user->phone != '' && $agency->twilio_api_key != '' && $agency->twilio_auth_token != '') {
                     //we have a phone, so send the SMS
-                    $this->SendSMS($this->formatTwilioPhone($user->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency);
+                    $this->SendSMS($this->formatTwilioPhone($user->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone);
                     //}
                 }
             }

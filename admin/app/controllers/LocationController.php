@@ -1062,7 +1062,7 @@
                         return;
                     } else {
                         //The message is saved, so send the SMS message now
-                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone, $agency)) {
+                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
                             $this->flash->success("The SMS was sent successfully");
                             //Tag::resetInput();
                         }
@@ -1274,7 +1274,7 @@
                 $parameters = array("agency_id" => $location->agency_id);
                 $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
-                $this->SendSMS($this->formatTwilioPhone($invite->phone), $invite->sms_message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency);
+                $this->SendSMS($this->formatTwilioPhone($invite->phone), $invite->sms_message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone);
             }
             //END checking for invites that need to be sent
 

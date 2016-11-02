@@ -1029,22 +1029,27 @@ class SessionController extends ControllerBase {
         $message = str_replace("{name}", 'Name', $message);
         $message = str_replace("{link}", 'Link', $message);
 
-        //find the agency
-        $conditions = "agency_id = :agency_id:";
-        $parameters = array("agency_id" => $id);
-        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-		if (isset($agency) && $agency->twilio_api_key == "") {
-			$conditions = "agency_id = :agency_id:";
-			$parameters = array("agency_id" => abs($agency->parent_id));
-			$agency->SMS_message = $original_message;
-			$agency->save();
-			//  echo $parentAgencyId;
-			$agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $identity = $this->auth->getIdentity();
+        $objUser = \Vokuro\Models\Users::findFirst("id = {$identity['id']}");
+        $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
 
-			$results = 'Using Parents twillio ID.';
-		} else {
-			$results = 'Twillio account not found.';
-		}
+        if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            $TwilioAPIKey = $this->config->twilio->twilio_api_key;
+            $TwilioAuthToken = $this->config->twilio->twilio_auth_token;
+            $TwilioAuthMessagingSID = $this->config->twilio->twilio_auth_messaging_sid;
+            $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $this->config->twilio->twilio_from_phone;
+        } else {
+            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+            $TwilioAPIKey = $objAgency->twilio_api_key;
+            $TwilioAuthToken = $objAgency->twilio_auth_token;
+            $TwilioAuthMessagingSID = $objAgency->twilio_auth_messaging_sid;
+            $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $objAgency->twilio_from_phone;
+        }
+
+        if(!$TwilioAPIKey || !$TwilioAuthToken || !$TwilioAuthMessagingSID || !$TwilioFromPhone) {
+            $this->flash->error("Twilio configuration error.  Please contact customer support.");
+        }
+
 		$conditions = "location_id = :location_id:";
 		$parameters = array("location_id" => $locationID);
 		$location = Location::findFirst(array($conditions, "bind" => $parameters));
@@ -1053,8 +1058,8 @@ class SessionController extends ControllerBase {
 			$location->save();
 		}
         //The message is saved, so send the SMS message now
-        if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
-            $results = 'The message was sent.';
+        if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $TwilioAPIKey, $TwilioAuthToken, $TwilioAuthMessagingSID, $TwilioFromPhone)) {
+            $this->flash->success("The message was sent!");
         }
         $this->view->disable();
         echo $results;
