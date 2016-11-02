@@ -86,8 +86,13 @@
                         <div class="panel panel-default apple-backgound">
                             <div class="panel-body">
                                 <div id="current-plan" class="responsive-float-left subscription-panel-default-caption">
-                                    <div><span id="current-locations" class="bold">{{ subscriptionPlanData['subscriptionPlan']['locations'] }}</span> Location(s)</div>
-                                    <div><span id="current-messages" class="bold">{{ subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] }}</span> Text Messages</div>
+
+                                <?php
+                                $ActiveLocations = isset($subscriptionPlanData['subscriptionPlan']['locations']) ? subscriptionPlanData['subscriptionPlan']['locations'] : $MaxLocationTrial;
+                                $ActiveSMS = isset($subscriptionPlanData['subscriptionPlan']['sms_messages_per_location']) ? subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] : $MaxSMSTrial;
+                            ?>
+                                    <div><span id="current-locations" class="bold">{{ ActiveLocations }} Location(s)</div>
+                                    <div><span id="current-messages" class="bold">{{ ActiveSMS }}</span> Text Messages</div>
                                 </div>
                                 <div class="responsive-float-right subscription-panel-large-caption"><sup class="subscription-panel-default-caption">$</sup>{{ paymentPlan }}<sub class="subscription-panel-default-caption">/mo</sub></div>
                             </div>
@@ -445,13 +450,13 @@
             smsMessagesSlider.setValue(currentPlanMessages ? currentPlanMessages : 100, true, true);
 
             /* Message init */
-            $('#current-locations').text(smsLocationSlider.getValue());
+            //$('#current-locations').text(smsLocationSlider.getValue());
             $('#change-plan-locations').text(smsLocationSlider.getValue());
             $('#slider-locations').text(smsLocationSlider.getValue());
             $('#modal-locations').text(smsLocationSlider.getValue());
 
             /* Locations init */
-            $('#current-messages').text(smsMessagesSlider.getValue());
+            //$('#current-messages').text(smsMessagesSlider.getValue());
             $('#change-plan-messages').text(smsMessagesSlider.getValue());
             $('#slider-messages').text(smsMessagesSlider.getValue());
             $('#modal-messages').text(smsMessagesSlider.getValue());
