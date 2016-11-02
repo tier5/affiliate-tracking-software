@@ -1,31 +1,49 @@
 <?php
     require 'bootstrap.php';
     use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
+
     $Start = date("Y-m-01", strtotime('now'));
     $End = date("Y-m-t", strtotime('now'));
-    $sql = "SELECT agency_id FROM agency WHERE parent_id <= 100";
-    $list = new \Vokuro\Models\Agency();
 
-    $params = null;
-    $agencyList = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+    $dbBusinesses = \Vokuro\Models\Agency::find('parent_id != ' . \Vokuro\Models\Agency::AGENCY);
 
-    foreach($agencyList as $agency) {
+    $dbAllPermissions = \Vokuro\Models\UsersLocation::find();
+    $tAllPermissions = [];
+    foreach($dbAllPermissions as $objPermission) {
+        $tAllPermissions[$objPermission->user_id][$objPermission->location_id] = 1;
+    }
 
-      $BusinessID = $agency->agency_id;
-      $dbLocations = \Vokuro\Models\Location::find("agency_id = {$BusinessID}");
+    $dbAllNotifications = \Vokuro\Models\LocationNotifications::find();
+    $tAllNotifications = [];
+    foreach($dbAllNotifications as $objNotification) {
+        if($objNotification->employee_leaderboards)
+            $tAllNotifications[$objNotification->user_id][$objNotification->location_id] = 1;
+    }
 
-      $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
-      $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = " . $objBusiness->parent_id);
+    foreach ($dbBusinesses as $objBusiness) {
+        $dbLocations = \Vokuro\Models\Location::find("agency_id = {$objBusiness->agency_id}");
 
+        $dbAllUsers = \Vokuro\Models\Users::find("agency_id = {$objBusiness->agency_id}");
+        $tRecipients = [];
 
-      foreach($dbLocations as $objLocation) {
-      	 echo $objLocation->location_id;
-          $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($BusinessID, $Start, $End, $objLocation->location_id, 0, 0, 1);
-          $objEmail = new \Vokuro\Services\Email();
-          echo count($dbEmployees);
-          $objEmail->sendEmployeeReport($dbEmployees, $objBusiness);
-          //print_r( $dbEmployees);
-          die;
-          
-      }
-}
+        foreach($dbAllUsers as $objUser) {
+            foreach($dbLocations as $objLocation) {
+                if (($objUser->role == \Vokuro\Models\Users::ROLE_SUPER_ADMIN || $objUser->role == \Vokuro\Models\Users::ROLE_ADMIN) && isset($tAllNotifications[$objUser->id][$objLocation->location_id])) {
+                    $tRecipients[$objLocation->location_id][] = $objUser->id;
+                } else {
+                    if(isset($tAllPermissions[$objUser->id][$objLocation->location_id]) && isset($tAllNotifications[$objUser->id][$objLocation->location_id]))
+                        $tRecipients[$objLocation->location_id][] = $objUser->id;
+                }
+            }
+        }
+
+       foreach ($dbLocations as $objLocation) {
+            if(isset($tRecipients[$objLocation->location_id])) {
+                $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $objLocation->location_id, 0, 0, 1);
+                $dbRecipients = \Vokuro\Models\Users::find("id IN (" . implode(',', $tRecipients[$objLocation->location_id]) . ")");
+
+                $objEmail = new \Vokuro\Services\Email();
+                $objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients);
+            }
+        }
+    }

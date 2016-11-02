@@ -832,7 +832,10 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         $.ajax({
             url: "/settings/sendSampleEmail/" + EmployeeID,
             success: function(data) {
-                console.log(data);
+                if(data == "1")
+                    alert("Email successfully sent!");
+                else
+                    alert("Problem sending email.  Please contact customer support.");
             }
         });
     });
@@ -858,8 +861,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         url: $('#createreviewsiteform').attr('action')+''+$("#review_site_id").val()+'/?url='+encodeURIComponent($("#url").val()),
         cache: false,
         success: function(data){
-          //done!
-          console.log('data:'+data);
+
           //$.each(data, function(index, element) {
           var element = $.parseJSON(data);
           //first, remove the value we selected

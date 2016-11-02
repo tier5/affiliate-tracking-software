@@ -61,7 +61,7 @@
 
                 $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
                 //start with Yelp reviews, if configured
-                if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
+                if (isset($Obj) && isset($Obj->external_location_id) && $Obj->external_location_id) {
                     $this->view->yelp_id = $Obj->external_id;
                     $yelp_review_count = $Obj->review_count;
                     $yelp_rating = $Obj->rating;

@@ -91,22 +91,26 @@ class Email{
         return true;
     }
 
-    public function sendEmployeeReport($dbEmployees, $objBusiness, $tSendTo) {
+    public function sendEmployeeReport($dbEmployees, $objLocation, $tSendTo) {
         try {
-
+            $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objLocation->agency_id}");
             $mail = $this->getDI()->getMail();
-            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 $mail->setFrom('zacha@reputationloop.com');
+                $FullDomain = "reviewvelocity.co";
+            }
             else {
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
                 $mail->setFrom($objAgency->email);
+                $FullDomain = "{$objAgency->custom_domain}.getmobilereviews.com";
             }
             $objEmployees = $dbEmployees;
 
             $Params = array(
               'dbEmployees'         => $dbEmployees,
-              'objBusiness'         => $objBusiness,
+              'objLocation'         => $objLocation,
               'objAgency'           => $objAgency ?: null,
+              'FullDomain'          => $FullDomain,
             );
 
             foreach($tSendTo as $objRecipient) {

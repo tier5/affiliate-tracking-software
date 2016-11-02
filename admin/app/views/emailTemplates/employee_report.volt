@@ -148,12 +148,14 @@
 </head>
 <body>
     <div class="header">
+        <!--
         <?php if($objBusiness->parent_id > 0) { ?>
             <img class="logo" src="http://<?=$objAgency->custom_domain; ?>.getmobilereviews.com/img/agency_logos/<?=$objAgency->logo_path;?>" />
         <?php } else { ?>
             <img class="logo" src="http://reviewvelocity.co/img/logo-white.gif" />
         <?php } ?>
-        <div class="title"><h3><?=$objBusiness->name; ?></h3></div>
+        -->
+        <div class="title"><h3><?=$objLocation->name; ?></h3></div>
     </div>
 
     <div class="container">
@@ -176,13 +178,13 @@
                 <?php
                     switch($Count) {
                         case 1:
-                            $Icon = "<img src='http://" . $objBusiness->custom_domain . ".getmobilereviews.com/img/gold_medal.png' />";
+                            $Icon = "<img src='http://{$FullDomain}/img/gold_medal.png' />";
                             break;
                         case 2:
-                                $Icon = "<img src='http://" . $objBusiness->custom_domain . ".getmobilereviews.com/img/silver_medal.png' />";
+                                $Icon = "<img src='http://{$FullDomain}/img/silver_medal.png' />";
                             break;
                         case 3:
-                                $Icon = "<img src='http://" . $objBusiness->custom_domain . ".getmobilereviews.com/img/bronze_medal.png' />";
+                                $Icon = "<img src='http://{$FullDomain}/img/bronze_medal.png' />";
                             break;
                         default:
                             // Fully aware this only works up to 110 employees.  GARY_TODO:  Fix this if it becomes an issue.
@@ -204,7 +206,6 @@
                     <td class="total_sms_sent"><?=($Employee->sms_sent_this_month ?: 0); ?></td>
                     <td class="total_positive_feedback"><?=$Employee->positive_feedback_this_month ?: 0; ?></td>
                     <td class="customer_satisfaction"><?=($Employee->sms_received_this_month > 0?(number_format(($Employee->positive_feedback_this_month / $Employee->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
-
                 </tr>
                 <?php $Count++; ?>
             {% endfor %}
@@ -213,13 +214,10 @@
     </div>
     <div ><br /><hr class="horizontalline"></div>
     <div class="footer">
-        <p><b><?=$objBusiness->name; ?></b>
-        <?php if($objBusiness->website) { ?>
-                | <a href="<?=$objBusiness->website; ?>"><?=$objBusiness->website; ?></a>
-        <?php } ?> | Like us on Facebook</p>
-        <p><?=$objBusiness->address; ?> <?=$objBusiness->address2; ?>, <?=$objBusiness->state_province; ?>, <?=$objBusiness->postal_code; ?></p>
-        <p><?=$objBusiness->phone; ?></p>
+        <p><b><?=$objLocation->name; ?></b> | Like us on Facebook</p>
+        <p><?=$objLocation->address; ?>, <?=$objLocation->state_province; ?>, <?=$objLocation->postal_code; ?></p>
+        <p><?=$objLocation->phone; ?></p>
         <br />
-        Powered by: <?=$objBusiness->name; ?>
+        Powered by: <?=$objAgency->name ?: 'Review Velocity'; ?>
     </div>
 </body>

@@ -404,9 +404,10 @@
             $Start = date("Y-m-01", strtotime('now'));
             $End = date("Y-m-t", strtotime('now'));
             $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], 0, 0, 1);
+            $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
 
             $objEmail = new \Vokuro\Services\Email();
-            return $objEmail->sendEmployeeReport($dbEmployees, $objBusiness, [$objRecipient]) ? 1 : 0;
+            return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
         }
 
         public function agencyAction() {

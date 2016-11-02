@@ -128,7 +128,7 @@
                             <a class="btnLink" id="googleLink" href="<?=$objGoogleReviewSite->url; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
                             <a href="/location/disconnectGoogle/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
                         {% else %}
-                            <a href="{{ authUrl }}" class="btnSecondary" id="gmb_signin">Authenticate Google My Business</a>
+                            <a href="{{ authUrl }}" class="btnSecondary" id="gmb_signin">Connect Google My Business</a>
                         {% endif %}
                     </div>
                 </div>
@@ -159,7 +159,7 @@
                     {% if FacebookConnected %}
                         <a href="/location/disconnectFacebook/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
                     {% else %}
-                        <a href="/location/getAccessToken/<?=$location->location_id; ?>/{{ ComingFromSignup }}" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
+                        <a href="/location/getAccessToken/<?=$location->location_id; ?>/{{ ComingFromSignup }}" id="btnAuthenticateFacebook" class="btnLink">Connect Facebook</a>
                     {% endif %}
                     </div>
                 </div>
