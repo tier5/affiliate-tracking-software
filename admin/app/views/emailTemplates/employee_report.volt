@@ -148,7 +148,7 @@
 </head>
 <body>
     <div class="header">
-        <?php if($objBusiness->parent_id > 0 { ?>
+        <?php if($objBusiness->parent_id > 0) { ?>
             <img class="logo" src="http://<?=$objAgency->custom_domain; ?>.getmobilereviews.com/img/agency_logos/<?=$objAgency->logo_path;?>" />
         <?php } else { ?>
             <img class="logo" src="http://reviewvelocity.co/img/logo-white.gif" />
