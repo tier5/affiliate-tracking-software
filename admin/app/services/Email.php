@@ -104,8 +104,9 @@ class Email{
             $objEmployees = $dbEmployees;
 
             $Params = array(
-              'dbEmployees'       => $dbEmployees,
-              'objBusiness'       => $objBusiness
+              'dbEmployees'         => $dbEmployees,
+              'objBusiness'         => $objBusiness,
+              'objAgency'           => $objAgency ?: null,
             );
 
             foreach($tSendTo as $objRecipient) {

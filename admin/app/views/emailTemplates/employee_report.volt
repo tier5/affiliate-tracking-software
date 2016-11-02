@@ -148,7 +148,11 @@
 </head>
 <body>
     <div class="header">
-        <img class="logo" src="http://<?=$objBusiness->custom_domain; ?>.getmobilereviews.com/img/agency_logos/<?=$objBusiness->logo_path;?>" />
+        <?php if($objBusiness->parent_id > 0 { ?>
+            <img class="logo" src="http://<?=$objAgency->custom_domain; ?>.getmobilereviews.com/img/agency_logos/<?=$objAgency->logo_path;?>" />
+        <?php } else { ?>
+            <img class="logo" src="http://reviewvelocity.co/img/logo-white.gif" />
+        <?php } ?>
         <div class="title"><h3><?=$objBusiness->name; ?></h3></div>
     </div>
 
@@ -209,7 +213,10 @@
     </div>
     <div ><br /><hr class="horizontalline"></div>
     <div class="footer">
-        <p><b><?=$objBusiness->name; ?></b> | <a href="<?=$objBusiness->website; ?>"><?=$objBusiness->website; ?></a> | Like us on Facebook</p>
+        <p><b><?=$objBusiness->name; ?></b>
+        <?php if($objBusiness->website) { ?>
+                | <a href="<?=$objBusiness->website; ?>"><?=$objBusiness->website; ?></a>
+        <?php } ?> | Like us on Facebook</p>
         <p><?=$objBusiness->address; ?> <?=$objBusiness->address2; ?>, <?=$objBusiness->state_province; ?>, <?=$objBusiness->postal_code; ?></p>
         <p><?=$objBusiness->phone; ?></p>
         <br />
