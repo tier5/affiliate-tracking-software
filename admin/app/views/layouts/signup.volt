@@ -58,7 +58,7 @@ if (isset($main_color_setting)) {
     <div class="headercontent">
         <!-- BEGIN LOGO -->
         <div class="logo">
-            <a href="/"><img  src="<?=(isset($this->view->logo_setting) && $this->view->logo_setting != ''?'/img/agency_logos/'.$logo_setting:'/img/logo-white.gif')?>" alt="" /></a>
+            <a href="/"><img style="max-width: 300px; margin-top: 15px;"  src="<?=(isset($this->view->logo_setting) && $this->view->logo_setting != ''?'/img/agency_logos/'.$logo_setting:'/img/logo-white.gif')?>" alt="" /></a>
         </div>
         <!-- END LOGO -->
         <div class="steps">
