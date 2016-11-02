@@ -575,6 +575,7 @@
                         <th>All Reviews</th>
                         <th>Individual Reviews</th>
                         <th>Employee Leaderboards</th>
+                        <th>Send Sample Email (Employee Leaderboards)</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -602,8 +603,9 @@
                 }
               }
             ?>
+
             <tr>
-              <td><?=$user->name?></td>
+              <td ObjectID="<?=$user->id; ?>"><?=$user->name?></td>
               <td>
                 <span class="on-off-buttons">
                     <a
@@ -725,6 +727,9 @@
                   </a>
                 </span>
               </td>
+              <td>
+                <a class="btnLink btnSecondary SendEmployeeEmail" href="#" >Send Email</a>
+              </td>
             </tr>
             <?php
             }
@@ -821,6 +826,17 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
 <script type="text/javascript">
   jQuery(document).ready(function($) {
+    $('.SendEmployeeEmail').on('click', function(e) {
+        var EmployeeID = $(this).parents('TR').children('TD:first-child').attr('ObjectID');
+
+        $.ajax({
+            url: "/settings/sendSampleEmail/" + EmployeeID,
+            success: function(data) {
+                console.log(data);
+            }
+        });
+    });
+
     $('#btnAddReviewSite').on('click', function(e) {
       e.preventDefault();
       $('#page-wrapper').show();
@@ -981,11 +997,11 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 	        }
 	 	});
 		if (value == 1) {
-		
+
 		} else {
-		
+
 		}
-          
+
     });
 
 

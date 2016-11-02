@@ -392,6 +392,21 @@
             $this->view->pick("settings/index");
         }
 
+        public function sendSampleEmailAction($EmployeeID) {
+            $this->view->disable();
+            $Identity = $this->session->get('auth-identity');
+            $objCurrentUser = \Vokuro\Models\Users::findFirst("id = " . $Identity['id']);
+            $objRecipient = \Vokuro\Models\Users::findFirst("id = {$EmployeeID}");
+            $objBusiness =  \Vokuro\Models\Agency::findFirst("agency_id = {$objCurrentUser->agency_id}");
+
+            $Start = date("Y-m-01", strtotime('now'));
+            $End = date("Y-m-t", strtotime('now'));
+            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], 0, 0, 1);
+
+            $objEmail = new \Vokuro\Services\Email();
+            return $objEmail->sendEmployeeReport($dbEmployees, $objBusiness, [$objRecipient]) ? 1 : 0;
+        }
+
         public function agencyAction() {
         // echo "agencyAction";
             $Identity = $this->auth->getIdentity();

@@ -91,24 +91,28 @@ class Email{
         return true;
     }
 
-    public function sendEmployeeReport($dbEmployees, $objBusiness) {
+    public function sendEmployeeReport($dbEmployees, $objBusiness, $tSendTo) {
         try {
 
             $mail = $this->getDI()->getMail();
-            $mail->setFrom('zacha@reputationloop.com');
+            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+                $mail->setFrom('zacha@reputationloop.com');
+            else {
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+                $mail->setFrom($objAgency->email);
+            }
             $objEmployees = $dbEmployees;
 
             $Params = array(
-              'dbEmployees'       => $dbEmployees,
-              'objBusiness'       => $objBusiness
+              'dbEmployees'         => $dbEmployees,
+              'objBusiness'         => $objBusiness,
+              'objAgency'           => $objAgency ?: null,
             );
 
-            for ($i = 0; $i < count($dbEmployees); ++$i) {
-                echo $mail->send($dbEmployees[$i]->email, "Your monthly employee report!", 'employee_report', $Params);
+            foreach($tSendTo as $objRecipient) {
+                echo $mail->send($objRecipient->email, "Your monthly employee report!", 'employee_report', $Params);
                 sleep(1);
-
             }
-
         } catch (Exception $e) {
             // GARY_TODO: Add logging!
             print $e;
