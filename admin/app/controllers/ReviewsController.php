@@ -226,7 +226,7 @@
                     $message = str_replace("{name}", $_POST['name'], $message);
                     $message = str_replace("{link}", $this->googleShortenURL($_POST['link']), $message);
 
-                    if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
+                    if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone)) {
                         $this->flash->success("The SMS was sent successfully to: " . $_POST['phone']);
                     }
                 } else if (isset($_POST['formposttype']) && $_POST['formposttype'] == 'send') {
@@ -291,7 +291,7 @@
 
 
                             //The message is saved, so send the SMS message now
-                            if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency)) {
+                            if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone)) {
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
                             }
 
