@@ -63,6 +63,8 @@ class ControllerBase extends Controller {
         if (is_array($identity)) {
             $userObj = $this->getUserObject();
             $this->view->loggedUser = $userObj;
+            
+            
             //find the agency
             $conditions = "agency_id = :agency_id:";
 
@@ -110,11 +112,11 @@ class ControllerBase extends Controller {
                 // We're an agency
                 /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
                     return $this->RedirectDomain($agency->custom_domain);*/
-
+                
                 $this->view->primary_color = "#2a3644";
                 $this->view->secondary_color = "#2eb82e";
                 $this->view->objParentAgency = null;
-                $this->view->agencyName = ($agency->parent_id == -1 || ($agency->is_admin == 1)) ? "Review Velocity" : $agency->name;
+                $this->view->agencyName = ($agency->parent_id == -1 || ($this->user_object->is_admin == 1)) ? "Review Velocity" : $agency->name;
                 $this->view->LogoPath = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
             }
 
