@@ -735,9 +735,13 @@
                 }
             }
             //end making sure the user should be here
-
-            $objGoogleReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
-
+			/////GetLocationReviewSite($location_id,\Vokuro\Models\Location::TYPE_GOOGLE);
+            //GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_GOOGLE);
+            //GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_FACEBOOK);
+            //GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_YELP);
+            
+            //$objGoogleReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
+            $objGoogleReviewSite = $this->GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_GOOGLE);
             $this->view->GoogleMyBusinessConnected = $objGoogleReviewSite && $objGoogleReviewSite->json_access_token ? true : false;
             $this->view->objGoogleReviewSite = $objGoogleReviewSite;
 
@@ -776,16 +780,18 @@
             $this->view->facebook_access_token = $this->facebook_access_token;
 
             //look for a yelp review configuration
-            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
-            $parameters = array("location_id" => $loc->location_id);
-            $this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+            //$conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
+            //$parameters = array("location_id" => $loc->location_id);
+            $this->view->yelp = $this->GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_YELP);
+            //$this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             $this->view->YelpConnected = isset($this->view->yelp->external_location_id) && $this->view->yelp->external_location_id && $this->view->yelp->external_location_id != '';
 
 
             //look for a facebook review configuration
-            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
-            $parameters = array("location_id" => $loc->location_id);
-            $this->view->facebook = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+            //$conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
+            //$parameters = array("location_id" => $loc->location_id);
+            //$this->view->facebook = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+            $this->view->facebook = $this->GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_FACEBOOK);
             $this->view->FacebookConnected = $this->view->facebook->access_token ? true : false;
 
             //look for a google review configuration
@@ -1407,9 +1413,28 @@
             return $this->response->redirect("/location/edit/{$LocationID}");
         }
 
+        
+        public function GetLocationReviewSite($location_id, $ReviewSiteType) {
+        	
+        	$conditions = "location_id = :location_id: AND review_site_id = " . $ReviewSiteType;
+        	$parameters = array("location_id" => $location_id);
+        	$objLocationReviewSite = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+        	
+        	if (!$objLocationReviewSite) {
+        		$objLocationReviewSite = new LocationReviewSite();
+        		$objLocationReviewSite->review_site_id = $ReviewSiteType;
+        		$objLocationReviewSite->location_id = $location_id;
+        		$objLocationReviewSite->is_on = 0;
+        		$objLocationReviewSite->access_token = "";
+        		$objLocationReviewSite->json_access_token = "";
+        		$objLocationReviewSite->save();
+        	}
+        	
+        	return $objLocationReviewSite;
+        }
         /**
          * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface|void
-         *
+         *:\Apache24\htdocs\reviewvelocity\reviewvelocity\admin\app\cache\volt\c__apache24_htdocs_reviewvelocity_reviewvelocity_admin_app_views_location_edit.volt.php o
          * List of categories in csv format (Yext)
          * Look for businesses that are in Financial Advisor category, financial planners, financial services, financial planning including agency if they are under one.
          * In agency 1468, myreputation protected account CSV raw data of the entire account (emails, templates, contact records).

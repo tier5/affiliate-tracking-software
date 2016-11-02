@@ -172,8 +172,8 @@
                 <div class="col-md-8">
                   <ul id="sortable">
                     <?php
-                  if (isset($review_site_lists)) {
-                  foreach($review_site_lists as $review_site_list) {
+                  if (isset($this->view->review_site_list)) {
+                  foreach($this->view->review_site_list as $review_site_list) {
                   if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
                     ?>
                     <li class="ui-state-default" id='<?=$review_site_list->location_review_site_id?>'>
@@ -195,7 +195,7 @@
                           <img src="/img/icon-pencil.png" /> Update Location
                         </a>
                       <?php } else { ?>
-                      <a class="btnLink" href="<?=$review_site_list->url?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a>
+                      <a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a>
                       <?php } ?>
                     </span>
                     <span class="on-off-buttons">
