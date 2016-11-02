@@ -323,6 +323,7 @@
                 $conditions = "location_id = :location_id:";
                 $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
                 $location = Location::findFirst(array($conditions, "bind" => $parameters));
+                $location->message_frequency = ($location->message_frequency == "" ? 0: $location->message_frequency );
             }
             if(!$location)
                 $location = new Location();
