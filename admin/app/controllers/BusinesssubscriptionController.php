@@ -91,6 +91,11 @@ class BusinessSubscriptionController extends ControllerBase {
         /* Filter out the pricing plan details into its own view because it contains markup */
         $this->view->pricingDetails = $subscriptionPlanData['pricingPlan']['pricing_details'];
 
+
+        $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("id = {$objAgency->subscription_id}");
+        $this->view->MaxSMSTrial = $objSubscriptionPricingPlan->max_messages_on_trial_account;
+        $this->view->MaxLocationTrial = 1;
+
         /* Set pricing plan details to empty so it doesn't display when attaching the json string to the data attribute */
         $subscriptionPlanData['pricingPlan']['pricing_details'] = '';
         $this->view->subscriptionPlanData = $subscriptionPlanData;
