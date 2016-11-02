@@ -152,11 +152,17 @@ class IndexController extends ControllerBase {
 
             $this->view->new_reviews = ReviewsMonthly::newReviewReport($this->session->get('auth-identity')['location_id']);
 
+
             foreach($dbYelpReviews as $objYelpReview) {
                 if(strtotime($objBusiness->date_created) < strtotime($objYelpReview->time_created))
                     $YelpSinceCreate++;
                 $TotalYelpRating += $objYelpReview->rating;
             }
+
+            // Yelp stats work differently since we calculate based on the #s yelp gives us, rather than we import since we can only import 1 yelp review at a time.  Leaving code in for when we solve this problem.
+            $objYelpReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_YELP);
+            $TotalYelpRating = $objYelpReviewSite ? $objYelpReviewSite->rating * $objYelpReviewSite->review_count : 0;
+
 
             foreach($dbFacebookReviews as $objFacebookReview) {
                 if(strtotime($objBusiness->date_created) < strtotime($objFacebookReview->time_created))
@@ -171,7 +177,7 @@ class IndexController extends ControllerBase {
                 $TotalGoogleRating += $objGoogleReview->rating;
             }
 
-            $this->view->yelp_review_count = $YelpReviewCount = count($dbYelpReviews);
+            $this->view->yelp_review_count = $YelpReviewCount = $objYelpReviewSite ? $objYelpReviewSite->review_count : 0; //count($dbYelpReviews);
             $this->view->facebook_review_count = $FacebookReviewCount = count($dbFacebookReviews);
             $this->view->google_review_count = $GoogleReviewCount = count($dbGoogleReviews);
             $this->view->total_reviews = $TotalReviews = $FacebookReviewCount + $GoogleReviewCount + $YelpReviewCount;
