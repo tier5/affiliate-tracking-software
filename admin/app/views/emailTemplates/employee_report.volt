@@ -148,11 +148,13 @@
 </head>
 <body>
     <div class="header">
+        <!--
         <?php if($objBusiness->parent_id > 0) { ?>
             <img class="logo" src="http://<?=$objAgency->custom_domain; ?>.getmobilereviews.com/img/agency_logos/<?=$objAgency->logo_path;?>" />
         <?php } else { ?>
             <img class="logo" src="http://reviewvelocity.co/img/logo-white.gif" />
         <?php } ?>
+        -->
         <div class="title"><h3><?=$objBusiness->name; ?></h3></div>
     </div>
 
@@ -220,6 +222,6 @@
         <p><?=$objBusiness->address; ?> <?=$objBusiness->address2; ?>, <?=$objBusiness->state_province; ?>, <?=$objBusiness->postal_code; ?></p>
         <p><?=$objBusiness->phone; ?></p>
         <br />
-        Powered by: <?=$objBusiness->name; ?>
+        Powered by: <?=$objAgency->name; ?>
     </div>
 </body>
