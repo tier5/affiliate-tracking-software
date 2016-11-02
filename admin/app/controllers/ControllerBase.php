@@ -114,7 +114,7 @@ class ControllerBase extends Controller {
                 $this->view->primary_color = "#2a3644";
                 $this->view->secondary_color = "#2eb82e";
                 $this->view->objParentAgency = null;
-                $this->view->agencyName = ($agency->parent_id == -1 ) ? "Review Velocity" : $agency->name;
+                $this->view->agencyName = ($agency->parent_id == -1 || ($agency->is_admin == 1)) ? "Review Velocity" : $agency->name;
                 $this->view->LogoPath = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
             }
 
