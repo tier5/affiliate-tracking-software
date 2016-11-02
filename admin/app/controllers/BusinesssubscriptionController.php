@@ -4,7 +4,6 @@ namespace Vokuro\Controllers;
 
 use Exception;
 use Vokuro\Models\BusinessSubscriptionPlan;
-use Vokuro\Utils;
 use Vokuro\Models\Users;
 use Vokuro\Models\Agency;
 use Vokuro\Services\ServicesConsts;

@@ -349,6 +349,8 @@
             }
 
             // Save the sort order of the review sites
+            echo $_POST['review_order'];
+            //exit;
             if (!empty($_POST['review_order'])) {
                 $order = 0;
                 $pieces = explode(",", $_POST['review_order']);
@@ -374,9 +376,9 @@
 
                 //find the location review sites
                 $conditions = "location_id = :location_id:";
+            
                 $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-                $review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
-                $this->view->review_site_list = $review_site_list;
+                $this->view->review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
             }
 
             $this->view->review_sites = ReviewSite::find();

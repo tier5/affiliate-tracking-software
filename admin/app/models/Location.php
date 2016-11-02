@@ -11,8 +11,8 @@
      */
     class Location extends BaseModel
     {
-        const TYPE_YELP = 1;
-        const TYPE_FACEBOOK = 2;
+    	const TYPE_FACEBOOK = 1;
+    	const TYPE_YELP = 2;
         const TYPE_GOOGLE = 3;
 
         public $location_id;

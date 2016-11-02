@@ -109,7 +109,7 @@
                         <span class="title-answer">Not connected</span></div>
                     {% endif %}
                     <div class="field"><span class="name">Business Name:</span> <span id="googleName">
-                        <?=$objGoogleReviewSite->name ?: $location->name; ?>
+                        <?=(isset($objGoogleReviewSite) && isset($objGoogleReviewSite->name)) ?: $location->name; ?>
 
                         </span></div>
                     <div class="field bottom">
@@ -117,10 +117,10 @@
                             Location:
                         </span>
                         <span class="googleAddress" id="googleAddress">
-                            <?=$objGoogleReviewSite->address ?: $location->address?>
-                            <?=$objGoogleReviewSite->locality ?: $location->locality?>,
-                            <?=$objGoogleReviewSite->state_province ?: $location->state_province?>
-                            <?=$objGoogleReviewSite->postal_code ?: $location->postal_code?>
+                            <?=(isset($objGoogleReviewSite) && isset($objGoogleReviewSite->location)) ?: $location->address?>
+                            <?=(isset($objGoogleReviewSite) && isset($objGoogleReviewSite->locality)) ?: $location->locality?>,
+                            <?=(isset($objGoogleReviewSite) && isset($objGoogleReviewSite->state_province)) ?: $location->state_province?>
+                            <?=(isset($objGoogleReviewSite) && isset($objGoogleReviewSite->postal_code)) ?: $location->postal_code?>
                         </span>
                     </div>
                     <div class="buttons">

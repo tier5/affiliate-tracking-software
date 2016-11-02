@@ -359,9 +359,11 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        
         $this->view->logo_setting = $parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         
