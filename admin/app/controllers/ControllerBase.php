@@ -224,7 +224,7 @@ class ControllerBase extends Controller {
         //find white label info based on the url
         $tHost = explode(".", $_SERVER['HTTP_HOST']);
         $sub = array_shift($tHost);
-        if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104') {
+        if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104' && $sub != 'getmobilereviews') {
             //find the agency object
             $conditions = "custom_domain = :custom_domain:";
 
