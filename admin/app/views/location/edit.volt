@@ -108,22 +108,25 @@
                     {% else %}
                         <span class="title-answer">Not connected</span></div>
                     {% endif %}
-                    <div class="field"><span class="name">Business Name:</span> <span id="googleName">
-                        <?=(isset($objGoogleReviewSite) && isset($objGoogleReviewSite->name)) ?: $location->name; ?>
-
-                        </span></div>
-                    <div class="field bottom">
-                        <span class="name">
-                            Location:
+                    {% if GoogleMyBusinessConnected %}
+                        <div class="field"><span class="name">Business Name:</span>
+                        <span id="googleName">
+                            <?=$objGoogleReviewSite->name; ?>
                         </span>
-                        <span class="googleAddress" id="googleAddress">
-                            <?=(isset($objGoogleReviewSite) && isset($objGoogleReviewSite->location)) ?: $location->address?>
-                            <?=(isset($objGoogleReviewSite) && isset($objGoogleReviewSite->locality)) ?: $location->locality?>,
-                            <?=(isset($objGoogleReviewSite) && isset($objGoogleReviewSite->state_province)) ?: $location->state_province?>
-                            <?=(isset($objGoogleReviewSite) && isset($objGoogleReviewSite->postal_code)) ?: $location->postal_code?>
-                        </span>
-                    </div>
-                    <div class="buttons">
+                        </div>
+                        <div class="field bottom">
+                            <span class="name">
+                                Location:
+                            </span>
+                            <span class="googleAddress" id="googleAddress">
+                                <?=$objGoogleReviewSite->address; ?>
+                                <?=$objGoogleReviewSite->locality; ?>,
+                                <?=$objGoogleReviewSite->state_province; ?>
+                                <?=$objGoogleReviewSite->postal_code; ?>
+                            </span>
+                        </div>
+                    {% endif %}
+                    <div class="buttons" {% if GoogleMyBusinessConnected %} style="margin-top: 33px" {% else %} style="margin-top: 104px;" {% endif %}>
                         {% if GoogleMyBusinessConnected %}
                             <a class="btnLink" id="googleLink" href="<?=$objGoogleReviewSite->url; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
                             <a href="/location/disconnectGoogle/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>

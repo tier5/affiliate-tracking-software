@@ -273,6 +273,8 @@ class IndexController extends ControllerBase {
             );
             $this->view->sms_sent_this_month = $sms_sent_this_month;
 
+            $this->view->total_reviews_this_month = \Vokuro\Models\Review::count("time_created BETWEEN '{$start_time}' AND '{$end_time}'");
+
 
             // Reviews GARY_START
 
