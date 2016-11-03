@@ -107,7 +107,7 @@ class ControllerBase extends Controller {
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
                 $this->view->objParentAgency = $objParentAgency;
                 
-                $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "/img/agency_logos/blank.png" ;
+                $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "/img/blank.png" ;
                 $this->view->agencyName =  $objParentAgency->name;
             } else {
                 // We're an agency
@@ -123,7 +123,7 @@ class ControllerBase extends Controller {
             		if (isset($agency->logo_path) && ($agency->logo_path != "")) {
             			$this->view->logo_path = "/img/agency_logos/{$agency->logo_path}";
             		} else {
-            			$this->view->logo_path = "/img/agency_logos/blank.png";
+            			$this->view->logo_path = "/img/blank.png";
             		}
             	} else {
             		$this->view->logo_path = '/assets/layouts/layout/img/logo.png';
@@ -240,7 +240,7 @@ class ControllerBase extends Controller {
             );
 
             if ($agency) {
-            	$agency->logo_path = ($agency->logo_path == "") ? "blank.png" : $agency->logo_path;
+            	$agency->logo_path = ($agency->logo_path == "") ? "/img/blank.png" : $agency->logo_path;
                 list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
                 $rgb = $r . ', ' . $g . ', ' . $b;
                 $vars = [
