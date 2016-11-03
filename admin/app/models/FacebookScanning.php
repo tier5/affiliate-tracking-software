@@ -93,7 +93,7 @@ class FacebookScanning extends Model {
     }
 
     function getReviews() {
-        $strSearchUrl = "https://graph.facebook.com/me/ratings?access_token={$this->_access_token}";
+        $strSearchUrl = "https://graph.facebook.com/me/ratings?access_token={$this->_access_token}&limit=1000";
         $Result = $this->file_get_contents_curl($strSearchUrl);
         return json_decode($Result)->data;
     }
