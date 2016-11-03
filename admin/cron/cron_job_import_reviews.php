@@ -21,7 +21,7 @@
         }
 
         function ImportGoogleMyBusinessReviews() {
-            $dbLocations = \Vokuro\Models\LocationReviewSite::find("review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE . " AND json_access_token IS NOT NULL");
+            $dbLocations = \Vokuro\Models\LocationReviewSite::find("review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE . " AND json_access_token IS NOT NULL AND json_access_token != ''");
             $objReviewService = new \Vokuro\Services\Reviews();
             foreach ($dbLocations as $objLocation) {
                 try {
@@ -33,18 +33,32 @@
         }
 
         public function ImportFacebookReviews() {
-            $LocationID = 98;
-            //$objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
-            //$objLocation = \Vokuro\Models\Location::findFirst("location_id = {$LocationID}");
-            $FoundAgency = [];
-
+            $dbLocations = \Vokuro\Models\LocationReviewSite::find("review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK . " AND access_token IS NOT NULL AND access_token != ''");
             $objReviewService = new \Vokuro\Services\Reviews();
-            $objReviewService->importFacebook($LocationID);
-            //$objReviewService->importFacebook($objLocationReviewSite, $objLocation, $FoundAgency);
+            foreach($dbLocations as $objLocation) {
+                try {
+                    $objReviewService->importFacebook($objLocation->location_id);
+                } catch (Exception $e) {
+                    $this->LogContents('Yelp', $objLocation->location_id, $e->getMessage());
+                }
+            }
+        }
+
+        public function ImportYelpReviews() {
+            $dbLocations = \Vokuro\Models\LocationReviewSite::find("review_site_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND external_location_id IS NOT NULL AND external_location_id != ''");
+            $objReviewService = new \Vokuro\Services\Reviews();
+            foreach($dbLocations as $objLocation) {
+                try {
+                    $objReviewService->importYelpReviews($objLocation->location_id);
+                } catch (Exception $e) {
+                    $this->LogContents('Yelp', $objLocation->location_id, $e->getMessage());
+                }
+            }
         }
     }
 
     $objImporter = new LocationImporter();
     $objImporter->initialize();
-    //$objImporter->ImportGoogleMyBusinessReviews();
+    $objImporter->ImportGoogleMyBusinessReviews();
     $objImporter->ImportFacebookReviews();
+    $objImporter->ImportYelpReviews();
