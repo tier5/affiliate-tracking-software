@@ -106,7 +106,7 @@
                         <div class="form-group">
                             <label for="name" class="col-md-4 control-label">Business Name</label>
                             <div class="col-md-8">
-                                {{ agencyform.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name']) }}
+                                {{ agencyform.render("name", ["class": 'form-control', 'placeholder': 'Business Name', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">

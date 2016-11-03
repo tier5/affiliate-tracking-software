@@ -20,7 +20,8 @@
             'City',
             'State',
             'Zip',
-            'Phone',
+        	'Country',
+        	'Phone',
             'Email',
             'Website',
             'EmailFromName',
@@ -56,7 +57,7 @@
             'BusinessName'          => 'name',
             'Address'               => 'address',
             'Address2'              => 'address2',
-            'City'                  => 'city',
+            'City'                  => 'locality',
             'Country'               => 'country',
             'State'                 => 'state_province',
             'Zip'                   => 'postal_code',
@@ -84,7 +85,7 @@
             'AgencyStripePublishableKey'  => 'stripe_publishable_keys',
 
             /* Order form Fields */
-            'FirstName'             => 'name',
+            //'FirstName'             => 'name',
             'LastName'              => 'last_name',
             'OwnerEmail'            => 'email',
             'URL'                   => 'custom_domain',
@@ -106,6 +107,7 @@
                 'Address',
                 'City',
                 'State',
+            	'Country',
                 'Zip',
                 'Phone',
                 'Email',
@@ -397,8 +399,9 @@
                 $Post = $this->request->getPost();
 
                 foreach ($this->tAllFormFields as $Field) {
+                	//echo $Field. "==>" .$Post[$Field] . "<br>";
                     if(isset($Post[$Field]))
-                        $tData[$Field] = $this->request->getPost($Field, 'striptags');;
+                        $tData[$Field] = $this->request->getPost($Field, 'striptags');
                 }
             }
 
@@ -406,7 +409,10 @@
 
             // Populate the view
             foreach($this->tAllFormFields as $Field) {
+            	//echo $Field. "==>" .$this->session->AgencySignup[$Field] . "<br>";
+            	
                 if(isset($this->session->AgencySignup[$Field]))
+                
                     $this->view->$Field = $this->session->AgencySignup[$Field];
                 else
                     $this->view->$Field = '';
@@ -444,10 +450,12 @@
         protected function UpdateAgency($AgencyID) {
             $objAgency = Agency::findFirst("agency_id = {$AgencyID}");
             foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
+            	
                 if($dbField) {
                     $objAgency->$dbField = isset($this->session->AgencySignup[$FormField]) ? $this->session->AgencySignup[$FormField] : '';
                 }
             }
+         
             unset($dbField);
 
             $objAgency->save();
@@ -748,7 +756,7 @@
             $this->ValidateFields('Step1');
             $this->StoreLogo();
             $this->view->Subdomain = $this->session->AgencySignup['URL'];
-            $this->view->Name = $this->session->AgencySignup['BusinessName'];
+            $this->view->BusinessName = $this->session->AgencySignup['BusinessName'];
             $this->view->Phone = $this->session->AgencySignup['Phone'];
             $this->view->PrimaryColorNohash = str_replace('#', '', $this->session->AgencySignup['PrimaryColor']);
             $this->view->SecondaryColorNohash = str_replace('#', '', $this->session->AgencySignup['SecondaryColor']);
