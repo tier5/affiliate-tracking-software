@@ -135,8 +135,8 @@
         <!-- BEGIN LOGO -->
         <div class="page-logo" style="margin-top: 0;">
             <a href="/">
-                {% if LogoPath %}
-                <img src="{{ LogoPath }}" alt="logo" class="logo-default"/>
+                {% if logo_path %}
+                <img src="{{ logo_path }}" alt="logo" class="logo-default"/>
                 {% endif %}
             </a>
             <div class="menu-toggler sidebar-toggler"></div>

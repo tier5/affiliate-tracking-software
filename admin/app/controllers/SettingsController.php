@@ -228,7 +228,7 @@
                         file_put_contents(__DIR__ .  DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR . "{$FileName}", file_get_contents($file->getTempName()));
                         $objAgency->logo_path = $FileName;
                         $objAgency->save();
-                        $this->view->LogoPath = DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR . "{$FileName}";
+                        $this->view->logo_path = DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR . "{$FileName}";
                         break;
                     }
                 }
@@ -587,7 +587,7 @@
                         $tFilepath = explode('/', $filepath);
                         $filepath = "/img/agency_logos/" . array_pop($tFilepath);
 
-                        $this->view->logo_setting = $filepath;
+                        $this->view->logo_path = $filepath;
                         return $filepath;
                     }
                 }
