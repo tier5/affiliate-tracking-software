@@ -357,9 +357,15 @@ class ControllerBase extends Controller {
             )
         );
         $num_discount = (int) ($num_signed_up / 3); //find how many three
+        $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+        $identity = $this->session->get('auth-identity');
+        if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $agency->parent_id > 0)
+            $MaxSMS = $objSubscriptionManager->GetMaxSMS($agency->agency_id, $identity['location_id']);
+        else
+            $MaxSMS = 0;
         $total_sms_month = $base_sms_allowed + ($num_discount * $additional_allowed);
         $this->view->setVars([
-            'total_sms_month' => $total_sms_month,
+            'total_sms_month' => $MaxSMS,
             'num_discount' => $num_discount,
             'num_signed_up' => $num_signed_up,
             'base_sms_allowed' => $base_sms_allowed,
