@@ -121,10 +121,9 @@
                         "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND recommend = 'N' AND sms_broadcast_id IS NULL",
                     )
                 );
-//echo '<pre>$negative_total:'.print_r($negative_total,true).'</pre>';
+
                 $this->view->negative_total = $negative_total;
 
-                //look in settings for the "Lifetime Value of the Customer"
                 $conditions = "agency_id = :agency_id:";
                 $parameters = array("agency_id" => $loc->agency_id);
                 $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -147,7 +146,6 @@
                 }
                 $this->view->percent_done = $percent_done;
 
-                //we need to find the most recent reviews
                 $review_report = Review::find(
                     array(
                         "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'],
