@@ -437,9 +437,8 @@
 
             foreach($tobjReviews as $objReview) {
                 $dbReview = new \Vokuro\Models\Review();
-                $dbReview->rating_type_id = 2;
+                $dbReview->rating_type_id = \Vokuro\Models\Location::TYPE_FACEBOOK;
                 $dbReview->rating = $objReview->rating;
-                //$dbReview->
             }
 
             $TotalRating = 0;
@@ -452,7 +451,7 @@
 
                     try {
                         $arr = [
-                            'rating_type_id' => 2,
+                            'rating_type_id' => \Vokuro\Models\Location::TYPE_FACEBOOK,
                             'review_text' => $objReview->review_text,
                             'rating' => $objReview->rating,
                             'location_id' => $LocationID,
@@ -467,7 +466,7 @@
                     }
                 }
             }
-            $dbReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = 2");
+            $dbReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
             $objLocationReviewSite->review_count = count($tobjReviews);
             $objLocationReviewSite->rating = $TotalReviews > 0 ? $TotalRating / $TotalReviews : 0;
             return $objLocationReviewSite->save();
