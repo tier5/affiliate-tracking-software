@@ -5,10 +5,6 @@
     <form class="login-form" action="/session/login?return=<?=(isset($_GET['return'])?$_GET['return']:'')?>" method="post">
         <h3><?=(strpos($_SERVER['REQUEST_URI'],'admin/confirm/')>0?'Thank You For Confirming Your Email Sign In':'Sign In')?></h3>
         <p class="hint"> &nbsp; </p>
-        <div class="alert alert-danger display-hide">
-            <button class="close" data-close="alert"></button>
-            <span> Enter your email and password. </span>
-        </div>
         <div class="form-group">
             <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
             <label class="control-label visible-ie8 visible-ie9">Email</label>
