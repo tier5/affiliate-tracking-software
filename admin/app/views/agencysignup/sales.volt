@@ -7,8 +7,8 @@
 {% endif %}
 <div class="row small-vertical-margins">
     <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 col-xs-offset-1 col-md-offset-1">
-    	{% if LogoPath != '' %}
-        	<img class="logo-order" src="{{ LogoPath }}"  alt="{{ Name }}" />
+    	{% if logo_path != '' %}
+        	<img class="logo-order" src="{{ logo_path }}"  alt="{{ Name }}" />
         {% else  %}
         	<span></span>
         {% endif  %}

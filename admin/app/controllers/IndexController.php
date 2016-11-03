@@ -102,14 +102,14 @@ class IndexController extends ControllerBase {
                     $this->view->Phone = $_GET['phone'];
                     $this->view->PrimaryColor = '#'.$_GET['primary_color'];
                     $this->view->SecondaryColor = '#'.$_GET['secondary_color'];
-                    $this->view->LogoPath = !empty($_GET['logo_path']) ? '/img/agency_logos/'.$_GET['logo_path'] : '';
+                    $this->view->logo_path = !empty($_GET['logo_path']) ? '/img/agency_logos/'.$_GET['logo_path'] : '';
                     $this->view->CleanUrl = true;
                 } else { // Loaded from DB for subdomain
                     $this->view->Name = !empty($agency->name) ? $agency->name : (!empty($_SESSION['demo_name']) ? $_SESSION['demo_name'] : 'Agency');
                     $this->view->Phone = !empty($agency->phone) ? $agency->phone : '(888) 555-1212';
                     $this->view->PrimaryColor = !empty($agency->main_color) ? $agency->main_color : '#2a3644';
                     $this->view->SecondaryColor = !empty($agency->secondary_color) ? $agency->secondary_color : '#65CE4D';
-                    $this->view->LogoPath = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
+                    $this->view->logo_path = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
                 }
 
                 $this->view->pick('agencysignup/sales');

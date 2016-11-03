@@ -76,14 +76,14 @@ class SessionController extends ControllerBase {
 
                 $this->view->main_color_setting = $this->view->PrimaryColor = !empty($objParentAgency->main_color) ? $objParentAgency->main_color : '#2a3644';
                 $this->view->SecondaryColor = !empty($objParentAgency->secondary_color) ? $objParentAgency->secondary_color : '#65CE4D';
-                $this->view->logo_setting = $this->view->LogoPath = !empty($objParentAgency->logo_path) ? '/img/agency_logos/'.$objParentAgency->logo_path : '';
+                $this->view->logo_path = $this->view->logo_path = !empty($objParentAgency->logo_path) ? '/img/agency_logos/'.$objParentAgency->logo_path : '';
 
             } else {
                 // Review velocity
                 $ParentID = \Vokuro\Models\Agency::BUSINESS_UNDER_RV;
                 $this->view->main_color_setting = $this->view->PrimaryColor = '#2a3644';
                 $this->view->SecondaryColor = '#65CE4D';
-                $this->view->logo_setting = $this->view->LogoPath = '';
+                $this->view->logo_path = $this->view->logo_path = '';
             }
 
         return $ParentID;
@@ -236,8 +236,8 @@ class SessionController extends ControllerBase {
                  */
                 $objUser = \Vokuro\Models\Users::findFirst("id = {$plan->user_id}");
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
-                //$this->view->LogoPath = $objAgency->logo_path;
-                $this->view->logo_setting = "/img/agency_logos/{$objAgency->logo_path}";
+                //$this->view->logo_path = $objAgency->logo_path;
+                $this->view->logo_path = "/img/agency_logos/{$objAgency->logo_path}";
                 $this->view->agency_name = $objAgency->name;
                 $status = $plan->enabled;
 
@@ -363,7 +363,7 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
         
-        $this->view->logo_setting = $parent_agency->logo_path;
+        $this->view->logo_path = $parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         
         if ($this->request->isPost()) {
@@ -492,8 +492,7 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->logo_setting = $parent_agency->logo_path;
-        $this->view->parent_agency = $parent_agency->name;
+        $this->view->logo_path = $parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         
         $conditions = "location_id = :location_id:";
@@ -564,7 +563,7 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->logo_setting = $parent_agency->logo_path;
+        $this->view->logo_path = $parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         
         //find the location
@@ -631,7 +630,7 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->logo_setting = $parent_agency->logo_path;
+        $this->view->logo_path = $parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         //Get the sharing code
         $this->getShareInfo($agency);
@@ -711,9 +710,21 @@ class SessionController extends ControllerBase {
     public function resetPasswordAction($code = 0, $userId = 0) {
     	//$this->view->setTemplateBefore('login');
     	$this->tag->setTitle('Review Velocity | Change Password');
+		
+    	
 
     	$resetPassword = ResetPasswords::findFirstByCode($code);
+    	$conditions = "id = :id:";
+    	$parameters = array("id" => $resetPassword->usersId);
+    	$User = Users::findFirst(array($conditions, "bind" => $parameters));
+    	 
     	
+    	$conditions = "agency_id = :agency_id:";
+    	$parameters = array("agency_id" => $User->agency_id);
+    	$agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+    	$this->view->logo_path = $agency->logo_path;
+
     	if (!$resetPassword) {
     		return $this->dispatcher->forward(array(
     				'controller' => 'index',

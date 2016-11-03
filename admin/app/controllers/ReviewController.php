@@ -48,7 +48,7 @@
                 $agencyobj = new Agency();
                 $agency = $agencyobj::findFirst($location->agency_id);
                 $this->view->sms_button_color = $location->sms_button_color;
-                $this->view->logo_setting = $location->sms_message_logo_path;
+                $this->view->logo_path = $location->sms_message_logo_path;
                 $this->view->name = $location->name;
 
                 $this->view->setVar('agency', $agency);
@@ -129,7 +129,7 @@
 
                     $this->view->agency = $agency;
                     $this->view->sms_button_color = $location->sms_button_color;
-                    $this->view->logo_setting = $location->sms_message_logo_path;
+                    $this->view->logo_path = $location->sms_message_logo_path;
                     $this->view->name = $location->name;
 
                     switch($invite->review_invite_type_id) {
@@ -217,7 +217,7 @@
             $agencyobj = new Agency();
             $agency = $agencyobj::findFirst($location->agency_id);
             $this->view->sms_button_color = $location->sms_button_color;
-            $this->view->logo_setting = $location->sms_message_logo_path;
+            $this->view->logo_path = $location->sms_message_logo_path;
             $this->view->name = $location->name;
 
             // Negative feedback comments are being posted

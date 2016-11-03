@@ -87,7 +87,7 @@
             <?php if(strpos($_SERVER['REQUEST_URI'], 'invite') === false) { ?>
                 <!-- BEGIN LOGO -->
                 <div class="logo">
-                    <a href="/"><img style="max-width: 625px;" src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/img/logo-gray.gif')?>" alt="" /></a>
+                    <a href="/"><img style="max-width: 625px;" src="<?=(isset($this->view->logo_path) && $this->view->logo_path != '' ? $this->view->logo_path : '/img/logo-gray.gif') ?>" alt="" /></a>
                 </div>
                 <!-- END LOGO -->
             <?php } ?>
@@ -98,7 +98,7 @@
         !(strpos($_SERVER['REQUEST_URI'],'login')>0) || strpos($_SERVER['REQUEST_URI'], 'invite') !== false) { ?>
             <!-- BEGIN LOGO -->
             <div class="logo">
-                <a href="/"><img style="max-width: 625px;" src="<?=(isset($logo_setting) && $logo_setting != ''? $logo_setting:'/img/logo-gray.gif')?>" alt="" /></a>
+                <a href="/"><img style="max-width: 625px;" src="<?=(isset($this->view->logo_path) && $this->view->logo_path != ''? $this->view->logo_path:'/img/logo-gray.gif')?>" alt="" /></a>
             </div>
             <!-- END LOGO -->
         <?php } ?>

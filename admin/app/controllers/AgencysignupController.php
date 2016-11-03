@@ -752,7 +752,7 @@
             $this->view->Phone = $this->session->AgencySignup['Phone'];
             $this->view->PrimaryColorNohash = str_replace('#', '', $this->session->AgencySignup['PrimaryColor']);
             $this->view->SecondaryColorNohash = str_replace('#', '', $this->session->AgencySignup['SecondaryColor']);
-            $this->view->LogoPath = !empty($this->session->AgencySignup['LogoFilename']) ? $this->session->AgencySignup['LogoFilename'] : '';
+            $this->view->logo_path = !empty($this->session->AgencySignup['LogoFilename']) ? $this->session->AgencySignup['LogoFilename'] : '';
         }
 
         protected function StoreLogo() {

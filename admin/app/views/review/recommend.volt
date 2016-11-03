@@ -4,10 +4,10 @@
   <div class="rounded-wrapper">
     <div class="rounded" style="padding-bottom: 25px;">
       <?php
-  if (isset($logo_setting) && $logo_setting != '') {
+  if (isset($logo_path) && $logo_path != '') {
     ?>
       <div class="page-logo">
-        <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
+        <img src="<?=$logo_path?>" alt="logo" class="logo-default" /> </a>
       </div>
       <?php
   } else if (isset($name) && $name != '') {

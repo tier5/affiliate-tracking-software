@@ -16,10 +16,10 @@ if (isset($invite)) {
     <div class="rounded-wrapper NPS">
         <div class="rounded">
             <?php
-      if (isset($logo_setting) && $logo_setting != '') {
+      if (isset($logo_path) && $logo_path != '') {
         ?>
             <div class="page-logo">
-                <img src="<?=$logo_setting?>" alt="logo" class="logo-default"/> </a>
+                <img src="<?=$logo_path?>" alt="logo" class="logo-default"/> </a>
             </div>
             <?php
       } else if (isset($name) && $name != '') {
@@ -71,10 +71,10 @@ if (isset($invite)) {
     <div class="rounded-wrapper star">
         <div class="rounded">
             <?php
-      if ($logo_setting != '') {
+      if ($logo_path != '') {
         ?>
             <div class="page-logo">
-                <img src="{{ logo_setting }}" alt="logo" class="logo-default"/> </a>
+                <img src="{{ logo_path }}" alt="logo" class="logo-default"/> </a>
             </div>
             <?php
       } else if ($name != '') {
@@ -104,10 +104,10 @@ if (isset($invite)) {
     <div class="rounded-wrapper">
         <div class="rounded">
             <?php
-      if ($logo_setting != '') {
+      if ($logo_path != '') {
         ?>
             <div class="page-logo">
-                <img src="{{ logo_setting }}" alt="logo" class="logo-default"/> </a>
+                <img src="{{ logo_path }}" alt="logo" class="logo-default"/> </a>
             </div>
             <?php
       } else if ($name != '') {
@@ -134,10 +134,10 @@ if (isset($invite)) {
     <div class="rounded-wrapper">
         <div class="rounded">
             <?php
-      if (isset($logo_setting) && $logo_setting != '') {
+      if (isset($logo_path) && $logo_path != '') {
         ?>
             <div class="page-logo">
-                <img src="<?=$logo_setting?>" alt="logo" class="logo-default"/> </a>
+                <img src="<?=$logo_path?>" alt="logo" class="logo-default"/> </a>
             </div>
             <?php
       }
