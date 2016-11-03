@@ -50,6 +50,29 @@ class SubscriptionManager extends BaseService {
         return false;
     }
 
+    public function GetMaxSMS($BusinessID, $LocationID) {
+        $objSuperAdmin = \Vokuro\Models\Users::findFirst("agency_id = {$BusinessID} and role='Super Admin'");
+        $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
+
+        if(!$objBusiness->subscription_id) {
+            // This mean plan is "Unpaid"
+            $MaxAllowed = 100;
+        }
+        else {
+            $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
+            if($objSubscriptionPlan) {
+                // We are a paid member, get subscription details.
+                $MaxAllowed = $objSubscriptionPlan->sms_messages_per_location;
+            } else {
+                // We're in a trial state, use trial numbers
+                $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("id = {$objBusiness->subscription_id}");
+                $MaxAllowed = $objSubscriptionPricingPlan->max_messages_on_trial_account;
+            }
+        }
+
+        return $MaxAllowed;
+    }
+
     public function ReachedMaxSMS($BusinessID, $LocationID) {
         $objSuperAdmin = \Vokuro\Models\Users::findFirst("agency_id = {$BusinessID} and role='Super Admin'");
         $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
