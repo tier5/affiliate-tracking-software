@@ -106,7 +106,8 @@ class ControllerBase extends Controller {
                 $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
                 $this->view->objParentAgency = $objParentAgency;
-                $this->view->logo_path = "/img/agency_logos/{$objParentAgency->logo_path}";
+                
+                $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "/img/agency_logos/blank.png" ;
                 $this->view->agencyName =  $objParentAgency->name;
             } else {
                 // We're an agency
@@ -117,7 +118,16 @@ class ControllerBase extends Controller {
                 $this->view->secondary_color = "#2eb82e";
                 $this->view->objParentAgency = null;
                 $this->view->agencyName = ($agency->parent_id == -1 || ($this->user_object->is_admin == 1)) ? "Review Velocity" : $agency->name;
-                $this->view->logo_path = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
+                //$this->view->logo_path = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
+            	if ($agency->parent_id == 0) {
+            		if (isset($agency->logo_path) && ($agency->logo_path != "")) {
+            			$this->view->logo_path = "/img/agency_logos/{$agency->logo_path}";
+            		} else {
+            			$this->view->logo_path = "/img/agency_logos/blank.png";
+            		}
+            	} else {
+            		$this->view->logo_path = '/assets/layouts/layout/img/logo.png';
+            	}
             }
 
             $objSMSManager = $this->di->get('smsManager');
