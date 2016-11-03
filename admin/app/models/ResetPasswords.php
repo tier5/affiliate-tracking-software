@@ -50,7 +50,7 @@
             $this->getDI()
                 ->getMail()
                 ->send($this->user->email, "Reset your password", 'reset', array(
-                    'resetUrl' => '/session/changePassword/' . $this->code . '/' . $this->user->email
+                    'resetUrl' => '/session/resetPassword/' . $this->code . '/' . $this->user->email
                 ));
         }
 

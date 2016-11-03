@@ -2,7 +2,6 @@
 
 namespace Vokuro\Controllers;
 use Vokuro\Models\SubscriptionPricingPlan;
-use Vokuro\Services\Encryption;
 use Vokuro\Services\SubscriptionManager;
 use Vokuro\Utils;
 use Vokuro\ArrayException;
@@ -699,15 +698,64 @@ class SessionController extends ControllerBase {
     public function privacyAction() {
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Review Velocity | Privacy');
+        
     }
 
-
+    public function changePasswordAction() {
+    	$this->tag->setTitle('Review Velocity | Change Password');
+    	$this->view->setTemplateBefore('login');
+    }
     /**
      * privacy page
      */
-    public function changePasswordAction() {
-    	$this->view->setTemplateBefore('login');
+    public function resetPasswordAction($code = 0, $userId = 0) {
+    	//$this->view->setTemplateBefore('login');
     	$this->tag->setTitle('Review Velocity | Change Password');
+
+    	$resetPassword = ResetPasswords::findFirstByCode($code);
+    	
+    	if (!$resetPassword) {
+    		return $this->dispatcher->forward(array(
+    				'controller' => 'index',
+    				'action' => 'index'
+    		));
+    	}
+    	if ($resetPassword->reset != 'N') {
+    		return $this->dispatcher->forward(array(
+    				'controller' => 'session',
+    				'action' => 'login'
+    		));
+    	}
+    	$resetPassword->reset = 'Y';
+    	
+    	/**
+    	 * Change the confirmation to 'reset'
+    	 */
+    	if (!$resetPassword->save()) {
+    	
+    		foreach ($resetPassword->getMessages() as $message) {
+    			$this->flash->error($message);
+    		}
+    	
+    		return $this->dispatcher->forward(array(
+    				'controller' => 'session',
+    				'action' => 'changePassword'
+    		));
+    	}
+    	
+    	/**
+    	 * Identify the user in the application
+    	 */
+
+    	$this->auth->authUserById($resetPassword->usersId);
+    	
+    	$this->flash->success('Please reset your password');
+    	
+    	return $this->dispatcher->forward(array(
+    			'controller' => 'session',
+    			'action' => 'changePassword'
+    	));
+    	
     }
     
     
