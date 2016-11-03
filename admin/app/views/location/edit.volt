@@ -158,9 +158,10 @@
                         <span id="facebookLocation" class="facebookfound" ><?=$facebook->name ? $facebook->address : $location->address?> <?=$facebook->name ? $facebook->locality . ', ' : $location->locality . ', '?><?=$facebook->name ? $facebook->state_province : $location->state_province?> <?=$facebook->name ? $facebook->postal_code : $location->postal_code?></span>
                     </div>
 -->
+
                   <div class="buttons" {% if FacebookConnected %} style="margin-top: 43px" {% else %} style="margin-top: 70px;" {% endif %}>
                     {% if FacebookConnected %}
-                        <a class="btnLink" id="facebookLink" href="http://www.facebook.com/<?=$objFacebookReviewSite->external_location_id; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
+                        <a class="btnLink" id="facebookLink" href="http://www.facebook.com/<?=$facebook->external_location_id; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
                         <a href="/location/disconnectFacebook/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
                     {% else %}
                         <a href="/location/getAccessToken/<?=$location->location_id; ?>/{{ ComingFromSignup }}" id="btnAuthenticateFacebook" class="btnLink">Connect Facebook</a>
