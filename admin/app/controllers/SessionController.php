@@ -409,7 +409,9 @@ class SessionController extends ControllerBase {
 
                 //check for google
                 $google_place_id = $this->request->getPost('google_place_id', 'striptags');
+
                 $google_api_id = $this->request->getPost('google_api_id', 'striptags');
+
                 if ($google_place_id != '') {
                     $googleScan = new GoogleScanning();
                     $lrs = new LocationReviewSite();
@@ -424,7 +426,7 @@ class SessionController extends ControllerBase {
                     ));
 
                     //find the review info
-                    //$this->importGoogle($lrs, $loc, $foundagency);
+                    $this->importGoogle($lrs, $loc, $foundagency);
                 }
 
                 //check for facebook
