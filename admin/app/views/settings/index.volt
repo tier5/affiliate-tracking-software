@@ -223,7 +223,7 @@
                 }
                 ?>
                   </ul>
-                  <input id="review_order" name="review_order" type="hidden" value="" />
+                  <input class="form-control" id="review_order" name="review_order" type="hidden" value="" />
                 </div>
               </div>
               <div class="row">

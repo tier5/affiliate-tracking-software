@@ -236,7 +236,7 @@
         }
 
         protected function storeSettings($entity, $type) {
-
+        	
             if ($this->request->isPost()) {
 
                 $form = new SettingsForm($entity);
@@ -298,6 +298,7 @@
          * Updates settings for locations
          */
         public function locationAction() {
+
             $location_id = $this->getLocationId();
             $userObj = $this->getUserObject();
             // If there is no identity available the user is redirected to index/index.  User must be a super admin or admin to view settings page.
@@ -308,8 +309,8 @@
             }
 
             if($userObj->role != \Vokuro\Models\Users::ROLE_SUPER_ADMIN && $userObj->role != \Vokuro\Models\Users::ROLE_ADMIN) {
-                $this->flash->error("You do not have permission to this page.");
-                $this->view->disable();
+                 $this->flash->error("You do not have permission to this page.");
+                 $this->view->disable();
             }
 
             $conditions = "agency_id = :agency_id:";
@@ -328,7 +329,22 @@
             if(!$location)
                 $location = new Location();
 
+                // Save the sort order of the review sites
 
+                if (!empty($_POST['review_order'])) {
+                	
+                	$order = 0;
+                	$pieces = explode(",", $_POST['review_order']);
+                	foreach ($pieces as $siteid) {
+                		$order++;
+                		$conditions = "location_review_site_id = :location_review_site_id:";
+                		$parameters = array("location_review_site_id" => $siteid);
+                		$Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                		$Obj->sort_order = $order;
+                		$Obj->save();
+                	}
+                }
+                
             if (!$this->storeSettings($location, 'location')) {
                 $this->flash->error($location->getMessages());
             } elseif($this->request->isPost()) {
@@ -348,21 +364,7 @@
                 }
             }
 
-            // Save the sort order of the review sites
-            echo $_POST['review_order'];
-            //exit;
-            if (!empty($_POST['review_order'])) {
-                $order = 0;
-                $pieces = explode(",", $_POST['review_order']);
-                foreach ($pieces as $siteid) {
-                    $order++;
-                    $conditions = "location_review_site_id = :location_review_site_id:";
-                    $parameters = array("location_review_site_id" => $siteid);
-                    $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-                    $Obj->sort_order = $order;
-                    $Obj->save();
-                }
-            }
+
 
             $this->view->users = \Vokuro\Models\Users::find("agency_id = {$userObj->agency_id}");
             $this->view->agency = $agency;

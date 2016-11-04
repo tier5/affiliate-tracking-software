@@ -132,7 +132,7 @@
             $tFields = ['name', 'external_location_id', 'url', 'address', 'postal_code', 'locality', 'country', 'state_province', 'phone'];
             foreach($tFields as $Field)
                 $objLocation->$Field = $objYelpBusiness->$Field;
-
+            $objLocation->is_on = 1;
             $objLocation->save();
 
             $objReviewsService->DeleteYelpReviews($LocationID);
@@ -146,6 +146,7 @@
             $objGoogleBusiness = $objReviewsService->getGoogleMyBusinessData($LocationID, $BusinessID);
 
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
+            $objLocation->is_on = 1;
             $tFields = ['name', 'external_location_id', 'url', 'address', 'postal_code', 'locality', 'country', 'state_province', 'phone'];
             foreach($tFields as $Field)
                 $objLocation->$Field = $objGoogleBusiness->$Field;
@@ -175,7 +176,7 @@
                     $objLocation->access_token = $objBusiness->access_token;
                     $objLocation->name = $objBusiness->name;
                     $objLocation->external_location_id = $objBusiness->id;
-
+                    $objLocation->is_on = 1;
                     if($objLocation->save()) {
                         $this->flash->success("Your business has been successfully synced with our system.");
                         $objReviewService = new \Vokuro\Services\Reviews();
