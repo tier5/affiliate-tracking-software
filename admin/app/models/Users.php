@@ -321,6 +321,7 @@
             $sql = "SELECT DISTINCT
                       users.name,
                       users.id,
+            		  users.is_employee,
                       users.email,
                       users.role,
                       (SELECT COUNT(*)

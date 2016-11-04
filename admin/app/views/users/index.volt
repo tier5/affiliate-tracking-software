@@ -210,7 +210,7 @@ foreach($users_report as $user) {
                   ?>
                   <td><?=$user->email;?></td>
                   <td><?=$user->role; ?></td>
-                  <td><?php if($user->is_employee) echo "Yes"; else echo "No"; ?></td>
+                  <td><?=($user->is_employee == 1 ? "Yes" :"No" )?></td>
                   <td>
                     <?=($user->is_all_locations==1?'<div>All</div>':'')?>
                     <?php foreach($user->locations as $location) { ?>

@@ -744,6 +744,7 @@ class ControllerBase extends Controller {
 
             if (strpos($_SERVER['REQUEST_URI'], 'users/admin') !== false) {
                 if ($loc) {
+                	
                     $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId, false);
                 }
             } else {
