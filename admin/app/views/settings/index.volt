@@ -187,7 +187,7 @@
                           class="btnLink btnSecondary"
                           href="<?=$review_site_list->review_site->base_url?><?=$review_site_list->external_id?>"
                           target="_blank">
-                          <img src="/img/icon-eye.gif" /> View
+                          View
                         </a>
                         <a
                           class="btnLink btnSecondary"
@@ -195,7 +195,7 @@
                           <img src="/img/icon-pencil.png" /> Update Location
                         </a>
                       <?php } else { ?>
-                      <a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a>
+                      <a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"> View</a>
                       <?php } ?>
                     </span>
                     <span class="on-off-buttons">
@@ -876,7 +876,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           var name = element.name;
 
           //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink" href="'+url+'" target="_blank"><img src="/img/icon-eye.gif" /> View</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink" href="'+url+'" target="_blank"> View</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
 
           $("a.review_site_on").click(function() {
             return turnOn($(this).attr("data-id"));
