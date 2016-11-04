@@ -2,7 +2,7 @@
 <div class="content">
   {{ content() }}
 
-  <h3>Anti-span Policy</h3>
+  <h3>Anti-spam Policy</h3>
   <p class="hint"> &nbsp; </p>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none"><B>Anti-Spam
