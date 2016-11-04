@@ -405,8 +405,13 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="logo_path" value="<?=$objAgency->logo_path; ?>">Logo</label>
                             <div class="col-md-8">
-                                <input type="file" id="logo_path" name="logo_path">
-                                <p class="help-block">(max width: 200 pixels, max height: 30 pixels) (only: gif, png, jpg or jpeg) </p>
+                            	<div class="page-logo" style="margin-top: 0;">
+                                	<input type="file" id="logo_path" name="logo_path">
+                            		{% if logo_path %}
+            						<img src="{{ logo_path }}" alt="logo" class="logo-default" />
+            						{% endif %}
+                                	<p class="help-block">(max width: 200 pixels, max height: 30 pixels)<br /> (only: gif, png, jpg or jpeg) </p>
+                            	</div>
                             </div>
                         </div>
         <!--
