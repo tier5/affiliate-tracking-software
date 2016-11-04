@@ -19,8 +19,7 @@ Revised: October 26, 2016)</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">PLEASE
 READ THIS DOCUMENT CAREFULLY BEFORE ORDERING, ACCESSING OR USING THE
-SOFTWARE AND TRAINING REFERRED TO AS &ldquo;</SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="es-ES"><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">Agency
-Name</SPAN></SPAN></SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">&rdquo;
+SOFTWARE AND TRAINING REFERRED TO AS &ldquo;{{ agency.name }}&rdquo;
 (HEREINAFTER THE &ldquo;SOFTWARE&rdquo;).</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <BR>
@@ -29,9 +28,7 @@ Name</SPAN></SPAN></SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">IMPORTANT:
 THIS SOFTWARE END USER LICENSE AGREEMENT (&ldquo;EULA&rdquo;) IS A
 LEGAL AGREEMENT BETWEEN YOU (EITHER AN INDIVIDUAL OR, IF PURCHASED OR
-OTHERWISE ACQUIRED BY OR FOR AN ENTITY, AN ENTITY) AND </SPAN></FONT></FONT><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">Agency
-Name</SPAN></SPAN><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">.
-READ IT CAREFULLY BEFORE ACCESSING THIS WEB SITE AND USING THE
+OTHERWISE ACQUIRED BY OR FOR AN ENTITY, AN ENTITY) AND {{ agency.name }}.  READ IT CAREFULLY BEFORE ACCESSING THIS WEB SITE AND USING THE
 SOFTWARE AND TRAINING. IT PROVIDES A LICENSE TO USE THE SOFTWARE AND
 CONTAINS WARRANTY INFORMATION AND LIABILITY DISCLAIMERS. BY SELECTING
 TO USE THE SOFTWARE, YOU ARE CONFIRMING YOUR ACCEPTANCE OF THE
@@ -49,12 +46,7 @@ DEFINITIONS</SPAN></FONT></FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
-&ldquo;LICENSOR&rdquo; means </SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">Agency
-Name</SPAN></SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">,
-a limited liability company with an address of </SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">455
-Marine View Avenue, Suite 300, </SPAN></SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="it-IT"><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">Del
-Mar, CA 92014</SPAN></SPAN></SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">.
-</SPAN></FONT></FONT></FONT>
+&ldquo;LICENSOR&rdquo; means {{ agency.name }} a limited liability company with an address of {{ agency.address }}, {{ agency.address2 }}, {{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <BR>
@@ -95,9 +87,7 @@ license.</SPAN></FONT></FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">F.
-&ldquo;Software&rdquo; shall mean the &ldquo;</SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="es-ES"><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">Agency
-Name</SPAN></SPAN></SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="es-ES"><SPAN STYLE="text-decoration: none">&rdquo;</SPAN></SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">
-web-hosted software and any subsequent error corrections or updates
+&ldquo;Software&rdquo; shall mean the &ldquo;{{ agency.name }}&ldquo; web-hosted software and any subsequent error corrections or updates
 supplied to LICENSEE by LICENSOR pursuant to this Agreement.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <BR>
@@ -515,8 +505,7 @@ required License Fee to LICENSOR when due.</SPAN></FONT></FONT></P>
 offer a 30-day trial version when you sign up for the paid account as
 a single location business. If you cancel within this 30 day trial,
 you will not be charged. If you are not completely satisfied please
-contact us at </SPAN></FONT><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">support@reviewvelocity.co</SPAN></SPAN></FONT><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">
-and we will refund any initial payment. Our 30 day money back
+contact us at {{ agency.email }} and we will refund any initial payment. Our 30 day money back
 guarantee only applies to paid single business location accounts. If
 you sign up for a multiple location or any account with an upfront
 fee we do not offer a refund of any kind.</SPAN></FONT></FONT></P>
@@ -527,8 +516,7 @@ fee we do not offer a refund of any kind.</SPAN></FONT></FONT></P>
 <FONT FACE="Cambria, serif"><SPAN STYLE="text-decoration: none">C.
 When your 30 day&nbsp;trial period expires, or when you exceed the
 trial number of free SMS messages allowed with your trial, you will
-be charged the Subscription price page of your </SPAN><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">Agency
-Name</SPAN></SPAN><SPAN STYLE="text-decoration: none"> installation
+be charged the Subscription price page of your {{ agency.name }} installation
 to continue using the service. You will be charged monthly
 approximately 30 days from the date you make the first payment.</SPAN></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
@@ -537,9 +525,7 @@ approximately 30 days from the date you make the first payment.</SPAN></FONT></P
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">D.
 If you decide not to continue you plan after your 30 day trial you
-must cancel your account from within the </SPAN></FONT><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">Agency
-Name</SPAN></SPAN></FONT><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">
-system or cancel your subscription through Paypal.</SPAN></FONT></FONT></P>
+must cancel your account from within the {{ agency.name }} system or cancel your subscription through Paypal.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <BR>
 </P>
@@ -557,10 +543,8 @@ link.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">F.
 To cancel your subscription on a paid plan using a credit card, you
-must subscription from with the </SPAN></FONT><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">Agency
-Name</SPAN></SPAN><SPAN STYLE="text-decoration: none"> </SPAN><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">system.
-Once your </SPAN></FONT><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">Agency
-Name</SPAN></SPAN><SPAN STYLE="text-decoration: none"> </SPAN><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">account
+must subscription from with the {{ agency.name }} system.
+Once your {{ agency.name }} account
 has been cancelled your monthly payment will be cancelled. You can
 cancel your account at any time simply by logging in, going to the
 payment details page and clicking the &ldquo;Deactivate My Account&rdquo;
@@ -782,12 +766,7 @@ to this EULA.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
-All questions regarding this agreement should be directed to </SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">Agency
-Name</SPAN></SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">
-by mail at </SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">455
-Marine View Avenue, Suite 300, Del Mar, CA 92014, or by email at:
-</SPAN></SPAN></FONT></FONT><A HREF="mailto:support@reviewvelocity.co"><FONT FACE="PT Sans, serif"><SPAN LANG="it-IT"><SPAN STYLE="text-decoration: none"><SPAN STYLE="background: #ffff00">support@reviewvelocity.co</SPAN></SPAN></SPAN></FONT></A><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">.</SPAN></FONT></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
+All questions regarding this agreement should be directed to {{ agency.name }} by mail at {{ agency.address }}, {{ agency.address2 }}, {{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}, or by email at: <A HREF="mailto:{{ agency.email }}">{{ agency.email }}</A><BR>
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">23.
 REFUND POLICY</SPAN></FONT></FONT></FONT></P>

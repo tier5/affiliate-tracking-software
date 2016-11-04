@@ -691,15 +691,6 @@ class SessionController extends ControllerBase {
         //$_SESSION['email']='test@tester.com';
     }
 
-    /**
-     * privacy page
-     */
-    public function privacyAction() {
-        $this->view->setTemplateBefore('login');
-        $this->tag->setTitle('Review Velocity | Privacy');
-        
-    }
-
     public function changePasswordAction() {
     	$this->tag->setTitle('Review Velocity | Change Password');
     	$this->view->setTemplateBefore('login');
@@ -769,6 +760,15 @@ class SessionController extends ControllerBase {
     	
     }
     
+
+    /**
+     * privacy page
+     */
+    public function privacyAction() {
+    	$this->view->setTemplateBefore('login');
+    	$this->tag->setTitle('Review Velocity | Privacy');
+    
+    }
     
     /**
      * terms page
@@ -781,7 +781,7 @@ class SessionController extends ControllerBase {
     /**
      * Anti-span Policy page
      */
-    public function antispanAction() {
+    public function antispamAction() {
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Review Velocity | Anti-span Policy');
     }
