@@ -193,7 +193,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                White Label Local Business Listings & Reputation Scanning Tool With Your Branding
+                White Label Reputation Management Agency Account With Your Own Company Branding and URL
             </div>
         </div>
         <div class="row right-feature">
@@ -201,7 +201,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Customized Landing Branded To Your Company On Your Own URL Ready For Paid Traffic
+                Complete Done-For-You Reputation Management Agency In A Box Solution From Lead to Fulfillment
             </div>
         </div>
         <div class="row right-feature">
@@ -209,7 +209,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Multiple Scanning Tool Embed Options For Your Website (Large Form, Slide-In Form, Slim Form, & Small Form)
+                Employee Gamification With Leaderboards To Keep Businesses Engage
             </div>
         </div>
         <div class="row right-feature">
@@ -217,7 +217,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Immediate Email & SMS Notifications Of New Leads
+                Unlimited Trial Accounts To Help You Maximize Lead Conversion Potential
             </div>
         </div>
         <div class="row right-feature">
@@ -225,7 +225,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Review Monitoring On Top Directories & Niche Sites - Daily, Weekly, & Monthly Reporting To Customers
+                Viral Account Engine Rewards Businesses For Giving Away Trial Accounts For You
             </div>
         </div>
         <div class="row right-feature">
@@ -233,7 +233,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Stripe Payment Integrations To Accept Payments
+                Built In Payment Processing To Efficiently Build Your Recurring Revenue
             </div>
         </div>
         <div class="row right-feature">
@@ -241,7 +241,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Agency Dashboard To Manage Prospects, Leads, & Customers
+                Duplicate Account Prevention Ensures Exclusivity Of New Account Trials
             </div>
         </div>
         <div class="row right-header">
