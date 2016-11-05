@@ -771,6 +771,15 @@ class SessionController extends ControllerBase {
     	$this->tag->setTitle('Review Velocity | Privacy');
     
     }
+
+    /**
+     * reseller page
+     */
+    public function resellerAction() {
+    	$this->view->setTemplateBefore('login');
+    	$this->tag->setTitle('Review Velocity | Reseller Agreement');
+    
+    }
     
     /**
      * terms page
