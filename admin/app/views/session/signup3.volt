@@ -85,10 +85,10 @@ style="margin: 4px;"
                   if (isset($_POST['sms_text_message_default']))  {
                     echo $_POST["sms_text_message_default"];
                   } else {
-                    if ( (isset($location->sms_text_message_default)) ) {
-                      echo $location->sms_text_message_default;
+                    if ( (isset($location->SMS_message)) ) {
+                    	echo $location->SMS_message;
                     } else {
-                      echo "{name}, thank you for visiting {location-name} we'd appreciate your feedback please click the link below.  Thanks! {link}";
+                    	echo $location->sms_text_message_default;
                     }
                   }
                 ?></textarea>

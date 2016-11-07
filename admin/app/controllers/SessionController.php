@@ -502,12 +502,11 @@ class SessionController extends ControllerBase {
         $location = Location::findFirst(array($conditions, "bind" => $parameters));
 
         if ($this->request->isPost()) {
-
             $location->assign(array(
                 'name' => $this->request->getPost('agency_name', 'striptags'),
                 'sms_button_color' => $this->request->getPost('sms_button_color', 'striptags'),
                 'sms_top_bar' => $this->request->getPost('sms_top_bar', 'striptags'),
-                'sms_text_message_default' => $this->request->getPost('sms_text_message_default', 'striptags'),
+            	'SMS_message' => $this->request->getPost('sms_text_message_default', 'striptags'),
             ));
             $file_location = $this->uploadAction($agency->agency_id);
             if ($file_location != '')
@@ -519,6 +518,8 @@ class SessionController extends ControllerBase {
                 $agency->save();
                 return $this->response->redirect('/session/signup4/' . ($subscription_id > 0 ? $subscription_id : ''));
             }
+        } else {
+        	
         }
 
 
