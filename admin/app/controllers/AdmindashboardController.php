@@ -27,7 +27,7 @@ class AdmindashboardController extends ControllerBusinessBase {
 
         $logged_in = is_array($this->auth->getIdentity());
 
-        if ($logged_in && (isset($this->session->get('auth-identity')['is_admin'])) {
+        if ($logged_in && (isset($this->session->get('auth-identity')['is_admin']))) {
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
         } else {
