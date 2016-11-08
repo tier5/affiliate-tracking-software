@@ -336,6 +336,7 @@
                                                                                 {% for Employee in dbEmployees %}
                                                                                     <?php
                                                                                 $Class = $Count % 2 == 0 ? "odd " : "even ";
+                                                                                $BGColor = $Count % 2 == 0 ? "#efefef" : "#fafafa";
                                                                                 switch($Count) {
                                                                                     case 1:
                                                                                        $Icon = "<img src='http://{$FullDomain}/img/gold_medal.png' />";
@@ -368,7 +369,7 @@
 
                                                                                         }
                                                                                     ?>
-                                                                                    <tr class="<?=$Class;?>" style="background:#fafafa;padding:0;text-align:left;vertical-align:top">
+                                                                                    <tr class="<?=$Class;?>" style="background:<?=$BGColor; ?>;padding:0;text-align:left;vertical-align:top">
                                                                                         <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Icon; ?></td>
                                                                                         <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Employee->name; ?></td>
                                                                                         <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=($Employee->sms_sent_this_month ?: 0); ?></td>
