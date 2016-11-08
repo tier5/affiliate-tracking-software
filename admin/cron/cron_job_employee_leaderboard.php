@@ -5,6 +5,16 @@
     $Start = date("Y-m-01", strtotime('now'));
     $End = date("Y-m-t", strtotime('now'));
 
+    /* This chunk of code will allow you to send to one user without all the processing down below.  Leaving it in here for easy testing later, just replace IDs!
+        $objLocation = \Vokuro\Models\Location::findFirst("location_id = 109");
+        $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = 207");
+        $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $objLocation->location_id, 0, 0, 1);
+        $dbRecipients = \Vokuro\Models\Users::find("id IN (309)");
+        $objEmail = new \Vokuro\Services\Email();
+        $objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients);
+        die();
+    */
+
     $dbBusinesses = \Vokuro\Models\Agency::find('parent_id != ' . \Vokuro\Models\Agency::AGENCY);
 
     $dbAllPermissions = \Vokuro\Models\UsersLocation::find();
