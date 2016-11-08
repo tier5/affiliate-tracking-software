@@ -85,7 +85,7 @@
             'AgencyStripePublishableKey'  => 'stripe_publishable_keys',
 
             /* Order form Fields */
-            //'FirstName'             => 'name',
+            'FirstName'             => 'name',
             'LastName'              => 'last_name',
             'OwnerEmail'            => 'email',
             'URL'                   => 'custom_domain',
@@ -399,7 +399,6 @@
                 $Post = $this->request->getPost();
 
                 foreach ($this->tAllFormFields as $Field) {
-                	//echo $Field. "==>" .$Post[$Field] . "<br>";
                     if(isset($Post[$Field]))
                         $tData[$Field] = $this->request->getPost($Field, 'striptags');
                 }
@@ -409,8 +408,6 @@
 
             // Populate the view
             foreach($this->tAllFormFields as $Field) {
-            	//echo $Field. "==>" .$this->session->AgencySignup[$Field] . "<br>";
-            	
                 if(isset($this->session->AgencySignup[$Field]))
                 
                     $this->view->$Field = $this->session->AgencySignup[$Field];
@@ -472,7 +469,7 @@
                 unset($dbField);
 
                 $objAgency->agency_type_id = 1; // REFACTOR:  Drop this column
-                $objAgency->subscription_id = '1';
+                $objAgency->subscription_id = '';
                 $objAgency->parent_id = \Vokuro\Models\Agency::AGENCY;
 
                 if (!$objAgency->create()) {
@@ -499,6 +496,7 @@
                 $objUser->send_confirmation = true;
                 $objUser->profilesId = 1; // Agency Admin
                 $objUser->role = "Super Admin";
+
 
                 if(!$objUser->create()) {
                     $this->flashSession->error($objUser->getMessages());
@@ -620,8 +618,8 @@
             $this->view->setLayout('agencysignup');
         }
 
-        protected function GetSubscriptionPrice($Id) {
-            $objPricingPlan = AgencyPricingPlan::findFirst("id='{$Id}'");
+        protected function GetSubscriptionPrice($Name) {
+            $objPricingPlan = AgencyPricingPlan::findFirst("name='{$Name}'");
             if(!$objPricingPlan)
                 $this->flashSession->error("Could not find subscription plan.  Contact customer support.");
 
@@ -693,7 +691,7 @@
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
                     $this->db->begin();
 
-                    $Price = $this->GetSubscriptionPrice($SubscriptionPlanId);
+                    $Price = $this->GetSubscriptionPrice("Ten for ten");
                     $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['Price' => $Price]);
 
                     if (!$UserID = $this->CreateSubscription($this->session->AgencySignup)) {

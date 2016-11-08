@@ -94,6 +94,8 @@ class Email{
     public function sendEmployeeReport($dbEmployees, $objLocation, $tSendTo) {
         try {
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objLocation->agency_id}");
+            $objFacebookReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$objLocation->location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
+            $FacebookURL = $objFacebookReviewSite->external_location_id ? "http://www.facebook.com/{$objFacebookReviewSite->external_location_id}" : '';
             $mail = $this->getDI()->getMail();
             if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 $mail->setFrom('zacha@reputationloop.com');
@@ -107,10 +109,13 @@ class Email{
             $objEmployees = $dbEmployees;
 
             $Params = array(
-              'dbEmployees'         => $dbEmployees,
-              'objLocation'         => $objLocation,
-              'objAgency'           => $objAgency ?: null,
-              'FullDomain'          => $FullDomain,
+                'dbEmployees'           => $dbEmployees,
+                'objLocation'           => $objLocation,
+                'objAgency'             => $objAgency ?: null,
+                'FullDomain'            => $FullDomain,
+                'Website'               => $objBusiness->website,
+                'FacebookURL'           => $FacebookURL,
+
             );
 
             foreach($tSendTo as $objRecipient) {

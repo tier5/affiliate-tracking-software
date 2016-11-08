@@ -169,7 +169,7 @@
             </div>
 
             <div class="col-xs-12 deal-section text-justify">
-                Review Velocity Business Listing & Reputation Software $1 Trial For 14 Days Then $47 a Month, when you order Today!
+                Review Velocity Business Listing & Reputation Software $10 Per Account For Ten Accounts
             </div>
 
 
