@@ -235,7 +235,7 @@
                 <div class="portlet light bordered dashboard-panel tall">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="">New Reviews</span>
+                            <span class="">New Reviews By Month</span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -335,7 +335,7 @@
                         ?>
                         <div class="review">
                             <div class="top">
-                                <div class="logo"><a href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==1?'yelp':($data->rating_type_id==2?'facebook':'google'))?>.gif" /></a></span></div>
+                                <div class="logo"><a href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==1?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==2?'yelp':($data->rating_type_id==1?'facebook':'google'))?>.gif" /></a></span></div>
                                 <div class="rating col-md-3"><input value="<?=$data->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /></div>
                                 <div class="name col-md-5"><?=$data->user_name?></div>
                                 <div class="date col-md-3"><?=date("m/d/Y", strtotime($data->time_created))?></div>
@@ -458,7 +458,7 @@
                 ]);
 
                 var options = {
-                    title: 'New Reviews By Month',
+                    title: '',
                     legend: {position: 'none'},
                     chartArea: {left:25, top:'auto', width:'100%', height:'auto'},
                     'tooltip': {
