@@ -130,7 +130,7 @@ class GoogleScanning extends Model {
      */
     public function getLRD($cid) {
       $lrd = '';
-      $url = 'https://maps.google.com/?cid='.$cid.'lrd=d'.;
+      $url = 'https://maps.google.com/?cid='.$cid.'lrd=d';
       $result = $this->curl_get_contents($url);
       $start = strpos($result,'#lrd');
       if ($start > 0) {
