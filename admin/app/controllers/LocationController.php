@@ -120,29 +120,31 @@
         }
 
         public function pickYelpBusinessAction($BusinessID, $LocationID, $RedirectToSession = 0) {
-            $objReviewsService = new \Vokuro\Services\Reviews();
+        	
+        	$objReviewsService = new \Vokuro\Services\Reviews();
             $objYelpBusiness = $objReviewsService->getYelpBusinessData($LocationID, $BusinessID);
-
+           
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP);
             if(!$objLocation) {
                 $objLocation = new \Vokuro\Models\LocationReviewSite();
                 $objLocation->review_site_id = \Vokuro\Models\Location::TYPE_YELP;
                 $objLocation->location_id = $LocationID;
             }
-            $tFields = ['name', 'external_location_id', 'url', 'address', 'postal_code', 'locality', 'country', 'state_province', 'phone'];
-            foreach($tFields as $Field)
+            $tFields = ['name', 'external_id','external_location_id', 'url', 'address', 'postal_code', 'locality', 'country', 'state_province', 'phone'];
+            foreach($tFields as $Field) 
                 $objLocation->$Field = $objYelpBusiness->$Field;
             $objLocation->is_on = 1;
             $objLocation->save();
 
             $objReviewsService->DeleteYelpReviews($LocationID);
             $objReviewsService->importYelpReviews($LocationID);
-
+ 
             $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
         }
 
         public function pickGoogleBusinessAction($BusinessID, $LocationID, $RedirectToSession = 0) {
             $objReviewsService = new \Vokuro\Services\Reviews();
+            
             $objGoogleBusiness = $objReviewsService->getGoogleMyBusinessData($LocationID, $BusinessID);
 
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
@@ -150,7 +152,6 @@
             $tFields = ['name', 'external_location_id', 'url', 'address', 'postal_code', 'locality', 'country', 'state_province', 'phone'];
             foreach($tFields as $Field)
                 $objLocation->$Field = $objGoogleBusiness->$Field;
-
             $objLocation->save();
 
             $objReviewsService->DeleteGoogleReviews($LocationID);
@@ -218,7 +219,9 @@
             $objReviewsService = new \Vokuro\Services\Reviews();
 
             $this->view->RedirectToSession = $RedirectToSession;
+
             $this->view->tobjBusinesses = $objReviewsService->getGoogleMyBusinessLocations($LocationID);
+            //print_r($this->view->tobjBusinesses);
             $this->view->LocationID = $LocationID;
             $this->view->pick('location/getFacebookPages');
         }
@@ -1480,6 +1483,7 @@
 
             if (!$accessToken)
                 return;
+
             //$client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
             $client->setAccessToken($accessToken['access_token']);
             // Refresh the token if it's expired.
