@@ -14,7 +14,7 @@
 
     <div class="row form-group small-vertical-margins">
         <div class="col-xs-4">
-            <label>Business Name<span class="required">*</span></label><input class="form-control" type="text" name="name" value="{{ BusinessName }}" required />
+            <label>Business Name<span class="required">*</span></label><input class="form-control" type="text" name="BusinessName" value="{{ BusinessName }}" required />
         </div>
         <div class="col-xs-4">
             <label>Address</label><span class="required">*</span><input class="form-control" type="text" name="Address" value="{{ Address }}" required />
