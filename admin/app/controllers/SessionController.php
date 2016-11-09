@@ -76,14 +76,14 @@ class SessionController extends ControllerBase {
 
                 $this->view->main_color_setting = $this->view->PrimaryColor = !empty($objParentAgency->main_color) ? $objParentAgency->main_color : '#2a3644';
                 $this->view->SecondaryColor = !empty($objParentAgency->secondary_color) ? $objParentAgency->secondary_color : '#65CE4D';
-                //$this->view->logo_path = $this->view->logo_path = !empty($objParentAgency->logo_path) ? '/img/agency_logos/'.$objParentAgency->logo_path : '';
+                $this->view->logo_path = (!empty($objParentAgency->logo_path)) ? '/img/agency_logos/'.$objParentAgency->logo_path : '';
 
             } else {
                 // Review velocity
                 $ParentID = \Vokuro\Models\Agency::BUSINESS_UNDER_RV;
                 $this->view->main_color_setting = $this->view->PrimaryColor = '#2a3644';
                 $this->view->SecondaryColor = '#65CE4D';
-               // $this->view->logo_path = $this->view->logo_path = '';
+                $this->view->logo_path =  '/img/logo-gray.gif';
             }
 
         return $ParentID;

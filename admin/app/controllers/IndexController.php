@@ -36,7 +36,7 @@ class IndexController extends ControllerBase {
     public function indexAction() {
         $tUser = $this->auth->getIdentity();
         $logged_in = is_array($tUser);
-
+       
         if ($logged_in) {
 
             /*

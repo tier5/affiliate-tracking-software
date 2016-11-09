@@ -43,7 +43,7 @@ class UserControlController extends ControllerBase
             $confirmation->confirmed = 'Y';
             $confirmation->update();
         }
-
+       
         $user_id = $confirmation->usersId;
         if ($user_id) $user = Users::findFirst('id = ' . $user_id);
         if ($user) {
@@ -65,15 +65,16 @@ class UserControlController extends ControllerBase
             //$confirmation->user->save();
             $confirmation->save();
         }
+       
         if (!$confirmation) {
             return $this->dispatcher->forward(array(
                 'controller' => 'index',
                 'action' => 'index'
             ));
         }
-
+       
         if ($confirmation->confirmed == 'Y' && $confirmation->user->mustChangePassword == 'N') {
-
+        	
             return $this->dispatcher->forward(array(
                 'controller' => 'session',
                 'action' => 'login',
@@ -81,9 +82,9 @@ class UserControlController extends ControllerBase
             ));
 
         }
-
+        die;
         $confirmation->confirmed = 'Y';
-
+        
         $confirmation->user->active = 'Y';
 
         /**
