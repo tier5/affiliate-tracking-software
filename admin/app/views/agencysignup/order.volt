@@ -160,12 +160,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-1 hidden-xs hidden-sm">
-	            <span id="siteseal"> 
-	            	
+            <div class="col-xs-3 ">
+	            <span id="siteseal"><Br><br><Br>
 	            	<script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=umKwirMP3LZxPHdMDSMSTvPxXVGgTtvG4cGYHfMfmcxcWXYeBD0QvXRH5MuQ"></script></span>
-	                
-	            <img src="/img/agencysignup/secure_checkout.png" alt="Secure Checkout" id="SecureImage"/>
             </div>
 
             <div class="col-xs-12 deal-section text-justify">
