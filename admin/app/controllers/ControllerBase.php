@@ -85,7 +85,7 @@ class ControllerBase extends Controller {
                 $this->view->setVars([
                     'main_color_setting' => $agency->main_color,
                     'rgb' => $rgb,
-                    'logo_path' => $agency->logo_path
+                    'logo_path' =>  "/img/agency_logos/" . $agency->logo_path
                 ]);
 
             }

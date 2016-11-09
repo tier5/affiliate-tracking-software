@@ -135,9 +135,9 @@
         <!-- BEGIN LOGO -->
         <div class="page-logo" style="margin-top: 0;">
             <a href="/">
-                {% if logo_path %}
-                <img src="{{ logo_path }}" alt="logo" class="logo-default"/>
-                {% endif %}
+                
+                <img src="<?=$this->view->logo_path;?>" alt="logo" class="logo-default"/>
+               
             </a>
             <div class="menu-toggler sidebar-toggler"></div>
         </div>
