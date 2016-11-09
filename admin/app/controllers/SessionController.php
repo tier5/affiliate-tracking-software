@@ -363,7 +363,7 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
         
-        $this->view->logo_path = $parent_agency->logo_path;
+        $this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         
         if ($this->request->isPost()) {
@@ -494,7 +494,7 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->logo_path = $parent_agency->logo_path;
+        $this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         
         $conditions = "location_id = :location_id:";
@@ -566,7 +566,7 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->logo_path = $parent_agency->logo_path;
+        $this->view->logo_path = "/img/agency_logos/" .$parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         
         //find the location
@@ -633,7 +633,7 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->logo_path = $parent_agency->logo_path;
+        $this->view->logo_path = "/img/agency_logos/" .$parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         //Get the sharing code
         $this->getShareInfo($agency);
@@ -717,7 +717,7 @@ class SessionController extends ControllerBase {
     	$parameters = array("agency_id" => $User->agency_id);
     	$agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
-    	$this->view->logo_path = $agency->logo_path;
+    	$this->view->logo_path = "/img/agency_logos/" . $agency->logo_path;
 
     	if (!$resetPassword) {
     		return $this->dispatcher->forward(array(
