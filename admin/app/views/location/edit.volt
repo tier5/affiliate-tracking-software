@@ -208,7 +208,7 @@
 
         <div class="buttons yelpfound">
             {% if YelpConnected %}
-                <a id="yelpLink" href="http://yelp.com/biz/<?=$yelp->external_id; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
+                <a id="yelpLink" href="http://www.yelp.com/biz/<?=$yelp->external_id; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
             {% endif %}
 
             {% if YelpConnected %}

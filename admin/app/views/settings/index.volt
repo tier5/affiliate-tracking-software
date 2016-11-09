@@ -182,10 +182,10 @@
                         <?=$review_site_list->review_site->name?>
                       </span>
                     <span class="review_site-buttons">
-                      <?php if ($review_site_list->review_site_id <= 3) { ?>
+                      <?php if ($review_site_list->review_site_id <= 3) { echo $review_site_list->location_review_site_id;?>
                         <a
                           class="btnLink btnSecondary"
-                          href="<?=$review_site_list->review_site->base_url?><?=$review_site_list->external_id?>"
+                          href="<?=$review_site_list->url?>"
                           target="_blank">
                           View
                         </a>

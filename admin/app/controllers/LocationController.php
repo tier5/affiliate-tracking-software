@@ -144,16 +144,16 @@
 
         public function pickGoogleBusinessAction($BusinessID, $LocationID, $RedirectToSession = 0) {
             $objReviewsService = new \Vokuro\Services\Reviews();
-            
             $objGoogleBusiness = $objReviewsService->getGoogleMyBusinessData($LocationID, $BusinessID);
 
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
             $objLocation->is_on = 1;
-            $tFields = ['name', 'external_location_id', 'url', 'address', 'postal_code', 'locality', 'country', 'state_province', 'phone'];
+            $tFields = ['name','external_id', 'external_location_id', 'url', 'address', 'postal_code', 'locality', 'country', 'state_province', 'phone'];
             foreach($tFields as $Field)
                 $objLocation->$Field = $objGoogleBusiness->$Field;
+            $objLocation->url = "https://www.google.com/search?q=".str_replace(" ", "+", $objLocation->name)."&ludocid=".$objLocation->cid."&#lrd=".$objLocation->lrd."3,5";
             $objLocation->save();
-
+			
             $objReviewsService->DeleteGoogleReviews($LocationID);
             $objReviewsService->importGoogleMyBusinessReviews($LocationID);
 
@@ -172,11 +172,13 @@
 
             foreach($tobjBusinesses as $objBusiness) {
                 if($objBusiness->id == $BusinessID) {
-
+                	
                     $Picked = true;
                     $objLocation->access_token = $objBusiness->access_token;
                     $objLocation->name = $objBusiness->name;
                     $objLocation->external_location_id = $objBusiness->id;
+                    $objLocation->external_id = $objBusiness->id;
+                    $objLocation->url = "fb://profile/" . $objLocation->external_id;
                     $objLocation->is_on = 1;
                     if($objLocation->save()) {
                         $this->flash->success("Your business has been successfully synced with our system.");
@@ -1494,11 +1496,11 @@
 
             $objReviewService->setGoogleAccessToken($accessToken, $LocationID);
             $objReviewService->setGoogleRefreshToken($accessToken, $LocationID);
-
+			
             // We're successfully using google my business.  Remove current google reviews.
             $objReviewService = new \Vokuro\Services\Reviews();
             $objReviewService->DeleteGoogleReviews($LocationID);
-
+            
             return $this->response->redirect("/location/getGooglePages/{$LocationID}/{$RedirectSession}");
         }
     }

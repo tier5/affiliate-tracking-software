@@ -139,17 +139,20 @@
             $Yelp->construct();
 
             $objYelpBusiness = json_decode($Yelp->get_business($BusinessID));
+
             $objBusiness = new \stdClass();
             $objBusiness->name = $objYelpBusiness->name;
             $objBusiness->type = 'Yelp';
             $objBusiness->id = $objBusiness->external_location_id = $objYelpBusiness->id;
             $objBusiness->mapsUrl = $objYelpBusiness->url;
+            $objBusiness->url = $objYelpBusiness->url;
             $objBusiness->address = implode("\r\n", $objYelpBusiness->location->display_address);
             $objBusiness->postal_code = $objYelpBusiness->location->postal_code;
             $objBusiness->locality = $objYelpBusiness->location->city;
             $objBusiness->country = $objYelpBusiness->location->country_code;
             $objBusiness->state_province = $objYelpBusiness->location->state_code;
             $objBusiness->phone = $objYelpBusiness->display_phone;
+            $objBusiness->external_id = $objYelpBusiness->id;
 
             return $objBusiness;
         }
@@ -168,6 +171,7 @@
                 $objBusiness->type = 'Yelp';
                 $objBusiness->id = $objBusiness->external_location_id = $objYelpBusiness->id;
                 $objBusiness->mapsUrl = $objYelpBusiness->url;
+                $objBusiness->url = $objYelpBusiness->mobile_url;
                 $objBusiness->address = implode("\r\n", $objYelpBusiness->location->display_address);
                 $objBusiness->postal_code = $objYelpBusiness->location->postal_code;
                 $objBusiness->locality = $objYelpBusiness->location->city;
@@ -215,6 +219,8 @@
                     }
                 }
             }
+            //print_r($tobjBusinesses);
+            
             return $tobjBusinesses;
         }
 
