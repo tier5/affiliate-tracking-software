@@ -83,7 +83,7 @@ class SessionController extends ControllerBase {
                 $ParentID = \Vokuro\Models\Agency::BUSINESS_UNDER_RV;
                 $this->view->main_color_setting = $this->view->PrimaryColor = '#2a3644';
                 $this->view->SecondaryColor = '#65CE4D';
-                $this->view->logo_path =  '/img/logo-gray.gif';
+                $this->view->logo_path =  '';
             }
 
         return $ParentID;
