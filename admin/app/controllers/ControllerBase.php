@@ -260,7 +260,7 @@ class ControllerBase extends Controller {
         	$conditions = "agency_id = :agency_id:";
         	
         	$parameters = array(
-        			"agency_id" => 0
+        			"agency_id" => 1
         	);
         	
         	$agency = Agency::findFirst(
