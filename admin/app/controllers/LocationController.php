@@ -178,7 +178,7 @@
                     $objLocation->name = $objBusiness->name;
                     $objLocation->external_location_id = $objBusiness->id;
                     $objLocation->external_id = $objBusiness->id;
-                    $objLocation->url = "fb://profile/" . $objLocation->external_id;
+                    $objLocation->url = "http://www.facebook.com/" . $objLocation->external_id;
                     $objLocation->is_on = 1;
                     if($objLocation->save()) {
                         $this->flash->success("Your business has been successfully synced with our system.");
