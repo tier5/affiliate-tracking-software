@@ -74,6 +74,7 @@
                     foreach ($form->getMessages() as $message) {
                         $this->flash->error($message);
                     }
+                    
                     //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
                     // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
                 } else {
@@ -103,6 +104,7 @@
                         'name' => $this->request->getPost('name', 'striptags'),
                         'email' => $this->request->getPost('email', 'striptags'),
                         'address' => $this->request->getPost('address', 'striptags'),
+                    	'address2' => $this->request->getPost('address2', 'striptags'),
                         'locality' => $this->request->getPost('locality', 'striptags'),
                         'state_province' => $this->request->getPost('state_province', 'striptags'),
                         'postal_code' => $this->request->getPost('postal_code', 'striptags'),
@@ -194,6 +196,7 @@
             'name'                          => 'string',
             'email'                         => 'string',
             'address'                       => 'string',
+        	'address2'                      => 'string',
             'locality'                      => 'string',
             'state_province'                => 'string',
             'postal_code'                   => 'string',
@@ -277,7 +280,7 @@
                                 break;
                         }
                     }
-//print_r($tEntityArray);
+
                     $entity->assign($tEntityArray);
                     // Don't hate me for this -- GG
                     $PrimaryID = $type == 'agency' ? 'agency_id' : 'location_id';
@@ -286,7 +289,6 @@
                     // This works because agencies and locations have the same column.
                     if ($file_location != '')
                         $entity->sms_message_logo_path = $file_location;
-//print_r($entity);
                     return $entity->save();
                 }
             }

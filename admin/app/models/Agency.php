@@ -62,7 +62,7 @@
         }
 
         public function initialize() {
-            $this->skipAttributes(['address2']);
+           // $this->skipAttributes(['address2']);
             $this->skipAttributes(['website']);
             $this->skipAttributes(['email_from_name']);
             $this->skipAttributes(['email_from_address']);
@@ -72,7 +72,7 @@
                 'alias' => 'subscription',
                 'reusable' => true
             ));
-            if (!$this->_skipped) $this->skipAttributes(['address2']); //address2 should NOT be required
+            //if (!$this->_skipped) $this->skipAttributes(['address2']); //address2 should NOT be required
             parent::initialize();
         }
 
