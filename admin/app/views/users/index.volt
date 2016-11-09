@@ -166,7 +166,7 @@ foreach($users_report as $user) {
                 <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
               </div>
             </div>
-            <div class="search-btn" style="width: 136px !important;"><a class="btnLink btnSecondary" style="width: 134px !important;text-align: center;" href="/users/<?=($profilesId==3?'':'admin')?>create?create_employee=1">Create Employee</a></div>
+            <div class="search-btn" style="width: 136px !important;"><a class="btnLink btnSecondary" style="width: 134px !important;text-align: center;" href="/users/<?=($profilesId==3?'':'admin')?>create?create_employee=1">Create User</a></div>
           </div>
 
           <!-- Start .panel -->
