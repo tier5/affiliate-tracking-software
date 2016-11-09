@@ -1,6 +1,6 @@
 
 <div class="content">
-  {{ content() }}
+  {{  content() }}
 
   <h3>Privacy</h3>
   <p class="hint"> &nbsp; </p>
@@ -19,7 +19,7 @@ Revised: October 26, 2016)</SPAN></FONT></FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">Thank
-you for visiting this web site. We </SPAN></FONT></FONT>{{ name }}<FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">
+you for visiting this web site. We </SPAN></FONT></FONT>{{ agency.name }}<FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">
 understand the importance that Internet users place on privacy, and
 this Privacy Policy describes how we use personal information that is
 collected at this web site.</SPAN></FONT></FONT></FONT></P>
@@ -292,9 +292,9 @@ information that you transmit to us, and you do so at your own risk.</SPAN></FON
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">If
 you need to contact us, you can email us at
-</SPAN></FONT></FONT>{{ email }},
-call us at {{ phone }},
-or send us a letter at: {{ address }}, {{ address2 }}, {{ locality }}, {{ state_province }}  {{ postal_code }}
+</SPAN></FONT></FONT>{{ agency.email }},
+call us at {{ agency.phone }},
+or send us a letter at: {{ agency.address }}, {{ agency.address2 }}, {{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}
 
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
@@ -351,14 +351,14 @@ you are a California resident and want to request information about
 how to exercise your third party disclosure choices, you must send a
 request to the following address with a preference on how our
 response to your request should be sent (email or postal mail).
-Please send an email to the Privacy Administrator at {{ email }} or you may contact us via regular mail at:</SPAN></FONT></FONT></FONT></P>
+Please send an email to the Privacy Administrator at {{ agency.email }} or you may contact us via regular mail at:</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 
 </P>
-<P STYLE="margin-bottom: 0in; text-decoration: none">{{ address }}
+<P STYLE="margin-bottom: 0in; text-decoration: none">{{ agency.address }}
 </P>
-<P STYLE="margin-bottom: 0in; text-decoration: none">{{ address2 }}</P>
-<P STYLE="margin-bottom: 0in; text-decoration: none">{{ locality }}, {{ state_province }}  {{ postal_code }}</P>
+<P STYLE="margin-bottom: 0in; text-decoration: none">{{ agency.address2 }}</P>
+<P STYLE="margin-bottom: 0in; text-decoration: none">{{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}</P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">All
