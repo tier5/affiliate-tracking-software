@@ -271,7 +271,7 @@ class SessionController extends ControllerBase {
         if($record){
             $this->view->agencyId = $record->agency_id;
 
-            if($record->logo_path) $this->view->logo_path = $record->logo_path;
+            if($record->logo_path) $this->view->logo_path = "/img/agency_logos/".$record->logo_path;
             if($record->name){
                 $this->view->agency_name = $record->name;
                 $this->view->agency_name = $record->name;
