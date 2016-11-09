@@ -19,7 +19,7 @@ Revised: October 26, 2016)</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">PLEASE
 READ THIS DOCUMENT CAREFULLY BEFORE ORDERING, ACCESSING OR USING THE
-SOFTWARE AND TRAINING REFERRED TO AS &ldquo;<?=$this->view->agencyName;?>&rdquo;
+SOFTWARE AND TRAINING REFERRED TO AS &ldquo;{{ agency.name }}&rdquo;
 (HEREINAFTER THE &ldquo;SOFTWARE&rdquo;).</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <BR>
