@@ -87,7 +87,7 @@
             <?php if(strpos($_SERVER['REQUEST_URI'], 'invite') === false) { ?>
                 <!-- BEGIN LOGO -->
                 <div class="logo">
-                    <a href="/"><img style="max-width: 625px;" src="<?=(isset($this->view->logo_path) && $this->view->logo_path != '' ? $this->view->logo_path : '/img/logo-gray.gif') ?>" alt="" /></a>
+                    <a href="/"><img style="max-width: 625px;" src="<?=(isset($this->view->logo_path) && $this->view->logo_path != '' ? $this->view->logo_path : '/img/blank.png') ?>" alt="" /></a>
                 </div>
                 <!-- END LOGO -->
             <?php } ?>
@@ -102,7 +102,7 @@
             </div>
             <!-- END LOGO -->
         <?php } ?>
-        <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. {{ (agency_name) ? agency_name : 'Review Velocity' }} <a href="/session/privacy">Privacy</a> | <a href="/session/terms">Terms</a></div>
+        <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. {{ (agency_name) ? agency_name : '' }} <a href="/session/privacy">Privacy</a> | <a href="/session/terms">Terms</a></div>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
