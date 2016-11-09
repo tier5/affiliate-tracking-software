@@ -87,7 +87,7 @@
             <?php if(strpos($_SERVER['REQUEST_URI'], 'invite') === false) { ?>
                 <!-- BEGIN LOGO -->
                 <div class="logo">
-                    <a href="/"><img style="max-width: 625px;" src="<?=(isset($this->view->logo_path) && $this->view->logo_path != '' ? "/img/agency_logos/".$this->view->logo_path : '/img/blank.png') ?>" alt="" /></a>
+                    <a href="/"><img style="max-width: 625px;" src="<?=(isset($this->view->logo_path) && $this->view->logo_path != '' ? $this->view->logo_path : '/img/blank.png') ?>" alt="" /></a>
                 </div>
                 <!-- END LOGO -->
             <?php } ?>
