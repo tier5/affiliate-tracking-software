@@ -255,37 +255,6 @@ class ControllerBase extends Controller {
                 ];
                 $this->view->setVars($vars);
             }
-
-        } else {
-        	$conditions = "agency_id = :agency_id:";
-        	
-        	$parameters = array(
-        			"agency_id" => 1
-        	);
-        	
-        	$agency = Agency::findFirst(
-        			array(
-        					$conditions,
-        					"bind" => $parameters
-        			)
-        			);
-        	
-        	if ($agency) {
-        		$agency->logo_path = ($agency->logo_path == "") ? "/img/logo-gray.gif" : "/img/agency_logos/" . $agency->logo_path;
-        		list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
-        		$rgb = $r . ', ' . $g . ', ' . $b;
-        		$vars = [
-        				'agency_id' => $agency->agency_id,
-        				'agency' => $agency,
-        				'main_color_setting' => $agency->main_color,
-        				'rgb' => $rgb,
-        				'logo_path' => $agency->logo_path,
-        				'main_color' => str_replace('#', '', $agency->main_color),
-        				'primary_color' => str_replace('#', '', $agency->main_color),
-        				'secondary_color' => str_replace('#', '', $agency->secondary_color)
-        		];
-        		$this->view->setVars($vars);
-        	}
         }
         
 		$this->agency = $agency;
