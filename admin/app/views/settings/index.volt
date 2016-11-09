@@ -234,24 +234,8 @@
                 </div>
               </div>
             </div>
+          
             <?php
-        if ($has_facebook) {
-          ?>
-            <div class="form-group">
-              <div class="row">
-                <label for="rating_threshold_star" class="col-md-4 control-label">Authenticate Facebook</label>
-                <div class="col-md-8">
-                  <a href="/location/getAccessToken" id="btnAuthenticateFacebook" class="btnLink btnSecondary">Authenticate Facebook</a>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <i>Facebook needs to be authenticated to import reviews into this system.</i>
-                </div>
-              </div>
-            </div>
-            <?php
-        }
         }
         ?>
 
