@@ -82,7 +82,7 @@ class UserControlController extends ControllerBase
             ));
 
         }
-        die;
+       
         $confirmation->confirmed = 'Y';
         
         $confirmation->user->active = 'Y';

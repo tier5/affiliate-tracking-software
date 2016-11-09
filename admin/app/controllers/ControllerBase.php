@@ -95,7 +95,7 @@ class ControllerBase extends Controller {
 //
             $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
             $this->view->ReachedMaxSMS = $objSubscriptionManager->ReachedMaxSMS($agency->agency_id, $this->session->get('auth-identity')['location_id']);
-exit;
+
             if($agency->parent_id > 0) {
                 // We're a business
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
