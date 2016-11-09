@@ -30,7 +30,7 @@ class ControllerBase extends Controller {
 
     protected $permissions;
     protected $user_object;
-
+	
 
     public function checkIntegerOrThrowException($int,$message = null){
         if(!is_int($int)){
@@ -248,14 +248,25 @@ class ControllerBase extends Controller {
                     'main_color_setting' => $agency->main_color,
                     'rgb' => $rgb,
                     'logo_path' => $agency->logo_path,
+                	'address2' => $agency->address2,
+                	'address' => $agency->address,
+                	'locality' => $agency->locality,
+                	'state_province' => $agency->state_province,
+                	'locality' => $agency->locality,
+                	'state_province' => $agency->state_province,
+                	'name' => $agency->name,
+                	'email' => $agency->email,
+                	'phone' => $agency->phone,
+                	'postal_code' => $agency->postal_code,
                     'main_color' => str_replace('#', '', $agency->main_color),
                     'primary_color' => str_replace('#', '', $agency->main_color),
                     'secondary_color' => str_replace('#', '', $agency->secondary_color)
                 ];
                 $this->view->setVars($vars);
             }
-        }
 
+        }
+		$this->agency = $agency;
         if ($this->request->getPost('main_color')) {
             list($r, $g, $b) = sscanf($this->request->getPost('main_color'), "#%02x%02x%02x");
             $rgb = $r . ', ' . $g . ', ' . $b;
