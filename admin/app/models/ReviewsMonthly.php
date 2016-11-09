@@ -23,7 +23,10 @@
         {
             $MonthsBack = 5;
             $StartMonth = date('n', strtotime("-{$MonthsBack} month"));
+            $StartMonth2 = date('m', strtotime("-{$MonthsBack} month"));
             $StartYear = date('Y', strtotime("-{$MonthsBack} month"));
+
+            $InitialCount = \Vokuro\Models\Review::count("location_id = {$location_id} AND time_created < '{$StartYear}-{$StartMonth2}-01 00:00:00'");
 
             $sql   = "
                 SELECT COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0) AS reviewcount, month, year
@@ -44,7 +47,7 @@
             $Count = 0;
             $Prev = 0;
 
-            // Initialize all values to 0
+            // Initialize all values to initial count
             $CurrentMonth = $StartMonth;
             for($c = 0 ; $c <= $MonthsBack ; $c++) {
                 if ($c + $StartMonth > 12) {
@@ -61,7 +64,7 @@
                 }
 
                 $tFilteredResults[$CurrentMonth] = [
-                    'reviewcount' => 0,
+                    'reviewcount' => $InitialCount,
                     'month' => $CurrentMonth,
                     'year' => $CurrentYear
                 ];
@@ -72,7 +75,7 @@
                         $Prev = $tResult['reviewcount'];
                     } else {
                         $Prev += $tResult['reviewcount'];
-                        $tResult['reviewcount'] = $Prev;
+                        $tResult['reviewcount'] = $Prev + $InitialCount;
                     }
 
 
