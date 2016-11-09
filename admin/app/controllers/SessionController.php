@@ -791,13 +791,48 @@ class SessionController extends ControllerBase {
     }
 
     /**
-     * Anti-span Policy page
+     * Anti-spam Policy page
      */
     public function antispamAction() {
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Review Velocity | Anti-span Policy');
     }
 
+    /**
+     * RVprivacy page
+     */
+    public function RVprivacyAction() {
+    	$this->view->setTemplateBefore('login');
+    	$this->tag->setTitle('Review Velocity | Privacy');
+    
+    }
+    
+    /**
+     * RVreseller page
+     */
+    public function RVresellerAction() {
+    	$this->view->setTemplateBefore('login');
+    	$this->tag->setTitle('Review Velocity | Reseller Agreement');
+    
+    }
+    
+    /**
+     * RVterms page
+     */
+    public function RVtermsAction() {
+    	$this->view->setTemplateBefore('login');
+    	$this->tag->setTitle('Review Velocity | Terms');
+    }
+    
+    /**
+     * RVAnti-spam Policy page
+     */
+    public function RVantispamAction() {
+    	$this->view->setTemplateBefore('login');
+    	$this->tag->setTitle('Review Velocity | Anti-span Policy');
+    }
+    
+    
     /**
      * Starts a session in the admin backend
      */

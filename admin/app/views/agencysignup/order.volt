@@ -180,6 +180,9 @@
                     Submit Order
                 </button>
             </div>
+            <div class="col-xs-12 col-xs-offset-3 ">
+            <br/>By clicking this button, you agree to Review Velocity's<br /><A href="/session/RVreseller">Reseller Terms</a>,  <A href="/session/RVantispam">Anti-spam</a>,  <A href="/session/RVprivacy">Privacy Policy</a>,  <A href="/session/RVterms">Policy & Terms of Use</a>.
+            </div>
         </div>
     </div>
     <div class="col-xs-3 col-xs-offset-1 hidden-xs hidden-sm">
