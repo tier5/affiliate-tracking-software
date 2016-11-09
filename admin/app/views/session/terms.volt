@@ -657,14 +657,13 @@ JURISDICTION AND DISPUTES</SPAN></FONT></FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
-This Agreement shall be governed by the laws of the State of Arizona.</SPAN></FONT></FONT></FONT></P>
+This Agreement shall be governed by the laws of the State of {% if agency.state_province %} {{ agency_name }} {% else %}Arizona{% endif %}</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <BR>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
-All disputes hereunder shall be resolved first through mediation in
-Maricopa County, Arizona. In the event that mediation is
+All disputes hereunder shall be resolved first through mediation in {% if agency.state_province %} {{ agency_name }} {% else %}Maricopa County, Arizona{% endif %}. In the event that mediation is
 unsuccessful, the Parties then agree to use binding arbitration in
 Maricopa County, Arizona. The parties consent to the jurisdiction of
 such judicial body/bodies, agree to accept service of process by
