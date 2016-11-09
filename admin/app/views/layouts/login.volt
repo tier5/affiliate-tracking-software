@@ -102,7 +102,7 @@
             </div>
             <!-- END LOGO -->
         <?php } ?>
-        <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. {{ (agency_name) ? agency_name : '' }} <a href="/session/privacy">Privacy</a> | <a href="/session/terms">Terms</a> | <a href="/session/antispam">Anti Spam</a></div>
+        <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. </div>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
