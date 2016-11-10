@@ -318,6 +318,17 @@ class PaymentService extends BaseService {
             $StripeSubscription->plan = $PlanID;
             $StripeSubscription->save();
 
+            // Create an initial charge if there is one
+            if(isset($ccParameters['initial_amount']) && $ccParameters['initial_amount']) {
+                $objCharge = \Stripe\Charge::create([
+                    'amount' => $ccParameters['initial_amount'],
+                    'currency' => 'usd',
+                    'customer' => $objStripeSubscription->stripe_customer_id,
+                    'description' => "Initial Service Fee"
+                ]);
+                $objStripeSubscription->initial_charge_id = $objCharge->id;
+            }
+
             $objStripeSubscription->stripe_subscription_id = $StripeSubscription->id;
 
             if ($objStripeSubscription->update())

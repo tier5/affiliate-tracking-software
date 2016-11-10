@@ -9,6 +9,8 @@
 
 
     class AgencysignupController extends ControllerBase {
+        protected $DefaultSubscription = "197 Ten for ten";
+        protected $DefaultUpgradeSubscription = "197 Twenty for eight";
         /**
          * @var array All fields from the sign up process.  Keys are the form variable names.  Values are the DB names (if they exist.
          */
@@ -566,25 +568,18 @@
          * @param $tData
          * @throws \Exception
          */
-        protected function CreateSubscription($tData) {
+        protected function CreateSubscription($tData, $SkipInitial = false) {
             try {
                 if (!$this->request->isPost())
                     throw new \Exception();
-
-                /*$objAuthDotNet = new AuthorizeDotNetModel();
-                $objAuthDotNet->setUserId($UserID);
-                $objAuthDotNet->setCustomerProfileId($tData['AuthProfile']['customerProfileId']);
-
-                if (!$objAuthDotNet->create()) {
-                    $this->flashSession->error($objAuthDotNet->getMessages());
-                }*/
 
                 $objPaymentService = $this->di->get('paymentService');
 
                 $tParameters = [
                     'userId'                    => $tData['UserID'],
                     'provider'                  => ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
-                    'amount'                    => $tData['Price'] * 100,
+                    'amount'                    => $tData['PricingPlan']['RecurringPayment'] * 100,
+                    'initial_amount'            => $SkipInitial ? 0 : $tData['PricingPlan']['InitialFee'] * 100,
                     'type'                      => 'Agency',
                 ];
 
@@ -614,23 +609,25 @@
 
             $this->view->tMonths = $tMonths;
             $this->view->tYears = $tYears;
-            //$this->view->tCardTypes = $this->tAcceptedCardTypes;
             $this->view->setLayout('agencysignup');
         }
 
-        protected function GetSubscriptionPrice($Name) {
+        protected function GetSubscriptionPricingPlan($Name) {
             $objPricingPlan = AgencyPricingPlan::findFirst("name='{$Name}'");
+
             if(!$objPricingPlan)
                 $this->flashSession->error("Could not find subscription plan.  Contact customer support.");
 
-            return $objPricingPlan->number_of_businesses * $objPricingPlan->price_per_business;
+            return [
+                'InitialFee' => $objPricingPlan->initial_fee,
+                'RecurringPayment' => $objPricingPlan->number_of_businesses * $objPricingPlan->price_per_business
+            ];
         }
 
         protected function IsUniqueEmail() {
         	$this->view->setLayout('');
         	if (isset($this->session->AgencySignup['OwnerEmail'])) {
-            	return 4; 
-            	//count(Users::find('email = "' .$this->session->AgencySignup['OwnerEmail'] . '"')) == 0;
+            	return 4;
         	} else {
         		return -1;
         	}
@@ -684,15 +681,15 @@
                 return false;
             }
 
-            $SubscriptionPlanId = 1; // ten for 10
+            $SubscriptionPlanId = '';
             $this->view->TodayYear = date("Y");
 
             try {
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
                     $this->db->begin();
 
-                    $Price = $this->GetSubscriptionPrice("Ten for ten");
-                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['Price' => $Price]);
+                    $PricingPlan = $this->GetSubscriptionPricingPlan($this->DefaultSubscription);
+                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['PricingPlan' => $PricingPlan]);
 
                     if (!$UserID = $this->CreateSubscription($this->session->AgencySignup)) {
                         $this->flashSession->error('Could not create subscription.  Contact customer support.');
@@ -717,17 +714,17 @@
 
         public function thankyouAction() {
             if($this->session->AgencySignup['Upgrade']) {
-                $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? 'Twenty for eight' : 'Ten for ten';
+                $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? $this->DefaultUpgradeSubscription : $this->DefaultSubscription;
                 $this->view->TodayYear = date("Y");
 
                 try {
                     if ($this->request->isPost() && $this->ValidateFields('Order')) {
                         $this->db->begin();
 
-                        $Price = $this->GetSubscriptionPrice($SubscriptionPlan);
-                        $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['Price' => $Price]);
+                        $PricingPlan = $this->GetSubscriptionPricingPlan($SubscriptionPlan);
+                        $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['PricingPlan' => $PricingPlan]);
 
-                        if (!$UserID = $this->CreateSubscription($this->session->AgencySignup)) {
+                        if (!$UserID = $this->CreateSubscription($this->session->AgencySignup, true)) {
                             $this->flashSession->error('Could not create subscription.  Contact customer support.');
                             $this->response->redirect('/agencysignup/step5');
                         }
@@ -779,11 +776,6 @@
                 }
             }
         }
-
-//        public function salesAction () { // Moved to indexController indexAction; shown in getmobilereviews subdomains
-//            $this->view->LogoSource = (isset($this->session->AgencySignup['LogoFilename']) && $this->session->AgencySignup['LogoFilename']) ? '/img/agency_logos/' . $this->session->AgencySignup['LogoFilename'] : '/img/logo-white.gif';
-//            $this->view->setLayout('agencysignup');
-//        }
 
         public function step3Action() {
             $this->StoreLogo();
