@@ -9,8 +9,8 @@
 
 
     class AgencysignupController extends ControllerBase {
-        protected $DefaultSubscription = "197 Ten for ten";
-        protected $DefaultUpgradeSubscription = "197 Twenty for eight";
+        protected $DefaultSubscription = "97 Ten for ten";
+        protected $DefaultUpgradeSubscription = "97 Twenty for eight";
         /**
          * @var array All fields from the sign up process.  Keys are the form variable names.  Values are the DB names (if they exist.
          */
