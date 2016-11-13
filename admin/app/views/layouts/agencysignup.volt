@@ -82,7 +82,7 @@
         <div class="headercontent">
             <!-- BEGIN LOGO -->
             <div class="logo">
-                <a href="/"><img src="<?=(false && isset($logo_path) && $logo_path != ''?$logo_path:'/img/logo-white.gif')?>" alt="" /></a>
+                <a href="/"><img width="300px" src="<?=(false && isset($logo_path) && $logo_path != ''?$logo_path:'/img/logo-white.gif')?>" alt="" /></a>
             </div>
             <!-- END LOGO -->
             <div class="steps">
