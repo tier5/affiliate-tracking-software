@@ -177,29 +177,17 @@
                   if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
                     ?>
                     <li class="ui-state-default" id='<?=$review_site_list->location_review_site_id?>'>
-                      <span class="site-wrapper">
-                        <img src="<?=$review_site_list->review_site->icon_path?>" class="imgicon" />
-                        <?=$review_site_list->review_site->name?>
-                      </span>
-                    <span class="review_site-buttons">
-                      <?php if ($review_site_list->review_site_id <= 3) { echo $review_site_list->location_review_site_id;?>
-                        <a
+                      <span class="site-wrapper"><img src="<?=$review_site_list->review_site->icon_path?>" class="imgicon" />
+                        <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { ?><a
                           class="btnLink btnSecondary"
                           href="<?=$review_site_list->url?>"
                           target="_blank">
                           View
-                        </a>
-                        <a
+                        </a><a
                           class="btnLink btnSecondary"
                           href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>">
-                          <img src="/img/icon-pencil.png" /> Update Location
-                        </a>
-                      <?php } else { ?>
-                      <a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"> View</a>
-                      <?php } ?>
-                    </span>
-                    <span class="on-off-buttons">
-                      <a
+                          <img src="/img/icon-pencil.png" /> Update Location</a><?php } else { ?><a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"> View</a>
+                      <?php } ?></span><span class="on-off-buttons"><a
                         data-id="<?=$review_site_list->location_review_site_id?>"
                         id="on<?=$review_site_list->location_review_site_id?>"
                         href="#"
@@ -214,8 +202,7 @@
                         class="review_site_off"
                         style="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'display: none;':'')?>">
                         <img src="/img/btn_off.gif"  class="sort-icon" />
-                      </a>
-                    </span>
+                      </a></span>
                       <img src="/img/btn_sort.gif" class="sort-icon" />
                     </li>
                     <?php
