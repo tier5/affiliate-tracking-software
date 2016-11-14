@@ -31,7 +31,7 @@ $(document).ready(function() {
 	function checkAvailableSubDomain() {
 
 		var min_chars = 8; 
-		var characters_error = 'Minimum of 8 Leters';
+		var characters_error = 'Minimum of 8 Letters';
 		var checking_html = 'Checking if available...';
 		
 		var return_field_name = 'URL_availability_result';
@@ -124,7 +124,7 @@ $(document).ready(function() {
 		var $form = $('#payment-form');
 		
 		if (response.error) { // Problem!
-		
+
 			// Show the errors on the form:
 			$form.find('.payment-errors').text(response.error.message);
 			$form.find('.submit').prop('disabled', false); // Re-enable submission

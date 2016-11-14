@@ -94,7 +94,7 @@ class ControllerBase extends Controller {
          //   $Subdomain = $SD_Parts[0];
 //
             $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
-            $this->view->ReachedMaxSMS = $objSubscriptionManager->ReachedMaxSMS($agency->agency_id, $this->session->get('auth-identity')['location_id']);
+            $this->view->ReachedMaxSMS = $userObj->is_admin ? false : $objSubscriptionManager->ReachedMaxSMS($agency->agency_id, $this->session->get('auth-identity')['location_id'])['ReachedLimit'];
 
             if($agency->parent_id > 0) {
                 // We're a business

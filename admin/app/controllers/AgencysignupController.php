@@ -583,13 +583,26 @@
                     'type'                      => 'Agency',
                 ];
 
+                // GARY_TODO:  Refactor:  No reason to have to query the DB here.
+                $objUser = \Vokuro\Models\Users::findFirst("id = " . $tData['UserID']);
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+
+                // This method is potentially called twice (To upgrade in the thank you action)
+                $objAgencySubscriptionPlan = \Vokuro\Models\AgencySubscriptionPlan::findFirst("agency_id = {$objAgency->agency_id}");
+                if(!$objAgencySubscriptionPlan)
+                    $objAgencySubscriptionPlan = new \Vokuro\Models\AgencySubscriptionPlan();
+
+                $objAgencySubscriptionPlan->agency_id = $objAgency->agency_id;
+                $objAgencySubscriptionPlan->pricing_plan_id = $tData['PricingPlan']['PlanID'];
+                $objAgencySubscriptionPlan->save();
+
                 if (!$objPaymentService->changeSubscription($tParameters)) {
                     $this->flashSession->error('Could not create subscription.  Contact customer support.');
                     return false;
                 }
 
             } catch (Exception $e) {
-                $this->response->redirect('/agencysignup/step5');
+                $this->flashSession->error($e->getMessage());
                 return false;
             }
             return true;
@@ -620,7 +633,8 @@
 
             return [
                 'InitialFee' => $objPricingPlan->initial_fee,
-                'RecurringPayment' => $objPricingPlan->number_of_businesses * $objPricingPlan->price_per_business
+                'RecurringPayment' => $objPricingPlan->number_of_businesses * $objPricingPlan->price_per_business,
+                'PlanID' => $objPricingPlan->id,
             ];
         }
 

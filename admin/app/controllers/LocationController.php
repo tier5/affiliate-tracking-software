@@ -291,7 +291,7 @@
         /**
          * Default index view
          */
-        public function indexAction($DisplayLocationsPopup = null) {
+        public function indexAction($DisplayLocationsPopup = 0) {
             $this->view->DisplayLocationsPopup = $DisplayLocationsPopup;
 
             //get the user id
@@ -360,7 +360,7 @@
         /**
          * Creates a Location
          */
-        public function createAction($DisplayLocationsPopup = false) {
+        public function createAction($DisplayLocationsPopup = 0) {
             $this->assets
                 ->addCss('css/main.css')
                 ->addCss('css/signup.css');
@@ -400,9 +400,11 @@
                 )
             );
 
+
             $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
-            if($objSubscriptionManager->ReachedMaxLocations($userObj->agency_id)) {
-                return $this->response->redirect('/location/index/1');
+            $tLimit = $objSubscriptionManager->ReachedMaxLocations($userObj->agency_id);
+            if($tLimit['ReachedLimit']) {
+                return $tLimit['FreePlan'] ? $this->response->redirect('/location/index/2') : $this->response->redirect('/location/index/1');
             }
 
             $dbLocations = \Vokuro\Models\Location::find('agency_id = ' . $userObj->agency_id);
@@ -464,7 +466,7 @@
                         $this->auth->setLocation($loc->location_id) / me;
                     }
                     $this->flash->success("The location was created successfully");
-                    $this->updateSubscriptionPlan();
+                    $this->updateAgencySubscriptionPlan($loc->location_id, true);
 
 
                     return $this->response->redirect('/location/edit/' . $loc->location_id . '/1');
@@ -480,18 +482,55 @@
 
         }
 
-        protected function updateSubscriptionPlan($businessID = null) {
-            if(!$businessID) return;
-            $Name = "Business Plan {$businessID}";
-            $UniqueID = "business_plan_{$businessID}";
+        /**
+         * @param $LocationID
+         * @param $Creating - Are we creating or deleting a location?  (Boolean)
+         * @return bool
+         */
+        protected function updateAgencySubscriptionPlan($LocationID, $Creating) {
 
-            return \Stripe\Plan::create([
-                'amount'        => $Amount,
-                'interval'      => 'month',
-                'name'          => $Name,
-                'currency'      => 'usd',
-                'id'            => $UniqueID
-            ]);
+            if(!$LocationID)
+                return false;
+
+            $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+            $objLocation = \Vokuro\Models\Location::findFirst("location_id = {$LocationID}");
+
+            // First check this business subscription level.  If trial, we can ignore.  Trial accounts can only have 1 location and they are not paid.
+            $SubscriptionLevel = $objSubscriptionManager->GetBusinessSubscriptionLevel($objLocation->agency_id);
+
+            if($SubscriptionLevel == \Vokuro\Services\ServicesConsts::$PAYMENT_PLAN_TRIAL)
+                return true;
+
+            // Get a list of all businesses under the Agency and count total locations
+            $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objLocation->agency_id}");
+            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+            $dbBusinesses = \Vokuro\Models\Agency::find("parent_id = {$objAgency->agency_id}");
+            $LocationCount = 0;
+            foreach($dbBusinesses as $objBusiness) {
+                if($objSubscriptionManager->GetBusinessSubscriptionLevel($objLocation->agency_id) != \Vokuro\Services\ServicesConsts::$PAYMENT_PLAN_TRIAL) {
+                    $LocationCount += \Vokuro\Models\Location::count("agency_id = {$objBusiness->agency_id}");
+                }
+            }
+
+            // Determine if we need to expand / shrink agency subscription plan
+            $objAgencySuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} and role='Super Admin'");
+            $objAgencySubscription = \Vokuro\Models\AgencySubscriptionPlan::findFirst("agency_id = {$objAgency->id}");
+            $objAgencyPricingPlan = \Vokuro\Models\AgencyPricingPlan::findFirst("id = {$objAgencySubscription->pricing_plan_id}");
+
+
+            $objPaymentService = new \Vokuro\Services\PaymentService();
+            if(($Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses) || (!$Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses)) {
+                $NewPayment = $Creating ? ($LocationCount * $objAgencyPricingPlan->price_per_business * 100) : (($LocationCount-1) * $objAgencyPricingPlan->price_per_business * 100);
+                $ccParameters = [
+                    'userId' => $objAgencySuperUser->id,
+                    'type' => 'Agency',
+                    'amount' => $NewPayment,
+                    'provider' => \Vokuro\Services\ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
+                ];
+                $objPaymentService->changeSubscription($ccParameters);
+            }
+
+            return true;
         }
 
 
@@ -860,6 +899,7 @@
             $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $loc->location_id);
             $lrs = LocationReviewSite::find(array($conditions, "bind" => $parameters));
+            $this->updateAgencySubscriptionPlan($loc->location_id, false);
             $lrs->delete();
 
             if (!$loc->delete()) {
