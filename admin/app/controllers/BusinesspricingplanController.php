@@ -234,7 +234,7 @@ class BusinessPricingPlanController extends ControllerBase {
 
             /* If we are creating a new plan, ensure the name of the pricing profile is unique for this user */
             $pricingPlan = $subscriptionManager->getPricingPlanByName($validatedParams['userId'], $validatedParams['name']);
-            if($pricingPlan && !$isUpdate && $pricingPlan->id !== 55) {
+            if($pricingPlan && !$isUpdate) {
                 throw new \Exception('Another pricing profile with that name already exists! Please choose a unique name and try again.');
             }
 
