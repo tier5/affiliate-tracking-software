@@ -154,16 +154,14 @@
             $objLocation->external_id = $objGoogleBusiness->id;
             $cid = explode("=", $objGoogleBusiness->url);
             $objLocation->cid = $cid[1];
-            
+            $address = preg_replace(" #[0-9]+","",$objGoogleBusiness->address);
             $objLocation->name .= " " .
-              					  $objGoogleBusiness->address . " " .  
+              					  $address . " " .  
             					  $objGoogleBusiness->postal_code . " " . 
             					  $objGoogleBusiness->locality . " " .
             					  $objGoogleBusiness->state_province . " " .
             					  $objGoogleBusiness->country;
 //print_r($objGoogleBusiness);
-//echo $objLocation->lrd;
-
             $objLocation->url = "https://www.google.com/search?q=".str_replace(" ", "+", $objLocation->name)."&ludocid=".$objLocation->cid."#lrd=".$objLocation->lrd.",3,5";
             $objLocation->save();
 			
