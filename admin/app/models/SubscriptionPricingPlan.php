@@ -111,11 +111,16 @@
             if(!$this->short_code){
                 $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
                 $short_code = '';
-                for ($i = 0; $i < 1; $i++) {
-                    $short_code .= $characters[mt_rand(0, strlen($characters) - 1)];
+                while(!$this->short_code) {
+                    for ($i = 0; $i < 12; $i++) {
+                        $short_code .= $characters[mt_rand(0, strlen($characters) - 1)];
+                    }
+                    $objSubscriptionPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("short_code = '{$short_code}'");
+                    if(!$objSubscriptionPlan) {
+                        $this->short_code = $short_code;
+                        $this->save();
+                    }
                 }
-                $this->short_code = $short_code;
-                $this->save();
                 return $this->short_code;
             }
             return $this->short_code;
