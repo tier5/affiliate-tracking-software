@@ -86,7 +86,7 @@
                 $objLocationReviewSite->original_count = 0;
                 $objLocationReviewSite->date_created = null;
                 $objLocationReviewSite->is_on = 0;
-                $objLocationReviewSite->lrd = null;
+                //$objLocationReviewSite->lrd = null;
                 $objLocationReviewSite->name = null;
                 $objLocationReviewSite->url = null;
                 $objLocationReviewSite->rating = 0;
@@ -139,7 +139,7 @@
             $objReviewsService->DeleteYelpReviews($LocationID);
             $objReviewsService->importYelpReviews($LocationID);
  
-            $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
+            $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}"); 
         }
 
         public function pickGoogleBusinessAction($BusinessID, $LocationID, $RedirectToSession = 0) {
@@ -148,10 +148,21 @@
 
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
             $objLocation->is_on = 1;
-            $tFields = ['name','external_id', 'external_location_id', 'url', 'address', 'postal_code', 'locality', 'country', 'state_province', 'phone'];
-            foreach($tFields as $Field)
-                $objLocation->$Field = $objGoogleBusiness->$Field;
-            $objLocation->url = "https://www.google.com/search?q=".str_replace(" ", "+", $objLocation->name)."&ludocid=".$objLocation->cid."&#lrd=".$objLocation->lrd."3,5";
+     
+            $objLocation->name = $objGoogleBusiness->name;
+            $objLocation->external_location_id = $objGoogleBusiness->external_location_id;
+            $objLocation->external_id = $objGoogleBusiness->id;
+            $cid = explode("=", $objGoogleBusiness->url);
+            $objLocation->cid = $cid[1];
+            $address = preg_replace(" #[0-9]+","",$objGoogleBusiness->address);
+            $objLocation->name .= " " .
+              					  $address . " " .  
+            					  $objGoogleBusiness->postal_code . " " . 
+            					  $objGoogleBusiness->locality . " " .
+            					  $objGoogleBusiness->state_province . " " .
+            					  $objGoogleBusiness->country;
+//print_r($objGoogleBusiness);
+            $objLocation->url = "https://www.google.com/search?q=".str_replace(" ", "+", $objLocation->name)."&ludocid=".$objLocation->cid."#lrd=".$objLocation->lrd.",3,5";
             $objLocation->save();
 			
             $objReviewsService->DeleteGoogleReviews($LocationID);
@@ -223,7 +234,7 @@
             $this->view->RedirectToSession = $RedirectToSession;
 
             $this->view->tobjBusinesses = $objReviewsService->getGoogleMyBusinessLocations($LocationID);
-            //print_r($this->view->tobjBusinesses);
+
             $this->view->LocationID = $LocationID;
             $this->view->pick('location/getFacebookPages');
         }
@@ -754,7 +765,7 @@
             }
 
             $this->view->location_id = $location_id;
-
+			$this->view->location = $loc;
             //verify that the user is supposed to be here, by checking to make sure that
             //their agency_id matches the agency_id of the location they are trying to edit
             $agency_id_to_check = $loc->agency_id;

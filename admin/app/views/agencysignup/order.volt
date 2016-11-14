@@ -174,15 +174,10 @@
                 <div style="float: left;">Total Due Today:</div>
                 <div style="float: right;">$1</div>
             </div>
-
             <div class="col-xs-12 col-xs-offset-1 submit-section">
-                <button class="big-green-button submit" id="BigGreenSubmit">
-                    Submit Order
-                </button>
-            </div>
-            <div class="col-xs-12 col-xs-offset-3 ">
-            <br/>By clicking this button, you agree to Review Velocity's<br /><A href="/session/RVreseller">Reseller Terms</a>,  <A href="/session/RVantispam">Anti-spam</a>,  <A href="/session/RVprivacy">Privacy Policy</a>,  <A href="/session/RVterms">Policy & Terms of Use</a>.
-            </div>
+                <button class="big-green-button submit" id="BigGreenSubmit">Submit Order</button><br>
+                <center><div class="col-xs-10 ">By clicking this button, you agree to Review Velocity's<br /><A href="/session/RVreseller" target="blank">Reseller Terms</a>,  <A href="/session/RVantispam" target="blank">Anti-spam</a>,  <A href="/session/RVprivacy" target="blank">Privacy Policy</a>,  <A href="/session/RVterms" target="blank">Terms of Use</a>.</div>
+            </center></div>
         </div>
     </div>
     <div class="col-xs-3 col-xs-offset-1 hidden-xs hidden-sm">

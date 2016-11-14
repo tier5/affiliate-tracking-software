@@ -215,6 +215,7 @@
 
         protected function storeLogo($objAgency) {
             if($this->request->hasFiles()) {
+
                 foreach ($this->request->getUploadedFiles() as $file) {
                     // This is for handling page reloads.
                     if($file->getTempName()) {
@@ -223,13 +224,14 @@
                             if (is_file($logoFilename)) {
                               unlink($logoFilename);
                             }
-                            $objAgency->logo_path = '';
+                            //$objAgency->logo_path = '';
                             $objAgency->save();
                         }
 
                         $FileName = uniqid('logo') . '.' . $file->getExtension();
                         file_put_contents(__DIR__ .  DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR . "{$FileName}", file_get_contents($file->getTempName()));
                         $objAgency->logo_path = $FileName;
+
                         $objAgency->save();
                         $this->view->logo_path = DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR . "{$FileName}";
                         break;

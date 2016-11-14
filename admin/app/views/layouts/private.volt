@@ -136,7 +136,7 @@
         <div class="page-logo" style="margin-top: 0;">
             <a href="/">
                 
-                <img src="<?=$this->view->logo_path;?>" alt="logo" class="logo-default"/>
+                <img src="<?=$this->view->logo_path;?>" alt="logo" width="200px" class="l ogo-default"/>
                
             </a>
             <div class="menu-toggler sidebar-toggler"></div>

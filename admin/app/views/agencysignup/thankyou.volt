@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="row medium-vertical-margins">
-        <img class="center-block" src="/img/logo-gray.gif" alt="Review Velocity" />
+        <img class="center-block" src="/img/logo-gray.gif" width="300px" alt="Review Velocity" />
     </div>
     <div class="row  medium-vertical-margins" style="padding-bottom: 200px;">
         <h5 class="text-center">&copy; {{ TodayYear }} All Rights Reserved.  Review Velocity.  <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></h5>

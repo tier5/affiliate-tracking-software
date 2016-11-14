@@ -111,7 +111,7 @@
                     {% if GoogleMyBusinessConnected %}
                         <div class="field"><span class="name">Business Name:</span>
                         <span id="googleName">
-                            <?=$objGoogleReviewSite->name; ?>
+                            <?=$location->name; ?>
                         </span>
                         </div>
                         <div class="field bottom">
@@ -119,10 +119,10 @@
                                 Location:
                             </span>
                             <span class="googleAddress" id="googleAddress">
-                                <?=$objGoogleReviewSite->address; ?>
-                                <?=$objGoogleReviewSite->locality; ?>,
-                                <?=$objGoogleReviewSite->state_province; ?>
-                                <?=$objGoogleReviewSite->postal_code; ?>
+                                <?=$location->address; ?>
+                                <?=$location->locality; ?>,
+                                <?=$location->state_province; ?>
+                                <?=$location->postal_code; ?>
                             </span>
                         </div>
                     {% endif %}
