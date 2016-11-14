@@ -1,10 +1,12 @@
 <?php
 
 
-    $AgencyOrBusiessType = $this->view->agency_type_id == 1 ? "Agency" : "Business";
-    $BackUrl = $AgencyOrBusiessType == 1 ? '/agency' : '/admindashboard/list/2';
-    $BackUrl = $loggedUser->is_admin ? "/admindashboard/list/1" : $BackUrl;
-
+    $CreateType = $agency_type_id == 1 ? 'Agency' : 'Business';
+    if($loggedUser->is_admin) {
+        $BackUrl = $CreateType == 'Business' ? '/admindashboard/list/2' : '/admindashboard/list/1';
+    } else {
+        $BackUrl = '/agency';
+    }
 ?>
 <ul class="pager">
     <li class="previous pull-left">
