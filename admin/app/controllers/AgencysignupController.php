@@ -87,8 +87,6 @@
             'AgencyStripePublishableKey'  => 'stripe_publishable_keys',
 
             /* Order form Fields */
-            'FirstName'             => 'name',
-            'LastName'              => 'last_name',
             'OwnerEmail'            => 'email',
             'URL'                   => 'custom_domain',
         ];
@@ -411,7 +409,6 @@
             // Populate the view
             foreach($this->tAllFormFields as $Field) {
                 if(isset($this->session->AgencySignup[$Field]))
-                
                     $this->view->$Field = $this->session->AgencySignup[$Field];
                 else
                     $this->view->$Field = '';
@@ -449,14 +446,11 @@
         protected function UpdateAgency($AgencyID) {
             $objAgency = Agency::findFirst("agency_id = {$AgencyID}");
             foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
-            	
                 if($dbField) {
                     $objAgency->$dbField = isset($this->session->AgencySignup[$FormField]) ? $this->session->AgencySignup[$FormField] : '';
                 }
             }
-         
             unset($dbField);
-
             $objAgency->save();
         }
 
@@ -744,15 +738,15 @@
                         }
 
                         $this->db->commit();
-
-                        $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
-                        $this->UpdateAgency($objUser->agency_id);
                     }
                 } catch (Exception $e) {
                     $this->db->rollback();
                     return false;
                 }
             }
+
+             $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+            $this->UpdateAgency($objUser->agency_id);
 
             $this->view->setLayout('agencysignup');
         }
