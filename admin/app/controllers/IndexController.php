@@ -72,6 +72,11 @@ class IndexController extends ControllerBase {
                 }
             }
 
+            $objUser = \Vokuro\Models\Users::findFirst("id = " . $identity['id']);
+            $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+            $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+            $this->view->SubscriptionPlan = $objSubscriptionManager->GetBusinessSubscriptionLevel($objBusiness->agency_id);
+
         } else {
             // Check for use of whitelabel domain
             // Moved to here from AgencySignupController::salesAction (agencysignup/sales)
@@ -275,59 +280,16 @@ class IndexController extends ControllerBase {
 
             $this->view->total_reviews_this_month = \Vokuro\Models\Review::count("time_created BETWEEN '{$start_time}' AND '{$end_time}' AND location_id = {$LocationID}");
 
-
-            // Reviews GARY_START
-
-/*
- * Not on the dashboard page.  MOVE PLZ
-            // Last month!
-            $this->view->num_reviews_last_month = ReviewsMonthly::sum(
-                            array(
-                                "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                "conditions" => "month = " . date("m", strtotime("first day of previous month")) . " AND year = '" . date("Y", strtotime("first day of previous month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                            )
-            );
-            $this->view->num_reviews_two_months_ago = ReviewsMonthly::sum(
-                            array(
-                                "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                "conditions" => "month = " . date("m", strtotime("-2 months", time())) . " AND year = '" . date("Y", strtotime("-2 months", time())) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                            )
-            );
-            $this->view->total_reviews_last_month = $this->view->num_reviews_last_month - $this->view->num_reviews_two_months_ago;
-
-            //This month!
-            $this->view->num_reviews_this_month = ReviewsMonthly::sum(
-                            array(
-                                "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                "conditions" => "month = " . date("m", strtotime("first day of this month")) . " AND year = '" . date("Y", strtotime("first day of this month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                            )
-            );
-            //echo '<p>num_reviews_this_month:'.$this->view->num_reviews_this_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
-            $this->view->total_reviews_this_month = $this->view->num_reviews_this_month - $this->view->total_reviews_last_month;
-
-
-*/
-
-            //set the agency SMS limit
             $this->view->review_goal = $loc->review_goal;
-            //calculate how many sms messages we need to send to meet this goal.
-            //$percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
-            //if ($percent_needed == 0)
+
             $percent_needed = 10;
             $this->view->percent_needed = $percent_needed;
-            //echo '<p>$sms_sent_last_month:'.$sms_sent_last_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
-            //echo '<p>percent_needed:'.$percent_needed.':review_goal:'.$loc->review_goal.'</p>';
+
             $this->view->total_sms_needed = round($loc->review_goal / ($percent_needed / 100));
 
-            //echo "<PRE>";
-            //print_r($this->view->new_reviews->toArray());
-            //die();
-//echo '<pre>new_reviews:'.print_r($this->view->new_reviews,true).'</pre>';
-            //Get the sharing code
+
             $this->getShareInfo($agency);
-            //end getting the sharing code
-            //###  START: find review site config info ###
-            //look for a yelp review configuration
+
             $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
@@ -361,9 +323,6 @@ class IndexController extends ControllerBase {
             }
             //###  END: find review site config info ###
         }
-
-        //$googleScan = new GoogleScanning();
-        //$google_reviews = $googleScan->getLRD('15803962018122969779');
     }
 
 }
