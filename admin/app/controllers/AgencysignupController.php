@@ -9,6 +9,7 @@
 
 
     class AgencysignupController extends ControllerBase {
+        protected $EncryptionKey = "0bf14113f8d657cbb4aad17753592fd4d278672f0cd6f8d4722bd907965786bf";
         protected $DefaultSubscription = "97 Ten for ten";
         protected $DefaultUpgradeSubscription = "97 Twenty for eight";
         /**
@@ -28,23 +29,28 @@
             'Website',
             'EmailFromName',
             'EmailFromAddress',
+            'sbyp',
 
             /* Step 2 Fields */
             'LogoFilename',
             'PrimaryColor',
             'SecondaryColor',
+            'sbyp',
             
             /* Step 3 Fields */
             'TwilioSID',
             'TwilioToken',
             'TwilioFromNumber',
+            'sbyp',
             
             /* Step 4 Fields */
             'AgencyStripeSecretKey',
             'AgencyStripePublishableKey',
+            'sbyp',
 
             /* Step 5 / Upgrade Step */
             'Upgrade',
+            'sbyp',
 
             /* Order form Fields */
             'FirstName',
@@ -52,6 +58,7 @@
             'OwnerEmail',
             'URL',
             'Password',
+            'sbyp',
         ];
 
         protected $tAgencyFieldTranslation = [
@@ -383,11 +390,45 @@
             "ZW" => "Zimbabwe",
         ];
 
+        /**
+         * Current subscriptons plan work as this.  The hash to the right represents the subscription label to the left.  The "Upgrade" button refers to the subscription immediately following the previous subscription so sbyp should never be a subscription "X Twenty for eight"
+            0 Ten for ten -         P7NhtxYfDIxoJl%2FxF20M%2Bw%3D%3D
+            0 Twenty for eight -    dnQyMo1njuKgu8ZDzyen5A%3D%3D
+            97 Ten for ten -        JIJTX0QscOKPJcnueOPehQ%3D%3D
+            97 Twenty for eight -   lIqhi1DFsZLPIu8vf7uJbA%3D%3D
+            197 Ten for ten -       17MmTfedKoKXdfRkQbRvKQ%3D%3D
+            197 Twenty for eight -  8Sv1GFdmxcpM6YnIwaD3sg%3D%3D
+
+            Sample URL - http://getmobilereviews.com/agencysignup/order?sbyp=17MmTfedKoKXdfRkQbRvKQ%3D%3D
+         */
 
         /**
          * Auto populate the session with form data, set their appropriate view variables and determine current step.
          */
         public function initialize() {
+            if($_GET['sbyp'] || $_POST['sbyp']) {
+                $sbyp = $_GET['sbyp'] ? $_GET['sbyp'] : $_POST['sbyp'];
+                // For current measures, the id should always be odd due to the way the signup process works.  Otherwise use the defaults
+                $id = openssl_decrypt($sbyp, 'aes-256-cbc', hex2bin($this->EncryptionKey));
+                if($id % 2 == 0) {
+                    $this->CurrentSubscription = $this->DefaultSubscription;
+                    $this->CurrentUpgradeSubscription = $this->DefaultUpgradeSubscription;
+                } else {
+                    $this->CurrentSubscription = $this->GetAgencyPricingPlanByHash($sbyp);
+                    $id++;
+                    $objUpgradeSubscription = \Vokuro\Models\AgencyPricingPlan::findFirst("id = {$id}");
+                    if($objUpgradeSubscription) {
+                        $this->CurrentUpgradeSubscription = $objUpgradeSubscription->name;
+                    } else {
+                        // Again going to fallback on defaults
+                        $this->CurrentSubscription = $this->DefaultSubscription;
+                        $this->CurrentUpgradeSubscription = $this->DefaultUpgradeSubscription;
+                    }
+                }
+            } else {
+                $this->CurrentSubscription = $this->DefaultSubscription;
+                $this->CurrentUpgradeSubscription = $this->DefaultUpgradeSubscription;
+            }
 
             if(!$this->session->AgencySignup)
                 $this->session->AgencySignup = [];
@@ -415,8 +456,6 @@
             }
            
             // Determine step from URI
-            
-
             preg_match("#agencysignup\/step(\d)+#", $_SERVER['REQUEST_URI'], $tMatches);
             if($tMatches) {
                 $this->view->current_step = $tMatches[1];
@@ -603,6 +642,19 @@
         }
 
 
+        /**
+         * @param $Hash
+         * @return string
+         */
+        protected function GetAgencyPricingPlanByHash($Hash) {
+            $id = openssl_decrypt($Hash, 'aes-256-cbc', hex2bin($this->EncryptionKey));
+            $objPricingPlan = null;
+            if($id)
+                $objPricingPlan = \Vokuro\Models\AgencyPricingPlan::findFirst("id = {$id}");
+            return $objPricingPlan ? $objPricingPlan->name : $this->DefaultSubscription;
+        }
+
+
         public function orderAction() {
             // Generate months
             $tMonths = [];
@@ -696,7 +748,7 @@
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
                     $this->db->begin();
 
-                    $PricingPlan = $this->GetSubscriptionPricingPlan($this->DefaultSubscription);
+                    $PricingPlan = $this->GetSubscriptionPricingPlan($this->CurrentSubscription);
                     $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['PricingPlan' => $PricingPlan]);
 
                     if (!$UserID = $this->CreateSubscription($this->session->AgencySignup)) {
@@ -722,7 +774,7 @@
 
         public function thankyouAction() {
             if($this->session->AgencySignup['Upgrade']) {
-                $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? $this->DefaultUpgradeSubscription : $this->DefaultSubscription;
+                $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? $this->CurrentUpgradeSubscription : $this->DefaultSubscription;
                 $this->view->TodayYear = date("Y");
 
                 try {
