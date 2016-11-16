@@ -135,8 +135,15 @@
         <!-- BEGIN LOGO -->
         <div class="page-logo" style="margin-top: 0;">
             <a href="/">
-                
-                <img src="<?=$this->view->logo_path;?>" alt="logo" width="200px" class="l ogo-default"/>
+                 {% if agencytype == "agency" %}
+                <img src="<?=$this->view->logo_path;?>" alt="logo" 
+                 style="max-width: 200px;" class="logo-default"/>
+
+                {% else %}
+
+                <img src="<?=$this->view->logo_path;?>" alt="logo" 
+                style="max-width: 300px;" class="logo-default"/>
+                {% endif %}
                
             </a>
             <div class="menu-toggler sidebar-toggler"></div>

@@ -1050,7 +1050,7 @@
                 } else {
                     //else we have a phone number, so send the message
                     $name = $_POST['name'];
-                    $message = $_POST['SMS_message'];
+                    $message = $_POST['SMS_message'].'- Reply stop to be removed';
                     //replace out the variables
                     $message = str_replace("{location-name}", $this->session->get('auth-identity')['location_name'], $message);
                     $message = str_replace("{name}", $name, $message);
@@ -1067,7 +1067,7 @@
                         'phone' => $phone,
                         //TODO: Added google URL shortener here
                         'api_key' => $guid,
-                        'sms_message' => $message,
+                        'sms_message' => $message.'- Reply stop to be removed',
                         'date_sent' => date('Y-m-d H:i:s'),
                         'date_last_sent' => date('Y-m-d H:i:s'),
                         'sent_by_user_id' => $identity['id']

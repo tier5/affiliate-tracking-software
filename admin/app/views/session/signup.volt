@@ -2,7 +2,7 @@
 <div class="signup-footer">
     <div class="title">Try us for free</div>
     <div class="description">No credit card required.  All features included.</div>
-    {% if agency_name %} {{ agency_name }} {% endif %}
+   <!-- {% if agency_name %} {{ agency_name }} {% endif %}-->
 </div>
 {% endif %}
 <div class="content">

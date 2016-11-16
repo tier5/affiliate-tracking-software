@@ -73,7 +73,7 @@ class SessionController extends ControllerBase {
                 }
 
                 $ParentID = $objParentAgency->agency_id;
-
+                //echo '<pre>';print_r($objParentAgency);exit;
                 $this->view->main_color_setting = $this->view->PrimaryColor = !empty($objParentAgency->main_color) ? $objParentAgency->main_color : '#2a3644';
                 $this->view->SecondaryColor = !empty($objParentAgency->secondary_color) ? $objParentAgency->secondary_color : '#65CE4D';
                 $this->view->logo_path = (!empty($objParentAgency->logo_path)) ? '/img/agency_logos/'.$objParentAgency->logo_path : '';
@@ -103,16 +103,18 @@ class SessionController extends ControllerBase {
                     $subscription_id = $subscription_pricing_plan->id;
                 }
             }
-
+//echo 'ok';exit;
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
-
+            //echo '<pre>';print_r($subscriptionManager);exit;
             if(!$subscription_id){
                 //here we are going to get the default subscription id
                 /**
                  * @var $subscriptionManager \Vokuro\Services\SubscriptionManager
                  */
+
                 $default = $subscriptionManager->getActiveSubscriptionPlan();
+                //echo '<pre>';print_r($default);exit;
                 if($default){
                    /**
                     * @var $default \Vokuro\Models\SubscriptionPricingPlan
@@ -258,6 +260,7 @@ class SessionController extends ControllerBase {
     }
 
     public function signupAction($subscriptionToken = '0') {
+        //echo $subscriptionToken;exit;
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
         $pi = array_shift($ex);
@@ -1122,7 +1125,7 @@ class SessionController extends ControllerBase {
     public function sendsmsAction() {
         $results = 'There was a problem sending the message.';
 
-        $message = $_GET['body'];
+        $message = $_GET['body'].'- Reply stop to be removed';
         $original_message = $message;
         $name = $_GET['name'];
         $cell_phone = $_GET['cell_phone'];

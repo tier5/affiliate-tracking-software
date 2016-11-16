@@ -4,7 +4,7 @@ Feature('Login Test');
 Scenario('Test Login as Super Admin and See Correct Page', (I) => {
     I.amOnPage('/session/login');
     I.see('Sign In');
-    I.fillField('email','zacha@reputationloop.com');
+    I.fillField('email','zacha@reviewvelocity.co');
     I.fillField('password','12345678');
     I.click('.btnLink');
     I.see('Businesses');
@@ -18,7 +18,7 @@ Scenario('Test Login as Super Admin and See Correct Page', (I) => {
 Scenario('I See Correct Page', (I) => {
     I.amOnPage('/session/login');
     I.see('Sign In');
-    I.fillField('email', 'zacha@reputationloop.com');
+    I.fillField('email', 'zacha@reviewvelocity.co');
     I.fillField('password', '12345678');
     I.click('.btnLink');
     I.see('Businesses');

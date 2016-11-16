@@ -141,6 +141,7 @@ class SubscriptionManager extends BaseService {
     }
 
     public function getActiveSubscriptionPlans($user_id = null) {
+
         $plans = SubscriptionPricingPlan::query()
             ->where('enabled = true');
         if($user_id) $plans->andWhere('user_id = :user_id',['user_id'=>$user_id]);
@@ -150,6 +151,7 @@ class SubscriptionManager extends BaseService {
 
     public function getActiveSubscriptionPlan() {
         $results = $this->getActiveSubscriptionPlans();
+        //echo '<pre>';print_r($results);exit;
         //if we only have one active.. or the one with the latest id.. then we return that one
         if($results && $results[0]) return $results[0];
         throw new \Exception('No active subscription plans found');

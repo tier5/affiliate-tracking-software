@@ -337,24 +337,36 @@
                       <tbody>
                       <?php
             $rowclass = '';
+
             foreach($review_report as $data) {
+//echo $data->rating_type_id;exit;
+
               ?>
                       <tr>
                         <td>
                           <div class="review <?=$rowclass?>">
                             <div class="rowbuttons">
-                              <a class="btnLink btnSecondary" href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://www.facebook.com/'.$this->view->facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank">View</a>
-                              <a class="btnLink btnPrimary" href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://www.facebook.com/'.$this->view->facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank">Respond</a>
+                              <a class="btnLink btnSecondary" href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==2?'http://www.facebook.com/'.$data->user_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank">View</a>
+
+                             <!-- <a class="btnLink btnSecondary" onclick="view_review(<?php echo $data->review_id?>,'more')" id="vm_<?php echo $data->review_id?>">View</a>-->
+                              
+                                 
+                              
+                               <a class="btnLink btnSecondary" onclick="view_review(<?php echo $data->review_id?>,'less')" style="display:none;" id="vl_<?php echo $data->review_id?>">View less</a>
+
+                              <a class="btnLink btnPrimary" href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==2?'http://www.facebook.com/'.$data->user_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank">Respond</a>
                             </div>
                             <div class="rowwrapper">
                               <div class="top">
-                                <div class="logo"><a href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://facebook.com/'.$this->view->facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==2?'yelp':($data->rating_type_id==1?'facebook':'google'))?>.gif" /></a></span></div>
+                                <div class="logo"><a href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://facebook.com/'.$data->user_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==1?'yelp':($data->rating_type_id==2?'facebook':'google'))?>.gif" /></a></span></div>
                                 <div class="rating col-md-2"><input value="<?=$data->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /></div>
                                 <div class="name col-md-5"><?=$data->user_name?></div>
                                 <div class="date col-md-3"><?=date("m/d/Y", strtotime($data->time_created))?></div>
                               </div>
                               <div class="content">
+                              <span id="less_<?php echo $data->review_id?>">
                                 <?php
+                                echo $data->review_id;
                       $text = $data->review_text;
                                 $text = $text." ";
                                 $text = substr($text,0,90);
@@ -362,6 +374,15 @@
                                 $text = $text."...";
                                 echo $text;
                                 ?>
+                                </span>
+
+                                <span id="more_<?php echo $data->review_id?>" style="display:none;">
+                                <?php
+
+                      echo $text = $data->review_text;
+                                
+                                ?>
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -676,6 +697,25 @@
   </div>
 </header>
 <script type="text/javascript">
+
+  function view_review(review_id,cond)
+  {
+      if(cond=='more')
+      {
+        $('#more_'+review_id).show();
+        $('#less_'+review_id).hide();
+        $('#vm_'+review_id).hide();
+        $('#vl_'+review_id).show();
+      }
+      else
+      {
+        $('#more_'+review_id).hide();
+        $('#less_'+review_id).show();
+        $('#vm_'+review_id).show();
+        $('#vl_'+review_id).hide();
+      }
+  }
+
   jQuery(document).ready(function($){
     $('.easy-pie-chart .number').easyPieChart({
       //animate: 1000,

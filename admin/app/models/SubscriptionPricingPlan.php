@@ -33,6 +33,14 @@
         public $updated_at;
         public $deleted_at;
         public $short_code;
+        public $annual_plan_discount;
+        public $trial_period;
+        public $max_sms_during_trial_period;
+        public $max_locations_on_free_account;
+        public $trial_number_of_days;
+        public $collect_credit_card_on_sign_up;
+        public $agency_id;
+
 
         public function initialize()
         {
@@ -103,7 +111,14 @@
                 'created_at' => 'created_at',
                 'updated_at' => 'updated_at',
                 'deleted_at' => 'deleted_at',
-                'short_code'=>'short_code'
+                'short_code'=>'short_code',
+                'annual_plan_discount'=>'annual_plan_discount',
+                'trial_period'=>'trial_period',
+                'max_sms_during_trial_period'=>'max_sms_during_trial_period',
+                'max_locations_on_free_account'=>'max_locations_on_free_account',
+                'trial_number_of_days'=>'trial_number_of_days',
+                'collect_credit_card_on_sign_up'=>'collect_credit_card_on_sign_up',
+                'agency_id'=>'agency_id'
             );
         }
 

@@ -9,7 +9,7 @@ use Vokuro\Models\Users;
  */
 class Email{
 
-    protected $from = 'zacha@reputationloop.com';
+    protected $from = 'zacha@reviewvelocity.co';
 
     /**
      * @var \Phalcon\DiInterface
@@ -165,7 +165,7 @@ class Email{
         }
 
 
-        if(!$this->from) $from = 'no-reply@reputationloop.com';
+        if(!$this->from) $from = 'no-reply@reviewvelocity.com';
         if(!$u->is_employee){
             throw new \Exception('Cannot send an employee activation email to someone that is not an employee');
         }

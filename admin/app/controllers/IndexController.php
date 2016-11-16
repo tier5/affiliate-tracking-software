@@ -354,6 +354,7 @@ class IndexController extends ControllerBase {
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             //start with Facebook reviews, if configured
+            //echo  $Obj->external_id;exit;
             if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
                 $this->view->facebook_page_id = $Obj->external_id;
             } else {
