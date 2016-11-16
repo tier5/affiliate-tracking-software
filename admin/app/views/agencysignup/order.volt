@@ -1,4 +1,9 @@
 <form method="post" action="submitorder" id="payment-form">
+    <?php
+        if($_GET['sbyp'] || $_POST['sbyp'])
+            $sbyp = $_GET['sbyp'] ? $_GET['sbyp'] : $_POST['sbyp'];
+    ?>
+    <input type="hidden" name="sbyp" value="{{ sbyp }}" />
     <span class="payment-errors"></span>
     <div class="row small-vertical-margins">
         <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 col-xs-offset-1 col-md-offset-1">

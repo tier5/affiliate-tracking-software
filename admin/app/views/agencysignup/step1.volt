@@ -1,4 +1,10 @@
 <form action="step2" method="post" id="Step1Form">
+    <?php
+        if($_GET['sbyp'] || $_POST['sbyp'])
+            $sbyp = $_GET['sbyp'] ? $_GET['sbyp'] : $_POST['sbyp'];
+    ?>
+    <input type="hidden" name="sbyp" value="{{ sbyp }}" />
+
     <div class="row">
         <div class="col-xs-12">
             <h2 class="section-header">Congratulations You Have Been Approved! <br /><br />Tell Us About Your Agency</h2>

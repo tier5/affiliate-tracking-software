@@ -37,11 +37,11 @@
          * Validate that custom_domain is unique across agencies
          */
         public function validation() {
-            $this->validate(new Regex([
+            /*$this->validate(new Regex([
                 'field'   => 'name',
                 'pattern' => '/^[a-zA-Z\.0-9 ]+$/',
                 'message' => 'Name is in the wrong format (letters, period, and apostrophe)'
-            ]));
+            ]));*/
 
             $this->validate(new Email([
                 'field'   => 'email',

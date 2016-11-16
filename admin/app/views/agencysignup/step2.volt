@@ -1,4 +1,10 @@
 <form action="step3" method="post" enctype="multipart/form-data" id="Step2Form">
+    <?php
+        if($_GET['sbyp'] || $_POST['sbyp'])
+            $sbyp = $_GET['sbyp'] ? $_GET['sbyp'] : $_POST['sbyp'];
+    ?>
+    <input type="hidden" name="sbyp" value="{{ sbyp }}" />
+
     <div class="row small-vertical-margins">
         <div class="col-xs-12">
             <h2 class="section-header">Customized Agency Landing Page</h2>

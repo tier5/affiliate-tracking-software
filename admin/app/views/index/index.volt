@@ -70,6 +70,7 @@
             }
         } ?>
 
+        {% if SubscriptionPlan != 'FR' %}
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="portlet light bordered">
@@ -101,7 +102,7 @@
                 </div>
             </div>
         </div>
-
+        {% endif %}
 
         <div class="row">
 

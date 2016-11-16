@@ -32,13 +32,10 @@ class SubscriptionManager extends BaseService {
         $subscriptionPlan = $this->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
         $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
 
-
-
         // GARY_TODO:  Somehow all payment_plans are getting started at Monthly.
         if (!$payment_plan || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE || $payment_plan == ServicesConsts::$PAYMENT_PLAN_TRIAL || $subscriptionPlan['pricing_plan']['enable_trial_account']) {
             return false;
         }
-
 
         $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
         $paymentProfile = $paymentService->getPaymentProfile([ 'userId' => $objSuperUser->id, 'provider' => $provider ]);
@@ -48,6 +45,26 @@ class SubscriptionManager extends BaseService {
             return true;
 
         return false;
+    }
+
+    public function GetBusinessSubscriptionLevel($BusinessID) {
+        $subscriptionManager = $this->di->get('subscriptionManager');
+
+        /* Get Super Admin */
+        $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
+        $objSuperUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $objBusiness->agency_id . ' AND role="Super Admin"');
+
+        /* Get the subscription plan */
+        $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objBusiness->subscription_id);
+
+        if($subscriptionPlanData['subscriptionPlan']['payment_plan']) {
+            return $subscriptionPlanData['subscriptionPlan']['payment_plan'];
+        } else {
+            if($subscriptionPlanData === false)
+                return ServicesConsts::$PAYMENT_PLAN_FREE;
+
+            return  ['pricingPlan']['enable_trial_account'] ? ServicesConsts::$PAYMENT_PLAN_TRIAL : ServicesConsts::$PAYMENT_PLAN_PAID;
+        }
     }
 
     public function GetMaxSMS($BusinessID, $LocationID) {
@@ -73,6 +90,13 @@ class SubscriptionManager extends BaseService {
         return $MaxAllowed;
     }
 
+    public function UpdateStripeSubscription($UserID, $Price) {
+        $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$UserID}");
+        echo "<PRE>";
+        print_r($objStripeSubscription);
+        die();
+    }
+
     public function ReachedMaxSMS($BusinessID, $LocationID) {
         $objSuperAdmin = \Vokuro\Models\Users::findFirst("agency_id = {$BusinessID} and role='Super Admin'");
         $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
@@ -80,6 +104,7 @@ class SubscriptionManager extends BaseService {
         $start_time = date("Y-m-d", strtotime("first day of this month"));
         $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
         $sms_sent_this_month = 0;
+        $FreePlan = false;
         if ($LocationID) {
             $CurrentCount = \Vokuro\Models\ReviewInvite::count(
                 array(
@@ -92,8 +117,15 @@ class SubscriptionManager extends BaseService {
         }
 
         if(!$objBusiness->subscription_id) {
-            // This mean plan is "Unpaid"
-            $MaxAllowed = 100;
+            if($this->GetBusinessSubscriptionLevel($objBusiness->agency_id) == ServicesConsts::$PAYMENT_PLAN_FREE) {
+                // Free
+                $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
+                $MaxAllowed = $objSubscriptionPlan->sms_messages_per_location;
+                $FreePlan = true;
+            } else {
+                // EDGE_CASE #1:  This case should ever happen.  If so, we're defaulting to 100
+                $MaxAllowed = 100;
+            }
         }
         else {
             $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
@@ -107,7 +139,7 @@ class SubscriptionManager extends BaseService {
             }
         }
 
-        return $CurrentCount >= $MaxAllowed;
+        return ['FreePlan' => $FreePlan, 'ReachedLimit' => $CurrentCount >= $MaxAllowed];
     }
 
     public function ReachedMaxLocations($BusinessID) {
@@ -115,14 +147,23 @@ class SubscriptionManager extends BaseService {
         $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
         $dbLocations = \Vokuro\Models\Location::find("agency_id = {$BusinessID}");
         $CurrentCount = count($dbLocations);
-        if(!$objBusiness->subscription_id)
-            $MaxAllowed = 1;
+        $FreePlan = false;
+        if(!$objBusiness->subscription_id) {
+            if($this->GetBusinessSubscriptionLevel($objBusiness->agency_id) == ServicesConsts::$PAYMENT_PLAN_FREE) {
+                $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
+                $MaxAllowed = $objSubscriptionPlan->locations;
+                $FreePlan = true;
+            } else {
+                // EDGE_CASE #2:  This case should ever happen.  If so, we're defaulting to 100
+                $MaxAllowed = 1;
+            }
+        }
         else {
             $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
             $MaxAllowed = $objSubscriptionPlan->locations;
         }
 
-        return $CurrentCount >= $MaxAllowed;
+        return ['FreePlan' => $FreePlan, 'ReachedLimit' => $CurrentCount >= $MaxAllowed];
     }
 
     public function getSubscriptionPricingPlans($tUserIDs = []) {
@@ -164,7 +205,7 @@ class SubscriptionManager extends BaseService {
             $userId = $newSubscriptionParameters['userAccountId'];
 
             /* Configure subscription parameters */
-            if ($newSubscriptionParameters['pricingPlanId'] !== 'Unpaid') {
+            if ($newSubscriptionParameters['pricingPlanId']) {
 
                 $subscriptionPricingPlan = SubscriptionPricingPlan::query()
                     ->where("id = :id:")
@@ -183,7 +224,6 @@ class SubscriptionManager extends BaseService {
                 }
 
             } else  {
-
                 $pricingPlanId = 0;
                 $locations = $newSubscriptionParameters['freeLocations'];
                 $smsMessagesPerLocation = $newSubscriptionParameters['freeSmsMessagesPerLocation'];

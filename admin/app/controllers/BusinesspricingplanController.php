@@ -234,7 +234,7 @@ class BusinessPricingPlanController extends ControllerBase {
 
             /* If we are creating a new plan, ensure the name of the pricing profile is unique for this user */
             $pricingPlan = $subscriptionManager->getPricingPlanByName($validatedParams['userId'], $validatedParams['name']);
-            if($pricingPlan && !$isUpdate && $pricingPlan->id !== 55) {
+            if($pricingPlan && !$isUpdate) {
                 throw new \Exception('Another pricing profile with that name already exists! Please choose a unique name and try again.');
             }
 
@@ -343,6 +343,11 @@ class BusinessPricingPlanController extends ControllerBase {
             // $subscriptionManager = $this->di->get('subscriptionManager');
 
             /* Ensure the name of the pricing profile is unique for this user */
+
+            $BusinessCount = \Vokuro\Models\Agency::count("subscription_id = {$pricingPlanId}");
+            if($BusinessCount > 0) {
+                throw new \Exception('Cannot delete a subscription that businesses are subscribed to.');
+            }
 
             /* REFACTOR - Temporary raw sql.  Soft deletes don't appear to be working via Phalcon */
             $sql = "UPDATE subscription_pricing_plan SET name='deleted-". time() ."', deleted_at='" . date('Y-m-h h:m:s') . "' WHERE id=" . $pricingPlanId;

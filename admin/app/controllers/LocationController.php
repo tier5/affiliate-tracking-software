@@ -154,16 +154,14 @@
             $objLocation->external_id = $objGoogleBusiness->id;
             $cid = explode("=", $objGoogleBusiness->url);
             $objLocation->cid = $cid[1];
-            
+            $address = preg_replace(" #[0-9]+","",$objGoogleBusiness->address);
             $objLocation->name .= " " .
-              					  $objGoogleBusiness->address . " " .  
+              					  $address . " " .  
             					  $objGoogleBusiness->postal_code . " " . 
             					  $objGoogleBusiness->locality . " " .
             					  $objGoogleBusiness->state_province . " " .
             					  $objGoogleBusiness->country;
 //print_r($objGoogleBusiness);
-//echo $objLocation->lrd;
-
             $objLocation->url = "https://www.google.com/search?q=".str_replace(" ", "+", $objLocation->name)."&ludocid=".$objLocation->cid."#lrd=".$objLocation->lrd.",3,5";
             $objLocation->save();
 			
@@ -304,7 +302,7 @@
         /**
          * Default index view
          */
-        public function indexAction($DisplayLocationsPopup = null) {
+        public function indexAction($DisplayLocationsPopup = 0) {
             $this->view->DisplayLocationsPopup = $DisplayLocationsPopup;
 
             //get the user id
@@ -373,7 +371,7 @@
         /**
          * Creates a Location
          */
-        public function createAction($DisplayLocationsPopup = false) {
+        public function createAction($DisplayLocationsPopup = 0) {
             $this->assets
                 ->addCss('css/main.css')
                 ->addCss('css/signup.css');
@@ -413,9 +411,11 @@
                 )
             );
 
+
             $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
-            if($objSubscriptionManager->ReachedMaxLocations($userObj->agency_id)) {
-                return $this->response->redirect('/location/index/1');
+            $tLimit = $objSubscriptionManager->ReachedMaxLocations($userObj->agency_id);
+            if($tLimit['ReachedLimit']) {
+                return $tLimit['FreePlan'] ? $this->response->redirect('/location/index/2') : $this->response->redirect('/location/index/1');
             }
 
             $dbLocations = \Vokuro\Models\Location::find('agency_id = ' . $userObj->agency_id);
@@ -477,7 +477,7 @@
                         $this->auth->setLocation($loc->location_id) / me;
                     }
                     $this->flash->success("The location was created successfully");
-                    $this->updateSubscriptionPlan();
+                    $this->updateAgencySubscriptionPlan($loc->location_id, true);
 
 
                     return $this->response->redirect('/location/edit/' . $loc->location_id . '/1');
@@ -493,18 +493,55 @@
 
         }
 
-        protected function updateSubscriptionPlan($businessID = null) {
-            if(!$businessID) return;
-            $Name = "Business Plan {$businessID}";
-            $UniqueID = "business_plan_{$businessID}";
+        /**
+         * @param $LocationID
+         * @param $Creating - Are we creating or deleting a location?  (Boolean)
+         * @return bool
+         */
+        protected function updateAgencySubscriptionPlan($LocationID, $Creating) {
 
-            return \Stripe\Plan::create([
-                'amount'        => $Amount,
-                'interval'      => 'month',
-                'name'          => $Name,
-                'currency'      => 'usd',
-                'id'            => $UniqueID
-            ]);
+            if(!$LocationID)
+                return false;
+
+            $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+            $objLocation = \Vokuro\Models\Location::findFirst("location_id = {$LocationID}");
+
+            // First check this business subscription level.  If trial, we can ignore.  Trial accounts can only have 1 location and they are not paid.
+            $SubscriptionLevel = $objSubscriptionManager->GetBusinessSubscriptionLevel($objLocation->agency_id);
+
+            if($SubscriptionLevel == \Vokuro\Services\ServicesConsts::$PAYMENT_PLAN_TRIAL)
+                return true;
+
+            // Get a list of all businesses under the Agency and count total locations
+            $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objLocation->agency_id}");
+            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+            $dbBusinesses = \Vokuro\Models\Agency::find("parent_id = {$objAgency->agency_id}");
+            $LocationCount = 0;
+            foreach($dbBusinesses as $objBusiness) {
+                if($objSubscriptionManager->GetBusinessSubscriptionLevel($objLocation->agency_id) != \Vokuro\Services\ServicesConsts::$PAYMENT_PLAN_TRIAL) {
+                    $LocationCount += \Vokuro\Models\Location::count("agency_id = {$objBusiness->agency_id}");
+                }
+            }
+
+            // Determine if we need to expand / shrink agency subscription plan
+            $objAgencySuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} and role='Super Admin'");
+            $objAgencySubscription = \Vokuro\Models\AgencySubscriptionPlan::findFirst("agency_id = {$objAgency->id}");
+            $objAgencyPricingPlan = \Vokuro\Models\AgencyPricingPlan::findFirst("id = {$objAgencySubscription->pricing_plan_id}");
+
+
+            $objPaymentService = new \Vokuro\Services\PaymentService();
+            if(($Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses) || (!$Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses)) {
+                $NewPayment = $Creating ? ($LocationCount * $objAgencyPricingPlan->price_per_business * 100) : (($LocationCount-1) * $objAgencyPricingPlan->price_per_business * 100);
+                $ccParameters = [
+                    'userId' => $objAgencySuperUser->id,
+                    'type' => 'Agency',
+                    'amount' => $NewPayment,
+                    'provider' => \Vokuro\Services\ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
+                ];
+                $objPaymentService->changeSubscription($ccParameters);
+            }
+
+            return true;
         }
 
 
@@ -798,18 +835,13 @@
             $this->view->location = $loc;
             $this->view->facebook_access_token = $this->facebook_access_token;
 
-            //look for a yelp review configuration
-            //$conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
-            //$parameters = array("location_id" => $loc->location_id);
+            //look for a yelp review configuration;
             $this->view->yelp = $this->GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_YELP);
             //$this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             $this->view->YelpConnected = isset($this->view->yelp->external_location_id) && $this->view->yelp->external_location_id && $this->view->yelp->external_location_id != '';
 
 
             //look for a facebook review configuration
-            //$conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
-            //$parameters = array("location_id" => $loc->location_id);
-            //$this->view->facebook = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
             $this->view->facebook = $this->GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_FACEBOOK);
             $this->view->FacebookConnected = $this->view->facebook->access_token ? true : false;
 
@@ -856,10 +888,8 @@
                 $conditions = "id = :id:";
                 $parameters = array("id" => $identity['id']);
                 $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-                //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
 
                 //if the agency id numbers do not match, log them out
-//echo '<pre>$agency_id_to_check:'.$agency_id_to_check.':$userObj->agency_id:'.$userObj->agency_id.'</pre>';
                 if ($agency_id_to_check != $userObj->agency_id) {
                     $userObj->suspended = 'Y';
                     $userObj->save();
@@ -873,11 +903,17 @@
             $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $loc->location_id);
             $lrs = LocationReviewSite::find(array($conditions, "bind" => $parameters));
+            $this->updateAgencySubscriptionPlan($loc->location_id, false);
             $lrs->delete();
 
             if (!$loc->delete()) {
                 $this->flash->error($loc->getMessages());
             } else {
+                $objFirstLocation = \Vokuro\Models\Location::findFirst("agency_id = {$agency_id_to_check}");
+                if($objFirstLocation)
+                    $this->auth->setLocation($objFirstLocation->location_id);
+                else
+                    $this->auth->setLocation('');
                 $this->auth->setLocationList();
                 $this->flash->success("The location was deleted");
             }
@@ -1074,8 +1110,6 @@
                     ));
 
                     if (!$invite->save()) {
-                        //$this->flash->error($invite->getMessages());
-                        //throw new Exception($invite->getMessages(), 123);
                         $this->view->disable();
                         echo $invite->getMessages();
                         return;
@@ -1083,12 +1117,10 @@
                         //The message is saved, so send the SMS message now
                         if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
                             $this->flash->success("The SMS was sent successfully");
-                            //Tag::resetInput();
                         }
                     }
                 }
             }
-            //$this->getTotalSMSSent($agency);
             $this->view->disable();
             return;
         }
@@ -1142,9 +1174,6 @@
                     $accessTokenLong = $this->fb->getOAuth2Client()->getLongLivedAccessToken($accessToken);
 
                     $accessToken = $accessTokenLong->getValue();
-                    //save the access token in the database
-
-                    //look for a facebook review configuration
                     $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
                     $LocationID = $this->session->get('auth-identity')['location_id'];
                     $parameters = array("location_id" => $LocationID);
@@ -1159,17 +1188,6 @@
                     $this->flash->success("The Facebook code was saved");
 
                     $this->response->redirect("/location/getFacebookPages/{$LocationID}/{$RedirectToSession}");
-
-                    //look for a facebook review configuration
-                    /*$conditions = "location_id = :location_id:";
-                    $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-                    $location = Location::findFirst(array($conditions, "bind" => $parameters));*/
-
-                    //$foundagency = array();
-                    //$objReviewService = new \Vokuro\Services\Reviews();
-                    //$objReviewService->importFacebook($Obj, $location, $foundagency);
-
-                    //$this->response->redirect('/settings/location/');
                 } catch (\Services\Facebook\Exceptions\FacebookSDKException $e) {
                     $this->flash->error($e->getMessage());
                 }
@@ -1178,253 +1196,20 @@
                 $helper = $this->fb->getRedirectLoginHelper();
 
                 $url = $helper->getLoginUrl($this->getRedirectUrl($LocationID, $RedirectToSession), array('manage_pages'));// . '&auth_type=reauthenticate';
-                //echo '<p>' . $url . '</p>';
 
                 $this->response->redirect($url);
                 $this->view->disable();
                 return;
             }
-
-
-            //exit;
         }
 
         protected function getRedirectUrl($LocationID, $RedirectToSession=0) {
             return 'http://' . $_SERVER['HTTP_HOST'] . "/location/getAccessToken/{$LocationID}/{$RedirectToSession}";
         }
 
-
-        /**
-         * This function runs every night to add new reviews to the database for every location
-         */
-        public function cronAction() {
-            echo '<div style="background-color: White;">';
-
-            $foundagency = array();
-
-            //now loop through every location in the database
-            $allLocations = Location::find();
-
-            $conditions = "location_id = :location_id:";
-            // TODO:  Remove location restriction.  Doing this for testing purposes (it was checked in with a limitation too, so remove entirely).
-            $parameters = array("location_id" => 61);
-            $allLocations = Location::find(array($conditions, "bind" => $parameters));
-
-            foreach ($allLocations as $location) {
-                $rev_monthly = new ReviewsMonthly();
-                $rev_monthly->location_id = $location->location_id;
-
-                echo '<p><b>Location: ' . $location->name . '</b></p>';
-
-                //look for a yelp review configuration
-                $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
-                $parameters = array("location_id" => $location->location_id);
-                $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-
-                // start with Yelp reviews, if configured
-                if (isset($Obj) && isset($Obj->api_id) && $Obj->api_id) {
-                    // import reviews
-                    $Obj = $this->importYelp($Obj, $location, $foundagency);
-
-                    $rev_monthly->yelp_rating = $Obj->rating;
-                    $rev_monthly->yelp_review_count = $Obj->review_count - $Obj->original_review_count;
-                } else {
-                    echo '<p>Yelp api_id NOT CONFIGURED!</p>';
-                }
-
-                //look for a facebook review configuration
-                $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
-                $parameters = array("location_id" => $location->location_id);
-                $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-
-                //Next lets import the Facebook reviews, if configured
-                if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
-                    $this->importFacebook($Obj, $location, $foundagency);
-
-                    $rev_monthly->facebook_rating = $Obj->rating;
-                    $rev_monthly->facebook_review_count = $Obj->review_count - $Obj->original_review_count;
-                } else {
-                    echo '<p>facebook page_id NOT CONFIGURED!</p>';
-                }
-
-                //find if we should insert or update our monthly review record
-
-                $conditions = "location_id = :location_id: AND month = " . date('m') . " AND year = " . date('Y');
-                $parameters = array("location_id" => $location->location_id);
-                $rm = ReviewsMonthly::findFirst(array($conditions, "bind" => $parameters));
-                //if we found a match, save the id
-                if (isset($rm->reviews_monthly_id) && $rm->reviews_monthly_id > 0) $rev_monthly->reviews_monthly_id = $rm->reviews_monthly_id;
-                //save our monthly data now
-                $rev_monthly->month = date('m');
-                $rev_monthly->year = date('Y');
-                $rev_monthly->save();
-
-                //loop through our found array and send notifications
-                //echo '<pre>$foundagency:'.print_r($foundagency,true).'</pre>';
-                $keys = array_keys($foundagency);
-                foreach ($keys as $key) {
-                    $agencyobj = new Agency();
-                    $agency = $agencyobj::findFirst($key);
-                    //send the notification about the new review
-                    $message = 'Notification: a new review has been posted for ' . $foundagency[$key] . ': http://' . (isset($agency->custom_domain) && $agency->custom_domain != '' ? $agency->custom_domain . '.' : '') . 'reviewvelocity.co/reviews/';
-                    //echo $message;
-                    parent::sendFeedback($agency, $message, $location->location_id, 'Notification: New Review', false);
-                }
-                $foundagency = array();
-
-            }  // go to the next location
-
-
-            //Check if there are any invites that need to be resent
-            $invitelist = ReviewInvite::getInvitesPending();
-            //loop through each invite and resend
-            foreach ($invitelist as $invite) {
-                $invite->date_last_sent = date('Y-m-d H:i:s');
-                $invite->times_sent = $invite->times_sent + 1;
-                $invite->save();
-
-                //find the location
-                $conditions = "location_id = :location_id:";
-                $parameters = array("location_id" => $invite->location_id);
-                $location = Location::findFirst(array($conditions, "bind" => $parameters));
-
-                //find the agency
-                $conditions = "agency_id = :agency_id:";
-                $parameters = array("agency_id" => $location->agency_id);
-                $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
-                $this->SendSMS($this->formatTwilioPhone($invite->phone), $invite->sms_message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone);
-            }
-            //END checking for invites that need to be sent
-
-
-            //START: checking if subscriptions are valid
-            echo '<p></p><p><b>START: checking if subscriptions are valid</b></p>';
-            define("AUTHORIZENET_LOG_FILE", "phplog");
-            date_default_timezone_set('America/Los_Angeles');
-            // Common Set Up for API Credentials
-            $merchantAuthentication = new AnetAPI\MerchantAuthenticationType();
-            $merchantAuthentication->setName("8BB6rbA9e");
-            $merchantAuthentication->setTransactionKey("66svuY48XbuZ76Sc");
-
-            //Find all subscrions that need to be checked
-            $conditions = "cancel_code IS NULL";
-            $parameters = array();
-            $subs = UsersSubscription::find(array($conditions, "bind" => $parameters));
-
-            //loop through the subscriptions
-            foreach ($subs as $sub) {
-                echo '<p><b>$sub->user_id:' . $sub->user_id . '</b></p>';
-
-                //lets check to see if this user has three referrers yet
-                $conditions = "agency_id = :agency_id:";
-                $parameters = array("agency_id" => $location->agency_id);
-                $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
-                //find the user object to update
-                $user = Users::findFirstById($sub->user_id);
-                if ($user) {
-                    //ask authorize.net if the subscription is valid
-                    $request = new AnetAPI\ARBGetSubscriptionStatusRequest();
-                    $request->setMerchantAuthentication($merchantAuthentication);
-                    $refId = 'ref' . time();
-                    $request->setRefId($refId);
-                    $request->setSubscriptionId($sub->auth_subscription_id);
-                    echo '<p><b>auth_subscription_id:' . $sub->auth_subscription_id . '</b></p>';
-
-                    $controller = new AnetController\ARBGetSubscriptionStatusController($request);
-
-                    $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
-
-                    if (isset($response) && ($response != null) && ($response->getMessages()->getResultCode() == "Ok")) {
-                        echo "<p>SUCCESS: Subscription Status : " . $response->getStatus() . "</p>";
-                        if ($response->getStatus() == 'active') {
-                            $agency->subscription_valid = 'Y';
-                        } else {
-                            $agency->subscription_valid = 'N';
-                        }
-                    } else {
-                        echo "<p>ERROR :  Invalid response</p>";
-                        echo "<p>Response : " . $response->getMessages()->getMessage()[0]->getCode() . "  " . $response->getMessages()->getMessage()[0]->getText() . "</p>";
-                        $agency->subscription_valid = 'N';
-                    }
-                    echo '<p><b>$agency->agency_id: ' . $agency->agency_id . '</b></p>';
-                    $agency->save();
-                } //end checking the user
-
-            } // go to the next subscription
-            echo '<p><b>END: checking if subscriptions are valid</b></p>';
-            //END: checking if subscriptions are valid
-
-
-            //START: checking if STRIPE subscriptions are valid
-            echo '<p></p><p><b>START: checking if STRIPE subscriptions are valid</b></p>';
-
-            //Find all subscrions that need to be checked
-            $conditions = "stripe_subscription_id IS NOT NULL";
-            $parameters = array();
-            $agencies = Agency::find(array($conditions, "bind" => $parameters));
-
-            //loop through the subscriptions
-            foreach ($agencies as $agency) {
-                echo '<p><b>$agency->stripe_subscription_id:' . $agency->stripe_subscription_id . '</b></p>';
-
-                //lets find the parent agency
-                $conditions = "agency_id = :agency_id:";
-                $parameters = array("agency_id" => $agency->parent_agency_id);
-                $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
-                \Stripe\Stripe::setApiKey($parent_agency->stripe_account_secret);
-
-                //check subscription
-                $isvalid = false;
-                try {
-                    $customer = \Stripe\Customer::retrieve($agency->stripe_customer_id);
-                    $subscription = $customer->subscriptions->retrieve($agency->stripe_subscription_id);
-
-                    if ($subscription->status == 'active') $isvalid = true;
-                } catch (Stripe_CardError $e) {
-                    echo '<p>Stripe_CardError: ' . $e->getMessage() . '</p>';
-                } catch (Stripe_InvalidRequestError $e) {
-                    // Invalid parameters were supplied to Stripe's API
-                    echo '<p>Stripe_InvalidRequestError: ' . $e->getMessage() . '</p>';
-                } catch (Stripe_AuthenticationError $e) {
-                    // Authentication with Stripe's API failed
-                    // (maybe you changed API keys recently)
-                    echo '<p>Stripe_AuthenticationError: ' . $e->getMessage() . '</p>';
-                } catch (Stripe_ApiConnectionError $e) {
-                    // Network communication with Stripe failed
-                    echo '<p>Stripe_ApiConnectionError: ' . $e->getMessage() . '</p>';
-                } catch (Stripe_Error $e) {
-                    // Display a very generic error to the user, and maybe send
-                    // yourself an email
-                    echo '<p>Stripe_Error: ' . $e->getMessage() . '</p>';
-                } catch (Exception $e) {
-                    // Something else happened, completely unrelated to Stripe
-                    echo '<p>Exception: ' . $e->getMessage() . '</p>';
-                } catch (\Stripe\Error\Base $e) {
-                    // Code to do something with the $e exception object when an error occurs
-                    echo '<p>\Stripe\Error\Base: ' . $e->getMessage() . '</p>';
-                }
-
-
-                echo '<pre>$isvalid:' . ($isvalid ? 'true' : 'false') . '</pre>';
-                $agency->subscription_valid = ($isvalid ? 'Y' : 'N');
-                $agency->save();
-//echo '<pre>$subscription:'.print_r($subscription,true).'</pre>';
-
-            } // go to the next subscription
-            echo '<p><b>END: checking if subscriptions are valid</b></p>';
-            //END: checking if STRIPE subscriptions are valid
-
-            echo '</div>';
-        } // end cronAction
-
-
         /**
          * Begin google my business implementation
          */
-
         public function googleReviewsAction($LocationID) {
             $objReviewsService = new \Vokuro\Services\Reviews();
             $objReviewsService->importGoogleMyBusinessReviews($LocationID);
@@ -1451,20 +1236,7 @@
         	
         	return $objLocationReviewSite;
         }
-        /**
-         * @return \Phalcon\Http\Response|\Phalcon\Http\ResponseInterface|void
-         *:\Apache24\htdocs\reviewvelocity\reviewvelocity\admin\app\cache\volt\c__apache24_htdocs_reviewvelocity_reviewvelocity_admin_app_views_location_edit.volt.php o
-         * List of categories in csv format (Yext)
-         * Look for businesses that are in Financial Advisor category, financial planners, financial services, financial planning including agency if they are under one.
-         * In agency 1468, myreputation protected account CSV raw data of the entire account (emails, templates, contact records).
-         * In agency 153, 9 that are financial planner that are disabled, all data for those too.
-         *
 
-
-         1059511 - Financial Planners
-         378 - Financial Services
-         2119 - Financial planning
-         */
         public function googlemybusinessAction() {
             /*$identity = $this->auth->getIdentity();
             $LocationID = $identity['location_id'];*/
