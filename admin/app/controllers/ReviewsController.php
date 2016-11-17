@@ -10,6 +10,7 @@
     use Vokuro\Models\SMSBroadcast;
     use Vokuro\Models\Users;
 
+
     /**
      * Display the default index page.
      */
@@ -77,6 +78,7 @@
                 if (isset($Obj)) {
                     $facebook_review_count = $Obj->review_count;
                     $facebook_rating = $Obj->rating;
+                     $this->view->facebook_page_id =$Obj->external_id;
                 } else {
                     $this->view->facebook_page_id = '';
                 }
@@ -153,8 +155,9 @@
                         "order" => "time_created DESC"
                     )
                 );
+               // echo '<pre>';print_r($review_report);exit;
                 $this->view->review_report = $review_report;
-
+                
                 //get a list of all review invites for this location
                 $invitelist = ReviewInvite::getReviewInvitesByLocation($this->session->get('auth-identity')['location_id']);
                 $this->view->invitelist = $invitelist;
@@ -378,6 +381,12 @@
 
             $this->view->disable();
             echo 'true';
+        }
+
+
+        public function hello()
+        {
+            echo $v='hi';
         }
 
 
