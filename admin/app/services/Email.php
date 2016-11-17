@@ -57,7 +57,7 @@ class Email{
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach";
-            $EmailFrom = "zacha@reputationloop.com";
+            $EmailFrom = "zacha@reviewvelocity.co";
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
@@ -98,7 +98,7 @@ class Email{
             $FacebookURL = $objFacebookReviewSite->external_location_id ? "http://www.facebook.com/{$objFacebookReviewSite->external_location_id}" : '';
             $mail = $this->getDI()->getMail();
             if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
-                $mail->setFrom('zacha@reputationloop.com');
+                $mail->setFrom('zacha@reviewvelocity.co');
                 $FullDomain = "reviewvelocity.co";
             }
             else {

@@ -43,7 +43,7 @@ class AdmindashboardController extends ControllerBusinessBase {
      * Default action. Set the public layout (layouts/private.volt)
      */
     public function indexAction() {
-echo 'kk';exit;
+/*echo 'kk';exit;*/
         $this->tag->setTitle('Review Velocity | Dashboard');
 
 
