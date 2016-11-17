@@ -368,7 +368,7 @@
                               <div class="content">
                               <span id="less_<?php echo $data->review_id?>">
                                 <?php
-                                echo $data->review_id;
+                               
                       $text = $data->review_text;
                                 $text = $text." ";
                                 $text = substr($text,0,90);
