@@ -1,3 +1,17 @@
+<style>
+.portlet.light {
+    padding: 12px 0 15px;
+}
+
+#locationlist .table_user tr td{
+  padding-left: 5px !important;
+}
+
+#locationlist .table_user tr td a{
+  display:inline-block;
+  padding: 5px;
+}
+</style>
 <div id="reviews">
 
   <div class="row">
@@ -84,7 +98,7 @@ if ($users_report) {
           <!-- Start .panel -->
           <div class="panel-default toggle panelMove panelClose panelRefresh" id="employeeleaderboard">
             <div class="customdatatable-wrapper" style="margin-top: 20px;">
-              <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
+              <table class="customdatatable table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
                 <thead>
                 <tr>
                 <th>Rank</th>
@@ -172,7 +186,7 @@ foreach($users_report as $user) {
           <!-- Start .panel -->
           <div class="panel-default toggle panelMove panelClose panelRefresh" id="locationlist">
             <div class="customdatatable-wrapper">
-              <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
+              <table class="customdatatable table table-striped table-bordered table-responsive table_user" cellspacing="0" width="100%">
                 <thead>
                 <tr>
                   <th>Rank</th>
@@ -184,6 +198,8 @@ foreach($users_report as $user) {
                   <th>Role</th>
                   <th>Employee?</th>
                   <th>Locations</th>
+                  <th>Link</th>
+                  <th>Action</th>
                   <?php
      				 } else {
         		  ?>
@@ -217,6 +233,7 @@ foreach($users_report as $user) {
                     <div><?=$location->name?></div>
                     <?php }  ?>
                   </td>
+                  <td><a href="/users/link/<?=base64_encode($user->id)?>"  class="btnLink btnSecondary">Link</td>
                   <?php
 				    } else {
 				  ?>
@@ -229,8 +246,8 @@ foreach($users_report as $user) {
 				    }
 				  ?>
                   {% if profilesId == 1 OR profilesId == 2 %}
-                  <td><a href="/users/adminedit/<?=$user->id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.png" /></a></td>
-                  <td><a href="/users/delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink btnSecondary"><img src="/img/icon-delete.png" /></a></td>
+                  <td><a href="/users/adminedit/<?=$user->id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.png" /></a>
+                  <a href="/users/delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink btnSecondary"><img src="/img/icon-delete.png" /></a></td>
                 {% endif %}
                 </tr>
                 <?php

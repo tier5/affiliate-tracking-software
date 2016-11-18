@@ -384,10 +384,7 @@
         }
 
 
-        public function hello()
-        {
-            echo $v='hi';
-        }
+        
 
 
     }

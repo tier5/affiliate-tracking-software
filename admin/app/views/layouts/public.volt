@@ -22,6 +22,7 @@
 
   <link rel="stylesheet" href="/css/font-awesome.min.css" />
   <link rel="stylesheet" href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
+         
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>

@@ -134,6 +134,8 @@
             return $objBusiness;
         }
 
+        
+
         public function getYelpBusinessData($LocationID, $BusinessID) {
             $Yelp = new \Vokuro\Models\YelpScanning();
             $Yelp->construct();

@@ -1042,7 +1042,84 @@
             }
         }
 
+             public function send_review_invite_employeeAction() {
 
+                    $identity = $this->auth->getIdentity();
+            // If there is no identity available the user is redirected to index/index
+            if (!is_array($identity)) {
+                $this->response->redirect('/session/login?return=/');
+                $this->view->disable();
+                return;
+            }
+                /*** get post value ***/
+
+                if ($this->request->isPost()) {
+
+                    //echo 'SMS starts';exit;
+                //the user wants to send an SMS, so first save it in the database
+                if (!$_POST['phone'] || $_POST['phone'] == '') {
+                    //$this->flash->error('Please enter a Phone number.');
+                    //throw new Exception('Please enter a Phone number.', 123);
+                    $this->view->disable();
+                    echo 'Please enter a Phone number.';
+                    return;
+                } else {
+                        if($_POST['location_id']=='')
+                        {
+                        $location_name=$this->session->get('auth-identity')['location_name'];
+                        $location_id=$this->session->get('auth-identity')['location_id'];
+                        }
+                        else
+                        {
+                             $location_name=$_POST['location_name'];
+                             $location_id=$_POST['location_id'];
+                        }
+                    
+                    //else we have a phone number, so send the message
+                    $name = $_POST['name'];
+                    $message = $_POST['SMS_message'].'- Reply stop to be removed';
+                    //replace out the variables
+                    $message = str_replace("{location-name}", $location_name, $message);
+                    $message = str_replace("{name}", $name, $message);
+                    $guid = $this->GUID();
+                   $message = str_replace("{link}", $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid), $message);
+
+                  // exit;
+
+                    $phone = $_POST['phone'];
+
+                    //save the message to the database before sending the message
+                    $invite = new ReviewInvite();
+                    $invite->assign(array(
+                        'name' => $name,
+                        'location_id' => $location_id,
+                        'phone' => $phone,
+                        //TODO: Added google URL shortener here
+                        'api_key' => $guid,
+                        'sms_message' => $message.'- Reply stop to be removed',
+                        'date_sent' => date('Y-m-d H:i:s'),
+                        'date_last_sent' => date('Y-m-d H:i:s'),
+                        'sent_by_user_id' => $identity['id']
+                    ));
+
+                    if (!$invite->save()) {
+                        $this->view->disable();
+                        echo $invite->getMessages();
+                        return;
+                    } else {
+                        //The message is saved, so send the SMS message now
+
+                        //echo $this->twilio_api_key;exit;
+                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
+                            $this->flash->success("The SMS was sent successfully");
+                        }
+                    }
+                }
+            }
+
+                /*** get post value ***/
+
+             }
         /**
          * Sends a review invite to the selected location
          */

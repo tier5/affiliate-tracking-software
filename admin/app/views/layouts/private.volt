@@ -9,6 +9,11 @@
 <!-- BEGIN HEAD -->
 
 <head>
+ <?php
+             if (strpos($_SERVER['REQUEST_URI'],'users/link')>0) {?>
+ <link href="/css/style_review.css" rel="stylesheet" />
+
+            <?php }?>
     <!-- Begin primary / secondary color css.  Should probably move -->
     <style type="text/css">
         .page-sidebar .page-sidebar-menu > li.active > a {
@@ -599,8 +604,10 @@
                     </div>
                 </div>
             </div>
-
+<?php
+             if (strpos($_SERVER['REQUEST_URI'],'users/link')==0) {?>
             <script src="https://checkout.stripe.com/checkout.js"></script>
+            <?php }?>
 
             <script type="text/javascript">
                 jQuery(document).ready(function ($) {

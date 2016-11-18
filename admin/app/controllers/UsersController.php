@@ -271,6 +271,52 @@
             return;
         }
 
+
+         public function linkAction($uid)
+            {
+                $id=base64_decode($uid);
+            
+            $conditions_user = "id = :id:";
+            $parameters_user = array("id" => $id);
+            $userinfo = Users::findFirst(array($conditions_user, "bind" => $parameters_user));
+                if(empty($userinfo))
+                {
+                    echo 'sorry this page does not exists';
+                    exit;
+                }
+            $conditions = "user_id = :user_id:";
+            $parameters = array("user_id" => $id);
+            $userObj = UsersLocation::find(array($conditions, "bind" => $parameters));
+           /*if($userObj->location_id!='')
+           {
+            $conditions1 = "location_id = :location_id:";
+            $parameters1 = array("location_id" => $userObj->location_id);
+            $userObj1 = Location::findFirst(array($conditions1, "bind" => $parameters1));
+
+            echo $userObj1->name;exit;
+           }
+            */
+           $make_location_array=array();
+
+           if(!empty($userObj))
+           {
+                foreach($userObj as $obj)
+                {
+                $conditions1 = "location_id = :location_id:";
+                $parameters1 = array("location_id" => $obj->location_id);
+                $userObj1 = Location::findFirst(array($conditions1, "bind" => $parameters1)); 
+                    $make_location_array[$obj->location_id]=$userObj1->name;
+                }
+                //print_r($make_location_array);exit;
+           }
+
+                 $this->view->userlocations = $make_location_array;
+              $this->view->render('users', 'sendreviewlink');
+               $this->view->disable();
+               return;  
+            }
+
+
         /**
          * Saves the user from the 'edit' action
          */
