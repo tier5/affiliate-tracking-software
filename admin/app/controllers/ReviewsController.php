@@ -221,7 +221,7 @@
                     $loc = Location::findFirst(array($conditions, "bind" => $parameters));
 
                     //else we have a phone number, so send the message
-                    $message = $_POST['SMS_message'].'- Reply stop to be removed';
+                    $message = $_POST['SMS_message'].'  Reply stop to be removed';
                     //replace out the variables
                     $message = str_replace("{location-name}", $loc->name, $message);
                     $message = str_replace("{name}", $_POST['name'], $message);
@@ -238,7 +238,7 @@
                         $smsb = new SMSBroadcast();
                         $smsb->assign(array(
                             'api_key' => $this->GUID(),
-                            'sms_message' => $_POST['SMS_message'].'- Reply stop to be removed',
+                            'sms_message' => $_POST['SMS_message'].'   Reply stop to be removed',
                             'date_sent' => date('Y-m-d H:i:s'),
                             'link' => $_POST['link'],
                             'sent_by_user_id' => $identity['id'],
@@ -260,7 +260,7 @@
                             $loc = Location::findFirst(array($conditions, "bind" => $parameters));
 
                             //else we have a phone number, so send the message
-                            $message = $_POST['SMS_message'].'- Reply stop to be removed';
+                            $message = $_POST['SMS_message'].'  Reply stop to be removed';
                             //replace out the variables
                             $message = str_replace("{location-name}", $loc->name, $message);
                             $message = str_replace("{name}", $invite->name, $message);

@@ -274,6 +274,7 @@
 
          public function linkAction($uid)
             {
+                
                 $id=base64_decode($uid);
             
             $conditions_user = "id = :id:";
@@ -307,6 +308,7 @@
                 $userObj1 = Location::findFirst(array($conditions1, "bind" => $parameters1)); 
                     $make_location_array[$obj->location_id]=$userObj1->name;
                 }
+
                 //print_r($make_location_array);exit;
            }
 

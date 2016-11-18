@@ -1077,7 +1077,7 @@
                     
                     //else we have a phone number, so send the message
                     $name = $_POST['name'];
-                    $message = $_POST['SMS_message'].'- Reply stop to be removed';
+                    $message = $_POST['SMS_message'].'  Reply stop to be removed';
                     //replace out the variables
                     $message = str_replace("{location-name}", $location_name, $message);
                     $message = str_replace("{name}", $name, $message);
@@ -1096,7 +1096,7 @@
                         'phone' => $phone,
                         //TODO: Added google URL shortener here
                         'api_key' => $guid,
-                        'sms_message' => $message.'- Reply stop to be removed',
+                        'sms_message' => $message.'  Reply stop to be removed',
                         'date_sent' => date('Y-m-d H:i:s'),
                         'date_last_sent' => date('Y-m-d H:i:s'),
                         'sent_by_user_id' => $identity['id']
@@ -1108,7 +1108,7 @@
                         return;
                     } else {
                         //The message is saved, so send the SMS message now
-                        echo $message;exit;
+                        //echo $message;exit;
                         //echo $this->twilio_api_key;exit;
                         if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
                             $this->flash->success("The SMS was sent successfully");
@@ -1163,7 +1163,7 @@
                 } else {
                     //else we have a phone number, so send the message
                     $name = $_POST['name'];
-                    $message = $_POST['SMS_message'].'- Reply stop to be removed';
+                    $message = $_POST['SMS_message'].'  Reply stop to be removed';
                     //replace out the variables
                     $message = str_replace("{location-name}", $this->session->get('auth-identity')['location_name'], $message);
                     $message = str_replace("{name}", $name, $message);
@@ -1180,7 +1180,7 @@
                         'phone' => $phone,
                         //TODO: Added google URL shortener here
                         'api_key' => $guid,
-                        'sms_message' => $message.'- Reply stop to be removed',
+                        'sms_message' => $message.'  Reply stop to be removed',
                         'date_sent' => date('Y-m-d H:i:s'),
                         'date_last_sent' => date('Y-m-d H:i:s'),
                         'sent_by_user_id' => $identity['id']

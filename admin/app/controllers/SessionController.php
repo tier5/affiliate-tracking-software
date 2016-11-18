@@ -1125,7 +1125,7 @@ class SessionController extends ControllerBase {
     public function sendsmsAction() {
         $results = 'There was a problem sending the message.';
 
-        $message = $_GET['body'].'- Reply stop to be removed';
+        $message = $_GET['body'].'  Reply stop to be removed';
         $original_message = $message;
         $name = $_GET['name'];
         $cell_phone = $_GET['cell_phone'];

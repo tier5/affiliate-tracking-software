@@ -16,15 +16,17 @@
       <div class="col-md-6">
         <div class="form">
         <form action="/location/send_review_invite_employee" role="form" method="post" autocomplete="off" id="link_review">
+          
+          <?php if(!empty($userlocations) && count($userlocations)>1){ ?>
           <div class="form-group">
             <div class="select">
               <select class="form-control" name="location_id" id="location_id">
                <option value="">Select</option>
-               <?php if(!empty($userlocations)):
+               
 
-               foreach($userlocations as $key=>$name):
-                echo '<option value='.$key.' data-title="'.$name.'">'.$name.'</option>';
-               endforeach; endif;?>
+              <?php foreach($userlocations as $key=>$name):?>
+             <option value="<?php echo $key;?>"><?php echo $name;?></option>
+              <?php endforeach; ?>
               </select>
               <input type="hidden" name="location_name" id="location_name" value="">
             </div>
@@ -33,7 +35,15 @@
             </div>
           </div>
 
-          
+          <?php } else if(!empty($userlocations) && count($userlocations)==1) {  foreach($userlocations as $key=>$name): echo $name; ?>
+
+             <input type="hidden" name="location_name" id="location_name" value="<?php echo $name;?>">
+             <input type="hidden" name="location_id" id="location_id" value="<?php echo $key;?>">
+          <?php endforeach;} else { ?>
+
+              <input type="hidden" name="location_name" id="location_name" value="">
+             <input type="hidden" name="location_id" id="location_id" value="">
+        <?php }?>
           <div class="form-group">
             <input type="text" class="form-control required" placeholder="Name" name="name" id="smsrequestformname" title="Name is required.">
             <div class="left-icon">
