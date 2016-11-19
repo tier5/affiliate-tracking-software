@@ -1202,7 +1202,7 @@
                         $t_api='AC68cd1cc8fe2ad03d2aa4d388b270577d';
                             $t_auth_tkn='MGa8510e68cd75433880ba6ea48c0bd81e';
                             $t_sid='AC68cd1cc8fe2ad03d2aa4d388b270577d';
-                            $t_frm='+18582120211';
+                            $t_frm='18582120211';
                         if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $t_api, $t_auth_tkn, $t_sid, $t_frm)) {
                             $this->flash->success("The SMS was sent successfully");
                     }
