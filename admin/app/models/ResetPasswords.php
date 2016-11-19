@@ -47,6 +47,7 @@
          */
         public function afterCreate()
         {
+            
             $this->getDI()
                 ->getMail()
                 ->send($this->user->email, "Reset your password", 'reset', array(

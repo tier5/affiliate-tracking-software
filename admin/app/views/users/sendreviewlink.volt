@@ -44,8 +44,8 @@
           <?php } else if(!empty($userlocations) && count($userlocations)==1) {  ?>
 
             <div class="form-group">
-            <div class="select">
-              <select class="form-control" name="location_id" id="location_id">
+            
+             <!--  <select class="form-control" name="location_id" id="location_id">
                
                
 
@@ -53,13 +53,22 @@
              <option value="<?php echo $key;?>" selected><?php echo $name;?></option>
             <input type="hidden" name="location_name" id="location_name" value="<?php echo $name;?>">
               <?php endforeach; ?>
-              </select>
-             
-            </div>
+              </select> -->
+               <?php foreach($userlocations as $key=>$name):?>
+               <input type="text" class="form-control" value="<?php echo $name;?>" readonly id="select_list" style="">
+
+                <input type="hidden" name="location_name" id="location_name" value="<?php echo $name;?>">
+           <input type="hidden" name="location_id" id="location_id" value="<?php echo $key;?>">
+               <?php endforeach; ?>
+          
             <div class="left-icon">
               <img src="/img/location.jpg" class="img-responsive">
             </div>
           </div>
+        <?php } else { ?>
+
+           <input type="hidden" name="location_name" id="location_name" value="">
+           <input type="hidden" name="location_id" id="location_id" value="">
         <?php }?>
           <div class="form-group">
             <input type="text" class="form-control required" placeholder="Name" name="name" id="smsrequestformname" title="Name is required.">
@@ -145,8 +154,8 @@
           <?php } else if(!empty($userlocations) && count($userlocations)==1) {  ?>
 
             <div class="form-group">
-            <div class="select">
-              <select class="form-control" name="location_id" id="location_id">
+            
+            <!--   <select class="form-control" name="location_id" id="location_id">
                
                
 
@@ -154,13 +163,23 @@
              <option value="<?php echo $key;?>" selected><?php echo $name;?></option>
             <input type="hidden" name="location_name" id="location_name" value="<?php echo $name;?>">
               <?php endforeach; ?>
-              </select>
+              </select> -->
              
-            </div>
+            <?php foreach($userlocations as $key=>$name):?>
+               <input type="text" class="form-control" value="<?php echo $name;?>" readonly id="select_list" style="">
+
+                <input type="hidden" name="location_name" id="location_name" value="<?php echo $name;?>">
+           <input type="hidden" name="location_id" id="location_id" value="<?php echo $key;?>">
+               <?php endforeach; ?>
+
+
             <div class="left-icon">
               <img src="/img/location.jpg" class="img-responsive">
             </div>
           </div>
+        <?php } else {?>
+           <input type="hidden" name="location_name" id="location_name" value="">
+           <input type="hidden" name="location_id" id="location_id" value="">
         <?php }?>
           <div class="form-group">
             <input type="text" class="form-control required" placeholder="Name" name="name" id="smsrequestformname" title="Name is required.">
@@ -218,6 +237,10 @@
             });
 
             $('#link_review').validate();
+
+            $('input[readonly]').focus(function(){
+    this.blur();
+});
     });
 
     </script>

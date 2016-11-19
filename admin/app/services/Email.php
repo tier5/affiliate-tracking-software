@@ -137,7 +137,7 @@ class Email{
     public function sendResetPasswordEmailToUser(Users $user){
         $this->getDI()
             ->getMail()
-            ->send($user->email, "Reset your password", 'reset', array(
+            ->send($user->email, "Your password reset request", 'reset', array(
                 'resetUrl' => '/reset-password/' . $this->code . '/' . $user->email
             ));
     }

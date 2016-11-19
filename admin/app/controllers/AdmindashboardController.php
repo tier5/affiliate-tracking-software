@@ -390,6 +390,8 @@ class AdmindashboardController extends ControllerBusinessBase {
     public function forgotPasswordAction($agency_type_id, $agency_id, $user_id) {
         $resetPassword = new ResetPasswords();
         $resetPassword->usersId = $user_id;
+
+       /* echo '<pre>';print_r($resetPassword);exit;*/
         if ($resetPassword->save()) {
             $this->flash->success('Success! Have the employee check their email for a reset password message');
         } else {
