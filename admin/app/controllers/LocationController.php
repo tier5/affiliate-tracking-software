@@ -1119,7 +1119,7 @@
 
                 /*** get post value ***/
 
-             }
+             
         /**
          * Sends a review invite to the selected location
          */
@@ -1199,12 +1199,14 @@
                             $this->flash->success("The SMS was sent successfully");
                         }
 
-                    
+                    }
                 }
             }
             $this->view->disable();
             return;
         }
+
+
 
 
         protected $fb;
