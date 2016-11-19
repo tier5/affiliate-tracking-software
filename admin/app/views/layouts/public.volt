@@ -7,6 +7,7 @@
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <meta name="description" content="" />
   <meta name="author" content="" />
+  <meta property="al:web:should_fallback" content="false" />
   <link rel="icon" href="/favicon.ico" />
   <title>Review Velocity</title>
 

@@ -1183,6 +1183,8 @@
                         'date_last_sent' => date('Y-m-d H:i:s'),
                         'sent_by_user_id' => $identity['id']
                     ));
+                    
+
 
                     if (!$invite->save()) {
                         $this->view->disable();
@@ -1190,6 +1192,7 @@
                         return;
                     } else {
                         //The message is saved, so send the SMS message now
+                        echo $message;exit;
                         if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
                             $this->flash->success("The SMS was sent successfully");
                         }
