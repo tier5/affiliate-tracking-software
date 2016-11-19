@@ -1195,17 +1195,11 @@
                     } else {
                         //The message is saved, so send the SMS message now
                         //echo $message;exit;
-                        /*if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
+                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
                             $this->flash->success("The SMS was sent successfully");
-                        }*/
+                        }
 
-                        $t_api='AC68cd1cc8fe2ad03d2aa4d388b270577d';
-                            $t_auth_tkn='MGa8510e68cd75433880ba6ea48c0bd81e';
-                            $t_sid='AC68cd1cc8fe2ad03d2aa4d388b270577d';
-                            $t_frm='18582120211';
-                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $t_api, $t_auth_tkn, $t_sid, $t_frm)) {
-                            $this->flash->success("The SMS was sent successfully");
-                    }
+                    
                 }
             }
             $this->view->disable();
