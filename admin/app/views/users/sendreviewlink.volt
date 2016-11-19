@@ -26,7 +26,7 @@
           <?php if(!empty($userlocations) && count($userlocations)>1){ ?>
           <div class="form-group">
             <div class="select">
-              <select class="form-control" name="location_id" id="location_id">
+              <select class="form-control required" name="location_id" id="location_id">
                <option value="">Select</option>
                
 
@@ -121,6 +121,7 @@
  <link rel="shortcut icon" href="favicon.ico"/>
    
 <script src="/js/jquery.min.js"></script>
+<script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
 <script src="/js/bootstrap.min.js"></script>
 
 </head>
@@ -136,7 +137,7 @@
           <?php if(!empty($userlocations) && count($userlocations)>1){ ?>
           <div class="form-group">
             <div class="select">
-              <select class="form-control" name="location_id" id="location_id">
+              <select class="form-control required" name="location_id" id="location_id">
                <option value="">Select</option>
                
 

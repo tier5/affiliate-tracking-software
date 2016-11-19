@@ -22,7 +22,10 @@ a:focus, a:hover {
     color: #000;
     text-decoration: none;
 }
-
+.error
+{
+    color:red;
+}
 .form input::-webkit-input-placeholder {
    color: #C5C5C5;
 }
