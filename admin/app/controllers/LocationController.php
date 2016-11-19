@@ -1043,14 +1043,12 @@
         }
 
              public function send_review_invite_employeeAction() {
+               
 
-                    $identity = $this->auth->getIdentity();
-            // If there is no identity available the user is redirected to index/index
-            if (!is_array($identity)) {
-                $this->response->redirect('/session/login?return=/');
-                $this->view->disable();
-                return;
-            }
+                $identity = $this->auth->getIdentity();
+                
+                // If there is no identity available the user is redirected to index/index
+                
                 /*** get post value ***/
 
                 if ($this->request->isPost()) {

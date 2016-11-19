@@ -233,7 +233,11 @@ foreach($users_report as $user) {
                     <div><?=$location->name?></div>
                     <?php }  ?>
                   </td>
-                  <td><a href="/users/link/<?=base64_encode($user->id)?>"  class="btnLink btnSecondary">Link</td>
+
+                  <?php 
+                    $code=$user->id."-".$user->name;
+                  ?>
+                  <td><a href="/link/createlink/<?=base64_encode($code)?>"  class="btnLink btnSecondary">Link</td>
                   <?php
 				    } else {
 				  ?>

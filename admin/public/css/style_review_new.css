@@ -1,0 +1,125 @@
+@font-face {
+    font-family:'OpenSans-Regular';
+    src:url('../fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family:'OpenSans-Bold';
+    src:url('../fonts/OpenSans-Bold.ttf') format('truetype');
+}
+
+html{
+    height: 100%;
+}
+body{
+    position: relative;
+    font-family:'OpenSans-Regular';
+    color: #C9C9C9;
+    min-height: 100%;
+}
+
+a:focus, a:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+.form input::-webkit-input-placeholder {
+   color: #C5C5C5;
+}
+
+.form input:-moz-placeholder { /* Firefox 18- */
+   color: #C5C5C5;  
+}
+
+.form input::-moz-placeholder {  /* Firefox 19+ */
+   color: #C5C5C5;  
+}
+
+.form input:-ms-input-placeholder {  
+   color: #C5C5C5;  
+}
+
+
+.form-group{
+    position: relative;
+}
+
+.form{
+    text-align: center;
+    margin-top: 50px;
+    padding: 0 20px;
+}
+
+.form input, .form select{
+    height: 45px;
+    border: 1px solid #E7ECF0;
+    border-radius: 6px;
+    padding-left: 50px;
+    font-size: 18px;
+    color: #C5C5C5;
+}
+
+.form input[type='submit']{
+    background: #22A727;
+    border: 1px solid #22A727;
+    color: #fff;
+    padding: 0;
+    width: 90%;
+    margin-top: 20px;
+    height: 64px;
+    font-family:'OpenSans-Bold';
+    transition: 0.5s;
+}
+
+.form input[type='submit']:hover{
+    background: #fff;
+    color: #22A727;
+}
+
+.left-icon{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #2B3745;
+    height: 100%;
+    width: 45px;
+    border: 1px solid #2B3745;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.left-icon img{
+    margin: 10px auto 0;
+}
+
+.select {
+    position: relative;
+    display: block;
+}
+
+select{  
+   -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.select:after {
+    content: '';
+    background:#F6F6F6 url(../img/dropdown.png) no-repeat center;
+    position: absolute;
+    right: 1px;
+    top: 1px;
+    z-index: 1;
+    text-align: center;
+    width: 10%;
+    height: 96%;
+    pointer-events: none;
+    box-sizing: border-box;
+    border-left: 1px solid #E7ECF0;  
+}
+
+.form p{
+    font-size: 16px;
+}
+
+@media screen and (max-width: 480px){
+}

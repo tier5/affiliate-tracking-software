@@ -18,6 +18,7 @@
      */
     class UsersController extends ControllerBase
     {
+        
         public function initialize()
         {
             if ($this->session->has('auth-identity')) {
@@ -272,19 +273,19 @@
         }
 
 
-         public function linkAction($uid)
-            {
+        public function linkAction($uid)
+        {
                 
-                $id=base64_decode($uid);
+            $id=base64_decode($uid);
             
             $conditions_user = "id = :id:";
             $parameters_user = array("id" => $id);
             $userinfo = Users::findFirst(array($conditions_user, "bind" => $parameters_user));
-                if(empty($userinfo))
-                {
-                    echo 'sorry this page does not exists';
-                    exit;
-                }
+            if(empty($userinfo))
+            {
+                echo 'sorry this page does not exists';
+                exit;
+            }
             $conditions = "user_id = :user_id:";
             $parameters = array("user_id" => $id);
             $userObj = UsersLocation::find(array($conditions, "bind" => $parameters));
@@ -312,11 +313,11 @@
                 //print_r($make_location_array);exit;
            }
 
-                 $this->view->userlocations = $make_location_array;
-              $this->view->render('users', 'sendreviewlink');
+               $this->view->userlocations = $make_location_array;
+               $this->view->render('users', 'sendreviewlink');
                $this->view->disable();
                return;  
-            }
+        }
 
 
         /**

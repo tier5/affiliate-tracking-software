@@ -10,7 +10,7 @@
 
 <head>
  <?php
-             if (strpos($_SERVER['REQUEST_URI'],'users/link')>0) {?>
+             if (strpos($_SERVER['REQUEST_URI'],'link/createlink')>0) {?>
  <link href="/css/style_review.css" rel="stylesheet" />
 
             <?php }?>
@@ -605,7 +605,7 @@
                 </div>
             </div>
 <?php
-             if (strpos($_SERVER['REQUEST_URI'],'users/link')==0) {?>
+             if (strpos($_SERVER['REQUEST_URI'],'link/createlink')==0) {?>
             <script src="https://checkout.stripe.com/checkout.js"></script>
             <?php }?>
 
