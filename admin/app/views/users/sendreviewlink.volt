@@ -120,7 +120,7 @@
 
  <link rel="shortcut icon" href="favicon.ico"/>
    
-<script src="/js/jquery.min.js"></script>
+ <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script>
 <script src="/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
 <script src="/js/bootstrap.min.js"></script>
 
