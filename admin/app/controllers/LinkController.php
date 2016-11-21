@@ -59,10 +59,10 @@
 
         public function createlinkAction($uid)
         {
-          if ($this->session->has('auth-identity')) 
+         /* if ($this->session->has('auth-identity')) 
           {
               $this->view->setTemplateBefore('private');   
-          }
+          }*/
 
             $getcode=base64_decode($uid);
             $getarray=explode('-',$getcode);
@@ -71,6 +71,8 @@
             $conditions_user = "id = :id:";
             $parameters_user = array("id" => $id);
             $userinfo = Users::findFirst(array($conditions_user, "bind" => $parameters_user));
+
+
             if(empty($userinfo))
             {
                 echo 'sorry this page does not exists';
@@ -105,6 +107,7 @@
                 $agency_id=$userinfo->agency_id;
                $this->view->userlocations = $make_location_array;
                $this->view->agency = $agency_id;
+               $this->view->userID = $uid;
                $this->view->render('users', 'sendreviewlink');
                $this->view->disable();
                return;  
@@ -113,7 +116,7 @@
 
     
 
-             public function send_review_invite_employeeAction() {
+             public function send_review_invite_employeeAction($uid=null) {
 
                 /*$identity = $this->auth->getIdentity();*/
                 // If there is no identity available the user is redirected to index/index
@@ -190,7 +193,7 @@
                   // exit;
 
                     $phone = $_POST['phone'];
-
+                   $uid=$_POST['userID'];//exit;
                     //save the message to the database before sending the message
                     $invite = new ReviewInvite();
                     $invite->assign(array(
@@ -214,14 +217,39 @@
                         //echo $message;exit;
                         //echo $this->twilio_api_key;exit;
                         if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
-                            $this->flash->success("The SMS was sent successfully");
+                            //echo $uid;exit;
+
+                            //$this->flash->success("The SMS was sent successfully to: " . $phone);
+                            //$this->view->render('users', 'reviewmsg');
+
+                            $this->flashSession->success("The SMS was sent successfully to: " . $phone);
+
+                           
+                    $this->view->disable();
+                       
+                    return $this->response->redirect('link/send_review_invite_employee/'.$uid);
+                            
+                           
                         }
                     }
                 }
             }
 
                 /*** get post value ***/
+                else
+                {
+                    //echo $uid;exit;
+                    if($uid)
+                    {
+                        $this->view->linkId = $uid;
+                    }
+                    $this->view->render('users', 'reviewmsg');
+                    
+                }
 
              }
+
+
+            
 
     }

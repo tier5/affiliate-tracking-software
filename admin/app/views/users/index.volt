@@ -1,10 +1,10 @@
 <style>
-.portlet.light {
+/*.portlet.light {
     padding: 12px 0 15px;
-}
+}*/
 
 #locationlist .table_user tr td{
-  padding-left: 5px !important;
+ vertical-align:middle;
 }
 
 #locationlist .table_user tr td a{
@@ -237,7 +237,7 @@ foreach($users_report as $user) {
                   <?php 
                     $code=$user->id."-".$user->name;
                   ?>
-                  <td><a href="/link/createlink/<?=base64_encode($code)?>"  class="btnLink btnSecondary">Link</td>
+                  <td><span class="btnSecondary link_url btnLink" data-title="/link/createlink/<?=base64_encode($code)?>" style="cursor:pointer;">Link</span></td>
                   <?php
 				    } else {
 				  ?>
@@ -250,7 +250,7 @@ foreach($users_report as $user) {
 				    }
 				  ?>
                   {% if profilesId == 1 OR profilesId == 2 %}
-                  <td><a href="/users/adminedit/<?=$user->id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.png" /></a>
+                  <td width="10%"><a href="/users/adminedit/<?=$user->id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.png" /></a>
                   <a href="/users/delete/<?=$user->id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink btnSecondary"><img src="/img/icon-delete.png" /></a></td>
                 {% endif %}
                 </tr>
@@ -313,5 +313,14 @@ foreach($users_report as $user) {
   jQuery(document).ready(function($){
 
     $('.starfield').rating({displayOnly: true, step: 0.5});
+
+    $('.link_url').click(function(){
+
+      var url=$(this).data('title');
+      var popup = window.open(url, "_blank", "width=800, height=800") ;
+      popup.location = url;
+    })
   });
+
+  
 </script>
