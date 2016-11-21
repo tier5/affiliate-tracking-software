@@ -216,7 +216,7 @@
                         //The message is saved, so send the SMS message now
                         //echo $message;exit;
                         //echo $this->twilio_api_key;exit;
-                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
+                        if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                             //echo $uid;exit;
 
                             //$this->flash->success("The SMS was sent successfully to: " . $phone);
@@ -239,10 +239,12 @@
                 else
                 {
                     //echo $uid;exit;
+                    //echo 'fgggggggggggggggggg';exit;
                     if($uid)
                     {
                         $this->view->linkId = $uid;
                     }
+
                     $this->view->render('users', 'reviewmsg');
                     
                 }

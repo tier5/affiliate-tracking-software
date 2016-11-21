@@ -606,6 +606,7 @@ class ControllerBase extends Controller {
         return true;
     }
 
+
     public function formatTwilioPhone($phone) {
         $phone = preg_replace('/\D+/', '', $phone);
         if (strlen($phone) == 10)
