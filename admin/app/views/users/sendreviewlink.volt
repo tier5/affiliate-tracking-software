@@ -9,10 +9,16 @@
     <meta content="" name="description"/>
     <meta content="" name="author"/>
     <title>Mobile Review</title>
-    <link rel="apple-touch-icon" sizes="57x57" href="/img/apple-icon-57x57.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="/img/apple-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="/img/apple-icon-114x114.png" />
-    <link rel="apple-touch-icon" sizes="144x144" href="/img/apple-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png" />
+ 
+
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-icon-144x144.png" />
 
 <link href="/css/bootstrap.min_v1.css" rel="stylesheet">
  <link href="/css/style_review_new.css" rel="stylesheet" />
@@ -128,10 +134,19 @@
 <meta content="" name="description"/>
 <meta content="" name="author"/>
 <title>Mobile Review</title>
-<link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png" />
-<link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png" />
-<link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png" />
-<link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png" />
+
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png" />
+ 
+
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-icon-144x144.png" />
+    
  <link href="/css/bootstrap.min_v1.css" rel="stylesheet">
  <link href="/css/style_review_new.css" rel="stylesheet" />
 
