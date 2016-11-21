@@ -24,6 +24,11 @@
             <input type="hidden" name="short_code" value="{{ short_code }}"/>
         {% endif %}
 
+        <?php if($_GET['code']) { ?>
+                <input type="hidden" name="sharing_code" value="<?=$_GET['code']; ?>" />
+        <?php } ?>
+
+
         <h3>Account Details</h3>
         <p class="hint"> Enter your account details below: </p>
         <div class="form-group">
@@ -31,16 +36,16 @@
             <input class="form-control placeholder-no-fix" type="text" placeholder="Full Name" name="name" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" required />
         </div>
         <div class="form-group">
-            <label class="control-label">Email:</label><span id="Email_availability_result"></span>
+            <label class="control-label">Email:</label><span id="Email_availability_result" style="margin-left: 10px" ></span>
             <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" id="email" name="email" value="<?=(isset($_POST['email'])?$_POST["email"]:'')?>" required />
-        	<div id='email_availability_result'></div>
+        	<!--<div id='email_availability_result' ></div>-->
         </div>
         <div class="form-group">
             <label class="control-label">Password:</label>
             <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="password" placeholder="Password" name="password" value="<?=(isset($_POST['password'])?$_POST["password"]:'')?>" required />
         </div>
         <div class="form-group">
-            <label class="control-label">Re-type Your Password:</label><span id="Confirm_password_result"></span>
+            <label class="control-label">Re-type Your Password:</label><span id="Confirm_password_result" style="margin-left: 10px;"></span>
             <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" id="confirmPassword" name="confirmPassword" value="<?=(isset($_POST['confirmPassword'])?$_POST["confirmPassword"]:'')?>" required />
         </div>
 

@@ -62,9 +62,11 @@ $(document).ready(function() {
 		
         if ( document.getElementById('password').value != document.getElementById('confirmPassword').value ) {
         	document.getElementById('Confirm_password_result').innerHTML = 'Password mismatch';
+        	$('#Confirm_password_result').css('color', 'red');
         	register_button_object.disable = true;
         } else {
         	document.getElementById('Confirm_password_result').innerHTML = 'Passwords Match';
+        	$('#Confirm_password_result').css('color', 'green');
         	register_button_object.disable = false;
         }
         

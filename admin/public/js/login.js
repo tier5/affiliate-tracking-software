@@ -39,10 +39,12 @@ jQuery(window).ready(function ($) {
 	$('#email').focusout(function() {
 	    //run the character number check  
 	    if ($('#email').val().length < min_chars) {
-	        //if it's bellow the minimum show characters_error text '  
+	        //if it's bellow the minimum show characters_error text '
+	        $('#email_availability_result').css('color', 'red');
 	        $('#email_availability_result').html(characters_error);  
 	    } else {  
-	        //else show the cheking_text and run the function to check  
+	        //else show the cheking_text and run the function to check
+	        $('#email_availability_result').css('color', 'green');
 	        $('#email_availability_result').html(checking_html);  
 	      checkEmailAvailability();  
 	    }
