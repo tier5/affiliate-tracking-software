@@ -108,7 +108,7 @@ if ($locs) {
             <!-- Start .panel -->
             <div class="panel-default toggle panelMove panelClose panelRefresh" id="locationlist">
               <div class="customdatatable-wrapper">
-                <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
+                <table class="customdatatable table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
                   <thead>
                   <tr>
                     <th>Location Name</th>

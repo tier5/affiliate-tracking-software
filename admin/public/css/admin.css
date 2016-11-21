@@ -174,7 +174,9 @@ div#image_container img.selected, div#image_container img:hover{
 .page-footer .page-footer-inner { color: #484848; }
 
 
-
+.table-responsive {
+    display: block;
+}
 
 
 .onoffswitch {

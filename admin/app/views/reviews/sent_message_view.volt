@@ -112,7 +112,7 @@
                         <?php
             //(invites have the following fields: Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)
             ?>
-                        <table id="" class="customdatatable table table-striped table-bordered dataTable no-footer" cellspacing="0" width="100%">
+                        <table id="" class="customdatatable table table-striped table-bordered dataTable no-footer table-responsive" cellspacing="0" width="100%">
                           <thead>
                           <tr>
                             <th>Name</th>
