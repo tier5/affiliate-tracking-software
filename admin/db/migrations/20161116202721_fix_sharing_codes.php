@@ -29,10 +29,10 @@ class FixSharingCodes extends AbstractMigration
     {
         // *NOTE ROLLBACK PROBLEM:  There is a risk of data loss if there is a rollback feature.  The problem is rolling forward could be a problem if migrations are ever rolled back before this.  Going to need to manually roll forward for this one.
         $table = $this->table('sharing_code');
-        $this->query("ALTER TABLE `sharing_code` CHANGE `agency_id` `business_id` INT")->update();
-        $this->query("ALTER TABLE `sharing_code` CHANGE `sharecode` `sharecode` VARCHAR(255)")->update();
+        $this->query("ALTER TABLE `sharing_code` CHANGE `agency_id` `business_id` INT");
+        $this->query("ALTER TABLE `sharing_code` CHANGE `sharecode` `sharecode` VARCHAR(255)");
 
-        $this->query("ALTER TABLE `agency` CHANGE `viral_sharing_code` `viral_sharing_code` VARCHAR(255)")->update();
+        $this->query("ALTER TABLE `agency` CHANGE `viral_sharing_code` `viral_sharing_code` VARCHAR(255)");
 
         $table->addIndex(['sharecode', 'business_id'], ['unique' => true]);
         $table->removeIndex(['sharecode']);
