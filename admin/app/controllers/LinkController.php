@@ -137,7 +137,7 @@
             $agency_location_name=$agencyLocationInfo->name;
 
             $AgencyID=$_POST['agency_id'];
-            $AgencyID=$objAgency = Agency::findFirst("agency_id = {$AgencyID}");
+            $objAgency = Agency::findFirst("agency_id = {$AgencyID}");
         // Are we a business?
         if($objAgency->parent_id > 0) {
             // Return parent's keys.
@@ -214,7 +214,7 @@
                         return;
                     } else {
 
-                        echo $twilio_api_key;
+                       /* echo $twilio_api_key;
                         echo '<br>';
                         echo $twilio_auth_token;
                         echo '<br>';
@@ -223,7 +223,7 @@
                         echo $twilio_from_phone;
                         echo '<br>';
                         echo 'Agency Id: '.$AgencyID;
-                         echo '<br>';exit;
+                         echo '<br>';exit;*/
                         //The message is saved, so send the SMS message now
 
                         /*$twilio_api_key='AC68cd1cc8fe2ad03d2aa4d388b270577d' ;
@@ -231,6 +231,11 @@
                         $twilio_auth_messaging_sid='MGa8510e68cd75433880ba6ea48c0bd81e';
                         $twilio_from_phone='+18582120211';*/
                         //$phone='(559) 425-4015';
+
+                        $twilio_api_key='AC00b855893dab69e458170cc524233f47' ;
+                        $twilio_auth_token='8a314c3ff7e285dfb4c02c93c257025e'; 
+                        $twilio_auth_messaging_sid='MGa8510e68cd75433880ba6ea48c0bd81e';
+                        $twilio_from_phone='+14253654160';
                         
                         //echo $this->twilio_api_key;exit;
                         if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
