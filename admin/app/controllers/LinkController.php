@@ -213,6 +213,17 @@
                         echo $invite->getMessages();
                         return;
                     } else {
+
+                        echo $twilio_api_key;
+                        echo '<br>';
+                        echo $twilio_auth_token;
+                        echo '<br>';
+                        echo $twilio_auth_messaging_sid;
+                        echo '<br>';
+                        echo $twilio_from_phone;
+                        echo '<br>';
+                        echo 'Agency Id: '.$AgencyID;
+                         echo '<br>';exit;
                         //The message is saved, so send the SMS message now
 
                         /*$twilio_api_key='AC68cd1cc8fe2ad03d2aa4d388b270577d' ;
