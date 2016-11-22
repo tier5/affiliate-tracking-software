@@ -181,18 +181,17 @@
                     ?>
                     <li class="ui-state-default" id='<?=$review_site_list->location_review_site_id?>'>
                       <span class="site-wrapper"><img src="<?=$review_site_list->review_site->icon_path?>" class="imgicon" />
-                        <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { ?><a
-                          class="btnLink btnSecondary"
-                          <?php if($review_site_list->review_site_id ==1)
-                    { ?>
-                    id="facebook_sett"
-                   href="http://facebook.com/<?=$review_site_list->external_id?>" 
-                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)"
-                  <?php
-                    } else { ?> href="<?=$review_site_list->url?>" <?php }?>
-                          target="_blank" <?php if($review_site_list->review_site_id==1){?>  <?php }?>>
+                        <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { 
+                        if($review_site_list->review_site_id ==1){
+                        ?><span id="facebooklink"><a
+                          class="btnLink btnSecondary" href="http://facebook.com/<?=$review_site_list->external_id?>" 
+                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" target="_blank">
                           View
-                        </a><a
+                        </a></span> <?php } else {?> 
+                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank">View</a>
+                        <?php } ?>
+
+                        <a
                           class="btnLink btnSecondary"
                           href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>">
                           <img src="/img/icon-pencil.png" /> Update Location</a><?php } else { ?><a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"> View</a>
