@@ -73,7 +73,6 @@ class Email{
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
             $EmailFrom = "zacha@reviewvelocity.co";
-
         }
 
         $params = [
