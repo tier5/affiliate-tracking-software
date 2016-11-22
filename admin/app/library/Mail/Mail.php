@@ -89,18 +89,19 @@ class Mail extends Component
      */
     public function send($to, $subject, $name, $params, $template = '')
     {
-
         // Settings
         $mailSettings = $this->config->mail;
 
         if ($template == '') $template = $this->getTemplate($name, $params);
 
-        if($this->from) $mailSettings->fromEmail = $this->from;
+        if(!$this->from)
+            $this->from = $mailSettings->fromEmail;
+
         // Create the message
         $message = Message::newInstance()
             ->setSubject($subject)
             ->setTo($to)
-            ->setFrom($mailSettings->fromEmail)
+            ->setFrom($this->from)
             ->setBody($template, 'text/html');
 
         // To send HTML mail, the Content-type header must be set
