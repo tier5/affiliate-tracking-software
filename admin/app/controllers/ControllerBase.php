@@ -97,7 +97,7 @@ class ControllerBase extends Controller {
             $this->view->ReachedMaxSMS = $userObj->is_admin ? false : $objSubscriptionManager->ReachedMaxSMS($agency->agency_id, $this->session->get('auth-identity')['location_id'])['ReachedLimit'];
 
             if($agency->parent_id > 0) {
-                // We're a business
+                // We're a business under an agency
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
                 // Commenting this out until we can figure out how to get sessions to last across subdomains.
                 /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $objParentAgency->custom_domain && $Subdomain != $objParentAgency->custom_domain)
@@ -110,7 +110,7 @@ class ControllerBase extends Controller {
                 $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "/img/blank.png" ;
                 $this->view->agencyName =  $objParentAgency->name;
             } else {
-                // We're an agency
+                // We're an agency or a business under RV
                 /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
                     return $this->RedirectDomain($agency->custom_domain);*/
                 
@@ -119,14 +119,17 @@ class ControllerBase extends Controller {
                 $this->view->objParentAgency = null;
                 $this->view->agencyName = ($agency->parent_id == -1 || ($this->user_object->is_admin == 1)) ? "Review Velocity" : $agency->name;
                 //$this->view->logo_path = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
-            	if ($agency->parent_id == 0) {
+            	if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             		if (isset($agency->logo_path) && ($agency->logo_path != "")) {
             			$this->view->logo_path = "/img/agency_logos/{$agency->logo_path}";
             		} else {
-            			$this->view->logo_path = "/img/blank.png";
+            			$this->view->logo_path = "";
             		}
             	} else {
-            		$this->view->logo_path = '/assets/layouts/layout/img/logo.png';
+            	    // We're a business under RV
+            	    if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+                        $this->view->logo_path = '/assets/layouts/layout/img/logo.png';
+                    }
             	}
             }
 
