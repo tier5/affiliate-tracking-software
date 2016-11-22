@@ -243,7 +243,7 @@ class ControllerBase extends Controller {
             );
 
             if ($agency) {
-            	$agency->logo_path = ($agency->logo_path == "") ? "/img/blank.png" : "/img/agency_logos/" . $agency->logo_path;
+            	$agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
                 list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
                 $rgb = $r . ', ' . $g . ', ' . $b;
                 $vars = [

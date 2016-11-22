@@ -66,7 +66,7 @@ if (isset($main_color_setting)) {
                 $MarginLeftWords = '';
             }
          ?>
-        {% if logo_path != "/img/agency_logos/" %}
+        {% if logo_path AND logo_path != "/img/agency_logos/" %}
         <div class="logo">
             <a href="/"><img style="max-width: 300px; margin-top: 15px;"  src="<?=(isset($this->view->logo_path) && $this->view->logo_path != ''? $this->view->logo_path:'/img/blank.png')?>" alt="" /></a>
         </div>

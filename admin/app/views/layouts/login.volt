@@ -96,7 +96,7 @@
         {{ content() }}
         <?php if((strpos($_SERVER['REQUEST_URI'],'thankyou')>0 || strpos($_SERVER['REQUEST_URI'],'signup')>0) &&
         !(strpos($_SERVER['REQUEST_URI'],'login')>0) || strpos($_SERVER['REQUEST_URI'], 'invite') !== false) { ?>
-            {% if logo_path != '/img/agency_logos/' %}
+            {% if logo_path AND logo_path != '/img/agency_logos/' %}
             <!-- BEGIN LOGO -->
             <div class="logo">
                 <a href="/"><img style="max-width: 625px;" src="<?=(isset($this->view->logo_path) && $this->view->logo_path != ''? $this->view->logo_path:'/img/blank.png')?>" alt="" /></a>
