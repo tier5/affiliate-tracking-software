@@ -81,7 +81,7 @@ function userTypeChange() {
 }
 
 function facebookClickHandler(facebook_page_id) {
-  alert('fb://profile/' + facebook_page_id);return false;
+  //alert('fb://profile/' + facebook_page_id);return false;
   deeplink.setup({
     iOS: {
       appId: "284882215",
