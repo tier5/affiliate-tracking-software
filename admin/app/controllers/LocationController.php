@@ -1108,6 +1108,19 @@
                         //The message is saved, so send the SMS message now
                         //echo $message;exit;
                         //echo $this->twilio_api_key;exit;
+
+                        echo $this->twilio_api_key;
+                        echo '<br>';
+                        echo $this->twilio_auth_token;
+                        echo '<br>';
+                        echo $this->twilio_auth_messaging_sid;
+                        echo '<br>';
+                        echo $this->twilio_from_phone;
+                        echo '<br>';
+                        //echo 'Agency Id: '.$AgencyID;
+                         //echo '<br>';exit;
+                        exit;
+
                         if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
                             $this->flash->success("The SMS was sent successfully");
                         }
