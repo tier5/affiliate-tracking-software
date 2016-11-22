@@ -538,6 +538,9 @@
                     return false;
                 }
 
+                $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+                $objSubscriptionManager->CreateDefaultSubscriptionPlan($objAgency->agency_id);
+                
                 return $objUser->id;
 
             } catch (Exception $e) {
