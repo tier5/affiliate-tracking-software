@@ -178,6 +178,7 @@ div#image_container img.selected, div#image_container img:hover{
     display: block;
 }
 
+.alert{   font-size: 20px; }
 
 .onoffswitch {
     position: relative; width: 90px;
