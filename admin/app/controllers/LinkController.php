@@ -232,10 +232,10 @@
                         $twilio_from_phone='+18582120211';*/
                         //$phone='(559) 425-4015';
 
-                        $twilio_api_key='AC00b855893dab69e458170cc524233f47' ;
+                       /* $twilio_api_key='AC00b855893dab69e458170cc524233f47' ;
                         $twilio_auth_token='8a314c3ff7e285dfb4c02c93c257025e'; 
                         $twilio_auth_messaging_sid='MG28424d425f7128e97d4c96f2fdc44f2d';
-                        $twilio_from_phone='4253654160';
+                        $twilio_from_phone='4253654160';*/
                         
                         //echo $this->twilio_api_key;exit;
                         if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {

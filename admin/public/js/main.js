@@ -21,9 +21,14 @@ var isMobile = {
 
 
 $(document).ready(function () {
+
+    if(isMobile.any()) {
+   alert("This is a Mobile Device");
+}
+
   if (isMobile.Android()) {
     //hide non-google options
-    $('#facebooklink, #yelplink').hide();
+   // $('#facebooklink, #yelplink').hide();
   }
 
   //set the left menu state from session, if set
