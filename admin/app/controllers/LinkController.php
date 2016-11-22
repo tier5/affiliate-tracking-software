@@ -215,10 +215,10 @@
                     } else {
                         //The message is saved, so send the SMS message now
 
-                        $twilio_api_key='AC68cd1cc8fe2ad03d2aa4d388b270577d' ;
+                        /*$twilio_api_key='AC68cd1cc8fe2ad03d2aa4d388b270577d' ;
                         $twilio_auth_token='42334ec4880d850d6c9683a4cd9d94b8'; 
                         $twilio_auth_messaging_sid='MGa8510e68cd75433880ba6ea48c0bd81e';
-                        $twilio_from_phone='+18582120211';
+                        $twilio_from_phone='+18582120211';*/
                         //$phone='(559) 425-4015';
                         
                         //echo $this->twilio_api_key;exit;
