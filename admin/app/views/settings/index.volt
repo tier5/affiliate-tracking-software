@@ -183,11 +183,11 @@
                       <span class="site-wrapper"><img src="<?=$review_site_list->review_site->icon_path?>" class="imgicon" />
                         <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { 
                         if($review_site_list->review_site_id ==1){
-                        ?><span id="facebooklink"><a
-                          class="btnLink btnSecondary" href="http://facebook.com/<?=$review_site_list->external_id?>" 
+                        ?><a
+                          class="btnLink btnSecondary" href="http://facebook.com/<?=$review_site_list->external_id?>" id="facebooklink1"
                   onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" target="_blank">
                           View
-                        </a></span> <?php } else {?> 
+                        </a> <?php } else {?> 
                           <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank">View</a>
                         <?php } ?>
 

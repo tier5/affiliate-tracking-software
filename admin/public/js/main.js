@@ -25,6 +25,7 @@ $(document).ready(function () {
     if(isMobile.any()) {
   // alert("This is a Mobile Device");
    $('#facebooklink a').removeAttr('href');
+   $('#facebooklink1 a').removeAttr('href');
    
 }
 
