@@ -10,10 +10,10 @@
 <script>
 
  jQuery(document).ready(function($){
-
+/*
  var link_id=$('#link_id').val();
  		setTimeout(function() {
   window.location.href = "/link/createlink/"+link_id;
-}, 5000);
+}, 5000);*/
  });
 </script>

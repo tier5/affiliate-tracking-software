@@ -180,6 +180,10 @@ div#image_container img.selected, div#image_container img:hover{
 
 .alert{   font-size: 20px; }
 
+@media screen and (max-width:767px){
+  .alert{   font-size: 40px; }
+}
+
 .onoffswitch {
     position: relative; width: 90px;
     -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
