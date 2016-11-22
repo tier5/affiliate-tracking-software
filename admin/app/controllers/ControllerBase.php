@@ -320,36 +320,20 @@ class ControllerBase extends Controller {
     }
 
     public function getShareInfo($agency) {
-        //Get the sharing code
-        $conditions = "agency_id = :agency_id:";
-
-        $parameters = array(
-            "agency_id" => $agency->agency_id
-        );
-
-        $share = SharingCode::findFirst(
-            array(
-                $conditions,
-                "bind" => $parameters)
-        );
-
-        if (!(isset($share) && isset($share->sharecode))) {
-            //we don't have a share code, so get one now
-            $share = SharingCode::findFirst(
-                array(
-                    'order' => 'RAND()'
-                )
-            );
-
-            $share->agency_id = $agency->agency_id;
-
-            $share->save();
+        if(!$agency->viral_sharing_code) {
+            $agency->viral_sharing_code = SharingCode::GenerateShareCode();
+            $agency->save();
         }
 
-        $this->view->share = $share;
+        $this->view->share = $agency->viral_sharing_code;
 
         //build share links
-        $share_link = $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/session/signup?code=' . $share->sharecode);
+        if($this->config->application->environment == 'dev')
+            $Domain = $_SERVER['HTTP_HOST'];
+        else {
+            $Domain = $agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV ? 'reviewvelocity.co' : $agency->custom_domain;
+        }
+        $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
 
         $this->view->setVars([
             'share_message' => 'Click this link to sign up for a great new way to get reviews: ' . $share_link,
@@ -357,18 +341,9 @@ class ControllerBase extends Controller {
             'share_subject' => 'Sign Up and Get Reviews!'
         ]);
 
-
-        //calculate how many sms messages sent and how many are remaining
-        //$sms_sent_this_month
-        //how many allowed, count the people signed up with our code
         $base_sms_allowed = 100;
         $additional_allowed = 25;
-        $num_signed_up = Agency::count(
-            array(
-                "column" => "agency_id",
-                "conditions" => "referrer_code = '" . $share->sharecode . "' ",
-            )
-        );
+        $num_signed_up = SharingCode::count("business_id = {$agency->agency_id}");
         $num_discount = (int) ($num_signed_up / 3); //find how many three
         $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
         $identity = $this->session->get('auth-identity');
@@ -376,17 +351,20 @@ class ControllerBase extends Controller {
             $MaxSMS = $objSubscriptionManager->GetMaxSMS($agency->agency_id, $identity['location_id']);
         else
             $MaxSMS = 0;
-        $total_sms_month = $base_sms_allowed + ($num_discount * $additional_allowed);
+
+        $NonViralSMS = $MaxSMS;
+        $ViralSMS = $objSubscriptionManager->GetViralSMSCount($agency->agency_id);
+        $MaxSMS += $ViralSMS;
+
         $this->view->setVars([
             'total_sms_month' => $MaxSMS,
             'num_discount' => $num_discount,
             'num_signed_up' => $num_signed_up,
             'base_sms_allowed' => $base_sms_allowed,
-            'additional_allowed' => $additional_allowed
+            'additional_allowed' => $additional_allowed,
+            'viral_sms' => $ViralSMS,
+            'non_viral_sms' => $NonViralSMS,
         ]);
-
-        //end calculating how many sent and how many allowed
-        //end getting the sharing code
     }
 
     public function getSMSReport() {

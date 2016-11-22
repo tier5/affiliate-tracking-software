@@ -40,6 +40,7 @@
         public $trial_number_of_days;
         public $collect_credit_card_on_sign_up;
         public $agency_id;
+        public $is_viral;
 
 
         public function initialize()
@@ -118,7 +119,8 @@
                 'max_locations_on_free_account'=>'max_locations_on_free_account',
                 'trial_number_of_days'=>'trial_number_of_days',
                 'collect_credit_card_on_sign_up'=>'collect_credit_card_on_sign_up',
-                'agency_id'=>'agency_id'
+                'agency_id'=>'agency_id',
+                'is_viral' => 'is_viral'
             );
         }
 
@@ -149,9 +151,4 @@
             if(!$this->short_code) $this->generateAndSaveShortCode();
             return $this->short_code;
         }
-
-
-
-
-
     }

@@ -34,7 +34,7 @@
                                         <th>Subscription Name</th>
                                         <th>Subscription Type</th>
                                         <th>Active/Inactive</th>
-                                        <th>Pricing Page</th>
+                                        <th>Viral Subscription</th>
                                         <th class="hide-small">Sign Up Link</th>
                                         <th>Edit</th>
                                         <th class="hide-small">Delete</th>
@@ -54,7 +54,11 @@
                                             {% else %}
                                                 <td><input id="subscription{{ pricingProfile.id }}" class="update-enable-pricing-plan-control make-switch" type="checkbox" data-on-color="primary" data-off-color="info"></td>
                                             {% endif %}
-                                            <td><button class="btn default btn-lg apple-backgound subscription-btn" disabled>View Page</button></td>
+                                            {% if pricingProfile.is_viral == true %}
+                                                <td><input id="subscriptionViral{{ pricingProfile.id }}" class="update-enable-viral-control make-switch" type="checkbox" checked data-on-color="primary" data-off-color="info"></td>
+                                            {% else %}
+                                                <td><input id="subscriptionViral{{ pricingProfile.id }}" class="update-enable-viral-control make-switch" type="checkbox" data-on-color="primary" data-off-color="info"></td>
+                                            {% endif %}
                                             <td class="hide-small">
                                                 <?php if($loggedUser->is_admin) { ?>
                                                     <a href="http://<?=$_SERVER['HTTP_HOST']; ?>/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn" target="_blank">View Page</a>
@@ -150,6 +154,36 @@
                         if(data.status !== true) {
                             $(event.currentTarget).setState(!state);
                             alert(data.message);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert("Unable to delete pricing profile!");
+                    }
+                });
+
+            });
+
+            $('input.update-enable-viral-control').on('switchChange.bootstrapSwitch', function (event, state) {
+                console.log('the viral state is',state);
+                var id = $(event.currentTarget).closest('tr').attr('id');
+                $.ajax({
+                    url: "/businessPricingPlan/updateViralSwitch/" + id + "/" + state,
+                    type: 'PUT',
+                    success: function(data) {
+                        if(data.status !== true) {
+                            $(event.currentTarget).setState(!state);
+                            alert(data.message);
+                        } else {
+                            /*
+                            // Only 1 viral plan allowed at once.
+                            $('input.update-enable-viral-control').each(function(i, val) {
+                                var Newid = $(val).closest('tr').attr('id');
+                                if(Newid != id)
+                                    console.log($(val));
+
+                            });
+                                GARY_TODO:  Disable other viral switches.
+                            */
                         }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {

@@ -257,6 +257,12 @@ public function editAction($agency_id = 0) {
                     $this->flash->error($messages);
                 }
 
+                if($age->agency_type_id == 1) {
+                    // Create a default subscription for the agency
+                    $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+                    $objSubscriptionManager->CreateDefaultSubscriptionPlan($age->agency_id, true);
+                }
+
                 $this->flash->success("The " . ($age->agency_type_id == 1 ? 'agency' : 'business') . " was created successfully");
                 $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
                 //if(!$errors) $db->commit();

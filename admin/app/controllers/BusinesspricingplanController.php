@@ -110,7 +110,7 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->name = $pricingPlan->name;
         $this->view->enableTrialAccount = $pricingPlan->enable_trial_account;
         $this->view->enableDiscountOnUpgrade = $pricingPlan->enable_discount_on_upgrade;
-        $this->view->basePrice = $pricingPlan->base_prices;
+        $this->view->basePrice = $pricingPlan->base_price;
         $this->view->costPerSms = $pricingPlan->cost_per_sms;
         $this->view->maxMessagesOnTrialAccount = $pricingPlan->max_messages_on_trial_account;
         $this->view->upgradeDiscount = $pricingPlan->updgrade_discount;
@@ -288,6 +288,42 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->ccform = $ccform;
         $this->view->current_step = 1;
         $this->view->pick("businessPricingPlan/signupPreview");
+    }
+
+    public function updateViralSwitchAction($pricingPlanId, $enable) {
+
+        $this->view->disable();
+
+        $responseParameters['status'] = false;
+
+        try {
+            if (!$this->request->isPut()) {
+                throw new \Exception('PUT request required!!!');
+            }
+
+            /* Get services */
+            $subscriptionManager = $this->di->get('subscriptionManager');
+
+            /* Ensure the name of the pricing profile is unique for this user */
+            if(!$subscriptionManager->enableViralPlanById($pricingPlanId, $enable)) {
+                throw new \Exception('Failed to set plan to viral.');
+            }
+
+            /*
+             * Success!!!
+             */
+            $responseParameters['status'] = true;
+
+        }  catch(Exception $e) {
+
+            $responseParameters['message'] = $e->getMessage();
+
+        }
+
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(json_encode($responseParameters));
+        return $this->response;
+
     }
 
     public function updateEnablePricingPlanAction($pricingPlanId, $enable) {

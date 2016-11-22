@@ -424,6 +424,23 @@ class SubscriptionManager extends BaseService {
         return $subscriptionPricingPlans;
     }
 
+    public function enableViralPlanById ($pricingPlanId, $enable) {
+        $subscriptionPricingPlan = SubscriptionPricingPlan::findFirst("id = {$pricingPlanId}");
+        if(!$subscriptionPricingPlan)
+            return false;
+
+        $subscriptionPricingPlan->is_viral = 1;
+        $subscriptionPricingPlan->save();
+
+        // Disable other plans.  All plans under an agency should have the same user id
+        $dbSubscriptionPlansToDisable = SubscriptionPricingPlan::find("user_id = {$subscriptionPricingPlan->id} AND id != {$pricingPlanId}");
+        foreach($dbSubscriptionPlansToDisable as $objSubscriptionPlan) {
+            $objSubscriptionPlan->is_viral = 0;
+            $objSubscriptionPlan->save();
+        }
+        return true;
+    }
+
     public function enablePricingPlanById($pricingPlanId, $enable) {  // Second param is a dirty filthy hack :(, See comment below for details
         $subscriptionPricingPlan = SubscriptionPricingPlan::query()
             ->where("id = :id:")
@@ -501,6 +518,7 @@ class SubscriptionManager extends BaseService {
         $subscriptionPricingPlan->enable_annual_discount = $parameters["enableAnnualDiscount"];
         $subscriptionPricingPlan->annual_discount = $parameters["annualDiscount"];
         $subscriptionPricingPlan->pricing_details = $parameters["pricingDetails"] ? : new \Phalcon\Db\RawValue('default');
+        $subscriptionPricingPlan->is_viral = $parameters['isViral'] ?: false;
 
         if ($isUpdate && !$subscriptionPricingPlan->update()) {
             return false;
@@ -527,8 +545,8 @@ class SubscriptionManager extends BaseService {
 
         }
 
-        foreach($parameters as $segment => $params) {
 
+        foreach($parameters as $segment => $params) {
             if(substr($segment,0,7) !== "segment") {
                 continue;
             }
@@ -542,6 +560,60 @@ class SubscriptionManager extends BaseService {
 
         return true;
     }
+
+
+
+    public function CreateDefaultSubscriptionPlan($AgencyID, $IsViral = true) {
+        $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$AgencyID} AND role = 'Super Admin'");
+        $tParameters = [
+            'userId' => $objSuperUser->id,
+            'name' => "Default Subscription",
+            'enabled' => true,
+            'enableTrialAccount' => true,
+            'basePrice' => 29.00,
+            'costPerSms' => 0.0075,
+            'maxMessagesOnTrialAccount' => 100,
+            'maxSmsMessages' => 1000,
+            'upgradeDiscount' => 10,
+            'chargePerSms' => 0.10,
+            'enableAnnualDiscount' => true,
+            'annualDiscount' => 10,
+            'enableDiscountOnUpgrade' => true,
+            'isViral' => $IsViral
+        ];
+
+        if($SubID = $this->saveSubscriptionPricingPlan($tParameters, false)) {
+            for($c = 1; $c <= 10; $c++) {
+                $tSegment = [
+                    'minLocations' => 1 + (($c-1) * 10),
+                    'maxLocations' => $c*10,
+                    'locationDiscountPercentage' => 5 * ($c - 1),
+                    'basePrice' => 29.00,
+                    'smsCharge' => 100.00,
+                    'totalPrice' => 129.00,
+                    'locationDiscount' => ($c - 1) * 1.45,
+                    'upgradeDiscount' => 0.00,
+                    'smsMessages' => 1000,
+                    'smsCost' => 7.50,
+                    'profitPerLocation' => 118.6 - (($c - 1) * 1.45),
+                ];
+
+                $this->createPricingParameterList($SubID, $tSegment);
+            }
+        }
+
+        return true;
+    }
+
+    public function GetViralSMSCount($AgencyID) {
+        $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$AgencyID}");
+        if(!$objAgency->viral_sharing_code)
+            return 0;
+
+        $Referrals = \Vokuro\Models\SharingCode::count("sharecode = '{$objAgency->viral_sharing_code}'");
+        return $Referrals > 4 ? 100 : $Referrals * 25;
+    }
+
 
     public function getSubscriptionPrice($UserID, $PlanType) {
         $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst('user_id = ' . $UserID);

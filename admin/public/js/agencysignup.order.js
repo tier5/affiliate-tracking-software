@@ -82,8 +82,10 @@ $(document).ready(function() {
         $('#ConfirmPassword').focusout(function() {
             if ($('#Password').val() != $('#ConfirmPassword').val()) {
             	document.getElementById('Confirm_password_result').innerHTML = 'Password mismatch';
+            	$('#Confirm_password_result').css('color', 'red');
             } else {
             	document.getElementById('Confirm_password_result').innerHTML = 'Passwords Match';
+            	$('#Confirm_password_result').css('color', 'green');
             }
             if ($('#Password').val().length < 6) {
             	document.getElementById('Confirm_password_result').innerHTML = 'Requirement: more than 6';

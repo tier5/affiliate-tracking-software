@@ -103,18 +103,15 @@ class SessionController extends ControllerBase {
                     $subscription_id = $subscription_pricing_plan->id;
                 }
             }
-//echo 'ok';exit;
+
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
-            //echo '<pre>';print_r($subscriptionManager);exit;
             if(!$subscription_id){
-                //here we are going to get the default subscription id
                 /**
                  * @var $subscriptionManager \Vokuro\Services\SubscriptionManager
                  */
 
                 $default = $subscriptionManager->getActiveSubscriptionPlan();
-                //echo '<pre>';print_r($default);exit;
                 if($default){
                    /**
                     * @var $default \Vokuro\Models\SubscriptionPricingPlan
@@ -179,7 +176,7 @@ class SessionController extends ControllerBase {
             $agency = new Agency();
             $agency_save_arr = [
                 'name' => $agency_name,
-                'referrer_code' => $this->request->getPost('sharecode'),
+                /*'referrer_code' => $this->request->getPost('sharecode'),*/
                 'date_created' => date('Y-m-d H:i:s'),
                 'signup_page' => 2, //go to the next page,
                 'agency_type_id' => 2,
@@ -195,6 +192,15 @@ class SessionController extends ControllerBase {
 
             if (!$agency->save()) {
                 throw new ArrayException('Could not save Agency', 0, null, $agency->getMessages());
+            }
+
+            if($this->request->getPost('sharing_code')) {
+                $objSharingCode = new \Vokuro\Models\SharingCode();
+                $objSharingCode->sharecode = $this->request->getPost('sharing_code');
+                $objSharingCode->business_id = $agency->agency_id;
+                $objSharingCode->created_at = date("Y-m-d H:i:s", strtotime('now'));
+                $objSharingCode->subscription_id = $subscription_id;
+                $objSharingCode->save();
             }
 
             $user->agency_id = $agency->agency_id;

@@ -35,7 +35,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="end-title"><?=$total_sms_month?><br/><span class="goal">Allowed</span></div>
+                <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
             </div>
         </div>
         <?php

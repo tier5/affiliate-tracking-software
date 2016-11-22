@@ -1088,7 +1088,7 @@ CREATE TABLE `subscription_pricing_plan_parameter_list` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `min_locations` int(11) NOT NULL DEFAULT '0',
   `max_locations` int(11) NOT NULL DEFAULT '0',
-  `location_discount_percentage` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `location_discount_percentage` decimal(10,2) NOT NULL DEFAULT '0.00',h
   `base_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `sms_charge` decimal(10,2) NOT NULL DEFAULT '0.00',
   `total_price` decimal(10,2) NOT NULL DEFAULT '0.00',

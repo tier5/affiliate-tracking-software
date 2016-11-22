@@ -15,10 +15,12 @@ function checkEmailAvailability(email, button, returnResult) {
         	if (result == 0) {  		
                 //show that the email is available
             	document.getElementById(returnResult).innerHTML = 'Available';
+            	$('#' + returnResult).css('color', 'green');
                 document.getElementById(button).disabled = false;
             } else {
                 //show that the email is NOT available
             	document.getElementById(returnResult).innerHTML = 'Not Available';
+            	$('#' + returnResult).css('color', 'red');
                 document.getElementById(button).disabled = true;
             }
         	return result;
@@ -36,10 +38,12 @@ function checkSubDomainAvailability(custom_domain, button, returnResult) {
         	if (result == 0) {
                 //show that the email is available  
             	document.getElementById(returnResult).innerHTML = 'Available';
+            	$('#' + returnResult).css('color', 'green');
                 document.getElementById(button).disabled = false;
             } else {
                 //show that the email is NOT available
             	document.getElementById(returnResult).innerHTML = 'Not Available';
+            	$('#' + returnResult).css('color', 'red');
                 document.getElementById(button).disabled = true;
             }
         	return result;
