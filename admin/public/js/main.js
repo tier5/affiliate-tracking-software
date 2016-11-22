@@ -28,6 +28,10 @@ $(document).ready(function () {
    $('#facebooklink1').removeAttr('href');
    
 }
+    else
+    {
+      alert("This is a Desktop Device");
+    }
 
   if (isMobile.Android()) {
     //hide non-google options
