@@ -156,8 +156,12 @@ class Email{
         $code = $record->code;
         $agency = new Agency();
         $record = $agency->findFirst('agency_id = '.$u->agency_id);
-        $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$record->parent_id}");
-        $this->from = $from = $objParentAgency->email;
+        if($record->parent_id > \Vokuro\Models\Agency::AGENCY) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$record->parent_id}");
+            $this->from = $from = $objParentAgency->email_from_name;
+        } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            $this->from = $from = 'no-reply@reviewvelocity.co';
+        }
 
         if(!$from) {
             $this->from = $from = "no-reply@{$objParentAgency->custom_domain}";
