@@ -219,7 +219,7 @@
                         $twilio_auth_token='42334ec4880d850d6c9683a4cd9d94b8'; 
                         $twilio_auth_messaging_sid='MGa8510e68cd75433880ba6ea48c0bd81e';
                         $twilio_from_phone='+18582120211';
-                        $phone='(559) 425-4015';
+                        //$phone='(559) 425-4015';
                         
                         //echo $this->twilio_api_key;exit;
                         if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
