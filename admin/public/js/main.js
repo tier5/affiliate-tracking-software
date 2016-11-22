@@ -23,8 +23,9 @@ var isMobile = {
 $(document).ready(function () {
 
     if(isMobile.any()) {
-   alert("This is a Mobile Device");
+  // alert("This is a Mobile Device");
    $('#facebooklink a').removeAttr('href');
+   $('#facebook_sett').removeAttr('href');
 }
 
   if (isMobile.Android()) {

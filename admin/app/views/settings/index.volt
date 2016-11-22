@@ -1,3 +1,4 @@
+
 <header class="jumbotron subhead <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'agency')?>settingspage" id="reviews">
   <div class="hero-unit">
     <div class="row">
@@ -172,16 +173,24 @@
                 <div class="col-md-8">
                   <ul id="sortable">
                     <?php
+
                   if (isset($this->view->review_site_list)) {
                   foreach($this->view->review_site_list as $review_site_list) {
                   if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
+                    
                     ?>
                     <li class="ui-state-default" id='<?=$review_site_list->location_review_site_id?>'>
                       <span class="site-wrapper"><img src="<?=$review_site_list->review_site->icon_path?>" class="imgicon" />
                         <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { ?><a
                           class="btnLink btnSecondary"
-                          href="<?=$review_site_list->url?>"
-                          target="_blank">
+                          <?php if($review_site_list->review_site_id ==1)
+                    { ?>
+                    id="facebook_sett"
+                   href="http://facebook.com/<?=$review_site_list->external_id?>" 
+                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)"
+                  <?php
+                    } else { ?> href="<?=$review_site_list->url?>" <?php }?>
+                          target="_blank" <?php if($review_site_list->review_site_id==1){?>  <?php }?>>
                           View
                         </a><a
                           class="btnLink btnSecondary"
