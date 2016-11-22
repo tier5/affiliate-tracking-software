@@ -24,7 +24,7 @@
   foreach($review_site_list as $rsl) {
     if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) {
       ?>
-      <div class="row text-center" id="facebooklink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="http://facebook.com/<?=$rsl->external_id?>" onclick="facebookClickHandler('<?=$rsl->external_id?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
+      <div class="row text-center" id="facebooklink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="http://facebook.com/<?=$rsl->external_id?>/reviews" onclick="facebookClickHandler('<?=$rsl->external_id?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
       <?php
     } else if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_YELP) {
       ?>

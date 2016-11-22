@@ -178,6 +178,11 @@ div#image_container img.selected, div#image_container img:hover{
     display: block;
 }
 
+.alert{   font-size: 20px !important; }
+
+@media screen and (max-width:767px){
+  .alert{   font-size: 40px !important; }
+}
 
 .onoffswitch {
     position: relative; width: 90px;

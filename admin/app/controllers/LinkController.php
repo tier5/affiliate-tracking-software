@@ -137,7 +137,7 @@
             $agency_location_name=$agencyLocationInfo->name;
 
             $AgencyID=$_POST['agency_id'];
-            $AgencyID=$objAgency = Agency::findFirst("agency_id = {$AgencyID}");
+            $objAgency = Agency::findFirst("agency_id = {$AgencyID}");
         // Are we a business?
         if($objAgency->parent_id > 0) {
             // Return parent's keys.
@@ -213,8 +213,30 @@
                         echo $invite->getMessages();
                         return;
                     } else {
+
+                        /*echo $twilio_api_key;
+                        echo '<br>';
+                        echo $twilio_auth_token;
+                        echo '<br>';
+                        echo $twilio_auth_messaging_sid;
+                        echo '<br>';
+                        echo $twilio_from_phone;
+                        echo '<br>';
+                        echo 'Agency Id: '.$AgencyID;
+                         echo '<br>';exit;*/
                         //The message is saved, so send the SMS message now
-                        //echo $message;exit;
+
+                     /*$twilio_api_key='AC68cd1cc8fe2ad03d2aa4d388b270577d' ;
+                        $twilio_auth_token='42334ec4880d850d6c9683a4cd9d94b8'; 
+                        $twilio_auth_messaging_sid='MGa8510e68cd75433880ba6ea48c0bd81e';
+                        $twilio_from_phone='+18582120211';*/
+                        //$phone='(559) 425-4015';
+
+                       /* $twilio_api_key='AC00b855893dab69e458170cc524233f47' ;
+                        $twilio_auth_token='8a314c3ff7e285dfb4c02c93c257025e'; 
+                        $twilio_auth_messaging_sid='MG28424d425f7128e97d4c96f2fdc44f2d';
+                        $twilio_from_phone='4253654160';*/
+                        
                         //echo $this->twilio_api_key;exit;
                         if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                             //echo $uid;exit;
@@ -222,12 +244,9 @@
                             //$this->flash->success("The SMS was sent successfully to: " . $phone);
                             //$this->view->render('users', 'reviewmsg');
 
-                            $this->flashSession->success("The SMS was sent successfully to: " . $phone);
-
-                           
-                    $this->view->disable();
-                       
-                    return $this->response->redirect('link/send_review_invite_employee/'.$uid);
+                            $this->flashSession->success("The SMS was sent successfully to: " . $phone.".This page will automatically refresh in 5 seconds.");
+                            $this->view->disable();
+                            return $this->response->redirect('link/send_review_invite_employee/'.$uid);
                             
                            
                         }

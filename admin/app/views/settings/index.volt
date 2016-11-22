@@ -1,3 +1,4 @@
+
 <header class="jumbotron subhead <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'agency')?>settingspage" id="reviews">
   <div class="hero-unit">
     <div class="row">
@@ -172,18 +173,25 @@
                 <div class="col-md-8">
                   <ul id="sortable">
                     <?php
+
                   if (isset($this->view->review_site_list)) {
                   foreach($this->view->review_site_list as $review_site_list) {
                   if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
+                    
                     ?>
                     <li class="ui-state-default" id='<?=$review_site_list->location_review_site_id?>'>
                       <span class="site-wrapper"><img src="<?=$review_site_list->review_site->icon_path?>" class="imgicon" />
-                        <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { ?><a
-                          class="btnLink btnSecondary"
-                          href="<?=$review_site_list->url?>"
-                          target="_blank">
+                        <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { 
+                        if($review_site_list->review_site_id ==1){
+                        ?><a
+                          class="btnLink btnSecondary" href="http://facebook.com/<?=$review_site_list->external_id?>" id="facebooklink1"
+                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" target="_blank">
                           View
-                        </a><a
+                        </a> <?php } else {?> 
+                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank">View</a>
+                        <?php } ?>
+
+                        <a
                           class="btnLink btnSecondary"
                           href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>">
                           <img src="/img/icon-pencil.png" /> Update Location</a><?php } else { ?><a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"> View</a>
