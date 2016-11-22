@@ -506,6 +506,7 @@
                 $objAgency->agency_type_id = 1; // REFACTOR:  Drop this column
                 $objAgency->subscription_id = '';
                 $objAgency->parent_id = \Vokuro\Models\Agency::AGENCY;
+                $objAgency->date_created = date("Y-m-d H:i:s", strtotime('now'));
 
                 if (!$objAgency->create()) {
                     $this->flashSession->error($objAgency->get_val_errors());
@@ -540,7 +541,7 @@
 
                 $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
                 $objSubscriptionManager->CreateDefaultSubscriptionPlan($objAgency->agency_id);
-                
+
                 return $objUser->id;
 
             } catch (Exception $e) {
