@@ -23,7 +23,7 @@ var isMobile = {
 $(document).ready(function () {
 
     if(isMobile.any()) {
-   alert("This is a Mobile Device");
+   //alert("This is a Mobile Device");
    $('#facebooklink a').removeAttr('href');
    $('#facebooklink1').removeAttr('href');
    
@@ -87,7 +87,7 @@ function userTypeChange() {
 }
 
 function facebookClickHandler(facebook_page_id) {
-  alert('fb://profile/' + facebook_page_id);return false;
+  //alert('fb://profile/' + facebook_page_id);return false;
   deeplink.setup({
     iOS: {
       appId: "284882215",
