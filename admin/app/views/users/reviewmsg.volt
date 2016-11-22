@@ -3,8 +3,10 @@
 
 <input type="hidden" id="link_id" value="<?php echo $linkId;?>">
 
-<link href="/css/bootstrap.min_v1.css" rel="stylesheet">
+
 <link href="/css/admin.css" rel="stylesheet">
+<link href="/css/bootstrap.min_v1.css" rel="stylesheet">
+
 
 <script type="text/javascript" src="/js/vendor/jquery-2.1.1.min.js"></script>
 <script>
