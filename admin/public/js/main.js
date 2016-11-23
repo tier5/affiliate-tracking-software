@@ -100,6 +100,23 @@ function facebookClickHandler(facebook_page_id) {
   return false;
 }
 
+function FnfacebookClickHandler(facebook_page_id) {
+  alert('fb://profile/' + facebook_page_id+'newww');//return false;
+  deeplink.setup({
+    iOS: {
+      appId: "284882215",
+      appName: "facebook",
+      storeUrl: "http://facebook.com/" + facebook_page_id,
+    },
+    android: {
+      appId: "com.facebook.katana",
+      storeUrl: "http://facebook.com/" + facebook_page_id,
+    }
+  });
+  deeplink.open('fb://profile/' + facebook_page_id, 'intent://page/' + facebook_page_id + '#Intent;scheme=fb;package=com.facebook.katana;end;');
+  //return false;
+}
+
 
 function yelpClickHandler(yelp_id) {
   deeplink.setup({
