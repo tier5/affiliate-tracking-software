@@ -73,7 +73,6 @@ class Email{
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
             $EmailFrom = "zacha@reviewvelocity.co";
-
         }
 
         $params = [
@@ -157,18 +156,17 @@ class Email{
         $code = $record->code;
         $agency = new Agency();
         $record = $agency->findFirst('agency_id = '.$u->agency_id);
-        if($record) {
-            $email = $record->email;
-            $domain = $record->custom_domain;
-            if(!$email && $domain){
-                //we set the domain to no-reply
-                $this->from = 'no-reply@'.$domain;
-            }
-            $this->from = $email;
+        if($record->parent_id > \Vokuro\Models\Agency::AGENCY) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$record->parent_id}");
+            $this->from = $from = $objParentAgency->email_from_name;
+        } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            $this->from = $from = 'no-reply@reviewvelocity.co';
         }
 
+        if(!$from) {
+            $this->from = $from = "no-reply@{$objParentAgency->custom_domain}";
+        }
 
-        if(!$this->from) $from = 'no-reply@reviewvelocity.com';
         if(!$u->is_employee){
             throw new \Exception('Cannot send an employee activation email to someone that is not an employee');
         }

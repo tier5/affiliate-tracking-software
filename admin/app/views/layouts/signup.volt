@@ -57,11 +57,22 @@ if (isset($main_color_setting)) {
 <header>
     <div class="headercontent">
         <!-- BEGIN LOGO -->
+        <?php
+            if($logo_path == '/img/agency_logos/') {
+                $MarginLeftSteps = "margin-left: 280px !important;";
+                $MarginLeftWords = "margin-left: 269px !important;";
+            } else {
+                $MarginLeftSteps = '';
+                $MarginLeftWords = '';
+            }
+         ?>
+        {% if logo_path AND logo_path != "/img/agency_logos/" %}
         <div class="logo">
             <a href="/"><img style="max-width: 300px; margin-top: 15px;"  src="<?=(isset($this->view->logo_path) && $this->view->logo_path != ''? $this->view->logo_path:'/img/blank.png')?>" alt="" /></a>
         </div>
+        {% endif %}
         <!-- END LOGO -->
-        <div class="steps">
+        <div class="steps" style="<?=$MarginLeftSteps; ?>">
             <div class="step"><img src="/img/step-<?=($current_step > 1?'on':'current')?>.gif" alt="Sign up form, Step 1 (Account)" /></div>
             <div class="divider"><img src="/img/step-line-<?=($current_step > 1?'on':'off')?>.gif" /></div>
             <div class="step"><img src="/img/step-<?=($current_step == 2?'current':($current_step > 2?'on':'off'))?>.gif" alt="Sign up form, Step 2 (Add Location)" /></div>
@@ -72,7 +83,7 @@ if (isset($main_color_setting)) {
             <div class="divider"><img src="/img/step-line-<?=($current_step > 4?'on':'off')?>.gif" /></div>
             <div class="step"><img src="/img/step-<?=($current_step == 5?'current':($current_step > 5?'on':'off'))?>.gif" alt="Sign up form, Step 5 (Share)" /></div>
         </div>
-        <div class="steps-desc">
+        <div class="steps-desc" style="<?=$MarginLeftWords; ?>">
             <div id="step1">Account</div>
             <div id="step2">Add Location</div>
             <div id="step3">Customize Survey</div>

@@ -72,7 +72,7 @@ class SubscriptionManager extends BaseService {
         $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
 
         if(!$objBusiness->subscription_id) {
-            // This mean plan is "Unpaid"
+            // This mean plan is "Unpaid" or free basically
             $MaxAllowed = 100;
         }
         else {
@@ -87,7 +87,7 @@ class SubscriptionManager extends BaseService {
             }
         }
 
-        return $MaxAllowed;
+        return $MaxAllowed + $this->GetViralSMSCount($BusinessID);
     }
 
     public function UpdateStripeSubscription($UserID, $Price) {
