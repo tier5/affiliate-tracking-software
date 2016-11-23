@@ -161,7 +161,7 @@
 
                   <div class="buttons" {% if FacebookConnected %} style="margin-top: 43px" {% else %} style="margin-top: 70px;" {% endif %}>
                     {% if FacebookConnected %}
-                        <a class="btnLink" id="facebookLink" href="http://facebook.com/<?=$facebook->external_id; ?>" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
+                        <a class="btnLink fb_link" id="facebookLink" href="http://facebook.com/<?=$location->external_id; ?>" onclick="facebookClickHandler(<?=$location->external_id; ?>)" target="_blank"><img src="/img/icon-eye.gif"/>View</a>
                         <a href="/location/disconnectFacebook/<?=$location->location_id; ?>/{{ ComingFromSignup }}" class="btnSecondary" id="gmb_signin">Disconnect?</a>
                     {% else %}
                         <a href="/location/getAccessToken/<?=$location->location_id; ?>/{{ ComingFromSignup }}" id="btnAuthenticateFacebook" class="btnLink">Connect Facebook</a>

@@ -26,6 +26,7 @@ $(document).ready(function () {
    //alert("This is a Mobile Device");
    $('#facebooklink a').removeAttr('href');
    $('#facebooklink1').removeAttr('href');
+   $('.fb_link').removeAttr('href');
    
 }
    
