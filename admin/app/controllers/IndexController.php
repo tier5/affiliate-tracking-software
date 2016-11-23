@@ -67,8 +67,39 @@ class IndexController extends ControllerBase {
                 $this->view->pick('admindashboard/index');
             } else {
                 if(!$isBusiness) {
+                   // echo $_SERVER['SERVER_NAME'];exit;
                     //$this->response->redirect('/agency');
+                    //return;
+
+                     $parts = explode(".", $_SERVER['SERVER_NAME']);
+
+                     /** agency redirect 23.11.2016**/
+                      if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
+                $subdomain = $parts[0];
+
+                $agency = Agency::findFirst([
+                        "custom_domain = :custom_domain:",
+                        "bind" => ["custom_domain" => $subdomain]
+                    ]);
+
+                // Subdomain must exist
+                if(!$agency) {
+                    $this->response->redirect('/agency');
                     return;
+
+                }
+
+
+                }
+
+                else
+                {
+                    $this->response->redirect('/agency');
+                    return;
+
+                }
+
+                     /** agency redirect 23.11.2016**/
                 }
             }
 
