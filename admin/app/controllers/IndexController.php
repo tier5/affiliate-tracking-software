@@ -63,6 +63,8 @@ class IndexController extends ControllerBase {
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
 
+
+
             if($tUser['is_admin']) {
                 $this->view->pick('admindashboard/index');
             } else {
@@ -70,8 +72,10 @@ class IndexController extends ControllerBase {
                    // echo $_SERVER['SERVER_NAME'];exit;
                     //$this->response->redirect('/agency');
                     //return;
- /** agency redirect 23.11.2016**/
-            echo "Hello";
+            /** agency redirect 23.11.2016**/
+
+            $this->view->setTemplateBefore('public');
+
                     
             $parts = explode(".", $_SERVER['SERVER_NAME']);
             if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
