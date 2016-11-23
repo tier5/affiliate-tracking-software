@@ -70,10 +70,10 @@ class IndexController extends ControllerBase {
                    // echo $_SERVER['SERVER_NAME'];exit;
                     //$this->response->redirect('/agency');
                     //return;
+ /** agency redirect 23.11.2016**/
+                    /* $parts = explode(".", $_SERVER['SERVER_NAME']);
 
-                     $parts = explode(".", $_SERVER['SERVER_NAME']);
-
-                     /** agency redirect 23.11.2016**/
+                    
                       if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
                 $subdomain = $parts[0];
 
@@ -90,8 +90,9 @@ class IndexController extends ControllerBase {
                     $this->response->redirect('/agency');
                     return;
 
-                }
-
+                }*/
+                    $this->response->redirect('/agency');
+                    return;
                      /** agency redirect 23.11.2016**/
                 }
             }
