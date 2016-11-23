@@ -71,18 +71,11 @@ class IndexController extends ControllerBase {
                     //$this->response->redirect('/agency');
                     //return;
  /** agency redirect 23.11.2016**/
-                    /* $parts = explode(".", $_SERVER['SERVER_NAME']);
+                    $parts = explode(".", $_SERVER['SERVER_NAME']);
 
-                    
+                    $flag_set=0;
                       if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
-                $subdomain = $parts[0];
-
-                $agency = Agency::findFirst([
-                        "custom_domain = :custom_domain:",
-                        "bind" => ["custom_domain" => $subdomain]
-                    ]);
-
-                                return;
+                    $flag_set=1;
                 }
 
                 else
@@ -90,9 +83,9 @@ class IndexController extends ControllerBase {
                     $this->response->redirect('/agency');
                     return;
 
-                }*/
-                    $this->response->redirect('/agency');
-                    return;
+                }
+                    //$this->response->redirect('/agency');
+                   // return;
                      /** agency redirect 23.11.2016**/
                 }
             }
