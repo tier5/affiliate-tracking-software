@@ -104,6 +104,8 @@
                                                   class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{ location.SMS_message }}{% else %}{location-name}: Hi {name}, We'd realllly appreciate your feedback by clicking the link. Thanks! {link}{% endif %}</textarea>
 
           <input type="hidden" name="agency_id" value="<?php echo $agency;?>">
+          <input type="hidden" name="user_id" value="<?php echo $user_id;?>">
+
           <input type="hidden" name="userID" value="<?php echo $userID;?>">
 
           <div class="form-group">
@@ -231,6 +233,7 @@
                                                   class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{ location.SMS_message }}{% else %}{location-name}: Hi {name}, We'd realllly appreciate your feedback by clicking the link. Thanks! {link}{% endif %}</textarea>
 
           <input type="hidden" name="agency_id" value="<?php echo $agency;?>">
+           <input type="hidden" name="user_id" value="<?php echo $user_id;?>">
           <input type="hidden" name="userID" value="<?php echo $userID;?>">
 
           <div class="form-group">

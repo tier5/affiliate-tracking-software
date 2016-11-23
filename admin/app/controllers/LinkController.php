@@ -107,6 +107,7 @@
                 $agency_id=$userinfo->agency_id;
                $this->view->userlocations = $make_location_array;
                $this->view->agency = $agency_id;
+               $this->view->user_id = $id;
                $this->view->userID = $uid;
                $this->view->render('users', 'sendreviewlink');
                $this->view->disable();
@@ -205,7 +206,7 @@
                         'sms_message' => $message.'  Reply stop to be removed',
                         'date_sent' => date('Y-m-d H:i:s'),
                         'date_last_sent' => date('Y-m-d H:i:s'),
-                        'sent_by_user_id' => $identity['id']
+                        'sent_by_user_id' => $_POST['user_id']
                     ));
 
                     if (!$invite->save()) {
