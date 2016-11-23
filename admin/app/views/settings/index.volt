@@ -184,7 +184,7 @@
                         <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { 
                         if($review_site_list->review_site_id ==1){
                         ?><a
-                          class="btnLink btnSecondary" href="http://facebook.com/<?=$review_site_list->external_id?>" id="facebooklink1"
+                          class="btnLink btnSecondary"  id="facebooklink1"
                   onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" target="_blank">
                           View
                         </a> <?php } else {?> 
