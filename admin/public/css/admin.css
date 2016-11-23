@@ -990,3 +990,54 @@ body { background-color: #FFFFFF; color: #484848; }
 .feedback_requests {
     font-weight: bold;
 }
+
+@media screen and (min-width: 481px) and (max-width: 767px){
+  #reviews .site-wrapper {
+    width: 160px;
+    font-size: 12px;
+    height: 30px;
+  }
+
+  #sortable .review_site-buttons {
+      display: inline-block;
+      width: auto;
+  }
+
+  #sortable .btnLink {
+    font-size: 10px;
+    margin-left: 2px;
+  }
+
+  .review_site_on img, .review_site_off img{
+    width: 10%;
+  }
+}
+
+@media screen and (max-width: 480px){
+  #reviews .site-wrapper img.imgicon {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #reviews .site-wrapper {
+    width: 120px;
+    font-size: 10px;
+    height: 28px;
+    padding: 2px;
+  }
+
+  #sortable .btnLink {
+    font-size: 10px;
+    margin-left: 0;
+  }
+
+  #sortable .review_site-buttons {
+    display: block;
+    width: auto;
+    margin-bottom: 10px;
+  }
+
+  #reviews .ui-state-default{
+    height: auto;
+  }
+}
