@@ -447,8 +447,8 @@
                         <hr>
                         <div class="row">
                             <div class="col-xs-12">
-                               <!-- <a href="http://<?=$agency->custom_domain; ?>.getmobilereviews.com" target="_blank"><button class="btn btn-primary" type="button" style="margin-top: 20px;">Preview Landing Page</button></a>-->
-                               <a  href="http://<?=$agency->custom_domain; ?>.getmobilereviews.com" target="_blank">preview landing</a>
+                               <a href="http://<?=$agency->custom_domain; ?>.getmobilereviews.com" target="_blank"><button class="btn btn-primary" type="button" style="margin-top: 20px;">Preview Landing Page</button></a>
+                               
                             </div>
                         </div>
                     </div>

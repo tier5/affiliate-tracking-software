@@ -67,7 +67,7 @@ class IndexController extends ControllerBase {
                 $this->view->pick('admindashboard/index');
             } else {
                 if(!$isBusiness) {
-                    $this->response->redirect('/agency');
+                    //$this->response->redirect('/agency');
                     return;
                 }
             }
