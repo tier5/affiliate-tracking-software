@@ -348,7 +348,9 @@
                         <td>
                           <div class="review <?=$rowclass?>">
                             <div class="rowbuttons">
-                              <a class="btnLink btnSecondary" href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://www.facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank">View</a>
+                              <a class="btnLink btnSecondary fb_link" 
+                                <?php if($data->rating_type_id==1)
+                                {?> onclick='facebookClickHandler(<?=$facebook_page_id;?>)' <?php } ?>  href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://www.facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank">View</a>
 
                              <!-- <a class="btnLink btnSecondary" onclick="view_review(<?php echo $data->review_id?>,'more')" id="vm_<?php echo $data->review_id?>">View</a>-->
                               
