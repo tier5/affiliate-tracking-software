@@ -71,6 +71,7 @@ class IndexController extends ControllerBase {
                     //$this->response->redirect('/agency');
                     //return;
  /** agency redirect 23.11.2016**/
+            echo "Hello";
                     
             $parts = explode(".", $_SERVER['SERVER_NAME']);
             if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
