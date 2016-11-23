@@ -185,7 +185,7 @@
                         if($review_site_list->review_site_id ==1){
                         ?><a
                           class="btnLink btnSecondary track-link"  id="facebooklink1" 
-                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" target="_blank"  data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>">
+                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="http://facebook.com/<?=$review_site_list->external_id?> target="_blank"  data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>">
                           View
                         </a> <?php } else {?> 
                           <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank">View</a>
