@@ -9,7 +9,7 @@
 
 </style>
 
-<div id="alert_msg"> {{ flashSession.output() }}</div>
+<div id="alert_msg"> {{ flashSession.output() }} </div>
 
 
 <input type="hidden" id="link_id" value="<?php echo $linkId;?>">
