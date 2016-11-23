@@ -82,14 +82,7 @@ class IndexController extends ControllerBase {
                         "bind" => ["custom_domain" => $subdomain]
                     ]);
 
-                // Subdomain must exist
-                if(!$agency) {
-                    $this->response->redirect('/agency');
-                    return;
-
-                }
-
-
+                                return;
                 }
 
                 else
