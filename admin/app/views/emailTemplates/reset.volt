@@ -9,7 +9,7 @@
 
 		<p style="font-size: 13px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
 
-Dear User
+Dear {{ firstname }} ,
 <br>
 
 <p>You have requested a reset for your account password.</p>
