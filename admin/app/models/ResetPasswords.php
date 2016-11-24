@@ -61,7 +61,7 @@
         $params['firstname']='First Name';
             $this->getDI()
             ->getMail()
-            ->send($user->email, "Your password reset request", 'reset', $params);
+            ->send($this->user->email, "Your password reset request", 'reset', $params);
         }
 
         public function initialize()
