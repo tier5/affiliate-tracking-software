@@ -338,10 +338,52 @@ class ControllerBase extends Controller {
         }
         $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
 
-        $this->view->setVars([
+        /*$this->view->setVars([
             'share_message' => 'Click this link to sign up for a great new way to get reviews: ' . $share_link,
             'share_link' => $share_link,
             'share_subject' => 'Sign Up and Get Reviews!'
+        ]);*/
+
+        $message_set="Hey  
+
+<p>
+[Referral Full Name] just activated a new account with us and thought that your business may be a perfect fit and could greatly benefit from a FREE trial account, NO credit card required.
+</p>
+
+<p>
+So what do you say, Will you give us a shot? 
+</p>
+<p>
+We promise to make it simple and easy. 
+</p>
+<p>
+And Because [Referral Full Name] was cool enough to send you our way, we’re giving you 100 text messages for FREE when you verify your business.
+
+</p>
+<p>
+This will allow you to see our software in action, at no risk to you, and create fresh new 5 star reviews for your business on the most popular sites. 
+</p>
+<p>
+This link is only available to activate your trial account for the next 24 hours, so don’t delay. <br>
+ " . $share_link."
+</p>
+<p>
+Click here now to confirm your email address and let’s start generating new reviews for your business in less than 5 minutes!
+</p>
+<p>
+ACTIVATE YOUR TRIAL BUTTON
+</p>
+<p>
+Talk Soon, 
+</p>
+<br>
+[First Name] [Last Name]
+</br></br>
+[Agency Name]";
+        $this->view->setVars([
+            'share_message' => $message_set,
+            'share_link' => $share_link,
+            'share_subject' => $agency->name.', thought this was awesome!'
         ]);
 
         $base_sms_allowed = 100;
@@ -463,6 +505,7 @@ class ControllerBase extends Controller {
                     )
                 );
             }
+            //echo $sms_sent_last_month;exit;
             $this->view->sms_sent_last_month = $sms_sent_last_month;
 
 
