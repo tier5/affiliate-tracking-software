@@ -135,11 +135,44 @@ class Email{
 
     public function sendResetPasswordEmailToUser(Users $user){
         //echo 'kk';exit;
-        $this->getDI()
+       /* $this->getDI()
             ->getMail()
             ->send($user->email, "Your password reset request", 'reset', array(
                 'resetUrl' => '/reset-password/' . $this->code . '/' . $user->email
-            ));
+            ));*/
+
+             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
+        if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            $AgencyName = "Review Velocity";
+            $AgencyUser = "Zach";
+           // $EmailFrom = "zacha@reviewvelocity.co";
+            
+        }
+        elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
+            $AgencyUser = $objAgencyUser->name;
+            $AgencyName = $objAgency->name;
+            //$EmailFrom = "zacha@reviewvelocity.co";
+
+        }
+        elseif($objAgency->parent_id > 0) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+            $AgencyName = $objParentAgency->name;
+            $AgencyUser = $objAgencyUser->name;
+           // $EmailFrom = "zacha@reviewvelocity.co";
+        }
+
+
+        $params = [];
+        $params['resetUrl'] = '/session/resetPassword/' . $this->code . '/' . $user->email;
+        $params['AgencyUser']=$AgencyUser;
+        $params['AgencyName']=$AgencyName;
+        $params['firstname']=$user->name;
+
+        $this->getDI()
+            ->getMail()
+            ->send($user->email, "Your password reset request", 'reset', $params);
 
         
     }

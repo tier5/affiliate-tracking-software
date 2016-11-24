@@ -47,6 +47,7 @@
          */
         public function afterCreate()
         {
+            //echo $this->usersId;exit;
            // echo 'yy';exit;
             /*$this->getDI()
                 ->getMail()
@@ -55,8 +56,8 @@
                 ));*/
 
 
-                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$this->user->agency_id}");
-        if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+        //$objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$this->user->agency_id}");
+        /*if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach";
             //$EmailFrom = "zacha@reviewvelocity.co";
@@ -68,18 +69,34 @@
             $AgencyName = $objAgency->name;
            // $EmailFrom = "zacha@reviewvelocity.co";
 
-        }
+        }*/
 
-        $params = [];
+       /* $params = [];
         $params['resetUrl'] = '/session/resetPassword/' . $this->code . '/' . $this->user->email;
         $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
         $params['firstname']=$this->user->name;
 
-       // print_r($params);exit;
+       echo '<pre>';print_r($objAgency);exit;
             $this->getDI()
             ->getMail()
-            ->send($this->user->email, "Your password reset request", 'reset', $params);
+            ->send($this->user->email, "Your password reset request", 'reset', $params);*/
+
+                 try {
+          if($this->template == "reset"){
+              $email->sendResetPasswordEmailByUserId($this->usersId);
+          }
+          if($this->template == null){
+              $email->sendResetPasswordEmailByUserId($this->usersId);
+          }
+
+
+      } catch (Exception $e) {
+          print $e;
+        //do nothing
+      }
+
+
         }
 
         public function initialize()
