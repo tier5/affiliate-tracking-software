@@ -406,6 +406,8 @@ Talk Soon,
 
 /**** 24.11.2016 ****/
         $this->view->setVars([
+            'AgencyUser'=> $AgencyUser,
+            'AgencyName'=>$AgencyName,  
             'share_message' => $message_set,
             'share_link' => $share_link,
             'share_subject' => $agency->name.', thought this was awesome!'
