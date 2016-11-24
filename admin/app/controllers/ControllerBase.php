@@ -339,7 +339,7 @@ class ControllerBase extends Controller {
 
         if($Domain=='')
         {
-            $Domain=$publicUrl;
+            $Domain="http://getmobilereviews.com";
         }
         $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
 
@@ -386,7 +386,7 @@ So what do you say, Will you give us a shot?
 We promise to make it simple and easy. 
 </p>
 <p>
-And Because ".$agency->name." was cool enough to send you our way, we’re giving you 100 text messages for FREE when you verify your business.
+And Because ".$agency->name." was cool enough to send you our way, <strong>we’re giving you 100 text messages for FREE when you verify your business</strong>.
 
 </p>
 <p>
@@ -394,10 +394,10 @@ This will allow you to see our software in action, at no risk to you, and create
 </p>
 <p>
 This link is only available to activate your trial account for the next 24 hours, so don’t delay. <br>
- " . $share_link."
+ 
 </p>
 <p>
-Click here now to confirm your email address and let’s start generating new reviews for your business in less than 5 minutes!
+<a href='".$share_link."'>Click here now to confirm your email address </> and let’s start generating new reviews for your business in less than 5 minutes!
 </p>
 <p>
 ACTIVATE YOUR TRIAL BUTTON

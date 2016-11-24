@@ -688,11 +688,12 @@ class SessionController extends ControllerBase {
             if (!$agency->save()) {
                 $this->flash->error($agency->getMessages());
             } else {
+                    $publicUrl="http://getmobilereviews.com";
                     $code=$userObj->id."-".$userObj->name;
                     $link=$publicUrl.'/link/createlink/'.base64_encode($code);
                     $feed_back_email=$userObj->email;
                     $feed_back_subj='Feedback Form';
-                    $feed_back_body='Hi'.$userObj->name.',';
+                    $feed_back_body='Hi '.$userObj->name.',';
                     $feed_back_body=$feed_back_body.'<p>Thank you for activating your account, we have created a mobile landing page so that you can request feedback from your customers in person from your mobile phone.</p><p>Click on the link below and add the the page to your home screen so that you can easily access this page. This link is customized to you so that all feedback and reviews will be tracked back to your account. 
                         </p>
 
