@@ -370,9 +370,7 @@ class ControllerBase extends Controller {
         }
 
 
-        $message_set="Hey  
-
-<p>
+        $message_set="<p>
 ".$agency->name." just activated a new account with us and thought that your business may be a perfect fit and could greatly benefit from a FREE trial account, NO credit card required.
 </p>
 
@@ -403,8 +401,7 @@ ACTIVATE YOUR TRIAL BUTTON
 Talk Soon, 
 </p>
 <br>
-".$AgencyUser."
-</br></br>".$AgencyName;
+".$AgencyUser."<br><br>".$AgencyName;
 
 
 /**** 24.11.2016 ****/

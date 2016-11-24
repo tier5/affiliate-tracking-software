@@ -195,8 +195,12 @@ class Email{
         if($record->parent_id > \Vokuro\Models\Agency::AGENCY) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$record->parent_id}");
             $this->from = $from = $objParentAgency->email_from_name;
+            $AgencyUser = $objParentAgency->name;
+            $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $this->from = $from = 'no-reply@reviewvelocity.co';
+            $AgencyName = "Review Velocity";
+            $AgencyUser = "Zach";
         }
 
         if(!$from) {
@@ -209,8 +213,13 @@ class Email{
         $mail = $this->getDI()->getMail();
         $mail->setFrom($from);
         $params = [];
+        $params['employeeName']=$u->name;
+        $params['AgencyUser']=$AgencyUser;
+        $params['AgencyName']=$AgencyName;
         $params['confirmUrl'] = '/admin/confirmEmail/' . $code . '/' . $u->email;
-        $mail->send($u->email, "Welcome aboard!", 'employee', $params);
+       // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
+
+        $mail->send($u->email, "Activate your account!", 'employee', $params);
 
     }
 
