@@ -72,11 +72,11 @@
 
         $params = [];
         $params['resetUrl'] = '/session/resetPassword/' . $this->code . '/' . $this->user->email;
-        $params['AgencyUser']='test test';
+        $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
         $params['firstname']=$this->user->name;
 
-        print_r($params);exit;
+       // print_r($params);exit;
             $this->getDI()
             ->getMail()
             ->send($this->user->email, "Your password reset request", 'reset', $params);
