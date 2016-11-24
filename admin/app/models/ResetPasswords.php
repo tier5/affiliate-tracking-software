@@ -47,12 +47,21 @@
          */
         public function afterCreate()
         {
-            
-            $this->getDI()
+           // echo 'yy';exit;
+            /*$this->getDI()
                 ->getMail()
                 ->send($this->user->email, "Reset your password", 'reset', array(
                     'resetUrl' => '/session/resetPassword/' . $this->code . '/' . $this->user->email
-                ));
+                ));*/
+
+        $params = [];
+        $params['resetUrl'] = '/session/resetPassword/' . $this->code . '/' . $this->user->email;
+        $params['AgencyUser']='test test';
+        $params['AgencyName']='test1 test1';
+        $params['firstname']='First Name';
+            $this->getDI()
+            ->getMail()
+            ->send($user->email, "Your password reset request", 'reset', $params);
         }
 
         public function initialize()

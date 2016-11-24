@@ -134,20 +134,14 @@ class Email{
     }
 
     public function sendResetPasswordEmailToUser(Users $user){
-        /*$this->getDI()
+        //echo 'kk';exit;
+        $this->getDI()
             ->getMail()
             ->send($user->email, "Your password reset request", 'reset', array(
                 'resetUrl' => '/reset-password/' . $this->code . '/' . $user->email
-            ));*/
+            ));
 
-        $params = [];
-        $params['resetUrl'] = '/reset-password/' . $this->code . '/' . $user->email;
-        $params['AgencyUser']='test test';
-        $params['AgencyName']='test1 test1';
-        $params['firstname']='First Name';
-            $this->getDI()
-            ->getMail()
-            ->send($user->email, "Your password reset request", 'reset', $params);
+        
     }
 
     public function sendActivationEmailToEmployee(Users $u,$from = null){
@@ -198,6 +192,7 @@ class Email{
      */
     public function sendResetPasswordEmailByUserId($user_id)
     {
+        // echo $user_id;exit;
         $users = new Users();
         $record = $users->getById($user_id);
         if ($record) return $this->sendResetPasswordEmailToUser($record);
