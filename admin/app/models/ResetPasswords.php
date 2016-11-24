@@ -81,7 +81,7 @@
             $this->getDI()
             ->getMail()
             ->send($this->user->email, "Your password reset request", 'reset', $params);*/
-
+             $email = new \Vokuro\Services\Email();
                  try {
           if($this->template == "reset"){
               $email->sendResetPasswordEmailByUserId($this->usersId);
