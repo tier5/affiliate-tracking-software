@@ -660,7 +660,7 @@ class SessionController extends ControllerBase {
                     if ($email != '') {
                         try {
                             $Email_set=explode('@',$email);
-                            $header_name="Hey "$Email_set[0].",";
+                            $header_name="Hey ".$Email_set[0].",";
                             $body_message=$header_name.$message;
                             $this->getDI()
                                     ->getMail()
