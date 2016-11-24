@@ -336,6 +336,11 @@ class ControllerBase extends Controller {
         else {
             $Domain = $agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV ? 'reviewvelocity.co' : $agency->custom_domain;
         }
+
+        if($Domain=='')
+        {
+            $Domain=$publicUrl;
+        }
         $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
 
         /*$this->view->setVars([
