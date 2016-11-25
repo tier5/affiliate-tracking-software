@@ -18,8 +18,8 @@
                   </p>
 
 
-Looking forward to working with you
-<br>
+                   <p>Looking forward to working with you.</p>
+
 {{ AgencyUser }}<br/>
                     {{ AgencyName }}
                     <br>

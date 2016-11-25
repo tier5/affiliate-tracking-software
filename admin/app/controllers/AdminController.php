@@ -215,8 +215,31 @@ class AdminController extends ControllerBase {
             ));
         }
 
-        $this->auth->authUserById($confirmation->user->getId());
+        $user_id=$this->auth->authUserById($confirmation->user->getId());
+        echo $user_id;exit;
+        /*** Feedback form ***/
+              /*  $publicUrl="http://getmobilereviews.com";
+                    $code=$userObj->id."-".$userObj->name;
+                    $link=$publicUrl.'/link/createlink/'.base64_encode($code);
+                    $feed_back_email=$userObj->email;
+                    $feed_back_subj='Feedback Form';
+                    $feed_back_body='Hi '.$userObj->name.',';
+                    $feed_back_body=$feed_back_body.'<p>Thank you for activating your account, we have created a mobile landing page so that you can request feedback from your customers in person from your mobile phone. 
+                        </p>
 
+                        <p>Click on the link below and add the the page to your home screen so that you can easily access this page. This link is customized to you so that all feedback and reviews will be tracked back to your account. 
+                        </p>
+
+                        <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online.</p>';
+
+                        $feed_back_body=$feed_back_body.'<a href="'.$link.'">Click Link</a><p>Looking forward to helping you build a strong online reputation.</p>';
+                        $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
+                $this->getDI()
+                                    ->getMail()
+                                    ->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);*/
+
+
+                        /*** Feedback form ***/
         if ($confirmation->user->mustChangePassword == 'Y') {
             $this->flash->success('The email was successfully confirmed. Now you must change your password');
             return $this->response->redirect($this->_activeLanguage . '/session/changePassword');

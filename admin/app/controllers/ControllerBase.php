@@ -406,7 +406,7 @@ ACTIVATE YOUR TRIAL BUTTON
 Talk Soon, 
 </p>
 <br>
-".$AgencyUser."<br><br>".$AgencyName;
+".$AgencyUser."<br>".$AgencyName;
 
 
 /**** 24.11.2016 ****/

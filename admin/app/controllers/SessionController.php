@@ -699,7 +699,7 @@ class SessionController extends ControllerBase {
 
                         <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online. </p>';
                         $feed_back_body=$feed_back_body.'<a href="'.$link.'">Click Link</a><p>Looking forward to helping you build a strong online reputation.</p>';
-                        $feed_back_body=$feed_back_body."<br><br>".$AgencyUser."<br></br>Co-Founder,".$AgencyName;
+                        $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                 $this->getDI()
                                     ->getMail()
                                     ->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
