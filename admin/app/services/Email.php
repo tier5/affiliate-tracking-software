@@ -56,7 +56,7 @@ class Email{
         $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Review Velocity";
-            $AgencyUser = "Zach";
+            $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
             
         }
@@ -77,7 +77,7 @@ class Email{
 
         $params = [
             'confirmUrl'=> '/confirm/' . $record->code . '/' . $user->email,
-            'firstName' => $user->getFirstName(),
+            'firstName' =>  $user->name,
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
         ];
@@ -144,7 +144,7 @@ class Email{
              $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Review Velocity";
-            $AgencyUser = "Zach";
+            $AgencyUser = "Zach Anderson";
            // $EmailFrom = "zacha@reviewvelocity.co";
             
         }

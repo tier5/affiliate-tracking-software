@@ -667,7 +667,7 @@ class SessionController extends ControllerBase {
                             $body_message=$header_name.$message;
                             $this->getDI()
                                     ->getMail()
-                                    ->send($email, $subject, '', '', $body_message);
+                                    ->send($email, $subject, '', '', $message);
                         } catch (Exception $e) {
                             // do nothing, just ignore
                         }
