@@ -215,8 +215,8 @@ class AdminController extends ControllerBase {
             ));
         }
 
-        $user_id=$this->auth->authUserById($confirmation->user->getId());
-        echo $user_id;exit;
+        $this->auth->authUserById($confirmation->user->getId());
+        echo $confirmation->user->id;exit;
         /*** Feedback form ***/
               /*  $publicUrl="http://getmobilereviews.com";
                     $code=$userObj->id."-".$userObj->name;
