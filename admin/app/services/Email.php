@@ -76,7 +76,7 @@ class Email{
             $AgencyUser = $objAgencyUser->name;
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
-            $EmailFrom = $objParentAgency->email_from_address ?: 'no_reply@' . $objParentAgency->custom_domain;
+            $EmailFrom = $objParentAgency->email_from_address ?: 'no_reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
         }
          if($AgencyName =='') {
             
@@ -116,7 +116,10 @@ class Email{
             }
             else {
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
-                $mail->setFrom($objAgency->email);
+                if(!$objAgency->email_from_address && !$objAgency->custom_domain)
+                    throw new \Exception("Your email from address or your custom domain needs to be set to send email");
+                $EmailFrom = $objAgency->email_from_address ?: 'no_reply@' . $objAgency->custom_domain . '.getmobilereviews.com';
+                $mail->setFrom($EmailFrom);
                 $FullDomain = "{$objAgency->custom_domain}.getmobilereviews.com";
             }
             $objEmployees = $dbEmployees;
