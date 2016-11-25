@@ -77,6 +77,7 @@ class Email{
             $EmailFrom = "zacha@reviewvelocity.co";
         }
          if($AgencyName =='') {
+            
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
