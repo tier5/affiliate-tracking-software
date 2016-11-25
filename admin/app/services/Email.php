@@ -178,7 +178,7 @@ class Email{
     }
 
     public function sendActivationEmailToEmployee(Users $u,$from = null,$businessname=null){
-        echo $businessname;exit;
+        //echo $businessname;exit;
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($u->getId());
 
@@ -230,7 +230,7 @@ class Email{
         $params['employeeName']=$u->name;
         $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
-        $params['BusinessName']=$userObj->name;
+        $params['BusinessName']=$businessname;
         $params['confirmUrl'] = '/admin/confirmEmail/' . $code . '/' . $u->email;
        // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
 
