@@ -219,12 +219,17 @@ class Email{
         if(!$u->is_employee){
             throw new \Exception('Cannot send an employee activation email to someone that is not an employee');
         }
+
+            $conditions = "id = :id:";
+            $parameters = array("id" => $identity['id']);
+            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
         $mail = $this->getDI()->getMail();
         $mail->setFrom($from);
         $params = [];
         $params['employeeName']=$u->name;
         $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
+        $params['BusinessName']=$userObj->name;
         $params['confirmUrl'] = '/admin/confirmEmail/' . $code . '/' . $u->email;
        // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
 

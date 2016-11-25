@@ -5,8 +5,24 @@
 	<tbody>
         <tr>
             <td style="padding:40px 0 40px 0;">
+            	Hi {{employeeName}},
+            	<p>
+            		We’ve just created your profile for {{BusinessName}} within our software. 
+
+            	</p>
                 <p style="font-size: 13px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
-                    Please confirm your employee account <a href="http://{{ publicUrl }}{{ confirmUrl }}">by clicking here.</a>
+
+                	When you <a href="http://{{ publicUrl }}{{ confirmUrl }}"><i>Click Here and Activate Your Profile Now</i></a>you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+
+                  <a href="http://{{ publicUrl }}{{ confirmUrl }}"> ACTIVATE HERE </a>
+
+
+Looking forward to working with you
+<br>
+{{ AgencyUser }}<br/>
+                    Co-Founder, {{ AgencyName }}
+                    <br>
+
                 </p>
             </td>
         </tr>
