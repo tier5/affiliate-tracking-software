@@ -74,6 +74,7 @@ class Email{
             $AgencyUser = $objAgencyUser->name;
             $EmailFrom = "zacha@reviewvelocity.co";
         }
+        echo $objAgency->parent_id;exit;
 
         $params = [
             'confirmUrl'=> '/confirm/' . $record->code . '/' . $user->email,
@@ -163,7 +164,7 @@ class Email{
             $AgencyUser = $objAgencyUser->name;
            // $EmailFrom = "zacha@reviewvelocity.co";
         }
-        echo $objAgency->parent_id;exit;
+       
 
 
         $params = [];

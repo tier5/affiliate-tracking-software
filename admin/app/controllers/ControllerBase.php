@@ -375,7 +375,7 @@ class ControllerBase extends Controller {
         }
 
 
-        $message_set="<p>
+        $message_set=" Hey Buddy,<p>
 ".$agency->name." just activated a new account with us and thought that your business may be a perfect fit and could greatly benefit from a FREE trial account, NO credit card required.
 </p>
 
@@ -397,7 +397,7 @@ This link is only available to activate your trial account for the next 24 hours
  
 </p>
 <p>
-<a href='".$share_link."'>Click here now to confirm your email address </> and let’s start generating new reviews for your business in less than 5 minutes!
+<a href='".$share_link."'>Click here now to confirm your email address </a> and let’s start generating new reviews for your business in less than 5 minutes!
 </p>
 <p>
 ACTIVATE YOUR TRIAL BUTTON
