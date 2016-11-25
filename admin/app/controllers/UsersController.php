@@ -169,6 +169,7 @@
             $conditions = "id = :id:";
             $parameters = array("id" => $identity['id']);
             $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+            $businessname=$userObj->name;
 
             if (defined('RV_TESTING') || $this->request->isPost()) {
                 if(defined('RV_TESTING')) $_POST = $data;
@@ -229,7 +230,7 @@
 
                     if($user->is_employee){
                         $mail = new Email();
-                        $mail->sendActivationEmailToEmployee($user);
+                        $mail->sendActivationEmailToEmployee($user,'',$businessname);
                     }
 
                     $this->flash->success("The user was created successfully");

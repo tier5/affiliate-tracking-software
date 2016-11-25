@@ -177,7 +177,8 @@ class Email{
         
     }
 
-    public function sendActivationEmailToEmployee(Users $u,$from = null){
+    public function sendActivationEmailToEmployee(Users $u,$from = null,$businessname=null){
+        echo $businessname;exit;
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($u->getId());
 
