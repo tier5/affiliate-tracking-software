@@ -101,7 +101,7 @@ class Email{
             $mail = $this->getDI()->getMail();
             if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 $mail->setFrom('zacha@reviewvelocity.co');
-                $FullDomain = "reviewvelocity.co";
+                $FullDomain = "getmobilereviews.com";
             }
             else {
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
@@ -194,7 +194,9 @@ class Email{
         $record = $agency->findFirst('agency_id = '.$u->agency_id);
         if($record->parent_id > \Vokuro\Models\Agency::AGENCY) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$record->parent_id}");
-            $this->from = $from = $objParentAgency->email_from_name;
+            //$this->from = $from = $objParentAgency->email_from_name;
+
+            $this->from = $from = 'zacha@reviewvelocity.co';
             $AgencyUser = $objParentAgency->name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
