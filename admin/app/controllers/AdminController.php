@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 ini_set("display_errors", "on");
 
 use Phalcon\UserPlugin\Models\User\User;
-use Phalcon\UserPlugin\Models\User\Agency;
+use Vokuro\Models\Agency;
 use Phalcon\UserPlugin\Models\User\UserResetPasswords;
 use Phalcon\UserPlugin\Models\User\UserPasswordChanges;
 use Phalcon\UserPlugin\Forms\User\LoginForm;
