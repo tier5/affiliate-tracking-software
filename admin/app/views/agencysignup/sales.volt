@@ -204,7 +204,7 @@
                 </div>
             </div>
 
-            <div class="row bottom-black-border" style="padding-bottom: 10px;">
+            <div class="row bottom-black-border" style="padding-bottom: 20px;">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
                     <span class="description-text">
@@ -243,6 +243,7 @@
             </div>
 
             <div class="row">
+                <div class="col-xs-1"></div>
                 <div class="col-xs-10">
                     <span class="description-text">The account wizard and setup process made getting started a breeze. Our customer experience standards are very high, and this helps us ensure we meet that standard. We now have all of our service techs in the field generating feedback as part of each service call.</span>
                 </div>
