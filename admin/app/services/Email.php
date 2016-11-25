@@ -149,6 +149,7 @@ class Email{
             
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
+
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
             $AgencyUser = $objAgencyUser->name;
             $AgencyName = $objAgency->name;
@@ -162,6 +163,7 @@ class Email{
             $AgencyUser = $objAgencyUser->name;
            // $EmailFrom = "zacha@reviewvelocity.co";
         }
+        echo $objAgency->parent_id;exit;
 
 
         $params = [];
@@ -205,7 +207,10 @@ class Email{
             $this->from = $from = $objParentAgency->email;
             }
             //$this->from = $from = 'zacha@reviewvelocity.co';
-            $AgencyUser = $objParentAgency->name;
+
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$u->agency_id} AND role='Super Admin'");
+
+            $AgencyUser = $objAgencyUser->name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $this->from = $from = 'no-reply@reviewvelocity.co';
