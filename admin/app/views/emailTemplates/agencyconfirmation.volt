@@ -10,7 +10,8 @@
 
                   I really appreciate you joining us at Review Velocity, and I know you’ll love it when you see how easy it is to generate 5-Star reviews for your customers.
                   <br/><br/>
-
+                    We built Review Velocity to help marketing agencies grow their business, and I hope that we can achieve that for you.
+                     <br/><br/>
                    If you wouldn’t mind, I’d love it if you answered one quick question: why did you sign up for Review Velocity?
                     <br/><br/>
 
