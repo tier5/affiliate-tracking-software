@@ -71,10 +71,10 @@
 
     <div class="row form-group small-vertical-margins">
         <div class="col-xs-6">
-            <label>From Name</label><input class="form-control" type="text" name="EmailFromName" value="{{ EmailFromName }}" />
+            <label>From Name</label><span class="required">*</span><input class="form-control" type="text" name="EmailFromName" value="{{ EmailFromName }}" required />
         </div>
         <div class="col-xs-6">
-            <label>From Email Address</label><input class="form-control" type="email" name="EmailFromAddress" value="{{ EmailFromAddress }}" />
+            <label>From Email Address</label><span class="required">*</span><input class="form-control" type="email" name="EmailFromAddress" value="{{ EmailFromAddress }}" required/>
         </div>
     </div>
 
