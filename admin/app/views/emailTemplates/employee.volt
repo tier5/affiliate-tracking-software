@@ -21,7 +21,7 @@
 Looking forward to working with you
 <br>
 {{ AgencyUser }}<br/>
-                    Co-Founder, {{ AgencyName }}
+                    {{ AgencyName }}
                     <br>
 
                 </p>

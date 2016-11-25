@@ -51,6 +51,8 @@ class Email{
     public function sendActivationEmailToUser(Users $user) {
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($user->getId());
+
+        $template='confirmation';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
 
         $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
@@ -74,7 +76,12 @@ class Email{
             $AgencyUser = $objAgencyUser->name;
             $EmailFrom = "zacha@reviewvelocity.co";
         }
-        echo $objAgency->parent_id;exit;
+         elseif($objAgency->parent_id ==0) {
+            $AgencyName = "Review Velocity";
+            $AgencyUser = "Zach Anderson";
+            $EmailFrom = "zacha@reviewvelocity.co";
+            $template="agencyconfirmation";
+         }
 
         $params = [
             'confirmUrl'=> '/confirm/' . $record->code . '/' . $user->email,
@@ -86,7 +93,7 @@ class Email{
         try {
             $mail = $this->getDI()->getMail();
             $mail->setFrom($EmailFrom);
-            $mail->send($user->email, "You’re in :) | PLUS, a quick question...", 'confirmation', $params);
+            $mail->send($user->email, "You’re in :) | PLUS, a quick question...", $template, $params);
         } catch (Exception $e) {
             print $e;
             throw new \Exception('Not able to send email in:'.__CLASS__.'::'.__FUNCTION__);
