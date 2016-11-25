@@ -339,9 +339,9 @@ class ControllerBase extends Controller {
 
         if($Domain=='')
         {
-            $Domain="http://getmobilereviews.com";
+            $Domain="getmobilereviews.com";
         }
-        $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
+        $share_link = $this->googleShortenURL("https://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
 
         /*$this->view->setVars([
             'share_message' => 'Click this link to sign up for a great new way to get reviews: ' . $share_link,

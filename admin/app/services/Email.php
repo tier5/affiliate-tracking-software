@@ -195,14 +195,21 @@ class Email{
         if($record->parent_id > \Vokuro\Models\Agency::AGENCY) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$record->parent_id}");
             //$this->from = $from = $objParentAgency->email_from_name;
-
-            $this->from = $from = 'zacha@reviewvelocity.co';
+            if($objParentAgency->email_from_address)
+            {
+            $this->from = $from = $objParentAgency->email_from_address;
+            }
+            else
+            {
+            $this->from = $from = $objParentAgency->email;
+            }
+            //$this->from = $from = 'zacha@reviewvelocity.co';
             $AgencyUser = $objParentAgency->name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $this->from = $from = 'no-reply@reviewvelocity.co';
             $AgencyName = "Review Velocity";
-            $AgencyUser = "Zach";
+            $AgencyUser = "Zach Anderson";
         }
 
         if(!$from) {
