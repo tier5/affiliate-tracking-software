@@ -825,7 +825,7 @@ class SessionController extends ControllerBase {
      */
     public function antispamAction() {
         $this->view->setTemplateBefore('login');
-        $this->tag->setTitle('Review Velocity | Anti-span Policy');
+        $this->tag->setTitle('Review Velocity | Anti-spam Policy');
     }
 
     /**

@@ -8,13 +8,12 @@
 <FONT FACE="Cambria, serif"><FONT COLOR="#253136"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none"><B>END-USER
 SOFTWARE LICENSE AGREEMENT</B></SPAN></FONT></FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">(Last
 Revised: October 26, 2016)</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">PLEASE
@@ -22,7 +21,7 @@ READ THIS DOCUMENT CAREFULLY BEFORE ORDERING, ACCESSING OR USING THE
 SOFTWARE AND TRAINING REFERRED TO AS &ldquo;{{ agency.name }}&rdquo;
 (HEREINAFTER THE &ldquo;SOFTWARE&rdquo;).</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">IMPORTANT:
@@ -36,27 +35,27 @@ SOFTWARE AND AGREEING TO BECOME BOUND BY THE TERMS OF THIS AGREEMENT.
 IF YOU DO NOT AGREE TO BE BOUND BY THESE TERMS, THEN DO NOT USE THIS
 WEB SITE OR THE SOFTWARE AND TRAINING.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">1.
 DEFINITIONS</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
 &ldquo;LICENSOR&rdquo; means {{ agency.name }} a limited liability company with an address of {{ agency.address }}, {{ agency.address2 }}, {{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
 &ldquo;LICENSEE&rdquo; means you, either an individual or, if
 purchased or otherwise acquired by or for an entity, that entity.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="it-IT"><SPAN STYLE="text-decoration: none">C.
@@ -65,7 +64,7 @@ Equipment&rdquo; shall mean the host server(s) of LICENSOR where the
 software application and any applicable end user data (such as end
 user contact info) is hosted.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">D.
@@ -75,7 +74,7 @@ videos, training audios, frequently asked questions, and other
 related materials pertaining to the Software that are furnished to
 LICENSEE by LICENSOR in connection with the Software.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">E.
@@ -83,20 +82,20 @@ LICENSEE by LICENSOR in connection with the Software.</SPAN></FONT></FONT></FONT
 other recurring term fee that is owed to LICENSOR to continue the
 license.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">F.
 &ldquo;Software&rdquo; shall mean the &ldquo;{{ agency.name }}&ldquo; web-hosted software and any subsequent error corrections or updates
 supplied to LICENSEE by LICENSOR pursuant to this Agreement.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="de-DE"><SPAN STYLE="text-decoration: none">2.
 LICENSE GRANT</SPAN></SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">LICENSOR
@@ -113,13 +112,13 @@ License Fee from LICENSOR, LICENSEE shall have the right to terminate
 this Agreement according to the Termination provision of Section 11
 herein.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="de-DE"><SPAN STYLE="text-decoration: none">3.
 DELIVERY</SPAN></SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">LICENSOR
@@ -128,13 +127,13 @@ shall be responsible for delivering to LICENSEE sufficient details
 LICENSEE to access the Software over an Internet connection and
 utilize its features.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">4.
 MODIFICATIONS</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
@@ -143,7 +142,7 @@ error corrections, bug fixes, patches or other updates to the
 Software licensed to the extent they become available during the time
 that LICENSEE has a valid and fully paid license to use the Software.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
@@ -153,7 +152,7 @@ into the Software. LICENSOR may, in its sole discretion, undertake to
 incorporate such changes and distribute the Software so modified to
 all or any of LICENSOR&rsquo;s licensees.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">C.
@@ -161,13 +160,13 @@ Title to Modifications. All such error corrections, bug fixes,
 patches, updates or other modifications shall be the sole property of
 LICENSOR.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">5.
 COPIES</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">Except
@@ -177,13 +176,13 @@ machine readable form, such as written, printed, or digital
 documents, shall be copied in whole or in part by LICENSEE without
 LICENSOR&rsquo;s prior written agreement.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">6.
 LICENSE FEES AND PAYMENT</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
@@ -194,7 +193,7 @@ amounts payable hereunder by LICENSEE to LICENSOR shall be payable in
 United States funds without deductions for taxes, assessments, fees,
 or charges of any kind.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
@@ -203,13 +202,13 @@ Taxes and Other Charges. LICENSEE shall be responsible for paying all
 charges imposed on the licensing or use of the Software or
 Documentation hereunder.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">7.
 PROTECTION OF SOFTWARE</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
@@ -218,7 +217,7 @@ obliterate, or cancel from view any copyright, trademark,
 confidentiality or other proprietary notice, mark, or legend
 appearing on any of the Software or output generated by the Software.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
@@ -226,7 +225,7 @@ No Reverse Engineering. LICENSEE agrees not to modify, reverse
 engineer, disassemble, or decompile the Software, or any portion
 thereof.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">C.
@@ -239,7 +238,7 @@ further shall secure and protect all Software and Documentation
 consistent with maintenance of LICENSOR&rsquo;s proprietary rights
 therein.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">D.
@@ -249,7 +248,7 @@ company details that are entered into the software by LICENSEE using
 the interface within the Software. Upon termination of this
 Agreement, LICENSEE must cease any and all use of the Software.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">E.
@@ -257,13 +256,13 @@ Backups of Data. LICENSEE shall be solely responsible for the backup
 of LICENSEE&rsquo;s files and/or data that is being used with the
 Software.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">8.
 NAME AND LOGO USAGE</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">LICENSOR
@@ -274,13 +273,13 @@ being listed as one of LICENSOR&rsquo;s clients. LICENSOR shall
 remove LICENSEE&rsquo;s name and logo within ten (14) business days
 of receiving such request.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">9.
 CONFIDENTIALITY</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
@@ -293,7 +292,7 @@ treat (and take precautions to ensure that its employees treat) the
 Software and Documentation as confidential in accordance with the
 confidentiality requirements and conditions set forth below.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
@@ -316,7 +315,7 @@ party; or (5) have been received by the recipient without any
 obligation of confidentiality from a source (other than the
 disclosing party) lawfully having possession of such information.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">C.
@@ -332,7 +331,7 @@ the Software or Documentation, LICENSOR shall be entitled to
 equitable relief to protect its interests therein, including, but not
 limited to, preliminary and permanent injunctive relief.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="pt-PT"><SPAN STYLE="text-decoration: none">D.
@@ -341,13 +340,13 @@ obligations under this Section will survive the termination of this
 Agreement or of any license granted under this Agreement for whatever
 reason.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="de-DE"><SPAN STYLE="text-decoration: none">10.
 WARRANTIES; SUPERIOR RIGHTS</SPAN></SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
@@ -358,7 +357,7 @@ grant licenses thereunder, and that it has not knowingly granted
 licenses thereunder to any other entity that would restrict rights
 granted hereunder except as stated herein.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
@@ -369,7 +368,7 @@ Documentation for such Software during the period that LICENSEE has a
 valid license to use the Software (because all required licensing
 fees have been paid by LICENSEE to LICENSOR).</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">C.
@@ -386,7 +385,7 @@ misunderstanding, incomplete training, power outage, website or
 server maintenance, equipment failure, extreme power surge or extreme
 electromagnetic field.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">D.
@@ -399,7 +398,7 @@ period of a breach of warranty. Any replacement Software will be
 warranted for the remainder of the original warranty period or thirty
 (30) days, whichever is longer.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">E.
@@ -414,7 +413,7 @@ PURPOSE, EVEN IF LICENSOR HAS BEEN INFORMED OF SUCH PURPOSE. NO
 RESELLER OR AGENT OF LICENSOR IS AUTHORIZED TO ALTER OR EXCEED THE
 WARRANTY OBLIGATIONS OF LICENSOR AS SET FORTH HEREIN.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">F.
@@ -446,7 +445,7 @@ hereunder and that, were LICENSOR to assume any further liability
 other than as set forth herein, such consideration would of necessity
 be set substantially higher.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">G.
@@ -461,7 +460,7 @@ addition, a link from LICENSOR&rsquo;s web site(s) does not mean that
 LICENSOR endorses or accept any responsibility for the content, or
 the use, of such web site.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">H.
@@ -477,13 +476,13 @@ included as an option within the Software, LICENSEE shall also be
 responsible for obtaining the proper licenses for any such third
 party service that LICENSEE elects to utilize.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">11.
 TERMINATION</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">A.
@@ -498,7 +497,7 @@ agreement immediately without written notice in the event of a breach
 of this Agreement by LICENSEE, such as if LICENSEE has not paid the
 required License Fee to LICENSOR when due.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><SPAN STYLE="text-decoration: none">B. </SPAN><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">We
@@ -510,7 +509,7 @@ guarantee only applies to paid single business location accounts. If
 you sign up for a multiple location or any account with an upfront
 fee we do not offer a refund of any kind.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><SPAN STYLE="text-decoration: none">C.
@@ -520,14 +519,14 @@ be charged the Subscription price page of your {{ agency.name }} installation
 to continue using the service. You will be charged monthly
 approximately 30 days from the date you make the first payment.</SPAN></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">D.
 If you decide not to continue you plan after your 30 day trial you
 must cancel your account from within the {{ agency.name }} system or cancel your subscription through Paypal.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">E.
@@ -538,7 +537,7 @@ You can cancel your account at any time simply by logging in, going
 to the Subscription page and clicking the &ldquo;Cancel my account&rdquo;
 link.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">F.
@@ -550,7 +549,7 @@ cancel your account at any time simply by logging in, going to the
 payment details page and clicking the &ldquo;Deactivate My Account&rdquo;
 link.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">G.
@@ -559,22 +558,22 @@ if you decide to stop using your account during the year. Once you
 pay for a year upfront your account will be live for 12 months. After
 the 12 months you can either re-new for an entire year, pay month by
 month, or cancel the account.</SPAN></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
+<P STYLE="margin-bottom: 0in; text-decoration: none">
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">H.
 Some accounts may require an upfront payment and we do not offer any
 refunds once the charges have occurred.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">12.
 POST TERMINATION RIGHTS</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
@@ -584,13 +583,13 @@ rights granted to LICENSEE under this Agreement shall forthwith
 terminate and immediately revert to LICENSOR and LICENSEE shall
 discontinue all use of the Software and Documentation.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">13.
 INDEMNITY</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
@@ -602,13 +601,13 @@ of this Agreement, and from LICENSEE&rsquo;s use of the information
 generated by the Software. LICENSEE&rsquo;s obligations under this
 Section will survive the expiration or termination of this Agreement.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="fr-FR"><SPAN STYLE="text-decoration: none">14.
 Force Majeure</SPAN></SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">Neither
@@ -619,13 +618,13 @@ of carriers to make scheduled deliveries, and any payment or delivery
 date shall be extended to the extent of any delay resulting from any
 force majeure event.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">15.
 NOTICES</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
@@ -639,7 +638,7 @@ address to be used for any required notices shall be the address
 provided by its authorized user of the Software, unless another
 address and/or contact is provided for receiving such notices.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
@@ -647,19 +646,19 @@ Either party may change the address to which notice is to be sent by
 written notice to the other party pursuant to the provisions of this
 paragraph.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">16.
 JURISDICTION AND DISPUTES</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
 This Agreement shall be governed by the laws of the State of {% if agency.state_province %}Arizona{% else %} {{ agency_name }} {% endif %}</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
@@ -670,26 +669,26 @@ such judicial body/bodies, agree to accept service of process by
 mail, and waive any jurisdictional or venue defenses otherwise
 available.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">17.
 AGREEMENT BINDING ON SUCCESSORS</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">This
 Agreement shall be binding upon and shall inure to the benefit of the
 parties hereto, their heirs, administrators, successors and assigns.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">18.
 WAIVER</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">No
@@ -697,13 +696,13 @@ waiver by either party of any default shall be deemed as a waiver of
 any prior or subsequent default of the same or other provisions of
 this Agreement.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="de-DE"><SPAN STYLE="text-decoration: none">19.
 SEVERABILITY</SPAN></SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">If
@@ -712,13 +711,13 @@ competent jurisdiction, such invalidity shall not affect the validity
 or operation of any other provision and such invalid provision shall
 be deemed to be severed from the Agreement.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">20.
 ASSIGNABILITY</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
@@ -732,13 +731,13 @@ LICENSOR shall have the right to assign this Agreement to another
 entity as LICENSOR sees fit, such as to a third party that acquires
 some or all of the ownership interests of LICENSOR.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">21.
 INTEGRATION</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">This
@@ -750,26 +749,26 @@ and specifically referring to this Agreement. This Agreement shall
 take precedence over any other documents that may be in conflict
 therewith.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN LANG="de-DE"><SPAN STYLE="text-decoration: none">22.
 MISCELLANEOUS</SPAN></SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
 No RESELLER or agent of LICENSOR is authorized to make any amendment
 to this EULA.</SPAN></FONT></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
+<P STYLE="margin-bottom: 0in; text-decoration: none">
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
-All questions regarding this agreement should be directed to {{ agency.name }} by mail at {{ agency.address }}, {{ agency.address2 }}, {{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}, or by email at: <A HREF="mailto:{{ agency.email }}">{{ agency.email }}</A><BR>
+All questions regarding this agreement should be directed to {{ agency.name }} by mail at {{ agency.address }}, {{ agency.address2 }}, {{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}, or by email at: <A HREF="mailto:{{ agency.email }}">{{ agency.email }}</A>
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">23.
 REFUND POLICY</SPAN></FONT></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
+<P STYLE="margin-bottom: 0in; text-decoration: none">
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">A.
@@ -781,7 +780,7 @@ monthly payment will be cancelled. You can cancel your account at any
 time simply by logging in, going to the subscriptions page and
 clicking the &ldquo;Deactivate My Account&rdquo; link.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">B.
@@ -790,23 +789,23 @@ if you decide to stop using your account during the year. Once you
 pay for a year upfront your account will be live for 12 months. After
 the 12 months you can either re-new for an entire year, pay month by
 month, or cancel the account.</SPAN></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
+<P STYLE="margin-bottom: 0in; text-decoration: none">
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">C.
 Some accounts may require an upfront payment and we do not offer any
 refunds once the charges have occurred.</SPAN></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
+<P STYLE="margin-bottom: 0in; text-decoration: none">
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif">24.
 HIPAA POLICY</FONT></P>
-<P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
+<P STYLE="margin-bottom: 0in; text-decoration: none">
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">This
 policy is intended to clarify our position regarding the Health
 Insurance Portability and Accountability Act of 1996 (HIPAA).</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">Since
@@ -818,7 +817,7 @@ health information. </SPAN></FONT></FONT><FONT COLOR="#262626"><FONT FACE="PT Sa
 designed to help you gather reviews from your customers, and manage
 your reputation across various review sites online.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">Therefore,
@@ -830,7 +829,7 @@ officers, directors, agents, affiliates, and assigns are not liable
 for the disclosure of such information that your customers submit
 willingly to our service and to the review sites we publish to.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">Furthermore,
@@ -846,7 +845,7 @@ liability that arises because you use </SPAN></FONT></FONT><FONT COLOR="#262626"
 the software</SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">
 in a way that it was not designed.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
-<BR>
+
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none"><A NAME="_GoBack"></A>
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">Although
@@ -855,11 +854,11 @@ to note that </SPAN></FONT></FONT><FONT COLOR="#262626"><FONT FACE="PT Sans, ser
 software</SPAN></FONT></FONT><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">
 does use industry standard security and encryption. However, as with
 any service, nothing can be guaranteed to be safe online.</SPAN></FONT></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
+<P STYLE="margin-bottom: 0in; text-decoration: none">
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">We
 reserve the right to modify this HIPAA Policy from time to time.</SPAN></FONT></FONT></FONT></P>
-<P STYLE="margin-bottom: 0in"><BR>
+<P STYLE="margin-bottom: 0in">
 
   <div class="row">
     <div class="col-md-12 col-sm-12">
