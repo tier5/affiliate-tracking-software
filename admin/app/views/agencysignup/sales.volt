@@ -204,7 +204,7 @@
                 </div>
             </div>
 
-            <div class="row bottom-black-border" style="padding-bottom: 20px;">
+            <div class="row bottom-black-border" style="padding-bottom: 10px;">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
                     <span class="description-text">
@@ -231,21 +231,20 @@
             <div class="row">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="title-text">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</span>
+                    <span class="title-text">We Had Our Account Setup And Sending Review Requests In No Time.</span>
                 </div>
             </div>
 
             <div class="row extra-small-vertical-margins">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="subtitle-text">By: Ipsum - May 21, 2016</span>
+                    <span class="subtitle-text">By: Mark - Sept 21, 2016</span>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="description-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis molestie massa, ut gravida felis rhoncus eget. Maecenas lectus libero, luctus at nisl vel, iaculis blandit erat. Donec eu tellus in tortor iaculis semper. Ut bibendum tortor convallis turpis pellentesque, eget rhoncus metus mollis.</span>
+                    <span class="description-text">The account wizard and setup process made getting started a breeze. Our customer experience standards are very high, and this helps us ensure we meet that standard. We now have all of our service techs in the field generating feedback as part of each service call.</span>
                 </div>
             </div>
 
@@ -264,21 +263,21 @@
             <div class="row">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="title-text">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</span>
+                    <span class="title-text">We Saw Results Immediately - Adding Dozens of New Reviews The First Month</span>
                 </div>
             </div>
 
             <div class="row extra-small-vertical-margins">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="subtitle-text">By: Ipsum - May 21, 2016</span>
+                    <span class="subtitle-text">By: Joanna - Aug 7, 2016</span>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="description-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis molestie massa, ut gravida felis rhoncus eget. Maecenas lectus libero, luctus at nisl vel, iaculis blandit erat. Donec eu tellus in tortor iaculis semper. Ut bibendum tortor convallis turpis pellentesque, eget rhoncus metus mollis.</span>
+                    <span class="description-text">I usually struggle with technology and was pleasantly surprised with how easy it was to get started and send out feedback requests. We started seeing new reviews being posted online in the first few days. All I did was put in my customers numbers and the software did the rest. Simply Amazing!</span>
                 </div>
             </div>
         </div>
