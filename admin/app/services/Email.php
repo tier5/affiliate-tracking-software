@@ -219,7 +219,7 @@ class Email{
         if(!$u->is_employee){
             throw new \Exception('Cannot send an employee activation email to someone that is not an employee');
         }
-
+            $identity = $this->auth->getIdentity();
             $conditions = "id = :id:";
             $parameters = array("id" => $identity['id']);
             $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
