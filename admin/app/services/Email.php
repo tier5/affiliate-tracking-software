@@ -76,7 +76,7 @@ class Email{
             $AgencyUser = $objAgencyUser->name;
             $EmailFrom = "zacha@reviewvelocity.co";
         }
-         elseif($objAgency->parent_id ==0) {
+         if($AgencyName =='') {
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
