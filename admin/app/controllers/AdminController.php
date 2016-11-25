@@ -216,14 +216,32 @@ class AdminController extends ControllerBase {
         }
 
         $this->auth->authUserById($confirmation->user->getId());
-        echo $confirmation->user->id;exit;
+        //echo $confirmation->user->id;exit;
+
+
+            /*** agency information ***/
+
+
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $confirmation->user->agency_id);
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+        $AgencyUser=$agency->name;
+
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency->parent_id);
+        $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+        $AgencyName=$parent_agency->name;
+            /*** agency information ***/
+
         /*** Feedback form ***/
-              /*  $publicUrl="http://getmobilereviews.com";
-                    $code=$userObj->id."-".$userObj->name;
+               $publicUrl="http://getmobilereviews.com";
+                    $code=$confirmation->user->id."-".$confirmation->user->name;
                     $link=$publicUrl.'/link/createlink/'.base64_encode($code);
-                    $feed_back_email=$userObj->email;
+                    $feed_back_email=$confirmation->user->email;
                     $feed_back_subj='Feedback Form';
-                    $feed_back_body='Hi '.$userObj->name.',';
+                    $feed_back_body='Hi '.$confirmation->user->name.',';
                     $feed_back_body=$feed_back_body.'<p>Thank you for activating your account, we have created a mobile landing page so that you can request feedback from your customers in person from your mobile phone. 
                         </p>
 
@@ -236,7 +254,7 @@ class AdminController extends ControllerBase {
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                 $this->getDI()
                                     ->getMail()
-                                    ->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);*/
+                                    ->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
 
 
                         /*** Feedback form ***/
