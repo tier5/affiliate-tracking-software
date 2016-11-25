@@ -54,7 +54,7 @@
         <div class="form-actions">
             <button type="button" id="register-submit-btn" class="btnsignup uppercase">CREATE MY ACCOUNT</button>
             <div class="signup-footer">By clicking this button, you agree to {{ agency_name }}'s
-                <a href="/session/antispam">Anti-spam Policy</a> &amp; <a href="/session/privacy">Privacy Policy</a> &amp; <a href="/session/terms">Terms of Use</a>.
+                <a href="/session/antispam">Anti-spam Policy</a>, <a href="/session/privacy">Privacy Policy</a> &amp; <a href="/session/terms">Terms of Use</a>.
             </div>
         </div>
         <div style="clear: both;">&nbsp;</div>
