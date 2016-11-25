@@ -9,7 +9,7 @@ use Vokuro\Models\Users;
  */
 class Email{
 
-    protected $from = 'zacha@reviewvelocity.co';
+    protected $from = 'no-reply@no-domain.com';
 
     /**
      * @var \Phalcon\DiInterface
@@ -74,7 +74,9 @@ class Email{
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
-            $EmailFrom = "zacha@reviewvelocity.co";
+            if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                throw new \Exception("Your email from address or your custom domain needs to be set to send email");
+            $EmailFrom = $objParentAgency->email_from_address ?: 'no_reply@' . $objParentAgency->custom_domain;
         }
          if($AgencyName =='') {
             
