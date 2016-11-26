@@ -148,8 +148,8 @@ style="margin: 4px;"
                                 <div class="">
                                     <img src="/img/phone-sms.png"/>
                                 </div>
-                                <div class="content-top">{name}, thank you for visiting
-                                    <span class="business-name"></span> we'd appreciate your feedback please click the link below. Thanks! {link}
+                                <div class="content-top">Hi {name}, thanks for visiting
+                                    <span class="business-name"></span> we'd really appreciate your feedback by clicking the following link {link}. Thanks!
                                 </div>
                             </div>
                         </div>

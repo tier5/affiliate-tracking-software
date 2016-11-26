@@ -410,7 +410,7 @@ This link is only available to activate your trial account for the next 24 hours
  
 </p>
 <p>
-<a href='".$share_link."'>Click here now to confirm your email address </a> and let’s start generating new reviews for your business in less than 5 minutes!
+<a href='".$share_link."'>Click here now to confirm your email address </a> and let's start generating new reviews for your business in less than 5 minutes!
 </p>
 <p>
 <a href='".$share_link."'>ACTIVATE YOUR TRIAL </a>
