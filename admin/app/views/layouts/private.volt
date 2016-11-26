@@ -147,7 +147,7 @@
                 {% else %}
 
                 <img src="<?=$this->view->logo_path;?>" alt="logo" 
-                style="max-width: 300px;" class="logo-default"/>
+                style="max-width: 300px;width:100%" class="logo-default not_agency"/>
                 {% endif %}
                
             </a>
