@@ -41,7 +41,7 @@
 
         public function initialize() {
 
-            $this->tag->setTitle('Review Velocity | Locations');
+            $this->tag->setTitle('Get Mobile Reviews | Locations');
             if ($this->session->has('auth-identity')) {
                 $this->view->setTemplateBefore('private');
             } else if (strpos($_SERVER['REQUEST_URI'], 'cron') > 0) {
@@ -212,7 +212,7 @@
         public function getYelpPagesAction($LocationID, $RedirectToSession = 0) {
             if($RedirectToSession) {
                 $this->view->setTemplateBefore('signup');
-                $this->tag->setTitle('Review Velocity | Sign up | Step 2 | Add Location');
+                $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
                 $this->view->current_step = 2;
             }
             $objReviewsService = new \Vokuro\Services\Reviews();
@@ -226,7 +226,7 @@
         public function getGooglePagesAction($LocationID, $RedirectToSession = 0) {
             if($RedirectToSession) {
                 $this->view->setTemplateBefore('signup');
-                $this->tag->setTitle('Review Velocity | Sign up | Step 2 | Add Location');
+                $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
                 $this->view->current_step = 2;
             }
             $objReviewsService = new \Vokuro\Services\Reviews();
@@ -242,7 +242,7 @@
         public function getFacebookPagesAction($LocationID, $RedirectToSession = 0) {
             if($RedirectToSession) {
                 $this->view->setTemplateBefore('signup');
-                $this->tag->setTitle('Review Velocity | Sign up | Step 2 | Add Location');
+                $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
                 $this->view->current_step = 2;
             }
             $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
@@ -733,7 +733,7 @@
         public function editAction($location_id, $include_customize_survey = 0, $ComingFromSignup = 0) {
             if($ComingFromSignup) {
                 $this->view->setTemplateBefore('signup');
-                $this->tag->setTitle('Review Velocity | Sign up | Step 2 | Add Location');
+                $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
                 $this->view->current_step = 2;
             }
             $this->view->ComingFromSignup = $ComingFromSignup;

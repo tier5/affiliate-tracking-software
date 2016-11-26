@@ -224,7 +224,7 @@
                             <span data-value="<?=$total_reviews_location?>" style="color: #2A3644;"><?=$total_reviews_location?></span>
                         </div>
                         <div class="text">
-                            New Reviews Since Joining Review Velocity
+                            New Reviews Since Joining Get Mobile Reviews
                         </div>
                     </div>
                 </div>

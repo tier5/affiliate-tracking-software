@@ -10,7 +10,7 @@ Policy</B></SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <BR>
 </P>
-<P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">Review Velocity has a zero tolerance policy for SMS spam. Subscribers will
+<P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">Get Mobile Reviews has a zero tolerance policy for SMS spam. Subscribers will
 only receive SMS messages from campaigns that they have opted into
 directly through a business or reseller agency.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><BR>

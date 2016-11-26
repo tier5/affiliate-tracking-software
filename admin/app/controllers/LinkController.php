@@ -44,7 +44,7 @@
 
          public function initialize() {
 
-            $this->tag->setTitle('Review Velocity | Link');
+            $this->tag->setTitle('Get Mobile Reviews | Link');
             
             $path_to_admin = realpath(__DIR__ . '/../../');
             include_once $path_to_admin . '/app/library/Google/mybusiness/Mybusiness.php';
@@ -245,7 +245,7 @@
                             //$this->flash->success("The SMS was sent successfully to: " . $phone);
                             //$this->view->render('users', 'reviewmsg');
 
-                            $this->flashSession->success("The SMS was sent successfully to: " . $phone.".This page will automatically refresh in 5 seconds.".$message);
+                            $this->flashSession->success("The SMS was sent successfully to: " . $phone.".This page will automatically refresh in 5 seconds.");
                             $this->view->disable();
                             return $this->response->redirect('link/send_review_invite_employee/'.$uid);
                             

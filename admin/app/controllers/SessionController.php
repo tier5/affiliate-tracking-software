@@ -44,7 +44,7 @@ class SessionController extends ControllerBase {
     public function indexAction() {
         $this->view->setTemplateBefore('login');
 
-        $this->tag->setTitle('Review Velocity | Subscription');
+        $this->tag->setTitle('Get Mobile Reviews | Subscription');
     }
 
     // Also will 404 on invalid subdomain
@@ -54,7 +54,7 @@ class SessionController extends ControllerBase {
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objPricingPlan->user_id}");
             return $objUser->agency_id;
         }
-        // Determine if business under an agency or review velocity
+        // Determine if business under an agency or Get Mobile Reviews
             $parts = explode(".", $_SERVER['SERVER_NAME']);
             if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
                 $subdomain = $parts[0];
@@ -79,7 +79,7 @@ class SessionController extends ControllerBase {
                 $this->view->logo_path = (!empty($objParentAgency->logo_path)) ? '/img/agency_logos/'.$objParentAgency->logo_path : '';
 
             } else {
-                // Review velocity
+                // Get Mobile Reviews
                 $ParentID = \Vokuro\Models\Agency::BUSINESS_UNDER_RV;
                 $this->view->main_color_setting = $this->view->PrimaryColor = '#2a3644';
                 $this->view->SecondaryColor = '#65CE4D';
@@ -302,7 +302,7 @@ class SessionController extends ControllerBase {
             }
         }
 
-        $this->tag->setTitle('Review Velocity | Plan: '.$white_label);
+        $this->tag->setTitle('Get Mobile Reviews | Plan: '.$white_label);
         $this->view->setTemplateBefore('login');
 
         /* Get services */
@@ -348,7 +348,7 @@ class SessionController extends ControllerBase {
             $short_code = $this->request->getPost('short_code');
         }
         $this->view->setTemplateBefore('signup');
-        $this->tag->setTitle('Review Velocity | Sign up | Step 2 | Add Location');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
 
         //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
@@ -482,7 +482,7 @@ class SessionController extends ControllerBase {
     /* public function signup3Action($subscription_id = 0) { */
     public function signup3Action($pricingProfileToken = 0) {
         $this->view->setTemplateBefore('signup');
-        $this->tag->setTitle('Review Velocity | Sign up | Step 3 | Customize Survey');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 3 | Customize Survey');
 
         $identity = $this->auth->getIdentity();
         // If there is no identity available the user is redirected to index/index
@@ -548,7 +548,7 @@ class SessionController extends ControllerBase {
         Utils::noSubDomains(4, $this->validSubDomains, $pricingProfileToken);
 
         $this->view->setTemplateBefore('signup');
-        $this->tag->setTitle('Review Velocity | Sign up | Step 4 | Add Employee');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 4 | Add Employee');
 
         //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
@@ -617,7 +617,7 @@ class SessionController extends ControllerBase {
         Utils::noSubDomains(5, $this->validSubDomains, $pricingProfileToken);
 
         $this->view->setTemplateBefore('signup');
-        $this->tag->setTitle('Review Velocity | Sign up | Step 5 | Share');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 5 | Share');
         $this->view->messages_sent = false;;
         //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
@@ -664,7 +664,17 @@ class SessionController extends ControllerBase {
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
                 if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                     throw \Exception("Contact customer support.  Email configuration not setup correctly");
-                $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+               // $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+                //$EmailFrom = $objParentAgency->email_from_address;
+
+                if(!$objParentAgency->email_from_address)
+                {
+                    $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+                }
+                else
+                {
+                   $EmailFrom =  $objParentAgency->email_from_address;
+                }
             }
 
             if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
@@ -673,7 +683,15 @@ class SessionController extends ControllerBase {
             if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                 if(!$agency->email_from_address && !$agency->custom_domain)
                     throw \Exception("Contact customer support.  Email configuration not setup correctly");
-                $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+              //  $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+                if(!$agency->email_from_address)
+                {
+                     $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+                }
+                else
+                {
+                   $EmailFrom = $agency->email_from_address; 
+                }
             }
 
             //loop through all the emails
@@ -734,7 +752,11 @@ class SessionController extends ControllerBase {
                         </p>
 
                         <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online. </p>';
-                        $feed_back_body=$feed_back_body.'<a href="'.$link.'">Click Link</a><p>Looking forward to helping you build a strong online reputation.</p>';
+                        $feed_back_body=$feed_back_body.'<a href="'.$link.'">Personalized Feedback Form - Click Here </a>
+                            <p>
+                            Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. 
+                            </p>
+                        <p>Looking forward to helping you build a strong online reputation.</p>';
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                     $Mail = $this->getDI()->getMail();
                     $Mail->setFrom($EmailFrom);
@@ -753,7 +775,7 @@ class SessionController extends ControllerBase {
      */
     public function thankyouAction() {
         $this->view->setTemplateBefore('login');
-        $this->tag->setTitle('Review Velocity | Thank You');
+        $this->tag->setTitle('Get Mobile Reviews | Thank You');
 
         //test code below, uncomment to test
         //$_SESSION['name']='Test Tester';
@@ -761,7 +783,7 @@ class SessionController extends ControllerBase {
     }
 
     public function changePasswordAction() {
-    	$this->tag->setTitle('Review Velocity | Change Password');
+    	$this->tag->setTitle('Get Mobile Reviews | Change Password');
     	$this->view->setTemplateBefore('login');
     }
     /**
@@ -769,7 +791,7 @@ class SessionController extends ControllerBase {
      */
     public function resetPasswordAction($code = 0, $userId = 0) {
     	//$this->view->setTemplateBefore('login');
-    	$this->tag->setTitle('Review Velocity | Change Password');
+    	$this->tag->setTitle('Get Mobile Reviews | Change Password');
 
     	$resetPassword = ResetPasswords::findFirstByCode($code);
     	$conditions = "id = :id:";
@@ -831,7 +853,7 @@ class SessionController extends ControllerBase {
      */
     public function privacyAction() {
     	$this->view->setTemplateBefore('login');
-    	$this->tag->setTitle('Review Velocity | Privacy');
+    	$this->tag->setTitle('Get Mobile Reviews | Privacy');
     
     }
 
@@ -840,7 +862,7 @@ class SessionController extends ControllerBase {
      */
     public function resellerAction() {
     	$this->view->setTemplateBefore('login');
-    	$this->tag->setTitle('Review Velocity | Reseller Agreement');
+    	$this->tag->setTitle('Get Mobile Reviews | Reseller Agreement');
     
     }
     
@@ -849,7 +871,7 @@ class SessionController extends ControllerBase {
      */
     public function termsAction() {
         $this->view->setTemplateBefore('login');
-        $this->tag->setTitle('Review Velocity | Terms');
+        $this->tag->setTitle('Get Mobile Reviews | Terms');
     }
 
     /**
@@ -857,7 +879,7 @@ class SessionController extends ControllerBase {
      */
     public function antispamAction() {
         $this->view->setTemplateBefore('login');
-        $this->tag->setTitle('Review Velocity | Anti-spam Policy');
+        $this->tag->setTitle('Get Mobile Reviews | Anti-spam Policy');
     }
 
     /**
@@ -865,7 +887,7 @@ class SessionController extends ControllerBase {
      */
     public function RVprivacyAction() {
     	$this->view->setTemplateBefore('login');
-    	$this->tag->setTitle('Review Velocity | Privacy');
+    	$this->tag->setTitle('Get Mobile Reviews | Privacy');
     
     }
     
@@ -874,7 +896,7 @@ class SessionController extends ControllerBase {
      */
     public function RVresellerAction() {
     	$this->view->setTemplateBefore('login');
-    	$this->tag->setTitle('Review Velocity | Reseller Agreement');
+    	$this->tag->setTitle('Get Mobile Reviews | Reseller Agreement');
     
     }
     
@@ -883,7 +905,7 @@ class SessionController extends ControllerBase {
      */
     public function RVtermsAction() {
     	$this->view->setTemplateBefore('login');
-    	$this->tag->setTitle('Review Velocity | Terms');
+    	$this->tag->setTitle('Get Mobile Reviews | Terms');
     }
     
     /**
@@ -891,7 +913,7 @@ class SessionController extends ControllerBase {
      */
     public function RVantispamAction() {
     	$this->view->setTemplateBefore('login');
-    	$this->tag->setTitle('Review Velocity | Anti-span Policy');
+    	$this->tag->setTitle('Get Mobile Reviews | Anti-span Policy');
     }
     
     
@@ -900,7 +922,7 @@ class SessionController extends ControllerBase {
      */
     public function loginAction() {
         $this->view->setTemplateBefore('login');
-        $this->tag->setTitle('Review Velocity | Login');
+        $this->tag->setTitle('Get Mobile Reviews | Login');
         $form = new LoginForm();
         $email = $this->dispatcher->getParam('email');
         $this->view->email = $email;
@@ -960,7 +982,7 @@ class SessionController extends ControllerBase {
     public function forgotPasswordAction() {
 
         $this->view->setTemplateBefore('login');
-        $this->tag->setTitle('Review Velocity | Forgot password');
+        $this->tag->setTitle('Get Mobile Reviews | Forgot password');
         $form = new ForgotPasswordForm();
 
         if ($this->request->isPost()) {
@@ -1245,7 +1267,7 @@ class SessionController extends ControllerBase {
     public function subscribeAction($subscription_stripe_id = 0) {
 
           $this->view->setTemplateBefore('login');
-          $this->tag->setTitle('Review Velocity | Sign up');
+          $this->tag->setTitle('Get Mobile Reviews | Sign up');
           $form = new SignUpForm();
 
           $this->view->maxlimitreached = $this->isMaxLimitReached();

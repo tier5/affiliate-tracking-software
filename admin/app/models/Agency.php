@@ -64,7 +64,7 @@
         public function initialize() {
            // $this->skipAttributes(['address2']);
 
-            if($this->parent_id != static::AGENCY) {
+            if(isset($this->parent_id) && $this->parent_id != static::AGENCY) {
                 $this->skipAttributes(['website']);
                 $this->skipAttributes(['email_from_name']);
                 $this->skipAttributes(['email_from_address']);

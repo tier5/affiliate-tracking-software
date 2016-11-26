@@ -49,5 +49,5 @@ if ($this->request->isPost()) {
     </div>
     <div class="subtext text-center">We will never share your personal information!</div>
   </div>
-  <div class="footer">Powered By Review Velocity</div>
+  <div class="footer">Powered By Get Mobile Reviews</div>
 </div>

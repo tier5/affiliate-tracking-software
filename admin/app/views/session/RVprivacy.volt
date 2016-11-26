@@ -19,7 +19,7 @@ Revised: October 26, 2016)</SPAN></FONT></FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="PT Sans, serif">Thank
-you for visiting this web site. We, Review Velocity,
+you for visiting this web site. We, Get Mobile Reviews,
 understand the importance that Internet users place on privacy, and
 this Privacy Policy describes how we use personal information that is
 collected at this web site.</FONT></P>
@@ -294,7 +294,7 @@ information that you transmit to us, and you do so at your own risk.</SPAN></FON
 you need to contact us, you can email us at
 </SPAN></FONT></FONT>support@reviewvelocity.co,
 call us at (877) 883-6660,
-or send us a letter at:Review Velocity, 455 Marine View Avenue, Suite 300
+or send us a letter at:Get Mobile Reviews, 455 Marine View Avenue, Suite 300
 Del Mar, CA 92014
 
 </P>

@@ -338,7 +338,7 @@
                                 <label for="SMS_message" class="col-md-4 control-label">SMS Message</label>
                                 <div class="col-md-8">
                                     <textarea style="width: 100%;" class="form-control" name="SMS_message"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($agency->
-                                        SMS_message)?$agency->SMS_message:'{location-name}: Hi {name}, We\'d really appreciate your feedback by clicking the link. Thanks! {link}'))?></textarea>
+                                        SMS_message)?$agency->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks! '))?></textarea>
                                 </div>
                             </div>
                             <div class="row">

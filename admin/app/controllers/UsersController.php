@@ -22,7 +22,7 @@
         public function initialize()
         {
             if ($this->session->has('auth-identity')) {
-                $this->tag->setTitle('Review Velocity | Users');
+                $this->tag->setTitle('Get Mobile Reviews | Users');
                 $this->view->setTemplateBefore('private');
             } else {
                 $this->view->setTemplateBefore('login');
@@ -523,7 +523,7 @@
          */
         public function changePasswordAction()
         {
-            $this->tag->setTitle('Review Velocity | Change password');
+            $this->tag->setTitle('Get Mobile Reviews | Change password');
             $this->view->setTemplateBefore('private');
             $form = new ChangePasswordForm();
 

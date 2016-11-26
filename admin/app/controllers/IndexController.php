@@ -17,7 +17,7 @@ class IndexController extends ControllerBase {
 
     public function initialize() {
 
-        $this->tag->setTitle('Review Velocity | Dashboard');
+        $this->tag->setTitle('Get Mobile Reviews | Dashboard');
         parent::initialize();
 
         //add needed css
@@ -248,7 +248,7 @@ class IndexController extends ControllerBase {
             $this->view->google_rating = $GoogleReviewCount > 0 ? $TotalGoogleRating / $GoogleReviewCount : 0;
             $this->view->average_rating = $AverageRating = $TotalReviews > 0 ? ($TotalYelpRating + $TotalFacebookRating + $TotalGoogleRating ) / $TotalReviews : 0;
 
-            // New Reviews Since Joining Review Velocity
+            // New Reviews Since Joining Get Mobile Reviews
             $this->view->total_reviews_location = $YelpSinceCreate + $FacebookSinceCreate + $GoogleSinceCreate;
 
             // New Reviews By Month Graph

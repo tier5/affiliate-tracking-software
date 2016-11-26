@@ -18,7 +18,7 @@
     class StripeController extends ControllerBusinessBase {
         public function initialize() {
             if ($this->session->get('auth-identity')['profile'] == 'Agency Admin') {
-                $this->tag->setTitle('Review Velocity | Subscriptions');
+                $this->tag->setTitle('Get Mobile Reviews | Subscriptions');
                 $this->view->setTemplateBefore('private');
             } else {
                 $this->response->redirect('/session/login?return=/stripe/');

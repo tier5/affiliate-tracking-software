@@ -19,7 +19,7 @@ class ProfilesController extends ControllerBase
      */
     public function initialize()
     {
-        $this->tag->setTitle('Review Velocity | Profiles');
+        $this->tag->setTitle('Get Mobile Reviews | Profiles');
         $this->view->setTemplateBefore('private');
 
         //disable

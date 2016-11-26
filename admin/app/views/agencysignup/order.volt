@@ -7,7 +7,7 @@
     <span class="payment-errors"></span>
     <div class="row small-vertical-margins">
         <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 col-xs-offset-1 col-md-offset-1">
-            <img class="logo-order" src="/img/logo-white.gif" alt="Review Velocity" />
+            <img class="logo-order" src="/img/logo-white.gif" alt="Get Mobile Reviews" />
         </div>
         <div class="col-xs-7 col-sm-4 col-sm-offset-4 col-lg-3 col-md-offset-6">
             <span class="contact-text">Contact Us:</span> <span class="contact-phone">(866) 700-9330</span>
@@ -109,7 +109,7 @@
                                 <div class="panel panel-default apple-backgound">
                                     <div class="panel-body">
                                         <div class="green-header text-center">
-                                            Security is our top priority at Review Velocity!
+                                            Security is our top priority at Get Mobile Reviews!
                                         </div>
                                         <div class="green-description text-justify">
                                             This website utilizes some of the most advanced techniques to protect your information and personal data including technical, administrative, and even physical safeguards against unauthorized access, misuse, and disclosure.
@@ -181,7 +181,7 @@
             </div>
             <div class="col-xs-12 col-xs-offset-1 submit-section">
                 <button class="big-green-button submit" id="BigGreenSubmit">Submit Order</button><br>
-                <center><div class="col-xs-10 ">By clicking this button, you agree to Review Velocity's<br /><A href="/session/RVreseller" target="blank">Reseller Terms</a>,  <A href="/session/RVantispam" target="blank">Anti-spam</a>,  <A href="/session/RVprivacy" target="blank">Privacy Policy</a>,  <A href="/session/RVterms" target="blank">Terms of Use</a>.</div>
+                <center><div class="col-xs-10 ">By clicking this button, you agree to Get Mobile Reviews's<br /><A href="/session/RVreseller" target="blank">Reseller Terms</a>,  <A href="/session/RVantispam" target="blank">Anti-spam</a>,  <A href="/session/RVprivacy" target="blank">Privacy Policy</a>,  <A href="/session/RVterms" target="blank">Terms of Use</a>.</div>
             </center></div>
         </div>
     </div>
@@ -190,7 +190,7 @@
             <img class="center-block" src="/img/agencysignup/monitor_dashboard.png" alt="Dashboard" />
         </div>
         <div class="row right-header">
-            What You Get With Review Velocity
+            What You Get With Get Mobile Reviews
         </div>
         <div class="row right-feature">
             <div class="col-xs-1">
@@ -271,7 +271,7 @@
     {{ content() }}
 </div>
 <footer>
-    <div class="copyright"> &copy; Copyright Review Velocity.  All Rights Reserved. </div>
+    <div class="copyright"> &copy; Copyright Get Mobile Reviews.  All Rights Reserved. </div>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>

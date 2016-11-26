@@ -27,7 +27,7 @@
     class SettingsController extends ControllerBase {
 
         public function initialize() {
-            $this->tag->setTitle('Review Velocity | Settings');
+            $this->tag->setTitle('Get Mobile Reviews | Settings');
             $this->view->setTemplateBefore('private');
             parent::initialize();
 
