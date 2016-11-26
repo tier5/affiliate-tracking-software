@@ -413,7 +413,7 @@ This link is only available to activate your trial account for the next 24 hours
 <a href='".$share_link."'>Click here now to confirm your email address </a> and let’s start generating new reviews for your business in less than 5 minutes!
 </p>
 <p>
-ACTIVATE YOUR TRIAL BUTTON
+<a href='".$share_link."'>ACTIVATE YOUR TRIAL </a>
 </p>
 <p>
 Talk Soon, 
@@ -428,7 +428,7 @@ Talk Soon,
             'AgencyName'=>$AgencyName,  
             'share_message' => $message_set,
             'share_link' => $share_link,
-            'share_subject' => $agency->name.', thought this was awesome!'
+            'share_subject' => $agency->name.',thought this was awesome!'
         ]);
 
         $base_sms_allowed = 100;

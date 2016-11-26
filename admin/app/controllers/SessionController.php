@@ -664,7 +664,17 @@ class SessionController extends ControllerBase {
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
                 if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                     throw \Exception("Contact customer support.  Email configuration not setup correctly");
-                $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+               // $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+                //$EmailFrom = $objParentAgency->email_from_address;
+
+                if(!$objParentAgency->email_from_address)
+                {
+                    $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+                }
+                else
+                {
+                   $EmailFrom =  $objParentAgency->email_from_address;
+                }
             }
 
             if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
@@ -673,7 +683,15 @@ class SessionController extends ControllerBase {
             if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                 if(!$agency->email_from_address && !$agency->custom_domain)
                     throw \Exception("Contact customer support.  Email configuration not setup correctly");
-                $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+              //  $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+                if(!$agency->email_from_address)
+                {
+                     $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+                }
+                else
+                {
+                   $EmailFrom = $agency->email_from_address; 
+                }
             }
 
             //loop through all the emails
@@ -734,7 +752,11 @@ class SessionController extends ControllerBase {
                         </p>
 
                         <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online. </p>';
-                        $feed_back_body=$feed_back_body.'<a href="'.$link.'">Click Link</a><p>Looking forward to helping you build a strong online reputation.</p>';
+                        $feed_back_body=$feed_back_body.'<a href="'.$link.'">Personalized Feedback Form - Click Here </a>
+                            <p>
+                            Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. 
+                            </p>
+                        <p>Looking forward to helping you build a strong online reputation.</p>';
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                     $Mail = $this->getDI()->getMail();
                     $Mail->setFrom($EmailFrom);

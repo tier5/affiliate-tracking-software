@@ -7,7 +7,7 @@
             <td style="padding:40px 0 40px 0;">
             	Hi {{employeeName}},
             	<p>
-            		We’ve just created your profile for {{BusinessName}} within our software. 
+            		We’ve just created your profile for {{ AgencyName }} within our software. 
 
             	</p>
                 <p style="font-size: 13px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
