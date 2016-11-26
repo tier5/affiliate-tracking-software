@@ -1,6 +1,13 @@
+<?php
+    if($agency_type_id == 1) {
+        $BackUrl = "/admindashboard/list/{$agency_type_id}";
+    } else {
+        $BackUrl = $loggedUser->is_admin ? "/admindashboard/list/2" :   "/agency";
+    }
+?>
 <ul class="pager">
   <li class="previous pull-left">
-    <a href="/admindashboard/list/<?=$agency_type_id?>" class="btn red btn-outline">&larr; Go Back</a>
+    <a href="{{ BackUrl }}" class="btn red btn-outline">&larr; Go Back</a>
   </li>
 </ul>
 

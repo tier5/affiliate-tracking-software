@@ -43,7 +43,6 @@ class AdmindashboardController extends ControllerBusinessBase {
      * Default action. Set the public layout (layouts/private.volt)
      */
     public function indexAction() {
-/*echo 'kk';exit;*/
         $this->tag->setTitle('Review Velocity | Dashboard');
 
 
@@ -235,9 +234,28 @@ class AdmindashboardController extends ControllerBusinessBase {
 
         // Query binding parameters with string placeholders
         $conditions = "agency_type_id = " . $agency_type_id;
-        $parameters = null;
-        array("parent_agency_id" => $userObj->agency_id);
-        $agencies = Agency::find(array($conditions, "bind" => $parameters));
+
+        if($agency_type_id == 1) {
+            // Display agencies
+            if($userObj->is_admin)
+                $agencies = \Vokuro\Models\Agency::find("parent_id = " . \Vokuro\Models\Agency::AGENCY);
+            else
+                $agencies = \Vokuro\Models\Agency::find("agency_id = {$userObj->agency_id}");   // Case should never happen, but just in case it did somehow
+        } else {
+            // Display businesses
+            if($userObj->is_admin)
+                $agencies = \Vokuro\Models\Agency::find("parent_id = " . \Vokuro\Models\Agency::BUSINESS_UNDER_RV . " OR parent_id > 0");
+            else {
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$userObj->agency_id}");
+                if($objAgency->parent_id > 0) {
+                    $this->response->setStatusCode(404, "Not Found");
+                    echo "<h1>404 Page Not Found</h1>";
+                    $this->view->disable();
+                    return;
+                }
+                $agencies = \Vokuro\Models\Agency::find("parent_id = {$userObj->agency_id}");
+            }
+        }
 
         $this->view->agencies = $agencies;
     }
