@@ -44,7 +44,7 @@ class AdmindashboardController extends ControllerBusinessBase {
      */
     public function indexAction() {
 /*echo 'kk';exit;*/
-        $this->tag->setTitle('Review Velocity | Dashboard');
+        $this->tag->setTitle('Get Mobile Reviews | Dashboard');
 
 
         //start of the month date
@@ -212,7 +212,7 @@ class AdmindashboardController extends ControllerBusinessBase {
     }
 
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
-	    // Businesses under Review Velocity have a parent_id of -1.  agency_type_id == 1 means Agency.  I do want to get rid of this field.
+	    // Businesses under Get Mobile Reviews have a parent_id of -1.  agency_type_id == 1 means Agency.  I do want to get rid of this field.
 	    $Ret =  parent::createAction($agency_type_id, $agency_id, $agency_type_id == 1 ? \Vokuro\Models\Agency::AGENCY : \Vokuro\Models\Agency::BUSINESS_UNDER_RV);
 	    return $this->view->pick("admindashboard/create");
 	}
@@ -268,7 +268,7 @@ class AdmindashboardController extends ControllerBusinessBase {
     public function listAction($agency_type_id = 1) {
         $agency_type_id = (int)$agency_type_id;
         if($agency_type_id && !is_int($agency_type_id)) throw new \Exception('Invalid agency type id specified');
-        $this->tag->setTitle('Review Velocity | See All ' . ($agency_type_id == 1 ? 'Agencies' : 'Businesses'));
+        $this->tag->setTitle('Get Mobile Reviews | See All ' . ($agency_type_id == 1 ? 'Agencies' : 'Businesses'));
 
         $this->findAgencies($agency_type_id);
         $this->view->agency_type_id = $agency_type_id;
@@ -408,14 +408,14 @@ class AdmindashboardController extends ControllerBusinessBase {
      * payments action.
      */
     public function paymentsAction() {
-        $this->tag->setTitle('Review Velocity | Payments');
+        $this->tag->setTitle('Get Mobile Reviews | Payments');
     }
 
     /**
      * settings action.
      */
     public function settingsAction() {
-        $this->tag->setTitle('Review Velocity | Settings');
+        $this->tag->setTitle('Get Mobile Reviews | Settings');
     }
 
     //end finding subscriptions

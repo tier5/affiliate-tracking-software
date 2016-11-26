@@ -17,7 +17,7 @@ class ReviewfeedsController extends ControllerBase
         include_once $path_to_admin . '/app/library/Google/mybusiness/Mybusiness.php';
         define('APPLICATION_NAME', 'User Query - Google My Business API');
         define('CLIENT_SECRET_PATH', $path_to_admin . '/app/models/client_secrets.json');
-        $this->tag->setTitle('Review Velocity | Dashboard');
+        $this->tag->setTitle('Get Mobile Reviews | Dashboard');
     }
 
     protected function getAccessToken(){

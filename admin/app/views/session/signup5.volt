@@ -28,7 +28,7 @@
   </div>
 
   <div class="row" style="margin-bottom: 22px; margin-left: 17px; margin-right: 17px;">
-    Enter the email address of your friends that would benefit from trying Review Velocity for free.  For each new signup you'll automatically receive <?=$additional_allowed?> additional text messages in your account.
+    Enter the email address of your friends that would benefit from trying Get Mobile Reviews for free.  For each new signup you'll automatically receive <?=$additional_allowed?> additional text messages in your account.
   </div>
 
   <div class="row" id="shareform">

@@ -18,7 +18,7 @@ class BusinessSubscriptionController extends ControllerBase {
 
         $identity = $this->session->get('auth-identity');
         if ($identity && $identity['profile'] != 'User') {
-            $this->tag->setTitle('Review Velocity | Subscription');
+            $this->tag->setTitle('Get Mobile Reviews | Subscription');
             $this->view->setTemplateBefore('private');
         } else {
             $this->response->redirect('/session/login?return=/');

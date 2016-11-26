@@ -34,7 +34,7 @@ class UserControlController extends ControllerBase
     public function confirmEmailAction()
     {
 
-        $this->tag->setTitle('Review Velocity | Confirm email');
+        $this->tag->setTitle('Get Mobile Reviews | Confirm email');
         $code = $this->dispatcher->getParam('code');
         $email = $this->dispatcher->getParam('email');
         $email = str_replace(' ', '+', $email);
@@ -133,7 +133,7 @@ class UserControlController extends ControllerBase
 
     public function resetPasswordAction()
     {
-        $this->tag->setTitle('Review Velocity | Reset password');
+        $this->tag->setTitle('Get Mobile Reviews | Reset password');
         $code = $this->dispatcher->getParam('code');
 
         $resetPassword = ResetPasswords::findFirstByCode($code);

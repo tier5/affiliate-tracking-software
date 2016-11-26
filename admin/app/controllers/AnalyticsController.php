@@ -12,7 +12,7 @@
      */
     class AnalyticsController extends ControllerBase {
         public function initialize() {
-            $this->tag->setTitle('Review Velocity | Analytics');
+            $this->tag->setTitle('Get Mobile Reviews | Analytics');
             parent::initialize();
         }
 

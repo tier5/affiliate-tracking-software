@@ -44,7 +44,7 @@
 
          public function initialize() {
 
-            $this->tag->setTitle('Review Velocity | Link');
+            $this->tag->setTitle('Get Mobile Reviews | Link');
             
             $path_to_admin = realpath(__DIR__ . '/../../');
             include_once $path_to_admin . '/app/library/Google/mybusiness/Mybusiness.php';

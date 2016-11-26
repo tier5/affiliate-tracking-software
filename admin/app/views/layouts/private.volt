@@ -423,7 +423,7 @@
 <!-- END CONTAINER -->
 <!-- BEGIN FOOTER -->
 <div class="page-footer">
-    <div class="page-footer-inner"> {{ date("Y") }} &copy; <?=(isset($this->view->agencyName))?$this->view->agencyName: "Review Velocity";?></div>
+    <div class="page-footer-inner"> {{ date("Y") }} &copy; <?=(isset($this->view->agencyName))?$this->view->agencyName: "Get Mobile Reviews";?></div>
     <div class="scroll-to-top">
         <i class="icon-arrow-up"></i>
     </div>

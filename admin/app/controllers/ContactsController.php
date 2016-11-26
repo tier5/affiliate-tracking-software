@@ -16,7 +16,7 @@ class ContactsController extends ControllerBase
 {
   public function initialize()
   {
-      $this->tag->setTitle('Review Velocity | Contacts');
+      $this->tag->setTitle('Get Mobile Reviews | Contacts');
       parent::initialize();
   }
 

@@ -19,7 +19,7 @@ Revised: October 26, 2016)</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">PLEASE
 READ THIS DOCUMENT CAREFULLY BEFORE ORDERING, ACCESSING OR USING THE
-SOFTWARE AND TRAINING REFERRED TO AS &ldquo;Review Velocity&rdquo;
+SOFTWARE AND TRAINING REFERRED TO AS &ldquo;Get Mobile Reviews&rdquo;
 (HEREINAFTER THE &ldquo;SOFTWARE&rdquo;).</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <BR>
@@ -28,7 +28,7 @@ SOFTWARE AND TRAINING REFERRED TO AS &ldquo;Review Velocity&rdquo;
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">IMPORTANT:
 THIS SOFTWARE END USER LICENSE AGREEMENT (&ldquo;EULA&rdquo;) IS A
 LEGAL AGREEMENT BETWEEN YOU (EITHER AN INDIVIDUAL OR, IF PURCHASED OR
-OTHERWISE ACQUIRED BY OR FOR AN ENTITY, AN ENTITY) AND Review Velocity.  READ IT CAREFULLY BEFORE ACCESSING THIS WEB SITE AND USING THE
+OTHERWISE ACQUIRED BY OR FOR AN ENTITY, AN ENTITY) AND Get Mobile Reviews.  READ IT CAREFULLY BEFORE ACCESSING THIS WEB SITE AND USING THE
 SOFTWARE AND TRAINING. IT PROVIDES A LICENSE TO USE THE SOFTWARE AND
 CONTAINS WARRANTY INFORMATION AND LIABILITY DISCLAIMERS. BY SELECTING
 TO USE THE SOFTWARE, YOU ARE CONFIRMING YOUR ACCEPTANCE OF THE
@@ -46,7 +46,7 @@ DEFINITIONS</SPAN></FONT></FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
-&ldquo;LICENSOR&rdquo; means Review Velocity a limited liability company with an address of 455 Marine View Avenue, Suite 300
+&ldquo;LICENSOR&rdquo; means Get Mobile Reviews a limited liability company with an address of 455 Marine View Avenue, Suite 300
 Del Mar, CA 92014
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
@@ -88,7 +88,7 @@ license.</SPAN></FONT></FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">F.
-&ldquo;Software&rdquo; shall mean the &ldquo;Review Velocity&ldquo; web-hosted software and any subsequent error corrections or updates
+&ldquo;Software&rdquo; shall mean the &ldquo;Get Mobile Reviews&ldquo; web-hosted software and any subsequent error corrections or updates
 supplied to LICENSEE by LICENSOR pursuant to this Agreement.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <BR>
@@ -517,7 +517,7 @@ fee we do not offer a refund of any kind.</SPAN></FONT></FONT></P>
 <FONT FACE="Cambria, serif"><SPAN STYLE="text-decoration: none">C.
 When your 30 day&nbsp;trial period expires, or when you exceed the
 trial number of free SMS messages allowed with your trial, you will
-be charged the Subscription price page of your Review Velocity installation
+be charged the Subscription price page of your Get Mobile Reviews installation
 to continue using the service. You will be charged monthly
 approximately 30 days from the date you make the first payment.</SPAN></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
@@ -526,7 +526,7 @@ approximately 30 days from the date you make the first payment.</SPAN></FONT></P
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">D.
 If you decide not to continue you plan after your 30 day trial you
-must cancel your account from within the Review Velocity system or cancel your subscription through Paypal.</SPAN></FONT></FONT></P>
+must cancel your account from within the Get Mobile Reviews system or cancel your subscription through Paypal.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <BR>
 </P>
@@ -544,8 +544,8 @@ link.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">F.
 To cancel your subscription on a paid plan using a credit card, you
-must subscription from with the Review Velocity system.
-Once your Review Velocity account
+must subscription from with the Get Mobile Reviews system.
+Once your Get Mobile Reviews account
 has been cancelled your monthly payment will be cancelled. You can
 cancel your account at any time simply by logging in, going to the
 payment details page and clicking the &ldquo;Deactivate My Account&rdquo;
@@ -767,7 +767,7 @@ to this EULA.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
-All questions regarding this agreement should be directed to Review Velocity by mail at: Review Velocity, 455 Marine View Avenue, Suite 300 , Del Mar, CA 92014, or by email at: <A HREF="mailto:support@reviewvelocity.co">support@reviewvelocity.co</A><BR>
+All questions regarding this agreement should be directed to Get Mobile Reviews by mail at: Get Mobile Reviews, 455 Marine View Avenue, Suite 300 , Del Mar, CA 92014, or by email at: <A HREF="mailto:support@reviewvelocity.co">support@reviewvelocity.co</A><BR>
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">23.
 REFUND POLICY</SPAN></FONT></FONT></FONT></P>

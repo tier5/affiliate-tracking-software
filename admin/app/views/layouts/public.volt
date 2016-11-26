@@ -9,7 +9,7 @@
   <meta name="author" content="" />
   <meta property="al:web:should_fallback" content="false" />
   <link rel="icon" href="/favicon.ico" />
-  <title>Review Velocity</title>
+  <title>Get Mobile Reviews</title>
 
   <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css' />
   <!-- Bootstrap core CSS -->

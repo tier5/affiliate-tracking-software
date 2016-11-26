@@ -39,7 +39,7 @@
 
             $location_id = $this->session->get('auth-identity')['location_id'];
 
-            $this->tag->setTitle('Review Velocity | Reviews');
+            $this->tag->setTitle('Get Mobile Reviews | Reviews');
             //get the location and calculate the review total and avg.
             if (isset($this->session->get('auth-identity')['location_id'])) {
                 $conditions = "location_id = :location_id:";
@@ -179,7 +179,7 @@
          * This sends an SMS braodcast message
          */
         public function sms_broadcastAction() {
-            $this->tag->setTitle('Review Velocity | Reviews | SMS Broadcast');
+            $this->tag->setTitle('Get Mobile Reviews | Reviews | SMS Broadcast');
 
             //get the user id
             $identity = $this->auth->getIdentity();

@@ -39,7 +39,7 @@
             <input type="hidden" name="sharecode" value="" />
             <div class="form-actions">
                 <button type="submit" id="register-submit-btn" class="btnsignup uppercase">CREATE MY ACCOUNT</button>
-                <div class="signup-footer">By clicking this button, you agree to Review Velocity's
+                <div class="signup-footer">By clicking this button, you agree to Get Mobile Reviews's
                     <a href="#">Anti-span Policy</a> &amp; <a href="#">Terms of Use</a>.</div>
             </div>
             <div style="clear: both;">&nbsp;</div>

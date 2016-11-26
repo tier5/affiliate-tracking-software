@@ -23,14 +23,14 @@ class BusinessPricingPlanController extends ControllerBase {
 
         $identity = $this->session->get('auth-identity');
         /*if ($identity && $identity['profile'] != 'Employee') {
-            $this->tag->setTitle('Review Velocity | Subscription');
+            $this->tag->setTitle('Get Mobile Reviews | Subscription');
             $this->view->setTemplateBefore('private');
         } else {
             $this->response->redirect('/session/login?return=/');
             $this->view->disable();
             return;
         }*/
-        $this->tag->setTitle('Review Velocity | Subscription');
+        $this->tag->setTitle('Get Mobile Reviews | Subscription');
         $this->view->setTemplateBefore('private');
         parent::initialize();
 

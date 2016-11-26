@@ -117,7 +117,7 @@ class ControllerBase extends Controller {
                 $this->view->primary_color = "#2a3644";
                 $this->view->secondary_color = "#2eb82e";
                 $this->view->objParentAgency = null;
-                $this->view->agencyName = ($agency->parent_id == -1 || ($this->user_object->is_admin == 1)) ? "Review Velocity" : $agency->name;
+                $this->view->agencyName = ($agency->parent_id == -1 || ($this->user_object->is_admin == 1)) ? "Get Mobile Reviews" : $agency->name;
                 //$this->view->logo_path = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
             	if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             		if (isset($agency->logo_path) && ($agency->logo_path != "")) {
@@ -367,7 +367,7 @@ class ControllerBase extends Controller {
 
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->agency_id}");
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
-            $AgencyName = "Review Velocity";
+            $AgencyName = "Get Mobile Reviews";
             $AgencyUser = "Zach";
            // $EmailFrom = "zacha@reviewvelocity.co";
             
