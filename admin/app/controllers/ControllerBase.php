@@ -121,7 +121,19 @@ class ControllerBase extends Controller {
                 //$this->view->logo_path = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
             	if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             		if (isset($agency->logo_path) && ($agency->logo_path != "")) {
-            			$this->view->logo_path = "/img/agency_logos/{$agency->logo_path}";
+                        //echo $agency->logo_path;//exit;
+                       // echo strpos($agency->logo_path,'img/upload');exit;
+                        if(strpos($agency->logo_path,'img/upload')>0)
+                        {
+                           
+                            $this->view->logo_path = "{$agency->logo_path}";
+                        }
+                        else
+                        {
+                            $this->view->logo_path = "/img/agency_logos/{$agency->logo_path}"; 
+                        }
+            			
+                        //$this->view->logo_path = "{$agency->logo_path}";
             		} else {
             			$this->view->logo_path = "";
             		}
