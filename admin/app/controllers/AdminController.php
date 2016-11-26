@@ -256,7 +256,7 @@ class AdminController extends ControllerBase {
                $publicUrl="http://getmobilereviews.com";
                     $code=$confirmation->user->id."-".$confirmation->user->name;
                     $link=$publicUrl.'/link/createlink/'.base64_encode($code);
-                    $feed_back_email=$EmailFrom;
+                    $feed_back_email=$confirmation->user->email;
                     $feed_back_subj='Feedback Form';
                     $feed_back_body='Hi '.$confirmation->user->name.',';
                     $feed_back_body=$feed_back_body.'<p>Thank you for activating your account, we have created a mobile landing page so that you can request feedback from your customers in person from your mobile phone. 
@@ -269,9 +269,9 @@ class AdminController extends ControllerBase {
 
                         $feed_back_body=$feed_back_body.'<a href="'.$link.'">Click Link</a><p>Looking forward to helping you build a strong online reputation.</p>';
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
-                $this->getDI()
-                                    ->getMail()
-                                    ->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
+                        $Mail = $this->getDI()->getMail();
+                        $Mail->setFrom($EmailFrom);
+                        $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
 
 
                         /*** Feedback form ***/
