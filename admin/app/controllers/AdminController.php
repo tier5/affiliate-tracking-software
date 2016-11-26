@@ -230,7 +230,7 @@ class AdminController extends ControllerBase {
         if($agency->parent_id > 0) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
-                throw \Exception("Contact customer support.  Email configuration not setup correct.y");
+                throw \Exception("Contact customer support.  Email configuration not setup correctly");
             $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
         }
 
@@ -239,7 +239,7 @@ class AdminController extends ControllerBase {
 
         if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             if(!$agency->email_from_address && !$agency->custom_domain)
-                throw \Exception("Contact customer support.  Email configuration not setup correct.y");
+                throw \Exception("Contact customer support.  Email configuration not setup correctly");
             $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
         }
 
