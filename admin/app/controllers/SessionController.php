@@ -646,6 +646,10 @@ class SessionController extends ControllerBase {
         $this->view->parent_agency = $parent_agency->name;
         //Get the sharing code
         $this->getShareInfo($agency);
+
+        /*echo "<PRE>";
+        print_r($agency->toArray());
+        die();*/
        
             $AgencyUser = $this->view->AgencyUser;
             $AgencyName = $this->view->AgencyName; 
@@ -656,6 +660,22 @@ class SessionController extends ControllerBase {
             $subject = $this->view->share_subject;
             $message = $this->view->share_message;
 
+            if($agency->parent_id > 0) {
+                $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+                if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                    throw \Exception("Contact customer support.  Email configuration not setup correctly");
+                $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+            }
+
+            if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+                $EmailFrom = 'zacha@reviewvelocity.co';
+
+            if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+                if(!$agency->email_from_address && !$agency->custom_domain)
+                    throw \Exception("Contact customer support.  Email configuration not setup correctly");
+                $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+            }
+
             //loop through all the emails
             for ($i = 1; $i < 16; $i++) {
                 if ($_POST['email_' . $i]) {
@@ -665,9 +685,9 @@ class SessionController extends ControllerBase {
                             $Email_set=explode('@',$email);
                             $header_name="Hey ".$Email_set[0].",";
                             $body_message=$header_name.$message;
-                            $this->getDI()
-                                    ->getMail()
-                                    ->send($email, $subject, '', '', $message);
+                            $Mail = $this->getDI()->getMail();
+                            $Mail->setFrom($EmailFrom);
+                            $Mail->send($email, $subject, '', '', $message);
                         } catch (Exception $e) {
                             // do nothing, just ignore
                         }
@@ -688,6 +708,22 @@ class SessionController extends ControllerBase {
             if (!$agency->save()) {
                 $this->flash->error($agency->getMessages());
             } else {
+                    if($agency->parent_id > 0) {
+                        $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+                        if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                            throw \Exception("Contact customer support.  Email configuration not setup correctly");
+                        $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+                    }
+
+                    if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+                        $EmailFrom = 'zacha@reviewvelocity.co';
+
+                    if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+                        if(!$agency->email_from_address && !$agency->custom_domain)
+                            throw \Exception("Contact customer support.  Email configuration not setup correctly");
+                        $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+                    }
+
                     $publicUrl="http://getmobilereviews.com";
                     $code=$userObj->id."-".$userObj->name;
                     $link=$publicUrl.'/link/createlink/'.base64_encode($code);
@@ -700,9 +736,9 @@ class SessionController extends ControllerBase {
                         <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online. </p>';
                         $feed_back_body=$feed_back_body.'<a href="'.$link.'">Click Link</a><p>Looking forward to helping you build a strong online reputation.</p>';
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
-                $this->getDI()
-                                    ->getMail()
-                                    ->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
+                    $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom);
+                    $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
                 return $this->response->redirect('/');
                 $this->view->disable();
                 return;
@@ -734,15 +770,12 @@ class SessionController extends ControllerBase {
     public function resetPasswordAction($code = 0, $userId = 0) {
     	//$this->view->setTemplateBefore('login');
     	$this->tag->setTitle('Review Velocity | Change Password');
-		
-    	
 
     	$resetPassword = ResetPasswords::findFirstByCode($code);
     	$conditions = "id = :id:";
     	$parameters = array("id" => $resetPassword->usersId);
     	$User = Users::findFirst(array($conditions, "bind" => $parameters));
-    	 
-    	
+
     	$conditions = "agency_id = :agency_id:";
     	$parameters = array("agency_id" => $User->agency_id);
     	$agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -767,7 +800,6 @@ class SessionController extends ControllerBase {
     	 * Change the confirmation to 'reset'
     	 */
     	if (!$resetPassword->save()) {
-    	
     		foreach ($resetPassword->getMessages() as $message) {
     			$this->flash->error($message);
     		}
@@ -1062,6 +1094,8 @@ class SessionController extends ControllerBase {
                                 $parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
                                 // Skip duplicate check if we're dev environment.
                                 $SkipCheck = $this->config->application->environment == 'dev' ? true : false;
+                                // SKIP CHECK REMOVE
+                                $SkipCheck = true;
 
 
                                 $loc = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));

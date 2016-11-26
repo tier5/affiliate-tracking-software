@@ -140,6 +140,7 @@
         <!-- BEGIN LOGO -->
         <div class="page-logo" style="margin-top: 0;">
             <a href="/">
+            {% if logo_path %}
                  {% if agencytype == "agency" %}
                 <img src="<?=$this->view->logo_path;?>" alt="logo" 
                  style="max-width: 200px;" class="logo-default"/>
@@ -149,6 +150,7 @@
                 <img src="<?=$this->view->logo_path;?>" alt="logo" 
                 style="max-width: 300px;width:100%" class="logo-default not_agency"/>
                 {% endif %}
+            {% endif %}
                
             </a>
             <div class="menu-toggler sidebar-toggler"></div>

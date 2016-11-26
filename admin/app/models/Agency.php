@@ -63,9 +63,13 @@
 
         public function initialize() {
            // $this->skipAttributes(['address2']);
-            $this->skipAttributes(['website']);
-            $this->skipAttributes(['email_from_name']);
-            $this->skipAttributes(['email_from_address']);
+
+            if($this->parent_id != static::AGENCY) {
+                $this->skipAttributes(['website']);
+                $this->skipAttributes(['email_from_name']);
+                $this->skipAttributes(['email_from_address']);
+            }
+
             $this->setSource('agency');
 
             $this->belongsTo('subscription_id', __NAMESPACE__ . '\Subscription', 'subscription_id', array(

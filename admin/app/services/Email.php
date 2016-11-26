@@ -9,14 +9,14 @@ use Vokuro\Models\Users;
  */
 class Email{
 
-    protected $from = 'zacha@reviewvelocity.co';
+    protected $from = 'no-reply@no-domain.com';
 
     /**
      * @var \Phalcon\DiInterface
      */
     protected $di;
 
-    public function __construct(){
+    public function __construct() {
         $this->di = $this->getDI();
     }
 
@@ -29,7 +29,7 @@ class Email{
         return $this;
     }
 
-    public function getDI(){
+    public function getDI() {
         if($this->di) return $this->di;
         $di = new \Phalcon\Di();
         $this->di = $di->getDefault();
@@ -74,7 +74,9 @@ class Email{
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
-            $EmailFrom = "zacha@reviewvelocity.co";
+            if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                throw new \Exception("Your email from address or your custom domain needs to be set to send email");
+            $EmailFrom = $objParentAgency->email_from_address ?: 'no_reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
         }
          if($AgencyName =='') {
             
@@ -114,7 +116,10 @@ class Email{
             }
             else {
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
-                $mail->setFrom($objAgency->email);
+                if(!$objAgency->email_from_address && !$objAgency->custom_domain)
+                    throw new \Exception("Your email from address or your custom domain needs to be set to send email");
+                $EmailFrom = $objAgency->email_from_address ?: 'no_reply@' . $objAgency->custom_domain . '.getmobilereviews.com';
+                $mail->setFrom($EmailFrom);
                 $FullDomain = "{$objAgency->custom_domain}.getmobilereviews.com";
             }
             $objEmployees = $dbEmployees;
@@ -249,7 +254,7 @@ class Email{
 
     }
 
-    public function sendActivationEmailToEmployeeById($user_id){
+    public function sendActivationEmailToEmployeeById($user_id) {
         $users = new Users();
         $record = $users->getById($user_id);
         if ($record) return $this->sendActivationEmailToEmployee($record);

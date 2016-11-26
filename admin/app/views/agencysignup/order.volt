@@ -171,13 +171,13 @@
             </div>
 
             <div class="col-xs-12 deal-section text-justify">
-                Review Velocity Business Listing & Reputation Software $10 Per Account For Ten Accounts
+                Complete White Label review acquisition, monitoring and marketing solution with 10 active locations & unlimited FREE trials. Get started today! $97 activation fee and $100/mo fee with 10 active accounts included.
             </div>
 
 
             <div class="col-xs-12 total-section">
                 <div style="float: left;">Total Due Today:</div>
-                <div style="float: right;">$1</div>
+                <div style="float: right;">$197</div>
             </div>
             <div class="col-xs-12 col-xs-offset-1 submit-section">
                 <button class="big-green-button submit" id="BigGreenSubmit">Submit Order</button><br>

@@ -107,7 +107,7 @@ class ControllerBase extends Controller {
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
                 $this->view->objParentAgency = $objParentAgency;
                 
-                $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "/img/blank.png" ;
+                $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "" ;
                 $this->view->agencyName =  $objParentAgency->name;
             } else {
                 // We're an agency or a business under RV
@@ -342,6 +342,7 @@ class ControllerBase extends Controller {
             $Domain="getmobilereviews.com";
         }
         $share_link = $this->googleShortenURL("https://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
+        $share_link = urlencode($share_link);
 
         /*$this->view->setVars([
             'share_message' => 'Click this link to sign up for a great new way to get reviews: ' . $share_link,

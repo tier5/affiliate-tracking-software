@@ -95,7 +95,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="referral-link"><b>Personalized Referral Link:</b> <?=$share_link?></div>
+                                <div class="referral-link"><b>Personalized Referral Link:</b> <?=urldecode($share_link); ?></div>
                             </div>
                         </div>
                     </div>

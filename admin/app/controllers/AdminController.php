@@ -227,6 +227,22 @@ class AdminController extends ControllerBase {
         $parameters = array("agency_id" => $confirmation->user->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
+        if($agency->parent_id > 0) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+            if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                throw \Exception("Contact customer support.  Email configuration not setup correctly");
+            $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+        }
+
+        if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+            $EmailFrom = 'zacha@reviewvelocity.co';
+
+        if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+            if(!$agency->email_from_address && !$agency->custom_domain)
+                throw \Exception("Contact customer support.  Email configuration not setup correctly");
+            $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+        }
+
         $AgencyUser=$agency->name;
 
         $conditions = "agency_id = :agency_id:";
@@ -253,9 +269,9 @@ class AdminController extends ControllerBase {
 
                         $feed_back_body=$feed_back_body.'<a href="'.$link.'">Click Link</a><p>Looking forward to helping you build a strong online reputation.</p>';
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
-                $this->getDI()
-                                    ->getMail()
-                                    ->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
+                        $Mail = $this->getDI()->getMail();
+                        $Mail->setFrom($EmailFrom);
+                        $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
 
 
                         /*** Feedback form ***/
