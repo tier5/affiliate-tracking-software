@@ -99,7 +99,7 @@
             {% if logo_path AND logo_path != '/img/agency_logos/' %}
             <!-- BEGIN LOGO -->
             <div class="logo">
-                <a href="/"><img style="max-width: 625px;" src="{{ logo_path }}" alt="" /></a>
+                <a href="/"><img style="max-width: 300px;" src="{{ logo_path }}" alt="" /></a>
             </div>
             <!-- END LOGO -->
             {% endif %}

@@ -121,7 +121,19 @@ class ControllerBase extends Controller {
                 //$this->view->logo_path = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
             	if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             		if (isset($agency->logo_path) && ($agency->logo_path != "")) {
-            			$this->view->logo_path = "/img/agency_logos/{$agency->logo_path}";
+                        //echo $agency->logo_path;//exit;
+                       // echo strpos($agency->logo_path,'img/upload');exit;
+                        if(strpos($agency->logo_path,'img/upload')>0)
+                        {
+                           
+                            $this->view->logo_path = "{$agency->logo_path}";
+                        }
+                        else
+                        {
+                            $this->view->logo_path = "/img/agency_logos/{$agency->logo_path}"; 
+                        }
+            			
+                        //$this->view->logo_path = "{$agency->logo_path}";
             		} else {
             			$this->view->logo_path = "";
             		}
@@ -401,7 +413,7 @@ This link is only available to activate your trial account for the next 24 hours
 <a href='".$share_link."'>Click here now to confirm your email address </a> and let’s start generating new reviews for your business in less than 5 minutes!
 </p>
 <p>
-ACTIVATE YOUR TRIAL BUTTON
+<a href='".$share_link."'>ACTIVATE YOUR TRIAL </a>
 </p>
 <p>
 Talk Soon, 
@@ -416,7 +428,7 @@ Talk Soon,
             'AgencyName'=>$AgencyName,  
             'share_message' => $message_set,
             'share_link' => $share_link,
-            'share_subject' => $agency->name.', thought this was awesome!'
+            'share_subject' => $agency->name.',thought this was awesome!'
         ]);
 
         $base_sms_allowed = 100;

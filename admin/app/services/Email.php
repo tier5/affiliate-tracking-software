@@ -66,7 +66,7 @@ class Email{
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
             $AgencyUser = $objAgencyUser->name;
             $AgencyName = $objAgency->name;
-            $EmailFrom = "zacha@reviewvelocity.co";
+            $EmailFrom =  $objAgency->email;
 
         }
         elseif($objAgency->parent_id > 0) {
