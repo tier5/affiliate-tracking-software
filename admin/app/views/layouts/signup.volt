@@ -58,7 +58,7 @@ if (isset($main_color_setting)) {
     <div class="headercontent">
         <!-- BEGIN LOGO -->
         <?php
-            if($logo_path == '/img/agency_logos/') {
+            if($logo_path == '/img/agency_logos/' || !$logo_path) {
                 $MarginLeftSteps = "margin-left: 280px !important;";
                 $MarginLeftWords = "margin-left: 269px !important;";
             } else {
@@ -68,7 +68,7 @@ if (isset($main_color_setting)) {
          ?>
         {% if logo_path AND logo_path != "/img/agency_logos/" %}
         <div class="logo">
-            <a href="/"><img style="max-width: 300px; margin-top: 15px;"  src="<?=(isset($this->view->logo_path) && $this->view->logo_path != ''? $this->view->logo_path:'/img/blank.png')?>" alt="" /></a>
+            <a href="/"><img style="max-width: 300px; margin-top: 15px;"  src="{{ logo_path }}" alt="" /></a>
         </div>
         {% endif %}
         <!-- END LOGO -->

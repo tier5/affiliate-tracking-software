@@ -107,7 +107,7 @@ class ControllerBase extends Controller {
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
                 $this->view->objParentAgency = $objParentAgency;
                 
-                $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "/img/blank.png" ;
+                $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "" ;
                 $this->view->agencyName =  $objParentAgency->name;
             } else {
                 // We're an agency or a business under RV
