@@ -227,6 +227,22 @@ class AdminController extends ControllerBase {
         $parameters = array("agency_id" => $confirmation->user->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
+        if($agency->parent_id > 0) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+            if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                throw \Exception("Contact customer support.  Email configuration not setup correct.y");
+            $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+        }
+
+        if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+            $EmailFrom = 'zacha@reviewvelocity.co';
+
+        if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+            if(!$agency->email_from_address && !$agency->custom_domain)
+                throw \Exception("Contact customer support.  Email configuration not setup correct.y");
+            $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+        }
+
         $AgencyUser=$agency->name;
 
         $conditions = "agency_id = :agency_id:";
@@ -240,7 +256,7 @@ class AdminController extends ControllerBase {
                $publicUrl="http://getmobilereviews.com";
                     $code=$confirmation->user->id."-".$confirmation->user->name;
                     $link=$publicUrl.'/link/createlink/'.base64_encode($code);
-                    $feed_back_email=$confirmation->user->email;
+                    $feed_back_email=$EmailFrom;
                     $feed_back_subj='Feedback Form';
                     $feed_back_body='Hi '.$confirmation->user->name.',';
                     $feed_back_body=$feed_back_body.'<p>Thank you for activating your account, we have created a mobile landing page so that you can request feedback from your customers in person from your mobile phone. 

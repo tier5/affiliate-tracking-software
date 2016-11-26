@@ -16,7 +16,7 @@ class Email{
      */
     protected $di;
 
-    public function __construct(){
+    public function __construct() {
         $this->di = $this->getDI();
     }
 
@@ -29,7 +29,7 @@ class Email{
         return $this;
     }
 
-    public function getDI(){
+    public function getDI() {
         if($this->di) return $this->di;
         $di = new \Phalcon\Di();
         $this->di = $di->getDefault();
@@ -254,7 +254,7 @@ class Email{
 
     }
 
-    public function sendActivationEmailToEmployeeById($user_id){
+    public function sendActivationEmailToEmployeeById($user_id) {
         $users = new Users();
         $record = $users->getById($user_id);
         if ($record) return $this->sendActivationEmailToEmployee($record);
