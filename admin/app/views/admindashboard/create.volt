@@ -116,7 +116,7 @@
             <div class="form-group">
                 <label for="admin_email" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Admin Email</label>
                 <div class="col-md-8">
-                    <input class="form-control" type="text" placeholder="Admin Email" name="admin_email" required value="<?=(isset($_POST['admin_email'])?$_POST["admin_email"]:'')?>" />
+                    <input class="form-control" type="email" placeholder="Admin Email" name="admin_email" required value="<?=(isset($_POST['admin_email'])?$_POST["admin_email"]:'')?>" />
                 </div>
             </div>
             <div class="form-group">

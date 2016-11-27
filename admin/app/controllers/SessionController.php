@@ -94,6 +94,8 @@ class SessionController extends ControllerBase {
             $subscription_id = null;
             $short_code = $this->request->getPost('short_code');
             $ssp = new SubscriptionPricingPlan();
+            $sharing_code = $this->request->getPost('sharing_code', 'striptags');
+            $parent_id = null;
             if ($short_code) {
                 $subscription_pricing_plan = $ssp->findOneBy(['short_code' => $short_code]);
                 if($subscription_pricing_plan) {
@@ -106,7 +108,21 @@ class SessionController extends ControllerBase {
 
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
-            if(!$subscription_id){
+
+            if(!$subscription_id && $sharing_code) {
+                // Viral signup, get viral subscription
+                $objBusiness = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$sharing_code}'");
+                if(!$objBusiness)
+                    throw new \Exception("Viral code not set properly.  Please contact customer support.");
+
+                $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$objBusiness->parent_id} and role = 'Super Admin'");
+
+                $objSubscription = \Vokuro\Models\SubscriptionPricingPlan::findFirst("is_viral = 1 AND user_id = {$objSuperUser->id}");
+                $subscription_id = $objSubscription->id;
+                $parent_id = $objBusiness->parent_id;
+            }
+
+            if(!$subscription_id) {
                 /**
                  * @var $subscriptionManager \Vokuro\Services\SubscriptionManager
                  */
@@ -170,8 +186,8 @@ class SessionController extends ControllerBase {
             $agency_name = $this->request->getPost('agency_name', 'striptags');
             if(!$agency_name) $agency_name = $this->request->getPost('name','striptags');
 
-            // Also will 404 on invalid subdomain
-            $ParentID = $this->DetermineParentIDAndSetViewVars($subscription_pricing_plan);
+            // Also will 404 on invalid subdomain.  If its a viral code, it will use that instead.  This is hacky, but it removes some reliance on the subdomain being correct.
+            $ParentID = $parent_id ?: $this->DetermineParentIDAndSetViewVars($subscription_pricing_plan);
 
             $agency = new Agency();
             $agency_save_arr = [
