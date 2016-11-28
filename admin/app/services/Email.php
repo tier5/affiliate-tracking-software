@@ -2,6 +2,8 @@
 use Vokuro\Models\Agency;
 use Vokuro\Models\EmailConfirmations;
 use Vokuro\Models\Users;
+use Vokuro\Models\UsersLocation;
+use Vokuro\Models\Location;
 
 /**
  * Class Email
@@ -205,6 +207,14 @@ class Email{
             $confirmationModel->save();
             $record = $confirmationModel;
         }
+
+        /*** business Information **/
+        $u->agency_id
+        $userslocation_info=\Vokuro\Models\UsersLocation::findFirst("user_id = {$u->id}");
+
+        $Location=\Vokuro\Models\Location::findFirst("location_id = {$userslocation_info->location_id}");
+        /*** business Information **/
+
         //get the email from address
         $code = $record->code;
         $agency = new Agency();
@@ -246,7 +256,7 @@ class Email{
         $params['employeeName']=$u->name;
         $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
-        $params['BusinessName']=$businessname;
+        $params['BusinessName']=$Location->name;
         $params['confirmUrl'] = '/admin/confirmEmail/' . $code . '/' . $u->email;
        // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
 
