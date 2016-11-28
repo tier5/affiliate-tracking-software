@@ -238,8 +238,8 @@
                         $twilio_auth_messaging_sid='MG28424d425f7128e97d4c96f2fdc44f2d';
                         $twilio_from_phone='4253654160';*/
 
-                        echo $message;
-                        exit;
+                        //echo $message;
+                        //exit;
                         
                         //echo $this->twilio_api_key;exit;
                         if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
