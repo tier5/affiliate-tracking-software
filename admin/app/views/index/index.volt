@@ -50,25 +50,23 @@
             ?>
         </div>
 
-		<?php
-         if(strpos($userLogged->role, "Admin") !== false || !$this->session->get('auth-identity')['is_employee']) {
-
-            if ($is_upgrade) { ?>
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="portlet dark bordered discount">
-                    <img src="/img/20-percent-off.gif" id="percentoff" alt="20% Off" />
-                    <a href="#"><img src="/img/btn-upgrade-now.gif" id="btnupgradenow" alt="Upgrade Now" /></a>
-                    <div class="upgrade-middle">
-                        <div class="upgrade-top">Hey <?=$this->session->get('auth-identity')['name']?>!  Upgrade Your Account Today and Boost Results!</div>
-                        <div class="upgrade-bottom">Increasing the number of feedback messages sent each month helps turbo charge your results.</div>
+		<?php if(strpos($loggedUser->role, "Admin") !== false || !$this->session->get('auth-identity')['is_employee']) { ?>
+            {% if SubscriptionPlan == 'TR' %}
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="portlet dark bordered discount">
+                            <img src="/img/20-percent-off.gif" id="percentoff" alt="20% Off" />
+                            <a href="/businessSubscription"><img src="/img/btn-upgrade-now.gif" id="btnupgradenow" alt="Upgrade Now" /></a>
+                            <div class="upgrade-middle">
+                                <div class="upgrade-top">Hey <?=$this->session->get('auth-identity')['name']?>!  Upgrade Your Account Today and Boost Results!</div>
+                                <div class="upgrade-bottom">Increasing the number of feedback messages sent each month helps turbo charge your results.</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <?php
-            }
-        } ?>
+            {% endif %}
+        <?php } ?>
+
 
         {% if SubscriptionPlan != 'FR' %}
         <div class="row">
@@ -557,19 +555,11 @@
     <div class="hero-unit">
         <!-- BEGIN PAGE TITLE-->
         <h3 class="page-title"> Welcome </h3>
-        <?php
-        //only the Agency Admin see this
-        if ($this->session->get('auth-identity')['profile'] == 'Agency Admin' ||
-        $this->session->get('auth-identity')['profile'] == 'Super Admin') {
-        ?>
-        <div><a href="/location/create">Click here</a> to set up a location to get started.</div>
-        <?php
-        } else {
-        ?>
-        <div>To get started: Have the Agency Admin add you to a location.</div>
-        <?php
-        }
-        ?>
+        <?php if($loggedUser->role == 'Super Admin' || $loggedUser->role == 'Admin') { ?>
+            <div><a href="/location/create">Click here</a> to set up a location to get started.</div>
+        <?php } else { ?>
+            <div>To get started: Have the administrator add you to a location.</div>
+        <?php } ?>
     </div>
 </header>
 <?php

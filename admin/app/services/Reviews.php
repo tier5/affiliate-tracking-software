@@ -443,7 +443,7 @@
 
             $tobjReviews = $FB->getReviews();
 
-            foreach($tobjReviews as $objReview) {
+            foreach((array)$tobjReviews as $objReview) {
                 $dbReview = new \Vokuro\Models\Review();
                 $dbReview->rating_type_id = \Vokuro\Models\Location::TYPE_FACEBOOK;
                 $dbReview->rating = $objReview->rating;
