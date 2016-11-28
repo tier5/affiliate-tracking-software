@@ -15,6 +15,9 @@ class ControllerBusinessBase extends ControllerBase {
 public function editAction($agency_id = 0) {
     $this->view->agency_id = $agency_id;
 
+    $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+    $this->view->UnpaidPlan = $objSubscriptionManager->GetBusinessSubscriptionLevel($agency_id) == 'FR';
+
     $form = new AgencyForm(null);
     if ($agency_id) {
         $age = Agency::findFirst("agency_id = {$agency_id}");
@@ -24,6 +27,14 @@ public function editAction($agency_id = 0) {
         $form = new AgencyForm($age);
     } else {
       $this->flash->error("The Entity with id:>" . $agency_id . "<:is not valid");
+    }
+
+    // I don't know of a situation where this shouldn't ever exist.  I'm putting the check in just to make sure I don't break something else.
+    if($agency_id) {
+        $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$agency_id} AND role='Super Admin'");
+        $objBusinessSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperUser->id}");
+        $this->view->sms_messages = $objBusinessSubscription->sms_messages_per_location;
+        $this->view->free_locations = $objBusinessSubscription->locations;
     }
 
 
@@ -78,13 +89,24 @@ public function editAction($agency_id = 0) {
                 'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
 
             ];
-//print_r($params);
+
             if (!$age->createOrUpdateBusiness($params)) {
                $error = true;
                 foreach($age->getMessages() as $error_message) $errors[] = $error_message;
             }
 
-            $this->flash->success("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was " . ($agency_id > 0 ? 'edited' : 'created') . " successfully");
+            $CreateType = $age->parent_id == \Vokuro\Models\Agency::AGENCY ? 'agency' : 'business';
+
+            if($CreateType == 'business') {
+                // Update subscription
+                $objBusinessSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperUser->id}");
+                if(!$objBusinessSubscription)
+                    $this->createSubsciptionPlan($objSuperUser, $this->request);
+                else
+                    $this->updateSubscriptionPlan($objSuperUser, $this->request);
+
+            }
+            $this->flash->success("The {$CreateType} was " . ($agency_id > 0 ? 'edited' : 'created') . " successfully");
             $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
             if(!$errors) $db->commit();
             if($errors) $db->rollback();
@@ -376,5 +398,21 @@ public function editAction($agency_id = 0) {
             'pricingPlanId' => $request->getPost('subscription_pricing_plan_id', 'striptags')
         ];
         return $this->di->get('subscriptionManager')->createSubscriptionPlan($newSubscriptionParameters);
+    }
+
+    private function updateSubscriptionPlan($user, $request) {
+        $objBusinessSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$user->id}");
+        if(!$objBusinessSubscription)
+            return false;
+
+        if($request->getPost('free_locations', 'striptags'))
+            $objBusinessSubscription->locations = $request->getPost('free_locations', 'striptags');
+        if($request->getPost('sms_messages', 'striptags'))
+            $objBusinessSubscription->sms_messages_per_location = $request->getPost('sms_messages', 'striptags');
+
+        $objBusinessSubscription->updated_at = date("Y-m-d H:i:s");
+        $objBusinessSubscription->save();
+
+        return true;
     }
 }

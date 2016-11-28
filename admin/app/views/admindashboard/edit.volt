@@ -72,6 +72,39 @@
                 </div>
             </div>
 
+            {% if UnpaidPlan %}
+                <div class="free_subscription_pricing_plan show">
+                <hr/>
+                <h4>Free Subscription Plan</h4>
+                <div class="form-group">
+                    <label for="locations" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Locations</label>
+                    <div class="col-md-8">
+                        <input
+                          class="form-control"
+                          type="number"
+                          min="0"
+                          value="<?=$free_locations ?: 1 ?>"
+                          placeholder="Number of locations"
+                          required name="free_locations"
+                          />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sms_messages" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> SMS Messages</label>
+                    <div class="col-md-8">
+                        <input
+                          class="form-control"
+                          type="number"
+                          min="0"
+                          placeholder="Number of messages"
+                          value="<?=$sms_messages ?: 100; ?>"
+                          required name="sms_messages"
+                          />
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="form-group">
                 <div class="col-md-offset-4 col-md-8">
                     {{ submit_button("Save", "class": "btn btn-big btn-success") }}
