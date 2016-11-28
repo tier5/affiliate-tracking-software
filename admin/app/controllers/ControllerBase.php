@@ -354,7 +354,7 @@ class ControllerBase extends Controller {
             $Domain="getmobilereviews.com";
         }
         $share_link = $this->googleShortenURL("https://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
-        $share_link = urlencode($share_link);
+        //$share_link = urlencode($share_link);
 
         /*$this->view->setVars([
             'share_message' => 'Click this link to sign up for a great new way to get reviews: ' . $share_link,
