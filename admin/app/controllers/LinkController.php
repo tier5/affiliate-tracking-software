@@ -191,7 +191,8 @@
                     $guid = $this->GUID();//exit;
                    $message = str_replace("{link}", $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid), $message);
 
-                  // exit;
+                    echo $message;
+                    exit;
 
                     $phone = $_POST['phone'];
                    $uid=$_POST['userID'];//exit;
