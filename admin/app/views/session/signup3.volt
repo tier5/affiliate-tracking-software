@@ -82,7 +82,8 @@ style="margin: 4px;"
                   name="sms_text_message_default"
                   id="sms_text_message_default"
                 ><?php
-                  if (isset($_POST['sms_text_message_default']))  {
+
+                 /* if (isset($_POST['sms_text_message_default']))  {
                     echo $_POST["sms_text_message_default"];
                   } else {
                     if ( (isset($location->SMS_message)) ) {
@@ -91,6 +92,17 @@ style="margin: 4px;"
                     	echo $location->sms_text_message_default;
                     }
                   }
+
+                    if ( (isset($location->SMS_message)) ) {
+                        echo $location->SMS_message;
+                    } elseif((isset($sms_text_message_default))) {
+                        echo $location->sms_text_message_default;
+                    }
+                    else
+                    {
+                         $_POST["sms_text_message_default"]
+                    }
+                  */
                 ?></textarea>
                 <p class="help-block">This is the default content of the text message you send to your customers, the max characters is 166.</p>
             </div>
