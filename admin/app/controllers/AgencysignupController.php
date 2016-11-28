@@ -82,8 +82,9 @@
             'SecondaryColor'        => 'secondary_color',
 
             /* Step 3 Fields */
-            'TwilioSID'             => 'twilio_auth_messaging_sid',
+            'TwilioAPIKey'          => 'twilio_api_key',
             'TwilioToken'           => 'twilio_auth_token',
+            'TwilioSID'             => 'twilio_auth_messaging_sid',
             'TwilioFromNumber'      => 'twilio_from_phone',
             // GARY_TODO Remove twilio_api_key from database?
 
