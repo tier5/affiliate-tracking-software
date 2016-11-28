@@ -280,7 +280,11 @@
                     <div class="portlet-body">
                         <?php
             if($clickreport) {
+            //echo $clickreport;
+               // echo count($clickreport);
               foreach($clickreport as $click_site) {
+              $clicktotal=$sms_sent_all_time;
+              $clicklargest=5;
                 $percent = ($click_site->num_clicks / $clicktotal) * 100;
                         $largestpercent = ($clicklargest / $clicktotal) * 100;
                         //calculate width
@@ -392,6 +396,7 @@
                                             date_viewed?date_format(date_create($invite->date_viewed),"m/d/Y"):'')?>
                                         </td>
                                         <td><?php
+                                        //print_r($invite->review_sites);
                       foreach ($invite->review_sites as $rs) {
                                             ?>
                                             <img src="<?=$rs->icon_path?>"/>

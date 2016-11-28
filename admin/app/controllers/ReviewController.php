@@ -31,6 +31,7 @@
 
 
         public function indexAction() {
+
             $conditions = "api_key = :api_key:";
 
             $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
@@ -244,11 +245,12 @@
 
 
         public function trackAction() {
-            $review_invite_id = $_GET['i'];
-            $review_site_id = $_GET['d'];
+            $review_invite_id = $_POST['i'];
+           // exit;
+            $review_site_id = $_POST['d'];
 
-            $this->checkIntegerOrThrowException($review_invite_id);
-            $this->checkIntegerOrThrowException($review_site_id);
+            //$this->checkIntegerOrThrowException($review_invite_id);
+           // $this->checkIntegerOrThrowException($review_site_id);
             $rirs = new ReviewInviteReviewSite();
             $rirs->review_invite_id = $review_invite_id;
             $rirs->review_site_id = $review_site_id;

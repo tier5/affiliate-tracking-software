@@ -52,12 +52,28 @@
 <script type="text/javascript">
   jQuery(document).ready(function($){
     $('.track-link').click(function(e) {
+   
+    //alert('ok');return false;
       //e.preventDefault();
-      $.ajax({
+      /*$.ajax({
         async: false,
-        type: 'POST',
-        url: '/review/track?d='+$(this).data("id")+'&i='+$(this).data("invite")
-      });
+        method: 'POST',
+        url: '/review/track?d='+$(this).data("id")+'&i='+$(this).data("invite"),
+        
+      });*/
+
+         $.ajax({
+          url: '/review/track',
+          method: "POST",
+          async:false,
+          data: { d : $(this).data("id"), i:$(this).data("invite")},
+          success:function(html)
+              {
+            //alert(html);  
+             
+             }
+           });
+
     });
   });
 </script>

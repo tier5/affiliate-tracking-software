@@ -176,6 +176,15 @@
                   " . ($only_site_clicked ? 'AND (SELECT COUNT(*) FROM review_invite_review_site WHERE review_invite_review_site.review_invite_id = review_invite.review_invite_id) > 0' : '') . "
                 ORDER BY review_invite.date_sent DESC";
 
+
+
+                 /*$sql = "SELECT users.name AS sent_by, review_invite.*
+                FROM review_invite 
+                  INNER JOIN users ON review_invite.sent_by_user_id = users.id
+                WHERE review_invite.location_id = " . $location_id . " AND sms_broadcast_id IS NULL ORDER BY review_invite.date_sent DESC";*/
+
+                //exit;
+
             // Base model
             $list = new ReviewInvite();
 
@@ -216,13 +225,14 @@
           *
           */
         public static function getReviewInviteClickReport($location_id) {
+            //echo $location_id;exit;
             // A raw SQL statement
             $sql = "SELECT COUNT(rirs.review_site_id) AS num_clicks, rirs.review_site_id, rs.icon_path
                 FROM review_invite ri
                   INNER JOIN review_invite_review_site rirs ON ri.review_invite_id = rirs.review_invite_id
                   INNER JOIN review_site rs ON rirs.review_site_id = rs.review_site_id
                 WHERE ri.location_id = " . $location_id . " AND ri.sms_broadcast_id IS NULL
-                GROUP BY rirs.review_site_id";
+                GROUP BY rirs.review_site_id";//exit;
 
             // Base model
             $list = new ReviewInvite();

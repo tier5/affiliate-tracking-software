@@ -244,7 +244,7 @@
 
                             //$this->flash->success("The SMS was sent successfully to: " . $phone);
                             //$this->view->render('users', 'reviewmsg');
-
+                            
                             $this->flashSession->success("The SMS was sent successfully to: " . $phone.".This page will automatically refresh in 5 seconds.");
                             $this->view->disable();
                             return $this->response->redirect('link/send_review_invite_employee/'.$uid);

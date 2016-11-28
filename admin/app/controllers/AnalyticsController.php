@@ -72,9 +72,11 @@
                 }
 
                 $invitelist = ReviewInvite::getReviewInvitesByLocation($LocationID, true);
+                //echo '<pre>';print_r( $invitelist);exit;
                 $this->view->invitelist = $invitelist;
 
                 $clickreport = ReviewInvite::getReviewInviteClickReport($LocationID, true);
+               // echo '<pre>';print_r( $clickreport);exit;
                 $this->view->clickreport = $clickreport;
 
                 $this->view->sms_sent_this_month = $this->view->sms_sent_this_month_total = $SMSSentThisMonth;
