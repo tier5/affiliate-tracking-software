@@ -62,8 +62,13 @@ if (isset($main_color_setting)) {
                 $MarginLeftSteps = "margin-left: 280px !important;";
                 $MarginLeftWords = "margin-left: 269px !important;";
             } else {
-                $MarginLeftSteps = '';
-                $MarginLeftWords = '';
+                if($logo_path == '/assets/layouts/layout/img/logo.png') {
+                    $MarginLeftSteps = 'margin-left: 35px !important;';
+                    $MarginLeftWords = "margin-left: 244px !important;";
+                } else {
+                    $MarginLeftSteps = '';
+                    $MarginLeftWords = '';
+                }
             }
          ?>
         {% if logo_path AND logo_path != "/img/agency_logos/" %}
