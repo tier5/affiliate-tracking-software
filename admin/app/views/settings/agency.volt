@@ -458,7 +458,7 @@
                     <div class="tab-pane fade" id="tab_twilio">
                         <div class="form-group">
                             <div class="row">
-                                <label for="twilio_api_key" class="col-md-4 control-label">Twilio SID</label>
+                                <label for="twilio_api_key" class="col-md-4 control-label">Twilio API Key</label>
                                 <div class="col-md-8">
                                     {{ form.render("twilio_api_key", ["class": 'form-control', 'placeholder': 'Twilio SID']) }}
                                 </div>
