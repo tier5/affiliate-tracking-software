@@ -20,7 +20,7 @@
 
     <div class="row form-group small-vertical-margins">
         <div class="col-xs-6">
-            <label>Twilio SID</label><input class="form-control" type="text" name="TwilioAPIKey" value="{{ TwilioAPIKey }}" />
+            <label>Twilio API Key</label><input class="form-control" type="text" name="TwilioAPIKey" value="{{ TwilioAPIKey }}" />
         </div>
         <div class="col-xs-6">
             <label>Twilio Token</label><input class="form-control" type="text" name="TwilioToken" value="{{ TwilioToken }}"/>

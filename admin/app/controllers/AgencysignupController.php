@@ -38,8 +38,9 @@
             'sbyp',
             
             /* Step 3 Fields */
-            'TwilioSID',
+            'TwilioAPIKey',
             'TwilioToken',
+            'TwilioSID',
             'TwilioFromNumber',
             'sbyp',
             
