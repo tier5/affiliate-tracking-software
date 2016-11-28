@@ -224,9 +224,9 @@ class PaymentService extends BaseService {
                 if ($objStripeSubscription->save())
                     $responseParameters['status'] = true;
             }
-        } catch (Exception $e) {
-            print_r($e->getMessage());
-            die();
+        } catch (\Stripe\Error\Card $e) {
+            $responseParameters['errors'] = $e->getMessage();
+            $responseParameters['status'] = false;
         }
 
         return $responseParameters;

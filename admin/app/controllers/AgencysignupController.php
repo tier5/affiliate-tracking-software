@@ -587,6 +587,13 @@
                     $this->flashSession->error('Could not create payment profile.');
                     return false;
                 }
+
+                if(!$Profile['status']) {
+                    $this->flashSession->error($Profile['errors']);
+                    $this->db->rollback();
+                    return false;
+                }
+
                 $this->db->commit();
 
             } catch(Exception $e) {
