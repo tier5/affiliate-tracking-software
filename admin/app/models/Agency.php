@@ -41,7 +41,7 @@
                 'field'   => 'name',
                 'pattern' => '/^[a-zA-Z\.0-9 ]+$/',
                 'message' => 'Name is in the wrong format (letters, period, and apostrophe)'
-            ]));
+            ]));*/
 
             $this->validate(new Email([
                 'field'   => 'email',
@@ -56,7 +56,7 @@
                     "field" => "custom_domain",
                     "message" => "The Custom Domain is already used"
                 )));
-            }*/
+            }
 
             return $this->validationHasFailed() != true;
         }
