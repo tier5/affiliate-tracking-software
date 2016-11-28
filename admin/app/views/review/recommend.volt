@@ -1,5 +1,10 @@
 <!-- views/review/recommend.volt -->
 {{ content() }}
+<?php
+function isMobile() {
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+}
+?>
 <div class="review recommend">
   <div class="rounded-wrapper">
     <div class="rounded" style="padding-bottom: 25px;">
@@ -23,8 +28,9 @@
       <?php
   foreach($review_site_list as $rsl) {
     if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) {
+        $FacebookLink = isMobile() ? "fb://profile/{$rsl->external_id}" : "http://facebook.com/{$rsl->external_id}/reviews";
       ?>
-      <div class="row text-center" id="facebooklink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="http://facebook.com/<?=$rsl->external_id?>/reviews" onclick="facebookClickHandler('<?=$rsl->external_id?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
+      <div class="row text-center" id="facebooklink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="<?=$FacebookLink; ?>" onclick="facebookClickHandler('<?=$rsl->external_id?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
       <?php
     } else if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_YELP) {
       ?>

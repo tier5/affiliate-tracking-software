@@ -76,14 +76,14 @@ class SessionController extends ControllerBase {
                 //echo '<pre>';print_r($objParentAgency);exit;
                 $this->view->main_color_setting = $this->view->PrimaryColor = !empty($objParentAgency->main_color) ? $objParentAgency->main_color : '#2a3644';
                 $this->view->SecondaryColor = !empty($objParentAgency->secondary_color) ? $objParentAgency->secondary_color : '#65CE4D';
-                $this->view->logo_path = (!empty($objParentAgency->logo_path)) ? '/img/agency_logos/'.$objParentAgency->logo_path : '';
+                //$this->view->logo_path = (!empty($objParentAgency->logo_path)) ? '/img/agency_logos/'.$objParentAgency->logo_path : '';
 
             } else {
                 // Get Mobile Reviews
                 $ParentID = \Vokuro\Models\Agency::BUSINESS_UNDER_RV;
                 $this->view->main_color_setting = $this->view->PrimaryColor = '#2a3644';
                 $this->view->SecondaryColor = '#65CE4D';
-                $this->view->logo_path =  '';
+                //$this->view->logo_path =  '';
             }
 
         return $ParentID;
@@ -262,7 +262,7 @@ class SessionController extends ControllerBase {
                 $objUser = \Vokuro\Models\Users::findFirst("id = {$plan->user_id}");
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
                 //$this->view->logo_path = $objAgency->logo_path;
-                $this->view->logo_path = "/img/agency_logos/{$objAgency->logo_path}";
+                //$this->view->logo_path = "/img/agency_logos/{$objAgency->logo_path}";
                 $this->view->agency_name = $objAgency->name;
                 $status = $plan->enabled;
 
@@ -297,7 +297,7 @@ class SessionController extends ControllerBase {
         if($record){
             $this->view->agencyId = $record->agency_id;
 
-            if($record->logo_path) $this->view->logo_path = "/img/agency_logos/".$record->logo_path;
+            //if($record->logo_path) $this->view->logo_path = "/img/agency_logos/".$record->logo_path;
             if($record->name){
                 $this->view->agency_name = $record->name;
                 $this->view->agency_name = $record->name;
@@ -389,7 +389,7 @@ class SessionController extends ControllerBase {
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
         
-        $this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
+        //$this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         
         if ($this->request->isPost()) {
@@ -520,7 +520,7 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
+        //$this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         
         $conditions = "location_id = :location_id:";
@@ -595,7 +595,7 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->logo_path = "/img/agency_logos/" .$parent_agency->logo_path;
+        //$this->view->logo_path = "/img/agency_logos/" .$parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         
         //find the location
@@ -662,7 +662,7 @@ class SessionController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        $this->view->logo_path = "/img/agency_logos/" .$parent_agency->logo_path;
+        //$this->view->logo_path = "/img/agency_logos/" .$parent_agency->logo_path;
         $this->view->parent_agency = $parent_agency->name;
         //Get the sharing code
         $this->getShareInfo($agency);
@@ -822,7 +822,7 @@ class SessionController extends ControllerBase {
     	$parameters = array("agency_id" => $User->agency_id);
     	$agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
-    	$this->view->logo_path = "/img/agency_logos/" . $agency->logo_path;
+    	//$this->view->logo_path = "/img/agency_logos/" . $agency->logo_path;
 
     	if (!$resetPassword) {
     		return $this->dispatcher->forward(array(
