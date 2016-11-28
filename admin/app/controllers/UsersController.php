@@ -524,7 +524,7 @@
         public function changePasswordAction()
         {
             $this->tag->setTitle('Get Mobile Reviews | Change password');
-            $this->view->setTemplateBefore('private');
+            $this->view->setTemplateBefore('login');
             $form = new ChangePasswordForm();
 
             if ($this->request->isPost()) {
