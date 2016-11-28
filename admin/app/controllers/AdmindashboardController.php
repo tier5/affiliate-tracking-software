@@ -275,7 +275,15 @@ class AdmindashboardController extends ControllerBusinessBase {
                 $this->flash->error("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " status was updated.");
             }
         }
-        $this->response->redirect('/admindashboard/list/' . $agency_type_id);
+        $identity = $this->auth->getIdentity();
+
+        if($identity['is_admin'])
+            $this->response->redirect('/admindashboard/list/' . $agency_type_id);
+        else
+            if($agency_type_id == 2)
+                $this->response->redirect('/agency');
+            else
+                $this->response->redirect('/admindashboard/list/' . $agency_type_id);
         $this->view->disable();
         return;
     }

@@ -47,7 +47,7 @@ foreach($tBusinesses as $objBusiness) {
                             <td>{{ objBusiness.subscription_id ? 'Paid':'Free' }}
                             </td>
                             <td>
-                                <a href="/agency/status/{{ objBusiness.agency_id }} >/{{ objBusiness.status ? 0 : 1 }}?>"><img src="/public/img/{{ objBusiness.status ? 'on' : 'off' }}.png" />
+                                <a href="/admindashboard/status/2/{{ objBusiness.agency_id }}/{{ objBusiness.status ? 0 : 1 }}"><img src="/public/img/{{ objBusiness.status ? 'on' : 'off' }}.png" /></a>
                             </td>
                             <td style="text-align: right;">
                                 <div class="actions">

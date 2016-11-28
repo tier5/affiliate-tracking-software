@@ -32,10 +32,6 @@
             parent::initialize();
         }
 
-        /**
-         * BEGIN OVERWRITE OF BUSINESS COMMON FUNCTIONS
-         */
-
         public function createAction($agency_type_id = null, $agency_id = 0, $parent_id = 0 ) {
             //$parent_id is never used...
             if(!$agency_type_id) $agency_type_id = 2;
