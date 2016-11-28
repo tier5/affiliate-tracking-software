@@ -47,7 +47,7 @@
                     </div>
                     <div class="row contact-row">
                         <div class="col-xs-5 col-lg-3">
-                        	<label class="hidden-xs" >Email
+                        	<label>Email
                         		<span class="required">*</span></label>
                         		<span style="color:red; font-size:80%; float: right,bottom;  white-space:nowrap;" id="Email_availability_result"></span>
                       
@@ -58,7 +58,7 @@
                     </div>
                     <div class="row contact-row">
                         <div class="col-xs-5 col-lg-3" >
-                        	<label class="hidden-xs" >
+                        	<label>
                         		<span class="required">Get A Company URL*</span></label>
                         		<span style="color:red; font-size:80%; float: right;  white-space:nowrap;" id="URL_availability_result"></span>
                         </div>
