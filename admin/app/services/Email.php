@@ -209,7 +209,7 @@ class Email{
         }
 
         /*** business Information **/
-        $u->agency_id
+      
         $userslocation_info=\Vokuro\Models\UsersLocation::findFirst("user_id = {$u->id}");
 
         $Location=\Vokuro\Models\Location::findFirst("location_id = {$userslocation_info->location_id}");
