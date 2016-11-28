@@ -424,6 +424,23 @@ class SubscriptionManager extends BaseService {
         return $subscriptionPricingPlans;
     }
 
+    public function toggleViralPlanById ($pricingPlanId) {
+        $subscriptionPricingPlan = SubscriptionPricingPlan::findFirst("id = {$pricingPlanId}");
+        if(!$subscriptionPricingPlan)
+            return false;
+
+        $subscriptionPricingPlan->is_viral = $subscriptionPricingPlan->is_viral ? 0 : 1;
+        $subscriptionPricingPlan->save();
+
+        return true;
+    }
+
+    /**
+     * This method is semi faulty but not in use currently.
+     * @param $pricingPlanId
+     * @param $enable
+     * @return bool
+     */
     public function enableViralPlanById ($pricingPlanId, $enable) {
         $subscriptionPricingPlan = SubscriptionPricingPlan::findFirst("id = {$pricingPlanId}");
         if(!$subscriptionPricingPlan)

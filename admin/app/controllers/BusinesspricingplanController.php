@@ -290,6 +290,8 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->pick("businessPricingPlan/signupPreview");
     }
 
+
+
     public function updateViralSwitchAction($pricingPlanId, $enable) {
 
         $this->view->disable();
@@ -305,7 +307,7 @@ class BusinessPricingPlanController extends ControllerBase {
             $subscriptionManager = $this->di->get('subscriptionManager');
 
             /* Ensure the name of the pricing profile is unique for this user */
-            if(!$subscriptionManager->enableViralPlanById($pricingPlanId, $enable)) {
+            if(!$subscriptionManager->toggleViralPlanById($pricingPlanId)) {
                 throw new \Exception('Failed to set plan to viral.');
             }
 
