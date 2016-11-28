@@ -527,7 +527,7 @@ class SessionController extends ControllerBase {
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
         $location = Location::findFirst(array($conditions, "bind" => $parameters));
 
-        echo '111'.$parent_agency->SMS_message;exit;
+        
 
         if ($this->request->isPost()) {
             $location->assign(array(
@@ -555,6 +555,7 @@ class SessionController extends ControllerBase {
         $this->view->location = $location;
         $this->view->current_step = 3;
         $this->view->id = $agency->agency_id;
+        $this->view->default_sms_agency=$parent_agency->SMS_message;
     }
 
     /**
