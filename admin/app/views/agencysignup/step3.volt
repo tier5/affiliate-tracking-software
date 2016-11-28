@@ -29,7 +29,7 @@
 
     <div class="row form-group">
     	<div class="col-xs-6">
-            <label>Twilio SID</label><input class="form-control" type="text" name="TwilioSID" value="{{ TwilioSID }}" />
+            <label>Twilio Messaging Service SID</label><input class="form-control" type="text" name="TwilioSID" value="{{ TwilioSID }}" />
         </div>
 
         <div class="col-xs-6">

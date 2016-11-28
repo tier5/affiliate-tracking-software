@@ -37,7 +37,7 @@
             'SecondaryColor',
             'sbyp',
             
-            /* Step 3 Fields */
+            /* Step 4 Fields */
             'TwilioAPIKey',
             'TwilioToken',
             'TwilioSID',
@@ -82,7 +82,7 @@
             'PrimaryColor'          => 'main_color',
             'SecondaryColor'        => 'secondary_color',
 
-            /* Step 3 Fields */
+            /* Step 4 Fields */
             'TwilioAPIKey'          => 'twilio_api_key',
             'TwilioToken'           => 'twilio_auth_token',
             'TwilioSID'             => 'twilio_auth_messaging_sid',
@@ -711,6 +711,8 @@
 
         public function submitorderAction() {
 /*
+    Already Commented
+
             if(!$this->IsUniqueEmail($this->session->AgencySignup)) {
                 $this->flashSession->error("This email address is already in use.  Please use another one.");
                 $this->response->redirect('/agencysignup/order');

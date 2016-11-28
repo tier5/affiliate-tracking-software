@@ -736,6 +736,10 @@
                 $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
                 $this->view->current_step = 2;
             }
+
+
+
+
             $this->view->ComingFromSignup = $ComingFromSignup;
             $this->view->include_customize_survey = $include_customize_survey;
 
@@ -769,7 +773,26 @@
             //verify that the user is supposed to be here, by checking to make sure that
             //their agency_id matches the agency_id of the location they are trying to edit
             $agency_id_to_check = $loc->agency_id;
+
             if ($agency_id_to_check > 0) {
+
+
+                // Get Agency Details from agency id
+                $conditions = "agency_id = :agency_id:";
+                $parameters = array("agency_id" => $agency_id_to_check);
+                $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+
+                if(isset($agency->parent_id)) {
+                    $conditions = "agency_id = :agency_id:";
+                    $parameters = array("agency_id" => $agency->parent_id);
+                    $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+                    $this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
+                    $this->view->parent_agency = $parent_agency->name;
+                }
+                
+
+
                 //get the user id
                 $identity = $this->auth->getIdentity();
                 // If there is no identity available the user is redirected to index/index
