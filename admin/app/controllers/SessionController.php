@@ -981,8 +981,12 @@ class SessionController extends ControllerBase {
                         $conditions = "agency_id = :agency_id:";
                         $parameters = array("agency_id" => $userObj->agency_id);
                         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
-                        if ($agency->signup_page > 0)
+                        if ($agency->signup_page > 0 && $userObj->role=='Super Admin')
+                        {
+                            
+                             $return = '/agencysignup/step' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : '');
+                        }
+                        elseif ($agency->signup_page > 0)
                             $return = '/session/signup' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : '');
                     }
                     return $this->response->redirect($return);

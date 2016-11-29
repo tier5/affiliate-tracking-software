@@ -1,4 +1,4 @@
-<form action="step2" method="post" id="Step1Form">
+<form action="/agencysignup/step2" method="post" id="Step1Form">
     <?php
         if($_GET['sbyp'] || $_POST['sbyp'])
             $sbyp = $_GET['sbyp'] ? $_GET['sbyp'] : $_POST['sbyp'];
@@ -33,6 +33,7 @@
             <span class="sub-section-header"><h5 ><a class="tertiary-text" id="NoThanks">No Thanks I Don't Want To Save 20% For Life!</a></h5></span>
         </div>
     </div>
+     <input id="sign_up" class="form-control"  name="sign_up" type="hidden" value="2"/>
 
     <input type="hidden" value="0" name="Upgrade" id="Upgrade" />
 </form>

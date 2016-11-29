@@ -85,6 +85,8 @@
                         <div id="Password_match_result"></div>
                         <div class="col-xs-7 col-lg-9">
                         	<input id="ConfirmPassword" class="form-control" maxlength="30"  name="ConfirmPassword" type="password" required />
+
+                            <input id="sign_up" class="form-control"  name="sign_up" type="hidden" value="1"/>
                         	
                         </div>
                     </div>
