@@ -84,10 +84,10 @@
              $email = new \Vokuro\Services\Email();
                  try {
           if($this->template == "reset"){
-              $email->sendResetPasswordEmailByUserId($this->usersId);
+              $email->sendResetPasswordEmailByUserId($this->usersId, $this->code);
           }
           if($this->template == null){
-              $email->sendResetPasswordEmailByUserId($this->usersId);
+              $email->sendResetPasswordEmailByUserId($this->usersId, $this->code);
           }
 
 

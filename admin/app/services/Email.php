@@ -149,48 +149,42 @@ class Email{
         return true;
     }
 
-    public function sendResetPasswordEmailToUser(Users $user){
-        //echo 'kk';exit;
-       /* $this->getDI()
-            ->getMail()
-            ->send($user->email, "Your password reset request", 'reset', array(
-                'resetUrl' => '/reset-password/' . $this->code . '/' . $user->email
-            ));*/
-
-             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
+    public function sendResetPasswordEmailToUser(Users $user, $code){
+        $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
-           // $EmailFrom = "zacha@reviewvelocity.co";
-            
+            $EmailFrom = "zacha@reviewvelocity.co";
         }
-        elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
-
+        elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
             $AgencyUser = $objAgencyUser->name;
             $AgencyName = $objAgency->name;
-            //$EmailFrom = "zacha@reviewvelocity.co";
+            if(!$objAgency->email_from_address && !$objAgency->custom_domain)
+                throw new \Exception("Email from address not configured correctly.  Please contact support.");
 
+            $EmailFrom = $objAgency->email_from_address ?: "no-reply@{$objAgency->custom_domain}.getmobilereviews.com";
         }
         elseif($objAgency->parent_id > 0) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
-           // $EmailFrom = "zacha@reviewvelocity.co";
-        }
-       
+            if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                throw new \Exception("Email from address not configured correctly.  Please contact support.");
 
+            $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.getmobilereviews.com";
+        }
 
         $params = [];
-        $params['resetUrl'] = '/session/resetPassword/' . $this->code . '/' . $user->email;
+        $params['resetUrl'] = '/session/resetPassword/' . $code . '/' . $user->email;
         $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
         $params['firstname']=$user->name;
 
-        $this->getDI()
-            ->getMail()
-            ->send($user->email, "Your password reset request", 'reset', $params);
+        $mail = $this->getDI()->getMail();
+        $mail->setFrom($EmailFrom);
+        $mail->send($user->email, "Your password reset request", 'reset', $params);
 
         
     }
@@ -286,12 +280,12 @@ class Email{
     /**
      * @param $user_id
      */
-    public function sendResetPasswordEmailByUserId($user_id)
+    public function sendResetPasswordEmailByUserId($user_id, $code)
     {
         // echo $user_id;exit;
         $users = new Users();
         $record = $users->getById($user_id);
-        if ($record) return $this->sendResetPasswordEmailToUser($record);
+        if ($record) return $this->sendResetPasswordEmailToUser($record, $code);
     }
 
 

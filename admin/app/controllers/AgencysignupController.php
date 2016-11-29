@@ -98,7 +98,7 @@
             /* Order form Fields */
             'OwnerEmail'            => 'email',
             'URL'                   => 'custom_domain',
-            'SignUp'                =>'signup_page',
+            //'SignUp'                =>'signup_page',
         ];
 
         protected $tUserFieldTranslation = [
