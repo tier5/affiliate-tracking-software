@@ -14,6 +14,9 @@
     </li>
 </ul>
 {{ content() }}
+
+<?php if(!isset($isSuccess)) { ?>}
+
 <!-- BEGIN SAMPLE FORM PORTLET-->
 <div class="portlet light bordered">
     <div class="portlet-title">
@@ -134,6 +137,8 @@
         </form>
     </div>
 </div>
+<?php } ?>
+
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
 

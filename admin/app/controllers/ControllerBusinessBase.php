@@ -287,6 +287,8 @@ public function editAction($agency_id = 0) {
                     $objSubscriptionManager->CreateDefaultSubscriptionPlan($age->agency_id, true);
                 }
 
+                $this->view->isSuccess = 1;
+
                 $this->flash->success("The " . ($age->agency_type_id == 1 ? 'agency' : 'business') . " was created successfully");
                 $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
                 //if(!$errors) $db->commit();
