@@ -52,7 +52,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-12">
             <div class="growth-bar transparent pull-right">
-                <a href="/subscription/" class="btn default btn-lg apple-backgound subscription-btn">Back</a>
+                <a href="/businessSubscription/" class="btn default btn-lg apple-backgound subscription-btn">Back</a>
             </div>
         </div>
     </div>
