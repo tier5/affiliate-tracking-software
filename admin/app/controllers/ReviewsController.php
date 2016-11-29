@@ -217,7 +217,7 @@
                 if(isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != "" && isset($agency->twilio_auth_messaging_sid) && $agency->twilio_auth_messaging_sid != "" && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
 
                     $twilio_api_key = $agency->twilio_api_key;
-                    $twilio_auth_token = $agency->twilio_api_key;
+                    $twilio_auth_token = $agency->twilio_auth_token;
                     $twilio_auth_messaging_sid = $agency->twilio_auth_messaging_sid;
                     $twilio_from_phone = $agency->twilio_from_phone;
 
@@ -237,7 +237,7 @@
                     if(isset($agency1->twilio_api_key) && $agency1->twilio_api_key != "" && isset($agency1->twilio_auth_token) && $agency1->twilio_auth_token != "" && isset($agency1->twilio_auth_messaging_sid) && $agency1->twilio_auth_messaging_sid != "" && isset($agency1->twilio_from_phone) && $agency1->twilio_from_phone != "") {
 
                         $twilio_api_key = $agency1->twilio_api_key;
-                        $twilio_auth_token = $agency1->twilio_api_key;
+                        $twilio_auth_token = $agency1->twilio_auth_token;
                         $twilio_auth_messaging_sid = $agency1->twilio_auth_messaging_sid;
                         $twilio_from_phone = $agency1->twilio_from_phone;
 
