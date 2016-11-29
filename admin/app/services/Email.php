@@ -196,6 +196,7 @@ class Email{
     }
 
     public function sendActivationEmailToEmployee(Users $u,$from = null,$businessname=null){
+
         //echo $businessname;exit;
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($u->getId());
@@ -209,10 +210,22 @@ class Email{
         }
 
         /*** business Information **/
-      
+        if($u->is_all_locations==0)
+        {
         $userslocation_info=\Vokuro\Models\UsersLocation::findFirst("user_id = {$u->id}");
 
+
+
         $Location=\Vokuro\Models\Location::findFirst("location_id = {$userslocation_info->location_id}");
+        $busi_nam=$Location->name;
+        }
+        else
+        {
+            $busi_nam='All';
+        }
+/*
+         echo 'mail2';
+        exit;*/
         /*** business Information **/
 
         //get the email from address
@@ -256,7 +269,7 @@ class Email{
         $params['employeeName']=$u->name;
         $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
-        $params['BusinessName']=$Location->name;
+        $params['BusinessName']=$busi_nam;
         $params['confirmUrl'] = '/admin/confirmEmail/' . $code . '/' . $u->email;
        // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
 

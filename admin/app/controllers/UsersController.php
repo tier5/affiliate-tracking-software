@@ -199,6 +199,7 @@
                         }
                     }
                 }
+                //echo $isall;exit;
                 $user->is_all_locations=($isall) ? 1 : 0;
 
                 if (!$user->save()) {
@@ -209,6 +210,8 @@
 
                     $this->flash->error($messages);
                 } else {
+
+                     //print_r($_POST['locations']);exit;
                     if(!empty($_POST['locations'])) {
                         foreach($_POST['locations'] as $check) {
                             $locInsert = new UsersLocation();

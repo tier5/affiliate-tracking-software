@@ -192,7 +192,7 @@
         /**
          * Validate that emails are unique across users
          */
-        public function validation() {
+        /*public function validation() {
             $this->validate(new Uniqueness(array(
                 "field" => "email",
                 "message" => "The email is already registered"
@@ -200,7 +200,7 @@
 
             return $this->validationHasFailed() != true;
         }
-
+*/
         public function beforeValidationOnUpdate() {
            return true;
         }

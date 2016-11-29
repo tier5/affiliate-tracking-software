@@ -173,15 +173,19 @@ div#image_container img.selected, div#image_container img:hover{
 .page-header.navbar .menu-toggler { background-image: url("/img/sidebar_toggler_icon_white.png"); }
 .page-footer .page-footer-inner { color: #484848; }
 
-
+/*
 .table-responsive {
     display: block;
-}
+}*/
 
 .alert{   font-size: 20px !important; }
 
 @media screen and (max-width:767px){
   .alert{   font-size: 40px !important; }
+
+  .table-responsive {
+    display: block;
+}
 }
 
 .onoffswitch {

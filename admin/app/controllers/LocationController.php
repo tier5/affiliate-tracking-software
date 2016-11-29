@@ -776,12 +776,10 @@
 
             if ($agency_id_to_check > 0) {
 
-
                 // Get Agency Details from agency id
                 $conditions = "agency_id = :agency_id:";
                 $parameters = array("agency_id" => $agency_id_to_check);
                 $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
 
                 if(isset($agency->parent_id)) {
                     $conditions = "agency_id = :agency_id:";

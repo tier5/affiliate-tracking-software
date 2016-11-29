@@ -102,7 +102,7 @@ if ($locs) {
                   <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
                 </div>
               </div>
-              <div class="search-btn"><a class="btnLink btnSecondary" href="/location/create" style="width: 127px !important;">Create Location</a></div>
+              <div class="search-btn"><a class="btnLink btnSecondary" href="/location/create" style="width: 128px !important;">Create Location</a></div>
             </div>
 
             <!-- Start .panel -->
