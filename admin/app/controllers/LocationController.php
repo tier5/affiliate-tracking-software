@@ -1065,7 +1065,7 @@
                 // Get the form fields and remove whitespace.
                 $subject = strip_tags(trim($_POST["subject"]));
                 $subject = str_replace(array("\r", "\n"), array(" ", " "), $subject);
-                $email = filter_var(trim($_POST["email"]), FILTER_SANITIZE_EMAIL);
+                $email = filter_var(trim($_POST["email_to"]), FILTER_SANITIZE_EMAIL);
                 $message = trim($_POST["message"]);
 
                 // Check that data was sent to the mailer.

@@ -376,7 +376,7 @@
 
         <div class="field">
             <label for="email">To Email:</label>
-            <input type="email" id="email" name="email" required="required" />
+            <input type="text" id="email_to" name="email_to" required="required" />
         </div>
 
         <div class="field">
@@ -520,20 +520,9 @@
                 //alert(formData);return false;
                 // Submit the form using AJAX.
 
-                    /*$.ajax({
-          url: 'location/send_email',
-          method: "POST",
-          async:false,
-          data: formData,
-          success:function(html)
-              {
-           $('#form-messages').html(html);  
-             
-             }
-           });*/
+                    
 
-
-               /* $.ajax({
+                $.ajax({
                 method: 'POST',
                         url: $(form).attr('action'),
                         data: formData
@@ -556,7 +545,7 @@
                     } else {
                         $(formMessages).text('An error occured and your message could not be sent.');
                     }
-                });*/
+                });
             });
 
         });
