@@ -1230,8 +1230,8 @@ class SessionController extends ControllerBase {
      * Sends a review invite to the selected location
      */
     public function sendsmsAction() {
-        $results = 'There was a problem sending the message.';
-
+        //$results = 'There was a problem sending the message.';
+        $results ='';
         $message = $_GET['body'].'  Reply stop to be removed';
         $original_message = $message;
         $name = $_GET['name'];
@@ -1276,6 +1276,10 @@ class SessionController extends ControllerBase {
         //The message is saved, so send the SMS message now
         if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $TwilioAPIKey, $TwilioAuthToken, $TwilioAuthMessagingSID, $TwilioFromPhone)) {
             $this->flash->success("The message was sent!");
+        }
+        else
+        {
+            echo "There was a problem sending messages";
         }
         $this->view->disable();
         echo $results;
