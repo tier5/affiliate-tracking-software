@@ -16,7 +16,11 @@
          * @var array All fields from the sign up process.  Keys are the form variable names.  Values are the DB names (if they exist.
          */
         protected $tAllFormFields = [
-            /* Step 1 Fields */
+            /* Step 1 / Upgrade Step */
+            'Upgrade',
+            'sbyp',
+
+            /* Step 2 Fields */
             'BusinessName',
             'Address',
             'Address2',
@@ -31,7 +35,7 @@
             'EmailFromAddress',
             'sbyp',
 
-            /* Step 2 Fields */
+            /* Step 3 Fields */
             'LogoFilename',
             'PrimaryColor',
             'SecondaryColor',
@@ -44,13 +48,9 @@
             'TwilioFromNumber',
             'sbyp',
             
-            /* Step 4 Fields */
+            /* Step 5 Fields */
             'AgencyStripeSecretKey',
             'AgencyStripePublishableKey',
-            'sbyp',
-
-            /* Step 5 / Upgrade Step */
-            'Upgrade',
             'sbyp',
 
             /* Order form Fields */
@@ -63,7 +63,7 @@
         ];
 
         protected $tAgencyFieldTranslation = [
-            /* Step 1 Fields */
+            /* Step 2 Fields */
             'BusinessName'          => 'name',
             'Address'               => 'address',
             'Address2'              => 'address2',
@@ -77,7 +77,7 @@
             'EmailFromName'         => 'email_from_name',
             'EmailFromAddress'      => 'email_from_address',
 
-            /* Step 2 Fields */
+            /* Step 3 Fields */
             'LogoFilename'          => 'logo_path',
             'PrimaryColor'          => 'main_color',
             'SecondaryColor'        => 'secondary_color',
@@ -89,7 +89,7 @@
             'TwilioFromNumber'      => 'twilio_from_phone',
             // GARY_TODO Remove twilio_api_key from database?
 
-            /* Step 4 Fields */
+            /* Step 5 Fields */
 
             // GARY_TODO:  Where is stripe_account_id in form?
             'AgencyStripeSecretKey'       => 'stripe_account_secret',
@@ -111,7 +111,7 @@
         ];
 
         protected $tRequiredFields = [
-            'Step1' => [
+            'Step2' => [
                 'BusinessName',
                 'Address',
                 'City',
@@ -790,6 +790,13 @@
         }
 
         public function thankyouAction() {
+            $this->view->setLayout('agencysignup');
+        }
+
+        public function step1Action() {
+        }
+
+        public function step2Action() {
             if($this->session->AgencySignup['Upgrade']) {
                 $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? $this->CurrentUpgradeSubscription : $this->DefaultSubscription;
                 $this->view->TodayYear = date("Y");
@@ -814,18 +821,15 @@
                 }
             }
 
-             $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
-            $this->UpdateAgency($objUser->agency_id);
+            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+            if($objUser)
+                $this->UpdateAgency($objUser->agency_id);
 
-            $this->view->setLayout('agencysignup');
-        }
-
-        public function step1Action() {
             $this->view->tCountries = $this->tCountries;
         }
 
-        public function step2Action() {
-            $this->ValidateFields('Step1');
+        public function step3Action() {
+            $this->ValidateFields('Step2');
             $this->StoreLogo();
             $this->view->Subdomain = $this->session->AgencySignup['URL'];
             $this->view->BusinessName = $this->session->AgencySignup['BusinessName'];
@@ -833,6 +837,10 @@
             $this->view->PrimaryColorNohash = str_replace('#', '', $this->session->AgencySignup['PrimaryColor']);
             $this->view->SecondaryColorNohash = str_replace('#', '', $this->session->AgencySignup['SecondaryColor']);
             $this->view->logo_path = !empty($this->session->AgencySignup['LogoFilename']) ? "/img/agency_logos/".$this->session->AgencySignup['LogoFilename'] : '';
+
+            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+            if($objUser)
+                $this->UpdateAgency($objUser->agency_id);
         }
 
         protected function StoreLogo() {
@@ -854,13 +862,17 @@
             }
         }
 
-        public function step3Action() {
-            $this->StoreLogo();
-        }
-
         public function step4Action() {
+            $this->StoreLogo();
+
+            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+            if($objUser)
+                $this->UpdateAgency($objUser->agency_id);
         }
 
         public function step5Action() {
+            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+            if($objUser)
+                $this->UpdateAgency($objUser->agency_id);
         }
     }
