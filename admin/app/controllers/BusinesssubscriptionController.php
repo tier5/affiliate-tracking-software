@@ -15,7 +15,7 @@ use Vokuro\Services\ServicesConsts;
 class BusinessSubscriptionController extends ControllerBase {
 
     public function initialize() {
-
+        //echo 'k';exit;
         $identity = $this->session->get('auth-identity');
         if ($identity && $identity['profile'] != 'User') {
             $this->tag->setTitle('Get Mobile Reviews | Subscription');
@@ -42,6 +42,7 @@ class BusinessSubscriptionController extends ControllerBase {
 
     public function indexAction() {
 
+
         /* Get services */
         $userManager = $this->di->get('userManager');
         $subscriptionManager = $this->di->get('subscriptionManager');
@@ -60,7 +61,9 @@ class BusinessSubscriptionController extends ControllerBase {
                 $userManager->getLocationId($this->session)
             );
 
+
             if ($smsQuotaParams['hasUpgrade']) {
+                 //print_r($smsQuotaParams);exit;
                 // REFACTOR: DOESN'T SEEM TO BE GETTING CALLED
                 // $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
                 // if ($percent > 100) $percent = 100;
@@ -86,6 +89,7 @@ class BusinessSubscriptionController extends ControllerBase {
 
         /* Get the subscription plan */
         $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
+        //print_r($subscriptionPlanData);exit;
 
         /* Filter out the pricing plan details into its own view because it contains markup */
         $this->view->pricingDetails = $subscriptionPlanData['pricingPlan']['pricing_details'];
@@ -119,11 +123,12 @@ class BusinessSubscriptionController extends ControllerBase {
                 			), 0, '', ',');
                 break;
             default:
+            
                 // No subscription currently in use.
                 $this->view->paymentPlan = $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? "TRIAL" : "UNPAID";
                 break;
         }
-
+        //print_r($subscriptionPlanData);exit;
         /* Payments paramaters */
         $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
 

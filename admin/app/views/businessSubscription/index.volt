@@ -58,11 +58,12 @@
 
         </div>
 
+
         <div class="row">
             <div class="col-sm-12 col-md-12">
-                <div class="growth-bar transparent pull-right">
+                <!--<div class="growth-bar transparent pull-right">
                     <a href="/businessSubscription/invoices" disabled class="btn default btn-lg apple-backgound subscription-btn">View Invoices</a>
-                </div>
+                </div>-->
             </div>
         </div>
 
@@ -88,6 +89,7 @@
                                 <div id="current-plan" class="responsive-float-left subscription-panel-default-caption">
 
                                 <?php
+                              
                                 $ActiveLocations = isset($subscriptionPlanData['subscriptionPlan']['locations']) ? subscriptionPlanData['subscriptionPlan']['locations'] : $MaxLocationTrial;
                                 $ActiveSMS = isset($subscriptionPlanData['subscriptionPlan']['sms_messages_per_location']) ? subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] : $MaxSMSTrial;
                             ?>

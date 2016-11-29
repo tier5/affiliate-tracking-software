@@ -221,7 +221,7 @@ class Email{
         }
         else
         {
-            $busi_nam='All';
+            $busi_nam='All Business';
         }
 /*
          echo 'mail2';

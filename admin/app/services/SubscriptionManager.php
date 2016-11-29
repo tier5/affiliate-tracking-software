@@ -56,7 +56,7 @@ class SubscriptionManager extends BaseService {
 
         /* Get the subscription plan */
         $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objBusiness->subscription_id);
-
+        //echo 'yyy';print_r($subscriptionPlanData);exit;
         if($subscriptionPlanData['subscriptionPlan']['payment_plan']) {
             return $subscriptionPlanData['subscriptionPlan']['payment_plan'];
         } else {
