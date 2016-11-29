@@ -1047,21 +1047,18 @@
                 }
 
                 try {
-                    echo 'lets check';
                     //$EmailFrom='s@gmail.com';
                     /*$mail = $this->getDI()->getMail();
                     $mail->setFrom($EmailFrom);
                     $mail->send($email, $subject, '', '', $message);*/
-                    /*$this->getDI()
+                    $this->getDI()
                         ->getMail()
-                        ->send($email, $subject, '', '', $message);*/
+                        ->send($email, $subject, '', '', $message);
                     // Set a 200 (okay) response code.
-                    //http_response_code(200);
-                    //echo "Thank You! Your message has been sent.";
+                    http_response_code(200);
+                    echo "Thank You! Your message has been sent.";
                     exit;
                 } catch (Exception $e) {
-
-                    echo 'error';exit;
                     // Set a 500 (internal server error) response code.
                     http_response_code(500);
                     echo "Something went wrong and we couldn't send your message.";

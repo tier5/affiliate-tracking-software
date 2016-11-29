@@ -520,7 +520,7 @@
                 //alert(formData);return false;
                 // Submit the form using AJAX.
                 $.ajax({
-                type: 'POST',
+                method: 'POST',
                         url: $(form).attr('action'),
                         data: formData
                 })
