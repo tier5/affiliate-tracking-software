@@ -290,6 +290,12 @@
                             ));
                             $invite2->save();
 
+                            echo "API Key: ".$agency->twilio_api_key."<br>";
+                            echo "Auth Token: ".$agency->twilio_auth_token."<br>";
+                            echo "Messaging SID: ".$agency->twilio_auth_messaging_sid."<br>";
+                            echo "Twilio Phone: ".$agency->twilio_from_phone."<br>";
+
+
 
                             //The message is saved, so send the SMS message now
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone)) {
