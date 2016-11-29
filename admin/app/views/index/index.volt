@@ -521,7 +521,7 @@
                 // Submit the form using AJAX.
                 $.ajax({
                 method: 'POST',
-                        url: $(form).attr('action'),
+                        url: 'location/send_emailfn',
                         data: formData
                 })
                 .done(function(response) {
