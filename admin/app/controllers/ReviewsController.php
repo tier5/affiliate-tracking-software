@@ -179,7 +179,14 @@
          * This sends an SMS braodcast message
          */
         public function sms_broadcastAction() {
+            
+
             $this->tag->setTitle('Get Mobile Reviews | Reviews | SMS Broadcast');
+
+            $twilio_api_key = "";
+            $twilio_auth_token = "";
+            $twilio_auth_messaging_sid = "";
+            $twilio_from_phone = "";
 
             //get the user id
             $identity = $this->auth->getIdentity();
@@ -193,15 +200,56 @@
             $conditions = "id = :id:";
             $parameters = array("id" => $identity['id']);
             $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+            //print_r($userObj);
 
             //find the agency
             $conditions = "agency_id = :agency_id:";
+            //echo $userObj->agency_id;
+            //exit;
+
             $parameters = array("agency_id" => $userObj->agency_id);
             $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+            
             if ($agency) {
                 $this->view->agency = $agency;
+
+
+                if(isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != "" && isset($agency->twilio_auth_messaging_sid) && $agency->twilio_auth_messaging_sid != "" && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
+
+                    $twilio_api_key = $agency->twilio_api_key;
+                    $twilio_auth_token = $agency->twilio_auth_token;
+                    $twilio_auth_messaging_sid = $agency->twilio_auth_messaging_sid;
+                    $twilio_from_phone = $agency->twilio_from_phone;
+
+
+                }
+                else if(isset($agency->parent_id)) {
+
+
+                    $parameters1 = array("agency_id" => $agency->parent_id);
+                    $agency1 = Agency::findFirst(array($conditions, "bind" => $parameters1));
+
+                    /*echo "API Key: ".$agency1->twilio_api_key."<br>";
+                    echo "Auth Token: ".$agency1->twilio_auth_token."<br>";
+                    echo "Messaging SID: ".$agency1->twilio_auth_messaging_sid."<br>";
+                    echo "Twilio Phone: ".$agency1->twilio_from_phone."<br>";*/
+
+                    if(isset($agency1->twilio_api_key) && $agency1->twilio_api_key != "" && isset($agency1->twilio_auth_token) && $agency1->twilio_auth_token != "" && isset($agency1->twilio_auth_messaging_sid) && $agency1->twilio_auth_messaging_sid != "" && isset($agency1->twilio_from_phone) && $agency1->twilio_from_phone != "") {
+
+                        $twilio_api_key = $agency1->twilio_api_key;
+                        $twilio_auth_token = $agency1->twilio_auth_token;
+                        $twilio_auth_messaging_sid = $agency1->twilio_auth_messaging_sid;
+                        $twilio_from_phone = $agency1->twilio_from_phone;
+
+                    }
+                   
+
+                }
+              
+
             }
 
+            
             $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $loc = Location::findFirst(array($conditions, "bind" => $parameters));
@@ -227,7 +275,16 @@
                     $message = str_replace("{name}", $_POST['name'], $message);
                     $message = str_replace("{link}", $this->googleShortenURL($_POST['link']), $message);
 
-                    if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone)) {
+                    /*echo "API Key: ".$twilio_api_key."<br>";
+                    echo "Auth Token: ".$twilio_auth_token."<br>";
+                    echo "Messaging SID: ".$twilio_auth_messaging_sid."<br>";
+                    echo "Twilio Phone: ".$twilio_from_phone."<br>";
+                    exit;*/
+
+
+
+
+                    if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                         $this->flash->success("The SMS was sent successfully to: " . $_POST['phone']);
                     }
                 } else if (isset($_POST['formposttype']) && $_POST['formposttype'] == 'send') {
@@ -290,15 +347,15 @@
                             ));
                             $invite2->save();
 
-                            echo "API Key: ".$agency->twilio_api_key."<br>";
-                            echo "Auth Token: ".$agency->twilio_auth_token."<br>";
-                            echo "Messaging SID: ".$agency->twilio_auth_messaging_sid."<br>";
-                            echo "Twilio Phone: ".$agency->twilio_from_phone."<br>";
-
+                            /*echo "API Key: ".$twilio_api_key."<br>";
+                            echo "Auth Token: ".$twilio_auth_token."<br>";
+                            echo "Messaging SID: ".$twilio_auth_messaging_sid."<br>";
+                            echo "Twilio Phone: ".$twilio_from_phone."<br>";
+                            exit;*/
 
 
                             //The message is saved, so send the SMS message now
-                            if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone)) {
+                            if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
                             }
 
