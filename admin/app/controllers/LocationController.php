@@ -515,6 +515,10 @@
             // Get a list of all businesses under the Agency and count total locations
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objLocation->agency_id}");
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+
+            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+                return true;
+
             $dbBusinesses = \Vokuro\Models\Agency::find("parent_id = {$objAgency->agency_id}");
             $LocationCount = 0;
             foreach($dbBusinesses as $objBusiness) {
