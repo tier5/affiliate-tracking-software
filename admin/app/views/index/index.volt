@@ -520,8 +520,8 @@
                 //alert(formData);return false;
                 // Submit the form using AJAX.
 
-                    $.ajax({
-          url: '/location/send_email',
+                    /*$.ajax({
+          url: 'location/send_email',
           method: "POST",
           async:false,
           data: formData,
@@ -530,7 +530,7 @@
            $('#form-messages').html(html);  
              
              }
-           });
+           });*/
 
 
                /* $.ajax({
