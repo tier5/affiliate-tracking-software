@@ -1047,13 +1047,13 @@
                 }
 
                 try {
-                    $EmailFrom='s@gmail.com';
-                    $mail = $this->getDI()->getMail();
+                    //$EmailFrom='s@gmail.com';
+                    /*$mail = $this->getDI()->getMail();
                     $mail->setFrom($EmailFrom);
-                    $mail->send($email, $subject, '', '', $message);
-                    /*$this->getDI()
+                    $mail->send($email, $subject, '', '', $message);*/
+                    $this->getDI()
                         ->getMail()
-                        ->send($email, $subject, '', '', $message);*/
+                        ->send($email, $subject, '', '', $message);
                     // Set a 200 (okay) response code.
                     http_response_code(200);
                     echo "Thank You! Your message has been sent.";
