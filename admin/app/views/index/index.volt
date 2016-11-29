@@ -517,6 +517,7 @@
                 e.preventDefault();
                 // Serialize the form data.
                 var formData = $(form).serialize();
+                //alert(formData);return false;
                 // Submit the form using AJAX.
                 $.ajax({
                 type: 'POST',

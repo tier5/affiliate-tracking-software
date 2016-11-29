@@ -1026,7 +1026,7 @@
         public function send_emailAction() {
             // Only process POST reqeusts.
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
+           // echo $_POST["email"];exit;
 
                 /***  Email From  29.11.2012 ***/
                 /***  Email From  29.11.2012 ***/
@@ -1047,15 +1047,16 @@
                 }
 
                 try {
+                    echo $email;
                     //$EmailFrom='s@gmail.com';
                     /*$mail = $this->getDI()->getMail();
                     $mail->setFrom($EmailFrom);
                     $mail->send($email, $subject, '', '', $message);*/
-                    $this->getDI()
+                    /*$this->getDI()
                         ->getMail()
-                        ->send($email, $subject, '', '', $message);
+                        ->send($email, $subject, '', '', $message);*/
                     // Set a 200 (okay) response code.
-                    http_response_code(200);
+                    //http_response_code(200);
                     echo "Thank You! Your message has been sent.";
                     exit;
                 } catch (Exception $e) {
