@@ -1026,6 +1026,94 @@
         public function send_emailAction() {
             // Only process POST reqeusts.
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
+           // echo $_POST["email"];exit;
+
+                /***  Email From  29.11.2012 ***/
+                $identity = $this->auth->getIdentity();
+                 $conditions = "id = :id:";
+            $parameters = array("id" => $identity['id']);
+            $user = Users::findFirst(array($conditions, "bind" => $parameters));
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
+        if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+           
+            $EmailFrom = "zacha@reviewvelocity.co";
+            
+        }
+        elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
+           
+            $EmailFrom =  $objAgency->email;
+
+        }
+        elseif($objAgency->parent_id > 0) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+           
+            if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                throw new \Exception("Your email from address or your custom domain needs to be set to send email");
+            $EmailFrom = $objParentAgency->email_from_address ?: 'no_reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+        }
+            else
+            {
+               $EmailFrom = "zacha@reviewvelocity.co";
+            }
+
+
+                /***  Email From  29.11.2012 ***/
+
+
+                // Get the form fields and remove whitespace.
+                $subject = strip_tags(trim($_POST["subject"]));
+                $subject = str_replace(array("\r", "\n"), array(" ", " "), $subject);
+                $email = filter_var(trim($_POST["email_to"]), FILTER_SANITIZE_EMAIL);
+                $message = trim($_POST["message"]);
+
+                // Check that data was sent to the mailer.
+                if (empty($subject) OR empty($message) OR !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    // Set a 400 (bad request) response code and exit.
+                    http_response_code(400);
+                    echo "Oops! There was a problem with your submission. Please complete the form and try again.";
+                    exit;
+                }
+
+                try {
+                    //$EmailFrom='s@gmail.com';
+                    $mail = $this->getDI()->getMail();
+                    $mail->setFrom($EmailFrom);
+                    $mail->send($email, $subject, '', '', $message);
+                   /* $this->getDI()
+                        ->getMail()
+                        ->send($email, $subject, '', '', $message);*/
+                    // Set a 200 (okay) response code.
+                    http_response_code(200);
+                    echo "Thank You! Your message has been sent.";
+                    exit;
+                } catch (Exception $e) {
+                    // Set a 500 (internal server error) response code.
+                    http_response_code(500);
+                    echo "Something went wrong and we couldn't send your message.";
+                    exit;
+                }
+
+            } else {
+                // Not a POST request, set a 403 (forbidden) response code.
+                http_response_code(403);
+                echo "There was a problem with your submission, please try again.";
+                exit;
+            }
+        }
+
+
+         public function send_emailfnAction() {
+            // Only process POST reqeusts.
+            if ($_POST) {
+                echo 'kk';exit;
+           // echo $_POST["email"];exit;
+
+                /***  Email From  29.11.2012 ***/
+                /***  Email From  29.11.2012 ***/
+
+
                 // Get the form fields and remove whitespace.
                 $subject = strip_tags(trim($_POST["subject"]));
                 $subject = str_replace(array("\r", "\n"), array(" ", " "), $subject);
@@ -1041,6 +1129,10 @@
                 }
 
                 try {
+                    //$EmailFrom='s@gmail.com';
+                    /*$mail = $this->getDI()->getMail();
+                    $mail->setFrom($EmailFrom);
+                    $mail->send($email, $subject, '', '', $message);*/
                     $this->getDI()
                         ->getMail()
                         ->send($email, $subject, '', '', $message);

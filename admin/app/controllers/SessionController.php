@@ -981,8 +981,12 @@ class SessionController extends ControllerBase {
                         $conditions = "agency_id = :agency_id:";
                         $parameters = array("agency_id" => $userObj->agency_id);
                         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
-                        if ($agency->signup_page > 0)
+                        if ($agency->signup_page > 0 && $userObj->role=='Super Admin')
+                        {
+                            
+                             $return = '/agencysignup/step' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : '');
+                        }
+                        elseif ($agency->signup_page > 0)
                             $return = '/session/signup' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : '');
                     }
                     return $this->response->redirect($return);
@@ -1226,8 +1230,8 @@ class SessionController extends ControllerBase {
      * Sends a review invite to the selected location
      */
     public function sendsmsAction() {
-        $results = 'There was a problem sending the message.';
-
+        //$results = 'There was a problem sending the message.';
+        $results ='';
         $message = $_GET['body'].'  Reply stop to be removed';
         $original_message = $message;
         $name = $_GET['name'];
@@ -1272,6 +1276,10 @@ class SessionController extends ControllerBase {
         //The message is saved, so send the SMS message now
         if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $TwilioAPIKey, $TwilioAuthToken, $TwilioAuthMessagingSID, $TwilioFromPhone)) {
             $this->flash->success("The message was sent!");
+        }
+        else
+        {
+            echo "There was a problem sending messages";
         }
         $this->view->disable();
         echo $results;

@@ -376,7 +376,7 @@
 
         <div class="field">
             <label for="email">To Email:</label>
-            <input type="email" id="email" name="email" required="required" />
+            <input type="text" id="email_to" name="email_to" required="required" />
         </div>
 
         <div class="field">
@@ -517,9 +517,13 @@
                 e.preventDefault();
                 // Serialize the form data.
                 var formData = $(form).serialize();
+                //alert(formData);return false;
                 // Submit the form using AJAX.
+
+                    
+
                 $.ajax({
-                type: 'POST',
+                method: 'POST',
                         url: $(form).attr('action'),
                         data: formData
                 })

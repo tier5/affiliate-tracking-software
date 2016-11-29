@@ -98,6 +98,7 @@
             /* Order form Fields */
             'OwnerEmail'            => 'email',
             'URL'                   => 'custom_domain',
+            'SignUp'                =>'signup_page',
         ];
 
         protected $tUserFieldTranslation = [
@@ -485,6 +486,7 @@
         }
 
         protected function UpdateAgency($AgencyID) {
+            print_r($this->session->AgencySignup);exit;
             $objAgency = Agency::findFirst("agency_id = {$AgencyID}");
             foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
                 if($dbField) {
@@ -498,6 +500,15 @@
         }
 
         protected function CreateAgency($tData) {
+
+            /*$objAgency = new Agency();
+                foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
+                    if($dbField) {
+                        echo $dbField.'<br>';
+                    }
+                }
+            echo '<pre>';print_r($this->tAgencyFieldTranslation);//exit;
+            echo '<pre>';print_r($tData);exit;*/
             try {
                 $objAgency = new Agency();
                 foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
@@ -554,12 +565,14 @@
         }
 
         protected function CreateProfile($tData) {
+
+            //echo '<pre>';print_r($tData);exit;
             try {
                 if (!$this->request->isPost())
                     throw new \Exception();
 
                 $objPaymentService = $this->di->get('paymentService');
-
+                //echo '<pre>';print_r($objPaymentService);exit;
                 $tData['MonthExpiration'] = strlen($tData['MonthExpiration']) == 1 ? '0'.$tData['MonthExpiration'] : $tData['MonthExpiration'];
 
                 $this->db->begin();
@@ -671,6 +684,7 @@
 
 
         public function orderAction() {
+
             // Generate months
             $tMonths = [];
             for($i = 1 ; $i <= 12 ; $i++) {
@@ -717,6 +731,7 @@
         }
 
         public function submitorderAction() {
+          //  print_r($_POST);exit;
 /*
     Already Commented
 
@@ -733,6 +748,10 @@
             }
 */
             $Token = $this->request->getPost('stripeToken', 'striptags');
+
+           // $Token='sk_test_zNX3s30y9WPK3yuIlXbDuXnF';
+            //print_r($Token);exit;
+            $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => $_POST['sign_up']]);
             if($Token) {
                 $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['StripeToken' => $Token]);
             }
@@ -797,12 +816,24 @@
         }
 
         public function step2Action() {
+                $identity = $this->auth->getIdentity();
+              
+           if($this->session->AgencySignup['UserID']=='')
+           {
+            $this->session->AgencySignup['UserID']=$identity['id'];
+            
+           }
+           $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 2]);
+           // echo  $this->session->AgencySignup['UserID'];exit;
+            //echo 'ok';exit;
             if($this->session->AgencySignup['Upgrade']) {
                 $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? $this->CurrentUpgradeSubscription : $this->DefaultSubscription;
                 $this->view->TodayYear = date("Y");
 
                 try {
-                    if ($this->request->isPost() && $this->ValidateFields('Order')) {
+                    if ($this->request->isPost() ) {
+
+                        //$this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => $_POST['sign_up']]);
                         $this->db->begin();
 
                         $PricingPlan = $this->GetSubscriptionPricingPlan($SubscriptionPlan);
@@ -813,6 +844,8 @@
                             $this->response->redirect('/agencysignup/step1');
                         }
 
+                       // $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => $_POST['sign_up']]);
+
                         $this->db->commit();
                     }
                 } catch (Exception $e) {
@@ -820,8 +853,8 @@
                     return false;
                 }
             }
-
-            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+             $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+            
             if($objUser)
                 $this->UpdateAgency($objUser->agency_id);
 
@@ -831,6 +864,7 @@
         public function step3Action() {
             $this->ValidateFields('Step2');
             $this->StoreLogo();
+            $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 4]);
             $this->view->Subdomain = $this->session->AgencySignup['URL'];
             $this->view->BusinessName = $this->session->AgencySignup['BusinessName'];
             $this->view->Phone = $this->session->AgencySignup['Phone'];
