@@ -810,7 +810,7 @@
 
                         if (!$UserID = $this->CreateSubscription($this->session->AgencySignup, true)) {
                             $this->flashSession->error('Could not create subscription.  Contact customer support.');
-                            $this->response->redirect('/agencysignup/step5');
+                            $this->response->redirect('/agencysignup/step1');
                         }
 
                         $this->db->commit();
