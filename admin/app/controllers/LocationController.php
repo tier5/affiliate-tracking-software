@@ -1026,6 +1026,37 @@
         public function send_emailAction() {
             // Only process POST reqeusts.
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+
+                /***  Email From  29.11.2012 ***/
+                    $identity = $this->auth->getIdentity();
+                    $conditions = "id = :id:";
+            $parameters = array("id" => $identity['id']);
+            $user = Users::findFirst(array($conditions, "bind" => $parameters));
+
+                  $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
+        if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+           
+            $EmailFrom = "zacha@reviewvelocity.co";
+            
+        }
+        elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
+           
+            $EmailFrom =  $objAgency->email;
+
+        }
+        elseif($objAgency->parent_id > 0) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+            
+            if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                throw new \Exception("Your email from address or your custom domain needs to be set to send email");
+            $EmailFrom = $objParentAgency->email_from_address ?: 'no_reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+        }
+                /***  Email From  29.11.2012 ***/
+
+
                 // Get the form fields and remove whitespace.
                 $subject = strip_tags(trim($_POST["subject"]));
                 $subject = str_replace(array("\r", "\n"), array(" ", " "), $subject);
@@ -1041,9 +1072,13 @@
                 }
 
                 try {
-                    $this->getDI()
+
+                    $mail = $this->getDI()->getMail();
+                    $mail->setFrom($EmailFrom);
+                    $mail->send($email, $subject, '', '', $message);
+                    /*$this->getDI()
                         ->getMail()
-                        ->send($email, $subject, '', '', $message);
+                        ->send($email, $subject, '', '', $message);*/
                     // Set a 200 (okay) response code.
                     http_response_code(200);
                     echo "Thank You! Your message has been sent.";
