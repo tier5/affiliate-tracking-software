@@ -519,7 +519,21 @@
                 var formData = $(form).serialize();
                 //alert(formData);return false;
                 // Submit the form using AJAX.
-                $.ajax({
+
+                    $.ajax({
+          url: '/location/send_email',
+          method: "POST",
+          async:false,
+          data: formData,
+          success:function(html)
+              {
+           $('#form-messages').html(html);  
+             
+             }
+           });
+
+
+               /* $.ajax({
                 method: 'POST',
                         url: $(form).attr('action'),
                         data: formData
@@ -542,7 +556,7 @@
                     } else {
                         $(formMessages).text('An error occured and your message could not be sent.');
                     }
-                });
+                });*/
             });
 
         });
