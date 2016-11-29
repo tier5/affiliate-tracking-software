@@ -162,6 +162,7 @@ public function editAction($agency_id = 0) {
      * Creates business / agencies
      */
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
+
         $this->view->agency_type_id = $agency_type_id;
         $this->view->agency_id = $agency_id;
 
@@ -170,6 +171,7 @@ public function editAction($agency_id = 0) {
         $this->view->form = $form;
 
         if ($this->request->isPost()) {
+            print_r($_POST);exit;
             $errors = [];
             $messages = [];
                 $IsEmailUnique = true;
