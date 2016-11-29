@@ -90,9 +90,10 @@
 
                                 <?php
                               
-                                $ActiveLocations = isset($subscriptionPlanData['subscriptionPlan']['locations']) ? subscriptionPlanData['subscriptionPlan']['locations'] : $MaxLocationTrial;
-                                $ActiveSMS = isset($subscriptionPlanData['subscriptionPlan']['sms_messages_per_location']) ? subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] : $MaxSMSTrial;
+                                $ActiveLocations = isset($subscriptionPlanData['subscriptionPlan']['locations']) ? $subscriptionPlanData['subscriptionPlan']['locations'] : $MaxLocationTrial;
+                                $ActiveSMS = isset($subscriptionPlanData['subscriptionPlan']['sms_messages_per_location']) ? $subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] : $MaxSMSTrial;
                             ?>
+
                                     <div><span id="current-locations" class="bold">{{ ActiveLocations }} Location(s)</div>
                                     <div><span id="current-messages" class="bold">{{ ActiveSMS }}</span> Text Messages</div>
                                 </div>
