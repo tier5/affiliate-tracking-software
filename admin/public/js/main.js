@@ -27,9 +27,6 @@ $(document).ready(function () {
    $('#facebooklink a').removeAttr('href');
    $('#facebooklink1').removeAttr('href');
    $('.fb_link').removeAttr('href');*/
-   
-}
-   
 
   if (isMobile.Android()) {
     //hide non-google options
@@ -68,7 +65,7 @@ $(document).ready(function () {
   $("#profilesId").change(function () {
     userTypeChange();
   });
-});
+})
 
 function userTypeChange() {  
   var val = $('#profilesId').val();
