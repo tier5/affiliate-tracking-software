@@ -1130,7 +1130,7 @@
                         //echo $message;exit;
                         //echo $this->twilio_api_key;exit;
 
-                        echo $this->twilio_api_key;
+                        /*echo $this->twilio_api_key;
                         echo '<br>';
                         echo $this->twilio_auth_token;
                         echo '<br>';
@@ -1140,7 +1140,7 @@
                         echo '<br>';
                         //echo 'Agency Id: '.$AgencyID;
                          //echo '<br>';exit;
-                        exit;
+                        exit;*/
 
                         if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
                             $this->flash->success("The SMS was sent successfully");
@@ -1158,6 +1158,9 @@
          * Sends a review invite to the selected location
          */
         public function send_review_inviteAction() {
+
+
+            
             //don't do anything until we verify the user
             $identity = $this->auth->getIdentity();
             // If there is no identity available the user is redirected to index/index
