@@ -216,10 +216,12 @@
                         <i class="fa fa-angle-down" style="color: #484848;"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-default">
+                        <?php if($objAgency->parent_id > 0 || $objAgency->parent_id == -1) { ?>
                         <li>
                             <a href="/users/adminedit/<?=$loggedUser->id ?>">
                                 <i class="icon-user"></i> My Profile </a>
                         </li>
+                        <?php } ?>
                         <li>
                             <a href="/session/logout">
                                 <i class="icon-key"></i>
