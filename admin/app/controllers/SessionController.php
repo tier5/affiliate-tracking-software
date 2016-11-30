@@ -1140,9 +1140,6 @@ class SessionController extends ControllerBase {
                                 $parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
                                 // Skip duplicate check if we're dev environment.
                                 $SkipCheck = $this->config->application->environment == 'dev' ? true : false;
-                                // SKIP CHECK REMOVE
-                                $SkipCheck = true;
-
 
                                 $loc = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
                                 if (!$loc || $SkipCheck) {
