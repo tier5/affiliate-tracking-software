@@ -486,7 +486,6 @@
         }
 
         protected function UpdateAgency($AgencyID) {
-            print_r($this->session->AgencySignup);exit;
             $objAgency = Agency::findFirst("agency_id = {$AgencyID}");
             foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
                 if($dbField) {
