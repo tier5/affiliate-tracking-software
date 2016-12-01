@@ -632,6 +632,7 @@
                 <tbody>
                 <?php
                 if($invitelist):
+                //print_r($invitelist);exit;
                   foreach($invitelist as $invite):
                     ?>
                 <tr>
@@ -640,7 +641,42 @@
                   <td><?=$invite->sent_by?></td>
                   <td><?=date_format(date_create($invite->date_sent),"m/d/Y")?></td>
                   <td><?=($invite->date_viewed?'Yes':'No')?></td>
-                  <td><?php
+                  <td>
+                  <?php
+
+                      if ($invite->date_viewed) {
+                                            if ($invite->review_invite_type_id == 1) {
+                                            if ($invite->recommend && $invite->recommend=='N') {
+                                            ?><span class="redfont">No</span><?php
+                          } else {
+                            ?><span class="greenfont">Yes</span><?php
+                          }
+                        } else if ($invite->review_invite_type_id == 2) {
+                                            if ($invite->recommend && $invite->recommend=='N') {
+                                            ?><input value="<?=$invite->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true"/><?php
+                          } else {
+                            ?>
+                                            <input value="<?=$invite->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true"/><?php
+                          }
+                        } else if ($invite->review_invite_type_id == 3) {
+                                            if ($invite->recommend && $invite->recommend=='N') {
+                                            ?><span class="review_invite_type_id_3 redfont"><?=$invite->
+                                                rating?></span><?php
+                          } else {
+                            ?><span class="review_invite_type_id_3 greenfont"><?=$invite->rating?></span><?php
+                          }
+                        }
+                      } else {
+                        if ($location->message_tries>1 && $location->message_tries > $invite->times_sent) {
+                                            echo '<strong>In Process</strong>';
+                                            } else {
+                                            echo '<strong>No Feedback</strong>';
+                                            }
+                                            }
+                                            ?>
+                  <?php 
+
+                  /*
                       if ($invite->date_viewed) {
                     if (isset($invite->comments) && $invite->comments != '') {
                     if ($invite->review_invite_type_id == 1) {
@@ -671,7 +707,7 @@
                     } else {
                     echo '<strong>No Feedback</strong>';
                     }
-                    }
+                    }*/
                     ?></td>
                 </tr>
                 <?php
