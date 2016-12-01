@@ -433,6 +433,12 @@
                 $this->CurrentUpgradeSubscription = $this->DefaultUpgradeSubscription;
             }
 
+             if(!$this->session->set_Signup)
+             {
+                $this->session->set_Signup='';
+             }
+
+
             if(!$this->session->AgencySignup)
                 $this->session->AgencySignup = [];
 
@@ -440,8 +446,11 @@
             // Update Session Data
             $tData = [];
             if($this->request->isPost()) {
+                //echo '<pre>';print_r($_POST);exit;
                 $Post = $this->request->getPost();
-
+                $this->session->set_Signup=$_POST['sign_up'];
+                
+               // exit;
                 foreach ($this->tAllFormFields as $Field) {
                     if(isset($Post[$Field]))
                         $tData[$Field] = $this->request->getPost($Field, 'striptags');
@@ -486,6 +495,7 @@
         }
 
         protected function UpdateAgency($AgencyID) {
+           // echo $this->session->set_Signup;exit;
             $objAgency = Agency::findFirst("agency_id = {$AgencyID}");
             foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
                 if($dbField) {
@@ -496,10 +506,13 @@
 
 
             $objAgency->save();
+
+            $objAgency->signup_page=$this->session->set_Signup;
+            $objAgency->save();
         }
 
         protected function CreateAgency($tData) {
-
+           // echo $this->session->Signup_step;exit;
             /*$objAgency = new Agency();
                 foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
                     if($dbField) {
@@ -521,6 +534,7 @@
                 $objAgency->subscription_id = '';
                 $objAgency->parent_id = \Vokuro\Models\Agency::AGENCY;
                 $objAgency->date_created = date("Y-m-d H:i:s", strtotime('now'));
+                 $objAgency->signup_page=$this->session->set_Signup;
 
                 if (!$objAgency->create()) {
                     $this->flashSession->error($objAgency->get_val_errors());
@@ -629,14 +643,17 @@
          * @throws \Exception
          */
         protected function CreateSubscription($tData, $SkipInitial = false) {
+
+           //echo '<pre>'; print_r($tData);exit;
             try {
                 if (!$this->request->isPost())
                     throw new \Exception();
 
                 $objPaymentService = $this->di->get('paymentService');
-
+                $identity = $this->auth->getIdentity();
+                $user_id=($tData['UserID'])?$tData['UserID']:$identity['id'];
                 $tParameters = [
-                    'userId'                    => $tData['UserID'],
+                    'userId'                    =>$user_id ,
                     'provider'                  => ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
                     'amount'                    => $tData['PricingPlan']['RecurringPayment'] * 100,
                     'initial_amount'            => $SkipInitial ? 0 : $tData['PricingPlan']['InitialFee'] * 100,
@@ -644,7 +661,7 @@
                 ];
 
                 // GARY_TODO:  Refactor:  No reason to have to query the DB here.
-                $objUser = \Vokuro\Models\Users::findFirst("id = " . $tData['UserID']);
+                $objUser = \Vokuro\Models\Users::findFirst("id = " . $user_id);
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
 
                 // This method is potentially called twice (To upgrade in the thank you action)
@@ -730,6 +747,8 @@
         }
 
         public function submitorderAction() {
+
+            
           //  print_r($_POST);exit;
 /*
     Already Commented
@@ -750,7 +769,7 @@
 
            // $Token='sk_test_zNX3s30y9WPK3yuIlXbDuXnF';
             //print_r($Token);exit;
-            $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => $_POST['sign_up']]);
+           // $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 1]);
             if($Token) {
                 $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['StripeToken' => $Token]);
             }
@@ -767,7 +786,7 @@
                         $this->flashSession->error('Invalid credit card information');
                         return $this->response->redirect('/agencysignup/order');
                     }
-
+                    
                     $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile]);
 
                 }
@@ -808,6 +827,32 @@
         }
 
         public function thankyouAction() {
+            //echo '<pre>';print_r($_POST);exit;
+                /*** 1/12/2016**/
+                $identity = $this->auth->getIdentity();
+          /*  if($this->session->AgencySignup['UserID']=='')
+           {
+            $this->session->AgencySignup['UserID']=$identity['id'];
+            
+           }
+            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);*/
+
+            if($this->session->AgencySignup['UserID']=='')
+           {
+             $objUser = Users::findFirst("id = " . $identity['id']);
+            $this->view->FirstName=$objUser->name;
+            $this->view->LastName=$objUser->last_name;
+            $this->view->OwnerEmail=$objUser->email;
+           }
+           else
+           {
+                 $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+           }
+            if($objUser)
+                $this->UpdateAgency($objUser->agency_id);
+
+             /*** 1/12/2016**/
+
             $this->view->setLayout('agencysignup');
         }
 
@@ -817,12 +862,8 @@
         public function step2Action() {
                 $identity = $this->auth->getIdentity();
               
-           if($this->session->AgencySignup['UserID']=='')
-           {
-            $this->session->AgencySignup['UserID']=$identity['id'];
-            
-           }
-           $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 2]);
+           
+          // $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 2]);
            // echo  $this->session->AgencySignup['UserID'];exit;
             //echo 'ok';exit;
             if($this->session->AgencySignup['Upgrade']) {
@@ -852,7 +893,18 @@
                     return false;
                 }
             }
-             $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+
+
+        if($this->session->AgencySignup['UserID']=='')
+           {
+             $objUser = Users::findFirst("id = " . $identity['id']);
+            
+           }
+           else
+           {
+                 $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+           }
+            // $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
             
             if($objUser)
                 $this->UpdateAgency($objUser->agency_id);
@@ -861,9 +913,15 @@
         }
 
         public function step3Action() {
-            $this->ValidateFields('Step2');
+            $identity = $this->auth->getIdentity();
+          /*  if($this->session->AgencySignup['UserID']=='')
+           {
+            $this->session->AgencySignup['UserID']=$identity['id'];
+            
+           }*/
+            //$this->ValidateFields('Step2');
             $this->StoreLogo();
-            $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 4]);
+            //$this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 4]);
             $this->view->Subdomain = $this->session->AgencySignup['URL'];
             $this->view->BusinessName = $this->session->AgencySignup['BusinessName'];
             $this->view->Phone = $this->session->AgencySignup['Phone'];
@@ -871,7 +929,18 @@
             $this->view->SecondaryColorNohash = str_replace('#', '', $this->session->AgencySignup['SecondaryColor']);
             $this->view->logo_path = !empty($this->session->AgencySignup['LogoFilename']) ? "/img/agency_logos/".$this->session->AgencySignup['LogoFilename'] : '';
 
-            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+
+             if($this->session->AgencySignup['UserID']=='')
+           {
+             $objUser = Users::findFirst("id = " . $identity['id']);
+            
+           }
+           else
+           {
+                 $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+           }
+
+            //$objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
             if($objUser)
                 $this->UpdateAgency($objUser->agency_id);
         }
@@ -896,15 +965,46 @@
         }
 
         public function step4Action() {
-            $this->StoreLogo();
 
-            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+            $identity = $this->auth->getIdentity();
+            //echo '<pre>';print_r( $identity);
+            
+           
+            $this->StoreLogo();
+            if($this->session->AgencySignup['UserID']=='')
+           {
+             $objUser = Users::findFirst("id = " . $identity['id']);
+            
+           }
+           else
+           {
+                 $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+           }
+
+           
             if($objUser)
                 $this->UpdateAgency($objUser->agency_id);
         }
 
         public function step5Action() {
-            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+
+            $identity = $this->auth->getIdentity();
+           /* if($this->session->AgencySignup['UserID']=='')
+           {
+            $this->session->AgencySignup['UserID']=$identity['id'];
+            
+           }
+            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);*/
+            if($this->session->AgencySignup['UserID']=='')
+            {
+             $objUser = Users::findFirst("id = " . $identity['id']);
+            
+           }
+           else
+           {
+                 $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+           }
+
             if($objUser)
                 $this->UpdateAgency($objUser->agency_id);
         }

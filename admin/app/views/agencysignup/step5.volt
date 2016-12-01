@@ -38,4 +38,5 @@
             </div>
         </div>
     </div>
+    <input id="sign_up" class="form-control"  name="sign_up" type="hidden" value=""/>
 </form>

@@ -55,6 +55,7 @@
                        readonly>
             </div>
         </div>
+        <input id="sign_up" class="form-control"  name="sign_up" type="hidden" value="4"/>
         <div class="col-xs-6">
             <div class="rounded-square primary-color" id="PrimarySquare" style="float: left; margin-right: 15px; background-color: {{ PrimaryColor }}; border-color: {{ PrimaryColor }}"></div><input id="PrimaryColor" type="color" class="form-control" name="PrimaryColor" value="{{ PrimaryColor }}" style="width: 90%;">
         </div>
