@@ -366,7 +366,7 @@
 
 
                             //The message is saved, so send the SMS message now
-                            echo $message;exit;
+                           // echo $message;exit;
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
                             }
