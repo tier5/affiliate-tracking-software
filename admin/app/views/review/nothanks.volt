@@ -29,7 +29,7 @@ if ($this->request->isPost()) {
   //verify that we found a review invite
   if ($invite) {
     //we have an invite, so find what type of question we should ask
-    if ($invite->name != '') {
+    if (isset($name) && $name != '') {
       $name = $invite->name;
       }
       }

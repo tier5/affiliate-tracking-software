@@ -282,7 +282,7 @@
                     exit;*/
 
 
-
+                    //echo $message;exit;
 
                     if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                         $this->flash->success("The SMS was sent successfully to: " . $_POST['phone']);
@@ -291,6 +291,8 @@
 
                     //check if the user wants to send a message
                     if (!empty($_POST['review_invite_ids'])) {
+                       // echo 'gg';exit;
+                      //  echo 'kk';exit;
                         //we have messages to send, so lets first create an SMS Broadcast record
                         $smsb = new SMSBroadcast();
                         $smsb->assign(array(
@@ -330,7 +332,16 @@
                                 $guid = $invite->api_key;
                                 $link = $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid);
                             }
-                            $message = str_replace("{link}", $link, $message);
+                            //echo $_POST['link'];exit;
+                            if($_POST['link']!='')
+                            {
+                                $message = str_replace("{link}", $_POST['link'], $message);
+                            }
+                            else
+                            {
+                               $message = str_replace("{link}", $link, $message); 
+                            }
+                            
 
 
                             //save the message to the database before sending the message
@@ -355,6 +366,7 @@
 
 
                             //The message is saved, so send the SMS message now
+                            echo $message;exit;
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
                             }

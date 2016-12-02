@@ -220,6 +220,7 @@
             $this->view->sms_button_color = $location->sms_button_color;
             $this->view->logo_path = $location->sms_message_logo_path;
             $this->view->name = $location->name;
+            $this->view->objname = $location->name;
             $this->view->objAgency=$agency;
             // Negative feedback comments are being posted
             if ($this->request->isPost()) {
