@@ -409,6 +409,7 @@
          * Auto populate the session with form data, set their appropriate view variables and determine current step.
          */
         public function initialize() {
+            $this->TLDomain = $this->config->application->domain;
             if($_GET['sbyp'] || $_POST['sbyp']) {
                 $sbyp = $_GET['sbyp'] ? $_GET['sbyp'] : $_POST['sbyp'];
                 // For current measures, the id should always be odd due to the way the signup process works.  Otherwise use the defaults
@@ -823,7 +824,8 @@
         }
 
         protected function GetAgencyUrl() {
-            return "http://" . $this->session->AgencySignup['custom_domain'] . ".getmobilereviews.com";
+            $Domain = $this->config->application->domain;
+            return "http://" . $this->session->AgencySignup['custom_domain'] . ".{$Domain}";
         }
 
         public function thankyouAction() {

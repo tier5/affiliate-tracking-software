@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="row medium-vertical-margins">
-        <div class="col-xs-4 col-xs-offset-2"><a href="//{{Subdomain}}.getmobilereviews.com/?name={{Name|url_encode}}&phone={{Phone|url_encode}}&logo_path={{logo_path|url_encode}}&primary_color={{PrimaryColorNohash|url_encode}}&secondary_color={{SecondaryColorNohash|url_encode}}" target="_blank"><button class="btn btn-primary center-block" type="button" id="PreviewButton">Preview Landing Page</button></a></div>
+        <div class="col-xs-4 col-xs-offset-2"><a href="//{{Subdomain}}.{{ TLDomain }}/?name={{Name|url_encode}}&phone={{Phone|url_encode}}&logo_path={{logo_path|url_encode}}&primary_color={{PrimaryColorNohash|url_encode}}&secondary_color={{SecondaryColorNohash|url_encode}}" target="_blank"><button class="btn btn-primary center-block" type="button" id="PreviewButton">Preview Landing Page</button></a></div>
         <div class="col-xs-4"><button class="btn btn-primary center-block" type="button" id="SaveButton">Save Changes</button></div>
     </div>
 

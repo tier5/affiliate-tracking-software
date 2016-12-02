@@ -684,12 +684,13 @@ class SessionController extends ControllerBase {
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
                 if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                     throw \Exception("Contact customer support.  Email configuration not setup correctly");
-               // $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
-                //$EmailFrom = $objParentAgency->email_from_address;
+
+                $Domain = $this->config->application->domain;
+                //$EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . ".{$Domain}";
 
                 if(!$objParentAgency->email_from_address)
                 {
-                    $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+                    $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . ".{$Domain}";
                 }
                 else
                 {
@@ -697,19 +698,19 @@ class SessionController extends ControllerBase {
                 }
             }
 
+            $Domain = $this->config->application->domain;
+
             if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
                 $EmailFrom = 'zacha@reviewvelocity.co';
 
             if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                 if(!$agency->email_from_address && !$agency->custom_domain)
                     throw \Exception("Contact customer support.  Email configuration not setup correctly");
-              //  $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
-                if(!$agency->email_from_address)
-                {
-                     $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+                //$EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
+                if(!$agency->email_from_address) {
+                     $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
                 }
-                else
-                {
+                else {
                    $EmailFrom = $agency->email_from_address; 
                 }
             }
@@ -743,6 +744,8 @@ class SessionController extends ControllerBase {
                 'signup_page' => '0', //go to the next page
             ));
 
+            $Domain = $this->config->application->domain;
+
             if (!$agency->save()) {
                 $this->flash->error($agency->getMessages());
             } else {
@@ -750,7 +753,7 @@ class SessionController extends ControllerBase {
                         $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
                         if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                             throw \Exception("Contact customer support.  Email configuration not setup correctly");
-                        $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+                        $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
                     }
 
                     if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
@@ -759,10 +762,12 @@ class SessionController extends ControllerBase {
                     if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                         if(!$agency->email_from_address && !$agency->custom_domain)
                             throw \Exception("Contact customer support.  Email configuration not setup correctly");
-                        $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+                        $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
                     }
 
-                    $publicUrl="http://getmobilereviews.com";
+                    $Domain = $this->config->application->domain;
+
+                    $publicUrl="http://{$Domain}";
                     $code=$userObj->id."-".$userObj->name;
                     $link=$publicUrl.'/link/createlink/'.base64_encode($code);
                     $feed_back_email=$userObj->email;

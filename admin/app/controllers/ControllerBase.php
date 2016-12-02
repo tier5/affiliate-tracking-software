@@ -45,10 +45,11 @@ class ControllerBase extends Controller {
     }
 
     public function RedirectDomain($Domain) {
+        $TLDomain = $this->config->application->domain;
         $PageURL = 'http';
         if($_SERVER['SERVER_PORT'] === 443)
             $PageURL .= 's';
-        $PageURL .= "://{$Domain}.getmobilereviews.com/" . $_SERVER['REQUEST_URI'];
+        $PageURL .= "://{$Domain}.{$TLDomain}.com/" . $_SERVER['REQUEST_URI'];
         
         return $this->response->redirect($PageURL);
     }
@@ -349,9 +350,11 @@ class ControllerBase extends Controller {
             $Domain = $agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV ? 'reviewvelocity.co' : $agency->custom_domain;
         }
 
+        $TLDomain = $this->config->application->domain;
+
         if($Domain=='')
         {
-            $Domain="getmobilereviews.com";
+            $Domain="{$TLDomain}";
         }
         $share_link = $this->googleShortenURL("https://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
         //$share_link = urlencode($share_link);
