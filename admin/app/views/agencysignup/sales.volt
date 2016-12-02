@@ -33,7 +33,7 @@
     <div class="row small-vertical-margins">
 
         <div class="col-xs-10 col-xs-offset-1">
-            <a href="http://{{ SubDomain }}.getmobilereviews.com/session/signup" style="text-decoration: none;">
+            <a href="http://{{ SubDomain }}.{{ TLDomain }}/session/signup" style="text-decoration: none;">
                 <button class="big-green-button thin-white-text SecondaryColor center-block">
                     Click Here To Sign Up Today
                 </button>
@@ -364,7 +364,7 @@
     <div class="row">
         <div class="col-xs-3"></div>
         <div class="col-xs-6">
-            <a href="http://{{ SubDomain }}.getmobilereviews.com/session/signup" style="text-decoration: none;">
+            <a href="http://{{ SubDomain }}.{{ TLDomain }}/session/signup" style="text-decoration: none;">
             <button class="big-green-button small-vertical-margins SecondaryColor" style="width: 100%; margin-left: 0px; height: 80px;">
                 Get Started Today
             </button>

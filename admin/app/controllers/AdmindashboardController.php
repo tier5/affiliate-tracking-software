@@ -381,16 +381,17 @@ class AdmindashboardController extends ControllerBusinessBase {
 
         $RedirectUrl = '/';
         $objEntity = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+        $Domain = $this->config->application->domain;
         if($objUser->is_admin || $objEntity->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $this->config->application['environment'] == 'dev')
             $RedirectUrl = '/';
         else {
             if($objEntity->parent_id == \Vokuro\Models\Agency::AGENCY) {
                 // All agencies should have a custom_domain, but I don't want the site breaking in the event that they don't for some weird reason.
-                $RedirectUrl = $objEntity->custom_domain ? 'http://' . $objEntity->custom_domain . '.getmobilereviews.com/' : '/';
+                $RedirectUrl = $objEntity->custom_domain ? "http://{$objEntity->custom_domain}.{$Domain}/" : '/';
             } elseif($objEntity->parent_id > 0) {
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objEntity->parent_id}");
                 // All agencies should have a custom_domain, but I don't want the site breaking in the event that they don't for some weird reason.
-                $RedirectUrl = $objAgency->custom_domain ? 'http://' . $objAgency->custom_domain . '.getmobilereviews.com/' : '/';
+                $RedirectUrl = $objAgency->custom_domain ? "http://{$objAgency->custom_domain}.{$Domain}/" : '/';
             }
             // GARY_TODO:  Temporarily not using custom_domain due to session problem
             $RedirectUrl = '/';

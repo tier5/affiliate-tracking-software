@@ -226,12 +226,13 @@ class AdminController extends ControllerBase {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $confirmation->user->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $Domain = $this->config->application->domain;
 
         if($agency->parent_id > 0) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw \Exception("Contact customer support.  Email configuration not setup correctly");
-            $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+            $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
         }
 
         if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
@@ -240,7 +241,7 @@ class AdminController extends ControllerBase {
         if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             if(!$agency->email_from_address && !$agency->custom_domain)
                 throw \Exception("Contact customer support.  Email configuration not setup correctly");
-            $EmailFrom = $agency->email_from_address ?: 'no-reply@' . $agency->custom_domain . '.getmobilereviews.com';
+            $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
         }
 
         $AgencyUser=$agency->name;
@@ -250,10 +251,11 @@ class AdminController extends ControllerBase {
         $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
         $AgencyName=$parent_agency->name;
+        $Domain = $this->config->application->domain;
             /*** agency information ***/
 
         /*** Feedback form ***/
-               $publicUrl="http://getmobilereviews.com";
+               $publicUrl="http://{$Domain}";
                     $code=$confirmation->user->id."-".$confirmation->user->name;
                     $link=$publicUrl.'/link/createlink/'.base64_encode($code);
                     $feed_back_email=$confirmation->user->email;
