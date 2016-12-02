@@ -481,6 +481,9 @@
             $this->view->StripePublishableKey = $this->config->stripe->publishable_key;
         }
 
+
+
+
         /**
          * Validates required fields.  Returns true on success, or redirects user to appropriate page with the invalid field.
          */
@@ -916,6 +919,7 @@
 
         public function step3Action() {
             $identity = $this->auth->getIdentity();
+           // echo $this->TLDomain;exit;
           /*  if($this->session->AgencySignup['UserID']=='')
            {
             $this->session->AgencySignup['UserID']=$identity['id'];
@@ -924,7 +928,10 @@
             //$this->ValidateFields('Step2');
             $this->StoreLogo();
             //$this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 4]);
+           // echo $this->TLDomain;
+            //print_r($this->session->AgencySignup);exit;
             $this->view->Subdomain = $this->session->AgencySignup['URL'];
+            $this->view->TLDomain =$this->TLDomain;
             $this->view->BusinessName = $this->session->AgencySignup['BusinessName'];
             $this->view->Phone = $this->session->AgencySignup['Phone'];
             $this->view->PrimaryColorNohash = str_replace('#', '', $this->session->AgencySignup['PrimaryColor']);
@@ -933,18 +940,72 @@
 
 
              if($this->session->AgencySignup['UserID']=='')
-           {
+                {
              $objUser = Users::findFirst("id = " . $identity['id']);
             
-           }
+                }
            else
-           {
+                {
                  $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
-           }
+                }
 
             //$objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
             if($objUser)
                 $this->UpdateAgency($objUser->agency_id);
+        }
+
+         public function loadingpageimageAction()
+        {
+            if($_POST)
+            {
+                $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['LogoFilename' => $_POST['image']]);
+
+                return $this->session->AgencySignup['PrimaryColor']."-".$this->session->AgencySignup['SecondaryColor']."-"."/img/agency_logos/".$this->session->AgencySignup['LogoFilename'];
+            }
+        }
+
+        public function loadingpageAction()
+        {
+           $b='ok';
+
+            if($_POST)
+            {
+                if($_POST['primarycolor'])
+                {
+
+                    $prm_clr=str_replace('#', '', $_POST['primarycolor']);
+                    $this->session->prmclr=$prm_clr;
+                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['PrimaryColor' => $prm_clr]);
+                        if($this->session->secdclr=='')
+                        {
+                    return $this->session->AgencySignup['PrimaryColor']."-".$this->session->AgencySignup['SecondaryColor'];
+                        }
+                        else
+                        {
+                             return $this->session->AgencySignup['PrimaryColor']."-".$this->session->secdclr;
+                        }
+                   
+               }
+                elseif($_POST['secondarycolor'])
+                {
+
+                    $secnd_clr=str_replace('#', '', $_POST['secondarycolor']);
+                    $this->session->secdclr=$secnd_clr;
+                     $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SecondaryColor' => $secnd_clr]);
+                     
+                      if($this->session->prmclr=='')
+                        {
+                   return $this->session->AgencySignup['PrimaryColor']."-".$this->session->AgencySignup['SecondaryColor'];
+                        }
+                        else
+                        {
+                             return $this->session->prmclr."-".$this->session->AgencySignup['SecondaryColor'];
+                        }
+                    //return $this->session->AgencySignup['PrimaryColor']."-".$this->session->AgencySignup['SecondaryColor'];
+                }
+
+                //$this->step3();
+            }
         }
 
         protected function StoreLogo() {

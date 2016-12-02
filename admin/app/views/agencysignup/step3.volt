@@ -17,7 +17,10 @@
         </div>
     </div>
     <div class="row medium-vertical-margins">
-        <div class="col-xs-4 col-xs-offset-2"><a href="//{{Subdomain}}.{{ TLDomain }}/?name={{Name|url_encode}}&phone={{Phone|url_encode}}&logo_path={{logo_path|url_encode}}&primary_color={{PrimaryColorNohash|url_encode}}&secondary_color={{SecondaryColorNohash|url_encode}}" target="_blank"><button class="btn btn-primary center-block" type="button" id="PreviewButton">Preview Landing Page</button></a></div>
+        <div class="col-xs-4 col-xs-offset-2"><!--<a href="https://{{Subdomain}}.{{TLDomain}}/?name={{Name|url_encode}}&phone={{Phone|url_encode}}&logo_path={{logo_path|url_encode}}&primary_color={{PrimaryColorNohash|url_encode}}&secondary_color={{SecondaryColorNohash|url_encode}}" target="_blank"><button class="btn btn-primary center-block" type="button" id="PreviewButton">Preview Landing Page</button></a>-->
+
+        <a href="https://{{Subdomain}}.{{TLDomain}}/?name={{BusinessName|url_encode}}&phone={{Phone|url_encode}}&logo_path={{logo_path|url_encode}}&primary_color={{PrimaryColorNohash|url_encode}}&secondary_color={{SecondaryColorNohash|url_encode}}" target="_blank" id="land_link"><button class="btn btn-primary center-block" type="button" id="PreviewButton">Preview Landing Page</button></a>
+        </div>
         <div class="col-xs-4"><button class="btn btn-primary center-block" type="button" id="SaveButton">Save Changes</button></div>
     </div>
 
@@ -56,6 +59,16 @@
             </div>
         </div>
         <input id="sign_up" class="form-control"  name="sign_up" type="hidden" value="4"/>
+
+         <?php
+       if (substr($PrimaryColor, 0, 1) === '#') {
+            $PrimaryColor=$PrimaryColor;
+        }
+        else
+        {
+        $PrimaryColor='#'.$PrimaryColor;
+        }
+        ?>
         <div class="col-xs-6">
             <div class="rounded-square primary-color" id="PrimarySquare" style="float: left; margin-right: 15px; background-color: {{ PrimaryColor }}; border-color: {{ PrimaryColor }}"></div><input id="PrimaryColor" type="color" class="form-control" name="PrimaryColor" value="{{ PrimaryColor }}" style="width: 90%;">
         </div>
@@ -71,6 +84,15 @@
     <div class="row">
         <div class="col-xs-6"></div>
         <div class="col-xs-6">
+        <?php
+       if (substr($SecondaryColor, 0, 1) === '#') {
+            $SecondaryColor=$SecondaryColor;
+        }
+        else
+        {
+        $SecondaryColor='#'.$SecondaryColor;
+        }
+        ?>
             <div class="rounded-square secondary-color" id="SecondarySquare" style="float: left; margin-right: 15px; background-color: {{ SecondaryColor }}; border-color: {{ SecondaryColor }}"></div><input id="SecondaryColor" type="color" class="form-control" name="SecondaryColor" value="{{ SecondaryColor }}" style="width: 90%;">
         </div>
     </div>
@@ -93,11 +115,64 @@
         $('#PrimaryColor').change(function() {
             $('#PrimarySquare').css('background-color', $(this).val());
             $('#PrimarySquare').css('border-color', $(this).val());
+
+             
+            $.ajax({
+            type: 'POST',
+             url: "/agencysignup/loadingpage", 
+            data:{primarycolor : $(this).val()},
+            
+             success: function(result){
+                        //alert(result);
+
+                        var prm=result.split('-');
+                        var prm_clr=prm[0];
+                       //alert(result);
+                       $("a").attr("href", "https://{{Subdomain}}.{{TLDomain}}/?name={{BusinessName|url_encode}}&phone={{Phone|url_encode}}&logo_path={{logo_path|url_encode}}&primary_color="+prm_clr+"&secondary_color="+prm[1]);
+                    }
+
+                    });
+
         });
-1
+
+        $('#file-selector').change(function(){
+            var image=$('#upload-file-info').val();
+
+             $.ajax({
+            type: 'POST',
+             url: "/agencysignup/loadingpageimage", 
+            data:{image :image},
+            
+             success: function(result){
+                 var prm=result.split('-');
+
+                  $("a").attr("href", "https://{{Subdomain}}.{{TLDomain}}/?name={{BusinessName|url_encode}}&phone={{Phone|url_encode}}&logo_path="+prm[2]+"&primary_color="+prm[0]+"&secondary_color="+prm[1]);
+
+             }
+             });
+
+        })
+
         $('#SecondaryColor').change(function() {
             $('#SecondarySquare').css('background-color', $(this).val());
             $('#SecondarySquare').css('border-color', $(this).val());
+
+             $.ajax({
+            type: 'POST',
+             url: "/agencysignup/loadingpage", 
+            data:{secondarycolor : $(this).val()},
+            
+             success: function(result){
+                        //alert(result);
+
+                         var prm=result.split('-');
+                        var sec_clr=prm[1];
+                       //result=result.replace("#", "");
+                       alert(result);
+                       $("a").attr("href", "https://{{Subdomain}}.{{TLDomain}}/?name={{BusinessName|url_encode}}&phone={{Phone|url_encode}}&logo_path={{logo_path|url_encode}}&primary_color="+prm[0]+"&secondary_color="+sec_clr);
+                    }
+
+                    });
         });
 
         $('#SaveButton').click(function() {
