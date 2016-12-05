@@ -323,7 +323,7 @@
     {# Row of 5 descriptions #}
     <div class="row">
         <div class="col-xs-1"></div>
-        <div class="col-xs-2 text-center description-text">Healthcare Services / Cosmetic Dentists / Chiropractors / Medial Devices</div>
+        <div class="col-xs-2 text-center description-text">Healthcare Services / Cosmetic Dentists / Chiropractors / Medical Devices</div>
         <div class="col-xs-2 text-center description-text">Mortgage Companies / Mortgage Consultants / Debt Consolidation</div>
         <div class="col-xs-2 text-center description-text">Real Estate Agents / Brokerage Firms & Real Estate Teams</div>
         <div class="col-xs-2 text-center description-text">Website Designers / Software Developers / Photographers</div>
