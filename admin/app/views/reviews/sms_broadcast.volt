@@ -343,7 +343,11 @@
                     <div class="form-group">
                       <div class="">
                         <div class="col-md-12">
-                          <textarea style="width: 100%;" name="SMS_message" class="form-control"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?></textarea>
+                        <!--
+                          <textarea style="width: 100%;" name="SMS_message" class="form-control"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?></textarea>-->
+
+                          <textarea style="width: 100%;" name="SMS_message" class="form-control"></textarea>
+
                           <i style="color: #c3c3c3; display: block; font-size: 12px; margin-top: 11px;">{location-name} will be the name of the location sending the SMS, {name} will be replaced with the name entered when sending the message and {link} will be the link to the review.</i>
                         </div>
                       </div>
@@ -351,7 +355,7 @@
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="link" style="text-align: left;">Link:</label>
                       <div class="col-md-7">
-                        <input type="text" placeholder="Link" class="form-control required" style="color:#000;" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" onblur="validateURL()" />
+                        <input type="text" placeholder="Link" class="form-control required url" style="color:#000;" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" onblur="validateURL()" />
                         <span class="url_err"></span>
                       </div>
                       <div class="col-md-4">
