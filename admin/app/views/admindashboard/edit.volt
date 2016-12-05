@@ -1,8 +1,7 @@
 <?php
 
     $AgencyOrBusiessType = $this->view->agency_type_id == 1 ? "Agency" : "Business";
-    $BackUrl = $AgencyOrBusiessType == 1 ? '/agency' : '/admindashboard/list/2';
-    $BackUrl = $loggedUser->is_admin ? "/admindashboard/list/1" : $BackUrl;
+    $BackUrl = $loggedUser->is_admin ? "/admindashboard/list/1" : '/agency';
 
 ?>
 <ul class="pager">

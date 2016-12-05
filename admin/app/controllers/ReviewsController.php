@@ -269,12 +269,21 @@
                     $loc = Location::findFirst(array($conditions, "bind" => $parameters));
 
                     //else we have a phone number, so send the message
-                    $message = $_POST['SMS_message'].'  Reply stop to be removed';
+                   
                     //replace out the variables
                     $message = str_replace("{location-name}", $loc->name, $message);
                     $message = str_replace("{name}", $_POST['name'], $message);
-                    $message = str_replace("{link}", $this->googleShortenURL($_POST['link']), $message);
-
+                    $pos = strpos($message, '{link}');
+                    if($pos!='')
+                    {
+                         $message = str_replace("{link}", $this->googleShortenURL($_POST['link']), $message);
+                    }
+                    else
+                    {
+                        $message = $message.$_POST['link'];
+                    }
+                   
+                     $message = $message.'  Reply stop to be removed';
                     /*echo "API Key: ".$twilio_api_key."<br>";
                     echo "Auth Token: ".$twilio_auth_token."<br>";
                     echo "Messaging SID: ".$twilio_auth_messaging_sid."<br>";
@@ -282,7 +291,7 @@
                     exit;*/
 
 
-
+                    //echo $message;exit;
 
                     if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                         $this->flash->success("The SMS was sent successfully to: " . $_POST['phone']);
@@ -291,7 +300,11 @@
 
                     //check if the user wants to send a message
                     if (!empty($_POST['review_invite_ids'])) {
+                       // echo 'gg';exit;
+                      //  echo 'kk';exit;
                         //we have messages to send, so lets first create an SMS Broadcast record
+
+
                         $smsb = new SMSBroadcast();
                         $smsb->assign(array(
                             'api_key' => $this->GUID(),
@@ -317,7 +330,7 @@
                             $loc = Location::findFirst(array($conditions, "bind" => $parameters));
 
                             //else we have a phone number, so send the message
-                            $message = $_POST['SMS_message'].'  Reply stop to be removed';
+                           
                             //replace out the variables
                             $message = str_replace("{location-name}", $loc->name, $message);
                             $message = str_replace("{name}", $invite->name, $message);
@@ -330,8 +343,26 @@
                                 $guid = $invite->api_key;
                                 $link = $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid);
                             }
-                            $message = str_replace("{link}", $link, $message);
 
+                            $pos = strpos($message, '{link}');//exit;
+                            //echo $_POST['link'];exit;
+                            if($pos!='')
+                            {
+                            if($_POST['link']!='')
+                            {
+                                $message = str_replace("{link}", $_POST['link'], $message);
+                            }
+                            else
+                            {
+                               $message = str_replace("{link}", $link, $message); 
+                            }
+                            }
+                            else
+                            {
+                                 $message = $message .$_POST['link'];
+                            }
+                            
+                             $message = $message.'  Reply stop to be removed';
 
                             //save the message to the database before sending the message
                             $invite2 = new ReviewInvite();
@@ -355,6 +386,7 @@
 
 
                             //The message is saved, so send the SMS message now
+                           // echo $message;exit;
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
                             }

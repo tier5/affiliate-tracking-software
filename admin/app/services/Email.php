@@ -57,6 +57,8 @@ class Email{
         $template='confirmation';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
 
+        $Domain = $this->config->application->domain;
+
         $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Review Velocity";
@@ -78,7 +80,7 @@ class Email{
             $AgencyUser = $objAgencyUser->name;
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
-            $EmailFrom = $objParentAgency->email_from_address ?: 'no_reply@' . $objParentAgency->custom_domain . '.getmobilereviews.com';
+            $EmailFrom = $objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
         }
          if($AgencyName =='') {
             
@@ -112,17 +114,18 @@ class Email{
             $objFacebookReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$objLocation->location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
             $FacebookURL = $objFacebookReviewSite->external_location_id ? "http://www.facebook.com/{$objFacebookReviewSite->external_location_id}" : '';
             $mail = $this->getDI()->getMail();
+            $Domain = $this->config->application->domain;
             if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 $mail->setFrom('zacha@reviewvelocity.co');
-                $FullDomain = "getmobilereviews.com";
+                $FullDomain = "{$Domain}";
             }
             else {
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
                 if(!$objAgency->email_from_address && !$objAgency->custom_domain)
                     throw new \Exception("Your email from address or your custom domain needs to be set to send email");
-                $EmailFrom = $objAgency->email_from_address ?: 'no_reply@' . $objAgency->custom_domain . '.getmobilereviews.com';
+                $EmailFrom = $objAgency->email_from_address ?: "no_reply@{$objAgency->custom_domain}.{$Domain}";
                 $mail->setFrom($EmailFrom);
-                $FullDomain = "{$objAgency->custom_domain}.getmobilereviews.com";
+                $FullDomain = "{$objAgency->custom_domain}.{$Domain}";
             }
             $objEmployees = $dbEmployees;
 
@@ -151,6 +154,7 @@ class Email{
 
     public function sendResetPasswordEmailToUser(Users $user, $code){
         $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
+        $Domain = $this->config->application->domain;
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
@@ -163,7 +167,7 @@ class Email{
             if(!$objAgency->email_from_address && !$objAgency->custom_domain)
                 throw new \Exception("Email from address not configured correctly.  Please contact support.");
 
-            $EmailFrom = $objAgency->email_from_address ?: "no-reply@{$objAgency->custom_domain}.getmobilereviews.com";
+            $EmailFrom = $objAgency->email_from_address ?: "no-reply@{$objAgency->custom_domain}.{$Domain}";
         }
         elseif($objAgency->parent_id > 0) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
@@ -173,7 +177,7 @@ class Email{
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw new \Exception("Email from address not configured correctly.  Please contact support.");
 
-            $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.getmobilereviews.com";
+            $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
         }
 
         $params = [];

@@ -397,14 +397,13 @@ class SubscriptionManager extends BaseService {
         $status = false;
 
         try {
-
             $id = $this->saveSubscriptionPricingPlan($parameters, $isUpdate);
             if (!$id) {
-                throw new \Exception();
+                throw new \Exception("Unable to obtain pricing plan ID");
             }
 
             if (!$this->appendPricingParameterLists($id, $parameters, $isUpdate)) {
-                throw new \Exception();
+                throw new \Exception("Unable to append pricing parameter list");
             }
 
             $status = true;
@@ -508,11 +507,7 @@ class SubscriptionManager extends BaseService {
          *
          */
         if ($isUpdate) {
-            $subscriptionPricingPlan = SubscriptionPricingPlan::query()
-                ->where("name = :name:")
-                ->bind(["name" => $parameters["name"]])
-                ->execute()
-                ->getFirst();
+            $subscriptionPricingPlan = SubscriptionPricingPlan::findFirst("name = '" . $parameters['name'] . "' AND user_id = " . $parameters['userId']);
         } else {
             $subscriptionPricingPlan = new SubscriptionPricingPlan();
         }
@@ -520,6 +515,7 @@ class SubscriptionManager extends BaseService {
         if (!$subscriptionPricingPlan) {
             return false;
         }
+
         $subscriptionPricingPlan->getShortCode();
         $subscriptionPricingPlan->user_id = $parameters["userId"];
         $subscriptionPricingPlan->name = $parameters["name"];
@@ -537,7 +533,7 @@ class SubscriptionManager extends BaseService {
         $subscriptionPricingPlan->pricing_details = $parameters["pricingDetails"] ? : new \Phalcon\Db\RawValue('default');
         $subscriptionPricingPlan->is_viral = $parameters['isViral'] ?: false;
 
-        if ($isUpdate && !$subscriptionPricingPlan->update()) {
+        if ($isUpdate && !$subscriptionPricingPlan->save()) {
             return false;
         } else if (!$isUpdate && !$subscriptionPricingPlan->create()) {
             return false;

@@ -161,6 +161,7 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->canEdit = true;
         $this->view->gridEditStatus = "";
         $this->view->isCreateMode = true;
+        $this->view->isNewRecord = true;
 
         /* Add progression parameters */
         $progressions = [];
@@ -232,6 +233,7 @@ class BusinessPricingPlanController extends ControllerBase {
             /* Get the user id */
             $validatedParams['userId'] = $userManager->getUserId($this->session);
 
+
             /* If we are creating a new plan, ensure the name of the pricing profile is unique for this user */
             $pricingPlan = $subscriptionManager->getPricingPlanByName($validatedParams['userId'], $validatedParams['name']);
             if($pricingPlan && !$isUpdate) {
@@ -255,8 +257,6 @@ class BusinessPricingPlanController extends ControllerBase {
             $responseParameters['status'] = true;
 
         }  catch(Exception $e) {
-
-
             /*
              * Failure :(
              */

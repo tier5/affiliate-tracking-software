@@ -124,7 +124,19 @@
             );
         }
 
-        public function generateAndSaveShortCode(){
+        public function beforeValidationOnCreate() {
+            if (!$this->is_viral) {
+                $this->is_viral = 0;
+            }
+        }
+
+        public function beforeValidationOnUpdate() {
+            if (!$this->is_viral) {
+                $this->is_viral = 0;
+            }
+        }
+
+        public function generateAndSaveShortCode() {
             if(!$this->short_code){
                 $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
                 $short_code = '';

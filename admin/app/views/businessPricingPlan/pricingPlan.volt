@@ -34,7 +34,7 @@
                         <div class="caption font-dark">
                             <div class="form-group">
                             <label>Subscription Name</label>
-                            <input id="name-control" type="text" value="{{ name }}" class="caption-subject form-control input-medium" placeholder="Subscription Name" />
+                            <input id="name-control" type="text" value="{% if !isNewRecord %}{{ name }}{% else %}My New Subscription{% endif %}" class="caption-subject form-control input-medium" placeholder="Subscription Name" {% if !isNewRecord %} readonly {% endif %}/>
                                 <hr>
                         </div>
                     </div>

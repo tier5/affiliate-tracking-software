@@ -60,10 +60,11 @@
                                                 <td><input id="subscriptionViral{{ pricingProfile.id }}" class="update-enable-viral-control make-switch" type="checkbox" data-on-color="primary" data-off-color="info"></td>
                                             {% endif %}
                                             <td class="hide-small">
+                                                <?php $Domain = $this->config->application->domain; ?>
                                                 <?php if($loggedUser->is_admin) { ?>
-                                                    <a href="http://<?=$_SERVER['HTTP_HOST']; ?>/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn" target="_blank">View Page</a>
+                                                    <a href="http://<?=$Domain; ?>/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn" target="_blank">View Page</a>
                                                 <?php } else { ?>
-                                                    <a href="http://{{ custom_domain }}.getmobilereviews.com/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn" target="_blank">View Page</a>
+                                                    <a href="http://{{ custom_domain }}.<?=$Domain; ?>/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn" target="_blank">View Page</a>
                                                 <?php } ?>
 
                                             </td>

@@ -64,7 +64,8 @@
                         </div>
                         <div class="col-xs-7 col-lg-9">
                         	<input type="text" id="URL" maxlength="30" class="form-control website-url" name="URL" value="{{ URL }}" required />
-                        	<span class="append_content hidden-xs">.getmobilereviews.com</span>
+                        	<?php $Domain = $this->config->application->domain; ?>
+                        	<span class="append_content hidden-xs">.<?=$Domain; ?></span>
                         </div>
                     </div>
                     <div class="row contact-row">

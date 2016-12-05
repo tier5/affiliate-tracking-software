@@ -61,6 +61,7 @@
             <label>Website</label><span class="required">*</span><input class="form-control" type="url" name="Website" value="{{ Website }}" required />
         </div>
     </div>
+<input id="sign_up" class="form-control"  name="sign_up" type="hidden" value="3"/>
 
     <div class="row small-vertical-margins">
         <div class="col-xs-12">

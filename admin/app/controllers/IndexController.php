@@ -184,6 +184,7 @@ class IndexController extends ControllerBase {
         }
 
         if ($identity['location_id'] > 0) {
+            //echo $identity['location_id'];exit;
             $conditions = "location_id = :location_id:";
 
             $parameters = array(
@@ -241,7 +242,21 @@ class IndexController extends ControllerBase {
             $this->view->yelp_review_count = $YelpReviewCount = $objYelpReviewSite ? $objYelpReviewSite->review_count : 0; //count($dbYelpReviews);
             $this->view->facebook_review_count = $FacebookReviewCount = count($dbFacebookReviews);
             $this->view->google_review_count = $GoogleReviewCount = count($dbGoogleReviews);
-            $this->view->total_reviews = $TotalReviews = $FacebookReviewCount + $GoogleReviewCount + $YelpReviewCount;
+            //$this->view->total_reviews = $TotalReviews = $FacebookReviewCount + $GoogleReviewCount + $YelpReviewCount;
+
+           $TotalReviews = $FacebookReviewCount + $GoogleReviewCount + $YelpReviewCount;
+
+           /*** 5/12/2016 ***/
+
+             $objFbReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
+
+              $objGlReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
+            $this->view->total_reviews  = $objYelpReviewSite->review_count+$objFbReviewSite->review_count+$objGlReviewSite->review_count;
+
+
+             /*** 5/12/2016 ***/
+
+
 
             $this->view->yelp_rating = $YelpReviewCount > 0 ? $TotalYelpRating / $YelpReviewCount : 0;
             $this->view->facebook_rating = $FacebookReviewCount > 0 ? $TotalFacebookRating / $FacebookReviewCount : 0;
