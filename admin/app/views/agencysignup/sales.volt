@@ -1,9 +1,20 @@
+{% if(CleanUrl === true) %}
+<script>
+	$().ready(function(){ // Remove query params from URL for preview
+		window.history.replaceState({}, document.title, window.location.href.replace(window.location.search,''));
+	});
+</script>
+{% endif %}
 <div class="row small-vertical-margins">
     <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 col-xs-offset-1 col-md-offset-1">
-        <img class="logo-order" src="{{ LogoSource }}"  alt="Review Velocity" />
+    	{% if logo_path != '' %}
+        	<img class="logo-order" src="{{ logo_path }}"  alt="{{ Name }}" />
+        {% else  %}
+        	<span></span>
+        {% endif  %}
     </div>
     <div class="col-xs-7 col-sm-4 col-sm-offset-4 col-lg-3 col-md-offset-6">
-        <span class="contact-text">Contact Us:</span> <span class="contact-phone">(866) 700-9330</span>
+        <span class="contact-text">Contact Us:</span> <span class="contact-phone">{{Phone}}</span>
     </div>
 </div>
 <div class="light-section">
@@ -21,10 +32,12 @@
     </div>
     <div class="row small-vertical-margins">
 
-        <div class="col-xs-8 col-xs-offset-2">
-            <button class="big-green-button thin-white-text SecondaryColor center-block">
-                Click Here To Sign Up Today
-            </button>
+        <div class="col-xs-10 col-xs-offset-1">
+            <a href="http://{{ SubDomain }}.{{ TLDomain }}/session/signup" style="text-decoration: none;">
+                <button class="big-green-button thin-white-text SecondaryColor center-block">
+                    Click Here To Sign Up Today
+                </button>
+            </a>
         </div>
         <div class="col-xs-2"></div>
     </div>
@@ -218,21 +231,21 @@
             <div class="row">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="title-text">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</span>
+                    <span class="title-text">We Had Our Account Setup And Sending Review Requests In No Time.</span>
                 </div>
             </div>
 
             <div class="row extra-small-vertical-margins">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="subtitle-text">By: Ipsum - May 21, 2016</span>
+                    <span class="subtitle-text">By: Mark - Sept 21, 2016</span>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="description-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis molestie massa, ut gravida felis rhoncus eget. Maecenas lectus libero, luctus at nisl vel, iaculis blandit erat. Donec eu tellus in tortor iaculis semper. Ut bibendum tortor convallis turpis pellentesque, eget rhoncus metus mollis.</span>
+                    <span class="description-text">The account wizard and setup process made getting started a breeze. Our customer experience standards are very high, and this helps us ensure we meet that standard. We now have all of our service techs in the field generating feedback as part of each service call.</span>
                 </div>
             </div>
 
@@ -251,21 +264,21 @@
             <div class="row">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="title-text">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</span>
+                    <span class="title-text">We Saw Results Immediately - Adding Dozens of New Reviews The First Month</span>
                 </div>
             </div>
 
             <div class="row extra-small-vertical-margins">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="subtitle-text">By: Ipsum - May 21, 2016</span>
+                    <span class="subtitle-text">By: Joanna - Aug 7, 2016</span>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-xs-1"></div>
                 <div class="col-xs-10">
-                    <span class="description-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis molestie massa, ut gravida felis rhoncus eget. Maecenas lectus libero, luctus at nisl vel, iaculis blandit erat. Donec eu tellus in tortor iaculis semper. Ut bibendum tortor convallis turpis pellentesque, eget rhoncus metus mollis.</span>
+                    <span class="description-text">I usually struggle with technology and was pleasantly surprised with how easy it was to get started and send out feedback requests. We started seeing new reviews being posted online in the first few days. All I did was put in my customers numbers and the software did the rest. Simply Amazing!</span>
                 </div>
             </div>
         </div>
@@ -310,7 +323,7 @@
     {# Row of 5 descriptions #}
     <div class="row">
         <div class="col-xs-1"></div>
-        <div class="col-xs-2 text-center description-text">Healthcare Services / Cosmetic Dentists / Chiropractors / Medial Devices</div>
+        <div class="col-xs-2 text-center description-text">Healthcare Services / Cosmetic Dentists / Chiropractors / Medical Devices</div>
         <div class="col-xs-2 text-center description-text">Mortgage Companies / Mortgage Consultants / Debt Consolidation</div>
         <div class="col-xs-2 text-center description-text">Real Estate Agents / Brokerage Firms & Real Estate Teams</div>
         <div class="col-xs-2 text-center description-text">Website Designers / Software Developers / Photographers</div>
@@ -349,11 +362,13 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-4"></div>
-        <div class="col-xs-4">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-6">
+            <a href="http://{{ SubDomain }}.{{ TLDomain }}/session/signup" style="text-decoration: none;">
             <button class="big-green-button small-vertical-margins SecondaryColor" style="width: 100%; margin-left: 0px; height: 80px;">
                 Get Started Today
             </button>
+            </a>
         </div>
     </div>
     <div class="row">

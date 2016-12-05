@@ -10,63 +10,66 @@
           <!-- END PAGE TITLE-->
         </div>
         <?php
-      if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
-        if ($is_upgrade) {
-        $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
-        if ($percent > 100) $percent = 100;
+          if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
+            if ($is_upgrade) {
+              $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
+              if ($percent > 100) {
+                $percent = 100;
+              }
         ?>
-        <div class="col-md-7 col-sm-7">
-          <div class="sms-chart-wrapper">
-            <div class="title">SMS Messages Sent</div>
-            <div class="bar-wrapper">
-              <div class="bar-background"></div>
-              <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-              <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-              <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
-          </div>
-          <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
-        </div>
-      </div>
-      <?php
-        } else {
-          $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
-      if ($percent > 100) $percent = 100;
-      ?>
-      <div class="col-md-7 col-sm-7">
-        <div class="sms-chart-wrapper">
-          <div class="title">SMS Messages Sent</div>
-          <div class="bar-wrapper">
-            <div class="bar-background"></div>
-            <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-            <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-            <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
-        </div>
-        <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
-      </div>
-  </div>
-  <?php
-        }
-      } //end checking for business vs agency
-      ?>
-  </div>
+              <div class="col-md-7 col-sm-7">
+                <div class="sms-chart-wrapper">
+                  <div class="title">SMS Messages Sent</div>
+                  <div class="bar-wrapper">
+                    <div class="bar-background"></div>
+                    <div class="bar-filled" style="width: <?=$percent?>%;"></div>
+                    <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
+                    <div class="bar-number" style="margin-left: <?=$percent?>%;">
+                      <div class="ball"><?=$sms_sent_this_month_total?></div>
+                      <div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div>
+                    </div>
+                  </div>
+                  <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
+                </div>
+              </div>
+        <?php
+            } else {
 
+              $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
+              if ($percent > 100) {
+                $percent = 100;
+              }
+        ?>
+              <div class="col-md-7 col-sm-7">
+                <div class="sms-chart-wrapper">
+                  <div class="title">SMS Messages Sent</div>
+                  <div class="bar-wrapper">
+                    <div class="bar-background"></div>
+                    <div class="bar-filled" style="width: <?=$percent?>%;"></div>
+                    <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
+                    <div class="bar-number" style="margin-left: <?=$percent?>%;">
+                      <div class="ball"><?=$sms_sent_this_month?></div>
+                      <div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div>
+                    </div>
+                  </div>
+                  <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
+                </div>
+              </div>
+      <?php
+            }
+          } //end checking for business vs agency
+      ?>
+      </div>
 
   <div class="row">
     <div class="col-md-12 col-sm-12">
       <div class="portlet light bordered dashboard-panel">
         <div class="portlet-body" id="reportwrapperreview">
-
           <ul class="nav nav-tabs" style="margin-bottom: 25px;">
-            <li class="active"><a style="border-top: 8px solid #283643 !important; padding: 14px 69px 53px;" href="/reviews/sms_broadcast"> NEW MESSAGES </a></li>
+            <li class="active"><a style="padding: 14px 69px 53px;" href="/reviews/sms_broadcast"> NEW MESSAGES </a></li>
             <li><a style="border-top: 8px solid #F6F6F6 !important; padding: 14px 69px 53px;" href="/reviews/sent_message"> SENT MESSAGE </a></li>
           </ul>
-
-
-
-
-
           <div class="row">
-
             <div class="col-md-12 col-sm-12">
               <div id="pnlSMSSent" class="portlet light bordered">
                 <div class="portlet-title" style="margin-top: 13px;">
@@ -78,7 +81,6 @@
                   <div class="col-md-12 col-sm-12" style="padding-top: 20px;">
                     <div class="col-md-4">
                       <div class="details" style="border-right: 1px solid #e7ecf0; min-height: 200px;">
-
                         <div class="form-group">
                           <div style="margin-bottom: 15px;">
                             <b>Locations:</b>
@@ -88,43 +90,52 @@
                               <div id="userlocationselect">
                                 <table width="100%" colspan="5" border="0">
                                   <?php
-                        $found = false;
-                        foreach($locations as $data) {
-                          $found = true;
-
-                          //now check if this record should be checked
-                          $checked = false;
-                          //check post
-                          if(!empty($_POST['locations'])) {
-                            foreach($_POST['locations'] as $check) {
-                              if ($check == $data->location_id) $checked = true;
+                                  $found = false;
+                                  foreach($locations as $data) {
+                                    $found = true;
+                                    //now check if this record should be checked
+                                    $checked = false;
+                                    //check post
+                                    if(!empty($_POST['locations'])) {
+                                      foreach($_POST['locations'] as $check) {
+                                        if ($check == $data->location_id) $checked = true;
+                                      }
+                                    }
+                                  ?>
+                                    <tr>
+                                      <td>
+                                        <div style="margin-bottom: 5px !important;">
+                                          <input
+                                            type="checkbox"
+                                            name="locations[]"
+                                            value="<?=$data->location_id?>"
+                                            <?=($checked?'checked="checked"':'')?> />
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <div style="margin-bottom: 5px !important;">
+                                          <?=$data->name?>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  <?php
                                   }
+                                  if (!$found) {
+                                  ?>
+                                    No locations found
+                                  <?php
                                   }
                                   ?>
-                                  <tr>
-                                    <td><div style="margin-bottom: 5px !important;"><input type="checkbox" name="locations[]" value="<?=$data->location_id?>" <?=($checked?'checked="checked"':'')?> /></div></td>
-                                    <td><div style="margin-bottom: 5px !important;"><?=$data->name?></div></td>
-                                  </tr>
-                                  <?php
-                        }
-                        if (!$found) {
-                          ?>
-                                  No locations found
-                                  <?php
-                        }
-                        ?>
                                 </table>
                               </div>
                             </div>
                           </div>
                         </div>
-
                       </div>
                     </div>
                     <div class="margin-bottom-10 visible-sm"> </div>
                     <div class="col-md-4">
                       <div class="details" style="border-right: 1px solid #e7ecf0; min-height: 200px;">
-
                         <div class="form-group">
                           <div style="margin-bottom: 15px;">
                             <b>Review Type:</b>
@@ -132,89 +143,115 @@
                           <div class="row">
                             <div class="col-md-12">
                               <div id="reviewtypeselect">
-
                                 <table width="100%" colspan="5" border="0">
                                   <tr>
-                                    <td><div style="margin-bottom: 5px !important;"><input type="checkbox" name="review_type_negative" value="1" <?=(isset($_POST['review_type_negative']) && $_POST['review_type_negative'] == 1?' checked="checked"':'')?> /></div></td>
-                                    <td><div style="margin-bottom: 5px !important;">Left Negative Feedback</div></td>
+                                    <td>
+                                      <div style="margin-bottom: 5px !important;">
+                                        <input
+                                          type="checkbox"
+                                          name="review_type_negative"
+                                          value="1"
+                                          <?=(isset($_POST['review_type_negative']) && $_POST['review_type_negative'] == 1?' checked="checked"':'')?> />
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div style="margin-bottom: 5px !important;">Left Negative Feedback</div></td>
                                   </tr>
                                   <tr>
-                                    <td><div style="margin-bottom: 5px !important;"><input type="checkbox" name="review_type_positive" value="1" <?=(isset($_POST['review_type_positive']) && $_POST['review_type_positive'] == 1?' checked="checked"':'')?> /></div></td>
-                                    <td><div style="margin-bottom: 5px !important;">Left Positive Review</div></td>
+                                    <td>
+                                      <div style="margin-bottom: 5px !important;">
+                                        <input
+                                          type="checkbox"
+                                          name="review_type_positive"
+                                          value="1"
+                                          <?=(isset($_POST['review_type_positive']) && $_POST['review_type_positive'] == 1?' checked="checked"':'')?> />
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div style="margin-bottom: 5px !important;">Left Positive Review</div>
+                                    </td>
                                   </tr>
                                 </table>
-
                               </div>
                             </div>
                           </div>
                         </div>
-
                         <div class="form-group">
                           <div style="display: none;" id="emailerror" class="error">
                             Invalid email.
                           </div>
                         </div>
                       </div>
-
                     </div>
                     <div class="margin-bottom-10 visible-sm"> </div>
                     <div class="col-md-4">
-
-
                       <div class="form-group">
                         <div style="margin-bottom: 15px;">
                           <b>Review Invite Date Sent Date Range:</b>
                         </div>
                         <div class="row">
                           <div class="col-md-12">
-
                             <div class="form-group">
                               <div class="col-md-12">
                                 <b style="display: block; margin-bottom: 6px;">Start Date:</b>
                                 <div data-date-format="mm-dd-yyyy" class="input-group date date-picker" style="width: 100%;">
-                                  <input name="start_date" value="<?=(isset($_POST['start_date'])?$_POST['start_date']:'')?>" type="text" name="datepicker" readonly="" class="form-control" aria-required="true" aria-invalid="false" aria-describedby="datepicker-error" style="background-color: #FFFFFF;" />
-                              <span class="" style="position: absolute; right: 0;z-index: 9;">
-                                <button type="button" class="btn default" style="background-color: Transparent; border: transparent;">
-                                  <i class="fa fa-calendar"></i>
-                                </button>
-                              </span>
+                                  <input
+                                    name="start_date"
+                                    value="<?=(isset($_POST['start_date'])?$_POST['start_date']:'')?>"
+                                    type="text"
+                                    name="datepicker"
+                                    readonly=""
+                                    class="form-control"
+                                    aria-required="true"
+                                    aria-invalid="false"
+                                    aria-describedby="datepicker-error"
+                                    style="background-color: #FFFFFF;" />
+                                  <span class="" style="position: absolute; right: 0;z-index: 9;">
+                                    <button type="button" class="btn default" style="background-color: Transparent; border: transparent;">
+                                      <i class="fa fa-calendar"></i>
+                                    </button>
+                                  </span>
                                 </div><span id="datepicker-error" class="help-block help-block-error"></span>
                                 <!-- /input-group -->
                               </div>
                             </div>
-
                             <div class="form-group">
                               <div class="col-md-12">
                                 <b style="display: block; margin-bottom: 6px;">End Date:</b>
                                 <div data-date-format="mm-dd-yyyy" class="input-group date date-picker" style="width: 100%;">
-                                  <input name="end_date" value="<?=(isset($_POST['end_date'])?$_POST['end_date']:'')?>" type="text" name="datepicker" readonly="" class="form-control" aria-required="true" aria-invalid="false" aria-describedby="datepicker-error" style="background-color: #FFFFFF;" />
-                              <span class="" style="position: absolute; right: 0;z-index: 9;">
-                                <button type="button" class="btn default" style="background-color: Transparent; border: transparent;">
-                                  <i class="fa fa-calendar"></i>
-                                </button>
-                              </span>
+                                  <input
+                                    name="end_date"
+                                    value="<?=(isset($_POST['end_date'])?$_POST['end_date']:'')?>"
+                                    type="text"
+                                    name="datepicker"
+                                    readonly=""
+                                    class="form-control"
+                                    aria-required="true"
+                                    aria-invalid="false"
+                                    aria-describedby="datepicker-error"
+                                    style="background-color: #FFFFFF;" />
+                                  <span class="" style="position: absolute; right: 0;z-index: 9;">
+                                    <button type="button" class="btn default" style="background-color: Transparent; border: transparent;">
+                                      <i class="fa fa-calendar"></i>
+                                    </button>
+                                  </span>
                                 </div><span id="datepicker-error" class="help-block help-block-error"></span>
                                 <!-- /input-group -->
                               </div>
                             </div>
-
                             <div class="form-group">
                               <div class="col-md-12">
-                                <input type="submit" id="searchbutton" class="btnLink" value="Search" style="width: 100%; height: 43px; padding: 12px;" />
+                                <input type="submit" id="searchbutton" class="btnLink btnSecondary" value="Search" style="width: 100%; height: 43px; padding: 12px;" />
                               </div>
                             </div>
-
                           </div>
                         </div>
                       </div>
-
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
-
           </div>
 
 
@@ -306,7 +343,11 @@
                     <div class="form-group">
                       <div class="">
                         <div class="col-md-12">
-                          <textarea style="width: 100%;" name="SMS_message" class="form-control"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'{location-name}: Hi {name}, We\'d really appreciate your feedback by clicking the link. Thanks! {link}'))?></textarea>
+                        <!--
+                          <textarea style="width: 100%;" name="SMS_message" class="form-control"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?></textarea>-->
+
+                          <textarea style="width: 100%;" name="SMS_message" class="form-control"></textarea>
+
                           <i style="color: #c3c3c3; display: block; font-size: 12px; margin-top: 11px;">{location-name} will be the name of the location sending the SMS, {name} will be replaced with the name entered when sending the message and {link} will be the link to the review.</i>
                         </div>
                       </div>
@@ -314,23 +355,24 @@
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="link" style="text-align: left;">Link:</label>
                       <div class="col-md-7">
-                        <input type="text" placeholder="Link" class="form-control" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" />
+                        <input type="text" placeholder="Link" class="form-control required url" style="color:#000;" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" onblur="validateURL()" />
+                        <span class="url_err"></span>
                       </div>
                       <div class="col-md-4">
-                        <input type="submit" class="btnLink" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" id="sendbutton" />
+                        <input type="submit" class="btnLink btnSecondary" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" id="sendbutton" />
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="name" style="text-align: left;">Name:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Name" class="form-control" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" name="name" id="name" />
+                        <input type="text" placeholder="Name" class="form-control required" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" name="name" id="name" style="color:#000;" />
                       </div>
                       <label class="col-md-1 control-label" for="phone" style="text-align: left;">Phone:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Phone" class="form-control" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" />
+                        <input type="text" placeholder="Phone" class="form-control required" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" />
                       </div>
                       <div class="col-md-4">
-                        <button id="testbutton" type="submit" class="btnLink" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" >Send Test SMS Message</button>
+                        <button id="testbutton" type="submit" class="btnLink btnSecondary" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" >Send Test SMS Message</button>
                       </div>
                     </div>
                     <div class="form-group error" id="testerror" style="display: none;">
@@ -370,7 +412,21 @@
   </form>
   </div>
 </header>
+
 <script type="text/javascript">
+
+function validateURL() {
+  var textval=$('.url').val();
+  url_validate = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+if(!url_validate.test(textval)){
+   $('.url').val('');
+   $('.url_err').html('<font color="red">Please enter a proper link</font>');
+}
+else{
+   //alert('success');
+   $('.url_err').html('');
+}
+}
   jQuery(document).ready(function($){
     $('.date-picker').datepicker({
       orientation: "right",
@@ -394,6 +450,7 @@
       }
     });
     $('#sendbutton').click(function (e) {
+      $('#broadcastform').validate();
       $('#formposttype').val('send');
     });
     $('#searchbutton').click(function (e) {
