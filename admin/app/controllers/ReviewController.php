@@ -171,6 +171,7 @@
                 $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
 
                 //save the rating
+                dd($rating);
                 $invite->rating = $rating;
                 $invite->recommend = 'Y';
                 $invite->save();
