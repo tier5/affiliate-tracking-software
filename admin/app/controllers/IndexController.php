@@ -248,48 +248,10 @@ class IndexController extends ControllerBase {
 
            /*** 5/12/2016 ***/
 
-            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
-                $parameters = array("location_id" => $location_id);
-                $ObjFb = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-                //start with Facebook reviews, if configured
-                if (isset($ObjFb)) {
-                    $Fbook_review_count = $ObjFb->review_count;
-                   
-                } else {
-                     $Fbook_review_count = 0;
-                }
+             $objFbReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
 
-
-
-                $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
-                $parameters = array("location_id" => $location_id);
-
-
-                $Objyelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-                //start with Yelp reviews, if configured
-                if (isset($Objyelp) && isset($Objyelp->external_location_id) && $Objyelp->external_location_id) {
-                    
-                    $Fyelp_review_count = $Objyelp->review_count;
-                   
-                } else {
-                    $Fyelp_review_count= 0;
-                }
-
-
-                 $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
-                $parameters = array("location_id" => $location_id);
-
-                $ObjGo = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-                //start with google reviews, if configured
-                if (isset($ObjGo)) {
-                  
-                    $Fgoogle_review_count = $Obj->review_count;
-                   
-                } else {
-                    $Fgoogle_review_count = 0;
-                }
-
-            $this->view->total_reviews  = $Fbook_review_count+$Fgoogle_review_count+$Fyelp_review_count;
+              $objGlReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
+            $this->view->total_reviews  = $objYelpReviewSite->review_count+$objFbReviewSite->review_count+$objGlReviewSite->review_count;
 
 
              /*** 5/12/2016 ***/
