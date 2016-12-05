@@ -15,7 +15,7 @@
 </ul>
 {{ content() }}
 
-<?php if(!isset($isSuccess)) { ?>}
+<?php if(!isset($isSuccess)) { ?>
 
 <!-- BEGIN SAMPLE FORM PORTLET-->
 <div class="portlet light bordered">
