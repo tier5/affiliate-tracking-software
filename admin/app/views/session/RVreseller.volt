@@ -1,4 +1,8 @@
-
+<style>
+.businestable td p{
+  margin: 0;
+}
+</style>
 <div class="content">
   {{ content() }}
 
@@ -518,7 +522,7 @@ RESELLER is solely and fully responsible for any and all costs and expenses RESE
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 
-<table><tbody><tr ><td colspan="1" rowspan="1"><p><span>Up to 10 Businesses</span></p></td><td colspan="1" rowspan="1"><p ><span class="c0">$100 per month</span></p></td></tr><tr><td colspan="1" rowspan="1"><p class="c3"><span class="c0">Up to 25 Businesses</span></p></td><td colspan="1" rowspan="1"><p class="c3"><span >$250 per month</span></p></td></tr><tr><td  colspan="1" rowspan="1"><p class="c3"><span class="c0">Up to 50 Businesses</span></p></td><td class="c14" colspan="1" rowspan="1"><p class="c3"><span class="c0">$500 per month</span></p></td></tr><tr class="c11"><td class="c15" colspan="1" rowspan="1"><p class="c3"><span class="c0">Up to 100 Businesses</span></p></td><td class="c14" colspan="1" rowspan="1"><p class="c3"><span class="c0">$1000 per month</span></p></td></tr><tr class="c11"><td class="c15" colspan="1" rowspan="1"><p class="c3"><span class="c0">Up to 200 Businesses</span></p></td><td class="c14" colspan="1" rowspan="1"><p class="c3"><span class="c0">$2000 per month</span></p></td></tr></tbody></table>
+<table class="table table-responsive table-bordered businestable"><tbody><tr ><td><p><span>Up to 10 Businesses</span></p></td><td><p ><span class="c0">$100 per month</span></p></td></tr><tr><td><p class="c3"><span class="c0">Up to 25 Businesses</span></p></td><td><p class="c3"><span >$250 per month</span></p></td></tr><tr><td><p class="c3"><span class="c0">Up to 50 Businesses</span></p></td><td class="c14"><p class="c3"><span class="c0">$500 per month</span></p></td></tr><tr class="c11"><td class="c15" colspan="1" rowspan="1"><p class="c3"><span class="c0">Up to 100 Businesses</span></p></td><td class="c14"><p class="c3"><span class="c0">$1000 per month</span></p></td></tr><tr class="c11"><td class="c15" colspan="1" rowspan="1"><p class="c3"><span class="c0">Up to 200 Businesses</span></p></td><td class="c14"><p class="c3"><span class="c0">$2000 per month</span></p></td></tr></tbody></table>
 
 </P>
 

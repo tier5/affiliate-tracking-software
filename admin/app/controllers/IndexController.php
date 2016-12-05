@@ -184,6 +184,7 @@ class IndexController extends ControllerBase {
         }
 
         if ($identity['location_id'] > 0) {
+            //echo $identity['location_id'];exit;
             $conditions = "location_id = :location_id:";
 
             $parameters = array(
@@ -241,8 +242,10 @@ class IndexController extends ControllerBase {
             $this->view->yelp_review_count = $YelpReviewCount = $objYelpReviewSite ? $objYelpReviewSite->review_count : 0; //count($dbYelpReviews);
             $this->view->facebook_review_count = $FacebookReviewCount = count($dbFacebookReviews);
             $this->view->google_review_count = $GoogleReviewCount = count($dbGoogleReviews);
-            $this->view->total_reviews = $TotalReviews = $FacebookReviewCount + $GoogleReviewCount + $YelpReviewCount;
+            //$this->view->total_reviews = $TotalReviews = $FacebookReviewCount + $GoogleReviewCount + $YelpReviewCount;
 
+           $TotalReviews = $FacebookReviewCount + $GoogleReviewCount + $YelpReviewCount;
+                $this->view->total_reviews  = 20;
             $this->view->yelp_rating = $YelpReviewCount > 0 ? $TotalYelpRating / $YelpReviewCount : 0;
             $this->view->facebook_rating = $FacebookReviewCount > 0 ? $TotalFacebookRating / $FacebookReviewCount : 0;
             $this->view->google_rating = $GoogleReviewCount > 0 ? $TotalGoogleRating / $GoogleReviewCount : 0;
