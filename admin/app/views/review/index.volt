@@ -93,7 +93,7 @@ if (isset($invite)) {
                 </div>
                 <div class="row text-center last"><input type="submit" class="btn-lg btn-recommend" value="Submit"/>
                 </div>
-               <?php echo htmlspecialchars($_GET["a"];?>
+               
                 <input type="text" name="a" value="<?php echo htmlspecialchars($_GET["a"])?>" />
             </form>
         </div>
