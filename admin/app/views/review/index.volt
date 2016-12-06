@@ -94,7 +94,7 @@ if (isset($invite)) {
                 <div class="row text-center last"><input type="submit" class="btn-lg btn-recommend" value="Submit"/>
                 </div>
                
-                <input type="text" name="a" value="<?php echo htmlspecialchars($_GET["a"])?>" />
+                <input type="hidden" name="a" value="<?php echo htmlspecialchars($_GET["a"])?>" />
             </form>
         </div>
         <div class="subtext text-center">Next Step, Write A Review</div>
