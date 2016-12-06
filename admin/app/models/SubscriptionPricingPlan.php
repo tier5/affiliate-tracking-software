@@ -45,14 +45,15 @@
 
         public function initialize()
         {
-            $this->addBehavior(
+            // I removed this because of the foreign key constraint.  We don't do soft deletes anywhere else in the system.  I think its a good idea, but its an overhaul.
+            /*$this->addBehavior(
                 new SoftDelete(
                     array(
                         'field' => 'deleted_at',
                         'value' => time()
                     )
                 )
-            );
+            );*/
 
             $this->skipAttributesOnCreate(['updated_at']);
             $this->allowEmptyStringValues(['pricing_details']);

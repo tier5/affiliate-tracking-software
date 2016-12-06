@@ -197,7 +197,7 @@ class PaymentService extends BaseService {
 
             $StripeSecretKey = $objBusiness->parent_id == -1 ? $this->config->stripe->secret_key : $objAgency->stripe_account_secret;
         } else {
-             $StripeSecretKey = $this->config->stripe->secret_key;
+            $StripeSecretKey = $this->config->stripe->secret_key;
         }
 
         if(!$StripeSecretKey) {
@@ -230,6 +230,67 @@ class PaymentService extends BaseService {
         }
 
         return $responseParameters;
+    }
+
+    private function GetStripeSecretKey($AgencyID) {
+        if(!$AgencyID)
+            return false;
+
+        $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$AgencyID}");
+        if(!$objAgency)
+            return false;
+
+        if($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY || $objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+            $this->config->stripe->secret_key;
+
+        if($objAgency->parent_id > 0) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+            return $objParentAgency->stripe_account_secret;
+        }
+
+        return false;
+    }
+
+    public function cancelStripeSubscription($SubscriptionID, $AgencyID) {
+        if(!$SubscriptionID)
+            return false;
+
+        $StripeSecretKey = $this->GetStripeSecretKey($AgencyID);
+        if(!$StripeSecretKey)
+            return false;
+
+        try {
+            \Stripe\Stripe::setApiKey($StripeSecretKey);
+            $StripeSubscription = \Stripe\Subscription::retrieve($SubscriptionID);
+            if(!$StripeSubscription)
+                return false;
+            $StripeSubscription->cancel();
+
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
+    }
+
+    public function deleteStripeCustomer($CustomerID, $AgencyID) {
+        if(!$CustomerID)
+            return false;
+
+        $StripeSecretKey = $this->GetStripeSecretKey($AgencyID);
+        if(!$StripeSecretKey)
+            return false;
+
+        try {
+            \Stripe\Stripe::setApiKey($StripeSecretKey);
+            $StripeCustomer = \Stripe\Customer::retrieve($CustomerID);
+            if(!$StripeCustomer)
+                return false;
+            $StripeCustomer->delete();
+
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
     }
 
     private function changeStripeSubscription($ccParameters) {

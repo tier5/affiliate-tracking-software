@@ -309,40 +309,137 @@ class AdmindashboardController extends ControllerBusinessBase {
         $this->view->tAllParentAgencies = $tAllParentAgencies;
     }
 
+    protected function DeleteBusiness($BusinessID) {
+        $dbLocations = \Vokuro\Models\Location::find("agency_id = {$BusinessID}");
+        // Delete review sites
+        foreach ($dbLocations as $objLocation) {
+            $dbLocationReviewSites = \Vokuro\Models\LocationReviewSite::find("location_id = {$objLocation->location_id}");
+            foreach($dbLocationReviewSites as $objReviewSite)
+                $objReviewSite->delete();
+            // Delete locations
+            $objLocation->delete();
+        }
+
+        // Delete current business subscription if exists
+        $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$BusinessID} AND role='Super Admin'");
+
+        $objSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperUser->id}");
+        $SubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+        if($objSubscription)
+            $objSubscription->delete();
+
+        // Delete agency subscription.  Cancel subscription in stripe if exists?
+        if(!$SubscriptionManager->CancelSubscription($BusinessID)) {
+            return false;
+        }
+
+        $dbSharingCodes = \Vokuro\Models\SharingCode::find("business_id = {$BusinessID}");
+        foreach($dbSharingCodes as $objSharingCode)
+            $objSharingCode->delete();
+
+        $dbUsers = \Vokuro\Models\Users::find("agency_id = {$BusinessID}");
+        foreach($dbUsers as $objUser)
+            $objUser->delete();
+
+        $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
+        $objBusiness->delete();
+
+        return true;
+    }
+
+    protected function DeleteAgency($AgencyID) {
+        $SubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+        $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$AgencyID} AND role='Super Admin'");
+
+        // Delete all business subscriptions under an agency
+        $dbSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::find("user_id = {$objSuperUser->id}");
+
+        foreach($dbSubscriptionPricingPlan as $objSubscriptionPricingPlan) {
+            $dbSubscriptionPricingPlanParameterList = \Vokuro\Models\SubscriptionPricingPlanParameterList::find("subscription_pricing_plan_id = {$objSubscriptionPricingPlan->id}");
+            foreach($dbSubscriptionPricingPlanParameterList as $objParameterList)
+                $objParameterList->delete();
+
+            $objSubscriptionPricingPlan->delete();
+        }
+
+        // Delete agency subscription.  Cancel subscription in stripe if exists?
+        if(!$SubscriptionManager->CancelSubscription($AgencyID)) {
+            return false;
+        }
+        $objAgencySubscriptionPlan = \Vokuro\Models\AgencySubscriptionPlan::findFirst("agency_id = {$AgencyID}");
+        if($objAgencySubscriptionPlan)
+            $objAgencySubscriptionPlan->delete();
+
+        // Delete all businesses
+        $dbBusinesses = \Vokuro\Models\Agency::find("parent_id = {$AgencyID}");
+        foreach($dbBusinesses as $objBusiness) {
+            $this->DeleteBusiness($objBusiness->agency_id);
+        }
+
+        $dbUsers = \Vokuro\Models\Users::find("agency_id = {$AgencyID}");
+
+        foreach($dbUsers as $objUser)
+            $objUser->delete();
+
+        $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$AgencyID}");
+        $objAgency->delete();
+    }
+
     /**
      * Deletes an agency
      *
      * @param int $id
      */
     public function deleteAction($agency_type_id, $agency_id) {
-        $conditions = "agency_id = :agency_id:";
-        $parameters = array("agency_id" => $agency_id);
+        $this->db->begin();
 
-
-        $age = Agency::findFirst(array($conditions, "bind" => $parameters));
-        if($age){
-            $user_id = $this->getUserObject()->id;
-            if (!$this->getPermissions()->canUserEditAgency($this->getUserObject(),$age)){
-                throw new \Exception("You do not have permissions to edit/delete this agency with the id of:
-                {$agency_id} with the user id of{$user_id}" );
+        try {
+            $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$agency_id}");
+            $DeleteType = $objBusiness->parent_id == \Vokuro\Models\Agency::AGENCY ? 'Agency' : 'Business';
+            if($DeleteType == 'Agency') {
+                $BackURL = '/admindashboard/list/1';
             }
-        }
-        if (!$age) {
-            $this->flash->error("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was not found");
+            else {
+                // Deleting an agency works as of 12/05/2016, but we deemed it too powerful to have to the super admins currently.  It will unsubscribe every business.
+                $identity = $this->auth->getIdentity();
+                $BackURL = $identity['is_admin'] ? '/admindashboard/list/2' : '/agency';
+                $this->response->redirect($BackURL);
+                $this->view->disable();
+                return;
+            }
 
-            $this->response->redirect('/admindashboard/list/' . $agency_type_id);
-            $this->view->disable();
-            return;
+            if($objBusiness) {
+                $UserID = $this->getUserObject()->id;
+                if (!$this->getPermissions()->canUserEditAgency($this->getUserObject(), $objBusiness)){
+                    throw new \Exception("You do not have permissions to edit/delete this agency with the id of:
+                    {$objBusiness->agency_id} with the user id of{$UserID}" );
+                }
+            }
+
+            if (!$objBusiness) {
+                $this->flash->error("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was not found");
+
+                $this->response->redirect($BackURL);
+                $this->view->disable();
+                return;
+            }
+
+            if($DeleteType == 'Agency') {
+                // Deleting an agency works as of 12/05/2016, but we deemed it too powerful to have to the super admins currently.  It will unsubscribe every business.
+                //$this->DeleteAgency($agency_id);
+            } else {
+                $this->DeleteBusiness($agency_id);
+            }
+        } catch (\Exception $e) {
+            $this->flash->error($e->getMessage());
+            $this->flash->error("Blah " . $e->getTraceAsString());
+            $this->db->rollback();
         }
 
-        if (!$age->delete()) {
-            $this->flash->error($age->getMessages());
-        } else {
-            $this->flash->success("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was deleted");
-        }
-
-        $this->response->redirect('/admindashboard/list/' . $agency_type_id);
+        $this->db->commit();
+        $this->response->redirect($BackURL);
         $this->view->disable();
+
         return;
     }
 

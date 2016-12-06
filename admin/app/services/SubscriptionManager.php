@@ -542,6 +542,36 @@ class SubscriptionManager extends BaseService {
         return $subscriptionPricingPlan->id;
     }
 
+    public function CancelSubscription($AgencyID) {
+        $objPaymentService = $this->di->get('paymentService');
+        $objSuperUser = \Vokuro\Models\Users::findFirst("role = 'Super Admin' AND agency_id = {$AgencyID}");
+        $db = $this->di->get('db');
+        $db->begin();
+        try {
+            $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$objSuperUser->id}");
+            if ($objStripeSubscription) {
+                if ($objStripeSubscription->stripe_subscription_id) {
+                    // We have a subscription, remove from stripe
+                    if($objPaymentService->cancelStripeSubscription($objStripeSubscription->stripe_subscription_id, $AgencyID)) {
+                        $objStripeSubscription->stripe_subscription_id = 'N';
+                        $objStripeSubscription->save();
+                    }
+                }
+
+                // This works, but we don't want to do it.  Just leaving in for future reference.
+                /*if($objStripeSubscription->stripe_customer_id) {
+                    if($objPaymentService->deleteStripeCustomer($objStripeSubscription->stripe_customer_id, $AgencyID)) {
+                        $objStripeSubscription->delete();
+                    }
+                }*/
+            }
+        } catch (Exception $e) {
+            $db->rollback();
+            return false;
+        }
+        $db->commit();
+        return true;
+    }
     private function appendPricingParameterLists($id, $parameters, $isUpdate) {
 
         /* Simply delete and refresh */
@@ -555,9 +585,7 @@ class SubscriptionManager extends BaseService {
             ));
             $db->query("DELETE FROM subscription_pricing_plan_parameter_list WHERE subscription_pricing_plan_id=".$id);
             $db->close();
-
         }
-
 
         foreach($parameters as $segment => $params) {
             if(substr($segment,0,7) !== "segment") {
@@ -568,7 +596,6 @@ class SubscriptionManager extends BaseService {
             if(!$pricingParameterList) {
                 return false;
             }
-
         }
 
         return true;

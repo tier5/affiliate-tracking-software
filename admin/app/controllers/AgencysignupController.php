@@ -409,7 +409,8 @@
          * Auto populate the session with form data, set their appropriate view variables and determine current step.
          */
         public function initialize() {
-            $this->TLDomain = $this->config->application->domain;
+            $this->TLDomain = $this->view->TLDomain = $this->config->application->domain;
+
             if($_GET['sbyp'] || $_POST['sbyp']) {
                 $sbyp = $_GET['sbyp'] ? $_GET['sbyp'] : $_POST['sbyp'];
                 // For current measures, the id should always be odd due to the way the signup process works.  Otherwise use the defaults

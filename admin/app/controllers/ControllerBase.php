@@ -312,6 +312,7 @@ class ControllerBase extends Controller {
                 return false;
             }
 
+
             // Check if the user have permission to the current option
             $actionName = $dispatcher->getActionName();
             if (!$this->acl->isAllowed($identity['profile'], $controllerName, $actionName)) {

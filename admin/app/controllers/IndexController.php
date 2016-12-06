@@ -16,7 +16,6 @@ use Vokuro\Models\Users;
 class IndexController extends ControllerBase {
 
     public function initialize() {
-	$this->view->TLDomain = $this->config->application->domain;
 
         $this->tag->setTitle('Get Mobile Reviews | Dashboard');
         parent::initialize();
@@ -35,6 +34,7 @@ class IndexController extends ControllerBase {
      * Default action. Set the public layout (layouts/private.volt)
      */
     public function indexAction() {
+        $this->view->TLDomain = $this->config->application->domain;
         $tUser = $this->auth->getIdentity();
         $logged_in = is_array($tUser);
        
