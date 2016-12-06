@@ -1,0 +1,78 @@
+<?php
+return new \Phalcon\Config(array(
+    'database' => array(
+      'adapter' => 'Mysql',
+      'host' => 'localhost',
+      'username' => 'live',
+      'password' => 'Fd7aK*D,?z,!V6~Q',
+      'dbname' => 'live',
+      'charset' => 'utf8',
+    ),
+    'application' => array(
+        'controllersDir' => APP_DIR . '/controllers/',
+        'modelsDir' => APP_DIR . '/models/',
+        'formsDir' => APP_DIR . '/forms/',
+        'viewsDir' => APP_DIR . '/views/',
+        'libraryDir' => APP_DIR . '/library/',
+        'servicesDir' => APP_DIR . '/services/',
+        'pluginsDir' => APP_DIR . '/plugins/',
+        'cacheDir' => APP_DIR . '/cache/',
+        'baseUri' => '/',
+        'publicUrl' => 'www.reviewvelocity.co',
+        'cryptSalt' => 'eEAfR|_&G&f,+vU]:jFr!!A&+71w1Ms9~8_4L!<@[N@DyaIP_2My|:+.u>/6m,$D',
+        'environment' => 'prod'
+    ),
+/*    'mail' => array(
+        'fromName' => '',
+        'fromEmail' => 'no-reply@reviewvelocity.co',
+        //use the SendGrid Relay server to send mail
+        'smtp' => array(
+            'server' => 'mailtrap.io',
+            'port' => 465,
+            'security' => 'tls',
+            'username' => 'de0d513c12498d',
+            'password' => '700de902cdaa9f'
+        )
+    ),*/
+	'mail' => array(
+        'fromName' => '',
+        'fromEmail' => 'no-reply@reviewvelocity.co',
+        //use the SendGrid Relay server to send mail
+        'smtp' => array(
+            'server' => 'smtp.sendgrid.net',
+            'port' => 587,
+            'security' => 'tls',
+            'username' => 'reviewvelocity',
+            'password' => 'r9dzDOEe6a3M'
+        )
+    ),
+    'authorizeDotNet' => array(
+        'apiLoginId' => '2aD9Vxe3X',
+        'transactionKey' => '3C8c3hh8r8w6L7Dk',
+        'prefixKey' => 'afrYkgkBunsbMsv5__',
+        'intervalLength' => "1",
+        'unit' => "months",
+        'totalOccurences' => '9999'
+    ),
+    'amazon' => array(
+        'AWSAccessKeyId' => '',
+        'AWSSecretKey' => ''
+    ),
+    'maxSignup' => array(
+        'perday' => '0', //zero equals infinite
+    ),
+    'stripe' => [
+        'secret_key'        => 'sk_test_ueVkjwhLtjBaKKmV4QgoODRt',
+        'publishable_key'   => 'pk_test_a2wErNaJgZzh7FMSG3FA19K5',
+    ],
+    'facebook' => [
+	'app_id' => '1923583701202687',
+	'app_secret' => '7682cb496e086c19bff195edf300dbae',
+    ],
+    'twilio' => [
+        'twilio_auth_token'         => '42334ec4880d850d6c9683a4cd9d94b8',
+        'twilio_auth_messaging_sid' => 'MGa8510e68cd75433880ba6ea48c0bd81e',
+        'twilio_from_phone'         => 'AC68cd1cc8fe2ad03d2aa4d388b270577d',
+	'twilio_from_phone'         => '+16197363100',
+    ],
+));

@@ -16,6 +16,7 @@ use Vokuro\Models\Users;
 class IndexController extends ControllerBase {
 
     public function initialize() {
+	$this->view->TLDomain = $this->config->application->domain;
 
         $this->tag->setTitle('Get Mobile Reviews | Dashboard');
         parent::initialize();
