@@ -42,6 +42,7 @@
                 $this->response->redirect('/review/expired');
 
             if ($invite->location_id > 0) {
+                //echo $invite->location_id;exit;
                 $locationobj = new Location();
                 $location = $locationobj::findFirst($invite->location_id);
                 $this->view->setVar('location', $location);
@@ -118,7 +119,7 @@
                     $this->response->redirect('/review/expired');
 
                 if ($invite->location_id > 0) {
-
+                   // echo $rating;exit;
 
                     $locationobj = new Location();
                     $location = $locationobj::findFirst($invite->location_id);
@@ -171,7 +172,7 @@
                 $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
 
                 //save the rating
-                dd($rating);
+                
                 $invite->rating = $rating;
                 $invite->recommend = 'Y';
                 $invite->save();
