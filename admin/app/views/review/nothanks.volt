@@ -18,6 +18,7 @@
       <?php
   }
   ?>
+  
       <?php
 if ($this->request->isPost()) {
       //the user just posted feedback, so say thanks
