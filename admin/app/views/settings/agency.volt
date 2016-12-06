@@ -35,7 +35,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="end-title"><?=$total_sms_month?><br/><span class="goal">Allowed</span></div>
+                <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
             </div>
         </div>
         <?php
@@ -89,6 +89,10 @@
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
                         Stripe </a></li>
+                    <li class=""><a href="#tab_intercom" data-toggle="tab" <?=(isset($this->
+                        session->get('auth-identity')['agencytype']) &&
+                        $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
+                        Intercom </a></li>
                     <li><a href="#tab_notification" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>>
@@ -100,49 +104,77 @@
 
 
                         <div class="form-group">
-                            <label for="name" class="col-md-4 control-label">Name</label>
+                            <label for="name" class="col-md-4 control-label">Business Name</label>
                             <div class="col-md-8">
-                                {{ agencyform.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name']) }}
+                                {{ agencyform.render("name", ["class": 'form-control', 'placeholder': 'Business Name', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="email" class="col-md-4 control-label">Email</label>
+                            <label for="email" class="col-md-4 control-label">Business Email</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("email", ["class": 'form-control', 'placeholder': 'Email', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="phone" class="col-md-4 control-label">Phone</label>
+                            <label for="phone" class="col-md-4 control-label">Business Phone</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("phone", ["class": 'form-control', 'placeholder': 'Phone', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="address" class="col-md-4 control-label">Address</label>
+                            <label for="address" class="col-md-4 control-label">Business Address</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("address", ["class": 'form-control', 'placeholder': 'Address', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="locality" class="col-md-4 control-label">City</label>
+                            <label for="address" class="col-md-4 control-label">Business Address 2</label>
+                            <div class="col-md-8">
+                                {{ agencyform.render("address2", ["class": 'form-control', 'placeholder': 'Address2', 'type': 'name']) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="locality" class="col-md-4 control-label">Business City</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("locality", ["class": 'form-control', 'placeholder': 'City', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="state_province" class="col-md-4 control-label">State/Province</label>
+                            <label for="state_province" class="col-md-4 control-label">Business State/Province</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("state_province", ["class": 'form-control', 'placeholder': 'State/Province', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="postal_code" class="col-md-4 control-label">Postal Code</label>
+                            <label for="state_province" class="col-md-4 control-label">Business Country</label>
+                            <div class="col-md-8">
+                                {{ agencyform.render("country", ["class": 'form-control', 'placeholder': 'Country', 'type': 'name']) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="postal_code" class="col-md-4 control-label">Business Zip / Postal Code</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("postal_code", ["class": 'form-control', 'placeholder': 'Postal Code', 'type': 'name']) }}
                             </div>
                         </div>
-
-
+                        <div class="form-group">
+                            <label for="postal_code" class="col-md-4 control-label">Business Website</label>
+                            <div class="col-md-8">
+                                {{ agencyform.render("website", ["class": 'form-control', 'placeholder': 'Website', 'type': 'name']) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="postal_code" class="col-md-4 control-label">Email From Name</label>
+                            <div class="col-md-8">
+                                {{ agencyform.render("email_from_name", ["class": 'form-control', 'placeholder': 'Email From Name', 'type': 'name']) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="postal_code" class="col-md-4 control-label">From Email Address</label>
+                            <div class="col-md-8">
+                                {{ agencyform.render("email_from_address", ["class": 'form-control', 'placeholder': 'From Email Address', 'type': 'name']) }}
+                            </div>
+                        </div>
                     </div>
                     <!-- END General Settings  -->
 
@@ -191,27 +223,29 @@
                                 <div class="col-md-8">
                                     <ul id="sortable">
                                         <?php
-                foreach($review_site_list as $rsl) {
-                  if ($rsl->review_site_id == 1) $has_facebook = true;
-                                        ?>
-                                        <li class="ui-state-default" id='<?=$rsl->location_review_site_id?>'>
-                                            <span class="site-wrapper"><img src="<?=$rsl->review_site->icon_path?>" class="imgicon"/> <?=$rsl->
-                                                review_site->name?></span>
-                    <span class="review_site-buttons">
-                      <?php if ($rsl->review_site_id <= 3) { ?>
-                        <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/img/icon-eye.gif"/> View</a>
-                        <a class="btnLink" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/img/icon-pencil.gif"/> Update Location</a>
-                        <?php } else { ?>
-                        <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/img/icon-eye.gif"/> View</a>
-                        <?php } ?>
-                    </span>
-                    <span class="on-off-buttons">
-                      <a data-id="<?=$rsl->location_review_site_id?>" id="on<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'':'display: none;')?>"><img src="/img/btn_on.gif" class="sort-icon"/></a>
-                      <a data-id="<?=$rsl->location_review_site_id?>" id="off<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'display: none;':'')?>"><img src="/img/btn_off.gif" class="sort-icon"/></a>
-                    </span>
-                                            <img src="/img/btn_sort.gif" class="sort-icon"/>
-                                        </li>
-                                        <?php
+                if (isset($review_site_list)) {
+                  foreach($review_site_list as $rsl) {
+                    if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
+                                          ?>
+                        <li class="ui-state-default" id='<?=$rsl->location_review_site_id?>'>
+                            <span class="site-wrapper"><img src="<?=$rsl->review_site->icon_path?>" class="imgicon"/> <?=$rsl->
+                                review_site->name?></span>
+                      <span class="review_site-buttons">
+                        <?php if ($rsl->review_site_id <= 3) { ?>
+                          <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/img/icon-eye.gif"/> View</a>
+                          <a class="btnLink" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/img/icon-pencil.png"/> Update Location</a>
+                          <?php } else { ?>
+                          <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/img/icon-eye.gif"/> View</a>
+                          <?php } ?>
+                      </span>
+                      <span class="on-off-buttons">
+                        <a data-id="<?=$rsl->location_review_site_id?>" id="on<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'':'display: none;')?>"><img src="/img/btn_on.gif" class="sort-icon"/></a>
+                        <a data-id="<?=$rsl->location_review_site_id?>" id="off<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'display: none;':'')?>"><img src="/img/btn_off.gif" class="sort-icon"/></a>
+                      </span>
+                                              <img src="/img/btn_sort.gif" class="sort-icon"/>
+                                          </li>
+                                          <?php
+                  }
                 }
                 ?>
                                     </ul>
@@ -304,7 +338,7 @@
                                 <label for="SMS_message" class="col-md-4 control-label">SMS Message</label>
                                 <div class="col-md-8">
                                     <textarea style="width: 100%;" class="form-control" name="SMS_message"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($agency->
-                                        SMS_message)?$agency->SMS_message:'{location-name}: Hi {name}, We\'d really appreciate your feedback by clicking the link. Thanks! {link}'))?></textarea>
+                                        SMS_message)?$agency->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks! '))?></textarea>
                                 </div>
                             </div>
                             <div class="row">
@@ -371,11 +405,16 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="logo_path" value="<?=$objAgency->logo_path; ?>">Logo</label>
                             <div class="col-md-8">
-                                <input type="file" id="logo_path" name="logo_path">
-                                <p class="help-block">(max width: 200 pixels, max height: 30 pixels) (only: gif, png,
-                                    jpg or jpeg) </p>
+                            	<div class="page-logo" style="margin-top: 0;">
+                                	<input type="file" id="logo_path" name="logo_path">
+                            		{% if logo_path %}
+            						<img src="{{ logo_path }}" alt="logo" class="logo-default" />
+            						{% endif %}
+                                	<p class="help-block">(max width: 200 pixels, max height: 30 pixels)<br /> (only: gif, png, jpg or jpeg) </p>
+                            	</div>
                             </div>
-                        </div><!--
+                        </div>
+        <!--
         <div class="form-group">
           <label class="col-md-4 control-label" for="sms_message_logo_path">SMS Message Logo</label>
           <div class="col-md-8">
@@ -385,35 +424,42 @@
         </div>-->
                         <hr>
                         <h4>Color Theme</h4>
+
                         <div class="form-group">
                             <div class="col-md-6" style="border-right: 1px silver solid;">
                                     <div id="primary-color-picker" style="height:50px; color:white;"></div>
                                     <input type="color" id="main_color_chooser" pattern="#[a-f0-9]{6}" name="main_color"
-                                           value="<?=(isset($_POST['main_color'])?$_POST['main_color']:(isset($agency->main_color)?$agency->main_color:''))?>"
+                                           value="<?=$objAgency->main_color; ?>"
                                     style="margin: 4px;" /> Primary Color
-                                <input type="hidden" id="main_color" value="<?=$agency->main_color; ?>"/>
+                                <input type="hidden" id="main_color" value="<?=$objAgency->main_color; ?>"/>
                             </div>
                             <div class="col-md-6">
 
                                     <div id="secondary-color-picker" style="height:50px; color:white;"></div>
                                     <input type="color" id="secondary_color_chooser" pattern="#[a-f0-9]{6}" name="secondary_color" style="margin: 4px;"
-                                           value="<?=(isset($_POST['main_color'])?$_POST['secondary_color']:(isset($agency->secondary_color)?$agency->secondary_color:''))?>"
+                                           value="<?=$objAgency->secondary_color; ?>"
                                     />
 
-                                <input type="hidden" id="secondary_color" value="<?=$agency->secondary_color; ?>"/>
+                                <input type="hidden" id="secondary_color" value="<?=$objAgency->secondary_color; ?>"/>
                                     Secondary Color
                             </div>
                         </div>
                         <hr>
+                        <?php $Domain = $this->config->application->domain; ?>
+                        <div class="row">
+                            <div class="col-xs-12">
+                               <a href="http://<?=$agency->custom_domain; ?>.<?=$Domain; ?>" target="_blank"><button class="btn btn-primary" type="button" style="margin-top: 20px;">Preview Landing Page</button></a>
+                               
+                            </div>
+                        </div>
                     </div>
                     <!-- END White Label Settings  -->
-
 
                     <!-- START Twilio Settings  -->
                     <div class="tab-pane fade" id="tab_twilio">
                         <div class="form-group">
                             <div class="row">
-                                <label for="twilio_api_key" class="col-md-4 control-label">Twilio SID</label>
+                                <label for="twilio_api_key" class="col-md-4 control-label">Twilio API Key</label>
                                 <div class="col-md-8">
                                     {{ form.render("twilio_api_key", ["class": 'form-control', 'placeholder': 'Twilio SID']) }}
                                 </div>
@@ -533,6 +579,47 @@
                         </div>
                     </div>
                     <!-- END Stripe Settings  -->
+
+                    <!-- START Intercom Settings  -->
+                    <div class="tab-pane fade in" id="tab_intercom">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i>
+                                        Support desk is done by using
+                                        <a href="https://www.intercom.com/" target="_blank">Intercom</a>.
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="intercom_api_id" class="col-md-4 control-label">App ID</label>
+                                <div class="col-md-8">
+                                    {{ form.render("intercom_api_id", ["class": 'form-control', 'placeholder': 'API ID']) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="intercom_security_hash" class="col-md-4 control-label">Secret Key</label>
+                                <div class="col-md-8">
+                                    {{ form.render("intercom_security_hash", ["class": 'form-control', 'placeholder': 'Secret Key']) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END Intercom Settings  -->
 
 
                     <!-- START Notification Settings  -->

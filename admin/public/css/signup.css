@@ -7,7 +7,7 @@ header .headercontent { width: 1050px; margin-left: auto; margin-right: auto; }
 header .logo { float: left; width: 220px; margin-top: 20px; }
 header .steps { float: left; width: 450px; height: 25px; margin-left: 114px; margin-top: 48px; }
 header .steps div { float: left; margin-right: 8px; }
-header .steps-desc { float: left; width: 450px; height: 20px; margin-left: 100px; margin-top: 1px; font-size: 12px; }
+header .steps-desc { float: left; width: 450px; height: 20px; margin-left: 104px; margin-top: 1px; font-size: 12px; }
 header .steps-desc div { float: left; }
 header .steps-desc #step2 { margin-left: 46px; }
 header .steps-desc #step3 { margin-left: 19px; }
@@ -319,7 +319,7 @@ a.btnLink
 
 
 .nav-tabs .active > a {
-  border-top: 4px solid #283643 !important;
+  border-top: 4px solid #283643;
 }
 .nav-tabs a {
   color: #283643;
@@ -501,7 +501,7 @@ a.btnLink
 #createregion label.error { display: inline !important; background-color: transparent; border: medium none; }
 #page-wrapper input.error,
 #createregion input.error { padding: 0 !important; }
-#signup5submitbtn { clear: both; display: block; margin-bottom: 25px; padding: 11px 21px; width: 290px; }
+#signup5submitbtn { clear: both; display: block; margin-bottom: 25px; padding: 11px 21px; width: 325px; text-decoration: none;}
 #signup5submitbtn:hover { color: #FFFFFF; }
 
 #btnCreateRegion { border: medium none !important; line-height: 12px; width: 100px !important; }

@@ -98,8 +98,8 @@ class Acl extends Component
     {
       //the super admin can access whatever they want
       if ($profile=='Super Admin' || $action == 'cron') return true;
-      //Only agency admin can manage locations
-      if ($profile!='Agency Admin' && $controller=='location') {
+      //Only business admin can manage locations
+      if ($profile!='Business Admin' && $controller=='location') {
         return false;
       } else if ($profile=='Agency Admin' && $controller=='location') {
         return true;

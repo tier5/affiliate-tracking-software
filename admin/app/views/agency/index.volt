@@ -47,7 +47,7 @@ foreach($tBusinesses as $objBusiness) {
                             <td>{{ objBusiness.subscription_id ? 'Paid':'Free' }}
                             </td>
                             <td>
-                                <a href="/agency/status/{{ objBusiness.agency_id }} >/{{ objBusiness.status ? 0 : 1 }}?>"><img src="/public/img/{{ objBusiness.status ? 'on' : 'off' }}.png" />
+                                <a href="/admindashboard/status/2/{{ objBusiness.agency_id }}/{{ objBusiness.status ? 0 : 1 }}"><img src="/public/img/{{ objBusiness.status ? 'on' : 'off' }}.png" /></a>
                             </td>
                             <td style="text-align: right;">
                                 <div class="actions">
@@ -55,13 +55,13 @@ foreach($tBusinesses as $objBusiness) {
                                         <a data-toggle="dropdown" href="javascript:;" class="btn btn-sm green dropdown-toggle" aria-expanded="false">
                                             Actions <i class="fa fa-angle-down"></i></a>
                                         <ul class="dropdown-menu pull-right">
-                                            <li>
+                                            <!--<li>
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-eye"></i>
-                                                    View</a></li>
+                                                    View</a></li>-->
                                             <li>
-                                                <a href="/agency/create/2/{{ objBusiness.agency_id }}" class=""><i class="icon-pencil"></i>
+                                                <a href="/admindashboard/edit/{{ objBusiness.agency_id }}" class=""><i class="icon-pencil"></i>
                                                     Edit</a></li>
-                                            <li>
+                                            <!--<li>
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-user"></i>
                                                     Password</a></li>
                                             <li>
@@ -69,7 +69,7 @@ foreach($tBusinesses as $objBusiness) {
                                                     Delete</a></li>
                                             <li>
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-envelope"></i>
-                                                    Resend Credentials</a></li>
+                                                    Resend Credentials</a></li>-->
                                             <li>
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-paper-plane"></i>
                                                     Manage</a></li>

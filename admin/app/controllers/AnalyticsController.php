@@ -1,132 +1,98 @@
 <?php
-namespace Vokuro\Controllers;
+    namespace Vokuro\Controllers;
 
-use Vokuro\Models\Agency;
-use Vokuro\Models\Location;
-use Vokuro\Models\LocationReviewSite;
-use Vokuro\Models\ReviewInvite;
-use Vokuro\Models\Users;
-
-/**
- * Display the default index page.
- */
-class AnalyticsController extends ControllerBase
-{
-    public function initialize()
-    {
-        $this->tag->setTitle('Review Velocity | Analytics');
-        parent::initialize();
-    }
+    use Vokuro\Models\Agency;
+    use Vokuro\Models\Location;
+    use Vokuro\Models\LocationReviewSite;
+    use Vokuro\Models\ReviewInvite;
+    use Vokuro\Models\Users;
 
     /**
-     * Default action. 
+     * Display the default index page.
      */
-    public function indexAction()
-    {
-      $logged_in = is_array($this->auth->getIdentity());
-      if (!$logged_in) {
-        $this->response->redirect('/session/login?return=/analytics/');
-        $this->view->disable();
-        return;
-      }
-      
-      $this->view->setVar('logged_in', $logged_in);
-      $this->view->setTemplateBefore('private');
+    class AnalyticsController extends ControllerBase {
+        public function initialize() {
+            $this->tag->setTitle('Get Mobile Reviews | Analytics');
+            parent::initialize();
+        }
 
-      //get the location and calculate the review total and avg.
-      if (isset($this->session->get('auth-identity')['location_id'])) {
-        //get a list of all review invites for this location
-        $invitelist = ReviewInvite::getReviewInvitesByLocation($this->session->get('auth-identity')['location_id'], true);
-        $this->view->invitelist = $invitelist;
-        
-        //get a list of all review invites for this location
-        $clickreport = ReviewInvite::getReviewInviteClickReport($this->session->get('auth-identity')['location_id'], true);
-        $this->view->clickreport = $clickreport;
-        //find the total clicks to calculate percent
-        $clicktotal = 0;
-        $clicklargest = 0;
-        foreach ($clickreport as $click) {
-          $clicktotal += $click->num_clicks;
-          if ($click->num_clicks > $clicklargest) $clicklargest = $click->num_clicks;
-        } 
-        $this->view->clicktotal = $clicktotal;
-        $this->view->clicklargest = $clicklargest;
+        /**
+         * Default action.
+         */
+        public function indexAction() {
+            $logged_in = is_array($this->auth->getIdentity());
+            if (!$logged_in) {
+                $this->response->redirect('/session/login?return=/analytics/');
+                $this->view->disable();
+                return;
+            }
 
-        $this->view->sms_sent_all_time = ReviewInvite::count(
-                array(
-                  "column" => "review_invite_id",
-                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND sms_broadcast_id IS NULL ",
-                )
-              );
+            $this->view->setVar('logged_in', $logged_in);
+            $this->view->setTemplateBefore('private');
 
-        $this->view->review_count_all_time = LocationReviewSite::sum(
-                array(
-                  "column" => "review_count",
-                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id'],
-                )
-              ) - LocationReviewSite::sum(
-                array(
-                  "column" => "original_review_count",
-                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id'],
-                )
-              );
+            $clickreport = [];
+            $invitelist = [];
+            $SMSSentThisMonth = 0;
+            $SMSSentLastMonth = 0;
+            $SMSClickThisMonth = 0;
+            $SMSClickLastMonth = 0;
+            $SMSConvertedThisMonth = 0;
+            $SMSConvertedLastMonth = 0;
 
-        //Last month!
-        $start_time = date("Y-m-d", strtotime("first day of previous month"));
-        $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
-        $this->view->sms_converted_last_month = ReviewInvite::count(
-              array(
-                "column" => "review_invite_id",
-                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != '')) AND sms_broadcast_id IS NULL",
-              )
-            ); 
 
-        //This month!
-        $start_time = date("Y-m-d", strtotime("first day of this month"));
-        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
-        $this->view->sms_converted_this_month = ReviewInvite::count(
-              array(
-                "column" => "review_invite_id",
-                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != '')) AND sms_broadcast_id IS NULL ",
-              )
-            );
-        $this->view->sms_converted_all_time = ReviewInvite::count(
-                array(
-                  "column" => "review_invite_id",
-                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != '')) AND sms_broadcast_id IS NULL ",
-                )
-              );
-              
-        //Last month!
-        $start_time = date("Y-m-d", strtotime("first day of previous month"));
-        $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
-        $this->view->sms_click_last_month = ReviewInvite::count(
-              array(
-                "column" => "review_invite_id",
-                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL  AND sms_broadcast_id IS NULL ",
-              )
-            ); 
+            $LocationID = $this->session->get('auth-identity')['location_id'];
+            if ($LocationID) {
+                $FirstDayThisMonth = date("Y-m-01 00:00:00");
+                $FirstDayLastMonth = date("Y-m-01 00:00:00", strtotime('-1 month'));
+                $LastDayLastMonth = date("Y-m-t 23:59:59", strtotime('-1 month'));
+                $dbReviewsSinceLastMonth = \Vokuro\Models\ReviewInvite::find("location_id = {$LocationID} AND date_sent >= '{$FirstDayLastMonth}'");
 
-        //This month!
-        $start_time = date("Y-m-d", strtotime("first day of this month"));
-        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
-        $this->view->sms_click_this_month = ReviewInvite::count(
-              array(
-                "column" => "review_invite_id",
-                "conditions" => "date_sent >= '".$start_time."' AND date_sent <= '".$end_time."' AND location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND sms_broadcast_id IS NULL ",
-              )
-            );
-        $this->view->sms_click_all_time = ReviewInvite::count(
-                array(
-                  "column" => "review_invite_id",
-                  "conditions" => "location_id = ".$this->session->get('auth-identity')['location_id']." AND date_viewed IS NOT NULL AND sms_broadcast_id IS NULL ",
-                )
-              );
+                foreach($dbReviewsSinceLastMonth as $objReviewInvite) {
+                    // Need to confirm w/ Zach about this.  I assume invites are sms messages sent?
+                    //$invitelist[] = $objReviewInvite;
+                    //if($objReviewInvite->rating && $objReviewInvite->rating > 0)
+                        //$clickreport[] = $objReviewInvite;
 
-      }
-      
-      $this->getSMSReport();
+                    if(strtotime($objReviewInvite->date_sent) > strtotime($FirstDayLastMonth) && strtotime($objReviewInvite->date_sent) < strtotime($LastDayLastMonth)) {
+                        $SMSSentLastMonth++;
+                        if($objReviewInvite->rating > 0)
+                            $SMSConvertedLastMonth++;
 
+                        if($objReviewInvite->sms_broadcast_id)
+                            $SMSClickLastMonth++;
+
+                    } else {
+                        $SMSSentThisMonth++;
+                        if($objReviewInvite->rating > 0)
+                            $SMSConvertedThisMonth++;
+
+                        if($objReviewInvite->sms_broadcast_id)
+                            $SMSClickThisMonth++;
+                    }
+                }
+
+                $invitelist = ReviewInvite::getReviewInvitesByLocation($LocationID, true);
+                //echo '<pre>';print_r( $invitelist);exit;
+                $this->view->invitelist = $invitelist;
+
+                $clickreport = ReviewInvite::getReviewInviteClickReport($LocationID, true);
+               // echo '<pre>';print_r( $clickreport);exit;
+                $this->view->clickreport = $clickreport;
+
+                $this->view->sms_sent_this_month = $this->view->sms_sent_this_month_total = $SMSSentThisMonth;
+                $this->view->sms_sent_last_month = $SMSSentLastMonth;
+                $this->view->sms_sent_all_time = \Vokuro\Models\ReviewInvite::count("location_id = {$LocationID}");
+                $this->view->sms_click_this_month = $SMSClickThisMonth;
+                $this->view->sms_click_last_month = $SMSClickLastMonth;
+                $this->view->sms_click_all_time = \Vokuro\Models\ReviewInvite::count("location_id = {$LocationID} AND rating > 0");
+                $this->view->total_reviews_this_month_analytics = \Vokuro\Models\Review::count("location_id = {$LocationID} AND time_created > '{$FirstDayThisMonth}'");
+                $this->view->total_reviews_last_month_analytics = \Vokuro\Models\Review::count("location_id = {$LocationID} AND time_created BETWEEN '{$FirstDayLastMonth}' AND '{$LastDayLastMonth}'");
+                $this->view->review_count_all_time_analytics = \Vokuro\Models\Review::count("location_id = {$LocationID}");
+                $this->view->sms_converted_this_month = $SMSConvertedThisMonth;
+                $this->view->sms_converted_last_month = $SMSConvertedLastMonth;
+                $this->view->sms_converted_all_time = \Vokuro\Models\ReviewInvite::count("location_id = {$LocationID} AND rating > 0");
+            }
+
+            $this->getSMSReport();
+        }
     }
-
-}

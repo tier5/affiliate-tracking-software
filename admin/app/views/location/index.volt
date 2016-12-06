@@ -51,6 +51,45 @@ if ($locs) {
           <script async defer
                   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPisblAqZJJ7mGWcORf4FBjNMQKV20J20&signed_in=true&callback=initMapList"></script>
 
+            <div class="modal fade" id="IncreaseLocations" tabindex="-1" role="dialog" aria-labelledby="increaseLocationsModalLabel">
+        <div class="credit-card-details modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="growth-bar">
+                        <div>Increase Locations</div>
+                    </div>
+                </div>
+                <div class="modal-body center-block">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a href="/businessSubscription" style="text-decoration:none;" ><button type="button" class="btn btn-warning btn-lg center-block">Click here to increase your locations</button></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="IncreaseLocationsFree" tabindex="-1" role="dialog" aria-labelledby="increaseLocationsModalLabel">
+        <div class="credit-card-details modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="growth-bar">
+                        <div>Increase Locations</div>
+                    </div>
+                </div>
+                <div class="modal-body center-block">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <button type="button" class="btn btn-warning btn-lg center-block">Please contact us if you need further locations. </button></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
 
           <div class="portlet light bordered dashboard-panel">
             <div class="table-header">
@@ -63,13 +102,13 @@ if ($locs) {
                   <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
                 </div>
               </div>
-              <div class="search-btn"><a class="btnLink" href="/location/create" style="width: 127px !important;">Create Location</a></div>
+              <div class="search-btn"><a class="btnLink btnSecondary" href="/location/create" style="width: 128px !important;">Create Location</a></div>
             </div>
 
             <!-- Start .panel -->
             <div class="panel-default toggle panelMove panelClose panelRefresh" id="locationlist">
               <div class="customdatatable-wrapper">
-                <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
+                <table class="customdatatable table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
                   <thead>
                   <tr>
                     <th>Location Name</th>
@@ -93,8 +132,8 @@ foreach($locs as $location) {
                     <td><?=$location->locality?></td>
                     <td><?=($location->review_count > 0?$location->review_count:0)?></td>
                     <td><?=($location->review_count > 0?number_format((float)($location->rating / $location->review_count), 1, '.', ''):'0.0')?></td>
-                    <td><a href="/location/edit/<?=$location->location_id?>" class="btnLink"><img src="/img/icon-pencil.gif" /></a></td>
-                    <td><a href="/location/delete/<?=$location->location_id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink"><img src="/img/icon-delete.gif" /></a></td>
+                    <td><a href="/location/edit/<?=$location->location_id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.png" /></a></td>
+                    <td><a href="/location/delete/<?=$location->location_id?>" onclick="return confirm('Are you sure you want to delete this item?');" class="btnLink btnSecondary"><img src="/img/icon-delete.png" /></a></td>
                   </tr>
                   <?php
     //if ($rowclass == '') { $rowclass = 'darker'; } else { $rowclass = ''; }
@@ -108,6 +147,19 @@ foreach($locs as $location) {
             </div>
             <!-- End .panel -->
 
+            {% if DisplayLocationsPopup == 1 %}
+            <script>
+                $(function(){
+                        $('#IncreaseLocations').modal('show');
+                });
+            </script>
+            {% elseif DisplayLocationsPopup == 2 %}
+                <script>
+                $(function(){
+                        $('#IncreaseLocationsFree').modal('show');
+                });
+            </script>
+            {% endif %}
             <script type="text/javascript">
               jQuery(document).ready(function($){
 
@@ -150,4 +202,3 @@ foreach($locs as $location) {
 
 
 </div>
-

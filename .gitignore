@@ -1,3 +1,5 @@
+.buildpath
+.project
 admin/app/config/config.php
 admin/phinx.yml
 wp-config.php

@@ -20,7 +20,8 @@ return new \Phalcon\Config(array(
         'baseUri' => '/',
         'publicUrl' => 'www.reviewvelocity.co',
         'cryptSalt' => 'eEAfR|_&G&f,+vU]:jFr!!A&+71w1Ms9~8_4L!<@[N@DyaIP_2My|:+.u>/6m,$D',
-        'environment' => 'dev'
+        'environment' => 'dev',
+        'domain' => 'getmobilereviews.com',
     ),
     'mail' => array(
         'fromName' => '',
@@ -52,5 +53,14 @@ return new \Phalcon\Config(array(
     'stripe' => [
         'secret_key'        => '',
         'publishable_key'   => '',
+    ],
+    'facebook' => [
+        'app_id'        => '',
+        'app_secret'    => ''
+    ],
+    'twilio' => [
+        'twilio_auth_token'         => '',
+        'twilio_auth_messaging_sid' => '',
+        'twilio_from_phone'         => '',
     ],
 ));

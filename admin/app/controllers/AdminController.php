@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 ini_set("display_errors", "on");
 
 use Phalcon\UserPlugin\Models\User\User;
+use Vokuro\Models\Agency;
 use Phalcon\UserPlugin\Models\User\UserResetPasswords;
 use Phalcon\UserPlugin\Models\User\UserPasswordChanges;
 use Phalcon\UserPlugin\Forms\User\LoginForm;
@@ -182,7 +183,8 @@ class AdminController extends ControllerBase {
      * Confirms an e-mail, if the user must change its password then changes it
      */
     public function confirmEmailAction($code) {
-        $confirmation = UserEmailConfirmations::findFirstByCode($code);
+
+        $confirmation = \Vokuro\Models\EmailConfirmations::findFirstByCode($code);
 
         if (!$confirmation) {
             $this->flash->error('Invalid or expired code');
@@ -192,7 +194,7 @@ class AdminController extends ControllerBase {
             ));
         }
 
-        if ($confirmation->getConfirmed() <> 0) {
+        if ($confirmation->isConfirmed() && $confirmation->user->mustChangePassword == 'N') {
             $this->flash->notice('This account is already activated. You can login.');
             return $this->dispatcher->forward(array(
                         'controller' => 'user',
@@ -200,11 +202,10 @@ class AdminController extends ControllerBase {
             ));
         }
 
-        $confirmation->setConfirmed(1);
-        $confirmation->user->setActive(1);
+        $confirmation->setConfirmed();
+        $confirmation->user->active = 'Y';
 
         if (!$confirmation->save()) {
-
             foreach ($confirmation->getMessages() as $message) {
                 $this->flash->error($message);
             }
@@ -216,11 +217,71 @@ class AdminController extends ControllerBase {
         }
 
         $this->auth->authUserById($confirmation->user->getId());
+        //echo $confirmation->user->id;exit;
 
-        if ($confirmation->user->getMustChangePassword() == 1) {
 
+            /*** agency information ***/
+
+
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $confirmation->user->agency_id);
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        $Domain = $this->config->application->domain;
+
+        if($agency->parent_id > 0) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+            if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                throw \Exception("Contact customer support.  Email configuration not setup correctly");
+            $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
+        }
+
+        if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+            $EmailFrom = 'zacha@reviewvelocity.co';
+
+        if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+            if(!$agency->email_from_address && !$agency->custom_domain)
+                throw \Exception("Contact customer support.  Email configuration not setup correctly");
+            $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
+        }
+
+        $AgencyUser=$agency->name;
+
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency->parent_id);
+        $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+        $AgencyName=$parent_agency->name;
+        $Domain = $this->config->application->domain;
+            /*** agency information ***/
+
+        /*** Feedback form ***/
+               $publicUrl="http://{$Domain}";
+                    $code=$confirmation->user->id."-".$confirmation->user->name;
+                    $link=$publicUrl.'/link/createlink/'.base64_encode($code);
+                    $feed_back_email=$confirmation->user->email;
+                    $feed_back_subj='Feedback Form';
+                    $feed_back_body='Hi '.$confirmation->user->name.',';
+                    $feed_back_body=$feed_back_body.'<p>Thank you for activating your account, we have created a mobile landing page so that you can request feedback from your customers in person from your mobile phone. 
+                        </p>
+
+                        <p>Click on the link below and add the the page to your home screen so that you can easily access this page. This link is customized to you so that all feedback and reviews will be tracked back to your account. 
+                        </p>
+
+                        <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online.</p>';
+
+                        $feed_back_body=$feed_back_body.'<a href="'.$link.'">Personalized Feedback Form - Click Here </a>
+                        <p>Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. </p>
+                        <p>Looking forward to helping you build a strong online reputation.</p>';
+                        $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
+                        $Mail = $this->getDI()->getMail();
+                        $Mail->setFrom($EmailFrom);
+                        $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
+
+
+                        /*** Feedback form ***/
+        if ($confirmation->user->mustChangePassword == 'Y') {
             $this->flash->success('The email was successfully confirmed. Now you must change your password');
-            return $this->response->redirect($this->_activeLanguage . '/user/changePassword');
+            return $this->response->redirect($this->_activeLanguage . '/session/changePassword');
         }
 
         $this->flash->success('The email was successfully confirmed');

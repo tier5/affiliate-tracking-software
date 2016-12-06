@@ -7,7 +7,7 @@
 	/**
 	 * Vokuro\Models\LocationReviewSite
 	 */
-	class LocationReviewSite extends Model
+	class LocationReviewSite extends BaseModel
 	{
 		public function initialize()
 		{

@@ -26,7 +26,8 @@ class AdmindashboardController extends ControllerBusinessBase {
         $this->assets->addCss('/css/subscription.css');
 
         $logged_in = is_array($this->auth->getIdentity());
-        if ($logged_in || (isset($this->session->get('auth-identity')['is_admin']) && $this->session->get('auth-identity')['is_admin'] > 0)) {
+
+        if ($logged_in && (isset($this->session->get('auth-identity')['is_admin']))) {
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
         } else {
@@ -43,6 +44,7 @@ class AdmindashboardController extends ControllerBusinessBase {
      */
     public function indexAction() {
         $this->tag->setTitle('Review Velocity | Dashboard');
+
 
         //start of the month date
         $now = new \DateTime('now');
@@ -209,21 +211,15 @@ class AdmindashboardController extends ControllerBusinessBase {
     }
 
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0) {
-	    $Identity = $this->auth->getIdentity();
-	    $UserID = $Identity['id'];
-	    $objLoggedInUser = Users::findFirst("id = {$UserID}");
-
-	    // Businesses under Review Velocity have a parent_id of -1
-	    $Ret =  parent::createAction($agency_type_id, $agency_id, $agency_type_id == 1 ? 0 : -1);
-	    $this->view->pick("admindashboard/create");
-	    return $Ret;
+	    // Businesses under Review Velocity have a parent_id of -1.  agency_type_id == 1 means Agency.  I do want to get rid of this field.
+	    $Ret =  parent::createAction($agency_type_id, $agency_id, $agency_type_id == 1 ? \Vokuro\Models\Agency::AGENCY : \Vokuro\Models\Agency::BUSINESS_UNDER_RV);
+	    return $this->view->pick("admindashboard/create");
 	}
 
     /**
      * This find the agencies for the agencies and businesses actions
      */
     public function findAgencies($agency_type_id) {
-        //get the user id
         $identity = $this->auth->getIdentity();
         // If there is no identity available the user is redirected
         if (!is_array($identity)) {
@@ -235,12 +231,31 @@ class AdmindashboardController extends ControllerBusinessBase {
         $conditions = "id = :id:";
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-        //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+
         // Query binding parameters with string placeholders
-        $conditions = "agency_type_id = " . $agency_type_id; //parent_agency_id = :parent_agency_id: AND
-        $parameters = null;
-        array("parent_agency_id" => $userObj->agency_id);
-        $agencies = Agency::find(array($conditions, "bind" => $parameters));
+        $conditions = "agency_type_id = " . $agency_type_id;
+
+        if($agency_type_id == 1) {
+            // Display agencies
+            if($userObj->is_admin)
+                $agencies = \Vokuro\Models\Agency::find("parent_id = " . \Vokuro\Models\Agency::AGENCY);
+            else
+                $agencies = \Vokuro\Models\Agency::find("agency_id = {$userObj->agency_id}");   // Case should never happen, but just in case it did somehow
+        } else {
+            // Display businesses
+            if($userObj->is_admin)
+                $agencies = \Vokuro\Models\Agency::find("parent_id = " . \Vokuro\Models\Agency::BUSINESS_UNDER_RV . " OR parent_id > 0");
+            else {
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$userObj->agency_id}");
+                if($objAgency->parent_id > 0) {
+                    $this->response->setStatusCode(404, "Not Found");
+                    echo "<h1>404 Page Not Found</h1>";
+                    $this->view->disable();
+                    return;
+                }
+                $agencies = \Vokuro\Models\Agency::find("parent_id = {$userObj->agency_id}");
+            }
+        }
 
         $this->view->agencies = $agencies;
     }
@@ -255,13 +270,20 @@ class AdmindashboardController extends ControllerBusinessBase {
             $parameters = array("agency_id" => $agency_id);
             $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
             if ($age2) {
-                //
                 $age2->status = $status;
                 $age2->save();
                 $this->flash->error("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " status was updated.");
             }
         }
-        $this->response->redirect('/admindashboard/list/' . $agency_type_id);
+        $identity = $this->auth->getIdentity();
+
+        if($identity['is_admin'])
+            $this->response->redirect('/admindashboard/list/' . $agency_type_id);
+        else
+            if($agency_type_id == 2)
+                $this->response->redirect('/agency');
+            else
+                $this->response->redirect('/admindashboard/list/' . $agency_type_id);
         $this->view->disable();
         return;
     }
@@ -270,10 +292,21 @@ class AdmindashboardController extends ControllerBusinessBase {
      * agencies action.
      */
     public function listAction($agency_type_id = 1) {
-        $this->tag->setTitle('Review Velocity | See All ' . ($agency_type_id == 1 ? 'Agencies' : 'Businesses'));
+        $agency_type_id = (int)$agency_type_id;
+        if($agency_type_id && !is_int($agency_type_id)) throw new \Exception('Invalid agency type id specified');
+        $this->tag->setTitle('Get Mobile Reviews | See All ' . ($agency_type_id == 1 ? 'Agencies' : 'Businesses'));
 
         $this->findAgencies($agency_type_id);
         $this->view->agency_type_id = $agency_type_id;
+
+        $dbAllParentAgencies = \Vokuro\Models\Agency::find('parent_id = ' . \Vokuro\Models\Agency::AGENCY);
+        $tAllParentAgencies = [];
+
+        foreach($dbAllParentAgencies as $objParentAgency)
+            $tAllParentAgencies[$objParentAgency->agency_id] = $objParentAgency->toArray();
+
+
+        $this->view->tAllParentAgencies = $tAllParentAgencies;
     }
 
     /**
@@ -284,7 +317,16 @@ class AdmindashboardController extends ControllerBusinessBase {
     public function deleteAction($agency_type_id, $agency_id) {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency_id);
+
+
         $age = Agency::findFirst(array($conditions, "bind" => $parameters));
+        if($age){
+            $user_id = $this->getUserObject()->id;
+            if (!$this->getPermissions()->canUserEditAgency($this->getUserObject(),$age)){
+                throw new \Exception("You do not have permissions to edit/delete this agency with the id of:
+                {$agency_id} with the user id of{$user_id}" );
+            }
+        }
         if (!$age) {
             $this->flash->error("The " . ($agency_type_id == 1 ? 'agency' : 'business') . " was not found");
 
@@ -308,6 +350,9 @@ class AdmindashboardController extends ControllerBusinessBase {
      * Sends confirmation email
      */
     public function confirmationAction($agency_type_id, $agency_id, $user_id) {
+
+
+
         $emailConfirmation = new EmailConfirmations();
         $emailConfirmation->usersId = $user_id;
         $emailConfirmation->save();
@@ -321,25 +366,48 @@ class AdmindashboardController extends ControllerBusinessBase {
      * Logs in as the user
      */
     public function loginAction($agency_type_id, $agency_id = null, $user_id = null) {
+        if($agency_type_id && !is_numeric($agency_type_id)) throw new \Exception('invalid agency type id provided');
+        if ($agency_id && !is_numeric($agency_id)) throw new \Exception('invalid agency id provided');
         $usermanager = new UserManager();
         try{
-            $usermanager->sudoAsUserId($user_id);
+            $objUser = $usermanager->sudoAsUserId($user_id);
             $this->response->redirect('/');
         }catch(\Exception $e){
-            $this->flash->error('You cannot login as an inactivated user');
-            exit('exiting: line '.__LINE__.' of file:'.__FILE__);
-            $this->response->redirect('/admindashboard');
+            $this->flash->success('You cannot login as an inactivated user, or there was an error sudoing as a user');
+            //exit('exiting: line '.__LINE__.' of file:'.__FILE__);
+            $this->response->redirect('/admindashboard/view/' . $agency_type_id . '/' . $agency_id . '?s=3');
             return;
         }
 
-        $this->response->redirect('/');
+        $RedirectUrl = '/';
+        $objEntity = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+        $Domain = $this->config->application->domain;
+        if($objUser->is_admin || $objEntity->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $this->config->application['environment'] == 'dev')
+            $RedirectUrl = '/';
+        else {
+            if($objEntity->parent_id == \Vokuro\Models\Agency::AGENCY) {
+                // All agencies should have a custom_domain, but I don't want the site breaking in the event that they don't for some weird reason.
+                $RedirectUrl = $objEntity->custom_domain ? "http://{$objEntity->custom_domain}.{$Domain}/" : '/';
+            } elseif($objEntity->parent_id > 0) {
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objEntity->parent_id}");
+                // All agencies should have a custom_domain, but I don't want the site breaking in the event that they don't for some weird reason.
+                $RedirectUrl = $objAgency->custom_domain ? "http://{$objAgency->custom_domain}.{$Domain}/" : '/';
+            }
+            // GARY_TODO:  Temporarily not using custom_domain due to session problem
+            $RedirectUrl = '/';
+        }
+
+
+        $this->response->redirect($RedirectUrl);
         $this->view->disable();
         return;
     }
 
-    public function editAction($agency_id,$agency_type_id = null){
-
-        $this->createAction($agency_type_id,$agency_id);
+    public function editAction($agency_id) {
+        if (!is_numeric($agency_id)) throw new \Exception('Invalid agency id provided, expected integer');
+        $Ret =  parent::editAction($agency_id);
+  	    $this->view->pick("admindashboard/edit");
+  	    return $Ret;
     }
 
     /**
@@ -348,6 +416,8 @@ class AdmindashboardController extends ControllerBusinessBase {
     public function forgotPasswordAction($agency_type_id, $agency_id, $user_id) {
         $resetPassword = new ResetPasswords();
         $resetPassword->usersId = $user_id;
+
+       /* echo '<pre>';print_r($resetPassword);exit;*/
         if ($resetPassword->save()) {
             $this->flash->success('Success! Have the employee check their email for a reset password message');
         } else {
@@ -364,14 +434,14 @@ class AdmindashboardController extends ControllerBusinessBase {
      * payments action.
      */
     public function paymentsAction() {
-        $this->tag->setTitle('Review Velocity | Payments');
+        $this->tag->setTitle('Get Mobile Reviews | Payments');
     }
 
     /**
      * settings action.
      */
     public function settingsAction() {
-        $this->tag->setTitle('Review Velocity | Settings');
+        $this->tag->setTitle('Get Mobile Reviews | Settings');
     }
 
     //end finding subscriptions

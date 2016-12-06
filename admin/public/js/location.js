@@ -65,7 +65,6 @@ function initMap() {
 
 
 function selectLocation(googleid, url, name, street_number, route, locality, administrative_area_level_1, postal_code, country, formatted_phone_number, lat, lng) {
-    //un-encode everything!
     var googleid = unencode(googleid);
     var url = unencode(url);
     var cid = url.replace("https://maps.google.com/?cid=", "");
@@ -81,7 +80,6 @@ function selectLocation(googleid, url, name, street_number, route, locality, adm
     var lng = unencode(lng);
     ReputationLoop.location.name = name;
 
-    //making this use jQuery
     $("#name").val(name);
     $("#phone").val(formatted_phone_number);
     $("#address").val(street_number + ' ' + route);
@@ -110,10 +108,13 @@ function selectLocation(googleid, url, name, street_number, route, locality, adm
     $('#yelpLocation').text(street_number + ' ' + route + ' ' + locality + ', ' + administrative_area_level_1 + ' ' + postal_code);
     document.getElementById("yelpsearchfield2").value = postal_code;
     findBusinessYelp();
-    //show the form
-    $('#select-google-maps').hide();
-    $('#locationform1').hide();
-    $('#hiddenForm').show();
+    /*if(Signup) {
+        $('#select-google-maps').hide();
+        $('#locationform1').hide();
+        $('#hiddenForm').show();
+    } else {*/
+        $('#hiddenForm').submit();
+    //}
 
 }
 function changeLocation() {
@@ -135,7 +136,7 @@ function unencode(val){
 function replaceAll(str, find, replace) {
     return str.replace(new RegExp(find, 'g'), replace);
 }
-function extractFromAdress(components, type){
+function extractFromAdress(components, type) {
     for (var i=0; i<components.length; i++)
         for (var j=0; j<components[i].types.length; j++)
             if (components[i].types[j]==type) return components[i].short_name;
@@ -316,39 +317,41 @@ function findFacebookByURL() {
 function findYelpByURL() {
     $('.yelp-results').html('Searching...');
     var url = document.getElementById("url").value;
+    var e = document.getElementById("locationselect");
+    var location_id = e.options[e.selectedIndex].value;
     var id = getId(url);
+
     var url = "/location/yelpurl?i=" + encodeURIComponent(id);
     var http_request = new XMLHttpRequest();
     http_request.open("GET", url, true);
     http_request.onreadystatechange = function () {
-        var done = 4, ok = 200;
-        if (http_request.readyState == done && http_request.status == ok) {
-            obj = JSON.parse(http_request.responseText);
-            if(obj.error) {
-                $('.yelp-results').html('No match found.');
-                $('.yelpfound').hide();
-                $('.yelpnotfound').show();
-            }
-            else {
-                $.ajax({
-                    url: "/admin/location/updateLocation?location_id=61&yelp_id=" + obj.id,
-                }).done(function (data) {
-                    if(data == "SUCCESS") {
-                        $("#yelpLink").attr("href", 'http://www.yelp.com/biz/' + obj.id);
-                        document.getElementById("yelp_id").value = obj.id;
-                        $('.yelpfound').show();
-                        $('.yelpnotfound').hide();
-                        $('#page-wrapper').hide();
-                        $('.overlay').hide();
-                    } else {
-                        $('.yelp-results').html('No match found.');
-                        $('.yelpfound').hide();
-                        $('.yelpnotfound').show();
-                    }
-                });
-                return true;
-            }
-        }
+      var done = 4, ok = 200;
+      if (http_request.readyState == done && http_request.status == ok) {
+          obj = JSON.parse(http_request.responseText);
+          if (obj.error) {
+              $('.yelp-results').html('No match found.');
+              $('.yelpfound').hide();
+              $('.yelpnotfound').show();
+          } else {
+              $.ajax({
+                  url: "/admin/location/updateLocation?location_id=" + location_id + "&yelp_id=" + obj.id,
+              }).done(function (data) {
+                  if(data == "SUCCESS") {
+                      $("#yelpLink").attr("href", 'http://www.yelp.com/biz/' + obj.id);
+                      document.getElementById("yelp_id").value = obj.id;
+                      $('.yelpfound').show();
+                      $('.yelpnotfound').hide();
+                      $('#page-wrapper').hide();
+                      $('.overlay').hide();
+                  } else {
+                      $('.yelp-results').html('No match found.');
+                      $('.yelpfound').hide();
+                      $('.yelpnotfound').show();
+                  }
+              });
+              return true;
+          }
+       }
     }
     http_request.send(null);
 }

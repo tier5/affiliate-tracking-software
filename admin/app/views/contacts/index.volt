@@ -25,7 +25,7 @@
             <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
             <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
         </div>
-        <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
+        <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
       </div>
     </div>
     <?php
@@ -75,7 +75,7 @@
           <!-- Start .panel -->
           <div class="panel-default toggle panelMove panelClose panelRefresh">
             <div class="customdatatable-wrapper">
-              <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
+              <table class="customdatatable table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
                 <thead>
                 <tr>
                   <th>NAME</th>
@@ -132,11 +132,11 @@
                   <td><?php
                       foreach ($invite->review_sites as $rs) {
                     ?>
-                    <img src="<?=$rs->icon_path?>" />
+                    <img  src="<?=$rs->icon_path?>" />
                     <?php
                       }
                       ?></td>
-                  <td style="min-width: 86px; width: 86px;"><a href="/contacts/view/<?=$invite->review_invite_id?>" class="btnLink" style="display: block;white-space: nowrap;"><img src="/img/icon-eye.gif"> View</a></td>
+                  <td style="min-width: 86px; width: 86px;"><a href="/contacts/view/<?=$invite->review_invite_id?>" class="btnLink btnSecondary" > View</a></td>
                 </tr>
                 <?php
                   endforeach;

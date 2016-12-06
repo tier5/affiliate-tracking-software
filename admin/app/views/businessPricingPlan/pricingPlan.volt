@@ -1,4 +1,19 @@
 {{ content() }}
+
+<style type="text/css">
+    td.hide-large.show-small{
+        font-weight:bold;
+    }
+    @media(min-width: 600px) {
+        td.hide-large{
+            display:none !important;
+        }
+        td.show-small{
+            display:block;
+        }
+    }
+</style>
+
 <header class="jumbotron subhead" id="reviews">
     <div class="hero-unit">
         <div class="row">
@@ -19,7 +34,7 @@
                         <div class="caption font-dark">
                             <div class="form-group">
                             <label>Subscription Name</label>
-                            <input id="name-control" type="text" value="{{ name }}" class="caption-subject form-control input-medium" placeholder="Subscription Name" />
+                            <input id="name-control" type="text" value="{% if !isNewRecord %}{{ name }}{% else %}My New Subscription{% endif %}" class="caption-subject form-control input-medium" placeholder="Subscription Name" {% if !isNewRecord %} readonly {% endif %}/>
                                 <hr>
                         </div>
                     </div>
@@ -47,16 +62,10 @@
                                     <div class="col-md-6">
                                         <input type="hidden" id="hidden-free-sms-messages" value="{{maxMessagesOnTrialAccount}}"/>
                                         <select id="free-sms-messages-control" class="form-control input-small" value="{{ maxMessagesOnTrialAccount }}">
-                                            <option  value="100">100</option>
-                                            <option value="200">200</option>
-                                            <option value="300">300</option>
-                                            <option value="400">400</option>
-                                            <option value="500">500</option>
-                                            <option value="600">600</option>
-                                            <option value="700">700</option>
-                                            <option value="800">800</option>
-                                            <option value="900">900</option>
-                                            <option value="1000">1000</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="75">75</option>
+                                            <option value="100">100</option>
                                         </select>
                                     </div>
                                 </div>
@@ -67,7 +76,7 @@
                                         <label class="control-label">Base Price $</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="base-price-control" type="number" value="{{ basePrice }}" step="0.01" min="0.00" class="form-control" placeholder="0.00">
+                                        <input id="base-price-control" type="number" value="{{ basePrice }}" step="0.01" min="0.00" class="form-control" placeholder="29.00">
                                     </div>
                                 </div>
                             </div>
@@ -218,22 +227,23 @@
                                                 <table class="table table-striped table-bordered table-hover dataTable no-footer collapsed" width="100%" id="sample_1" role="grid" aria-describedby="sample_1_info" style="width: 100%;">
                                                     <thead>
                                                     <tr role="row">
-                                                        <th>Locations</th>
-                                                        <th>Discount %</th>
-                                                        <th>Base Price</th>
-                                                        <th>SMS Charge</th>
-                                                        <th>Total Price</th>
-                                                        <th>Location Discount</th>
-                                                        <th>Upgrade Discount</th>
-                                                        <th>Discount Price</th>
-                                                        <th>SMS Messages</th>
-                                                        <th>SMS Cost</th>
-                                                        <th>Profit Per Location</th>
+                                                        <th>Number of <br />Locations</th>
+                                                        <th>Discount <br /> Percentage</th>
+                                                        <th>Base<br />Price</th>
+                                                        <th>SMS<br />Charge</th>
+                                                        <th>Total<br />Price</th>
+                                                        <th>Location<br />Discount</th>
+                                                        <th>Upgrade<br />Discount</th>
+                                                        <th>Discount<br />Price</th>
+                                                        <th>SMS<br />Messages</th>
+                                                        <th>SMS<br />Cost</th>
+                                                        <th>Profit Per<br />Location</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody id="progression-table-rows">
                                                         {% for progression in progressions %}
                                                         <tr role="row" class="odd">
+                                                            <td class="show-small hide-large">Locations</td>
                                                             <td>
                                                                 <form class="form-inline" role="form">
                                                                     <div class="form-group">
@@ -245,18 +255,28 @@
                                                                     </div>
                                                                 </form>
                                                             </td>
+                                                            <td class="show-small hide-large">Discount</td>
                                                             <td>
-                                                                <select class="form-control input-small location-discount-control"></select>
+                                                                <select value="{{progression['location_discount_percentage'] }}" class="form-control input-small location-discount-control"></select>
                                                             </td>
+                                                            <td class="show-small hide-large">Base Price</td>
                                                             <td class="base-price-column">${{ progression['base_price'] }}</td>
+                                                            <td class="show-small hide-large">SMS Charge</td>
                                                             <td class="sms-charge-column">${{ progression['sms_charge'] }}</td>
+                                                            <td class="show-small hide-large">Total Price</td>
                                                             <td class="total-price-column">${{ progression['total_price'] }}</td>
+                                                            <td class="show-small hide-large">Location Discount</td>
                                                             <td class="location-discount-column">${{ progression['location_discount'] }}</td>
+                                                            <td class="show-small hide-large">Upgrade Discount</td>
                                                             <td class="upgrade-discount-column">${{ progression['upgrade_discount'] }}</td>
+                                                            <td class="show-small hide-large">Discount Price</td>
                                                             <td class="discount-price-column">${{ progression['discount_price'] }}</td>
+                                                            <td class="show-small hide-large">SMS Messages</td>
                                                             <td class="sms-messages-column"><span class="value">{{ progression['sms_messages'] }}</span></td>
+                                                            <td class="show-small hide-large">SMS Cost</td>
                                                             <td class="sms-cost-column">${{ progression['sms_cost'] }}</td>
-                                                            <td class="profit-per-location-column">${{ progression['profit_per_location'] }}</td>
+                                                            <td class="show-small hide-large">Profit Per Location</td>
+                                                            <td class="profit-per-location-column">{{ progression['profit_per_location'] }}</td>
                                                         </tr>
                                                         {% endfor %}
                                                     </tbody>
@@ -322,23 +342,21 @@
         }
 
         function getValueParameters() {
-
             return {
                 name: $('input[id="name-control"]').val(),
-                enableTrialAccount: $('input[id="enable-trial-account-control"]').val() === "on" ? true : false,
-                enableDiscountOnUpgrade: $('input[id="enable-discount-on-upgrade-control"]').val() === "on" ? true : false,
+                enableTrialAccount: $('input[id="enable-trial-account-control"]').bootstrapSwitch('state') ? true : false,
+                enableDiscountOnUpgrade: $('input[id="enable-discount-on-upgrade-control"]').bootstrapSwitch('state') ? true : false,
                 basePrice: $('input[id="base-price-control"]').val(),
                 costPerSms: $('input[id="cost-per-sms-control"]').val(),
                 maxMessagesOnTrialAccount: $('select[id="free-sms-messages-control"]').val(),
                 upgradeDiscount: $('select[id="upgrade-discount-control"]').val(),
                 chargePerSms: $('input[id="charge-per-sms-control"]').val(),
                 maxSmsMessages: $('input[id="max-sms-messages-control"]').val(),
-                enableAnnualDiscount: $('input[id="enable-annual-discount-control"]').val() === "on" ? true : false,
+                enableAnnualDiscount: $('input[id="enable-annual-discount-control"]').bootstrapSwitch('state') ? true : false,
                 annualDiscount: $('select[id="annual-discount-control"]').val(),
                 upgradeDiscount: $('select[id="upgrade-discount-control"]').val(),
                 pricingDetails: $('#summernote_1').code()
             };
-
         }
 
         function getProgressionDetails() {
@@ -356,7 +374,7 @@
                     upgradeDiscount: $(this).find('td.upgrade-discount-control').first().text(),
                     smsMessages: $(this).find('td.sms-messages-column span.value').text(),
                     smsCost: $(this).find('td.sms-cost-column').first().text(),
-                    profitPerLocation: $(this).find('td.profit-per-location-column').first().text()
+                    profitPerLocation: $(this).find('td.profit-per-location-column').first().text().replace('$','')
                 };
             });
 
@@ -421,12 +439,13 @@
         function recalculateTotalCharge() {
             var basePrice = $('input[id="base-price-control"]').val();
             var chargePerSms = $('input[id="charge-per-sms-control"]').val();
-            var smsMessages = $('input[id="max-sms-messages-control"]').val();
+            //var smsMessages = $('input[id="max-sms-messages-control"]').val();
+            var smsMessages = $('#sms-messages-slider').val();
             var smsCharge = parseFloat(chargePerSms) * parseInt(smsMessages);
             var totalCharge = parseFloat(basePrice) + parseFloat(smsCharge);
 
             $('#progression-table-rows').find('tr td.total-price-column').each(function (index) {
-                $(this).text(totalCharge.toFixed(2)); // Update the cell value
+                $(this).text("$" + totalCharge.toFixed(2)); // Update the cell value
             });
         }
 
@@ -484,23 +503,62 @@
                 $(this).text(total.toFixed(2));
                 var profitElement = $(this).siblings(".profit-per-location-column");
                 recalculateProfits(profitElement);
+                setTimeout(function(){
+                    recalculateProfits(profitElement);
+                },2);
             });
         }
 
         function recalculateProfits(profitElement) {
-            var locationDiscount = parseFloat($(profitElement).siblings(".discount-price-column").text());
-            var smsCost = parseFloat($(profitElement).siblings(".sms-cost-column").text());
-            var profit = locationDiscount - smsCost;
-            $(profitElement).text(profit.toFixed(2));
+            var smsCharge = parseFloat($(profitElement).parent().find('.sms-charge-column').text().replace('$',''));
+
+            var sliderSMSAmount = $('#sms-messages-slider').val();
+
+            console.log('sliderSMSAmount',sliderSMSAmount);
+
+            var smsTotalCharge = sliderSMSAmount * parseFloat($('#charge-per-sms-control').val());
+
+            var smsTotalChargeActualCost = sliderSMSAmount * parseFloat($('#cost-per-sms-control').val());
+
+            console.log('smsTotalCharge',smsTotalCharge,'smsTotalChargeActualCost',smsTotalChargeActualCost);
+
+
+
+
+            var locationDiscountPercentage = parseInt($(profitElement).parent().find('.location-discount-control').val());
+            var basePrice = parseFloat($(profitElement).parent().find('.base-price-column').text().replace('$',''));
+            var locationDiscount = parseFloat(basePrice * (locationDiscountPercentage / 100));
+            $(profitElement).parent().find('.location-discount-column').text('$' + locationDiscount.toFixed(2).toString());
+            //upgrade discount
+            var upgradeDiscountPercentage = parseInt($('#upgrade-discount-control').val(),10);
+            //set the display discount
+            var upgradeDiscount = basePrice * (upgradeDiscountPercentage / 100);
+            //this is the actual discount price
+            var discountPrice = basePrice - locationDiscount + smsCharge - upgradeDiscount;
+
+            $(profitElement).parent().find('.discount-price-column').text('$' + discountPrice.toFixed(2).toString());
+
+            //set the upgrade discount
+            $(profitElement).parent().find('.upgrade-discount-column').text('$' + upgradeDiscount.toFixed(2).toString());
+
+            var priceUpgradeDiscount = parseFloat(basePrice - (basePrice * (upgradeDiscountPercentage / 100))).toFixed(2);
+            $(profitElement).parent().find('.discount-price-column').text('$' + discountPrice.toFixed(2).toString());
+            var smsCost = smsTotalChargeActualCost.toFixed(2);
+            $(profitElement).parent().find('.sms-cost-column').text('$' + smsCost);
+            var smsCharge = smsTotalCharge.toFixed(2);
+            $(profitElement).parent().find('.sms-charge-column').text('$' + smsCharge);
+            var smsCost = parseFloat(smsCost);
+            var totalProfit = discountPrice - smsCost;
+            $(profitElement).parent().find('.profit-per-location-column').text('$' + parseInt(totalProfit,10).toString());
+            recalculateTotalCharge();
         }
 
         function getPlanCostPerSMSMessage(){
-            return parseFloat(document.getElementById('charge-per-sms-control').value);
-
+            return parseFloat(document.getElementById('charge-per-sms-control').value,10);
         }
 
         function getActualCostPerSMSMessage(){
-            return parseFloat(document.getElementById('cost-per-sms-control').value);
+            return parseFloat(document.getElementById('cost-per-sms-control').value,10);
         }
 
         function refreshDisplayPrices(){
@@ -513,10 +571,11 @@
             var profit = totalPlanCost - actualPlanCost;
 
             $('#progression-table-rows tr').each(function(){
-                var row = $(this);
-                $(this).find('.discount-price-column').text('$' + actualPlanCost.toFixed(2));
-                $(this).find('.profit-per-location-column:first').text('$' + profit.toFixed(2));
+                //var row = $(this);
+                //$(this).find('.discount-price-column').text('$' + actualPlanCost.toFixed(2));
+                //$(this).find('.profit-per-location-column:first').text('$' + profit.toFixed(2));
             });
+            recalculateAllDiscountedPrices();
         }
 
         var smsMessagesSlider = null;
@@ -527,10 +586,9 @@
                 smsMessagesSlider.setValue(parseInt(val), true, true);
                 smsMessagesSlider.on('change', function () {
                     var sliderValue = smsMessagesSlider.getValue();
+                    recalculateAllDiscountedPrices();
                     $('#slider-messages').text(smsMessagesSlider.getValue());
                 });
-
-
             }
         }
 
@@ -618,17 +676,27 @@
                 rebuildSmsSlider(messages, 50);
                 refreshSmsSliderControls(messages);
                 refreshDisplayPrices();
+                recalculateAllDiscountedPrices();
 
             });
             if(upgradeDiscount && upgradeDiscount !== '') $('#upgrade-discount-control').val(parseInt(upgradeDiscount,10));
             if(annualDiscount && annualDiscount !== '') $('#annual-discount-control').val(parseInt(annualDiscount,10));
-
+            setTimeout(function() {
+                $('.location-discount-control').each(function () {
+                    var value = null;
+                    var value = $(this).attr('value');
+                    $(this).find('option').each(function () {
+                        if (parseInt($(this).val()) === parseInt(value)) $(this).attr('selected', 'selected');
+                    });
+                });
+            },1);
         }
 
         function addSegment(min, max, options) {
 
             var row = "";
             row += "<tr role=\"row\" class=\"odd\">";
+            row += '<td class="show-small hide-large">Base Price</td>';
             row += "    <td>";
             row += "        <form class=\"form-inline\" role=\"form\">";
             row += "            <div class=\"form-group\">";
@@ -640,17 +708,27 @@
             row += "            </div>";
             row += "        </form>";
             row += "    </td>";
+            row += '<td class="show-small hide-large">Location Discount</td>';
             row += "    <td>";
             row += "        <select class=\"form-control input-small location-discount-control\"></select>";
             row += "    </td>";
+            row += '<td class="show-small hide-large">Base Price</td>';
             row += "    <td class=\"base-price-column\">0</td>";
+            row += '<td class="show-small hide-large">SMS Charge</td>';
             row += "    <td class=\"sms-charge-column\">0</td>";
+            row += '<td class="show-small hide-large">Total Price</td>';
             row += "    <td class=\"total-price-column\">0</td>";
+            row += '<td class="show-small hide-large">Location Discount</td>';
             row += "    <td class=\"location-discount-column\">0</td>";
+            row += '<td class="show-small hide-large">Upgrade Discount</td>';
             row += "    <td class=\"upgrade-discount-column\">0</td>";
+            row += '<td class="show-small hide-large">Discount Price</td>';
             row += "    <td class=\"discount-price-column\">0</td>";
+            row += '<td class="show-small hide-large">SMS Messages</td>';
             row += "    <td class=\"sms-messages-column\"><span class=\"value\">0</td>";
+            row += '<td class="show-small hide-large">SMS Cost</td>';
             row += "    <td class=\"sms-cost-column\">0</td>";
+            row += '<td class="show-small hide-large">Profit Per Location</td>';
             row += "    <td class=\"profit-per-location-column\">0</td>";
             row += "</tr>";
 
@@ -719,7 +797,6 @@
         }
 
         function initProgressionControls(options) {
-
             appendDiscountPercentage(options);
 
             /* Init progression button controls */

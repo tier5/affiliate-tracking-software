@@ -23,7 +23,7 @@
             <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
             <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
         </div>
-        <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
+        <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
       </div>
     </div>
     <?php
@@ -56,8 +56,8 @@
         <div class="portlet-body" id="reportwrapperreview">
 
           <ul class="nav nav-tabs" style="margin-bottom: 12px;">
-            <li><a style="border-top: 8px solid #F6F6F6 !important; padding: 14px 69px 53px;" href="/reviews/sms_broadcast"> NEW MESSAGES </a></li>
-            <li class="active"><a style="border-top: 8px solid #283643 !important; padding: 14px 69px 53px;" href="/reviews/sent_message"> SENT MESSAGE </a></li>
+            <li><a style="padding: 14px 69px 53px;" href="/reviews/sms_broadcast"> NEW MESSAGES </a></li>
+            <li class="active"><a style="padding: 14px 69px 53px;" href="/reviews/sent_message"> SENT MESSAGE </a></li>
           </ul>
 
 
@@ -76,7 +76,7 @@
                     <?php
             //(invites have the following fields: Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)
             ?>
-                    <table id="" class="customdatatable table table-striped table-bordered dataTable no-footer" cellspacing="0" width="100%">
+                    <table id="" class="customdatatable table table-striped table-bordered dataTable no-footer table-responsive" cellspacing="0" width="100%">
                       <thead>
                       <tr>
                         <th>Message</th>
@@ -98,7 +98,7 @@
                         <td><?=$invite->total_sent?></td>
                         <td><?=$invite->total_clicked?></td>
                         <td><?=($invite->total_sent>0?number_format($invite->total_clicked / $invite->total_sent * 100):0)?>%</td>
-                        <td><a href="/reviews/sent_message_view/<?=$invite->sms_broadcast_id?>" class="btnLink" style="display: block;">View</a></td>
+                        <td><a href="/reviews/sent_message_view/<?=$invite->sms_broadcast_id?>" class="btnLink btnSecondary" style="display: block;">View</a></td>
                       </tr>
                       <?php
                 endforeach;

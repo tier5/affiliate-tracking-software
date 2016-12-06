@@ -34,8 +34,8 @@
                                         <th>Subscription Name</th>
                                         <th>Subscription Type</th>
                                         <th>Active/Inactive</th>
-                                        <th>Pricing Page</th>
-                                        <th class="hide-small">Free Sign Up Link</th>
+                                        <th>Viral Subscription</th>
+                                        <th class="hide-small">Sign Up Link</th>
                                         <th>Edit</th>
                                         <th class="hide-small">Delete</th>
                                     </tr>
@@ -50,12 +50,24 @@
                                                 <td>Paid</td>
                                             {% endif %}
                                             {% if pricingProfile.enabled == true %}
-                                                <td><input id="update-enable-pricing-plan-control" type="checkbox" class="make-switch" checked data-on-color="primary" data-off-color="info"></td>
+                                                <td><input id="subscription{{ pricingProfile.id }}" class="update-enable-pricing-plan-control make-switch" type="checkbox" checked data-on-color="primary" data-off-color="info"></td>
                                             {% else %}
-                                                <td><input id="update-enable-pricing-plan-control" type="checkbox" class="make-switch" data-on-color="primary" data-off-color="info"></td>
+                                                <td><input id="subscription{{ pricingProfile.id }}" class="update-enable-pricing-plan-control make-switch" type="checkbox" data-on-color="primary" data-off-color="info"></td>
                                             {% endif %}
-                                            <td><button class="btn default btn-lg apple-backgound subscription-btn" disabled>View Page</button></td>
-                                            <td class="hide-small"><a href="/businessPricingPlan/previewSignUpPage" class="btn default btn-lg apple-backgound subscription-btn">View Page</a></td>
+                                            {% if pricingProfile.is_viral == true %}
+                                                <td><input id="subscriptionViral{{ pricingProfile.id }}" class="update-enable-viral-control make-switch" type="checkbox" checked data-on-color="primary" data-off-color="info"></td>
+                                            {% else %}
+                                                <td><input id="subscriptionViral{{ pricingProfile.id }}" class="update-enable-viral-control make-switch" type="checkbox" data-on-color="primary" data-off-color="info"></td>
+                                            {% endif %}
+                                            <td class="hide-small">
+                                                <?php $Domain = $this->config->application->domain; ?>
+                                                <?php if($loggedUser->is_admin) { ?>
+                                                    <a href="http://<?=$Domain; ?>/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn" target="_blank">View Page</a>
+                                                <?php } else { ?>
+                                                    <a href="http://{{ custom_domain }}.<?=$Domain; ?>/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn" target="_blank">View Page</a>
+                                                <?php } ?>
+
+                                            </td>
                                             <td><a href="/businessPricingPlan/editExistingPricingPlan/{{ pricingProfile.id }}" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-edit"></i></a></td>
                                             <td><button id="delete-pricing-plan-control" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></button></td>
                                         </tr>
@@ -133,10 +145,9 @@
 
         function refreshSwitchHandlers() {
 
-            $('input[id="update-enable-pricing-plan-control"]').on('switchChange.bootstrapSwitch', function (event, state) {
-
+            $('input.update-enable-pricing-plan-control').on('switchChange.bootstrapSwitch', function (event, state) {
+                console.log('the state is',state);
                 var id = $(event.currentTarget).closest('tr').attr('id');
-
                 $.ajax({
                     url: "/businessPricingPlan/updateEnablePricingPlan/" + id + "/" + state,
                     type: 'PUT',
@@ -153,8 +164,36 @@
 
             });
 
-        }
+            $('input.update-enable-viral-control').on('switchChange.bootstrapSwitch', function (event, state) {
+                console.log('the viral state is',state);
+                var id = $(event.currentTarget).closest('tr').attr('id');
+                $.ajax({
+                    url: "/businessPricingPlan/updateViralSwitch/" + id + "/" + state,
+                    type: 'PUT',
+                    success: function(data) {
+                        if(data.status !== true) {
+                            $(event.currentTarget).setState(!state);
+                            alert(data.message);
+                        } else {
+                            /*
+                            // Only 1 viral plan allowed at once.
+                            $('input.update-enable-viral-control').each(function(i, val) {
+                                var Newid = $(val).closest('tr').attr('id');
+                                if(Newid != id)
+                                    console.log($(val));
 
+                            });
+                                GARY_TODO:  Disable other viral switches.
+                            */
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert("Unable to delete pricing profile!");
+                    }
+                });
+
+            });
+        }
         refreshDeleteHandlers();
         refreshSwitchHandlers();
 

@@ -21,9 +21,16 @@ var isMobile = {
 
 
 $(document).ready(function () {
+
+   /* if(isMobile.any()) {
+   //alert("This is a Mobile Device");
+   $('#facebooklink a').removeAttr('href');
+   $('#facebooklink1').removeAttr('href');
+   $('.fb_link').removeAttr('href');*/
+
   if (isMobile.Android()) {
     //hide non-google options
-    $('#facebooklink, #yelplink').hide();
+   // $('#facebooklink, #yelplink').hide();
   }
 
   //set the left menu state from session, if set
@@ -58,7 +65,7 @@ $(document).ready(function () {
   $("#profilesId").change(function () {
     userTypeChange();
   });
-});
+})
 
 function userTypeChange() {  
   var val = $('#profilesId').val();
@@ -75,6 +82,7 @@ function userTypeChange() {
 }
 
 function facebookClickHandler(facebook_page_id) {
+  //alert('fb://profile/' + facebook_page_id);//return false;
   deeplink.setup({
     iOS: {
       appId: "284882215",

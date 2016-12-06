@@ -24,7 +24,7 @@
                         <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
                         <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
                     </div>
-                    <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
+                    <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
                 </div>
             </div>
             <?php
@@ -50,26 +50,25 @@
             ?>
         </div>
 
-        <?php
-        //check if the user should upgrade
-        if ($is_upgrade) {
-        ?>
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="portlet dark bordered discount">
-                    <img src="/img/20-percent-off.gif" id="percentoff" alt="20% Off" />
-                    <a href="#"><img src="/img/btn-upgrade-now.gif" id="btnupgradenow" alt="Upgrade Now" /></a>
-                    <div class="upgrade-middle">
-                        <div class="upgrade-top">Hey <?=$this->session->get('auth-identity')['name']?>!  Upgrade Your Account Today To Send Unlimited Text Message</div>
-                        <div class="upgrade-bottom">Add unlimited text message so you can send out unlimited feedback request each month.  Save 20% today!</div>
+		<?php if(strpos($loggedUser->role, "Admin") !== false || !$this->session->get('auth-identity')['is_employee']) { ?>
+            {% if SubscriptionPlan == 'TR' %}
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="portlet dark bordered discount">
+                            <img src="/img/20-percent-off.gif" id="percentoff" alt="20% Off" />
+                            <a href="/businessSubscription"><img src="/img/btn-upgrade-now.gif" id="btnupgradenow" alt="Upgrade Now" /></a>
+                            <div class="upgrade-middle">
+                                <div class="upgrade-top">Hey <?=$this->session->get('auth-identity')['name']?>!  Upgrade Your Account Today and Boost Results!</div>
+                                <div class="upgrade-bottom">Increasing the number of feedback messages sent each month helps turbo charge your results.</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <?php
-        } // end checking for need to upgrade
-        ?>
+            {% endif %}
+        <?php } ?>
 
+
+        {% if SubscriptionPlan != 'FR' %}
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="portlet light bordered">
@@ -77,7 +76,7 @@
                         <div class="">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="share-text"><b>Get <?=$additional_allowed?> additional SMS messages for every 3 referrals that sign up.</b>  Use the following links to share your referral URL: </div>
+                                    <div class="share-text"><b>Get <?=$additional_allowed?> additional SMS messages for every 1 referral that sign up.</b>  Use the following links to share your referral URL: </div>
                                     <?php
                                     if ($num_signed_up > 0) {
                                     ?>
@@ -94,14 +93,14 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="referral-link"><b>Personalized Referral Link:</b> <?=$share_link?></div>
+                                <div class="referral-link"><b>Personalized Referral Link:</b> <?=urldecode($share_link); ?></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
+        {% endif %}
 
         <div class="row">
 
@@ -158,8 +157,8 @@
                             </div>
                         </div>
                         <div class="bottom-part">
-                            <span class="text-wrapper">
-                                You Must Send <span class="fontred"><?=$total_sms_needed?></span> Feedback Requests To Reach Your Goal Of <span class="fontred"><?=$review_goal?></span> New Reviews
+                            <span class="text-wrapper text-center" style="width: 100%">
+                                You Must Send <span class="feedback_requests"><?=$total_sms_needed?></span> Feedback Requests To Reach Your Goal Of <span class="feedback_requests"><?=$review_goal ?: 0; ?></span> New Reviews
                             </span>
                         </div>
                     </div>
@@ -223,7 +222,7 @@
                             <span data-value="<?=$total_reviews_location?>" style="color: #2A3644;"><?=$total_reviews_location?></span>
                         </div>
                         <div class="text">
-                            New Reviews Since Joining Review Velocity
+                            New Reviews Since Joining Get Mobile Reviews
                         </div>
                     </div>
                 </div>
@@ -235,12 +234,12 @@
                 <div class="portlet light bordered dashboard-panel tall">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="">New Reviews</span>
+                            <span class="">New Reviews By Month</span>
                         </div>
                     </div>
                     <div class="portlet-body">
                         <?php
-                        if ($new_reviews->count() > 0) {
+                        if (count($new_reviews) > 0) {
                         ?>
                         <div id="barchart_div"></div>
                         <?php
@@ -294,9 +293,9 @@
                                 <tr class="uppercase">
                                     <th>Rank</th>
                                     <th>Name</th>
-                                    <th>This Month</th>
-                                    <th>Total</th>
-                                    <th>Positive Feedback</th>
+                                    <th>Reviews Sent</th>
+                                    <th>Reviews Received</th>
+                                    <th>Customer Satisfaction</th>
                                 </tr>
                             </thead>
                             <?php
@@ -305,13 +304,13 @@
                             foreach($employee_conversion_report as $data) {
                             $i++;
                             if ($class == '') { $class = 'darker'; } else { $class = ''; }
-                            ?>
+                          	?>
                             <tr>
                                 <td class="<?=$class?>"><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
                                 <td class="<?=$class?>"><?=$data->name?></td>
                                 <td class="<?=$class?>"><?=$data->sms_sent_this_month?></td>
-                                <td class="<?=$class?>"><?=($data->sms_sent_all_time)?></td>
-                                <td class="<?=$class?>"><?=($data->sms_sent_all_time > 0?(number_format(($data->positive_feedback / $data->sms_sent_all_time) * 100, 1) . '%'):'0.0%')?></td>
+                                <td class="<?=$class?>"><?=($data->sms_received_this_month)?></td>
+                                <td class="<?=$class?>"><?=($data->sms_sent_this_month > 0?(number_format(($data->positive_feedback_this_month / $data->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
                             </tr>
                             <?php } ?>
                         </table>
@@ -335,7 +334,7 @@
                         ?>
                         <div class="review">
                             <div class="top">
-                                <div class="logo"><a href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==1?'yelp':($data->rating_type_id==2?'facebook':'google'))?>.gif" /></a></span></div>
+                                <div class="logo"><a href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==1?'http://facebook.com/'.$user_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==2?'yelp':($data->rating_type_id==1?'facebook':'google'))?>.gif" /></a></span></div>
                                 <div class="rating col-md-3"><input value="<?=$data->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /></div>
                                 <div class="name col-md-5"><?=$data->user_name?></div>
                                 <div class="date col-md-3"><?=date("m/d/Y", strtotime($data->time_created))?></div>
@@ -377,7 +376,7 @@
 
         <div class="field">
             <label for="email">To Email:</label>
-            <input type="email" id="email" name="email" required="required" />
+            <input type="text" id="email_to" name="email_to" required="required" />
         </div>
 
         <div class="field">
@@ -415,7 +414,7 @@
             $('.overlay').hide();
         });
 
-        var barColor = primary_color ? '#' + primary_color : '#F8CB00';
+        var barColor = primary_color ? primary_color : '#F8CB00';
         $('.easy-pie-chart .number.monthly-review').easyPieChart({
             animate: 1000,
             size: 100,
@@ -438,20 +437,19 @@
             google.charts.setOnLoadCallback(drawBasic);
 
             function drawBasic() {
-                var color = primary_color ? primary_color : '#67cd4d';
+                var color = secondary_color ? secondary_color : '#67cd4d';
                 var data = google.visualization.arrayToDataTable([
                     ['Month', 'Density', { role: 'style' }],
                 <?php
-                    $prevmonth = 0;
                     $count = 0;
                     $strarray = '';
                     $color = ($primary_color) ? $primary_color : '';
                     foreach ($new_reviews as $data) {
-                        if ($new_reviews->count() > 6 && $count == 0) {
-                        } else {
-                            $strarray = $strarray."['".date("M", mktime(0, 0, 0, $data-> month, 1, 2011))."', ".($data-> reviewcount - $prevmonth).", '".$color."'],\n";
-                        }
-                        $prevmonth = $data->reviewcount;
+                        /*if (count($new_reviews) > 6 && $count == 0) {
+                        } else {*/
+                            $strarray = $strarray."['".date("M", mktime(0, 0, 0, $data['month'], 1, 2011))."', ".($data['reviewcount']).", '".$color."'],\n";
+                        //}
+
                         $count++;
                     }
                     echo $strarray;
@@ -459,7 +457,7 @@
                 ]);
 
                 var options = {
-                    title: 'New Reviews By Month',
+                    title: '',
                     legend: {position: 'none'},
                     chartArea: {left:25, top:'auto', width:'100%', height:'auto'},
                     'tooltip': {
@@ -519,9 +517,13 @@
                 e.preventDefault();
                 // Serialize the form data.
                 var formData = $(form).serialize();
+                //alert(formData);return false;
                 // Submit the form using AJAX.
+
+                    
+
                 $.ajax({
-                type: 'POST',
+                method: 'POST',
                         url: $(form).attr('action'),
                         data: formData
                 })
@@ -557,19 +559,11 @@
     <div class="hero-unit">
         <!-- BEGIN PAGE TITLE-->
         <h3 class="page-title"> Welcome </h3>
-        <?php
-        //only the Agency Admin see this
-        if ($this->session->get('auth-identity')['profile'] == 'Agency Admin' ||
-        $this->session->get('auth-identity')['profile'] == 'Super Admin') {
-        ?>
-        <div><a href="/location/create">Click here</a> to set up a location to get started.</div>
-        <?php
-        } else {
-        ?>
-        <div>To get started: Have the Agency Admin add you to a location.</div>
-        <?php
-        }
-        ?>
+        <?php if($loggedUser->role == 'Super Admin' || $loggedUser->role == 'Admin') { ?>
+            <div><a href="/location/create">Click here</a> to set up a location to get started.</div>
+        <?php } else { ?>
+            <div>To get started: Have the administrator add you to a location.</div>
+        <?php } ?>
     </div>
 </header>
 <?php

@@ -26,7 +26,7 @@ class AgencyForm extends Form
 
 
     $name = new Text('name', array(
-        'placeholder' => 'Name'
+        'placeholder' => 'Business Name'
     ));
     $name->addValidators(array(
         new PresenceOf(array(
@@ -37,11 +37,15 @@ class AgencyForm extends Form
     
     $this->add(new Text('email'));
     $this->add(new Text('address'));
+    $this->add(new Text('address2'));
     $this->add(new Text('locality'));
     $this->add(new Text('state_province'));
     $this->add(new Text('postal_code'));
     $this->add(new Text('country'));
     $this->add(new Text('phone'));
+    $this->add(new Text('website'));
+    $this->add(new Text('email_from_name'));
+    $this->add(new Text('email_from_address'));
         
 
   }

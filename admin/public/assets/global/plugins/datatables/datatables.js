@@ -83133,12 +83133,12 @@ $.extend( Buttons.prototype, {
 			var a = this.s.listenKeys.split('');
 			var idx = $.inArray( character, a );
 			a.splice( idx, 1 );
-			this.s.listenKeys = a.join('');
-		}
+			thÉs.s.lisÅenKeys Ä a.joinÇ'');
+		Ç
 	},
 
-	/**
-	 * Resolve a button configuration
+	Ñ**
+	 * Ñesolve É button configuration
 	 * @param  {string|function|object} Button config to resolve
 	 * @return {object} Button configuration
 	 */

@@ -1,6 +1,6 @@
+
 <header class="jumbotron subhead <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'agency')?>settingspage" id="reviews">
   <div class="hero-unit">
-
     <div class="row">
       <div class="col-md-5 col-sm-5">
         <!-- BEGIN PAGE TITLE-->
@@ -10,41 +10,41 @@
       <?php
       if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
       if ($is_upgrade) {
-      $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
-      if ($percent > 100) $percent = 100;
-      ?>
-      <div class="col-md-7 col-sm-7">
-        <div class="sms-chart-wrapper">
-          <div class="title">SMS Messages Sent</div>
-          <div class="bar-wrapper">
-            <div class="bar-background"></div>
-            <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-            <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-            <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
+        $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
+        if ($percent > 100) $percent = 100;
+        ?>
+        <div class="col-md-7 col-sm-7">
+          <div class="sms-chart-wrapper">
+            <div class="title">SMS Messages Sent</div>
+            <div class="bar-wrapper">
+              <div class="bar-background"></div>
+              <div class="bar-filled" style="width: <?=$percent?>%;"></div>
+              <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
+              <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
+            </div>
+            <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
+          </div>
         </div>
-        <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
+        <?php
+      } else {
+        $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
+        if ($percent > 100) $percent = 100;
+        ?>
+        <div class="col-md-7 col-sm-7">
+          <div class="sms-chart-wrapper">
+            <div class="title">SMS Messages Sent</div>
+            <div class="bar-wrapper">
+              <div class="bar-background"></div>
+              <div class="bar-filled" style="width: <?=$percent?>%;"></div>
+              <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
+              <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
+          </div>
+          <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
+        </div>
       </div>
-    </div>
-    <?php
-        } else {
-          $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
-    if ($percent > 100) $percent = 100;
-    ?>
-    <div class="col-md-7 col-sm-7">
-      <div class="sms-chart-wrapper">
-        <div class="title">SMS Messages Sent</div>
-        <div class="bar-wrapper">
-          <div class="bar-background"></div>
-          <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-          <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-          <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
-      </div>
-      <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
-    </div>
-  </div>
-  <?php
-        }
-      } //end checking for business vs agency
+      <?php
+    }
+  } //end checking for business vs agency
       ?>
   </div>
 
@@ -132,11 +132,24 @@
                 <label for="review_invite_type_id" class="col-md-4 control-label">Review Invite Type</label>
                 <div class="col-md-8">
                   <div id="image_container">
-                    <img src="/img/feedback_request.png" data-id="1" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 1?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 1?' class="selected"':''))?> />
-                    <img src="/img/stars.png" data-id="2" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 2?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 2?' class="selected"':''))?> />
-                    <img src="/img/nps.png" data-id="3" <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 3?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 3?' class="selected"':''))?> />
+                    <img
+                      src="/img/feedback_request.png"
+                      data-id="1"
+                      <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 1?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 1?' class="selected"':''))?> />
+                    <img
+                      src="/img/stars.png"
+                      data-id="2"
+                      <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 2?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 2?' class="selected"':''))?> />
+                    <img
+                      src="/img/nps.png"
+                      data-id="3"
+                      <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 3?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 3?' class="selected"':''))?> />
                   </div>
-                  <input id="review_invite_type_id" name="review_invite_type_id" type="hidden" value="<?=(isset($_POST['review_invite_type_id'])?$_POST["review_invite_type_id"]:(isset($location->review_invite_type_id)?$location->review_invite_type_id:''))?>" />
+                  <input
+                    id="review_invite_type_id"
+                    name="review_invite_type_id"
+                    type="hidden"
+                    value="<?=(isset($_POST['review_invite_type_id'])?$_POST["review_invite_type_id"]:(isset($location->review_invite_type_id)?$location->review_invite_type_id:''))?>" />
                 </div>
               </div>
               <div class="row">
@@ -160,58 +173,64 @@
                 <div class="col-md-8">
                   <ul id="sortable">
                     <?php
-                foreach($review_site_list as $rsl) {
-                  if ($rsl->review_site_id == 1) $has_facebook = true;
+
+                  if (isset($this->view->review_site_list)) {
+                  foreach($this->view->review_site_list as $review_site_list) {
+                  if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
+                    
                     ?>
-                    <li class="ui-state-default" id='<?=$rsl->location_review_site_id?>'>
-                      <span class="site-wrapper"><img src="<?=$rsl->review_site->icon_path?>" class="imgicon" /> <?=$rsl->review_site->name?></span>
-                    <span class="review_site-buttons">
-                      <?php if ($rsl->review_site_id <= 3) { ?>
-                        <a class="btnLink" href="<?=$rsl->review_site->base_url?><?=$rsl->external_id?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a>
-                        <a class="btnLink" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"><img src="/img/icon-pencil.gif" /> Update Location</a>
-                      <?php } else { ?>
-                      <a class="btnLink" href="<?=$rsl->url?>" target="_blank"><img src="/img/icon-eye.gif" /> View</a>
-                      <?php } ?>
-                    </span>
-                    <span class="on-off-buttons">
-                      <a data-id="<?=$rsl->location_review_site_id?>" id="on<?=$rsl->location_review_site_id?>" href="#" class="review_site_on" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
-                      <a data-id="<?=$rsl->location_review_site_id?>" id="off<?=$rsl->location_review_site_id?>" href="#" class="review_site_off" style="<?=(isset($rsl->is_on) && $rsl->is_on == 1?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
-                    </span>
+                    <li class="ui-state-default" id='<?=$review_site_list->location_review_site_id?>'>
+                      <span class="site-wrapper"><img src="<?=$review_site_list->review_site->icon_path?>" class="imgicon" />
+                        <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { 
+                        if($review_site_list->review_site_id ==1){
+                        ?><a
+                          class="btnLink btnSecondary track-link"  id="facebooklink1" 
+                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="http://facebook.com/<?=$review_site_list->external_id; ?>" target="_blank"  data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>">
+                          View
+                        </a> <?php } else {?> 
+                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank">View</a>
+                        <?php } ?>
+
+                        <a
+                          class="btnLink btnSecondary"
+                          href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>">
+                          <img src="/img/icon-pencil.png" /> Update Location</a><?php } else { ?><a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"> View</a>
+                      <?php } ?></span><span class="on-off-buttons"><a
+                        data-id="<?=$review_site_list->location_review_site_id?>"
+                        id="on<?=$review_site_list->location_review_site_id?>"
+                        href="#"
+                        class="review_site_on"
+                        style="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'':'display: none;')?>">
+                        <img src="/img/btn_on.gif"  class="sort-icon" />
+                      </a>
+                      <a
+                        data-id="<?=$review_site_list->location_review_site_id?>"
+                        id="off<?=$review_site_list->location_review_site_id?>"
+                        href="#"
+                        class="review_site_off"
+                        style="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'display: none;':'')?>">
+                        <img src="/img/btn_off.gif"  class="sort-icon" />
+                      </a></span>
                       <img src="/img/btn_sort.gif" class="sort-icon" />
                     </li>
                     <?php
                 }
+                }
                 ?>
                   </ul>
-                  <input id="review_order" name="review_order" type="hidden" value="" />
+                  <input class="form-control" id="review_order" name="review_order" type="hidden" value="" />
                 </div>
               </div>
               <div class="row">
                 <label class="col-md-4 control-label">
                 </label>
                 <div class="col-md-8">
-                  <a class="btnLink" id="btnAddReviewSite" href="" target="_blank">Add Review Site</a>
+                  <a class="btnLink btnSecondary" id="btnAddReviewSite" href="" target="_blank">Add Review Site</a>
                 </div>
               </div>
             </div>
+          
             <?php
-        if ($has_facebook) {
-          ?>
-            <div class="form-group">
-              <div class="row">
-                <label for="rating_threshold_star" class="col-md-4 control-label">Authenticate Facebook</label>
-                <div class="col-md-8">
-                  <a href="/location/getAccessToken" id="btnAuthenticateFacebook" class="btnLink">Authenticate Facebook</a>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <i>Facebook needs to be authenticated to import reviews into this system.</i>
-                </div>
-              </div>
-            </div>
-            <?php
-        }
         }
         ?>
 
@@ -265,12 +284,17 @@
               <div class="row">
                 <label for="SMS_message" class="col-md-4 control-label">SMS Message</label>
                 <div class="col-md-8">
-                  <textarea style="width: 100%;" class="form-control" name="SMS_message"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($agency->SMS_message)?$agency->SMS_message:'{location-name}: Hi {name}, We\'d really appreciate your feedback by clicking the link. Thanks! {link}'))?></textarea>
+                  <textarea style="width: 100%;" class="form-control" name="SMS_message"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?>
+                  </textarea>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <i>The default content of the SMS message.  This can be customized when sending the SMS.  {location-name} will be the name of the location sending the SMS, {name} will be replaced with the name entered when sending the message and {link} will be the link to the review.</i>
+                  <i>The default content of the SMS message.
+                    This can be customized when sending the SMS.
+                    {location-name} will be the name of the location sending the SMS,
+                    {name} will be replaced with the name entered when sending the message and
+                    {link} will be the link to the review.</i>
                 </div>
               </div>
             </div>
@@ -370,7 +394,16 @@
               </div>
               <div class="col-md-6">
                 <p><b>Or choose your own color theme:</b></p>
-                <div class="color-select"><input type="text" id="main_color" name="main_color" class="" data-control="hue" value="<?=(isset($_POST['main_color'])?$_POST["main_color"]:(isset($agency->main_color)?$agency->main_color:'#2B3643'))?>" style="margin: 4px;"  /> Primary</div>
+                <div class="color-select">
+                  <input
+                    type="text"
+                    id="main_color"
+                    name="main_color"
+                    class=""
+                    data-control="hue"
+                    value="<?=(isset($_POST['main_color'])?$_POST["main_color"]:(isset($agency->main_color)?$agency->main_color:'#2B3643'))?>"
+                    style="margin: 4px;"  /> Primary
+                </div>
                 <!--<div class="color-select"><input type="text" id="secondary_color" name="secondary_color" class="" data-control="hue" value="#364150" style="margin: 4px;"  /> Secondary</div>-->
               </div>
             </div>
@@ -392,7 +425,11 @@
               <div class="row">
                 <div class="col-md-12">
                   <i>
-                    All SMS messages are sent using <a href="https://www.twilio.com/" target="_blank">Twilio</a>.  Enter your API key here.  <a href="https://www.twilio.com/user/account" target="_blank">Click here</a> to find your Twilio SID and Auth Token.  If you don't have an API key yet, <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a> to sign up.  Note: you must have a Twilio SID and Auth Key to send SMS messages.
+                    All SMS messages are sent using <a href="https://www.twilio.com/" target="_blank">Twilio</a>.
+                    Enter your API key here.  <a href="https://www.twilio.com/user/account" target="_blank">Click here</a>
+                    to find your Twilio SID and Auth Token.
+                    If you don't have an API key yet, <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a>
+                    to sign up.  Note: you must have a Twilio SID and Auth Key to send SMS messages.
                   </i>
                 </div>
               </div>
@@ -419,7 +456,11 @@
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <i>Either the Twilio Messaging Service SID or the Twilio Phone number is required.  The Twilio Messaging Service SID allows for dynamic phone numbers.  <a href="https://www.twilio.com/copilot" target="_blank">Click here</a> to read more about this field.</i>
+                  <i>
+                    Either the Twilio Messaging Service SID or the Twilio Phone number is required.
+                    The Twilio Messaging Service SID allows for dynamic phone numbers.
+                    <a href="https://www.twilio.com/copilot" target="_blank">Click here</a> to read more about this field.
+                  </i>
                 </div>
               </div>
             </div>
@@ -512,12 +553,14 @@
                         <th>SMS Alert</th>
                         <th>All Reviews</th>
                         <th>Individual Reviews</th>
+                        <th>Employee Leaderboards</th>
+                        <th>Send Sample Email (Employee Leaderboards)</th>
                       </tr>
                       </thead>
                       <tbody>
                       <?php
             $found = false;
-            foreach($users as $data) {
+            foreach($users as $user) {
               $found = true;
 
               //now check if this record should be checked
@@ -526,44 +569,148 @@
               $is_sms_alert_on = false;
               $is_all_reviews_on = false;
               $is_individual_reviews_on = false;
-              foreach($agencynotifications as $an) {
-                if ($an->user_id == $data->id) {
-                      $is_email_alert_on = ($an->email_alert==1?true:false);
-                      $is_sms_alert_on = ($an->sms_alert==1?true:false);
-                      $is_all_reviews_on = ($an->all_reviews==1?true:false);
-                      $is_individual_reviews_on = ($an->individual_reviews==1?true:false);
-                      }
-                      }
+              $is_employee_report_on = false;
 
-                      ?>
-                      <tr>
-                        <td><?=$data->name?></td>
-                        <td>
+              foreach($agencynotifications as $agencynotification) {
+                if ($agencynotification->user_id == $user->id) {
+
+                  $is_email_alert_on = ($agencynotification->email_alert==1?true:false);
+                  $is_sms_alert_on = ($agencynotification->sms_alert==1?true:false);
+                  $is_all_reviews_on = ($agencynotification->all_reviews==1?true:false);
+                  $is_individual_reviews_on = ($agencynotification->individual_reviews==1?true:false);
+                  $is_employee_report_on = ($agencynotification->employee_leaderboards==1?true:false);
+                }
+              }
+            ?>
+
+            <tr>
+              <td ObjectID="<?=$user->id; ?>"><?=$user->name?></td>
+              <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" data-type="ea" data-value="0" id="eaon<?=$data->id?>" href="#" class="email_alert_on" style="<?=($is_email_alert_on?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" data-type="ea" data-value="1" id="eaoff<?=$data->id?>" href="#" class="email_alert_off" style="<?=($is_email_alert_on?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
+                    <a
+                    data-id="<?=$user->id?>"
+                    data-type="ea"
+                    data-value="0"
+                    id="eaon<?=$user->id?>"
+                    href="#"
+                    class="email_alert_on"
+                    style="<?=($is_email_alert_on?'':'display: none;')?>">
+                    <img src="/img/btn_on.gif" class="sort-icon" />
+                  </a>
+                  <a
+                    data-id="<?=$user->id?>"
+                    data-type="ea"
+                    data-value="1"
+                    id="eaoff<?=$user->id?>"
+                    href="#"
+                    class="email_alert_off"
+                    style="<?=($is_email_alert_on?'display: none;':'')?>">
+                    <img src="/img/btn_off.gif" class="sort-icon" />
+                  </a>
+
                 </span>
-                        </td>
-                        <td>
+
+              </td>
+              <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" data-type="sa" data-value="0" id="saon<?=$data->id?>" href="#" class="sms_alert_on" style="<?=($is_sms_alert_on?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" data-type="sa" data-value="1" id="saoff<?=$data->id?>" href="#" class="sms_alert_off" style="<?=($is_sms_alert_on?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a
+                    data-id="<?=$user->id?>"
+                    data-type="sa"
+                    data-value="0"
+                    id="saon<?=$user->id?>"
+                    href="#"
+                    class="sms_alert_on"
+                    style="<?=($is_sms_alert_on?'':'display: none;')?>">
+                    <img src="/img/btn_on.gif" class="sort-icon" />
+                  </a>
+                  <a
+                    data-id="<?=$user->id?>"
+                    data-type="sa"
+                    data-value="1"
+                    id="saoff<?=$user->id?>"
+                    href="#"
+                    class="sms_alert_off"
+                    style="<?=($is_sms_alert_on?'display: none;':'')?>">
+                    <img src="/img/btn_off.gif" class="sort-icon" />
+                  </a>
                 </span>
-                        </td>
-                        <td>
+              </td>
+              <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" data-type="ar" data-value="0" id="aron<?=$data->id?>" href="#" class="all_reviews_on" style="<?=($is_all_reviews_on?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" data-type="ar" data-value="1" id="aroff<?=$data->id?>" href="#" class="all_reviews_off" style="<?=($is_all_reviews_on?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a
+                    data-id="<?=$user->id?>"
+                    data-type="ar"
+                    data-value="0"
+                    id="aron<?=$user->id?>"
+                    href="#"
+                    class="all_reviews_on"
+                    style="<?=($is_all_reviews_on?'':'display: none;')?>">
+                    <img src="/img/btn_on.gif"  class="sort-icon" />
+                  </a>
+                  <a
+                    data-id="<?=$user->id?>"
+                    data-type="ar"
+                    data-value="1"
+                    id="aroff<?=$user->id?>"
+                    href="#"
+                    class="all_reviews_off"
+                    style="<?=($is_all_reviews_on?'display: none;':'')?>">
+                    <img src="/img/btn_off.gif" class="sort-icon" />
+                  </a>
                 </span>
-                        </td>
-                        <td>
+              </td>
+              <td>
                 <span class="on-off-buttons">
-                  <a data-id="<?=$data->id?>" data-type="ir" data-value="0" id="iron<?=$data->id?>" href="#" class="individual_reviews_on" style="<?=($is_individual_reviews_on?'':'display: none;')?>"><img src="/img/btn_on.gif"  class="sort-icon" /></a>
-                  <a data-id="<?=$data->id?>" data-type="ir" data-value="1" id="iroff<?=$data->id?>" href="#" class="individual_reviews_off" style="<?=($is_individual_reviews_on?'display: none;':'')?>"><img src="/img/btn_off.gif"  class="sort-icon" /></a>
+                  <a
+                    data-id="<?=$user->id?>"
+                    data-type="ir"
+                    data-value="0"
+                    id="iron<?=$user->id?>"
+                    href="#"
+                    class="individual_reviews_on"
+                    style="<?=($is_individual_reviews_on?'':'display: none;')?>">
+                    <img src="/img/btn_on.gif" class="sort-icon" />
+                  </a>
+                  <a
+                    data-id="<?=$user->id?>"
+                    data-type="ir"
+                    data-value="1"
+                    id="iroff<?=$user->id?>" href="#"
+                    class="individual_reviews_off"
+                    style="<?=($is_individual_reviews_on?'display: none;':'')?>">
+                    <img src="/img/btn_off.gif" class="sort-icon" />
+                  </a>
                 </span>
-                        </td>
-                      </tr>
-                      <?php
+              </td>
+              <td>
+                <span class="on-off-buttons">
+                  <a
+                    data-id="<?=$user->id?>"
+                    data-type="el"
+                    data-value="0"
+                    id="elon<?=$user->id?>"
+                    href="#"
+                    class="employee_report_on"
+                    style="<?=($is_employee_report_on?'':'display: none;')?>">
+                    <img src="/img/btn_on.gif" class="sort-icon" />
+                  </a>
+                  <a
+                    data-id="<?=$user->id?>"
+                    data-type="el"
+                    data-value="1"
+                    id="eloff<?=$user->id?>"
+                    href="#"
+                    class="employee_report_off"
+                    style="<?=($is_employee_report_on?'display: none;':'')?>">
+                    <img src="/img/btn_off.gif" class="sort-icon" />
+                  </a>
+                </span>
+              </td>
+              <td>
+                <a class="btnLink btnSecondary SendEmployeeEmail" href="#" >Send Email</a>
+              </td>
+            </tr>
+            <?php
             }
           ?>
                       </tbody>
@@ -582,7 +729,6 @@
           </div>
           <!-- END Notification Settings  -->
 
-
         </div>
 
         <div class="form-group">
@@ -590,18 +736,15 @@
             Invalid file type.  Only gif, png, jpg  or jpeg file extensions are allowed.
           </div>
           <div class="col-md-offset-4 col-md-8">
-            {{ submit_button("Save", "class": "btn btn-big btn-success btnLink") }}
+            {{ submit_button("Save", "class": "btn btn-big btn-success btnLink btnSecondary") }}
           </div>
         </div>
         {{ form.render("agency_id") }}
       </form>
     </div>
   </div>
-
-
   </div>
 </header>
-
 
 <?php
 //make sure we are at the location level settings
@@ -619,21 +762,21 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           <select name="review_site_id" id="review_site_id" required="required">
             <option value="">Select Site</option>
             <?php
-          foreach($review_sites as $rs) {
-            $found = false;
-            if ($rs->review_site_id < 4) {
-            $found = true;
-            } else if (isset($review_site_list)) {
-            foreach($review_site_list as $rsl) {
-            if ($rsl->review_site_id == $rs->review_site_id) $found = true;
-            }
-            }
-            if (!$found) {
-            ?>
-            <option value="<?=$rs->review_site_id?>"><?=$rs->name?></option>
-            <?php
-            }
-          }
+              foreach($review_sites as $review_site) {
+                $found = false;
+                if ($review_site->review_site_id < 4) {
+                  $found = true;
+                } else if (isset($review_site_lists)) {
+                  foreach($review_site_lists as $review_site_list) {
+                    if ($review_site_list->review_site_id == $review_site->review_site_id) $found = true;
+                  }
+                }
+                if (!$found) {
+                  ?>
+                  <option value="<?=$review_site->review_site_id?>"><?=$review_site->name?></option>
+                  <?php
+                }
+              }
           ?>
           </select>
         </div>
@@ -645,7 +788,9 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         </div>
       </div>
       <div class="row">
-        <div class="field"><button id="createsite" type="submit" class="btnLink">Save</button></div>
+        <div class="field">
+          <button id="createsite" type="submit" class="btnLink btnSecondary">Save</button>
+        </div>
       </div>
       <div style="clear: both;">&nbsp;</div>
     </div>
@@ -659,7 +804,21 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
 
 <script type="text/javascript">
-  jQuery(document).ready(function($){
+  jQuery(document).ready(function($) {
+    $('.SendEmployeeEmail').on('click', function(e) {
+        var EmployeeID = $(this).parents('TR').children('TD:first-child').attr('ObjectID');
+
+        $.ajax({
+            url: "/settings/sendSampleEmail/" + EmployeeID,
+            success: function(data) {
+                if(data == "1")
+                    alert("Email successfully sent!");
+                else
+                    alert("Problem sending email.  Please contact customer support.");
+            }
+        });
+    });
+
     $('#btnAddReviewSite').on('click', function(e) {
       e.preventDefault();
       $('#page-wrapper').show();
@@ -681,8 +840,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         url: $('#createreviewsiteform').attr('action')+''+$("#review_site_id").val()+'/?url='+encodeURIComponent($("#url").val()),
         cache: false,
         success: function(data){
-          //done!
-          //console.log('data:'+data);
+
           //$.each(data, function(index, element) {
           var element = $.parseJSON(data);
           //first, remove the value we selected
@@ -697,7 +855,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           var name = element.name;
 
           //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span> <span class="review_site-buttons"><a class="btnLink" href="'+url+'" target="_blank"><img src="/img/icon-eye.gif" /> View</a></span> <span class="on-off-buttons"> <a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a> <a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a> </span> <img src="/img/btn_sort.gif" class="sort-icon" /> </li>');
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink" href="'+url+'" target="_blank"> View</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
 
           $("a.review_site_on").click(function() {
             return turnOn($(this).attr("data-id"));
@@ -745,7 +903,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       //console.log('id:'+id);
 
       $.ajax({
-        url: "/settings/off/"+id,
+        url: "/settings/off/"+id+"/",
         cache: false,
         success: function(html){
           //done!
@@ -758,34 +916,40 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       return false;
     }
 
-    $("#notifications .on-off-buttons a").click(function() {
-      id = $(this).attr("data-id");
-      type = $(this).attr("data-type");
-      value = $(this).attr("data-value");
-      //console.log('id:'+id);
-      $.ajax({
-        url: "/settings/notification/"+id+"/"+type+"/"+value+"/",
-        cache: false,
-        success: function(html){
-          //done!
-        }
-      });
 
-      if (value == 1) {
-        //console.log('#'+type+'on'+id);
-        $('#'+type+'on'+id).show();
-        $('#'+type+'off'+id).hide();
-      } else {
-        //console.log('#'+type+'off'+id);
-        $('#'+type+'on'+id).hide();
-        $('#'+type+'off'+id).show();
-      }
+        $("#notifications .on-off-buttons a").click(function() {
+          id = $(this).attr("data-id");
+          type = $(this).attr("data-type");
+          value = $(this).attr("data-value");
+          //console.log('id:'+id);
+          $.ajax({
+            url: "/settings/notification/"+id+"/"+type+"/"+value+"/",
+            cache: false,
+            success: function(html){
+              //done!
+            }
+          });
 
-      return false;
-    });
+          if (value == 1) {
+            //console.log('#'+type+'on'+id);
+            $('#'+type+'on'+id).show();
+            $('#'+type+'off'+id).hide();
+          } else {
+            //console.log('#'+type+'off'+id);
+            $('#'+type+'on'+id).hide();
+            $('#'+type+'off'+id).show();
+          }
+
+          return false;
+        });
 
 
-    $("#settingsform").on("submit", function(e){
+
+    $("#settingsform").on("submit", function(e) {
+
+  //  var inputs = document.getElementsByTagName('on-off-buttons');
+  //alert(inputs.serializeArray());
+
       var idsInOrder = $("#sortable").sortable("toArray");
       //-----------------^^^^
       console.log(idsInOrder);
@@ -805,6 +969,23 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
     });
 
 
+    $("#creastesite").on("submit", function(e) {
+    var url = document.getElementsByIdName('url');
+	    $.ajax({
+	        url: "/settings/addReviewSite/"+url+"/",
+	        cache: false,
+	        success: function(html){
+	        }
+	 	});
+		if (value == 1) {
+
+		} else {
+
+		}
+
+    });
+
+
     $('div#image_container img').click(function(){
       // set the img-source as value of image_from_list
       $('div#image_container img').removeClass("selected");
@@ -816,6 +997,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
     $("#sortable").disableSelection();
     //i broke this out so it would be on its own function
   });
+
   $(function () {
     var selected = $('#image_container img.selected').length;
     if (selected <= 0 || typeof selected == undefined) {

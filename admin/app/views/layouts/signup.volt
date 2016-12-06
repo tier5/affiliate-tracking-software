@@ -35,7 +35,21 @@
     <!-- END PAGE LEVEL STYLES -->
     <!-- BEGIN THEME LAYOUT STYLES -->
     <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="favicon.ico" />
+    
+    <link rel="apple-touch-icon" sizes="57x57" href="/img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
+    
 
     <link href="/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
 
@@ -57,11 +71,27 @@ if (isset($main_color_setting)) {
 <header>
     <div class="headercontent">
         <!-- BEGIN LOGO -->
+        <?php
+            if($logo_path == '/img/agency_logos/' || !$logo_path) {
+                $MarginLeftSteps = "margin-left: 280px !important;";
+                $MarginLeftWords = "margin-left: 269px !important;";
+            } else {
+                if($logo_path == '/assets/layouts/layout/img/logo.png') {
+                    $MarginLeftSteps = 'margin-left: 35px !important;';
+                    $MarginLeftWords = "margin-left: 244px !important;";
+                } else {
+                    $MarginLeftSteps = '';
+                    $MarginLeftWords = '';
+                }
+            }
+         ?>
+        {% if logo_path AND logo_path != "/img/agency_logos/" %}
         <div class="logo">
-            <a href="/"><img src="<?=(false && isset($logo_setting) && $logo_setting != ''?$logo_setting:'/img/logo-white.gif')?>" alt="" /></a>
+            <a href="/"><img style="max-width: 300px; margin-top: 15px;"  src="{{ logo_path }}" alt="" /></a>
         </div>
+        {% endif %}
         <!-- END LOGO -->
-        <div class="steps">
+        <div class="steps" style="<?=$MarginLeftSteps; ?>">
             <div class="step"><img src="/img/step-<?=($current_step > 1?'on':'current')?>.gif" alt="Sign up form, Step 1 (Account)" /></div>
             <div class="divider"><img src="/img/step-line-<?=($current_step > 1?'on':'off')?>.gif" /></div>
             <div class="step"><img src="/img/step-<?=($current_step == 2?'current':($current_step > 2?'on':'off'))?>.gif" alt="Sign up form, Step 2 (Add Location)" /></div>
@@ -72,7 +102,7 @@ if (isset($main_color_setting)) {
             <div class="divider"><img src="/img/step-line-<?=($current_step > 4?'on':'off')?>.gif" /></div>
             <div class="step"><img src="/img/step-<?=($current_step == 5?'current':($current_step > 5?'on':'off'))?>.gif" alt="Sign up form, Step 5 (Share)" /></div>
         </div>
-        <div class="steps-desc">
+        <div class="steps-desc" style="<?=$MarginLeftWords; ?>">
             <div id="step1">Account</div>
             <div id="step2">Add Location</div>
             <div id="step3">Customize Survey</div>
@@ -86,7 +116,7 @@ if (isset($main_color_setting)) {
     {{ content() }}
 </div>
 <footer>
-    <div class="copyright"> &copy; Copyright Review Velocity.  All Rights Reserved. </div>
+    <div class="copyright"> &copy; Copyright <?php echo $this->view->parent_agency; ?>.  All Rights Reserved. </div>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
@@ -114,7 +144,7 @@ if (isset($main_color_setting)) {
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script type="text/javascript" src="/js/vendor/minicolors/jquery.minicolors.js"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
-        <script src="/js/login.js"></script>
+        <script src="/js/signup.js"></script>
 </footer>
 </body>
 

@@ -33,7 +33,8 @@ class UserControlController extends ControllerBase
      */
     public function confirmEmailAction()
     {
-        $this->tag->setTitle('Review Velocity | Confirm email');
+
+        $this->tag->setTitle('Get Mobile Reviews | Confirm email');
         $code = $this->dispatcher->getParam('code');
         $email = $this->dispatcher->getParam('email');
         $email = str_replace(' ', '+', $email);
@@ -42,7 +43,7 @@ class UserControlController extends ControllerBase
             $confirmation->confirmed = 'Y';
             $confirmation->update();
         }
-
+       
         $user_id = $confirmation->usersId;
         if ($user_id) $user = Users::findFirst('id = ' . $user_id);
         if ($user) {
@@ -64,27 +65,32 @@ class UserControlController extends ControllerBase
             //$confirmation->user->save();
             $confirmation->save();
         }
+       
         if (!$confirmation) {
             return $this->dispatcher->forward(array(
                 'controller' => 'index',
                 'action' => 'index'
             ));
         }
-        if ($confirmation->confirmed == 'Y') {
+       
+        if ($confirmation->confirmed == 'Y' && $confirmation->user->mustChangePassword == 'N') {
+        	
             return $this->dispatcher->forward(array(
                 'controller' => 'session',
                 'action' => 'login',
                 'params'=>['email'=>$email]
             ));
+
         }
-
+       
         $confirmation->confirmed = 'Y';
-
+        
         $confirmation->user->active = 'Y';
 
         /**
          * Change the confirmation to 'confirmed' and update the user to 'active'
          */
+
         $confirmation->save();
         if (!$confirmation->save()) {
 
@@ -106,6 +112,7 @@ class UserControlController extends ControllerBase
         /**
          * Check if the user must change his/her password
          */
+
         if ($confirmation->user->mustChangePassword == 'Y') {
 
             $this->flash->success('The email was successfully confirmed. Now you must change your password');
@@ -126,7 +133,7 @@ class UserControlController extends ControllerBase
 
     public function resetPasswordAction()
     {
-        $this->tag->setTitle('Review Velocity | Reset password');
+        $this->tag->setTitle('Get Mobile Reviews | Reset password');
         $code = $this->dispatcher->getParam('code');
 
         $resetPassword = ResetPasswords::findFirstByCode($code);

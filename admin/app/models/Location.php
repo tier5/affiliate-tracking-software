@@ -9,9 +9,11 @@
      * Vokuro\Models\Location
      * The Locations
      */
-    class Location extends Model
+    class Location extends BaseModel
     {
-
+    	const TYPE_FACEBOOK = 1;
+    	const TYPE_YELP = 2;
+        const TYPE_GOOGLE = 3;
 
         public $location_id;
         public $agency_id;
@@ -32,7 +34,7 @@
         public function initialize()
         {
             $this->setSource('location');
-
+			$this->skipAttributes(['region_id']);
             $this->belongsTo('region_id', __NAMESPACE__ . '\Region', 'region_id', array(
                 'alias' => 'region',
                 'reusable' => true

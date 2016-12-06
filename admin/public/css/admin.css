@@ -173,9 +173,20 @@ div#image_container img.selected, div#image_container img:hover{
 .page-header.navbar .menu-toggler { background-image: url("/img/sidebar_toggler_icon_white.png"); }
 .page-footer .page-footer-inner { color: #484848; }
 
+/*
+.table-responsive {
+    display: block;
+}*/
 
+.alert{   font-size: 20px !important; }
 
+@media screen and (max-width:767px){
+  .alert{   font-size: 40px !important; }
 
+  .table-responsive {
+    display: block;
+}
+}
 
 .onoffswitch {
     position: relative; width: 90px;
@@ -573,8 +584,8 @@ div#image_container img.selected, div#image_container img:hover{
 #reviews .fade { display: none; }
 #reviews .active { display: block; }
 #reviews .user-data .active { display: inline; }
-#reviews .nav-tabs a { background-color: #f6f6f6; border: 1px solid #e7ecf0 !important; color: #293543; font-weight: bold; height: 53px; line-height: 36px; margin: 0; text-transform: uppercase; }
-#reviews .nav-tabs .active > a { border-top: 4px solid #283643 !important; background-color: #FFFFFF; height: 53px; line-height: 29px; }
+#reviews .nav-tabs a { background-color: #f6f6f6; border: 1px solid #e7ecf0; color: #293543; font-weight: bold; height: 53px; line-height: 36px; margin: 0; text-transform: uppercase; }
+#reviews .nav-tabs .active > a { border-top: 4px solid #283643; background-color: #FFFFFF; height: 53px; line-height: 29px; }
 #reviews .nav-tabs > li { margin-bottom: -4px; }
 #reviews .nav.nav-tabs { overflow: hidden; }
 
@@ -915,7 +926,7 @@ body { background-color: #FFFFFF; color: #484848; }
   vertical-align: middle;
 }
 
-.page-logo img { max-width: 100%;}
+.page-logo img { max-height: 39px; }
 
 @media (max-width: 1267px) {
   .upgrade-top {
@@ -978,4 +989,59 @@ body { background-color: #FFFFFF; color: #484848; }
 }
 .free_subscription_pricing_plan.show {
     display: block;
+}
+
+.feedback_requests {
+    font-weight: bold;
+}
+
+@media screen and (min-width: 481px) and (max-width: 767px){
+  #reviews .site-wrapper {
+    width: 160px;
+    font-size: 12px;
+    height: 30px;
+  }
+
+  #sortable .review_site-buttons {
+      display: inline-block;
+      width: auto;
+  }
+
+  #sortable .btnLink {
+    font-size: 10px;
+    margin-left: 2px;
+  }
+
+  .review_site_on img, .review_site_off img{
+    width: 10%;
+  }
+}
+
+@media screen and (max-width: 480px){
+  #reviews .site-wrapper img.imgicon {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #reviews .site-wrapper {
+    width: 120px;
+    font-size: 10px;
+    height: 28px;
+    padding: 2px;
+  }
+
+  #sortable .btnLink {
+    font-size: 10px;
+    margin-left: 0;
+  }
+
+  #sortable .review_site-buttons {
+    display: block;
+    width: auto;
+    margin-bottom: 10px;
+  }
+
+  #reviews .ui-state-default{
+    height: auto;
+  }
 }

@@ -11,6 +11,25 @@
 
     class Agency extends BaseModel {
 
+        //public $id;
+        public $agency_id;
+
+        /**
+         * @return mixed
+         */
+        public function getId()
+        {
+            return $this->agency_id;
+        }
+
+        /**
+         * @param mixed $id
+         */
+        public function setId($id)
+        {
+            $this->agency_id = $id;
+        }
+
         const AGENCY = 0;
         const BUSINESS_UNDER_RV = -1;
 
@@ -18,11 +37,11 @@
          * Validate that custom_domain is unique across agencies
          */
         public function validation() {
-            $this->validate(new Regex([
+            /*$this->validate(new Regex([
                 'field'   => 'name',
                 'pattern' => '/^[a-zA-Z\.0-9 ]+$/',
                 'message' => 'Name is in the wrong format (letters, period, and apostrophe)'
-            ]));
+            ]));*/
 
             $this->validate(new Email([
                 'field'   => 'email',
@@ -43,17 +62,21 @@
         }
 
         public function initialize() {
-            $this->skipAttributes(['address2']);
-            $this->skipAttributes(['website']);
-            $this->skipAttributes(['email_from_name']);
-            $this->skipAttributes(['email_from_address']);
+           // $this->skipAttributes(['address2']);
+
+            if(isset($this->parent_id) && $this->parent_id != static::AGENCY) {
+                $this->skipAttributes(['website']);
+                $this->skipAttributes(['email_from_name']);
+                $this->skipAttributes(['email_from_address']);
+            }
+
             $this->setSource('agency');
 
             $this->belongsTo('subscription_id', __NAMESPACE__ . '\Subscription', 'subscription_id', array(
                 'alias' => 'subscription',
                 'reusable' => true
             ));
-            if (!$this->_skipped) $this->skipAttributes(['address2']); //address2 should NOT be required
+            //if (!$this->_skipped) $this->skipAttributes(['address2']); //address2 should NOT be required
             parent::initialize();
         }
 

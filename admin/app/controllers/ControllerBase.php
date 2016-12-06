@@ -17,6 +17,7 @@ use Vokuro\Models\SharingCode;
 use Vokuro\Models\Users;
 use Vokuro\Models\UsersSubscription;
 use Vokuro\Models\YelpScanning;
+use Vokuro\Services\Permissions;
 use Vokuro\Services\ServicesConsts;
 use Services_Twilio;
 use Services_Twilio_RestException;
@@ -27,27 +28,44 @@ use Services_Twilio_RestException;
  */
 class ControllerBase extends Controller {
 
+    protected $permissions;
+    protected $user_object;
+	
+
+    public function checkIntegerOrThrowException($int,$message = null){
+        if(!is_int($int)){
+            var_dump($int);
+            throw new \Exception(($message) ? $message : 'Invalid parameter provided, expected integer');
+        }
+    }
+
+    public function clean($val){
+        return strip_tags($val,['<p><a><br><hr><h1><h2><h3><h4><h5><h6><b>']);
+        return $val;
+    }
+
+    public function RedirectDomain($Domain) {
+        $TLDomain = $this->config->application->domain;
+        $PageURL = 'http';
+        if($_SERVER['SERVER_PORT'] === 443)
+            $PageURL .= 's';
+        $PageURL .= "://{$Domain}.{$TLDomain}.com/" . $_SERVER['REQUEST_URI'];
+        
+        return $this->response->redirect($PageURL);
+    }
+
     public function initialize() {
         error_reporting(E_ALL ^ E_NOTICE);
-        //get the user id, to find the settings
+
+        $this->permissions = new Permissions();
+        $this->user_object = $this->getUserObject();
         $identity = $this->auth->getIdentity();
-        // If there is no identity available the user is redirected to index/index
-        //KT WHERE?
 
         if (is_array($identity)) {
-            $conditions = 'id = :id:';
-
-            $parameters = array(
-                "id" => $identity['id']
-            );
-
-            $userObj = Users::findFirst(
-                array(
-                    $conditions,
-                    "bind" => $parameters
-                )
-            );
-
+            $userObj = $this->getUserObject();
+            $this->view->loggedUser = $userObj;
+            
+            
             //find the agency
             $conditions = "agency_id = :agency_id:";
 
@@ -56,10 +74,10 @@ class ControllerBase extends Controller {
             );
 
             $agency = Agency::findFirst(
-                            array(
-                                $conditions,
-                                "bind" => $parameters
-                            )
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
             );
 
             if ($agency) {
@@ -68,16 +86,76 @@ class ControllerBase extends Controller {
                 $this->view->setVars([
                     'main_color_setting' => $agency->main_color,
                     'rgb' => $rgb,
-                    'main_color'=>$agency->main_color,
-                    'secondary_color'=>$agency->secondary_color,
-                    'logo_setting' => $agency->logo_path
+                    'logo_path' =>  "/img/agency_logos/" . $agency->logo_path
                 ]);
+
             }
+
+    //        $SD_Parts = explode('.', $_SERVER['HTTP_HOST']);
+         //   $Subdomain = $SD_Parts[0];
+//
+            $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+            $this->view->ReachedMaxSMS = $userObj->is_admin ? false : $objSubscriptionManager->ReachedMaxSMS($agency->agency_id, $this->session->get('auth-identity')['location_id'])['ReachedLimit'];
+
+            if($agency->parent_id > 0) {
+                // We're a business under an agency
+                $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+                // Commenting this out until we can figure out how to get sessions to last across subdomains.
+                /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $objParentAgency->custom_domain && $Subdomain != $objParentAgency->custom_domain)
+                    return $this->RedirectDomain($objParentAgency->custom_domain);*/
+
+                $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
+                $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
+                $this->view->objParentAgency = $objParentAgency;
+                
+                $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "" ;
+                $this->view->agencyName =  $objParentAgency->name;
+            } else {
+                // We're an agency or a business under RV
+                /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
+                    return $this->RedirectDomain($agency->custom_domain);*/
+                
+                $this->view->primary_color = "#2a3644";
+                $this->view->secondary_color = "#2eb82e";
+                $this->view->objParentAgency = null;
+                $this->view->agencyName = ($agency->parent_id == -1 || ($this->user_object->is_admin == 1)) ? "Get Mobile Reviews" : $agency->name;
+                //$this->view->logo_path = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
+            	if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+            		if (isset($agency->logo_path) && ($agency->logo_path != "")) {
+                        //echo $agency->logo_path;//exit;
+                       // echo strpos($agency->logo_path,'img/upload');exit;
+                        if(strpos($agency->logo_path,'img/upload')>0)
+                        {
+                           
+                            $this->view->logo_path = "{$agency->logo_path}";
+                        }
+                        else
+                        {
+                            $this->view->logo_path = "/img/agency_logos/{$agency->logo_path}"; 
+                        }
+            			
+                        //$this->view->logo_path = "{$agency->logo_path}";
+            		} else {
+            			$this->view->logo_path = "";
+            		}
+            	} else {
+            	    // We're a business under RV
+            	    if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+                        $this->view->logo_path = '/assets/layouts/layout/img/logo.png';
+                    }
+            	}
+            }
+
+            $objSMSManager = $this->di->get('smsManager');
+            $tTwilioKeys = $objSMSManager->getTwilioKeys($agency->agency_id, $userObj->is_admin);
+
+            $this->view->twilio_auth_messaging_sid = $this->twilio_auth_messaging_sid = $tTwilioKeys['twilio_auth_messaging_sid'];
+            $this->view->twilio_auth_token = $this->twilio_auth_token = $tTwilioKeys['twilio_auth_token'];
+            $this->view->twilio_from_phone = $this->twilio_from_phone = $tTwilioKeys['twilio_from_phone'];
+            $this->view->twilio_api_key = $this->twilio_api_key = $tTwilioKeys['twilio_api_key'];
 
             //internal navigation parameters
             $this->configureNavigation($identity);
-
-            $haspaid = true;
 
             /*
              * Has this user provided their credit card info?
@@ -87,25 +165,35 @@ class ControllerBase extends Controller {
 
             $this->view->paymentService = 'Stripe';
 
+
+            $objPricingPlan = $agency->subscription_id ? \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $agency->subscription_id) : '';
             $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = '. $identity['id']);
 
             // Check if business should be disabled
             $this->view->BusinessDisableBecauseOfStripe = false;
-            if($agency->parent_id > 0 && (!$objStripeSubscription || !$objStripeSubscription->stripe_subscription_id || $objStripeSubscription->stripe_subscription_id == 'N')) {
-                $haspaid = false;
+            $this->view->invalidBusinessSubscription = false;
 
-                if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret)
+            // Are we a business without an active subscription plan?
+            if($agency->parent_id > 0 && (!$objStripeSubscription || !$objStripeSubscription->stripe_subscription_id || $objStripeSubscription->stripe_subscription_id == 'N')) {
+                $this->view->invalidBusinessSubscription = true;
+
+                // Disable business if agency has no stripe keys enabled.
+                if (!$objParentAgency->stripe_publishable_keys || !$objParentAgency->stripe_account_secret)
                     $this->view->BusinessDisableBecauseOfStripe = true;
+                else {
+                    $this->view->stripePublishableKey = $objParentAgency->stripe_publishable_keys;
+                }
             }
             // End disabled check
+
+            $this->view->objAgency = $agency;
 
             // Should popup agency stripe modal?
             $this->AgencyInvalidStripe = false;
             $this->view->ShowAgencyStripePopup = false;
 
-
             if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
-                if (!$agency->stripe_publishable_keys || !$agency->stripe_account_secret) {
+                if ((!$agency->stripe_publishable_keys || !$agency->stripe_account_secret) && !$userObj->is_admin) {
                     $this->view->AgencyInvalidStripe = true;
                     $this->view->ShowAgencyStripePopup = true;
                 }
@@ -117,9 +205,8 @@ class ControllerBase extends Controller {
             }
             // End stripe modal
 
-
-            $this->view->haspaid = $haspaid;
-            //###  END: check to see if this user has paid   #####
+            if($this->session->StripePopupDisabled)
+                $this->view->ShowAgencyStripePopup = false;
 
             $conditions = "location_id = :location_id:";
 
@@ -153,7 +240,7 @@ class ControllerBase extends Controller {
         //find white label info based on the url
         $tHost = explode(".", $_SERVER['HTTP_HOST']);
         $sub = array_shift($tHost);
-        if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104') {
+        if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104' && $sub != 'getmobilereviews') {
             //find the agency object
             $conditions = "custom_domain = :custom_domain:";
 
@@ -162,20 +249,22 @@ class ControllerBase extends Controller {
             );
 
             $agency = Agency::findFirst(
-                            array(
-                                $conditions,
-                                "bind" => $parameters
-                            )
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
             );
 
             if ($agency) {
+            	$agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
                 list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
                 $rgb = $r . ', ' . $g . ', ' . $b;
                 $vars = [
                     'agency_id' => $agency->agency_id,
+                	'agency' => $agency,
                     'main_color_setting' => $agency->main_color,
                     'rgb' => $rgb,
-                    'logo_setting' => $agency->logo_path,
+                    'logo_path' => $agency->logo_path,
                     'main_color' => str_replace('#', '', $agency->main_color),
                     'primary_color' => str_replace('#', '', $agency->main_color),
                     'secondary_color' => str_replace('#', '', $agency->secondary_color)
@@ -183,7 +272,8 @@ class ControllerBase extends Controller {
                 $this->view->setVars($vars);
             }
         }
-
+        
+		$this->agency = $agency;
         if ($this->request->getPost('main_color')) {
             list($r, $g, $b) = sscanf($this->request->getPost('main_color'), "#%02x%02x%02x");
             $rgb = $r . ', ' . $g . ', ' . $b;
@@ -246,67 +336,128 @@ class ControllerBase extends Controller {
     }
 
     public function getShareInfo($agency) {
-        //Get the sharing code
-        $conditions = "agency_id = :agency_id:";
-
-        $parameters = array(
-            "agency_id" => $agency->agency_id
-        );
-
-        $share = SharingCode::findFirst(
-                        array(
-                            $conditions,
-                            "bind" => $parameters)
-        );
-
-        if (!(isset($share) && isset($share->sharecode))) {
-            //we don't have a share code, so get one now
-            $share = SharingCode::findFirst(
-                            array(
-                                'order' => 'RAND()'
-                            )
-            );
-
-            $share->agency_id = $agency->agency_id;
-
-            $share->save();
+        if(!$agency->viral_sharing_code) {
+            $agency->viral_sharing_code = SharingCode::GenerateShareCode();
+            $agency->save();
         }
 
-        $this->view->share = $share;
+        $this->view->share = $agency->viral_sharing_code;
 
         //build share links
-        $share_link = $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/session/signup?code=' . $share->sharecode);
+        if($this->config->application->environment == 'dev')
+            $Domain = $_SERVER['HTTP_HOST'];
+        else {
+            $Domain = $agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV ? 'reviewvelocity.co' : $agency->custom_domain;
+        }
 
-        $this->view->setVars([
+        $TLDomain = $this->config->application->domain;
+
+        if($Domain=='')
+        {
+            $Domain="{$TLDomain}";
+        }
+        $share_link = $this->googleShortenURL("https://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
+        //$share_link = urlencode($share_link);
+
+        /*$this->view->setVars([
             'share_message' => 'Click this link to sign up for a great new way to get reviews: ' . $share_link,
             'share_link' => $share_link,
             'share_subject' => 'Sign Up and Get Reviews!'
+        ]);*/
+
+
+            /**** 24.11.2016 ****/
+
+            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->agency_id}");
+        if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            $AgencyName = "Get Mobile Reviews";
+            $AgencyUser = "Zach";
+           // $EmailFrom = "zacha@reviewvelocity.co";
+            
+        }
+        elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
+            $AgencyUser = $objAgencyUser->name;
+            $AgencyName = $objAgency->name;
+            //$EmailFrom = "zacha@reviewvelocity.co";
+
+        }
+        elseif($objAgency->parent_id > 0) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+            $AgencyName = $objParentAgency->name;
+            $AgencyUser = $objAgencyUser->name;
+           // $EmailFrom = "zacha@reviewvelocity.co";
+        }
+
+
+        $message_set=" Hey Buddy,<p>
+".$agency->name." just activated a new account with us and thought that your business may be a perfect fit and could greatly benefit from a FREE trial account, NO credit card required.
+</p>
+
+<p>
+So what do you say, Will you give us a shot? 
+</p>
+<p>
+We promise to make it simple and easy. 
+</p>
+<p>
+And Because ".$agency->name." was cool enough to send you our way, <strong>we’re giving you 100 text messages for FREE when you verify your business</strong>.
+
+</p>
+<p>
+This will allow you to see our software in action, at no risk to you, and create fresh new 5 star reviews for your business on the most popular sites. 
+</p>
+<p>
+This link is only available to activate your trial account for the next 24 hours, so don’t delay. <br>
+ 
+</p>
+<p>
+<a href='".$share_link."'>Click here now to confirm your email address </a> and let's start generating new reviews for your business in less than 5 minutes!
+</p>
+<p>
+<a href='".$share_link."'>ACTIVATE YOUR TRIAL </a>
+</p>
+<p>
+Talk Soon, 
+</p>
+<br>
+".$AgencyUser."<br>".$AgencyName;
+
+
+/**** 24.11.2016 ****/
+        $this->view->setVars([
+            'AgencyUser'=> $AgencyUser,
+            'AgencyName'=>$AgencyName,  
+            'share_message' => $message_set,
+            'share_link' => $share_link,
+            'share_subject' => $agency->name.',thought this was awesome!'
         ]);
 
-
-        //calculate how many sms messages sent and how many are remaining
-        //$sms_sent_this_month
-        //how many allowed, count the people signed up with our code
         $base_sms_allowed = 100;
         $additional_allowed = 25;
-        $num_signed_up = Agency::count(
-                        array(
-                            "column" => "agency_id",
-                            "conditions" => "referrer_code = '" . $share->sharecode . "' ",
-                        )
-        );
+        $num_signed_up = SharingCode::count("business_id = {$agency->agency_id}");
         $num_discount = (int) ($num_signed_up / 3); //find how many three
-        $total_sms_month = $base_sms_allowed + ($num_discount * $additional_allowed);
+        $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+        $identity = $this->session->get('auth-identity');
+        if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $agency->parent_id > 0)
+            $MaxSMS = $objSubscriptionManager->GetMaxSMS($agency->agency_id, $identity['location_id']);
+        else
+            $MaxSMS = 0;
+
+        $NonViralSMS = $MaxSMS;
+        $ViralSMS = $objSubscriptionManager->GetViralSMSCount($agency->agency_id);
+        $MaxSMS += $ViralSMS;
+
         $this->view->setVars([
-            'total_sms_month' => $total_sms_month,
+            'total_sms_month' => $MaxSMS,
             'num_discount' => $num_discount,
             'num_signed_up' => $num_signed_up,
             'base_sms_allowed' => $base_sms_allowed,
-            'additional_allowed' => $additional_allowed
+            'additional_allowed' => $additional_allowed,
+            'viral_sms' => $ViralSMS,
+            'non_viral_sms' => $NonViralSMS,
         ]);
-
-        //end calculating how many sent and how many allowed
-        //end getting the sharing code
     }
 
     public function getSMSReport() {
@@ -314,7 +465,13 @@ class ControllerBase extends Controller {
         //check if the user should get the upgrade message (Only "business" agency_types who are signed up for Free accounts,
         //get the upgrade message)
         $is_upgrade = false;
-        if ($this->session->get('auth-identity')['agencytype'] == 'agency') {
+
+        if ($this->session->get('auth-identity')['agencytype'] == 'business') {
+            // GARY_TODO:  Refactor.  The agency_id I would think would be in the auth-identity, but it appears not to be.
+
+            $objUser = \Vokuro\Models\Users::findFirst("id = " . $this->session->get('auth-identity')['id']);
+            $agency = \Vokuro\Models\Agency::findFirst("agency_id = " . $objUser->agency_id);
+
 
             //we have a business, so check if free
             if ($agency->subscription_id > 0) {
@@ -325,11 +482,11 @@ class ControllerBase extends Controller {
                     "subscription_id" => $agency->subscription_id
                 );
 
-                $subscriptionobj = Subscription::findFirst(
-                                array(
-                                    $conditions,
-                                    "bind" => $parameters
-                                )
+                $subscriptionobj = \Vokuro\Models\Subscription::findFirst(
+                    array(
+                        $conditions,
+                        "bind" => $parameters
+                    )
                 );
 
                 if (!($subscriptionobj->amount > 0)) {
@@ -354,10 +511,10 @@ class ControllerBase extends Controller {
                 );
 
                 $userObj = Users::findFirst(
-                                array(
-                                    $conditions,
-                                    "bind" => $parameters
-                                )
+                    array(
+                        $conditions,
+                        "bind" => $parameters
+                    )
                 );
 
                 //find the agency
@@ -368,10 +525,10 @@ class ControllerBase extends Controller {
                 );
 
                 $agency = Agency::findFirst(
-                                array(
-                                    $conditions,
-                                    "bind" => $parameters
-                                )
+                    array(
+                        $conditions,
+                        "bind" => $parameters
+                    )
                 );
 
                 //get total sent
@@ -390,12 +547,13 @@ class ControllerBase extends Controller {
             $sms_sent_last_month = 0;
             if ($this->session->get('auth-identity')['location_id']) {
                 $sms_sent_last_month = ReviewInvite::count(
-                                array(
-                                    "column" => "review_invite_id",
-                                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
-                                )
+                    array(
+                        "column" => "review_invite_id",
+                        "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
+                    )
                 );
             }
+            //echo $sms_sent_last_month;exit;
             $this->view->sms_sent_last_month = $sms_sent_last_month;
 
 
@@ -405,10 +563,10 @@ class ControllerBase extends Controller {
             $sms_sent_this_month = 0;
             if ($this->session->get('auth-identity')['location_id']) {
                 $sms_sent_this_month = ReviewInvite::count(
-                                array(
-                                    "column" => "review_invite_id",
-                                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
-                                )
+                    array(
+                        "column" => "review_invite_id",
+                        "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL",
+                    )
                 );
             }
             $this->view->sms_sent_this_month = $sms_sent_this_month;
@@ -419,17 +577,17 @@ class ControllerBase extends Controller {
             $this->view->num_reviews_two_months_ago = 0;
             if ($this->session->get('auth-identity')['location_id']) {
                 $this->view->num_reviews_last_month = ReviewsMonthly::sum(
-                                array(
-                                    "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                    "conditions" => "month = " . date("m", strtotime("first day of previous month")) . " AND year = '" . date("Y", strtotime("first day of previous month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                                )
+                    array(
+                        "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
+                        "conditions" => "month = " . date("m", strtotime("first day of previous month")) . " AND year = '" . date("Y", strtotime("first day of previous month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
+                    )
                 );
 
                 $this->view->num_reviews_two_months_ago = ReviewsMonthly::sum(
-                                array(
-                                    "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                    "conditions" => "month = " . date("m", strtotime("-2 months", time())) . " AND year = '" . date("Y", strtotime("-2 months", time())) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                                )
+                    array(
+                        "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
+                        "conditions" => "month = " . date("m", strtotime("-2 months", time())) . " AND year = '" . date("Y", strtotime("-2 months", time())) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
+                    )
                 );
             }
             $this->view->total_reviews_last_month = $this->view->num_reviews_last_month - $this->view->num_reviews_two_months_ago;
@@ -439,13 +597,13 @@ class ControllerBase extends Controller {
             $this->view->num_reviews_this_month = 0;
             if ($this->session->get('auth-identity')['location_id']) {
                 $this->view->num_reviews_this_month = ReviewsMonthly::sum(
-                                array(
-                                    "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
-                                    "conditions" => "month = " . date("m", strtotime("first day of this month")) . " AND year = '" . date("Y", strtotime("first day of this month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
-                                )
+                    array(
+                        "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
+                        "conditions" => "month = " . date("m", strtotime("first day of this month")) . " AND year = '" . date("Y", strtotime("first day of this month")) . "' AND location_id = " . $this->session->get('auth-identity')['location_id'],
+                    )
                 );
             }
-            $this->view->total_reviews_this_month = $this->view->num_reviews_this_month - $this->view->total_reviews_last_month;
+            //$this->view->total_reviews_this_month = $this->view->num_reviews_this_month - $this->view->total_reviews_last_month;
 
 
             //find the location
@@ -491,33 +649,17 @@ class ControllerBase extends Controller {
         $this->view->sms_sent_this_month_total = $rs->count();
     }
 
-    public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_auth_messaging_sid, $twilio_from_phone, $agency) {
-        // this line loads the library
-
-        // set your AccountSid and AuthToken from www.twilio.com/user/account
-        //new tokens
-        //$AccountSid = "AC68cd1cc8fe2ad03d2aa4d388b270577d";
-        //$AuthToken = "42334ec4880d850d6c9683a4cd9d94b8";
-        //old tokens
-        //$AccountSid = "AC42c4f42d8076602844b3b226bdf74fd8";
-        //$AuthToken = "09d64c23112f28d29ac1ded2fd61672c";
-        //if this is a business not under a custom agency, then use global twillio settings
-        if ((!isset($agency->parent_agency_id) || $agency->parent_agency_id == '') && $agency->agency_type_id = 2) {
-            $AccountSid = "AC68cd1cc8fe2ad03d2aa4d388b270577d";
-            $AuthToken = "42334ec4880d850d6c9683a4cd9d94b8";
-            $twilio_auth_messaging_sid = 'MGa8510e68cd75433880ba6ea48c0bd81e';
-            $twilio_from_phone = '+16197363100';
+    public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_auth_messaging_sid, $twilio_from_phone) {
+        if(!$AccountSid || !$AuthToken || !$twilio_from_phone) {
+            $this->flash->error("Missing twilio configuration.");
+            return false;
         }
-        //echo '<p>$AccountSid:'.$AccountSid.':$AuthToken:'.$AuthToken.':$twilio_auth_messaging_sid:'.$twilio_auth_messaging_sid.':$twilio_from_phone:'.$twilio_from_phone.'</p>';
-        //prepare twilio to send the message
+
         $client = new Services_Twilio($AccountSid, $AuthToken);
 
-        //send the message now
         try {
             if (isset($twilio_auth_messaging_sid) && $twilio_auth_messaging_sid != '') {
                 $message = $client->account->messages->create(array(
-                    //"From" => $this->formatTwilioPhone("213-725-2500"),
-                    //'MessagingServiceSid' => "MGa8510e68cd75433880ba6ea48c0bd81e",
                     "MessagingServiceSid" => $twilio_auth_messaging_sid,
                     "To" => $phone,
                     "Body" => $smsBody,
@@ -535,6 +677,7 @@ class ControllerBase extends Controller {
         }
         return true;
     }
+
 
     public function formatTwilioPhone($phone) {
         $phone = preg_replace('/\D+/', '', $phone);
@@ -560,16 +703,15 @@ class ControllerBase extends Controller {
                 if ($an->email_alert == 1 && isset($user->email)) {
                     //the user wants an email, so send it now
                     $this->getDI()
-                            ->getMail()
-                            ->send('kevin_revie@hotmail.com', $subject, '', '', $message);
-                    //->send($user->email, 'Notification: New Review', '', '', $message);
+                        ->getMail()
+                        ->send($user->email, 'Notification: New Review', '', '', $message);
                 }
                 if ($an->sms_alert == 1 && isset($user->phone) && $user->phone != '') {
                     //the user wants a text message
                     //echo '<pre>$user:'.print_r($user,true).'</pre>';
                     //if (isset($user->phone) && $user->phone != '' && $agency->twilio_api_key != '' && $agency->twilio_auth_token != '') {
                     //we have a phone, so send the SMS
-                    $this->SendSMS($this->formatTwilioPhone($user->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone, $agency);
+                    $this->SendSMS($this->formatTwilioPhone($user->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone);
                     //}
                 }
             }
@@ -651,10 +793,10 @@ class ControllerBase extends Controller {
             );
 
             $loc = Location::findFirst(
-                            array(
-                                $conditions,
-                                "bind" => $parameters
-                            )
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
             );
 
             //default this month
@@ -675,17 +817,20 @@ class ControllerBase extends Controller {
                 $end_time = date("Y-m-d H:i:s", strtotime($end_time));
             }
 
-            if (strpos($_SERVER['REQUEST_URI'], 'users/admin') > 0) {
-
+            if (strpos($_SERVER['REQUEST_URI'], 'users/admin') !== false) {
+                if ($loc) {
+                	
+                    $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId, false);
+                }
             } else {
                 $users_report = null;
-                if ($loc)
-                    $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false);
+                if ($loc) {
+                    $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
+                    $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
+                }
                 $this->view->users_report = $users_report;
             }
 
-            if ($loc)
-                $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId);
             //} else {
             //else only show the user the employees from the locations that they have access to
             //  $users = Users::getEmployeesByUser($userObj, $profilesId);
@@ -771,6 +916,7 @@ class ControllerBase extends Controller {
 
         $yelp_reviews = $yelp->get_business($Obj->api_id);
         $yelpreviews = json_decode($yelp_reviews);
+
         //echo '<pre>$yelpreviews:'.print_r($yelpreviews,true).'</pre>';
         //import data from the feed into the database, first update the location
         $Obj->rating = $yelpreviews->rating;
@@ -779,7 +925,10 @@ class ControllerBase extends Controller {
             $Obj->original_rating = $yelpreviews->rating;
             $Obj->original_review_count = $yelpreviews->review_count;
         }
+
         $Obj->save();
+
+
 
         //now import the review (if not already in the database)
         //loop through reviews
@@ -821,7 +970,7 @@ class ControllerBase extends Controller {
             /**
              * @var $s \Vokuro\Services\Reviews
              */
-            if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(1, $location->location_id);
+            //if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(1, $location->location_id);
 
         } catch (\Exception $e) {
         }
@@ -1035,14 +1184,14 @@ class ControllerBase extends Controller {
         if ($this->request->hasFiles() == true) {
             //echo '<p>hasFiles() == true!</p>';
             try {
-                $baseLocation = '/var/www/html/' . $this->config->webpathfolder->path . '/public/img/upload/';
+                $baseLocation = '/var/www/html/' . $this->config->webpathfolder->path . '/public/img/agency_logo/';
 
 
                 // Print the real file names and sizes
                 foreach ($this->request->getUploadedFiles() as $file) {
                     if ($file->getName() != '') {
                         //Move the file into the application
-                        $filepath = $baseLocation . $agencyid . '-' . $file->getName();
+                        $filepath = $baseLocation . uniqid('logo');
                         $file->moveTo($filepath);
 
                         //resize
@@ -1051,11 +1200,11 @@ class ControllerBase extends Controller {
 
                         //echo '<p>$filepath: '.$filepath.'</p>';
                         $filepath = '/admin' . str_replace("/var/www/html/" . $this->config->webpathfolder->path . "/public", "", $filepath);
-                        $this->view->logo_setting = $filepath;
+                        $this->view->logo_path = $filepath;
                         return $filepath;
                     }
                 }
-            }catch(\Exception $e){
+            } catch(\Exception $e) {
                 //here we explicitly do nothing
             }
         } else {
@@ -1076,23 +1225,31 @@ class ControllerBase extends Controller {
         $internalNavParams['isBusinessAdmin'] = $userManager->isBusiness($this->session);
         $internalNavParams['isEmployee'] = $userManager->isEmployee($this->session);
 
+        $userId = $userManager->getUserId($this->session);
+        $objUser = \Vokuro\Models\Users::findFirst('id = ' . $userId);
+
+        // Get super admin user id
+        $objSuperUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $objUser->agency_id . ' AND role="Super Admin"');
+
+        $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
+
         // Subscriptions
-        $userSubscription = $subscriptionManager->getSubscriptionPlan($userManager->getUserId($this->session));
+        $userSubscription = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
 
         // GARY_TODO Determine if the comment below is accurate.
         $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] &&
-                ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
-                ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
-                $userManager->hasLocation($this->session);
+            ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
+            ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
+            ($userManager->hasLocation($this->session) && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
 
         $internalNavParams['hasPricingPlans'] = $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];
-
 
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isBusinessAdmin']) {
             $internalNavParams['subscriptionController'] = '/businessSubscription';
         }
+
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isAgencyAdmin']) {
-            $internalNavParams['subscriptionController'] = '';
+            $internalNavParams['subscriptionController'] = '/businessPricingPlan';
         }
 
         $this->view->internalNavParams = $internalNavParams;
@@ -1144,11 +1301,18 @@ class ControllerBase extends Controller {
 
     public function getLocationId(){
         $identity = $this->getIdentity();
-       return $identity['location_id'];
+        return $identity['location_id'];
     }
 
     public function getIdentity(){
         return $this->auth->getIdentity();
+    }
+
+
+    public function getPermissions(){
+        if($this->permissions) return $this->permissions;
+        $this->permissions = new Permissions();
+        return $this->permissions;
     }
 
     public function getUserObject(){

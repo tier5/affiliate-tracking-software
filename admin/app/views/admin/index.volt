@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h1>Review Velocity</h1>
+    <h1>Get Mobile Reviews</h1>
 </div>
 
 <p>You're now flying with Phalcon. Great things are about to happen!</p>

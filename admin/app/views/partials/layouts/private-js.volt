@@ -65,6 +65,7 @@
 <script src="/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
 <!-- END THEME LAYOUT SCRIPTS -->
 <script type="text/javascript" src="/js/vendor/minicolors/jquery.minicolors.js"></script>
+<script src="/js/browser-deeplink.js"></script>
 <script src="/js/main.js" type="text/javascript"></script>
 <script src="/js/star-rating.js" type="text/javascript"></script>
 <!-- <script src="/js/pdf-viewer.js" type="text/javascript"></script> -->

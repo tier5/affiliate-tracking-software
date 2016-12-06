@@ -25,7 +25,7 @@
             <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
             <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
         </div>
-        <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
+        <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
       </div>
     </div>
     <?php
@@ -168,7 +168,7 @@
       <div class="portlet light bordered" id="pnlSMSSent">
         <div class="portlet-title">
           <div class="caption">
-            <img src="/img/icon_bargraph.gif" />
+            <img src="/img/icon_bargraph.png" />
             <span class="caption-subject bold uppercase">Review Count By Site</span>
           </div>
         </div>
@@ -292,7 +292,7 @@
   <div class="row">
     <div class="col-md-12 col-sm-12">
       <div class="growth-bar">
-        <img src="/img/icon_reviews.gif" /> Reviews &amp; Feedback
+        <img src="/img/icon_reviews.png" /> Reviews &amp; Feedback
       </div>
     </div>
   </div>
@@ -328,7 +328,7 @@
                 <!-- Start .panel -->
                 <div class="panel-default toggle panelMove panelClose panelRefresh">
                   <div class="customdatatable-wrapper">
-                    <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
+                    <table class="customdatatable table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
                       <thead>
                       <tr>
                         <th> </th>
@@ -337,24 +337,40 @@
                       <tbody>
                       <?php
             $rowclass = '';
+
+
             foreach($review_report as $data) {
+           
+
+
               ?>
                       <tr>
                         <td>
                           <div class="review <?=$rowclass?>">
                             <div class="rowbuttons">
-                              <a class="btnLink" href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank">View</a>
-                              <a class="btnLink" href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank">Respond</a>
+                              <a class="btnLink btnSecondary fb_link" 
+                                <?php if($data->rating_type_id==1)
+                                {?> onclick='facebookClickHandler(<?=$facebook_page_id;?>)' <?php } ?>  href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://www.facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank">View</a>
+
+                             <!-- <a class="btnLink btnSecondary" onclick="view_review(<?php echo $data->review_id?>,'more')" id="vm_<?php echo $data->review_id?>">View</a>-->
+                              
+                                 
+                              
+                               <a class="btnLink btnSecondary" onclick="view_review(<?php echo $data->review_id?>,'less')" style="display:none;" id="vl_<?php echo $data->review_id?>">View less</a>
+
+                              <a class="btnLink btnPrimary" href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://www.facebook.com/'.$data->  facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank">Respond</a>
                             </div>
                             <div class="rowwrapper">
                               <div class="top">
-                                <div class="logo"><a href="<?=($data->rating_type_id==1?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==2?'http://facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==1?'yelp':($data->rating_type_id==2?'facebook':'google'))?>.gif" /></a></span></div>
+                                <div class="logo"><a href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://facebook.com/'.$data->user_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==2?'yelp':($data->rating_type_id==1?'facebook':'google'))?>.gif" /></a></span></div>
                                 <div class="rating col-md-2"><input value="<?=$data->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /></div>
                                 <div class="name col-md-5"><?=$data->user_name?></div>
                                 <div class="date col-md-3"><?=date("m/d/Y", strtotime($data->time_created))?></div>
                               </div>
                               <div class="content">
+                              <span id="less_<?php echo $data->review_id?>">
                                 <?php
+                               
                       $text = $data->review_text;
                                 $text = $text." ";
                                 $text = substr($text,0,90);
@@ -362,6 +378,15 @@
                                 $text = $text."...";
                                 echo $text;
                                 ?>
+                                </span>
+
+                                <span id="more_<?php echo $data->review_id?>" style="display:none;">
+                                <?php
+
+                      echo $text = $data->review_text;
+                                
+                                ?>
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -567,7 +592,7 @@
   <div class="row">
     <div class="col-md-12 col-sm-12">
       <div class="growth-bar">
-        <img src="/img/icon_reviews.gif" /> Review Invite List
+        <img src="/img/icon_reviews.png" /> Review Invite List
       </div>
     </div>
   </div>
@@ -607,6 +632,7 @@
                 <tbody>
                 <?php
                 if($invitelist):
+                //print_r($invitelist);exit;
                   foreach($invitelist as $invite):
                     ?>
                 <tr>
@@ -615,7 +641,42 @@
                   <td><?=$invite->sent_by?></td>
                   <td><?=date_format(date_create($invite->date_sent),"m/d/Y")?></td>
                   <td><?=($invite->date_viewed?'Yes':'No')?></td>
-                  <td><?php
+                  <td>
+                  <?php
+
+                      if ($invite->date_viewed) {
+                                            if ($invite->review_invite_type_id == 1) {
+                                            if ($invite->recommend && $invite->recommend=='N') {
+                                            ?><span class="redfont">No</span><?php
+                          } else {
+                            ?><span class="greenfont">Yes</span><?php
+                          }
+                        } else if ($invite->review_invite_type_id == 2) {
+                                            if ($invite->recommend && $invite->recommend=='N') {
+                                            ?><input value="<?=$invite->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true"/><?php
+                          } else {
+                            ?>
+                                            <input value="<?=$invite->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true"/><?php
+                          }
+                        } else if ($invite->review_invite_type_id == 3) {
+                                            if ($invite->recommend && $invite->recommend=='N') {
+                                            ?><span class="review_invite_type_id_3 redfont"><?=$invite->
+                                                rating?></span><?php
+                          } else {
+                            ?><span class="review_invite_type_id_3 greenfont"><?=$invite->rating?></span><?php
+                          }
+                        }
+                      } else {
+                        if ($location->message_tries>1 && $location->message_tries > $invite->times_sent) {
+                                            echo '<strong>In Process</strong>';
+                                            } else {
+                                            echo '<strong>No Feedback</strong>';
+                                            }
+                                            }
+                                            ?>
+                  <?php 
+
+                  /*
                       if ($invite->date_viewed) {
                     if (isset($invite->comments) && $invite->comments != '') {
                     if ($invite->review_invite_type_id == 1) {
@@ -646,7 +707,7 @@
                     } else {
                     echo '<strong>No Feedback</strong>';
                     }
-                    }
+                    }*/
                     ?></td>
                 </tr>
                 <?php
@@ -676,6 +737,25 @@
   </div>
 </header>
 <script type="text/javascript">
+
+  function view_review(review_id,cond)
+  {
+      if(cond=='more')
+      {
+        $('#more_'+review_id).show();
+        $('#less_'+review_id).hide();
+        $('#vm_'+review_id).hide();
+        $('#vl_'+review_id).show();
+      }
+      else
+      {
+        $('#more_'+review_id).hide();
+        $('#less_'+review_id).show();
+        $('#vm_'+review_id).show();
+        $('#vl_'+review_id).hide();
+      }
+  }
+
   jQuery(document).ready(function($){
     $('.easy-pie-chart .number').easyPieChart({
       //animate: 1000,
@@ -685,9 +765,9 @@
 
 
       // The color of the curcular bar. You can pass either a css valid color string like rgb, rgba hex or string colors. But you can also pass a function that accepts the current percentage as a value to return a dynamically generated color.
-      barColor: '#31C5D1',
+      barColor: '{{ secondary_color }}',
       // The color of the track for the bar, false to disable rendering.
-      trackColor: '#E75059',
+      trackColor: '{{ primary_color }}',
       // The color of the scale lines, false to disable rendering.
       scaleColor: false,
       // Defines how the ending of the bar line looks like. Possible values are: butt, round and square.

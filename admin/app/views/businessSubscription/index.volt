@@ -2,17 +2,68 @@
 
 <header class="jumbotron subhead" id="reviews">
     <div id="subscription-data" class="hero-unit" data-subscription="{{ subscriptionPlanData | json_encode | escape }}">
-        <div class="row">
-            {% if showSmsQuota %}
-                {{ partial("shared/smsQuota", smsQuotaParams) }}
-            {% endif %}
+            <div class="col-md-5 col-sm-5">
+                <!-- BEGIN PAGE TITLE-->
+                <h3 class="page-title"> Subscription </h3>
+                <!-- END PAGE TITLE-->
+            </div>
+            <?php
+      if (isset($this->session->get('auth-identity')['agencytype']) &&
+            $this->session->get('auth-identity')['agencytype'] == 'business') {
+            if ($is_upgrade) {
+            $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) *
+            100, 0, '.', ''):100);
+            if ($percent > 100) $percent = 100;
+            ?>
+            <div class="col-md-7 col-sm-7">
+                <div class="sms-chart-wrapper">
+                    <div class="title">SMS Messages Sent</div>
+                    <div class="bar-wrapper">
+                        <div class="bar-background"></div>
+                        <div class="bar-filled" style="width: {{ percent }}%;"></div>
+                        <div class="bar-percent" style="padding-left: {{ percent }}%;">{{ percent }}%</div>
+                        <div class="bar-number" style="margin-left: {{ percent }}%;">
+                            <div class="ball">{{ sms_sent_this_month_total }}</div>
+                            <div class="bar-text" {{ percent > 60 ? 'style="display: none;"':'' }} >This Month</div>
+                        </div>
+                    </div>
+                    <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
+                </div>
+            </div>
+            <?php
+        } else {
+          $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0,
+            '.', ''):100);
+            if ($percent > 100) $percent = 100;
+            ?>
+            <div class="col-md-7 col-sm-7">
+                <div class="sms-chart-wrapper">
+                    <div class="title">SMS Messages Sent</div>
+                    <div class="bar-wrapper">
+                        <div class="bar-background"></div>
+                        <div class="bar-filled" style="width: {{ percent }}%;"></div>
+                        <div class="bar-percent" style="padding-left: {{ percent }}%;"><?=$percent?>%</div>
+                        <div class="bar-number" style="margin-left: {{ percent }}%;">
+                            <div class="ball"><?=$sms_sent_this_month?></div>
+                            <div class="bar-text" {{ percent > 60 ? 'style="display: none;"':'' }}>This Month</div>
+                        </div>
+                    </div>
+                    <div class="end-title">{{ total_sms_needed }}<br/><span class="goal">Goal</span></div>
+                </div>
+            </div>
+            <?php
+        }
+      } //end checking for business vs agency
+      ?>
+
         </div>
-        
+
+
         <div class="row">
             <div class="col-sm-12 col-md-12">
-                <div class="growth-bar transparent pull-right">
+                <!--<div class="growth-bar transparent pull-right">
                     <a href="/businessSubscription/invoices" disabled class="btn default btn-lg apple-backgound subscription-btn">View Invoices</a>
-                </div>
+                </div>-->
             </div>
         </div>
 
@@ -36,10 +87,17 @@
                         <div class="panel panel-default apple-backgound">
                             <div class="panel-body">
                                 <div id="current-plan" class="responsive-float-left subscription-panel-default-caption">
-                                    <div><span id="current-locations" class="bold">{{ subscriptionPlanData['subscriptionPlan']['locations'] }}</span> Location(s)</div>
-                                    <div><span id="current-messages" class="bold">{{ subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] }}</span> Text Messages</div>
+
+                                <?php
+                              
+                                $ActiveLocations = isset($subscriptionPlanData['subscriptionPlan']['locations']) ? $subscriptionPlanData['subscriptionPlan']['locations'] : $MaxLocationTrial;
+                                $ActiveSMS = isset($subscriptionPlanData['subscriptionPlan']['sms_messages_per_location']) ? $subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] : $MaxSMSTrial;
+                            ?>
+
+                                    <div><span id="current-locations" class="bold">{{ ActiveLocations }} Location(s)</div>
+                                    <div><span id="current-messages" class="bold">{{ ActiveSMS }}</span> Text Messages</div>
                                 </div>
-                                <div class="responsive-float-right subscription-panel-large-caption">{{ paymentPlan }}</div>
+                                <div class="responsive-float-right subscription-panel-large-caption"><sup class="subscription-panel-default-caption">$</sup>{{ paymentPlan }}<sub class="subscription-panel-default-caption">/mo</sub></div>
                             </div>
                         </div>
                         <div class="panel panel-default">
@@ -53,7 +111,7 @@
                     </div>
                 </div>
             </div>
-           
+
             <div class="col-md-12 col-lg-4">
                 <div class="portlet light bordered dashboard-panel payment-info">
                     <div class="portlet-title">
@@ -79,7 +137,7 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="form-group">
-                                            <button type="button" class="btn default btn-lg apple-backgound subscription-btn" data-target="#updateCardModal" id="UpdateCard">Update Card</button>
+                                            <button type="button" class="btn default btn-lg apple-backgound subscription-btn UpdateCard" data-target="#updateCardModal" id="UpdateCard">Update Card</button>
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +290,7 @@
                                                     {% set MonthlyActive = 'active' %}
                                                     {% set ButtonDisabled = 'disabled' %}
 
-                                                    {% if subscriptionPlanData['subscriptionPlan'] %}
+                                                    {% if subscriptionPlanData['subscriptionPlan']['payment_plan'] and subscriptionPlanData['subscriptionPlan']['payment_plan'] != 'none' %}
                                                         {% set PlanVerbage = "Change" %}
                                                     {% else %}
                                                         {% set PlanVerbage = "Begin" %}
@@ -249,16 +307,21 @@
                                                         {% set MonthlyActive = 'active' %}
                                                     {% endif %}
                                                 {% endif %}
-
+                                                {% if hasPaymentProfile %}
                                                 <button {{ ButtonDisabled }} class="btn {{ MonthlyActive }} btn-primary" data-subscription='M'>Monthly</button>
                                                 <button {{ ButtonDisabled }} class="btn {{ AnnuallyActive }} btn-default" data-subscription='Y'>Annually</button>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 col-sm-12">
                                             <div class="growth-bar transparent center">
-                                                <button id="submit-change-plan-btn" class="btn btn-block subscription-btn golden-poppy-backgound">{{ PlanVerbage }} Plan</button>
+                                                {% if hasPaymentProfile %}
+                                                <button id="submit-change-plan-btn" class="btn btn-block subscription-btn golden-poppy-backgound" >{{ PlanVerbage }} Plan</button>
+                                                {% else %}
+                                                <button type="button" class="btn btn-block subscription-btn golden-poppy-backgound UpdateCard" data-target="#updateCardModal" id="UpdateCard2">{{ PlanVerbage }} Plan</button>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -305,10 +368,28 @@
     </div>
 </header>
 
+<?php
+
+    $MaxSMS = $subscriptionPlanData['pricingPlan']['max_sms_messages'];
+
+    $TickDivText = '';
+    $Ticks = [];
+    // Gonna split the slider in 10 ticks.
+    for($c = 0 ; $c < (int)$MaxSMS ; $c += round($MaxSMS / 10)) {
+        $TickDivText .= "'<div>$c</div><div class=\"tick-marker\">|</div>',";
+         $Ticks[] = $c;
+     }
+
+     $TickDivText .= "'<div>{$MaxSMS}</div><div class=\"tick-marker\">|</div>',";
+     $Ticks[] = $MaxSMS;
+     $TickArrayText = '[' . implode(',', $Ticks) . ']';
+?>
+
+
 <script type="text/javascript">
 
     jQuery(document).ready(function ($) {
-        $("#UpdateCard").click(function() {
+        $(".UpdateCard").click(function() {
             var bodyElem = document.getElementsByTagName("body")[0];
             if(bodyElem.dataset.paymentprovider === "AuthorizeDotNet") {
                 $('#updateCardModal').modal('show');
@@ -316,7 +397,7 @@
             else if(bodyElem.dataset.paymentprovider === "Stripe") {
                 var handler = StripeCheckout.configure({
                     key: '{{ stripePublishableKey }}',
-                    /* TODO: Replace with agency logo */
+                    /* GARY_TODO: Replace with agency logo */
                     /*image: '/img/documentation/checkout/marketplace.png',*/
                     locale: 'auto',
                     token: function(token) {
@@ -331,7 +412,8 @@
                             /*if (data.status !== true) {
                                 alert("Update card failed!!!")
                             }*/
-                            console.log(data);
+                            //console.log(data);
+                            window.location.reload();
                         })
                         .fail(function () {
                         })
@@ -362,44 +444,44 @@
 
         function initSubscriptionParameters() {
             var subscriptionData = getSubscriptionData();
-        
+
             var currentPlanLocations = parseInt(subscriptionData.subscriptionPlan.locations);
             var currentPlanMessages = parseInt(subscriptionData.subscriptionPlan.sms_messages_per_location);
 
             /* Slider initializations */
             smsLocationSlider.setValue(currentPlanLocations, true, true);
-            smsMessagesSlider.setValue(currentPlanMessages, true, true);
+            smsMessagesSlider.setValue(currentPlanMessages ? currentPlanMessages : 100, true, true);
 
             /* Message init */
-            $('#current-locations').text(smsLocationSlider.getValue());
+            //$('#current-locations').text(smsLocationSlider.getValue());
             $('#change-plan-locations').text(smsLocationSlider.getValue());
             $('#slider-locations').text(smsLocationSlider.getValue());
             $('#modal-locations').text(smsLocationSlider.getValue());
 
             /* Locations init */
-            $('#current-messages').text(smsMessagesSlider.getValue());
+            //$('#current-messages').text(smsMessagesSlider.getValue());
             $('#change-plan-messages').text(smsMessagesSlider.getValue());
             $('#slider-messages').text(smsMessagesSlider.getValue());
             $('#modal-messages').text(smsMessagesSlider.getValue());
 
             /* Calculate the initial plan value */
             refreshPlanValue();
-            
+
         }
 
         function calculateMonthlyPlanCost() {
-            
+
             /* Calculate the plan value */
             var subscriptionData = getSubscriptionData();
 
             /* Get number of locations and messages  */
             var locations = smsLocationSlider.getValue();
             var messages = smsMessagesSlider.getValue();
-            
-            /* 
-             * Fetch the applicbale ranges for the calculations - we need the maximum values in an ordered sequence 
-             * so we can limit to O(n) complexity and any complex branching. 
-             *  
+
+            /*
+             * Fetch the applicbale ranges for the calculations - we need the maximum values in an ordered sequence
+             * so we can limit to O(n) complexity and any complex branching.
+             *
              */
             var range_maximums = Object.keys(subscriptionData.pricingPlanParameterLists);
 
@@ -407,66 +489,67 @@
             var planCost = 0.00;
             var breakOnNextIteration = false;
             for (var i = 0; i < range_maximums.length; i++) {
-            
-                /* 
-                 * Charge the next batch of locations, based on the current range, 
+
+                /*
+                 * Charge the next batch of locations, based on the current range,
                  * and add it to the total
                  */
                 var parameterList = subscriptionData.pricingPlanParameterLists[range_maximums[i]];
                 var nextBatchOfLocations = (parameterList.max_locations - parameterList.min_locations + 1);
-                
-                if ((locations - nextBatchOfLocations) <= 0) {  
+
+                if ((locations - nextBatchOfLocations) <= 0) {
                     nextBatchOfLocations = locations;
-                    breakOnNextIteration = true; 
+                    breakOnNextIteration = true;
                 } else {
                     locations -= nextBatchOfLocations;
                 }
-                
-                var cost = parseFloat(nextBatchOfLocations * parameterList.base_price + nextBatchOfLocations * messages * parameterList.sms_cost);
+
+                var cost = parseFloat(nextBatchOfLocations * parameterList.base_price + nextBatchOfLocations * messages * subscriptionData.pricingPlan.charge_per_sms);
                 cost *= ((100 - parseFloat(parameterList.location_discount_percentage)) * 0.01);
-                        
+
                 planCost += cost;
-                
+
                 if(breakOnNextIteration) {
+                    //console.log(planCost);
                     break;
                 }
-               
+
             }
-            
+
             return planCost;
         }
-        
+
         function applyAnnualDiscount(monthlyPlanCost) {
             /*
              * If the yearly plan is selected, calculate the current plan cost over 12 months, apply the annual
-             * discount, and divide by 12 to get the monthly payment. 
-             * 
+             * discount, and divide by 12 to get the monthly payment.
+             *
              */
             var subscriptionData = getSubscriptionData();
 
-            return Math.round(monthlyPlanCost * ((100 - parseFloat(subscriptionData.pricingPlan.annual_discount)) * 0.01)); 
+            return Math.round(monthlyPlanCost * ((100 - parseFloat(subscriptionData.pricingPlan.annual_discount)) * 0.01));
         }
-        
+
         function refreshPlanValue() {
-            
+
             /* Get elements */
             var priceDisplay = document.getElementById("change-plan-final-price");
             var modalPriceDisplay = document.getElementById("modal-price");
 
             var monthlyPlanCost = calculateMonthlyPlanCost();
-            
+
             var planType = $("#plan-type > button.active").text();
             if (planType === 'Annually') {
                 monthlyPlanCost = applyAnnualDiscount(monthlyPlanCost);
-                $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(2));
+                $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(0));
                 $('#paid-annually-caption').show()
             } else {
                 $('#paid-annually-caption').hide();
             }
-            
-            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
-            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(2));
-            
+
+            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(0));
+            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(0));
+
         };
 
         function getSubscriptionParams() {
@@ -486,13 +569,14 @@
         function changePlan() {
             $.post('/businessSubscription/changePlan', getSubscriptionParams())
                     .done(function (data) {
+                        //console.log(data);
                         if (data.status === true) {
                             $('#current-locations').text(smsLocationSlider.getValue());
                             $('#current-messages').text(smsMessagesSlider.getValue());
                             $('.subscription-panel-large-caption').text("PAID");
                             $('#updatePlanModal').modal('show');
                         } else {
-                            alert("Change plan failed!!!");
+                            alert('Change plan failed - ' + data.error);
                         }
                     })
                     .fail(function () {})
@@ -510,6 +594,9 @@
                 $('#submit-change-plan-btn').prop('disabled', false);
             }
         }
+
+
+
 
         var smsLocationSlider = new Slider("#smsLocationSlider", {
             tooltip: 'show',
@@ -537,28 +624,10 @@
             tooltip: 'show',
             min: 100,
             max: maxMessages + 1,
-            step: 50,
-            ticks: [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1001],
+            step: <?=round($MaxSMS / 10); ?>,
+            ticks: <?=$TickArrayText; ?>,
             ticks_labels: [
-                '<div>100</div><div class="tick-marker">|</div>',
-                '<div>150</div><div class="tick-marker">|</div>',
-                '<div>200</div><div class="tick-marker">|</div>',
-                '<div>250</div><div class="tick-marker">|</div>',
-                '<div>300</div><div class="tick-marker">|</div>',
-                '<div>350</div><div class="tick-marker">|</div>',
-                '<div>400</div><div class="tick-marker">|</div>',
-                '<div>450</div><div class="tick-marker">|</div>',
-                '<div>500</div><div class="tick-marker">|</div>',
-                '<div>550</div><div class="tick-marker">|</div>',
-                '<div>600</div><div class="tick-marker">|</div>',
-                '<div>650</div><div class="tick-marker">|</div>',
-                '<div>700</div><div class="tick-marker">|</div>',
-                '<div>750</div><div class="tick-marker">|</div>',
-                '<div>800</div><div class="tick-marker">|</div>',
-                '<div>850</div><div class="tick-marker">|</div>',
-                '<div>900</div><div class="tick-marker">|</div>',
-                '<div>950</div><div class="tick-marker">|</div>',
-                '<div>1000</div><div class="tick-marker">|</div>'
+                <?=$TickDivText; ?>
             ],
             ticks_snap_bounds: 0
         });
@@ -566,7 +635,7 @@
         smsLocationSlider.on('change', function (values) {
             updateLargeCaption(values.newValue, maxLocations);
             refreshPlanValue();
-            
+
             if (values.newValue > maxLocations) {
                 values.newValue = maxLocations + '+';
             }
@@ -583,12 +652,12 @@
             $('#change-plan-messages').text(values.newValue);
             $('#slider-messages').text(values.newValue);
             $('#modal-messages').text(values.newValue);
-            
+
         });
 
         $('.subscription-toggle').click(function () {
             $(this).find('.btn').toggleClass('active');
-            
+
             if ($(this).find('.btn-primary').size() > 0) {
                 $(this).find('.btn').toggleClass('btn-primary');
             }
@@ -597,7 +666,7 @@
 
             refreshPlanValue();
         });
-        
+
         $('#submit-change-plan-btn').click(function () {
             changePlan();
         });

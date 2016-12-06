@@ -38,6 +38,7 @@ class Auth extends Component {
         }
 
         // Check if the user was flagged
+
         $this->checkUserFlags($user);
 
         // Register the successful login
@@ -60,10 +61,13 @@ class Auth extends Component {
             'id' => $user->id,
             'name' => $user->name,
             'profile' => $user->profile->name,
+            'profilesId' => $user->profilesId,
             'locations' => $locs, //set the location list in the identity,
             'location_id' => $location_id,
             'location_name' => $location_name,
             'is_admin' => $user->is_admin,
+            'is_employee' => $user->is_employee,
+        	'role' => $user->role,
             'agencytype' => $this->getAgencyType($user->agency_id),
             'parent_id' => $this->getAgencyParentId($user->agency_id),
             'signup_page' => $this->getCurrentSignupPage($user->agency_id)
@@ -125,10 +129,13 @@ class Auth extends Component {
             'id' => $this->session->get('auth-identity')['id'],
             'name' => $this->session->get('auth-identity')['name'],
             'profile' => $this->session->get('auth-identity')['profile'],
+            'profilesId' => $this->session->get('auth-identity')['profilesId'],
             'locations' => $this->getLocationList($this->getUser()), //set the location list in the identity,
             'location_id' => $this->session->get('auth-identity')['location_id'],
             'location_name' => $this->session->get('auth-identity')['location_name'],
             'is_admin' => $this->session->get('auth-identity')['is_admin'],
+            'is_employee' => $this->session->get('auth-identity')['is_employee'],
+        	'role' => $this->session->get('auth-identity')['role'],
             'agencytype' => $this->session->get('auth-identity')['agencytype']
         ));
     }
@@ -254,10 +261,13 @@ class Auth extends Component {
                             'id' => $user->id,
                             'name' => $user->name,
                             'profile' => $user->profile->name,
+                            'profilesId' => $user->profilesId,
                             'locations' => $locs, //set the location list in the identity,
                             'location_id' => $location_id,
                             'location_name' => $location_name,
                             'is_admin' => $user->is_admin,
+                            'is_employee' => $user->is_employee,
+                        	'role' => $user->role,
                             'agencytype' => $this->getAgencyType($user->agency_id)
                         ));
 
@@ -291,10 +301,13 @@ class Auth extends Component {
             'id' => $iden['id'],
             'name' => $iden['name'],
             'profile' => $iden['profile'],
+            'profilesId' => $iden['profilesId'],
             'locations' => $iden['locations'], //set the location list in the identity,
             'location_id' => $locationid,
             'location_name' => $loc->name,
             'is_admin' => $iden['is_admin'],
+            'is_employee' => $iden['is_employee'],
+        	'role' => $iden['role'],
             'agencytype' => $iden['agencytype']
         ));
     }
@@ -305,12 +318,16 @@ class Auth extends Component {
      * @param Vokuro\Models\Users $user
      */
     public function checkUserFlags(Users $user) {
-        //check to make sure the user matches the agency
-        //echo '<p>$this->view->agency_id:'.$this->view->agency_id.'</p>';
-        //echo '<p>$this->view->agency_id:'.$user->agency_id.'</p>';
-        if (isset($this->view->agency_id) && $this->view->agency_id > 0 && $user->agency_id != $this->view->agency_id && $user->agency_id) {
-            throw new Exception('Your account does not belong to this site.');
+        // I have no idea where the agency_id in the view is getting set so I'm just going to query the db to make this check proper.
+        $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
+        $AgencyID = 0;
+        if($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY)
+            $AgencyID = $objAgency->agency_id;
+        else {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+            $AgencyID = $objParentAgency->agency_id;
         }
+
         if ($user->active != 'Y') {
             throw new Exception('Your account is inactive');
         }
@@ -380,19 +397,26 @@ class Auth extends Component {
         }
 
         $this->checkUserFlags($user);
-
+        $locs = null;
         $locs = $this->getLocationList($user); //set the location list in the identity
-        $location_id = ($locs && $locs[0]) ? $locs[0]->location_id : '';
-        $location_name = ($locs && $locs[0]) ? $locs[0]->name : '';
+        if (isset($locs[0])) {
+          //print_r($locs);
+          $location_id = ($locs && $locs[0]) ? $locs[0]->location_id : '';
+          $location_name = ($locs && $locs[0]) ? $locs[0]->name : '';
+        }
+
         $this->session->set('auth-identity', array(
             'id' => $user->id,
             'name' => $user->name,
             'profile' => $user->profile->name,
+            'profilesId' => $user->profilesId,
             'locations' => $locs, //set the location list in the identity,
             'location_id' => $location_id,
             'location_name' => $location_name,
             'is_admin' => $user->is_admin,
-            'agencytype' => $this->getAgencyType($user->agency_id)
+        	'role' => $user->role,
+            'is_employee' => $user->is_employee,
+            'agencytype' => $this->getAgencyType($user->agency_id),
         ));
     }
 

@@ -23,7 +23,7 @@
             <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
             <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
         </div>
-        <div class="end-title"><?=$total_sms_month?><br /><span class="goal">Allowed</span></div>
+        <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
       </div>
     </div>
     <?php
@@ -59,7 +59,7 @@
             <div class="table-header">
               <div class="title reporttitle"><i class="icon-envelope"></i> SENT MESSAGES</div>
               <div class="header-buttons">
-                <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink" href="/reviews/sent_message">Back</a>
+                <a style="float: right; padding-left: 35px; padding-right: 35px; line-height: 17px;" class="btnLink btnSecondary" href="/reviews/sent_message">Back</a>
               </div>
             </div>
           </div>
@@ -112,7 +112,7 @@
                         <?php
             //(invites have the following fields: Phone/Email, Name, Sent By, Time Sent, Followed Link, Recommended?)
             ?>
-                        <table id="" class="customdatatable table table-striped table-bordered dataTable no-footer" cellspacing="0" width="100%">
+                        <table id="" class="customdatatable table table-striped table-bordered dataTable no-footer table-responsive" cellspacing="0" width="100%">
                           <thead>
                           <tr>
                             <th>Name</th>

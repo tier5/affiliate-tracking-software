@@ -4,10 +4,10 @@
   <div class="rounded-wrapper">
     <div class="rounded">
       <?php
-  if (isset($logo_setting) && $logo_setting != '') {
+  if (isset($logo_path) && $logo_path != '') {
     ?>
       <div class="page-logo">
-        <img src="<?=$logo_setting?>" alt="logo" class="logo-default" /> </a>
+        <img src="<?=$logo_path?>" alt="logo" class="logo-default" /> </a>
       </div>
       <?php
   } else if (isset($name) && $name != '') {
@@ -29,7 +29,7 @@ if ($this->request->isPost()) {
   //verify that we found a review invite
   if ($invite) {
     //we have an invite, so find what type of question we should ask
-    if ($invite->name != '') {
+    if (isset($name) && $name != '') {
       $name = $invite->name;
       }
       }
@@ -49,5 +49,7 @@ if ($this->request->isPost()) {
     </div>
     <div class="subtext text-center">We will never share your personal information!</div>
   </div>
-  <div class="footer">Powered By Review Velocity</div>
+  <div class="footer">Powered by:
+  418                                                                          <?php if($objAgency) { ?>
+  419                                                                          <a href="<?=$objAgency->website; ?>" style="Margin:0;color:#2199e8;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none"><?=$objAgency->name; ?></a><?php }?></div>
 </div>

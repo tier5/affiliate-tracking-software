@@ -34,11 +34,23 @@
         <!-- END PAGE LEVEL STYLES -->
         <!-- BEGIN THEME LAYOUT STYLES -->
         <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="favicon.ico" />
+        <link rel="apple-touch-icon" sizes="57x57" href="/img/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/img/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/img/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="/img/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
 
         <link href="/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
         <?php
-        if (isset($main_color_setting) && false) {
+        if (isset($main_color_setting) && 2 == 1 && $agency_white_label) {
         list($r, $g, $b) = sscanf($main_color_setting, "#%02x%02x%02x");
         //echo "$main_color_setting -> $r $g $b";
         ?>
@@ -63,9 +75,14 @@
             .login {
                 background-color: <?=$main_color_setting?> !important;
             }
+
+            .btnsignup{
+                background-color: <?=$main_color_setting ?>;
+            }
         </style>
         <?php
         }
+
         ?>
         <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
         <script type="text/javascript" src="/js/jquery.validate.js"></script>
@@ -76,26 +93,30 @@
         <div class="menu-toggler sidebar-toggler"></div>
         <!-- END SIDEBAR TOGGLER BUTTON -->
         <!-- BEGIN LOGIN -->
-
         <?php if(!(strpos($_SERVER['REQUEST_URI'],'thankyou')>0 || strpos($_SERVER['REQUEST_URI'],'signup')>0) ||
         strpos($_SERVER['REQUEST_URI'],'login')>0) { ?>
-        <!-- BEGIN LOGO -->
-        <div class="logo">
-            <a href="/"><img src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/img/logo-gray.gif')?>" alt="" /></a>
-        </div>
-        <!-- END LOGO -->
+
+            <?php if(strpos($_SERVER['REQUEST_URI'], 'invite') === false) { ?>
+                <!-- BEGIN LOGO -->
+                <div class="logo">
+                   <!--  <a href="/"><img style="max-width: 625px;" src="<?=(isset($this->view->logo_path) && $this->view->logo_path != '' ? $this->view->logo_path : '/img/blank.png') ?>" alt="" /></a> -->
+                </div>
+                <!-- END LOGO -->
+            <?php } ?>
+
         <?php } ?>
         {{ content() }}
-
         <?php if((strpos($_SERVER['REQUEST_URI'],'thankyou')>0 || strpos($_SERVER['REQUEST_URI'],'signup')>0) &&
-        !(strpos($_SERVER['REQUEST_URI'],'login')>0)) { ?>
-        <!-- BEGIN LOGO -->
-        <div class="logo">
-            <a href="/"><img src="<?=(isset($logo_setting) && $logo_setting != ''?$logo_setting:'/img/logo-gray.gif')?>" alt="" /></a>
-        </div>
-        <!-- END LOGO -->
+        !(strpos($_SERVER['REQUEST_URI'],'login')>0) || strpos($_SERVER['REQUEST_URI'], 'invite') !== false) { ?>
+            {% if logo_path AND logo_path != '/img/agency_logos/' %}
+            <!-- BEGIN LOGO -->
+            <div class="logo">
+                <a href="/"><img style="max-width: 300px;" src="{{ logo_path }}" alt="" /></a>
+            </div>
+            <!-- END LOGO -->
+            {% endif %}
         <?php } ?>
-        <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. Review Velocity. <a href="/session/privacy">Privacy</a> | <a href="/session/terms">Terms</a></div>
+        <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. </div>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
@@ -118,11 +139,10 @@
         <script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="/assets/pages/scripts/login.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <!-- END THEME LAYOUT SCRIPTS -->
-        <script src="/js/login.js"></script>
+
     </body>
 
 </html>

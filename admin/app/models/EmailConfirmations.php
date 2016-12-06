@@ -23,7 +23,13 @@ class EmailConfirmations extends Model
     public $template = null;
 
 
+    public function isConfirmed() {
+        return $this->confirmed == 'Y';
+    }
 
+    public function setConfirmed($Val = 'Y') {
+        $this->confirmed = $Val;
+    }
 
     /**
      * Before create the user assign a password
