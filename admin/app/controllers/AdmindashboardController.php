@@ -398,14 +398,14 @@ class AdmindashboardController extends ControllerBusinessBase {
             $DeleteType = $objBusiness->parent_id == \Vokuro\Models\Agency::AGENCY ? 'Agency' : 'Business';
             if($DeleteType == 'Agency') {
                 $BackURL = '/admindashboard/list/1';
+                $this->response->redirect($BackURL);
+                $this->view->disable();
+                return;
             }
             else {
                 // Deleting an agency works as of 12/05/2016, but we deemed it too powerful to have to the super admins currently.  It will unsubscribe every business.
                 $identity = $this->auth->getIdentity();
                 $BackURL = $identity['is_admin'] ? '/admindashboard/list/2' : '/agency';
-                $this->response->redirect($BackURL);
-                $this->view->disable();
-                return;
             }
 
             if($objBusiness) {
@@ -432,7 +432,7 @@ class AdmindashboardController extends ControllerBusinessBase {
             }
         } catch (\Exception $e) {
             $this->flash->error($e->getMessage());
-            $this->flash->error("Blah " . $e->getTraceAsString());
+            $this->flash->error("<PRE>" . $e->getTraceAsString());
             $this->db->rollback();
         }
 
