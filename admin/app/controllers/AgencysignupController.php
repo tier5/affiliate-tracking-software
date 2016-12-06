@@ -644,12 +644,11 @@
          *
          */
         /**
+         * REFACTOR:  This is also going into SubscriptionManager.  Needs to be removed here and tested.  It is called createAgencySubscription() and the parameters have been modified.
          * @param $tData
          * @throws \Exception
          */
         protected function CreateSubscription($tData, $SkipInitial = false) {
-
-           //echo '<pre>'; print_r($tData);exit;
             try {
                 if (!$this->request->isPost())
                     throw new \Exception();
@@ -658,7 +657,7 @@
                 $identity = $this->auth->getIdentity();
                 $user_id=($tData['UserID'])?$tData['UserID']:$identity['id'];
                 $tParameters = [
-                    'userId'                    =>$user_id ,
+                    'userId'                    => $user_id,
                     'provider'                  => ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
                     'amount'                    => $tData['PricingPlan']['RecurringPayment'] * 100,
                     'initial_amount'            => $SkipInitial ? 0 : $tData['PricingPlan']['InitialFee'] * 100,
@@ -721,6 +720,11 @@
             $this->view->setLayout('agencysignup');
         }
 
+        /**
+         * REFACTOR:  This also exists in subscription manager.  Haven't implemented that here yet.  It's called getAgencySubscriptionPricingPlan()
+         * @param $Name
+         * @return array
+         */
         protected function GetSubscriptionPricingPlan($Name) {
             $objPricingPlan = AgencyPricingPlan::findFirst("name='{$Name}'");
 
@@ -866,12 +870,8 @@
         }
 
         public function step2Action() {
-                $identity = $this->auth->getIdentity();
-              
-           
-          // $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 2]);
-           // echo  $this->session->AgencySignup['UserID'];exit;
-            //echo 'ok';exit;
+            $identity = $this->auth->getIdentity();
+
             if($this->session->AgencySignup['Upgrade']) {
                 $SubscriptionPlan = $this->session->AgencySignup['Upgrade'] ? $this->CurrentUpgradeSubscription : $this->DefaultSubscription;
                 $this->view->TodayYear = date("Y");

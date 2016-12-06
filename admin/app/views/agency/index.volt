@@ -1,5 +1,33 @@
 {{ content() }}
 
+<!-- Upgrade plan pop up -->
+<div class="modal fade" id="upgradePlanModal" tabindex="-1" role="dialog" aria-labelledby="upgradePlanModalLabel">
+	<div class="change-plan modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="growth-bar">
+					<div class="caption">
+						<span>Upgrade subscription</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-body center-block">
+				<div class="row">
+					<div class="col-xs-12">
+						<button id="submit-agency-change-plan-btn" type="button" class="btn btn-warning btn-lg center-block">Upgrade to 20 accounts for $160</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12" style="margin-top: 30px;">
+						<button onclick="DismissUpgrade();" type="button" class="btn btn-link btn-lg center-block">Dismiss message</button>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer"></div>
+		</div>
+	</div>
+</div>
+
 <div id="locationlist">
     {{ content() }}
 
@@ -97,3 +125,45 @@ foreach($tBusinesses as $objBusiness) {
     <?php }  ?>
 
 </div>
+
+{% if showUpgrade %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#upgradePlanModal').modal('show');
+
+			$('#submit-agency-change-plan-btn').click(function () {
+				changePlan();
+			});
+		});
+		function changePlan() {
+			$.post('/agency/upgradePlan')
+				.done(function (data) {
+					//console.log(data);
+					if (data.status === true) {
+						$('#upgradePlanModal').modal('hide');
+					} else {
+						alert('Change plan failed - ' + data.error);
+					}
+				})
+				.fail(function () {})
+				.always(function () {});
+		}
+
+		function DismissUpgrade() {
+			$.post('/agency/dismissUpgrade')
+				.done(function (data) {
+					console.log(data);
+					if (data.status === true) {
+						$('#upgradePlanModal').modal('hide');
+					} else {
+						alert('Could not dismiss message - ' + data.error);
+					}
+				})
+				.fail(function () {})
+				.always(function () {});
+		}
+
+
+
+	</script>
+{% endif %}

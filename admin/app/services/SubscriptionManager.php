@@ -198,8 +198,52 @@ class SubscriptionManager extends BaseService {
         throw new \Exception('No active subscription plans found');
     }
 
-    public function createSubscriptionPlan($newSubscriptionParameters) {
+    /**
+     * @param $UserID
+     * @param $RecurringPayment Monthly fee
+     * @param int $InitialFee Initial fee
+     * @param bool $SkipInitial
+     * @return bool
+     * @throws \Exception
+     */
+    public function createAgencySubscription($UserID, $PlanID, $RecurringPayment, $InitialFee = 0, $SkipInitial = false) {
+        try {
+            $objPaymentService = $this->di->get('paymentService');
 
+            $tParameters = [
+                'userId'                    => $UserID,
+                'provider'                  => ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
+                'amount'                    => $RecurringPayment * 100,
+                'initial_amount'            => $SkipInitial ? 0 : $InitialFee * 100,
+                'type'                      => 'Agency',
+            ];
+
+            // GARY_TODO:  Refactor:  No reason to have to query the DB here.
+            $objUser = \Vokuro\Models\Users::findFirst("id = " . $UserID);
+            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+
+            // This method is potentially called twice (To upgrade in the thank you action)
+            $objAgencySubscriptionPlan = \Vokuro\Models\AgencySubscriptionPlan::findFirst("agency_id = {$objAgency->agency_id}");
+            if(!$objAgencySubscriptionPlan)
+                $objAgencySubscriptionPlan = new \Vokuro\Models\AgencySubscriptionPlan();
+
+            $objAgencySubscriptionPlan->agency_id = $objAgency->agency_id;
+            $objAgencySubscriptionPlan->pricing_plan_id = $PlanID;
+            $objAgencySubscriptionPlan->save();
+
+            if (!$objPaymentService->changeSubscription($tParameters)) {
+                $this->flashSession->error('Could not create subscription.  Contact customer support.');
+                return false;
+            }
+
+        } catch (Exception $e) {
+            $this->flashSession->error($e->getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public function createSubscriptionPlan($newSubscriptionParameters) {
         try {
 
             $userId = $newSubscriptionParameters['userAccountId'];
@@ -540,6 +584,19 @@ class SubscriptionManager extends BaseService {
         }
 
         return $subscriptionPricingPlan->id;
+    }
+
+    public function getAgencySubscriptionPricingPlan($Name) {
+        $objPricingPlan = \Vokuro\Models\AgencyPricingPlan::findFirst("name='{$Name}'");
+
+        if(!$objPricingPlan)
+            $this->flashSession->error("Could not find subscription plan.  Contact customer support.");
+
+        return [
+            'InitialFee' => $objPricingPlan->initial_fee,
+            'RecurringPayment' => $objPricingPlan->number_of_businesses * $objPricingPlan->price_per_business,
+            'PlanID' => $objPricingPlan->id,
+        ];
     }
 
     public function CancelSubscription($AgencyID) {

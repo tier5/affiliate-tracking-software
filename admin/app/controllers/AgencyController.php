@@ -14,7 +14,6 @@
      */
     class AgencyController extends ControllerBusinessBase {
         public function initialize() {
-
             $tUser = $this->auth->getIdentity();
             $logged_in = is_array($tUser);
             if ($logged_in && $tUser['profile'] == 'Agency Admin') {
@@ -30,6 +29,63 @@
                 return;
             }
             parent::initialize();
+        }
+
+        public function dismissUpgradeAction() {
+            $this->view->disable();
+            $responseParameters['status'] = false;
+
+            $identity = $this->auth->getIdentity();
+            if ($identity) {
+                $objUser = \Vokuro\Models\Users::findFirst('id = ' . $identity['id']);
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+                $objAgency->upgraded_status++;
+                $objAgency->save();
+                $responseParameters['status'] = true;
+            } else {
+                $responseParameters['error'] = "Could not determine identification.";
+            }
+
+            $this->response->setContentType('application/json', 'UTF-8');
+            $this->response->setContent(json_encode($responseParameters));
+            return $this->response;
+        }
+
+        public function upgradePlanAction() {
+            $DefaultUpgradeSubscription = "97 Twenty for eight";
+            $this->view->disable();
+            $responseParameters['status'] = false;
+            try {
+                if (!$this->request->isPost())
+                    throw new \Exception("Request must be POST");
+
+                $identity = $this->auth->getIdentity();
+                if ($identity) {
+                    $objUser = \Vokuro\Models\Users::findFirst('id = ' . $identity['id']);
+                    $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+                    $objAgency->upgraded_status++;
+                    $objAgency->save();
+
+                    $SubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+                    $tPricingInfo = $SubscriptionManager->GetAgencySubscriptionPricingPlan($DefaultUpgradeSubscription);
+
+                    if($SubscriptionManager->createAgencySubscription($objUser->id, $tPricingInfo['PlanID'], $tPricingInfo['RecurringPayment'])) {
+                        $responseParameters['status'] = true;
+                    } else {
+                        $responseParameters['error'] = "Could not upgrade subscription";
+                    }
+
+                } else {
+                    $responseParameters['error'] = "Could not determine identification.";
+                }
+            } catch (Exception $e) {
+                $responseParameters['status'] = false;
+                $responseParameters['error'] = $e->getMessage();
+            }
+
+            $this->response->setContentType('application/json', 'UTF-8');
+            $this->response->setContent(json_encode($responseParameters));
+            return $this->response;
         }
 
         public function createAction($agency_type_id = null, $agency_id = 0, $parent_id = 0 ) {
@@ -82,6 +138,15 @@
          * Default action. Set the public layout (layouts/private.volt)
          */
         public function indexAction() {
+            $UpgradeSubscriptionPlanID = 4;
+            $identity = $this->auth->getIdentity();
+
+            $objUser = \Vokuro\Models\Users::findFirst('id = ' . $identity['id']);
+            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+            $objAgencyPricingPlan = \Vokuro\Models\AgencySubscriptionPlan::findFirst("agency_id = {$objAgency->agency_id}");
+
+            $this->view->showUpgrade = ($objAgency->upgraded_status > 0 || $objAgencyPricingPlan->pricing_plan_id == $UpgradeSubscriptionPlanID) ? false : true;
+            
             $this->tag->setTitle('Manage Businesses');
             $this->view->tBusinesses = $this->findBusinesses();
         }
