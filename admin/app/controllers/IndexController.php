@@ -79,7 +79,7 @@ class IndexController extends ControllerBase {
 
                     
             $parts = explode(".", $_SERVER['SERVER_NAME']);
-            if(count($parts) >= 2 && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
+            if(count($parts) > 2 && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
                 $subdomain = $parts[0];
 
                 $agency = Agency::findFirst([
