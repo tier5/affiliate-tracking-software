@@ -538,7 +538,10 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>"
+                                               <!--  <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>"
+                                                /> -->
+
+                                        <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value=""
                                                 />
                                             </div>
                                         </div>
@@ -551,7 +554,10 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])? $_POST["phone"]:'')?>"
+                                                <!--<input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])? $_POST["phone"]:'')?>"
+                                                />-->
+
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value=""
                                                 />
                                             </div>
                                         </div>
@@ -721,14 +727,31 @@
                                     type: "POST",
                                     data: postData,
                                     success: function (data, textStatus, jqXHR) {
+
+                                        $('#smsrequestformname').val('');
+
+                                        $('#smsrequestformphone').val('');
                                         $('#smsrequestformerror').html(data);
                                         $('#smsrequestformsuccess').hide();
                                         $('#smsrequestformerror').show();
+
+                                        setTimeout(function(){
+                                        $('.fancybox-close').click();
+                                             $('#smsrequestformsuccess').html('');
+                                              $('#smsrequestformerror').html('');
+                                            }, 2000);
+                                       
                                     },
                                     error: function (jqXHR, textStatus, errorThrown) {
                                         //if fails
                                         $('#smsrequestformsuccess').hide();
                                         $('#smsrequestformerror').show();
+
+                                        setTimeout(function(){
+                                        $('.fancybox-close').click();
+                                        $('#smsrequestformsuccess').html('');
+                                              $('#smsrequestformerror').html('');
+                                            }, 2000);
                                     }
                                 });
                         e.preventDefault(); //STOP default action

@@ -76,7 +76,7 @@ function isMobile() {
           data: { d : $(this).data("id"), i:$(this).data("invite")},
           success:function(html)
               {
-            //alert(html);  
+           // alert(html);  
              
              }
            });

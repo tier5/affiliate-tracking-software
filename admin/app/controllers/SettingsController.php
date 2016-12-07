@@ -429,6 +429,12 @@
             if($this->request->get('tab') == 'Stripe') {
                 $this->view->ShowAgencyStripePopup = false;
             }
+                $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        $location = Location::findFirst(array($conditions, "bind" => $parameters));
+        //dd($location);
+       //echo $Identity['location_id'];exit;
+
 
             $objUser = Users::findFirst("id = " . $Identity['id']);
 
@@ -462,11 +468,16 @@
                     $this->flash->error($message);
                 }
             }
-
+            //dd($objUser);
             $this->view->form = $SettingsForm;
             $this->view->agencyform = $AgencyForm;
-
+            $this->view->objgetuser=$objUser ;
             $this->view->objAgency = $objAgency;
+            
+            $this->view->location_id=$location->location_id;
+            
+            
+            
         }
 
         public function siteaddAction($location_id = 0, $review_site_id = 0) {
