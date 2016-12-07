@@ -307,10 +307,10 @@
                                                         {% set MonthlyActive = 'active' %}
                                                     {% endif %}
                                                 {% endif %}
-                                                {% if hasPaymentProfile %}
+
                                                 <button {{ ButtonDisabled }} class="btn {{ MonthlyActive }} btn-primary" data-subscription='M'>Monthly</button>
                                                 <button {{ ButtonDisabled }} class="btn {{ AnnuallyActive }} btn-default" data-subscription='Y'>Annually</button>
-                                                {% endif %}
+
                                             </div>
                                         </div>
                                     </div>
@@ -366,6 +366,30 @@
             </div>
         </div>
     </div>
+
+    <!-- Processing -->
+    <div class="modal fade" id="processingModal" tabindex="-1" role="dialog" aria-labelledby="processingLabel">
+        <div class="change-plan modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="growth-bar">
+                        <div class="caption">
+                            <span>Processing...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default apple-backgound">
+                        <div class="panel-body" style="color: white; font-size: 14px; font-weight: bold;">
+                            Processing subscription...
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </header>
 
 <?php
@@ -413,7 +437,7 @@
                                 alert("Update card failed!!!")
                             }*/
                             //console.log(data);
-                            window.location.reload();
+                            changePlan();
                         })
                         .fail(function () {
                         })
@@ -567,15 +591,18 @@
         };
 
         function changePlan() {
+        	$('#processingModal').modal('show');
             $.post('/businessSubscription/changePlan', getSubscriptionParams())
                     .done(function (data) {
                         //console.log(data);
                         if (data.status === true) {
                             $('#current-locations').text(smsLocationSlider.getValue());
                             $('#current-messages').text(smsMessagesSlider.getValue());
+                            $('#processingModal').modal('hide');
                             $('.subscription-panel-large-caption').text("PAID");
                             $('#updatePlanModal').modal('show');
                         } else {
+                        	$('#processingModal').modal('hide');
                             alert('Change plan failed - ' + data.error);
                         }
                     })
