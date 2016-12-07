@@ -63,7 +63,7 @@ class SubscriptionManager extends BaseService {
             if($subscriptionPlanData === false)
                 return ServicesConsts::$PAYMENT_PLAN_FREE;
 
-            return  ['pricingPlan']['enable_trial_account'] ? ServicesConsts::$PAYMENT_PLAN_TRIAL : ServicesConsts::$PAYMENT_PLAN_PAID;
+            return  $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? ServicesConsts::$PAYMENT_PLAN_TRIAL : ServicesConsts::$PAYMENT_PLAN_PAID;
         }
     }
 
