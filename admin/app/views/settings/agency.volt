@@ -524,6 +524,39 @@
                                 </div>
                             </div>
                         </div>
+                    <div>
+                    Send text message:<br> <input
+                  class="form-control
+                  placeholder-no-fix"
+                  type="name"
+                  autocomplete="off"
+                  placeholder="Cell Phone"
+                  name="cell_phone"
+                  id="cell_phone"
+                  value="<?=(isset($_POST['cell_phone'])?$_POST[" cell_phone"]:'')?>"
+                  style="float: left; width: 40%; margin-right: 15px;"
+                />
+
+                <br>
+
+                <input
+                  class="form-control placeholder-no-fix"
+                  type="hidden"
+                  required
+                  autocomplete="off"
+                  placeholder="Business Name"
+                  id="name"
+                 
+                  value="<?php echo $objgetuser->name;?>"
+                />
+
+
+                 <textarea style="display:none;" class="form-control" name="sms_text_message_default" id="sms_text_message_default"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($agency->
+                                        SMS_message)?$agency->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks! '))?></textarea>
+                
+                <a href="#" class="btnLink btnSecondary" id="sendsmslink" style="float: left;line-height: 19px;">Send</a>
+                </div>
+
                     </div>
                     <!-- END Twilio Settings  -->
 
@@ -804,6 +837,27 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
             e.preventDefault();
             $('#page-wrapper').hide();
             $('.overlay').hide();
+        });
+
+
+          $("#sendsmslink").click(function () {
+            //e.preventDefault();
+            var datavar = {
+                "body": $('#sms_text_message_default').val(),
+                "name": $('#name').val(),
+                "cell_phone": $('#cell_phone').val(),
+                "id": '<?=$objgetuser->id?>',
+                "location_id": '<?=$location_id?>'
+                
+            };
+            $.ajax({
+                url: "/session/sendsms",
+                data: datavar,
+                success: function (result) {
+                    $("#divSMSResults").html(result);
+                }
+            });
+            return false;
         });
 
         $("#createreviewsiteform").on('submit', function (ev) {

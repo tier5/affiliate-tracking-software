@@ -280,7 +280,7 @@
                     }
                     else
                     {
-                        $message = $message.$_POST['link'];
+                        $message = $message.googleShortenURL($_POST['link']);
                     }
                    
                      $message = $message.'  Reply stop to be removed';
@@ -350,7 +350,7 @@
                             {
                             if($_POST['link']!='')
                             {
-                                $message = str_replace("{link}", $_POST['link'], $message);
+                                $message = str_replace("{link}", googleShortenURL($_POST['link']), $message);
                             }
                             else
                             {
@@ -359,7 +359,7 @@
                             }
                             else
                             {
-                                 $message = $message .$_POST['link'];
+                                 $message = $message .googleShortenURL($_POST['link']);
                             }
                             
                              $message = $message.'  Reply stop to be removed';
