@@ -311,12 +311,20 @@ class AdmindashboardController extends ControllerBusinessBase {
 
     protected function DeleteBusiness($BusinessID) {
         $dbLocations = \Vokuro\Models\Location::find("agency_id = {$BusinessID}");
-        // Delete review sites
+        // Delete locations, review sites and review invites
         foreach ($dbLocations as $objLocation) {
             $dbLocationReviewSites = \Vokuro\Models\LocationReviewSite::find("location_id = {$objLocation->location_id}");
+
+            // Review invites
+            $dbReviewInvite = \Vokuro\Models\ReviewInvite::find("location_id = {$objLocation->location_id}");
+            foreach($dbReviewInvite as $objReviewInvite)
+                $objReviewInvite->delete();
+
+            // Review Sites
             foreach($dbLocationReviewSites as $objReviewSite)
                 $objReviewSite->delete();
-            // Delete locations
+
+            // Location
             $objLocation->delete();
         }
 
@@ -447,9 +455,6 @@ class AdmindashboardController extends ControllerBusinessBase {
      * Sends confirmation email
      */
     public function confirmationAction($agency_type_id, $agency_id, $user_id) {
-
-
-
         $emailConfirmation = new EmailConfirmations();
         $emailConfirmation->usersId = $user_id;
         $emailConfirmation->save();

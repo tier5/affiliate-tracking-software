@@ -93,7 +93,7 @@ foreach($tBusinesses as $objBusiness) {
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-user"></i>
                                                     Password</a></li>-->
                                             <li>
-                                                <a href="/agency/delete/2/{{ objBusiness.agency_id }}" onclick="return confirm('Are you sure you want to delete this item?');" class=""><i class="fa fa-trash-o"></i>
+                                                <a href="/admindashboard/delete/2/{{ objBusiness.agency_id }}" onclick="return confirm('Are you sure you want to delete this item?');" class=""><i class="fa fa-trash-o"></i>
                                                     Delete</a></li>
                                             <!--
                                             <li>

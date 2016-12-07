@@ -42,10 +42,19 @@ class Permissions{
      * @return bool
      */
     public function canUserEditAgency(Users $u, Agency $agency){
-        if($this->isUserSuperAdmin($u)) return true;
+        if($this->isUserSuperAdmin($u))
+            return true;
+
+        // Currently only one user to an agency
+        if($agency->parent_id != \Vokuro\Models\Agency::AGENCY) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+            if($objParentAgency->agency_id == $u->agency_id)
+                return true;
+        }
         $agency_id = $u->agency_id;
-        if($agency_id == $agency->agency_id) return true;
-        //by default, return false
+        if($agency_id == $agency->agency_id)
+            return true;
+
         return false;
     }
 

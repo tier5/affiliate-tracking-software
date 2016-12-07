@@ -146,7 +146,7 @@
             $objAgencyPricingPlan = \Vokuro\Models\AgencySubscriptionPlan::findFirst("agency_id = {$objAgency->agency_id}");
 
             $this->view->showUpgrade = ($objAgency->upgraded_status > 0 || $objAgencyPricingPlan->pricing_plan_id == $UpgradeSubscriptionPlanID) ? false : true;
-            
+
             $this->tag->setTitle('Manage Businesses');
             $this->view->tBusinesses = $this->findBusinesses();
         }
