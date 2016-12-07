@@ -576,7 +576,8 @@ class SubscriptionManager extends BaseService {
         $subscriptionPricingPlan->enable_annual_discount = $parameters["enableAnnualDiscount"];
         $subscriptionPricingPlan->annual_discount = $parameters["annualDiscount"];
         $subscriptionPricingPlan->pricing_details = $parameters["pricingDetails"] ? : new \Phalcon\Db\RawValue('default');
-        $subscriptionPricingPlan->is_viral = $parameters['isViral'] ?: false;
+        if(!$isUpdate)
+            $subscriptionPricingPlan->is_viral = $parameters['isViral'] ?: false;
 
         if ($isUpdate && !$subscriptionPricingPlan->save()) {
             return false;
