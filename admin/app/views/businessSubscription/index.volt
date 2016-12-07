@@ -369,13 +369,13 @@
 </header>
 
 <?php
-
     $MaxSMS = $subscriptionPlanData['pricingPlan']['max_sms_messages'];
 
     $TickDivText = '';
     $Ticks = [];
+    $Start = $subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] ?: 50;
     // Gonna split the slider in 10 ticks.
-    for($c = 0 ; $c < (int)$MaxSMS ; $c += round($MaxSMS / 10)) {
+    for($c = $Start ; $c < (int)$MaxSMS ; $c += round($MaxSMS / 10)) {
         $TickDivText .= "'<div>$c</div><div class=\"tick-marker\">|</div>',";
          $Ticks[] = $c;
      }
@@ -450,7 +450,7 @@
 
             /* Slider initializations */
             smsLocationSlider.setValue(currentPlanLocations, true, true);
-            smsMessagesSlider.setValue(currentPlanMessages ? currentPlanMessages : 100, true, true);
+            smsMessagesSlider.setValue(currentPlanMessages ? currentPlanMessages : 50, true, true);
 
             /* Message init */
             //$('#current-locations').text(smsLocationSlider.getValue());
@@ -622,7 +622,7 @@
 
         var smsMessagesSlider = new Slider("#smsMessagesSlider", {
             tooltip: 'show',
-            min: 100,
+            min: 50,
             max: maxMessages + 1,
             step: <?=round($MaxSMS / 10); ?>,
             ticks: <?=$TickArrayText; ?>,
