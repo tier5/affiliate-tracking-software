@@ -717,6 +717,7 @@
 
             $this->view->tMonths = $tMonths;
             $this->view->tYears = $tYears;
+            $this->tag->setTitle('Get Mobile Reviews | Agency Signup');
             $this->view->setLayout('agencysignup');
         }
 
@@ -835,6 +836,7 @@
             //echo '<pre>';print_r($_POST);exit;
                 /*** 1/12/2016**/
                 $identity = $this->auth->getIdentity();
+                
           /*  if($this->session->AgencySignup['UserID']=='')
            {
             $this->session->AgencySignup['UserID']=$identity['id'];
@@ -845,6 +847,10 @@
             if($this->session->AgencySignup['UserID']=='')
            {
              $objUser = Users::findFirst("id = " . $identity['id']);
+                if($objUser->active=='Y')
+                {
+                    $this->response->redirect('/agency'); 
+                }
             $this->view->FirstName=$objUser->name;
             $this->view->LastName=$objUser->last_name;
             $this->view->OwnerEmail=$objUser->email;
