@@ -433,7 +433,7 @@
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
         $location = Location::findFirst(array($conditions, "bind" => $parameters));
         //dd($location);
-       //echo $Identity['location_id'];exit;
+       //echo $Identity['id'];exit;
 
 
             $objUser = Users::findFirst("id = " . $Identity['id']);
@@ -473,7 +473,7 @@
             $this->view->agencyform = $AgencyForm;
             $this->view->objgetuser=$objUser ;
             $this->view->objAgency = $objAgency;
-            
+            $this->view->id=$Identity['id'];
             $this->view->location_id=$location->location_id;
             
             

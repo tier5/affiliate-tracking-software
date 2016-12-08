@@ -1,3 +1,43 @@
+<style>
+.agencysettingspage{
+    position:relative;
+}
+/*.cellphn{
+    position: absolute;
+    bottom: 0px;
+    right: 0;
+    width: 30%;
+    top:90%;
+}*/
+
+.cellphn .cellphnsubmit {
+    background: #283643 !important;
+    border-radius: 5px !important;
+    color: #ffffff;
+    font-weight: bold;
+    height: 33px;
+    padding: 8px;
+    display: inline-block;
+    font-size: 12px;
+    text-decoration:none;
+}
+
+#divSMSResults_msg
+{
+ width: 287px;
+ margin-left: 300px;
+ }
+
+
+/*.cellphn input{
+    display: inline-block;
+    width: 70%;
+    float: left;
+    margin-right: 10px;
+    margin-top: 10px;
+}*/
+</style>
+
 {% set GeneralExpanded = 'active' %}
 {% if tab == 'Stripe' %}
     {% set StripeExpanded = 'active' %}
@@ -524,8 +564,13 @@
                                 </div>
                             </div>
                         </div>
-                    <div>
-                    Send text message:<br> <input
+                <div class="cellphn form-group">
+                    <div class="row">
+                    <!-- cell phone -->
+                    <div id='divSMSResults_msg'></div>
+                    <label class="col-md-4 control-label">Send test text message:</label> 
+                    <div class="col-md-6">
+                    <input
                   class="form-control
                   placeholder-no-fix"
                   type="name"
@@ -533,31 +578,34 @@
                   placeholder="Cell Phone"
                   name="cell_phone"
                   id="cell_phone"
-                  value="<?=(isset($_POST['cell_phone'])?$_POST[" cell_phone"]:'')?>"
-                  style="float: left; width: 40%; margin-right: 15px;"
-                />
-
-                <br>
-
-                <input
+                  value="<?=(isset($_POST['cell_phone'])?$_POST[" cell_phone"]:'')?>"/>
+                  </div>
+                  <input
                   class="form-control placeholder-no-fix"
                   type="hidden"
                   required
                   autocomplete="off"
                   placeholder="Business Name"
-                  id="name"
-                 
-                  value="<?php echo $objgetuser->name;?>"
-                />
+                  id="name" value="<?php echo $objgetuser->name;?>"
+                   />
 
 
-                 <textarea style="display:none;" class="form-control" name="sms_text_message_default" id="sms_text_message_default"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($agency->
-                                        SMS_message)?$agency->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks! '))?></textarea>
-                
-                <a href="#" class="btnLink btnSecondary" id="sendsmslink" style="float: left;line-height: 19px;">Send</a>
+                 <textarea style="display:none;" class="form-control" name="sms_text_message_default" id="sms_text_message_default"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($agency->SMS_message)?$agency->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks! '))?></textarea>
+                 <div class="col-md-2">
+                <a href="#" class="btnLink btnSecondary cellphnsubmit" id="sendsmslink" style="float: left;line-height: 19px;">Send</a>
+                </div>
+                </div><div id="divSMSResults"></div>
+                <!-- cell phone -->
                 </div>
 
-                    </div>
+   <div class="row">
+                                <div class="col-md-12">
+                               
+     <i>This Field is to test your twilio settings to ensure they are working properly. Be sure your account is not in trial mode and you have added funds to your Twilio account.</i>
+                                </div>
+                            </div>
+
+            </div>
                     <!-- END Twilio Settings  -->
 
 
@@ -846,15 +894,16 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
                 "body": $('#sms_text_message_default').val(),
                 "name": $('#name').val(),
                 "cell_phone": $('#cell_phone').val(),
-                "id": '<?=$objgetuser->id?>',
-                "location_id": '<?=$location_id?>'
+                "id": '<?=$id?>',
+                "location_id": ''
                 
             };
             $.ajax({
                 url: "/session/sendsms",
                 data: datavar,
                 success: function (result) {
-                    $("#divSMSResults").html(result);
+                //alert(result);
+                    $("#divSMSResults_msg").html(result);
                 }
             });
             return false;

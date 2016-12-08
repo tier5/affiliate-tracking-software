@@ -763,6 +763,9 @@ Talk Soon,
     /**
      * Searches for users
      */
+
+
+
     public function usersFunctionality($profilesId, $locationid = 0) {
         $this->view->profilesId = $profilesId;
 
@@ -828,6 +831,48 @@ Talk Soon,
                 if ($loc) {
                     $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
                     $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
+
+                    $this->view->review_invite_type_id =$loc->review_invite_type_id;
+                    $Reviewlist=ReviewInvite::FnallReview(true);
+                    //$rev_count=[];
+                    $this->view->rev_count=$rev_count;    
+                    $this->view->Reviewlist=$Reviewlist;
+                    $user_array=array();
+
+
+                   // dd($Reviewlist);
+                   foreach($Reviewlist as $reviews)
+                    {
+                        if(!in_array($reviews->sent_by_user_id,$user_array))
+                        {
+                      array_push($user_array,$reviews->sent_by_user_id);
+                        }
+                    }
+                    $rating=array();
+
+                    for($i=0;$i<count($user_array);$i++)
+                    {
+                       $value=ReviewInvite::starrating(true,$user_array[$i],2);
+
+                       foreach($value as $rates)
+                       {
+                        $rating[$user_array[$i]]= $rates->rates.'-'.$rates->counts;
+                       }
+                    }
+
+
+                    for($i=0;$i<count($user_array);$i++)
+                    {
+                       $value=ReviewInvite::starrating(true,$user_array[$i]);
+
+                       foreach($value as $rates)
+                       {
+                        $rating[$user_array[$i]]= $rates->rates.'-'.$rates->counts;
+                       }
+                    }
+
+                    $this->view->rating=$rating;
+                   //echo '<pre>';print_r($rating);exit;
                 }
                 $this->view->users_report = $users_report;
             }

@@ -39,6 +39,8 @@
             $identity = $this->auth->getIdentity();
             $this->usersFunctionality(3);
             $this->getSMSReport();
+
+          
         }
 
 
