@@ -11,6 +11,27 @@
   display:inline-block;
   padding: 5px;
 }
+
+.avgfeedbck ul{
+    list-style-type: none;
+    padding: 0;
+}
+
+.avgfeedbck ul li{
+      display: inline-block;
+      vertical-align: top;
+}
+
+.number-view {
+    display: block;
+    border: 3px solid;
+    border-radius: 50% !important;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+}
 </style>
 <div id="reviews">
 
@@ -103,8 +124,9 @@ if ($users_report) {
                 <tr>
                 <th>Rank</th>
                 <th>Name</th>
-                <th>Reviews Sent</th>
-                <th>Reviews Received</th>
+                <!--<th>Reviews Sent</th>
+                <th>Reviews Received</th>-->
+                <th>total</total>
                 <th>Customer Satisfaction</th>
                 </tr>
                 </thead>
@@ -113,15 +135,60 @@ if ($users_report) {
                 <?php
 $rowclass = '';
 $i = 0;
+  $star_rating=array();
+  foreach($users_report as $rp)
+  {
+    array_push($star_rating,$rp->id);
+  }
+
+
+
+
+
 foreach($users_report as $user) {
   $i++;
+  $total=$user->sms_sent_this_month+$user->sms_received_this_month;
+  $star_rating=0;
+
+  
   ?>
                 <tr>
                   <td class="<?=$class?>"><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
                   <td class="<?=$class?>"><?=$user->name?></td>
-                  <td class="<?=$class?>"><?=$user->sms_sent_this_month?></td>
-                  <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>
-                  <td class="<?=$class?>"><?=($user->sms_received_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
+                  <!--<td class="<?=$class?>"><?=$user->sms_sent_this_month?></td>
+                  <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>-->
+                  <td><?php echo $total;?></td>
+                  <td class="<?=$class?> avgfeedbck">
+
+                  <?php if($review_invite_type_id==1){?>
+                  <?=($user->sms_received_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?> - <span style="text-transform: capitalize;"> yes </span>
+
+                  <?php } elseif($review_invite_type_id==2){
+                        if(!empty($rating) && array_key_exists($user->id, $rating))
+                        {
+                          $get_rating=explode('-',$rating[$user->id]);
+                          $full_star=floor($get_rating[0]/$get_rating[1]);
+                          $half_star=$get_rating[0]%$get_rating[1];
+                       
+
+                  ?>
+
+                    <ul class="ratings">
+                    <?php for($l=0;$l<$full_star;$l++)
+                    {?>
+                      <li><img src="/img/star.png" class="img-responsive"></li>
+                      <?php } if($half_star!=0) {?>
+                      <li><img src="/img/star2.png" class="img-responsive"></li>
+                      <?php }?>
+
+                      <?php echo number_format($get_rating[0]/$get_rating[1],1); ?>
+                    </ul>
+                  <?php } } else {?>
+
+                      <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;">9</span>
+                  <?php } ?>
+
+                  </td>
                   </td>
                 </tr>
                 <?php
@@ -203,8 +270,9 @@ foreach($users_report as $user) {
                   <?php
      				 } else {
         		  ?>
-                  <th>Reviews Sent</th>
-                  <th>Reviews Received</th>
+                  <!--<th>Reviews Sent</th>
+                  <th>Reviews Received</th>-->
+                  <th>Total</th>
                   <th>Customer Satisfaction</th>
                   <?php
       				}
@@ -240,10 +308,44 @@ foreach($users_report as $user) {
                   <td><span class="btnSecondary link_url btnLink" data-title="/link/createlink/<?=base64_encode($code)?>" style="cursor:pointer;">Link</span></td>
                   <?php
 				    } else {
+            $total=$user->sms_sent_this_month+$user->sms_received_this_month;
 				  ?>
-				      <td class="<?=$class?>"><?=$user->sms_sent_this_month?></td>
+				      <!--<td class="<?=$class?>"><?=$user->sms_sent_this_month?></td>
 				      <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>
-				      <td class="<?=$class?>"><?=($user->sms_sent_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
+
+              -->
+              <td>$total</td>
+				       <td class="<?=$class?> avgfeedbck">
+
+                  <?php if($review_invite_type_id==1){?>
+                  <?=($user->sms_received_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?> - <span style="text-transform: capitalize;"> yes </span>
+
+                  <?php } elseif($review_invite_type_id==2){
+                        if(!empty($rating) && array_key_exists($user->id, $rating))
+                        {
+                          $get_rating=explode('-',$rating[$user->id]);
+                          $full_star=floor($get_rating[0]/$get_rating[1]);
+                          $half_star=$get_rating[0]%$get_rating[1];
+                       
+
+                  ?>
+
+                    <ul class="ratings">
+                    <?php for($l=0;$l<$full_star;$l++)
+                    {?>
+                      <li><img src="/img/star.png" class="img-responsive"></li>
+                      <?php } if($half_star!=0) {?>
+                      <li><img src="/img/star2.png" class="img-responsive"></li>
+                      <?php }?>
+
+                      <?php echo number_format($get_rating[0]/$get_rating[1],1); ?>
+                    </ul>
+                  <?php } } else {?>
+
+                      <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;">9</span>
+                  <?php } ?>
+
+              </td>
 				
 				
 				  <?php

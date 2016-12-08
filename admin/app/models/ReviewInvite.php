@@ -194,6 +194,57 @@
         }
 
 
+        public static function FnallReview($only_site_clicked = false) {
+            // A raw SQL statement
+            $sql = "SELECT users.name AS sent_by , review_invite.*
+                FROM review_invite 
+                  INNER JOIN users ON review_invite.sent_by_user_id = users.id
+                WHERE sms_broadcast_id IS NULL
+                  " . ($only_site_clicked ? 'AND (SELECT COUNT(*) FROM review_invite_review_site WHERE review_invite_review_site.review_invite_id = review_invite.review_invite_id) > 0' : '') . "
+                ORDER BY review_invite.date_sent DESC";
+
+            //exit;
+
+                 /*$sql = "SELECT users.name AS sent_by, review_invite.*
+                FROM review_invite 
+                  INNER JOIN users ON review_invite.sent_by_user_id = users.id
+                WHERE review_invite.location_id = " . $location_id . " AND sms_broadcast_id IS NULL ORDER BY review_invite.date_sent DESC";*/
+
+                //exit;
+
+            // Base model
+            $list = new ReviewInvite();
+
+            // Execute the query
+            $params = null;
+            return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+
+        }
+
+
+        public static function starrating($only_site_clicked = false,$user_id)
+             {
+                   $sql = "SELECT sum(rating) as rates,review_invite.*,count(rating) as counts
+                FROM review_invite 
+                  INNER JOIN users ON review_invite.sent_by_user_id = users.id
+                WHERE sms_broadcast_id IS NULL  and sent_by_user_id=".$user_id." 
+                  " . ($only_site_clicked ? 'AND (SELECT COUNT(*) FROM review_invite_review_site WHERE review_invite_review_site.review_invite_id = review_invite.review_invite_id) > 0' : '') . "
+                ORDER BY review_invite.date_sent DESC";
+
+       
+//exit;
+            // Base model
+            $list = new ReviewInvite();
+
+            // Execute the query
+            $params = null;
+           return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+           
+                 } 
+
+
+       
+
         /*
           * Find the data for the report
           *
