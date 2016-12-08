@@ -37,6 +37,7 @@ class IndexController extends ControllerBase {
         $this->view->TLDomain = $this->config->application->domain;
         $tUser = $this->auth->getIdentity();
         $logged_in = is_array($tUser);
+
        
         if ($logged_in) {
 

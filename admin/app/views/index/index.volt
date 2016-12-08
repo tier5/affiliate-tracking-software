@@ -369,20 +369,38 @@
     <div id="form-messages"></div>
 
     <form id="ajax-contact" method="post" action="/location/send_email">
-        <div class="field">
-            <label for="name">Subject:</label>
+        
+        <div class="field" style="display:none">
             <input type="text" id="subject" name="subject" value="<?=$share_subject?>" required="required" />
         </div>
+       
 
         <div class="field">
             <label for="email">To Email:</label>
-            <input type="text" id="email_to" name="email_to" required="required" />
+            <input type="email" class="email_to" name="email_to[]"  />
+        </div>
+        <div class="field">
+            <label for="email">To Email:</label>
+            <input type="email" class="email_to" name="email_to[]"  />
+        </div>
+        <div class="field">
+            <label for="email">To Email:</label>
+            <input type="email" class="email_to" name="email_to[]" />
+        </div>
+        <div class="field">
+            <label for="email">To Email:</label>
+            <input type="email" class="email_to" name="email_to[]"  />
+        </div>
+        <div class="field">
+            <label for="email">To Email:</label>
+            <input type="email" class="email_to" name="email_to[]s"  />
         </div>
 
-        <div class="field">
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" required="required"><?=$share_message?></textarea>
+        
+        <div class="field" style="display:none">
+            <input id="message" name="message" required="required" value="<?php echo $share_message; ?>">
         </div>
+        
 
         <div class="field">
             <input class="btn btn-big btn-success" type="submit" value="Send" />
