@@ -2,15 +2,15 @@
 .agencysettingspage{
     position:relative;
 }
-.cellphn{
+/*.cellphn{
     position: absolute;
     bottom: 0px;
     right: 0;
     width: 30%;
     top:90%;
-}
+}*/
 
-.cellphn #sendsmslink {
+.cellphn .cellphnsubmit {
     background: #283643 !important;
     border-radius: 5px !important;
     color: #ffffff;
@@ -19,17 +19,23 @@
     padding: 8px;
     display: inline-block;
     font-size: 12px;
-    margin-top: 10px;
     text-decoration:none;
 }
 
-.cellphn input{
+#divSMSResults_msg
+{
+ width: 287px;
+ margin-left: 300px;
+ }
+
+
+/*.cellphn input{
     display: inline-block;
     width: 70%;
     float: left;
     margin-right: 10px;
     margin-top: 10px;
-}
+}*/
 </style>
 
 {% set GeneralExpanded = 'active' %}
@@ -558,10 +564,13 @@
                                 </div>
                             </div>
                         </div>
-                <div class="cellphn">
+                <div class="cellphn form-group">
+                    <div class="row">
                     <!-- cell phone -->
-                <div id='divSMSResults_msg'></div>
-                    Send test text message:<br> <input
+                    <div id='divSMSResults_msg'></div>
+                    <label class="col-md-4 control-label">Send test text message:</label> 
+                    <div class="col-md-6">
+                    <input
                   class="form-control
                   placeholder-no-fix"
                   type="name"
@@ -570,26 +579,33 @@
                   name="cell_phone"
                   id="cell_phone"
                   value="<?=(isset($_POST['cell_phone'])?$_POST[" cell_phone"]:'')?>"/>
-
-                
-
-                <input
+                  </div>
+                  <input
                   class="form-control placeholder-no-fix"
                   type="hidden"
                   required
                   autocomplete="off"
                   placeholder="Business Name"
                   id="name" value="<?php echo $objgetuser->name;?>"
-                />
+                   />
 
 
                  <textarea style="display:none;" class="form-control" name="sms_text_message_default" id="sms_text_message_default"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($agency->SMS_message)?$agency->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks! '))?></textarea>
-                
-                <a href="#" class="btnLink btnSecondary" id="sendsmslink" style="float: left;line-height: 19px;">Send</a>
+                 <div class="col-md-2">
+                <a href="#" class="btnLink btnSecondary cellphnsubmit" id="sendsmslink" style="float: left;line-height: 19px;">Send</a>
+                </div>
                 </div><div id="divSMSResults"></div>
                 <!-- cell phone -->
+                </div>
 
-                    </div>
+   <div class="row">
+                                <div class="col-md-12">
+                               
+     <i>This Field is to test your twilio settings to ensure they are working properly. Be sure your account is not in trial mode and you have added funds to your Twilio account.</i>
+                                </div>
+                            </div>
+
+            </div>
                     <!-- END Twilio Settings  -->
 
 
