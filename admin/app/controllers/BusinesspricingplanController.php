@@ -105,7 +105,7 @@ class BusinessPricingPlanController extends ControllerBase {
             $this->flash->error("Could not open pricing plan for editing.");
             return;
         }
-
+        
         /* Set top level parameters */
         $this->view->name = $pricingPlan->name;
         $this->view->enableTrialAccount = $pricingPlan->enable_trial_account;

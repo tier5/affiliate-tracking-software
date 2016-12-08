@@ -63,7 +63,7 @@ class SubscriptionManager extends BaseService {
             if($subscriptionPlanData === false)
                 return ServicesConsts::$PAYMENT_PLAN_FREE;
 
-            return  ['pricingPlan']['enable_trial_account'] ? ServicesConsts::$PAYMENT_PLAN_TRIAL : ServicesConsts::$PAYMENT_PLAN_PAID;
+            return  $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? ServicesConsts::$PAYMENT_PLAN_TRIAL : ServicesConsts::$PAYMENT_PLAN_PAID;
         }
     }
 
@@ -311,6 +311,7 @@ class SubscriptionManager extends BaseService {
             ->execute()
             ->getFirst();
         if (!$subscriptionPlan) {
+            throw new \Exception("Could not find subscription plan for user id " . $subscriptionParameters['userId']);
             return false;
         }
 
@@ -318,6 +319,7 @@ class SubscriptionManager extends BaseService {
         $subscriptionPlan->sms_messages_per_location = $subscriptionParameters['messages'];
         $subscriptionPlan->payment_plan = $subscriptionParameters['planType'];
         if (!$subscriptionPlan->save()) {
+            throw new \Exception("Could not save subscription plan - " . implode('.  ', $subscriptionPlan->getMessages()));
             return false;
         }
 
@@ -325,7 +327,6 @@ class SubscriptionManager extends BaseService {
     }
 
     public function getSubscriptionPlan($userId, $subscription_pricing_plan_id) {
-
         /* Get subscription plan */
         $subscriptionPlan = BusinessSubscriptionPlan::query()
             ->where("user_id = :user_id:")
@@ -575,7 +576,8 @@ class SubscriptionManager extends BaseService {
         $subscriptionPricingPlan->enable_annual_discount = $parameters["enableAnnualDiscount"];
         $subscriptionPricingPlan->annual_discount = $parameters["annualDiscount"];
         $subscriptionPricingPlan->pricing_details = $parameters["pricingDetails"] ? : new \Phalcon\Db\RawValue('default');
-        $subscriptionPricingPlan->is_viral = $parameters['isViral'] ?: false;
+        if(!$isUpdate)
+            $subscriptionPricingPlan->is_viral = $parameters['isViral'] ?: false;
 
         if ($isUpdate && !$subscriptionPricingPlan->save()) {
             return false;

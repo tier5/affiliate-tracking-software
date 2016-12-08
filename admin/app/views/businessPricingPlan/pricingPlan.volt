@@ -383,6 +383,10 @@
         }
 
         function savePricingProfile(isCreate) {
+        	if($('#max-sms-messages-control').val() < 50) {
+        		alert("Maximum SMS messages must meet or exceed 50.");
+        		return false;
+        	}
             var parameters = {};
             $.extend(parameters, getValueParameters(), getProgressionDetails());
 
