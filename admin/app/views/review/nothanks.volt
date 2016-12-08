@@ -51,5 +51,5 @@ if ($this->request->isPost()) {
     <div class="subtext text-center">We will never share your personal information!</div>
   </div>
   <div class="footer">Powered by:
-  <a href="<?=$objAgency->website; ?>" style="Margin:0;color:#2199e8;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none"><?=$objAgency->name; ?></a><?php }?></div>
+  <a href="<?=$objAgency->website; ?>" style="Margin:0;color:#2199e8;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none"><?=$objAgency->name; ?></a></div>
 </div>
