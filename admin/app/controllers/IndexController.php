@@ -114,7 +114,6 @@ class IndexController extends ControllerBase {
                 }
 
                 $this->view->salesPage = true;
-                $this->view->setTemplateBefore('agencysignup');
                 $this->view->pick('agencysignup/sales');
                 return;
 
@@ -178,7 +177,7 @@ class IndexController extends ControllerBase {
                 }
 
                 $this->view->salesPage = true;
-                $this->view->setTemplateBefore('agencysignup');
+                //$this->view->setTemplateBefore('agencysignup');
                 $this->view->pick('agencysignup/sales');
                 return;
 
