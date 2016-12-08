@@ -37,6 +37,7 @@ class IndexController extends ControllerBase {
         $this->view->TLDomain = $this->config->application->domain;
         $tUser = $this->auth->getIdentity();
         $logged_in = is_array($tUser);
+
        
         if ($logged_in) {
 
@@ -116,7 +117,7 @@ class IndexController extends ControllerBase {
                 $this->view->pick('agencysignup/sales');
                 return;
 
-            }
+                }
 
                 else
                 {
@@ -142,7 +143,7 @@ class IndexController extends ControllerBase {
 
 
             $parts = explode(".", $_SERVER['SERVER_NAME']);
-            if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
+            if(count($parts) >= 2 && $parts[1] == 'reviewvelocity' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
                 $subdomain = $parts[0];
 
                 $agency = Agency::findFirst([
