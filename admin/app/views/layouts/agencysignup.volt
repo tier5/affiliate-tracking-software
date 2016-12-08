@@ -65,6 +65,12 @@
     <link href="/css/agencysignup.css" rel="stylesheet" type="text/css" />
 
      <style type="text/css">
+         {% if salesPage %}
+            div.container{
+              width: 100%;
+              padding: 0px;
+            }
+         {% endif %}
         .PrimaryColor {
             background-color: {{ PrimaryColor }} !important;
         }
