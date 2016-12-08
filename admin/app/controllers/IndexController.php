@@ -113,6 +113,7 @@ class IndexController extends ControllerBase {
                     $this->view->logo_path = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
                 }
 
+                $this->view->salesPage = true;
                 $this->view->setTemplateBefore('agencysignup');
                 $this->view->pick('agencysignup/sales');
                 return;
