@@ -63,7 +63,6 @@
           <li><a href="#tab_twilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> Twilio </a></li>
           <li><a href="#tab_stripe" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> Stripe </a></li>
           <li><a href="#tab_notification" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>> Notifications </a></li>
-          <li><a href="#tab_viral" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>> Viral </a></li>
         </ul>
         <div class="tab-content">
           <!-- START General Settings  -->
@@ -331,27 +330,7 @@
             </div>
           </div>
           <!-- END SMS Message Settings  -->
-
-          <!-- START Viral Settings  -->
-          <div class="tab-pane fade in" id="tab_viral">
-            <div class="form-group">
-              <div class="row">
-                <label for="SMS_message" class="col-md-4 control-label">Email Subject</label>
-                <div class="col-md-8">
-                  <textarea style="width: 100%;" class="form-control" name="SMS_message"><?=(isset($_POST['viral_email_subject_text'])?$_POST["viral_email_subject_text"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?>
-                  </textarea>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <i>Subject line for viral email.</i>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- END SMS Message Settings  -->
-
-
+            
 
           <!-- START White Label Settings  -->
           <div class="tab-pane fade" id="tab_white_label">
