@@ -1269,31 +1269,51 @@ class SessionController extends ControllerBase {
             $TwilioAuthMessagingSID = $this->config->twilio->twilio_auth_messaging_sid;
             $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $this->config->twilio->twilio_from_phone;
         } else {
+            //echo $objBusiness->parent_id;exit;
+            if($objBusiness->parent_id!=0)
+            {
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
             $TwilioAPIKey = $objAgency->twilio_api_key;
             $TwilioAuthToken = $objAgency->twilio_auth_token;
             $TwilioAuthMessagingSID = $objAgency->twilio_auth_messaging_sid;
             $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $objAgency->twilio_from_phone;
+            }
+            else
+            {
+               $TwilioAPIKey = $objBusiness->twilio_api_key;
+            $TwilioAuthToken = $objBusiness->twilio_auth_token;
+            $TwilioAuthMessagingSID = $objBusiness->twilio_auth_messaging_sid;
+            $TwilioFromPhone = $objBusiness->twilio_from_phone; 
+            }
         }
+
+            
+
+      // echo $TwilioAPIKey."-".$TwilioAuthToken."-".$TwilioAuthMessagingSID."-".$TwilioFromPhone;exit;
+
 
         if(!$TwilioAPIKey || !$TwilioAuthToken || !$TwilioAuthMessagingSID || !$TwilioFromPhone) {
             $this->flash->error("Twilio configuration error.  Please contact customer support.");
         }
+        
 
-		$conditions = "location_id = :location_id:";
-		$parameters = array("location_id" => $locationID);
-		$location = Location::findFirst(array($conditions, "bind" => $parameters));
-		if (isset($location)) {
-			$location->SMS_message = $original_message;
-			$location->save();
-		}
+        if($locationID)
+        {
+        $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $locationID);
+        $location = Location::findFirst(array($conditions, "bind" => $parameters));
+        if (isset($location)) {
+            $location->SMS_message = $original_message;
+            $location->save();
+        }
+        }
         //The message is saved, so send the SMS message now
         if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $TwilioAPIKey, $TwilioAuthToken, $TwilioAuthMessagingSID, $TwilioFromPhone)) {
             $this->flash->success("The message was sent!");
         }
         else
         {
-            echo "There was a problem sending messages";
+            $this->flash->error("There was a problem sending messages");
         }
         $this->view->disable();
         echo $results;
