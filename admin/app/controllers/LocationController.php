@@ -1066,22 +1066,42 @@
                 // Get the form fields and remove whitespace.
                 $subject = strip_tags(trim($_POST["subject"]));
                 $subject = str_replace(array("\r", "\n"), array(" ", " "), $subject);
-                $email = filter_var(trim($_POST["email_to"]), FILTER_SANITIZE_EMAIL);
+                $emailArr = $_POST['email_to'];
+                
                 $message = trim($_POST["message"]);
 
                 // Check that data was sent to the mailer.
-                if (empty($subject) OR empty($message) OR !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (!$subject || !$message) {
                     // Set a 400 (bad request) response code and exit.
                     http_response_code(400);
                     echo "Oops! There was a problem with your submission. Please complete the form and try again.";
                     exit;
                 }
 
+                $filterEmailArr = [];
+                foreach ($emailArr as $key => $email) {
+                    $email = filter_var(trim($email), FILTER_SANITIZE_EMAIL);
+                    if($email && !filter_var($email, FILTER_VALIDATE_EMAIL)){
+                        http_response_code(400);
+                        echo "Oops! There was a problem with your submission. Please complete the form and try again.";
+                        exit;
+                    }else if($email){
+                        $filterEmailArr[] = $email;
+                    }
+                }
+                if(!count($filterEmailArr)){
+                    http_response_code(400);
+                    echo "Oops! There was a problem with your submission. Please complete the form and try again.";
+                    exit;
+                }
+                
                 try {
                     //$EmailFrom='s@gmail.com';
-                    $mail = $this->getDI()->getMail();
-                    $mail->setFrom($EmailFrom);
-                    $mail->send($email, $subject, '', '', $message);
+                    foreach ($filterEmailArr as $key => $email) {
+                        $mail = $this->getDI()->getMail();
+                        $mail->setFrom($EmailFrom);
+                        $mail->send($email, $subject, '', '', $message);
+                    }
                    /* $this->getDI()
                         ->getMail()
                         ->send($email, $subject, '', '', $message);*/
