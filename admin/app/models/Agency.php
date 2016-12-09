@@ -43,7 +43,7 @@
                 'message' => 'Name is in the wrong format (letters, period, and apostrophe)'
             ]));*/
 
-            $this->validate(new Email([
+            /*$this->validate(new Email([
                 'field'   => 'email',
                 'message' => 'Email is in the wrong format (xxx@xxx.xxx)'
             ]));
@@ -56,7 +56,7 @@
                     "field" => "custom_domain",
                     "message" => "The Custom Domain is already used"
                 )));
-            }
+            }*/
 
             return $this->validationHasFailed() != true;
         }
