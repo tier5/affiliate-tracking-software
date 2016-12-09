@@ -402,14 +402,17 @@
 
         public function sendSampleEmailAction($EmployeeID) {
             $this->view->disable();
+
             $Identity = $this->session->get('auth-identity');
+            //echo $Identity['id'];exit;
             $objCurrentUser = \Vokuro\Models\Users::findFirst("id = " . $Identity['id']);
             $objRecipient = \Vokuro\Models\Users::findFirst("id = {$EmployeeID}");
             $objBusiness =  \Vokuro\Models\Agency::findFirst("agency_id = {$objCurrentUser->agency_id}");
-
+            echo $objBusiness->review_invite_type_id;exit;
             $Start = date("Y-m-01", strtotime('now'));
             $End = date("Y-m-t", strtotime('now'));
-            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], 0, 0, 1);
+            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objBusiness->review_invite_type_id, 0, 1);
+            echo '<pre>';print_r($dbEmployees);exit;
             $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
 
             $objEmail = new \Vokuro\Services\Email();

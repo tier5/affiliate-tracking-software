@@ -138,7 +138,8 @@ class Email{
                 'FacebookURL'           => $FacebookURL,
 
             );
-
+            
+            //echo $objRecipient->email;exit;
             foreach($tSendTo as $objRecipient) {
                 echo $mail->send($objRecipient->email, "Your monthly employee report!", 'employee_report', $Params);
                 sleep(1);

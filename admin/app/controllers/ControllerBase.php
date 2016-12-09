@@ -833,9 +833,9 @@ Talk Soon,
                     $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
                     $this->view->review_invite_type_id =$loc->review_invite_type_id;
-                    $Reviewlist=ReviewInvite::FnallReview(true);
+                    $Reviewlist=ReviewInvite::FnallReview(true,2);
                     //$rev_count=[];
-                    $this->view->rev_count=$rev_count;    
+                    
                     $this->view->Reviewlist=$Reviewlist;
                     $user_array=array();
 
@@ -850,19 +850,11 @@ Talk Soon,
                     }
                     $rating=array();
 
+                    if(!empty( $user_array))
+                    {
                     for($i=0;$i<count($user_array);$i++)
                     {
-                       $value=ReviewInvite::starrating(true,$user_array[$i],2);
-
-                       foreach($value as $rates)
-                       {
-                        $rating[$user_array[$i]]= $rates->rates.'-'.$rates->counts;
-                       }
-                    }
-
-
-                    for($i=0;$i<count($user_array);$i++)
-                    {
+                        $type=2;
                        $value=ReviewInvite::starrating(true,$user_array[$i]);
 
                        foreach($value as $rates)
@@ -871,7 +863,48 @@ Talk Soon,
                        }
                     }
 
+                        }
+                    
+
                     $this->view->rating=$rating;
+
+
+
+                    /*** number rating ***/
+
+                     $ReviewlistNumer=ReviewInvite::FnallReviewNumber(true,3);
+                    //$rev_count=[];
+                    
+                   
+                    $user_array_number=array();
+                
+                foreach($ReviewlistNumer as $reviews)
+                    {
+                        if(!in_array($reviews->sent_by_user_id,$user_array_number))
+                        {
+                      array_push($user_array_number,$reviews->sent_by_user_id);
+                        }
+                       // echo $reviews->sent_by_user_id.'--'.$reviews->review_invite_type_id;
+                    }
+                    //exit;
+                    $rating_number=array();
+
+                   
+
+                    for($i=0;$i<count($user_array_number);$i++)
+                    {
+                       $value_number=ReviewInvite::starratingnumber(true,$user_array_number[$i]);
+
+                       foreach($value_number as $rates)
+                       {
+                        
+                        $rating_number[$user_array_number[$i]]= $rates->rates.'-'.$rates->counts;
+                       }
+                    }
+
+                    $this->view->rating_number=$rating_number;
+
+                    /*** number rating ***/
                    //echo '<pre>';print_r($rating);exit;
                 }
                 $this->view->users_report = $users_report;

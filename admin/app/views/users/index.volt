@@ -183,10 +183,18 @@ foreach($users_report as $user) {
 
                       <?php echo number_format($get_rating[0]/$get_rating[1],1); ?>
                     </ul>
-                  <?php } } else {?>
+                  <?php } } else {
 
-                      <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;">9</span>
-                  <?php } ?>
+                    if(!empty($rating_number) && array_key_exists($user->id, $rating_number))
+                        {
+                          $get_rating_number=explode('-',$rating_number[$user->id]);
+                          $number=round($get_rating_number[0]/$get_rating_number[1]);
+                  ?>
+
+                      <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><?php echo $number;?></span>
+                  <?php } else { ?>
+                     <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;">0</span>
+                  <?php } } ?>
 
                   </td>
                   </td>
@@ -314,7 +322,7 @@ foreach($users_report as $user) {
 				      <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>
 
               -->
-              <td>$total</td>
+              <td><?php echo $total;?></td>
 				       <td class="<?=$class?> avgfeedbck">
 
                   <?php if($review_invite_type_id==1){?>
@@ -332,7 +340,7 @@ foreach($users_report as $user) {
 
                     <ul class="ratings">
                     <?php for($l=0;$l<$full_star;$l++)
-                    {?>
+                    { ?>
                       <li><img src="/img/star.png" class="img-responsive"></li>
                       <?php } if($half_star!=0) {?>
                       <li><img src="/img/star2.png" class="img-responsive"></li>
@@ -340,10 +348,19 @@ foreach($users_report as $user) {
 
                       <?php echo number_format($get_rating[0]/$get_rating[1],1); ?>
                     </ul>
-                  <?php } } else {?>
+                  <?php } } else {
 
-                      <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;">9</span>
-                  <?php } ?>
+                       if(!empty($rating_number) && array_key_exists($user->id, $rating_number))
+                        {
+                        $get_rating_number=explode('-',$rating_number[$user->id]);
+                          $number=round($get_rating_number[0]/$get_rating_number[1]);
+                  ?>
+
+                      <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><?php echo $number;?></span>
+                  <?php } else { ?>
+                    <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;">0</span>
+                  <?php
+                  } } ?>
 
               </td>
 				
