@@ -59,6 +59,7 @@
           <li class="active"><a href="#tab_general" data-toggle="tab"> General </a></li>
           <li><a href="#tab_review_invite" data-toggle="tab"> Review Invite </a></li>
           <li><a href="#tab_sms_message" data-toggle="tab"> SMS Message </a></li>
+          <!--<li><a href="#tab_twitter_message" data-toggle="tab"> Twitter Message </a></li>-->
           <li><a href="#tab_white_label" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> White Label </a></li>
           <li><a href="#tab_twilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> Twilio </a></li>
           <li><a href="#tab_stripe" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> Stripe </a></li>
@@ -329,6 +330,21 @@
               </div>
             </div>
           </div>
+          <!-- END SMS Message Settings  -->
+
+          <!-- START SMS Message Settings  -->
+          <!--<div class="tab-pane fade in" id="tab_twitter_message">
+            <div class="form-group">
+              <div class="row">
+                <label for="SMS_message" class="col-md-4 control-label">Twitter Message</label>
+                <div class="col-md-8">
+                  <textarea style="width: 100%;" class="form-control" name="twitter_message"><?=(isset($_POST['twitter_message']) && $_POST['twitter_message'] != ''?$_POST["twitter_message"]:(isset($location->twitter_message) && $location->twitter_message != ''?$location->twitter_message:'I just started using this amazing new software for my business. They are giving away a trial account here: {link}'))?></textarea>
+                </div>
+              </div>
+              
+            </div>
+            
+          </div>-->
           <!-- END SMS Message Settings  -->
 
 

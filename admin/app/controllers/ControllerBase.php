@@ -391,8 +391,21 @@ class ControllerBase extends Controller {
            // $EmailFrom = "zacha@reviewvelocity.co";
         }
 
-        $message_set="I just started using this amazing new software for my business. They are giving away a trial account here: {$share_link}";
+        if($objParentAgency->twitter_message)
+            $message_set=$objParentAgency->twitter_message;
+        else if($agency->twitter_message)
+            $message_set=$agency->twitter_message;
+        else 
+            $message_set="I just started using this amazing new software for my business. They are giving away a trial account here: {$share_link}";
 
+        $message_set = str_replace('{link}', $share_link, $message_set);
+
+        //dd($message_set);
+
+        //dd($objParentAgency->twitter_message);
+        //$message_set="I just started using this amazing new software for my business. They are giving away a trial account here: {$share_link}";
+        //$message_set=$message_set;
+        
         /**** 24.11.2016 ****/
         $this->view->setVars([
             'AgencyUser' => $AgencyUser,
