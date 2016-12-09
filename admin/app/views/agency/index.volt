@@ -12,13 +12,29 @@
 				</div>
 			</div>
 			<div class="modal-body center-block">
+			    <div class="row">
+                <div class="col-xs-12 text-center">
+                        <span class="sub-section-header"><h4 class="bold">One Time Offer</h4></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <span class="sub-section-header"><h5 class="bold">Double The Amount Of Accounts & Get 20% Off For Life!</h5></span>
+                    </div>
+                </div>
+
+                <div class="row" style="padding-bottom: 11px;">
+                    <div class="col-xs-12 text-center">
+                        <span class="sub-section-header"><h6 class="blue slight-bold">Upgrade To 20 Accounts For $160 Per Month & All New Additional Accounts Will Be $8 For Life.</h6></span>
+                    </div>
+                </div>
 				<div class="row">
 					<div class="col-xs-12">
 						<button id="submit-agency-change-plan-btn" type="button" class="btn btn-warning btn-lg center-block">Upgrade to 20 accounts for $160</button>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-12" style="margin-top: 30px;">
+					<div class="col-xs-12" style="margin-top: 10px;">
 						<button onclick="DismissUpgrade();" type="button" class="btn btn-link btn-lg center-block">Dismiss message</button>
 					</div>
 				</div>
@@ -92,10 +108,10 @@ foreach($tBusinesses as $objBusiness) {
                                             <!--<li>
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-user"></i>
                                                     Password</a></li>-->
-                                            <li>
+                                            <!--<li>
                                                 <a href="/admindashboard/delete/2/{{ objBusiness.agency_id }}" onclick="return confirm('Are you sure you want to delete this item?');" class=""><i class="fa fa-trash-o"></i>
                                                     Delete</a></li>
-                                            <!--
+
                                             <li>
                                                 <a href="/agency/view/2/{{ objBusiness.agency_id }}" class=""><i class="icon-envelope"></i>
                                                     Resend Credentials</a></li>-->

@@ -332,7 +332,6 @@
           <!-- END SMS Message Settings  -->
 
 
-
           <!-- START White Label Settings  -->
           <div class="tab-pane fade" id="tab_white_label">
             <div class="form-group">

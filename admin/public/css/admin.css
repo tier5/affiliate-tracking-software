@@ -4,10 +4,7 @@ html, body {
   margin: 0;
   padding: 0;
 }
-div.container{
-  width: 100%;
-  padding: 0px;
-}
+
 h1.text-center{
   font-size: 36px;
   color: #333;
