@@ -412,13 +412,13 @@ class ControllerBase extends Controller {
         </p>
 
         <p>
-        So what do you say, Will you give us a shot? 
+        So what do you say? Will you give us a shot? 
         </p>
         <p>
         We promise to make it simple and easy. 
         </p>
         <p>
-        And Because ".$agency->name." was cool enough to send you our way, <strong>we’re giving you 100 text messages for FREE when you verify your business</strong>.
+        And because ".$agency->name." was cool enough to send you our way, <strong>we’re giving you 100 text messages for FREE when you verify your business</strong>.
 
         </p>
         <p>
