@@ -585,7 +585,7 @@
                     <div class="row">
                     <!-- cell phone -->
                     <div id='divSMSResults_msg'></div>
-                    <label class="col-md-4 control-label">Send test text message:</label> 
+                    <label class="col-md-4 control-label"> Send Test Text Message:</label> 
                     <div class="col-md-6">
                     <input
                   class="form-control
