@@ -130,10 +130,10 @@
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
                         Stripe </a></li>
-                    <li class=""><a href="#tab_intercom" data-toggle="tab" <?=(isset($this->
+                    <!--<li class=""><a href="#tab_intercom" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
-                        Intercom </a></li>
+                        Intercom </a></li>-->
                     <li><a href="#tab_notification" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>>
@@ -679,7 +679,7 @@
                     <!-- END Stripe Settings  -->
 
                     <!-- START Intercom Settings  -->
-                    <div class="tab-pane fade in" id="tab_intercom">
+                    <!--<div class="tab-pane fade in" id="tab_intercom">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-12">
@@ -716,7 +716,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                     <!-- END Intercom Settings  -->
 
 
