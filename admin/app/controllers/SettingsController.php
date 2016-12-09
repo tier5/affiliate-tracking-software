@@ -78,6 +78,8 @@
                     //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
                     // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
                 } else {
+
+                   
                     $agency->assign(array(
                         'review_invite_type_id' => $this->request->getPost('review_invite_type_id', 'int'),
                         'review_goal' => $this->request->getPost('review_goal', 'int'),
@@ -410,14 +412,17 @@
             //echo $Identity['id'];exit;
             $objCurrentUser = \Vokuro\Models\Users::findFirst("id = " . $Identity['id']);
             $objRecipient = \Vokuro\Models\Users::findFirst("id = {$EmployeeID}");
+            $objlocationinfo = \Vokuro\Models\UsersLocation::findFirst("user_id = {$EmployeeID}");
+            $objReview= \Vokuro\Models\Location::findFirst("location_id = {$objlocationinfo->location_id}");
             $objBusiness =  \Vokuro\Models\Agency::findFirst("agency_id = {$objCurrentUser->agency_id}");
-            echo $objBusiness->review_invite_type_id;exit;
+            /*echo $objReview->review_invite_type_id;
+            exit;*/
             $Start = date("Y-m-01", strtotime('now'));
             $End = date("Y-m-t", strtotime('now'));
-            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objBusiness->review_invite_type_id, 0, 1);
-            echo '<pre>';print_r($dbEmployees);exit;
+            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
+            //echo '<pre>';print_r($dbEmployees);exit;
             $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
-
+            $this->view->review_invite_type_id=$objReview->review_invite_type_id;
             $objEmail = new \Vokuro\Services\Email();
             return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
         }
