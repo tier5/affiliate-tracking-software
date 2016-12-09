@@ -87,7 +87,7 @@
                                     <div class="share-inner">
                                         <a id="maillink" class="share-link" href="mailto:?&subject=<?=$share_subject?>&body=<?=$share_message?>">Send Email <img src="/img/icon_sm_email.gif" /></a>
                                         <a target="_blank" class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=<?=$share_link?>">Share on Facebook <img src="/img/icon_sm_facebook.gif" /></a>
-                                        <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$share_message?>">Share on Twitter  <img src="/img/icon_sm_twitter.gif" /></a>
+                                        <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$twitter_message_set?>">Share on Twitter  <img src="/img/icon_sm_twitter.gif" /></a>
                                         <a target="_blank" class="share-link" href="https://plus.google.com/share?url=<?=$share_link?>">Share on Google+  <img src="/img/icon_sm_google.gif" /></a>
                                     </div>
                                 </div>

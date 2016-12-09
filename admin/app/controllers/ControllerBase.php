@@ -392,25 +392,60 @@ class ControllerBase extends Controller {
         }
 
         if($objParentAgency->twitter_message)
-            $message_set=$objParentAgency->twitter_message;
+            $twitter_message_set=$objParentAgency->twitter_message;
         else if($agency->twitter_message)
-            $message_set=$agency->twitter_message;
+            $twitter_message_set=$agency->twitter_message;
         else 
-            $message_set="I just started using this amazing new software for my business. They are giving away a trial account here: {$share_link}";
+            $twitter_message_set="I just started using this amazing new software for my business. They are giving away a trial account here: {$share_link}";
 
-        $message_set = str_replace('{link}', $share_link, $message_set);
+        $twitter_message_set = str_replace('{link}', $share_link, $twitter_message_set);
 
         //dd($message_set);
 
         //dd($objParentAgency->twitter_message);
         //$message_set="I just started using this amazing new software for my business. They are giving away a trial account here: {$share_link}";
         //$message_set=$message_set;
+
+
+        $message_set=" Hey Buddy,<p>
+        ".$agency->name." just activated a new account with us and thought that your business may be a perfect fit and could greatly benefit from a FREE trial account, NO credit card required.
+        </p>
+
+        <p>
+        So what do you say, Will you give us a shot? 
+        </p>
+        <p>
+        We promise to make it simple and easy. 
+        </p>
+        <p>
+        And Because ".$agency->name." was cool enough to send you our way, <strong>we’re giving you 100 text messages for FREE when you verify your business</strong>.
+
+        </p>
+        <p>
+        This will allow you to see our software in action, at no risk to you, and create fresh new 5 star reviews for your business on the most popular sites. 
+        </p>
+        <p>
+        This link is only available to activate your trial account for the next 24 hours, so don’t delay. <br>
+         
+        </p>
+        <p>
+        <a href='".$share_link."'>Click here now to confirm your email address </a> and let's start generating new reviews for your business in less than 5 minutes!
+        </p>
+        <p>
+        <a href='".$share_link."'>ACTIVATE YOUR TRIAL </a>
+        </p>
+        <p>
+        Talk Soon, 
+        </p>
+        <br>
+        ".$AgencyUser."<br>".$AgencyName;
         
         /**** 24.11.2016 ****/
         $this->view->setVars([
             'AgencyUser' => $AgencyUser,
             'AgencyName' =>$AgencyName,
             'share_message' => $message_set,
+            'twitter_message_set'  => $twitter_message_set,
             'share_link' => $share_link,
             'share_subject' => $agency->name.', thought this was awesome!'
         ]);
