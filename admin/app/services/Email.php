@@ -20,6 +20,7 @@ class Email{
 
     public function __construct() {
         $this->di = $this->getDI();
+        $this->config = $this->di->get('config');
     }
 
     /**
@@ -115,7 +116,8 @@ class Email{
             $FacebookURL = $objFacebookReviewSite->external_location_id ? "http://www.facebook.com/{$objFacebookReviewSite->external_location_id}" : '';
             $mail = $this->getDI()->getMail();
             $Domain = $this->config->application->domain;
-            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+
+            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $objBusiness->parent_id > 0) {
                 $mail->setFrom('zacha@reviewvelocity.co');
                 $FullDomain = "{$Domain}";
             }

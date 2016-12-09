@@ -443,17 +443,12 @@
 
             $tobjReviews = $FB->getReviews();
 
-            foreach((array)$tobjReviews as $objReview) {
-                $dbReview = new \Vokuro\Models\Review();
-                $dbReview->rating_type_id = \Vokuro\Models\Location::TYPE_FACEBOOK;
-                $dbReview->rating = $objReview->rating;
-            }
-
             $TotalRating = 0;
             $TotalReviews = 0;
 
             if ($tobjReviews) {
                 foreach ($tobjReviews as $objReview) {
+
                     $TotalReviews++;
                     $TotalRating += $objReview->rating;
 
@@ -466,6 +461,8 @@
                             'time_created' => date("Y-m-d H:i:s", strtotime($objReview->created_time)),
                             'user_id' => $objReview->reviewer->id,
                             'user_name' => $objReview->reviewer->name,
+                            // Assuming one user per location can only leave one review.  Currently, they do not provide any other identifier, and I believe this is true.
+                            'rating_type_review_id' => $objReview->reviewer->id,
                         ];
                         $reviewService->saveReviewFromData($arr);
 

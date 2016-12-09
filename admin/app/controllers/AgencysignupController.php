@@ -10,8 +10,8 @@
 
     class AgencysignupController extends ControllerBase {
         protected $EncryptionKey = "0bf14113f8d657cbb4aad17753592fd4d278672f0cd6f8d4722bd907965786bf";
-        protected $DefaultSubscription = "97 Ten for ten";
-        protected $DefaultUpgradeSubscription = "97 Twenty for eight";
+        protected $DefaultSubscription = "197 Ten for ten";
+        protected $DefaultUpgradeSubscription = "197 Twenty for eight";
         /**
          * @var array All fields from the sign up process.  Keys are the form variable names.  Values are the DB names (if they exist.
          */

@@ -78,6 +78,7 @@ class BusinessSubscriptionController extends ControllerBase {
         $objUser = \Vokuro\Models\Users::findFirst('id = ' . $userId);
         $objSuperUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $objUser->agency_id . ' AND role="Super Admin"');
         $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
+        $this->view->businessEmail = $objAgency->email;
 
         $Provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
         $paymentParams = [
@@ -128,12 +129,11 @@ class BusinessSubscriptionController extends ControllerBase {
                 $this->view->paymentPlan = $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? "TRIAL" : "UNPAID";
                 break;
         }
-        //print_r($subscriptionPlanData);exit;
+
         /* Payments paramaters */
         $provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
 
         $this->view->registeredCardType = $paymentService->getRegisteredCardType($userId, $provider);
-
     }
 
     /**

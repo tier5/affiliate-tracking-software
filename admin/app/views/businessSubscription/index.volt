@@ -398,8 +398,13 @@
     $TickDivText = '';
     $Ticks = [];
     $Start = $subscriptionPlanData['subscriptionPlan']['sms_messages_per_location'] ?: 50;
-    // Gonna split the slider in 10 ticks.
-    for($c = $Start ; $c < (int)$MaxSMS ; $c += round($MaxSMS / 10)) {
+    // If we use the above line, it will never let people lower their SMS counts.
+    $Start = 50;
+    // Initially did it at 10 clicks w/ math, but Zach wants it at increments of 50 no matter what.
+    for($c = $Start ; $c < (int)$MaxSMS ; $c += 50) {
+        if($c > $MaxSMS)
+            $c = $MaxSMS;
+
         $TickDivText .= "'<div>$c</div><div class=\"tick-marker\">|</div>',";
          $Ticks[] = $c;
      }
@@ -414,6 +419,8 @@
 
     jQuery(document).ready(function ($) {
         $(".UpdateCard").click(function() {
+            var ButtonID = $(this).attr('id');
+
             var bodyElem = document.getElementsByTagName("body")[0];
             if(bodyElem.dataset.paymentprovider === "AuthorizeDotNet") {
                 $('#updateCardModal').modal('show');
@@ -421,6 +428,8 @@
             else if(bodyElem.dataset.paymentprovider === "Stripe") {
                 var handler = StripeCheckout.configure({
                     key: '{{ stripePublishableKey }}',
+                    email: '{{ businessEmail }}',
+                    allowRememberMe: false,
                     /* GARY_TODO: Replace with agency logo */
                     /*image: '/img/documentation/checkout/marketplace.png',*/
                     locale: 'auto',
@@ -430,14 +439,18 @@
                     // GARY_TODO  UGH, why can't I call the UpdateStripeCard method?!?
                     $.post('/businessSubscription/updatePaymentProfile', {
                         tokenID: token.id,
-                        email: token.emai1
+                        email: token.email,
                     })
                         .done(function (data) {
-                            /*if (data.status !== true) {
+                            if (data.status !== true) {
                                 alert("Update card failed!!!")
-                            }*/
-                            //console.log(data);
-                            changePlan();
+                            }
+
+                            // Otherwise, they're just updating the card
+                            if(ButtonID == 'UpdateCard2')
+                                changePlan();
+
+                            window.location.reload();
                         })
                         .fail(function () {
                         })
@@ -534,7 +547,6 @@
                 planCost += cost;
 
                 if(breakOnNextIteration) {
-                    //console.log(planCost);
                     break;
                 }
 
@@ -599,7 +611,6 @@
                             $('#current-locations').text(smsLocationSlider.getValue());
                             $('#current-messages').text(smsMessagesSlider.getValue());
                             $('#processingModal').modal('hide');
-                            $('.subscription-panel-large-caption').text("PAID");
                             $('#updatePlanModal').modal('show');
                         } else {
                         	$('#processingModal').modal('hide');
@@ -651,7 +662,7 @@
             tooltip: 'show',
             min: 50,
             max: maxMessages + 1,
-            step: <?=round($MaxSMS / 10); ?>,
+            step: 50,
             ticks: <?=$TickArrayText; ?>,
             ticks_labels: [
                 <?=$TickDivText; ?>
@@ -699,6 +710,5 @@
         });
 
         initSubscriptionParameters();
-
     });
 </script>
