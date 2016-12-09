@@ -377,7 +377,46 @@
 
                                                                                         <?=($total ?: 0); ?></td>
                                                                                         <!--<td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Employee->positive_feedback_this_month ?: 0; ?></td>-->
-                                                                                        <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=($Employee->sms_received_this_month > 0?(number_format(($Employee->positive_feedback_this_month / $Employee->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
+                                                                                        <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word">
+                                                                                        <?php 
+                                                                                        if(review_invite_type_id==1){?>
+
+                                                                                      <?=($Employee->sms_received_this_month > 0?(number_format(($Employee->positive_feedback_this_month / $Employee->sms_received_this_month) * 100, 1) . '%'):'0.0%')?> -Yes
+
+                                                                                        <?php } elseif(review_invite_type_id==2)
+
+                                                                                        {
+
+                                                                                        $star_full=ceil($Employee->rates/$Employee->positive_feedback_this_month);
+
+                                                                                         $star_half=($Employee->rates%$Employee->positive_feedback_this_month);
+                                                                                         ?>
+                                                                                         <ul>
+
+                                                                                         <?php
+
+                                                                                        for($l=0;$l<$star_full;$l++)
+                                                                                        { ?>
+                                                                                        <li><img src="/img/star.png" class="img-responsive"></li>
+
+                                                                                        <?php
+
+                                                                                        }
+                                                                                        if($star_half)
+                                                                                        {
+                                                                                        ?>
+                                                                                            <li><img src="/img/star2.png" class="img-responsive"></li>
+                                                                                        <?php
+                                                                                        }
+
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            $number =round($Employee->rates/$Employee->positive_feedback_this_month);  
+                                                                                            echo $number;
+                                                                                        }
+                                                                                        ?>
+                                                                                        </td>
                                                                                     </tr>
                                                                                     <?php $Count++; ?>
                                                                                 {% endfor %}
