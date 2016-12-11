@@ -56,7 +56,7 @@ class SessionController extends ControllerBase {
         }
         // Determine if business under an agency or Get Mobile Reviews
             $parts = explode(".", $_SERVER['SERVER_NAME']);
-            if(count($parts) >= 2 && $parts[1] == 'getmobilereviews' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
+            if(count($parts) == 3 && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
                 $subdomain = $parts[0];
 
                 $objParentAgency = Agency::findFirst([
