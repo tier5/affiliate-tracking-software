@@ -118,10 +118,16 @@ class Email{
             $Domain = $this->config->application->domain;
 
             if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $objBusiness->parent_id > 0) {
-                $mail->setFrom('zacha@reviewvelocity.co');
-                $FullDomain = "{$Domain}";
-            }
-            else {
+                if($objBusiness->parent_id > 0) {
+                    $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objParentAgency->parent_id}");
+                    $EmailFrom = $objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
+                    $mail->setFrom($EmailFrom);
+                    $FullDomain = "{$objParentAgency->custom_domain}.{$Domain}";
+                } else {
+                    $mail->setFrom('zacha@reviewvelocity.co');
+                    $FullDomain = "{$Domain}";
+                }
+            } else {
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
                 if(!$objAgency->email_from_address && !$objAgency->custom_domain)
                     throw new \Exception("Your email from address or your custom domain needs to be set to send email");
