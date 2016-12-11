@@ -355,7 +355,7 @@
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="link" style="text-align: left;">Link:</label>
                       <div class="col-md-7">
-                        <input type="text" placeholder="Link" class="form-control required url" style="color:#000;" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" onblur="validateURL()" />
+                        <input type="text" id="test_link" placeholder="Link" class="form-control url" style="color:#000;" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" onblur="validateURL()" />
                         <span class="url_err"></span>
                       </div>
                       <div class="col-md-4">
@@ -365,11 +365,11 @@
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="name" style="text-align: left;">Name:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Name" class="form-control required" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" name="name" id="name" style="color:#000;" />
+                        <input type="text" placeholder="Name" id="test_name" class="form-control" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" name="name" id="name" style="color:#000;" />
                       </div>
                       <label class="col-md-1 control-label" for="phone" style="text-align: left;">Phone:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Phone" class="form-control required" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" />
+                        <input type="text" placeholder="Phone" id="test_phone" class="form-control" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" />
                       </div>
                       <div class="col-md-4">
                         <button id="testbutton" type="submit" class="btnLink btnSecondary" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" >Send Test SMS Message</button>
@@ -436,6 +436,21 @@ else{
     $('.fancybox').fancybox();
 
     $('#testbutton').click(function (e) {
+        if($('#test_name').val().trim() == '') {
+            alert('Name is required');
+            return false;
+        }
+
+        if($('#test_link').val().trim() == '') {
+            alert('Link is required');
+            return false;
+        }
+
+        if($('#test_phone').val().trim() == '') {
+            alert('Phone is required');
+            return false;
+        }
+
       //make sure we have name and phone, before submitting
       if ($('#name').val() != '' && $('#name').val() != '') {
         //we are good, go ahead and continue
