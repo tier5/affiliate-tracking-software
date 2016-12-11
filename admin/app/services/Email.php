@@ -119,10 +119,10 @@ class Email{
 
             if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $objBusiness->parent_id > 0) {
                 if($objBusiness->parent_id > 0) {
-                    $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
-                    $EmailFrom = $objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
+                    $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+                    $EmailFrom = $objAgency->email_from_address ?: "no_reply@{$objAgency->custom_domain}.{$Domain}";
                     $mail->setFrom($EmailFrom);
-                    $FullDomain = "{$objParentAgency->custom_domain}.{$Domain}";
+                    $FullDomain = "{$objAgency->custom_domain}.{$Domain}";
                 } else {
                     $mail->setFrom('zacha@reviewvelocity.co');
                     $FullDomain = "{$Domain}";

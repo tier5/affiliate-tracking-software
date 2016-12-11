@@ -418,7 +418,7 @@
                                                                         <?php if($objAgency) { ?>
                                                                         <a href="<?=$objAgency->website; ?>" style="Margin:0;color:#2199e8;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none"><?=$objAgency->name; ?></a></p>
                                                                         <?php } else { ?>
-                                                                        <a href="http://reviewvelocity.co" style="Margin:0;color:#2199e8;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none">'Get Mobile Reviews</a></p>
+                                                                        <a href="http://reviewvelocity.co" style="Margin:0;color:#2199e8;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none">Get Mobile Reviews</a></p>
                                                                         <?php } ?>
                                                                     </td>
                                                                 </tr>
