@@ -222,6 +222,7 @@
         }
 
          public static function FnallReviewNumber($only_site_clicked = false) {
+
             // A raw SQL statement
          $sql = "SELECT users.name AS sent_by , review_invite.*
                 FROM review_invite 
@@ -251,6 +252,7 @@
 
         public static function starrating($only_site_clicked = false,$user_id)
              {
+              
                    $sql = "SELECT sum(rating) as rates,review_invite.*,count(rating) as counts
                 FROM review_invite 
                   INNER JOIN users ON review_invite.sent_by_user_id = users.id

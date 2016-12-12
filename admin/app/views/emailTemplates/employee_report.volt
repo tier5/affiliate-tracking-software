@@ -16,6 +16,7 @@
                 background: #f3f3f3
             }
         }
+        
 
         @media only screen and (max-width:596px) {
             .small-float-center {

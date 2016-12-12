@@ -425,6 +425,7 @@
             $this->view->review_invite_type_id=$objReview->review_invite_type_id;
             $objEmail = new \Vokuro\Services\Email();
             return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
+            
         }
 
         public function agencyAction() {
