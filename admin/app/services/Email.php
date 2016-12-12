@@ -20,6 +20,7 @@ class Email{
 
     public function __construct() {
         $this->di = $this->getDI();
+        $this->config = $this->di->get('config');
     }
 
     /**
@@ -115,11 +116,18 @@ class Email{
             $FacebookURL = $objFacebookReviewSite->external_location_id ? "http://www.facebook.com/{$objFacebookReviewSite->external_location_id}" : '';
             $mail = $this->getDI()->getMail();
             $Domain = $this->config->application->domain;
-            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
-                $mail->setFrom('zacha@reviewvelocity.co');
-                $FullDomain = "{$Domain}";
-            }
-            else {
+
+            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $objBusiness->parent_id > 0) {
+                if($objBusiness->parent_id > 0) {
+                    $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+                    $EmailFrom = $objAgency->email_from_address ?: "no_reply@{$objAgency->custom_domain}.{$Domain}";
+                    $mail->setFrom($EmailFrom);
+                    $FullDomain = "{$objAgency->custom_domain}.{$Domain}";
+                } else {
+                    $mail->setFrom('zacha@reviewvelocity.co');
+                    $FullDomain = "{$Domain}";
+                }
+            } else {
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
                 if(!$objAgency->email_from_address && !$objAgency->custom_domain)
                     throw new \Exception("Your email from address or your custom domain needs to be set to send email");
