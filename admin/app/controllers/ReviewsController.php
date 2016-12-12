@@ -263,7 +263,30 @@
                     //replace out the variables
                     $message = str_replace("{location-name}", $loc->name, $message);
                     $message = str_replace("{name}", $_POST['name'], $message);
-                    $message = str_replace("{link}", $this->googleShortenURL($_POST['link']), $message);
+
+
+
+                         $link = '';
+                            if (isset($_POST['link']) && $_POST['link'] != '') {
+                                $guid = $this->GUID();
+                                $link = 'http://' . $_SERVER['HTTP_HOST'] . '/review/link?a=' . $guid;
+                                $link = $this->googleShortenURL($link);
+                            } else {
+                                $guid = $invite->api_key;
+                                $link = $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid);
+                            }
+
+
+                    $pos = strpos($message, '{link}');
+                    if($pos!='')
+                    {
+                         $message = str_replace("{link}", $link, $message);
+                    }
+                    else
+                    {
+                        $message = $message." ".$link;
+                    }
+                   
                     $message = $message.'  Reply stop to be removed';
 
                     if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
@@ -319,18 +342,12 @@
                             //echo $_POST['link'];exit;
                             if($pos!='')
                             {
-                            if($_POST['link']!='')
-                            {
-                                $message = str_replace("{link}", $this->googleShortenURL($_POST['link']), $message);
+                           
+                             $message = str_replace("{link}", $link, $message);
                             }
                             else
                             {
-                               $message = str_replace("{link}", $link, $message); 
-                            }
-                            }
-                            else
-                            {
-                                 $message = $message . $this->googleShortenURL($_POST['link']);
+                                 $message =  $message." ".$link;
                             }
                             
                              $message = $message.'  Reply stop to be removed';
@@ -348,7 +365,7 @@
                                 'sms_broadcast_id' => $smsb->sms_broadcast_id
                             ));
                             $invite2->save();
-
+                                //echo $message;exit;
                             //The message is saved, so send the SMS message now
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
@@ -388,7 +405,8 @@
          * Sent message report
          */
         public function sent_message_viewAction($id = 0) {
-            $this->checkIntegerOrThrowException($id);
+            //echo $id;exit;
+            //$this->checkIntegerOrThrowException($id);
 
             //get the user id
             $identity = $this->auth->getIdentity();
