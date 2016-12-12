@@ -885,7 +885,8 @@ class ControllerBase extends Controller {
 
 
 
-                    /*** number rating ***/
+                    /*** number rating friday***/
+
 
                      $ReviewlistNumer=ReviewInvite::FnallReviewNumber(true,3);
                     //$rev_count=[];

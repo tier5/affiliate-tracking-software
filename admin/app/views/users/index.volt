@@ -126,7 +126,7 @@ if ($users_report) {
                 <th>Name</th>
                 <!--<th>Reviews Sent</th>
                 <th>Reviews Received</th>-->
-                <th>total</total>
+                <th>Total</th>
                 <th>Customer Satisfaction</th>
                 </tr>
                 </thead>
@@ -322,7 +322,7 @@ foreach($users_report as $user) {
 				      <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>
 
               -->
-              <td><?php echo $total;?></td>
+              <td><?php echo $total; ?></td>
 				       <td class="<?=$class?> avgfeedbck">
 
                   <?php if($review_invite_type_id==1){?>
