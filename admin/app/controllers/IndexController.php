@@ -80,7 +80,7 @@ class IndexController extends ControllerBase {
 
                     
             $parts = explode(".", $_SERVER['SERVER_NAME']);
-            if(count($parts) > 2 && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
+            if(count($parts) > 2 && $parts[0] != 'www') { // Subdomain exists.  Probably should do count($parts) == 3.
                 $subdomain = $parts[0];
 
                 $agency = Agency::findFirst([
@@ -143,7 +143,7 @@ class IndexController extends ControllerBase {
 
 
             $parts = explode(".", $_SERVER['SERVER_NAME']);
-            if(count($parts) >= 2 && $parts[1] == 'reviewvelocity' && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
+            if(count($parts) > 2 && $parts[0] != 'www') { // Subdomain exists.  Probably should do count($parts) == 3.
                 $subdomain = $parts[0];
 
                 $agency = Agency::findFirst([

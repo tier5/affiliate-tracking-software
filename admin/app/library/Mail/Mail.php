@@ -68,8 +68,12 @@ class Mail extends Component
      */
     public function getTemplate($name, $params)
     {
+        $tDomain = explode('.', $_SERVER['HTTP_HOST']);
+        $End = array_pop($tDomain);
+        $Domain = array_pop($tDomain);
+        $TLDomain = "{$Domain}.{$End}";
         $parameters = array_merge(array(
-            'publicUrl' => $_SERVER['HTTP_HOST']
+            'publicUrl' => $TLDomain,
         ), $params);
 
         return $this->view->getRender('emailTemplates', $name, $parameters, function ($view) {

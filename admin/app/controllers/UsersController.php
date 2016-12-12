@@ -399,7 +399,7 @@
 
 
 
-                $user->profilesId = $_POST['userType'] == 'User' ? 3 : 2;
+                $user->profilesId = $_POST['type'] == 'User' ? 3 : 2;
                 $user->role = $user->role == 'Super Admin' ? 'Super Admin' : $_POST['userType'];
 
                 //delete all locations for this user

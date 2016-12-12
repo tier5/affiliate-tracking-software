@@ -64,7 +64,7 @@
                                                 <?php if($loggedUser->is_admin) { ?>
                                                     <a href="http://<?=$Domain; ?>/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn" target="_blank">View Page</a>
                                                 <?php } else { ?>
-                                                    <a href="http://{{ custom_domain }}.<?=$Domain; ?>/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn" target="_blank">View Page</a>
+                                                    <a href="http://<?=$Domain; ?>/session/invite/{{ pricingProfile.getShortCode() }}" class="btn default btn-lg apple-backgound subscription-btn" target="_blank">View Page</a>
                                                 <?php } ?>
 
                                             </td>

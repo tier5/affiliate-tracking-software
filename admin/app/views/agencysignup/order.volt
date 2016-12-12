@@ -174,13 +174,13 @@
             </div>
 
             <div class="col-xs-12 deal-section text-justify">
-                Complete White Label review acquisition, monitoring and marketing solution with 10 active locations & unlimited FREE trials. Get started today! $97 activation fee and $100/mo fee with 10 active accounts included.
+                White Label Agency Account with 10 active locations & unlimited FREE trials.  $297 activation fee (includes first month’s service) then just $100/mo
             </div>
 
 
             <div class="col-xs-12 total-section">
                 <div style="float: left;">Total Due Today:</div>
-                <div style="float: right;">$197</div>
+                <div style="float: right;">$297</div>
             </div>
             <div class="col-xs-12 col-xs-offset-1 submit-section">
                 <button class="big-green-button submit" id="BigGreenSubmit">Submit Order</button><br>

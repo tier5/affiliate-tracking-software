@@ -829,8 +829,10 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
            // alert(data);
                 if(data == "1")
                     alert("Email successfully sent!");
-                else
+                else {
+                    console.log(data);
                     alert("Problem sending email.  Please contact customer support.");
+                }
             }
         });
     });
