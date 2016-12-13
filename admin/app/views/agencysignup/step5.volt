@@ -14,7 +14,8 @@
     <div class="row small-vertical-margins">
         <div class="col-xs-12">
             <span class="sub-section-header">Stripe Integration</span>
-        </div>
+        </div><br />
+        Click on the following link for the Stripe integration training <a href="http://training.reviewvelocity.co/knowledge-base/stripe-integration-training/">http://training.reviewvelocity.co/knowledge-base/stripe-integration-training/</a>
     </div>
     <hr>
 
