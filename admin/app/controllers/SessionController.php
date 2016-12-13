@@ -329,9 +329,18 @@ class SessionController extends ControllerBase {
              $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
 
 
-             
              $this->view->agencyId = $objAgency->agency_id;
              $this->view->agency_name = $objAgency->name;
+             
+             if($objAgency->parent_id) {
+                $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+
+                $this->view->agencyId = $objAgency1->agency_id;
+                $this->view->agency_name = $objAgency1->name;
+
+             }
+             
+
 
         }
         else
