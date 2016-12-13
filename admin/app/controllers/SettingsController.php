@@ -518,7 +518,7 @@
 
 
         public function onAction($id = 0) {
-            $this->checkIntegerOrThrowException($id,'$id was invalid');
+            //$this->checkIntegerOrThrowException($id,'$id was invalid');
             $conditions = "location_review_site_id = :location_review_site_id:";
             $parameters = array("location_review_site_id" => $id);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
