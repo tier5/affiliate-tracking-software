@@ -188,23 +188,30 @@
         }
 
 
+        public function beforeValidationOnUpdate() {
+           return true;
+        }
+
+
 
         /**
          * Validate that emails are unique across users
          */
         public function validation() {
-            $this->validate(new Uniqueness(array(
-                "field" => "email",
-                "message" => "The email is already registered"
-            )));
             
+            if(!$this->id) {
+
+              $this->validate(new Uniqueness(array(
+                  "field" => "email",
+                  "message" => "The email is already registered"
+              )));
+            
+            }
+
 
             return $this->validationHasFailed() != true;
         }
 
-        public function beforeValidationOnUpdate() {
-           return true;
-        }
 
         public function initialize() {
             $this->byPassConfirmationEmail = false;
