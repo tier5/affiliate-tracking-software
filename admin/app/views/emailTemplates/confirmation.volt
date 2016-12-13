@@ -4,9 +4,9 @@
 <table border="0" cellspacing="0" width="530" style="color:#262626;background-color:#fff; padding:27px 30px 20px 30px;margin:auto; border:1px solid #e1e1e1;">
 	<tbody>
         <tr>
-            <td style="padding:40px 0  0 0;">
+            <td style="padding:0px 0  0 0;">
                 <p style="font-size: 13px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
-                    Hey {{firstName}},<br /><br />
+                    Hey {{firstName}},<br />
 
                    <P>Congratulations on joining us at {{ AgencyName }}, I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
@@ -16,7 +16,7 @@
                    </P>
                     
                     To get started just confirm your email by <a style="padding:10px; margin-left:-10px;" href="http://{{ publicUrl }}{{ confirmUrl }}">Clicking Here</a><br/><br/>
-                    
+
                     Thanks,<br/><br/>
 
                     {{ AgencyUser }}<br/>
