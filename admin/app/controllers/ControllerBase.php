@@ -847,6 +847,11 @@ class ControllerBase extends Controller {
                     $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
                     $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
+
+                     $usersGenerate = Users::getEmployeeListReportGenerate($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
+
+                    $users_report_generate =Users::getEmployeeConversionReportGenerate( $loc->review_invite_type_id,$userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], 'desc');
+
                     $this->view->review_invite_type_id =$loc->review_invite_type_id;
                     $Reviewlist=ReviewInvite::FnallReview(true,2);
                     //$rev_count=[];
@@ -924,6 +929,7 @@ class ControllerBase extends Controller {
                    //echo '<pre>';print_r($rating);exit;
                 }
                 $this->view->users_report = $users_report;
+                $this->view->users_report_generate = $users_report_generate;
             }
 
             //} else {
@@ -937,6 +943,7 @@ class ControllerBase extends Controller {
 
         if (isset($users))
             $this->view->users = $users;
+            $this->view->usersGenerate = $usersGenerate;
     }
 
     public function importGoogle($Obj, $location, &$foundagency) {

@@ -388,9 +388,9 @@
 
                                                                                         {
 
-                                                                                        $star_full=ceil($Employee->rates/$Employee->positive_feedback_this_month);
+                                                                                        $star_full=ceil($Employee->rates/$Employee->sms_received_this_month);
 
-                                                                                         $star_half=($Employee->rates%$Employee->positive_feedback_this_month);
+                                                                                         $star_half=($Employee->rates%$Employee->sms_received_this_month);
                                                                                          ?>
                                                                                          <ul>
 
@@ -413,7 +413,7 @@
                                                                                         }
                                                                                         else
                                                                                         {
-                                                                                            $number =round($Employee->rates/$Employee->positive_feedback_this_month);  
+                                                                                            $number =round($Employee->rates/$Employee->sms_received_this_month);  
                                                                                             echo $number;
                                                                                         }
                                                                                         ?>

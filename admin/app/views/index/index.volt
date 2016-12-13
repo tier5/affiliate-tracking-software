@@ -1,3 +1,27 @@
+
+<style>
+.avgfeedbck ul{
+    list-style-type: none;
+    padding: 0;
+}
+
+.avgfeedbck ul li{
+      display: inline-block;
+      vertical-align: top;
+}
+
+.number-view {
+    display: block;
+    border: 3px solid;
+    border-radius: 50% !important;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+}
+</style>
+
 {{ content() }}
 <?php if (isset($this->session->get('auth-identity')['location_id']) && $this->session->get('auth-identity')['location_id'] > 0) { ?>
 <header class="jumbotron subhead" id="dashboard">
@@ -293,24 +317,62 @@
                                 <tr class="uppercase">
                                     <th>Rank</th>
                                     <th>Name</th>
-                                    <th>Reviews Sent</th>
-                                    <th>Reviews Received</th>
+                                    <!--<th>Reviews Sent</th>
+                                    <th>Reviews Received</th>-->
+                                    <th>Total</th>
                                     <th>Customer Satisfaction</th>
                                 </tr>
                             </thead>
                             <?php
                             $i = 0;
                             $class = '';
-                            foreach($employee_conversion_report as $data) {
+                            /*foreach($employee_conversion_report as $data) {*/
+
+                            foreach($employee_conversion_report_generate as $data){
+
+                            $total=$data->sms_sent_this_month+$data->sms_received_this_month;
                             $i++;
                             if ($class == '') { $class = 'darker'; } else { $class = ''; }
                           	?>
                             <tr>
                                 <td class="<?=$class?>"><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
                                 <td class="<?=$class?>"><?=$data->name?></td>
-                                <td class="<?=$class?>"><?=$data->sms_sent_this_month?></td>
-                                <td class="<?=$class?>"><?=($data->sms_received_this_month)?></td>
-                                <td class="<?=$class?>"><?=($data->sms_sent_this_month > 0?(number_format(($data->positive_feedback_this_month / $data->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
+                                <!--<td class="<?=$class?>"><?=$data->sms_sent_this_month?></td>
+                                <td class="<?=$class?>"><?=($data->sms_received_this_month)?></td>-->
+                                <td class="<?=$class;?>"><?php echo $total;?></td>
+                                <?php if($review_invite_type_id==1){?>
+                                <td class="<?=$class?>"><?=($data->sms_sent_this_month > 0?(number_format(($data->positive_feedback_this_month / $data->sms_received_this_month) * 100, 1) . '%'):'0.0%')?> -Yes</td>
+
+                                <?php } elseif($review_invite_type_id==2)
+                                {
+                                
+                                $full_star=floor($data->rates/ $data->sms_received_this_month);
+                                $half_star=($data->rates % $data->sms_received_this_month);
+                                ?>
+                                <td class="<?=$class?> avgfeedbck" >
+                                    <ul>
+
+                                    
+                                <?php
+                                for($k=0;$k<$full_star;$k++)
+                                {
+                                        ?>
+                                         <li><img src="/img/star.png" class="img-responsive"></li>
+                                        <?php
+                                }
+                                    if($half_star!=0)
+                                    {
+                                    ?>
+                                       <li> <img src="/img/star2.png" class="img-responsive"></li>
+                                    <?php
+                                    }
+                                ?></ul></td>
+                                <?php
+                                } else {
+                                
+                                    ?>
+                                    <td class="<?=$class?>"> <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><center><?php echo round($data->rates/ $data->sms_received_this_month);?></span></center></td>
+                               <?php } ?>
                             </tr>
                             <?php } ?>
                         </table>
