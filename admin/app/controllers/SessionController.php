@@ -307,17 +307,20 @@ class SessionController extends ControllerBase {
                 $this->view->agency_name = $record->name;
                 //$this->view->agency_name = $record->name;
             }
-            elseif(!empty($objAgency) && $objAgency->name)
+            
+            $this->view->agency_white_label = true;
+            if($record->main_color) $this->view->main_color_setting = $record->main_color;
+        }
+
+        elseif(!empty($objAgency) && $objAgency->name)
             {
                 $this->view->agency_name = $objAgency->name;
+                $this->view->agency_id = $objAgency->agency_id;
             }
             else
             {
                 $this->view->agency_name ='';
             }
-            $this->view->agency_white_label = true;
-            if($record->main_color) $this->view->main_color_setting = $record->main_color;
-        }
         //see invite action above
         if($this->view->short_code){
             $subscription = new SubscriptionPricingPlan();
