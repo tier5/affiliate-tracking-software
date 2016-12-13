@@ -210,7 +210,7 @@
             if ($agency) {
                 $this->view->agency = $agency;
 
-                if($agency->parent_id = Agency::BUSINESS_UNDER_RV) {
+                if($agency->parent_id == Agency::BUSINESS_UNDER_RV) {
                     $twilio_api_key = $this->config->twilio->twilio_api_key;
                     $twilio_auth_token = $this->config->twilio->twilio_auth_token;
                     $twilio_auth_messaging_sid = $this->config->twilio->twilio_auth_messaging_sid;
@@ -263,16 +263,7 @@
                     //replace out the variables
                     $message = str_replace("{location-name}", $loc->name, $message);
                     $message = str_replace("{name}", $_POST['name'], $message);
-                    $pos = strpos($message, '{link}');
-                    if($pos!='')
-                    {
-                         $message = str_replace("{link}", $this->googleShortenURL($_POST['link']), $message);
-                    }
-                    else
-                    {
-                        $message = $message.$this->googleShortenURL($_POST['link']);
-                    }
-                   
+                    $message = str_replace("{link}", $this->googleShortenURL($_POST['link']), $message);
                     $message = $message.'  Reply stop to be removed';
 
                     if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
@@ -362,7 +353,6 @@
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
                             }
-
                         }
                     } //end checking for formposttype
                 }

@@ -62,7 +62,7 @@ foreach($agencies as $agency) {
                                             <li><a href="/admindashboard/view/<?=$agency_type_id?>/<?=$agency->agency_id?>" class=""><i class="icon-eye"></i> View</a></li>
                                             <li><a href="/admindashboard/edit/<?=$agency->agency_id?>" class=""><i class="icon-pencil"></i> Edit</a></li>
                                             <li><a href="/admindashboard/view/<?=$agency_type_id?>/<?=$agency->agency_id?>" class=""><i class="icon-user"></i> Password</a></li>
-                                            <?php if($agency->parent_id != 0 && false) { ?>
+                                            <?php if($agency->parent_id != 0) { ?>
                                             	<li><a href="/admindashboard/delete/<?=$agency_type_id?>/<?=$agency->agency_id?>" onclick="return confirm('Are you sure you want to delete this item?');" class=""><i class="fa fa-trash-o"></i> Delete</a></li>
                                             <?php } ?>
                                             <li><a href="/admindashboard/view/<?=$agency_type_id?>/<?=$agency->agency_id?>" class=""><i class="icon-envelope"></i> Resend Credentials</a></li>

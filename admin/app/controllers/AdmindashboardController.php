@@ -317,8 +317,13 @@ class AdmindashboardController extends ControllerBusinessBase {
 
             // Review invites
             $dbReviewInvite = \Vokuro\Models\ReviewInvite::find("location_id = {$objLocation->location_id}");
-            foreach($dbReviewInvite as $objReviewInvite)
+            foreach($dbReviewInvite as $objReviewInvite) {
+                $dbReviewInviteReviewSite = \Vokuro\Models\ReviewInviteReviewSite::find("review_invite_id = {$objReviewInvite->review_invite_id}");
+                foreach($dbReviewInviteReviewSite as $objReviewInviteReviewSite)
+                    $objReviewInviteReviewSite->delete();
+
                 $objReviewInvite->delete();
+            }
 
             // Review Sites
             foreach($dbLocationReviewSites as $objReviewSite)
