@@ -449,14 +449,6 @@
             <label for="email">To Email:</label>
             <input type="email" class="email_to" name="email_to[]" />
         </div>
-        <div class="field">
-            <label for="email">To Email:</label>
-            <input type="email" class="email_to" name="email_to[]"  />
-        </div>
-        <div class="field">
-            <label for="email">To Email:</label>
-            <input type="email" class="email_to" name="email_to[]s"  />
-        </div>
 
         
         <div class="field" style="display:none">
