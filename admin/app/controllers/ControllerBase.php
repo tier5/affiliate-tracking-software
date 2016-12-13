@@ -241,6 +241,8 @@ class ControllerBase extends Controller {
         $tHost = explode(".", $_SERVER['HTTP_HOST']);
         $sub = array_shift($tHost);
         if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104' && $sub != 'getmobilereviews') {
+
+
             //find the agency object
             $conditions = "custom_domain = :custom_domain:";
 
@@ -255,23 +257,50 @@ class ControllerBase extends Controller {
                 )
             );
 
-            if ($agency) {
-            	$agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
-                list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
-                $rgb = $r . ', ' . $g . ', ' . $b;
-                $vars = [
-                    'agency_id' => $agency->agency_id,
-                	'agency' => $agency,
-                    'main_color_setting' => $agency->main_color,
-                    'rgb' => $rgb,
-                    'logo_path' => $agency->logo_path,
-                    'main_color' => str_replace('#', '', $agency->main_color),
-                    'primary_color' => str_replace('#', '', $agency->main_color),
-                    'secondary_color' => str_replace('#', '', $agency->secondary_color)
-                ];
-                $this->view->setVars($vars);
-            }
         }
+        else  {
+
+            if($_GET['code'])
+            {
+                $agency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$_GET['code']}'");
+
+                $this->session->set("share_code", $_GET['code']);
+
+
+            }
+
+             else if ($this->session->has("share_code")) {
+
+                // Retrieve its value
+                $code = $this->session->get("share_code");
+
+                $agency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
+
+            }
+
+        }
+
+        
+
+        if ($agency) {
+            //dd($agency->agency_id);
+        	$agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
+            list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+            $rgb = $r . ', ' . $g . ', ' . $b;
+            $vars = [
+                'agency_id' => $agency->agency_id,
+            	'agency' => $agency,
+                'main_color_setting' => $agency->main_color,
+                'rgb' => $rgb,
+                'logo_path' => $agency->logo_path,
+                'main_color' => str_replace('#', '', $agency->main_color),
+                'primary_color' => str_replace('#', '', $agency->main_color),
+                'secondary_color' => str_replace('#', '', $agency->secondary_color)
+            ];
+            $this->view->setVars($vars);
+        }
+    
+        
         
 		$this->agency = $agency;
         if ($this->request->getPost('main_color')) {

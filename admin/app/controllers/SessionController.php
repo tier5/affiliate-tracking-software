@@ -94,7 +94,7 @@ class SessionController extends ControllerBase {
             $subscription_id = null;
             $short_code = $this->request->getPost('short_code');
 
-            dd($short_code);
+
             $ssp = new SubscriptionPricingPlan();
             $sharing_code = $this->request->getPost('sharing_code', 'striptags');
             $parent_id = null;
@@ -306,9 +306,8 @@ class SessionController extends ControllerBase {
 
         $white_label = 'Sign Up';
         if($record){
+            if($record->agency_id)
             $this->view->agencyId = $record->agency_id;
-
-            
 
             //if($record->logo_path) $this->view->logo_path = "/img/agency_logos/".$record->logo_path;
             if($record->name){
@@ -327,7 +326,7 @@ class SessionController extends ControllerBase {
 
         
 
-        if($_GET['code'])
+        else if($_GET['code'])
         {
             
 
