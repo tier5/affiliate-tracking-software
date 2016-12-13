@@ -78,12 +78,15 @@
                     //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
                     // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
                 } else {
+
+                   
                     $agency->assign(array(
                         'review_invite_type_id' => $this->request->getPost('review_invite_type_id', 'int'),
                         'review_goal' => $this->request->getPost('review_goal', 'int'),
                         'custom_domain' => $this->request->getPost('custom_domain'),
                         'lifetime_value_customer' => str_replace("$", "", str_replace(",", "", $this->request->getPost('lifetime_value_customer'))),
                         'SMS_message' => $this->request->getPost('SMS_message'),
+                        'twitter_message' => $this->request->getPost('twitter_message'),
                         'message_tries' => $this->request->getPost('message_tries'),
                         'notifications' => $this->request->getPost('notifications'),
                         'rating_threshold_star' => $this->request->getPost('rating_threshold_star'),
@@ -171,6 +174,7 @@
             'lifetime_value_customer'       => 'replace_commas_dollars',
             'SMS_message'                   => 'string',
             'message_tries'                 => 'int',
+            'twitter_message'               => 'string',
             'rating_threshold_star'         => 'int',
             'rating_threshold_nps'          => 'int',
             'message_frequency'             => 'int',
@@ -189,6 +193,7 @@
             'review_goal'                   => 'int',
             'lifetime_value_customer'       => 'replace_commas_dollars',
             'SMS_message'                   => 'string',
+            'twitter_message'               => 'string',
             'message_tries'                 => 'int',
             'rating_threshold_star'         => 'int',
             'rating_threshold_nps'          => 'int',
@@ -402,16 +407,22 @@
 
         public function sendSampleEmailAction($EmployeeID) {
             $this->view->disable();
+
             $Identity = $this->session->get('auth-identity');
+            //echo $Identity['id'];exit;
             $objCurrentUser = \Vokuro\Models\Users::findFirst("id = " . $Identity['id']);
             $objRecipient = \Vokuro\Models\Users::findFirst("id = {$EmployeeID}");
+            $objlocationinfo = \Vokuro\Models\UsersLocation::findFirst("user_id = {$EmployeeID}");
+            $objReview= \Vokuro\Models\Location::findFirst("location_id = {$objlocationinfo->location_id}");
             $objBusiness =  \Vokuro\Models\Agency::findFirst("agency_id = {$objCurrentUser->agency_id}");
-
+            /*echo $objReview->review_invite_type_id;
+            exit;*/
             $Start = date("Y-m-01", strtotime('now'));
             $End = date("Y-m-t", strtotime('now'));
-            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], 0, 0, 1);
+            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
+            //echo '<pre>';print_r($dbEmployees);exit;
             $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
-
+            $this->view->review_invite_type_id=$objReview->review_invite_type_id;
             $objEmail = new \Vokuro\Services\Email();
             return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
         }
@@ -430,10 +441,9 @@
                 $this->view->ShowAgencyStripePopup = false;
             }
                 $conditions = "location_id = :location_id:";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-        $location = Location::findFirst(array($conditions, "bind" => $parameters));
-        //dd($location);
-       //echo $Identity['id'];exit;
+            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+            $location = Location::findFirst(array($conditions, "bind" => $parameters));
+       
 
 
             $objUser = Users::findFirst("id = " . $Identity['id']);
@@ -468,7 +478,6 @@
                     $this->flash->error($message);
                 }
             }
-            //dd($objUser);
             $this->view->form = $SettingsForm;
             $this->view->agencyform = $AgencyForm;
             $this->view->objgetuser=$objUser ;
@@ -509,7 +518,7 @@
 
 
         public function onAction($id = 0) {
-            $this->checkIntegerOrThrowException($id,'$id was invalid');
+            //$this->checkIntegerOrThrowException($id,'$id was invalid');
             $conditions = "location_review_site_id = :location_review_site_id:";
             $parameters = array("location_review_site_id" => $id);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));

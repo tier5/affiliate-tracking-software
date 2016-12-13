@@ -92,8 +92,10 @@
                             </div>
                             <div class="col-md-6 col-sm-6 border-panel">
                                 <div class="easy-pie-chart-big">
-                                    <div class="number lastmonth" data-percent="<?=($sms_sent_last_month>0?round($sms_sent_this_month / $sms_sent_last_month * 100):0)?>">
-                                        <span><?=($sms_sent_last_month>0?round($sms_sent_this_month / $sms_sent_last_month * 100):0)?><span class="percent-sign">%</span></span>
+                                   <!-- <div class="number lastmonth" data-percent="<?=($sms_sent_last_month>0?round($sms_sent_this_month / $sms_sent_last_month * 100):0)?>">-->
+
+                                   <div class="number lastmonth" data-percent="<?=($sms_sent_last_month>0?round($sms_sent_last_month / $sms_sent_all_time * 100):0)?>">
+                                        <span><?=($sms_sent_last_month>0?round($sms_sent_last_month / $sms_sent_all_time * 100):0)?><span class="percent-sign">%</span></span>
                                     </div>
                                     <div class="report-title" style="margin-top: 34px;margin-bottom: 5px;"> % Of Last
                                         Month
@@ -118,7 +120,7 @@
                         <div class="row">
                             <div class="col-md-6 col-sm-6 border-panel">
                                 <div class="easy-pie-chart">
-                                    <div class="report-num" style="color: #af0000; font-size: 65px; margin-top: 10px;"><?=round(($total_reviews_this_month_analytics + $total_reviews_last_month_analytics) / 2, 1)?></div>
+                                    <div class="report-num" style="color: #af0000; font-size: 65px; margin-top: 10px;"><?=round(($total_reviews_this_month_analytics + $total_reviews_last_month_analytics) / 2)?></div>
                                     <div class="report-title" style="margin-top: 21px;margin-bottom: 5px;"> Average New
                                         Review Per Month
                                     </div>
@@ -279,14 +281,18 @@
                     </div>
                     <div class="portlet-body">
                         <?php
+                        
             if($clickreport) {
             //echo $clickreport;
                // echo count($clickreport);
               foreach($clickreport as $click_site) {
               $clicktotal=$sms_sent_all_time;
-              $clicklargest=5;
-                $percent = ($click_site->num_clicks / $clicktotal) * 100;
-                        $largestpercent = ($clicklargest / $clicktotal) * 100;
+              
+              //$clicklargest=5;
+               // $percent = ($click_site->num_clicks / $clicktotal) * 100;
+            $percent = ($click_site->num_clicks / $Totalclick) * 100;
+                       // $largestpercent = ($clicklargest / $clicktotal) * 100;
+                        $largestpercent = ($clicklargest / $Totalclick) * 100;
                         //calculate width
                         $width = 10;
                         if ($click_site->num_clicks == $clicklargest) {
@@ -303,7 +309,9 @@
                             <div class="click-percent"><?=round($percent)?>%</div>
                         </div>
                         <?php
-              } //endforeach;
+              }
+
+               //endforeach;
             } // endif;
             ?>
                     </div>

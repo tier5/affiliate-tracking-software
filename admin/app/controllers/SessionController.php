@@ -93,6 +93,8 @@ class SessionController extends ControllerBase {
         try {
             $subscription_id = null;
             $short_code = $this->request->getPost('short_code');
+
+
             $ssp = new SubscriptionPricingPlan();
             $sharing_code = $this->request->getPost('sharing_code', 'striptags');
             $parent_id = null;
@@ -283,28 +285,73 @@ class SessionController extends ControllerBase {
     }
 
     public function signupAction($subscriptionToken = '0') {
+        $objAgency='';
+        $objUser='';
+
         //echo $subscriptionToken;exit;
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
-        $pi = array_shift($ex);
+        $pi = array_shift($ex);//exit;
 
         // Also will 404 on invalid subdomain
         $this->DetermineParentIDAndSetViewVars();
 
         $agency = new Agency();
         $record = $agency->findOneBy(['custom_domain'=>$pi]);
+
         $white_label = 'Sign Up';
         if($record){
+            if($record->agency_id)
             $this->view->agencyId = $record->agency_id;
 
             //if($record->logo_path) $this->view->logo_path = "/img/agency_logos/".$record->logo_path;
             if($record->name){
                 $this->view->agency_name = $record->name;
-                $this->view->agency_name = $record->name;
+                //$this->view->agency_name = $record->name;
             }
+            
             $this->view->agency_white_label = true;
             if($record->main_color) $this->view->main_color_setting = $record->main_color;
         }
+
+        elseif(!empty($objUser) && $objUser->name)
+        {
+             $this->view->agency_name = $objUser->name;
+        }
+
+        
+
+        else if($_GET['code'])
+        {
+            
+
+            $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$_GET['code']}'");
+             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
+
+
+             $this->view->agencyId = $objAgency->agency_id;
+             $this->view->agency_name = $objAgency->name;
+             
+             if($objAgency->parent_id) {
+                $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+
+                $this->view->agencyId = $objAgency1->agency_id;
+                $this->view->agency_name = $objAgency1->name;
+
+             }
+             
+
+
+        }
+        else
+        {
+
+             $this->view->agency_name ='';
+        }
+
+        //dd($record->agency_id);
+
+       
         //see invite action above
         if($this->view->short_code){
             $subscription = new SubscriptionPricingPlan();

@@ -1097,6 +1097,7 @@
                 
                 try {
                     //$EmailFrom='s@gmail.com';
+                   // echo $message;exit;
                     foreach ($filterEmailArr as $key => $email) {
                         $mail = $this->getDI()->getMail();
                         $mail->setFrom($EmailFrom);

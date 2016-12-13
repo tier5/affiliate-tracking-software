@@ -117,6 +117,7 @@
                     <li class="{{ GeneralExpanded }}"><a href="#tab_general" data-toggle="tab"> General </a></li>
                     <li><a href="#tab_review_invite" data-toggle="tab"> Review Invite </a></li>
                     <li><a href="#tab_sms_message" data-toggle="tab"> SMS Message </a></li>
+                    <li><a href="#tab_twitter_message" data-toggle="tab"> Twitter Message </a></li>
                     <li><a href="#tab_white_label" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
@@ -129,10 +130,10 @@
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
                         Stripe </a></li>
-                    <li class=""><a href="#tab_intercom" data-toggle="tab" <?=(isset($this->
+                    <!--<li class=""><a href="#tab_intercom" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
-                        Intercom </a></li>
+                        Intercom </a></li>-->
                     <li><a href="#tab_notification" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>>
@@ -427,6 +428,22 @@
                     <!-- END SMS Message Settings  -->
 
 
+                    <!-- START Twitter Message Settings  -->
+                    <div class="tab-pane fade in" id="tab_twitter_message">
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="twitter_message" class="col-md-4 control-label">Twitter Message</label>
+                                <div class="col-md-8">
+                                    <textarea style="width: 100%;" class="form-control" name="twitter_message"><?=(isset($_POST['twitter_message'])?$_POST["twitter_message"]:(isset($agency->
+                                        twitter_message)?$agency->twitter_message:'I just started using this amazing new software for my business. They are giving away a trial account here: {link}'))?></textarea>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    <!-- END SMS Twitter Settings  -->
+
                     <!-- START White Label Settings  -->
                     <div class="tab-pane fade" id="tab_white_label">
                         <div class="form-group">
@@ -568,7 +585,7 @@
                     <div class="row">
                     <!-- cell phone -->
                     <div id='divSMSResults_msg'></div>
-                    <label class="col-md-4 control-label">Send test text message:</label> 
+                    <label class="col-md-4 control-label"> Send Test Text Message:</label> 
                     <div class="col-md-6">
                     <input
                   class="form-control
@@ -662,7 +679,7 @@
                     <!-- END Stripe Settings  -->
 
                     <!-- START Intercom Settings  -->
-                    <div class="tab-pane fade in" id="tab_intercom">
+                    <!--<div class="tab-pane fade in" id="tab_intercom">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-12">
@@ -699,7 +716,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                     <!-- END Intercom Settings  -->
 
 

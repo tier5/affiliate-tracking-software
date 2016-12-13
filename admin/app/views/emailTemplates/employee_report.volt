@@ -328,8 +328,8 @@
                                                                                 <tr class="odd" style="background:#efefef;padding:0;text-align:left;vertical-align:top">
                                                                                     <th class="column-rank" style="Margin:0;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;padding:15px;text-align:center;width:20%">Rank</th>
                                                                                     <th class="column-employee" style="Margin:0;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;padding:15px;text-align:center;width:40%">Employee</th>
-                                                                                    <th class="column-sent" style="Margin:0;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;padding:15px;text-align:center;width:40%">Total Sent</th>
-                                                                                    <th class="column-received" style="Margin:0;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;padding:15px;text-align:center;width:20%">Total Received</th>
+                                                                                    <th class="column-sent" style="Margin:0;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;padding:15px;text-align:center;width:40%">Total</th>
+                                                                                    <!--<th class="column-received" style="Margin:0;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;padding:15px;text-align:center;width:20%">Total Received</th>-->
                                                                                     <th class="column-satisfaction" style="Margin:0;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;padding:15px;text-align:center;width:20%">Customer Satisfaction</th>
                                                                                 </tr>
                                                                                 <?php $Count = 1; ?>
@@ -339,17 +339,17 @@
                                                                                 $BGColor = $Count % 2 == 0 ? "#efefef" : "#fafafa";
                                                                                 switch($Count) {
                                                                                     case 1:
-                                                                                       $Icon = "<img src='http://{$FullDomain}/img/gold_medal.png' />";
+                                                                                       $Icon = "<img src='/img/gold_medal.png' />";
                                                                                                     $Class .= "first";
                                                                                                     $FontSize = "24px";
                                                                                                 break;
                                                                                             case 2:
-                                                                                                    $Icon = "<img src='http://{$FullDomain}/img/silver_medal.png' />";
+                                                                                                    $Icon = "<img src='/img/silver_medal.png' />";
                                                                                                     $Class .= "second";
                                                                                                     $FontSize = "17px";
                                                                                                 break;
                                                                                             case 3:
-                                                                                                    $Icon = "<img src='http://{$FullDomain}/img/bronze_medal.png' />";
+                                                                                                    $Icon = "<img src='/img/bronze_medal.png' />";
                                                                                                     $Class .= "third";
                                                                                                     $FontSize = "15px";
                                                                                                 break;
@@ -372,9 +372,51 @@
                                                                                     <tr class="<?=$Class;?>" style="background:<?=$BGColor; ?>;padding:0;text-align:left;vertical-align:top">
                                                                                         <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Icon; ?></td>
                                                                                         <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Employee->name; ?></td>
-                                                                                        <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=($Employee->sms_sent_this_month ?: 0); ?></td>
-                                                                                        <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Employee->positive_feedback_this_month ?: 0; ?></td>
-                                                                                        <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=($Employee->sms_received_this_month > 0?(number_format(($Employee->positive_feedback_this_month / $Employee->sms_received_this_month) * 100, 1) . '%'):'0.0%')?></td>
+                                                                                        <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word">
+                                                                                        <?php $total=$Employee->sms_sent_this_month+$Employee->positive_feedback_this_month;?>
+
+                                                                                        <?=($total ?: 0); ?></td>
+                                                                                        <!--<td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Employee->positive_feedback_this_month ?: 0; ?></td>-->
+                                                                                        <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word">
+                                                                                        <?php 
+                                                                                        if($review_invite_type_id==1){?>
+
+                                                                                      <?=($Employee->sms_received_this_month > 0?(number_format(($Employee->positive_feedback_this_month / $Employee->sms_received_this_month) * 100, 1) . '%'):'0.0%')?> -Yes
+
+                                                                                        <?php } elseif($review_invite_type_id==2)
+
+                                                                                        {
+
+                                                                                        $star_full=ceil($Employee->rates/$Employee->positive_feedback_this_month);
+
+                                                                                         $star_half=($Employee->rates%$Employee->positive_feedback_this_month);
+                                                                                         ?>
+                                                                                         <ul>
+
+                                                                                         <?php
+
+                                                                                        for($l=0;$l<$star_full;$l++)
+                                                                                        { ?>
+                                                                                        <li><img src="/img/star.png" class="img-responsive"></li>
+
+                                                                                        <?php
+
+                                                                                        }
+                                                                                        if($star_half)
+                                                                                        {
+                                                                                        ?>
+                                                                                            <li><img src="/img/star2.png" class="img-responsive"></li>
+                                                                                        <?php
+                                                                                        }
+
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            $number =round($Employee->rates/$Employee->positive_feedback_this_month);  
+                                                                                            echo $number;
+                                                                                        }
+                                                                                        ?>
+                                                                                        </td>
                                                                                     </tr>
                                                                                     <?php $Count++; ?>
                                                                                 {% endfor %}

@@ -5,6 +5,7 @@
     use Vokuro\Models\Location;
     use Vokuro\Models\LocationReviewSite;
     use Vokuro\Models\ReviewInvite;
+    use Vokuro\Models\ReviewInviteReviewSite;
     use Vokuro\Models\Users;
 
     /**
@@ -39,7 +40,7 @@
             $SMSConvertedThisMonth = 0;
             $SMSConvertedLastMonth = 0;
 
-
+            $this->view->Totalclick = \Vokuro\Models\ReviewInviteReviewSite::count();//exit;
             $LocationID = $this->session->get('auth-identity')['location_id'];
             if ($LocationID) {
                 $FirstDayThisMonth = date("Y-m-01 00:00:00");
@@ -78,6 +79,17 @@
                 $clickreport = ReviewInvite::getReviewInviteClickReport($LocationID, true);
                // echo '<pre>';print_r( $clickreport);exit;
                 $this->view->clickreport = $clickreport;
+
+                $clicklargest=0;
+            foreach($clickreport as $click_site) {
+              
+              if($clicklargest<$click_site->num_clicks)
+              {
+              $clicklargest=$click_site->num_clicks;
+              }
+                    }
+
+                    $this->view->clicklargest=$clicklargest;
 
                 $this->view->sms_sent_this_month = $this->view->sms_sent_this_month_total = $SMSSentThisMonth;
                 $this->view->sms_sent_last_month = $SMSSentLastMonth;

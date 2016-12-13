@@ -87,7 +87,7 @@
                                     <div class="share-inner">
                                         <a id="maillink" class="share-link" href="mailto:?&subject=<?=$share_subject?>&body=<?=$share_message?>">Send Email <img src="/img/icon_sm_email.gif" /></a>
                                         <a target="_blank" class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=<?=$share_link?>">Share on Facebook <img src="/img/icon_sm_facebook.gif" /></a>
-                                        <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$share_message?>">Share on Twitter  <img src="/img/icon_sm_twitter.gif" /></a>
+                                        <a target="_blank" class="share-link" href="https://twitter.com/home?status=<?=$twitter_message_set?>">Share on Twitter  <img src="/img/icon_sm_twitter.gif" /></a>
                                         <a target="_blank" class="share-link" href="https://plus.google.com/share?url=<?=$share_link?>">Share on Google+  <img src="/img/icon_sm_google.gif" /></a>
                                     </div>
                                 </div>
@@ -334,7 +334,19 @@
                         ?>
                         <div class="review">
                             <div class="top">
-                                <div class="logo"><a href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==1?'http://facebook.com/'.$user_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==2?'yelp':($data->rating_type_id==1?'facebook':'google'))?>.gif" /></a></span></div>
+                                <div class="logo">
+
+                                <!--
+                                <a href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==1?'http://facebook.com/'.$user_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==2?'yelp':($data->rating_type_id==1?'facebook':'google'))?>.gif" /></a>-->
+
+                                <a 
+                                <?php if($data->rating_type_id==1)
+                                {?> onclick='facebookClickHandler(<?=$facebook_page_id;?>)' <?php } ?>  href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://www.facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==2?'yelp':($data->rating_type_id==1?'facebook':'google'))?>.gif" /></a>
+
+
+
+
+                                </span></div>
                                 <div class="rating col-md-3"><input value="<?=$data->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /></div>
                                 <div class="name col-md-5"><?=$data->user_name?></div>
                                 <div class="date col-md-3"><?=date("m/d/Y", strtotime($data->time_created))?></div>
@@ -386,14 +398,6 @@
         <div class="field">
             <label for="email">To Email:</label>
             <input type="email" class="email_to" name="email_to[]" />
-        </div>
-        <div class="field">
-            <label for="email">To Email:</label>
-            <input type="email" class="email_to" name="email_to[]"  />
-        </div>
-        <div class="field">
-            <label for="email">To Email:</label>
-            <input type="email" class="email_to" name="email_to[]s"  />
         </div>
 
         
