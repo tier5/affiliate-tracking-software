@@ -323,7 +323,10 @@ class IndexController extends ControllerBase {
              $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $review_info = Location::findFirst(array($conditions, "bind" => $parameters));
+            echo "location-id:".$this->session->get('auth-identity')['location_id'].'<br>';
+            echo'<pre>';print_r($review_info);exit;
              $review_type_id=$review_info->review_invite_type_id;//exit;
+
              $this->view->review_invite_type_id=$review_type_id;
              $this->view->employee_conversion_report_generate = Users::getEmployeeConversionReportGenerate($review_type_id,$loc->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], 'DESC');
 
