@@ -8,14 +8,18 @@
 <div class="content">
 
 
+
+
     {{ content() }}
     {% if maxLimitReached %}
     The max signup limit has been reached for today.  Please try again tomorrow.
     <p><a href="/session/login" id="register-back-btn" class="btn btn-default" style="margin-right: 50px;">Back</a></p>
     {% else %}
 
+    <div id="returnmessage"></div>
+
     <!-- BEGIN REGISTRATION FORM -->
-    <form class="register-form" id="register-form" action="/session/submitSignup/{{ subscription_id ? subscription_id : token}}" method="post" style="display: block;">
+    <form class="register-form" name="registration" id="register-form" action="/session/submitSignup/{{ subscription_id ? subscription_id : token}}" method="post" style="display: block;">
         {% if subscription_id %}
             <input type="hidden" name="subscription_id" value="{{ subscription_id }}"/>
         {% endif %}
@@ -33,7 +37,7 @@
         <p class="hint"> Enter your account details below: </p>
         <div class="form-group">
             <label class="control-label">Full Name:</label>
-            <input class="form-control placeholder-no-fix" type="text" placeholder="Full Name" name="name" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" required />
+            <input class="form-control placeholder-no-fix" type="text" placeholder="Full Name" id="name" name="name" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" required />
         </div>
         <div class="form-group">
             <label class="control-label">Email:</label><span id="Email_availability_result" style="margin-left: 10px" ></span>
@@ -64,3 +68,4 @@
     {% endif %}
 </div>
 <script src="/js/signup.js"></script>
+
