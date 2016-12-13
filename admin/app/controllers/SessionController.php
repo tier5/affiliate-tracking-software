@@ -288,11 +288,6 @@ class SessionController extends ControllerBase {
         $objAgency='';
         $objUser='';
 
-
-        
-
-        //echo '<pre>';print_r($objAgency);exit;
-
         //echo $subscriptionToken;exit;
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
@@ -333,8 +328,8 @@ class SessionController extends ControllerBase {
             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$_GET['code']}'");
              $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
 
-             //dd($objAgency->name);
 
+             
              $this->view->agencyId = $objAgency->agency_id;
              $this->view->agency_name = $objAgency->name;
 
