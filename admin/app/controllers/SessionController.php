@@ -284,14 +284,21 @@ class SessionController extends ControllerBase {
 
     public function signupAction($subscriptionToken = '0') {
         $objAgency='';
-        if($subscriptionToken!=0)
+        $objUser='';
+
+        if($_GET['code'])
         {
-            $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = {$subscriptionToken}");
+            //echo $_GET['code'];exit;
+
+            $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = {$_GET['code']}");
+             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
         }
+        //echo '<pre>';print_r($objAgency);exit;
+
         //echo $subscriptionToken;exit;
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
-        $pi = array_shift($ex);
+        $pi = array_shift($ex);//exit;
 
         // Also will 404 on invalid subdomain
         $this->DetermineParentIDAndSetViewVars();
@@ -312,15 +319,16 @@ class SessionController extends ControllerBase {
             if($record->main_color) $this->view->main_color_setting = $record->main_color;
         }
 
-        elseif(!empty($objAgency) && $objAgency->name)
-            {
-                $this->view->agency_name = $objAgency->name;
-                $this->view->agency_id = $objAgency->agency_id;
-            }
-            else
-            {
-                $this->view->agency_name ='';
-            }
+        elseif(!empty($objUser) && $objUser->name)
+        {
+             $this->view->agency_name = $objUser->name;
+        }
+        else
+        {
+             $this->view->agency_name ='';
+        }
+
+       
         //see invite action above
         if($this->view->short_code){
             $subscription = new SubscriptionPricingPlan();
