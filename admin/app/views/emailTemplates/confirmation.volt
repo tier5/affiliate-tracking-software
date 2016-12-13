@@ -16,7 +16,6 @@
                     <br/><br/>
 
                     
-
                     To get started just confirm your email by <a style="padding:10px; margin-left:-10px;" href="http://{{ publicUrl }}{{ confirmUrl }}">Clicking Here</a><br/><br />
 
                     Thanks,<br/>

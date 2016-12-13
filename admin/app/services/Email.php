@@ -69,7 +69,7 @@ class Email{
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
-            $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+            $AgencyUser =$objAgencyUser->name." ".$objAgencyUser->last_name;
             $AgencyName = $objAgency->name;
             $EmailFrom =  $objAgency->email;
 
