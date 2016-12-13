@@ -410,16 +410,35 @@
 
             $Identity = $this->session->get('auth-identity');
             //echo $Identity['id'];exit;
+            //echo $this->session->get('auth-identity')['location_id'];exit;
             $objCurrentUser = \Vokuro\Models\Users::findFirst("id = " . $Identity['id']);
             $objRecipient = \Vokuro\Models\Users::findFirst("id = {$EmployeeID}");
+
             $objlocationinfo = \Vokuro\Models\UsersLocation::findFirst("user_id = {$EmployeeID}");
-            $objReview= \Vokuro\Models\Location::findFirst("location_id = {$objlocationinfo->location_id}");
+                if($objlocationinfo)
+                {
+                     $objReview= \Vokuro\Models\Location::findFirst("location_id = {$objlocationinfo->location_id}");
+                     $review_invite_type_id=$objReview->review_invite_type_id;
+                }
+                else
+                {
+                    
+                    $objReview= \Vokuro\Models\Location::findFirst("location_id = {$this->session->get('auth-identity')['location_id']}");
+                     $review_invite_type_id=$objReview->review_invite_type_id;
+                }
+
+           
             $objBusiness =  \Vokuro\Models\Agency::findFirst("agency_id = {$objCurrentUser->agency_id}");
             /*echo $objReview->review_invite_type_id;
             exit;*/
+
             $Start = date("Y-m-01", strtotime('now'));
             $End = date("Y-m-t", strtotime('now'));
-            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
+           // $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
+
+            
+
+            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReportGenerate($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
             //echo '<pre>';print_r($dbEmployees);exit;
             $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
             $this->view->review_invite_type_id=$objReview->review_invite_type_id;

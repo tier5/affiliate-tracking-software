@@ -145,7 +145,7 @@ $i = 0;
 
 
 
-foreach($users_report as $user) {
+foreach($users_report_generate as $user) {
   $i++;
   $total=$user->sms_sent_this_month+$user->sms_received_this_month;
   $star_rating=0;
@@ -164,11 +164,10 @@ foreach($users_report as $user) {
                   <?=($user->sms_received_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?> - <span style="text-transform: capitalize;"> yes </span>
 
                   <?php } elseif($review_invite_type_id==2){
-                        if(!empty($rating) && array_key_exists($user->id, $rating))
-                        {
-                          $get_rating=explode('-',$rating[$user->id]);
-                          $full_star=floor($get_rating[0]/$get_rating[1]);
-                          $half_star=$get_rating[0]%$get_rating[1];
+                        
+                          
+                          $full_star=floor($user->rates/$user->sms_received_this_month);
+                          $half_star=($user->rates%$user->sms_received_this_month);
                        
 
                   ?>
@@ -183,18 +182,14 @@ foreach($users_report as $user) {
 
                       <?php echo number_format($get_rating[0]/$get_rating[1],1); ?>
                     </ul>
-                  <?php } } else {
+                  <?php  } else {
 
-                    if(!empty($rating_number) && array_key_exists($user->id, $rating_number))
-                        {
-                          $get_rating_number=explode('-',$rating_number[$user->id]);
-                          $number=round($get_rating_number[0]/$get_rating_number[1]);
+                         $number=round($user->rates/$user->sms_received_this_month);
                   ?>
 
                       <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><?php echo $number;?></span>
-                  <?php } else { ?>
-                     <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;">0</span>
-                  <?php } } ?>
+                  <?php } ?>
+                    
 
                   </td>
                   </td>
@@ -241,7 +236,7 @@ foreach($users_report as $user) {
 		  }
 		  
 		if ($this->session->get('auth-identity')['role'] != "User") {
-		  if (isset($users) && $users) {
+		  if (isset($usersGenerate) && $usersGenerate) {
 		?>
 
         <div class="portlet light bordered dashboard-panel">
@@ -291,7 +286,7 @@ foreach($users_report as $user) {
               <?php
 				$rowclass = '';
 				$i=0;
-				foreach($users as $user) {
+				foreach($usersGenerate as $user) {
 					$i++;
 			  ?>
                 <tr>
@@ -329,11 +324,9 @@ foreach($users_report as $user) {
                   <?=($user->sms_received_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?> - <span style="text-transform: capitalize;"> yes </span>
 
                   <?php } elseif($review_invite_type_id==2){
-                        if(!empty($rating) && array_key_exists($user->id, $rating))
-                        {
-                          $get_rating=explode('-',$rating[$user->id]);
-                          $full_star=floor($get_rating[0]/$get_rating[1]);
-                          $half_star=$get_rating[0]%$get_rating[1];
+                        
+                           $full_star=floor($user->rates/$user->sms_received_this_month);
+                          $half_star=($user->rates%$user->positive_feedback_this_month);
                        
 
                   ?>
@@ -348,19 +341,14 @@ foreach($users_report as $user) {
 
                       <?php echo number_format($get_rating[0]/$get_rating[1],1); ?>
                     </ul>
-                  <?php } } else {
+                  <?php  } else {
 
-                       if(!empty($rating_number) && array_key_exists($user->id, $rating_number))
-                        {
-                        $get_rating_number=explode('-',$rating_number[$user->id]);
-                          $number=round($get_rating_number[0]/$get_rating_number[1]);
+                     
+                          $number=round($user->rates/$user->sms_received_this_month);
                   ?>
 
                       <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><?php echo $number;?></span>
-                  <?php } else { ?>
-                    <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;">0</span>
-                  <?php
-                  } } ?>
+                  <?php } ?>
 
               </td>
 				

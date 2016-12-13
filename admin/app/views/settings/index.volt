@@ -826,7 +826,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         $.ajax({
             url: "/settings/sendSampleEmail/" + EmployeeID,
             success: function(data) {
-           // alert(data);
+           alert(data);
                 if(data == "1")
                     alert("Email successfully sent!");
                 else {

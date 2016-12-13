@@ -504,4 +504,182 @@
             return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
         }
 
+
+
+            public static function getEmployeeConversionReportGenerate($review_invite_type_id,$agency_id,
+                                                           $start_time,
+                                                           $end_time,
+                                                           $location_id,
+                                                           $sort_order) {
+            // A raw SQL statement
+            $sql = "SELECT distinct
+                       users.name,
+                       users.id,
+                       (SELECT COUNT(*)
+                          FROM
+                              review_invite
+                          WHERE
+                              review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
+                              sms_broadcast_id IS NULL AND
+                              users.id = review_invite.sent_by_user_id AND
+                              review_invite.date_sent >= DATE_FORMAT(NOW(), '%Y-%m')) 
+                          AS
+                              sms_sent_this_month,
+
+                        (SELECT COUNT(*)
+                            FROM
+                                  review_invite
+                            WHERE
+                                  review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
+                                  sms_broadcast_id IS NULL AND
+                                  users.id = review_invite.sent_by_user_id AND
+                                  review_invite.date_viewed >= DATE_FORMAT(NOW(), '%Y-%m'))
+                                  
+                            AS
+                                  sms_received_this_month ,
+
+                        (SELECT COUNT(*)
+                            FROM
+                                  review_invite
+                            WHERE
+                                  review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
+                                  sms_broadcast_id IS NULL AND
+                                  users.id = review_invite.sent_by_user_id AND
+                                  recommend = 'Y' AND
+                                  review_invite.date_viewed >= DATE_FORMAT(NOW(), '%Y-%m'))
+                            AS
+                                  positive_feedback_this_month,
+
+
+                                  (SELECT sum(review_invite.rating) 
+                            FROM
+                                  review_invite
+                            WHERE
+                                  review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
+                                  sms_broadcast_id IS NULL AND
+                                  users.id = review_invite.sent_by_user_id AND
+                                  recommend = 'Y' AND
+                                  review_invite.date_viewed >= DATE_FORMAT(NOW(), '%Y-%m'))
+                            AS
+                                  rates
+
+                    FROM users
+                    LEFT OUTER join users_location
+                    ON users.id = users_location.user_id
+                    WHERE (users_location.location_id = ".$location_id."  OR
+                          users.is_all_locations = 1 ) AND users.agency_id = {$agency_id} AND
+                      (users.profilesId = 3 OR users.is_employee = 1) OR (users.role = 'Super Admin' AND users.agency_id = {$agency_id})
+                    ORDER BY positive_feedback_this_month desc
+                  ;";
+                 // exit;
+//echo $sql;exit;
+            // Base model  main dashboard
+            $list = new Users();
+
+            // Execute the query
+            $params = null;
+            return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        }
+
+
+
+
+            public static function getEmployeeListReportGenerate($agency_id,
+                                                     $start_time,
+                                                     $end_time,
+                                                     $location_id,
+                                                     $review_invite_type_id,
+                                                     $profilesId,
+                                                     $employees_only) {
+
+            if ($start_time == "") {$start_time = date("1970-01-01");}
+            if ($end_time == "") {$end_time = date("Y-m-d H:i:s");}
+
+            $ProfileWhere = '';
+            switch($profilesId) {
+                case 1:
+                case 2:
+                case 4:
+                    break;
+
+                case 3:
+                    $ProfileWhere = ' AND profilesID = 4 ';
+                    break;
+            }
+
+            if ($employees_only) {
+                $ProfileWhere .= ' AND is_employee = 1';
+            }
+            // A raw SQL statement
+            $sql = "SELECT DISTINCT
+                      users.name,
+                      users.id,
+                  users.is_employee,
+                      users.email,
+                      users.role,
+                      (SELECT COUNT(*)
+                          FROM
+                              review_invite
+                          WHERE
+                              review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND 
+                              sms_broadcast_id IS NULL AND
+                              users.id = review_invite.sent_by_user_id AND
+                              review_invite.date_sent >= DATE_FORMAT('" . $start_time . "', '%Y-%m-%d') AND
+                              review_invite.date_sent <= DATE_FORMAT('" . $end_time . "', '%Y-%m-%d'))
+                          AS
+                              sms_sent_this_month,
+
+                      (SELECT COUNT(*)
+                          FROM
+                                review_invite
+                          WHERE
+                                review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
+                                sms_broadcast_id IS NULL AND
+                                users.id = review_invite.sent_by_user_id AND
+                                review_invite.date_viewed >= DATE_FORMAT('" . $start_time . "', '%Y-%m-%d') AND
+                                review_invite.date_viewed <= DATE_FORMAT('" . $end_time . "', '%Y-%m-%d'))
+                          AS
+                                sms_received_this_month,
+
+                      (SELECT COUNT(*)
+                          FROM
+                                review_invite
+                          WHERE
+                                review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
+                                sms_broadcast_id IS NULL AND
+                                users.id = review_invite.sent_by_user_id AND
+                                recommend = 'Y' AND
+                                review_invite.date_viewed >= DATE_FORMAT('" . $start_time . "', '%Y-%m-%d') AND
+                                review_invite.date_viewed <= DATE_FORMAT('" . $end_time . "', '%Y-%m-%d'))
+                          AS
+                                positive_feedback_this_month,
+                                   (SELECT sum(review_invite.rating) 
+                            FROM
+                                  review_invite
+                            WHERE
+                                  review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
+                                  sms_broadcast_id IS NULL AND
+                                  users.id = review_invite.sent_by_user_id AND
+                                  recommend = 'Y' AND
+                                  review_invite.date_viewed >= DATE_FORMAT(NOW(), '%Y-%m'))
+                            AS
+                                  rates
+
+                    FROM users
+                    LEFT OUTER JOIN users_location
+                    ON users.id = users_location.user_id
+                    WHERE (users_location.location_id = ".$location_id." OR
+                          users.is_all_locations = 1) AND users.agency_id = {$agency_id} AND 
+                          (users.profilesId = 3 OR users.is_employee = 1) OR (users.role = 'Super Admin' AND users.agency_id = {$agency_id}) 
+                    ORDER BY positive_feedback_this_month desc
+                    ;";
+//echo $sql . "<BR><BR>";exit;
+            $list = new Users();
+
+            $params = null;
+            return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        }
+
+
+
     }

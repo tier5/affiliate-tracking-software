@@ -290,6 +290,7 @@
               
               //$clicklargest=5;
                // $percent = ($click_site->num_clicks / $clicktotal) * 100;
+               
             $percent = ($click_site->num_clicks / $Totalclick) * 100;
                        // $largestpercent = ($clicklargest / $clicktotal) * 100;
                         $largestpercent = ($clicklargest / $Totalclick) * 100;
