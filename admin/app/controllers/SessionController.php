@@ -93,6 +93,8 @@ class SessionController extends ControllerBase {
         try {
             $subscription_id = null;
             $short_code = $this->request->getPost('short_code');
+
+            dd($short_code);
             $ssp = new SubscriptionPricingPlan();
             $sharing_code = $this->request->getPost('sharing_code', 'striptags');
             $parent_id = null;
@@ -286,13 +288,8 @@ class SessionController extends ControllerBase {
         $objAgency='';
         $objUser='';
 
-        if($_GET['code'])
-        {
-            //echo $_GET['code'];exit;
 
-            $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = {$_GET['code']}");
-             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
-        }
+
         //echo '<pre>';print_r($objAgency);exit;
 
         //echo $subscriptionToken;exit;
@@ -305,9 +302,12 @@ class SessionController extends ControllerBase {
 
         $agency = new Agency();
         $record = $agency->findOneBy(['custom_domain'=>$pi]);
+
         $white_label = 'Sign Up';
         if($record){
             $this->view->agencyId = $record->agency_id;
+
+            
 
             //if($record->logo_path) $this->view->logo_path = "/img/agency_logos/".$record->logo_path;
             if($record->name){
@@ -323,10 +323,26 @@ class SessionController extends ControllerBase {
         {
              $this->view->agency_name = $objUser->name;
         }
+        
+
+        if($_GET['code'])
+        {
+            //echo $_GET['code'];exit;
+
+            $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = {$_GET['code']}");
+             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
+
+             $this->view->agencyId = $objAgency->agency_id;
+             $this->view->agency_name = $objAgency->name;
+
+        }
         else
         {
+
              $this->view->agency_name ='';
         }
+
+        //dd($record->agency_id);
 
        
         //see invite action above
