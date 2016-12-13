@@ -14,6 +14,7 @@
     <div class="row small-vertical-margins">
         <div class="col-xs-12">
             <span class="sub-section-header">Twilio Integration</span>
+            Click on the following link for the Twillio integration training <a href="http://training.reviewvelocity.co/knowledge-base/twillio-setup/" target="_blank">http://training.reviewvelocity.co/knowledge-base/twillio-setup/</a>
         </div>
     </div>
     <hr>
