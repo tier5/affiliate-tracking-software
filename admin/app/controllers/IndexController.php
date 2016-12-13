@@ -318,13 +318,13 @@ class IndexController extends ControllerBase {
             $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
 
             // Get the employee conversion reports
-
+ echo "location-id:".$this->session->get('auth-identity')['location_id'].'<br>';exit;
 
              $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $review_info = Location::findFirst(array($conditions, "bind" => $parameters));
-            echo "location-id:".$this->session->get('auth-identity')['location_id'].'<br>';
-            echo'<pre>';print_r($review_info);exit;
+           
+            //echo'<pre>';print_r($review_info);exit;
              $review_type_id=$review_info->review_invite_type_id;//exit;
 
              $this->view->review_invite_type_id=$review_type_id;
