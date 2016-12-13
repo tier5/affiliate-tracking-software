@@ -45,6 +45,7 @@ class ControllerBase extends Controller {
     }
 
     public function RedirectDomain($Domain) {
+
         $TLDomain = $this->config->application->domain;
         $PageURL = 'http';
         if($_SERVER['SERVER_PORT'] === 443)
@@ -56,6 +57,7 @@ class ControllerBase extends Controller {
 
     public function initialize() {
         error_reporting(E_ALL ^ E_NOTICE);
+
 
         $this->permissions = new Permissions();
         $this->user_object = $this->getUserObject();
@@ -386,7 +388,7 @@ class ControllerBase extends Controller {
         {
             $Domain="{$TLDomain}";
         }
-        $share_link = $this->googleShortenURL("https://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
+        $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
         //$share_link = urlencode($share_link);
 
         /*$this->view->setVars([
