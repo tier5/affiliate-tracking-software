@@ -565,15 +565,15 @@ class SubscriptionManager extends BaseService {
         $subscriptionPricingPlan->user_id = $parameters["userId"];
         $subscriptionPricingPlan->name = $parameters["name"];
         $subscriptionPricingPlan->enabled = $isUpdate ? $subscriptionPricingPlan->enabled : true;
-        $subscriptionPricingPlan->enable_trial_account = $parameters["enableTrialAccount"];
-        $subscriptionPricingPlan->enable_discount_on_upgrade = $parameters["enableDiscountOnUpgrade"];
+        $subscriptionPricingPlan->enable_trial_account = $parameters["enableTrialAccount"] ? $parameters["enableTrialAccount"] : 0;
+        $subscriptionPricingPlan->enable_discount_on_upgrade = $parameters["enableDiscountOnUpgrade"] ? $parameters["enableDiscountOnUpgrade"] : 0;
         $subscriptionPricingPlan->base_price = $parameters["basePrice"];
         $subscriptionPricingPlan->cost_per_sms = $parameters["costPerSms"];
         $subscriptionPricingPlan->max_messages_on_trial_account = $parameters["maxMessagesOnTrialAccount"];
         $subscriptionPricingPlan->updgrade_discount = $parameters["upgradeDiscount"];
         $subscriptionPricingPlan->charge_per_sms = $parameters["chargePerSms"];
         $subscriptionPricingPlan->max_sms_messages = $parameters["maxSmsMessages"];
-        $subscriptionPricingPlan->enable_annual_discount = $parameters["enableAnnualDiscount"];
+        $subscriptionPricingPlan->enable_annual_discount = $parameters["enableAnnualDiscount"] ? $parameters["enableAnnualDiscount"] : 0;
         $subscriptionPricingPlan->annual_discount = $parameters["annualDiscount"];
         $subscriptionPricingPlan->pricing_details = $parameters["pricingDetails"] ? : new \Phalcon\Db\RawValue('default');
         if(!$isUpdate)
