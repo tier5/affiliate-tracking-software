@@ -349,15 +349,19 @@
                 ));
             }
 
+
+
             // Query binding parameters with string placeholders
             $conditions = "id = :id:";
             $parameters = array("id" => $identity['id']);
             $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
             //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+            //exit;
 
             //verify that the user is supposed to be here, by checking to make sure that
             //their agency_id matches the agency_id of the user they are trying to edit
             $agency_id_to_check = $user->agency_id;
+
             if ($agency_id_to_check > 0) {
                 //if the agency id numbers do not match, log them out
 //echo '<pre>$agency_id_to_check:'.$agency_id_to_check.':$userObj->agency_id:'.$userObj->agency_id.'</pre>';
@@ -399,6 +403,7 @@
 
 
 
+
                 $user->profilesId = $_POST['type'] == 'User' ? 3 : 2;
                 $user->role = $user->role == 'Super Admin' ? 'Super Admin' : $_POST['userType'];
 
@@ -416,6 +421,8 @@
                     $locInsert->delete();
                 }
 
+                //dd($_POST['locations']);
+
                 $isall = false;
                 if(!empty($_POST['locations'])) {
                     foreach($_POST['locations'] as $check) {
@@ -429,7 +436,11 @@
                         }
                     }
                 }
+
+                //dd($isall);
+
                 $user->is_all_locations=($isall?1:0);
+
                 if (!$user->save()) {
                     $this->flash->error($user->getMessages());
                 } else {
