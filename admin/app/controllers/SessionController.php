@@ -283,6 +283,11 @@ class SessionController extends ControllerBase {
     }
 
     public function signupAction($subscriptionToken = '0') {
+        $objAgency='';
+        if($subscriptionToken!=0)
+        {
+            $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = {$subscriptionToken}");
+        }
         //echo $subscriptionToken;exit;
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
@@ -300,7 +305,15 @@ class SessionController extends ControllerBase {
             //if($record->logo_path) $this->view->logo_path = "/img/agency_logos/".$record->logo_path;
             if($record->name){
                 $this->view->agency_name = $record->name;
-                $this->view->agency_name = $record->name;
+                //$this->view->agency_name = $record->name;
+            }
+            elseif(!empty($objAgency) && $objAgency->name)
+            {
+                $this->view->agency_name = $objAgency->name;
+            }
+            else
+            {
+                $this->view->agency_name ='';
             }
             $this->view->agency_white_label = true;
             if($record->main_color) $this->view->main_color_setting = $record->main_color;
