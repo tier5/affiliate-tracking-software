@@ -218,7 +218,7 @@ Login page
 .login .signup-footer a:hover,
 .login .copyright a:hover { color: #3F4A56; text-decoration: none; }
 .login .copyright, .login .copyright a { color: #3F4A56; }
-.login .signup-footer .title { font-size: 44px; }
+.login .signup-footer .title {font-size: 44px;}
 .login .signup-footer .description { font-size: 18px; padding-bottom: 30px; }
 .login .content .login-form .form-actions { border-bottom: none; }
 
@@ -248,11 +248,25 @@ Login page
   /***
   Login page
   ***/
+  .login .signup-footer .description{
+    padding-bottom: 5px;
+  }
+  .login .content .form-control{   
+    padding: 10px 20px;
+    border: solid 1px #eeeeee;
+  }
+  .login .signup-footer .title{
+    font-size:35px;
+    font-weight: bold;
+  }
   .login .logo {
     margin-top: 10px; }
   .login .content {
     width: 280px;
-    margin-top: 10px; }
+    margin-top: 10px;
+    padding: 20px;
+    font-family: arial;
+    }
   .login .content h3 {
     font-size: 22px; }
   .forget-password {
@@ -263,3 +277,9 @@ Login page
     padding-top: 3px; }
   .login .checkbox {
     font-size: 13px; } }
+@media (max-width:330px){
+  .login .signup-footer .title{
+    font-size:30px;
+    font-weight: bold;
+  }
+}
