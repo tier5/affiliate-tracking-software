@@ -680,7 +680,7 @@
                           (users.profilesId = 3 OR users.is_employee = 1) OR (users.role = 'Super Admin' AND users.agency_id = {$agency_id}) 
                     ORDER BY positive_feedback_this_month desc
                     ;";
-//echo $sql . "<BR><BR>";exit;
+echo $sql . "<BR><BR>";exit;
             $list = new Users();
 
             $params = null;

@@ -797,10 +797,11 @@ class ControllerBase extends Controller {
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
         //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
-
+        //echo $locationid;exit;
         if ($locationid > 0) {
             //else only show the user the employees from the locations that they have access to
             $users = Users::getEmployeesByLocation($locationid);
+            $usersGenerate = Users::getEmployeesByLocation($locationid);
         } else { //if ($userObj->profilesId == 1 || $userObj->profilesId == 4) {
             // Query binding parameters with string placeholders
             //$conditions = "agency_id = :agency_id: AND profilesId = ".$profilesId;
@@ -840,6 +841,8 @@ class ControllerBase extends Controller {
                 if ($loc) {
                 	
                     $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId, false);
+
+                    $usersGenerate = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId, false);
                 }
             } else {
                 $users_report = null;
@@ -847,7 +850,7 @@ class ControllerBase extends Controller {
                     $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
                     $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
-
+                   // echo $loc->review_invite_type_id;exit;
                      $usersGenerate = Users::getEmployeeListReportGenerate($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
                     $users_report_generate =Users::getEmployeeConversionReportGenerate( $loc->review_invite_type_id,$userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], 'desc');
