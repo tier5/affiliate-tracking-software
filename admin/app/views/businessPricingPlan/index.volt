@@ -34,7 +34,8 @@
                                         <th>Subscription Name</th>
                                         <th>Subscription Type</th>
                                         <th>Active/Inactive</th>
-                                        <th>Viral Subscription</th>
+                                       <!--<th>Viral Subscription</th>-->
+                                       <th>Viral/Landing Page </th>
                                         <th class="hide-small">Sign Up Link</th>
                                         <th>Edit</th>
                                         <th class="hide-small">Delete</th>
