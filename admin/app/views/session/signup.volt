@@ -99,10 +99,10 @@
 
     </div>
 <script src="/js/signup.js"></script>
-<div class="logo">
+<!--<div class="logo">
                 <a href="/"><img style="max-width: 300px;" src="http://getmobilereviews.com/img/agency_logos/logo583d066831ff3.png" alt=""></a>
             </div>
-                                    <div class="copyright"> © 2016 All Rights Reserved. </div>
+                                    <div class="copyright"> © 2016 All Rights Reserved. </div>-->
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
