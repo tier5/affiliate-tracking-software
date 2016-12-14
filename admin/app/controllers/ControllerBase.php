@@ -448,7 +448,8 @@ class ControllerBase extends Controller {
             'share_message' => $message_set,
             'twitter_message_set'  => $twitter_message_set,
             'share_link' => $share_link,
-            'share_subject' => $agency->name.', thought this was awesome!'
+            'share_subject' => $agency->name.', thought this was awesome!',
+            'domain'    => $TLDomain
         ]);
 
         $base_sms_allowed = 100;
