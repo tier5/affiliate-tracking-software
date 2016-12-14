@@ -45,6 +45,7 @@ class ControllerBase extends Controller {
     }
 
     public function RedirectDomain($Domain) {
+
         $TLDomain = $this->config->application->domain;
         $PageURL = 'http';
         if($_SERVER['SERVER_PORT'] === 443)
@@ -56,6 +57,7 @@ class ControllerBase extends Controller {
 
     public function initialize() {
         error_reporting(E_ALL ^ E_NOTICE);
+
 
         $this->permissions = new Permissions();
         $this->user_object = $this->getUserObject();
@@ -241,6 +243,8 @@ class ControllerBase extends Controller {
         $tHost = explode(".", $_SERVER['HTTP_HOST']);
         $sub = array_shift($tHost);
         if ($sub && $sub != '' && $sub != 'local' && $sub != 'my' && $sub != 'www' && $sub != 'reviewvelocity' && $sub != '104' && $sub != 'getmobilereviews') {
+
+
             //find the agency object
             $conditions = "custom_domain = :custom_domain:";
 
@@ -255,23 +259,76 @@ class ControllerBase extends Controller {
                 )
             );
 
-            if ($agency) {
-            	$agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
-                list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
-                $rgb = $r . ', ' . $g . ', ' . $b;
-                $vars = [
-                    'agency_id' => $agency->agency_id,
-                	'agency' => $agency,
-                    'main_color_setting' => $agency->main_color,
-                    'rgb' => $rgb,
-                    'logo_path' => $agency->logo_path,
-                    'main_color' => str_replace('#', '', $agency->main_color),
-                    'primary_color' => str_replace('#', '', $agency->main_color),
-                    'secondary_color' => str_replace('#', '', $agency->secondary_color)
-                ];
-                $this->view->setVars($vars);
-            }
         }
+        else  {
+
+            if($_GET['code'])
+            {
+                $agency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$_GET['code']}'");
+                $this->session->set("share_code", $_GET['code']);
+            }
+
+             else if ($this->session->has("share_code")) {
+
+                // Retrieve its value
+                $code = $this->session->get("share_code");
+
+                $agency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
+
+            }
+
+        }
+
+        
+
+        if ($agency) {
+
+             if($agency->parent_id) {
+
+
+                $agency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+
+                    //dd($agency->parent_id);
+                    $agency1->logo_path = ($agency1->logo_path == "") ? "" : "/img/agency_logos/" . $agency1->logo_path;
+                    list($r, $g, $b) = sscanf($agency1->main_color, "#%02x%02x%02x");
+                    $rgb = $r . ', ' . $g . ', ' . $b;
+                    $vars = [
+                        'agency_id' => $agency1->agency_id,
+                        'agency' => $agency1,
+                        'main_color_setting' => $agency1->main_color,
+                        'rgb' => $rgb,
+                        'logo_path' => $agency1->logo_path,
+                        'main_color' => str_replace('#', '', $agency1->main_color),
+                        'primary_color' => str_replace('#', '', $agency1->main_color),
+                        'secondary_color' => str_replace('#', '', $agency1->secondary_color)
+                    ];
+                    $this->view->setVars($vars);
+
+             }
+             else {
+
+
+                    //dd($agency->parent_id);
+                    $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency1->logo_path;
+                    list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+                    $rgb = $r . ', ' . $g . ', ' . $b;
+                    $vars = [
+                        'agency_id' => $agency->agency_id,
+                        'agency' => $agency,
+                        'main_color_setting' => $agency->main_color,
+                        'rgb' => $rgb,
+                        'logo_path' => $agency->logo_path,
+                        'main_color' => str_replace('#', '', $agency->main_color),
+                        'primary_color' => str_replace('#', '', $agency->main_color),
+                        'secondary_color' => str_replace('#', '', $agency->secondary_color)
+                    ];
+                    $this->view->setVars($vars);
+
+             }
+             
+        }
+    
+        
         
 		$this->agency = $agency;
         if ($this->request->getPost('main_color')) {
@@ -357,7 +414,7 @@ class ControllerBase extends Controller {
         {
             $Domain="{$TLDomain}";
         }
-        $share_link = $this->googleShortenURL("https://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
+        $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
         //$share_link = urlencode($share_link);
 
         /*$this->view->setVars([
@@ -407,38 +464,7 @@ class ControllerBase extends Controller {
         //$message_set=$message_set;
 
 
-        $message_set=" Hey Buddy,<p>
-        ".$agency->name." just activated a new account with us and thought that your business may be a perfect fit and could greatly benefit from a FREE trial account, NO credit card required.
-        </p>
-
-        <p>
-        So what do you say? Will you give us a shot? 
-        </p>
-        <p>
-        We promise to make it simple and easy. 
-        </p>
-        <p>
-        And because ".$agency->name." was cool enough to send you our way, <strong>we’re giving you 100 text messages for FREE when you verify your business</strong>.
-
-        </p>
-        <p>
-        This will allow you to see our software in action, at no risk to you, and create fresh new 5 star reviews for your business on the most popular sites. 
-        </p>
-        <p>
-        This link is only available to activate your trial account for the next 24 hours, so don’t delay. <br>
-         
-        </p>
-        <p>
-        <a href='".$share_link."'>Click here now to confirm your email address </a> and let's start generating new reviews for your business in less than 5 minutes!
-        </p>
-        <p>
-        <a href='".$share_link."'>ACTIVATE YOUR TRIAL </a>
-        </p>
-        <p>
-        Talk Soon, 
-        </p>
-        <br>
-        ".$AgencyUser."<br>".$AgencyName;
+        $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {$share_link}";
         
         /**** 24.11.2016 ****/
         $this->view->setVars([

@@ -210,7 +210,7 @@
             if ($agency) {
                 $this->view->agency = $agency;
 
-                if($agency->parent_id = Agency::BUSINESS_UNDER_RV) {
+                if($agency->parent_id == Agency::BUSINESS_UNDER_RV) {
                     $twilio_api_key = $this->config->twilio->twilio_api_key;
                     $twilio_auth_token = $this->config->twilio->twilio_auth_token;
                     $twilio_auth_messaging_sid = $this->config->twilio->twilio_auth_messaging_sid;
@@ -369,7 +369,6 @@
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
                             }
-
                         }
                     } //end checking for formposttype
                 }

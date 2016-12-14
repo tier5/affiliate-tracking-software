@@ -422,7 +422,19 @@
                         ?>
                         <div class="review">
                             <div class="top">
-                                <div class="logo"><a href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==1?'http://facebook.com/'.$user_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==2?'yelp':($data->rating_type_id==1?'facebook':'google'))?>.gif" /></a></span></div>
+                                <div class="logo">
+
+                                <!--
+                                <a href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$yelp_id:($data->rating_type_id==1?'http://facebook.com/'.$user_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==2?'yelp':($data->rating_type_id==1?'facebook':'google'))?>.gif" /></a>-->
+
+                                <a 
+                                <?php if($data->rating_type_id==1)
+                                {?> onclick='facebookClickHandler(<?=$facebook_page_id;?>)' <?php } ?>  href="<?=($data->rating_type_id==2?'https://www.yelp.com/biz/'.$this->view->yelp_id:($data->rating_type_id==1?'http://www.facebook.com/'.$facebook_page_id:'https://www.google.com/search?q='.urlencode($location->name.', '.$location->address.', '.$location->locality.', '.$location->state_province.', '.$location->postal_code.', '.$location->country).'&ludocid='.$google_place_id.'#lrd=3,5'))?>" target="_blank"><img src="/img/logo/icon-<?=($data->rating_type_id==2?'yelp':($data->rating_type_id==1?'facebook':'google'))?>.gif" /></a>
+
+
+
+
+                                </span></div>
                                 <div class="rating col-md-3"><input value="<?=$data->rating?>" class="rating-loading starfield" data-size="xxs" data-show-clear="false" data-show-caption="false" data-readonly="true" /></div>
                                 <div class="name col-md-5"><?=$data->user_name?></div>
                                 <div class="date col-md-3"><?=date("m/d/Y", strtotime($data->time_created))?></div>

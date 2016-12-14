@@ -72,7 +72,7 @@ class Email{
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
-            $AgencyUser = $objAgencyUser->name;
+            $AgencyUser =$objAgencyUser->name." ".$objAgencyUser->last_name;
             $AgencyName = $objAgency->name;
             $EmailFrom =  $objAgency->email;
             $EmailFromName='';
@@ -82,7 +82,7 @@ class Email{
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
-            $AgencyUser = $objAgencyUser->name;
+            $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
