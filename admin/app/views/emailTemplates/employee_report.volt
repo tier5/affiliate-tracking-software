@@ -340,17 +340,17 @@
                                                                                 $BGColor = $Count % 2 == 0 ? "#efefef" : "#fafafa";
                                                                                 switch($Count) {
                                                                                     case 1:
-                                                                                       $Icon = "<img src='/img/gold_medal.png' />";
+                                                                                       $Icon = "<img src='http://{$domain}/img/gold_medal.png' />";
                                                                                                     $Class .= "first";
                                                                                                     $FontSize = "24px";
                                                                                                 break;
                                                                                             case 2:
-                                                                                                    $Icon = "<img src='/img/silver_medal.png' />";
+                                                                                                    $Icon = "<img src='http://{$domain}/img/silver_medal.png' />";
                                                                                                     $Class .= "second";
                                                                                                     $FontSize = "17px";
                                                                                                 break;
                                                                                             case 3:
-                                                                                                    $Icon = "<img src='/img/bronze_medal.png' />";
+                                                                                                    $Icon = "<img src='http://{$domain}/img/bronze_medal.png' />";
                                                                                                     $Class .= "third";
                                                                                                     $FontSize = "15px";
                                                                                                 break;
