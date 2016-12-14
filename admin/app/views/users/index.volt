@@ -236,6 +236,7 @@ foreach($users_report_generate as $user) {
 		  }
 		  
 		if ($this->session->get('auth-identity')['role'] != "User") {
+    
 		  if (isset($usersGenerate) && $usersGenerate) {
 		?>
 
