@@ -255,12 +255,12 @@ class Email{
             //$this->from = $from = 'zacha@reviewvelocity.co';
 
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$u->agency_id} AND role='Super Admin'");
-            $oAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgencyUser->agency_id}");
+            $oAgency = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id}");
 
-            $oAgencyparent = \Vokuro\Models\Agency::findFirst("agency_id = {$oAgency->parent_id}");
+            
 
            // $AgencyUser = $objAgencyUser->name;
-            $AgencyUser = $oAgencyparent->name;
+            $AgencyUser = $oAgency->name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $this->from = $from = 'no-reply@reviewvelocity.co';
