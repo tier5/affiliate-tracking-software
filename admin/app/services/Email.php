@@ -12,6 +12,7 @@ use Vokuro\Models\Location;
 class Email{
 
     protected $from = 'no-reply@no-domain.com';
+    protected $from_name = '';
 
     /**
      * @var \Phalcon\DiInterface
@@ -26,9 +27,10 @@ class Email{
     /**
      * @param string $from
      */
-    public function setFrom($from)
+    public function setFrom($from,$from_name)
     {
         $this->from = $from;
+        $this->from_name = $from_name;
         return $this;
     }
 
@@ -65,6 +67,7 @@ class Email{
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
+            $EmailFromName="";
             
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
@@ -72,6 +75,7 @@ class Email{
             $AgencyUser = $objAgencyUser->name;
             $AgencyName = $objAgency->name;
             $EmailFrom =  $objAgency->email;
+            $EmailFromName='';
 
         }
         elseif($objAgency->parent_id > 0) {
@@ -82,6 +86,7 @@ class Email{
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
+            $EmailFromName=$objParentAgency->email_from_name ?: "";
            
             //$EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
         }
@@ -90,6 +95,7 @@ class Email{
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
+            $EmailFromName='';
             $template="agencyconfirmation";
          }
 
@@ -102,7 +108,7 @@ class Email{
 
         try {
             $mail = $this->getDI()->getMail();
-            $mail->setFrom($EmailFrom);
+            $mail->setFrom($EmailFrom,$EmailFromName);
             $mail->send($user->email, "You’re in :) | PLUS, a quick question...", $template, $params);
         } catch (Exception $e) {
             print $e;
@@ -123,10 +129,11 @@ class Email{
                 if($objBusiness->parent_id > 0) {
                     $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
                     $EmailFrom = $objAgency->email_from_address ?: "no_reply@{$objAgency->custom_domain}.{$Domain}";
-                    $mail->setFrom($EmailFrom);
+                    $EmailFromName = $objAgency->email_from_name ?: "";
+                    $mail->setFrom($EmailFrom,$EmailFromName);
                     $FullDomain = "{$objAgency->custom_domain}.{$Domain}";
                 } else {
-                    $mail->setFrom('zacha@reviewvelocity.co');
+                    $mail->setFrom('zacha@reviewvelocity.co','zacha');
                     $FullDomain = "{$Domain}";
                 }
             } else {
@@ -134,7 +141,9 @@ class Email{
                 if(!$objAgency->email_from_address && !$objAgency->custom_domain)
                     throw new \Exception("Your email from address or your custom domain needs to be set to send email");
                 $EmailFrom = $objAgency->email_from_address ?: "no_reply@{$objAgency->custom_domain}.{$Domain}";
-                $mail->setFrom($EmailFrom);
+
+                $EmailFromName = $objAgency->email_from_name ?: "";
+                $mail->setFrom($EmailFrom,$EmailFromName);
                 $FullDomain = "{$objAgency->custom_domain}.{$Domain}";
             }
             $objEmployees = $dbEmployees;
@@ -170,6 +179,7 @@ class Email{
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
+            $EmailFromName ="";
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
@@ -179,7 +189,8 @@ class Email{
                 throw new \Exception("Email from address not configured correctly.  Please contact support.");
 
             $EmailFrom = $objAgency->email_from_address ?: "no-reply@{$objAgency->custom_domain}.{$Domain}";
-        }
+            $EmailFromName = $objAgency->email_from_name ?: "";
+       }
         elseif($objAgency->parent_id > 0) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
@@ -189,6 +200,8 @@ class Email{
                 throw new \Exception("Email from address not configured correctly.  Please contact support.");
 
             $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
+            $EmailFromName = $objParentAgency->email_from_name ?: "";
+
         }
 
         $params = [];
@@ -198,7 +211,7 @@ class Email{
         $params['firstname']=$user->name;
 
         $mail = $this->getDI()->getMail();
-        $mail->setFrom($EmailFrom);
+        $mail->setFrom($EmailFrom,$EmailFromName);
         $mail->send($user->email, "Your password reset request", 'reset', $params);
 
         
@@ -249,10 +262,12 @@ class Email{
             if($objParentAgency->email_from_address)
             {
             $this->from = $from = $objParentAgency->email_from_address;
+            $this->from_name = $from_name = $objParentAgency->email_from_name;
             }
             else
             {
             $this->from = $from = $objParentAgency->email;
+            $this->from_name = $from_name ="";
             }
             //$this->from = $from = 'zacha@reviewvelocity.co';
 
@@ -268,10 +283,12 @@ class Email{
             $this->from = $from = 'no-reply@reviewvelocity.co';
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
+            $this->from_name = $from_name = "Zach Anderson";
         }
 
         if(!$from) {
             $this->from = $from = "no-reply@{$objParentAgency->custom_domain}";
+            $this->from_name = $from_name = "Zach Anderson";
         }
 
         if(!$u->is_employee){
@@ -279,7 +296,7 @@ class Email{
         }
             
         $mail = $this->getDI()->getMail();
-        $mail->setFrom($from);
+        $mail->setFrom($from,$from_name);
         $params = [];
         $params['employeeName']=$u->name;
         $params['AgencyUser']=$AgencyUser;

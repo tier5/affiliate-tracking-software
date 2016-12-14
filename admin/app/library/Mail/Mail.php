@@ -20,13 +20,21 @@ class Mail extends Component
     protected $directSmtp = true;
 
     protected $from = null;
+    protected $from_name = null;
 
     /**
      * @param null $from
      */
-    public function setFrom($from)
+    public function setFrom($from,$from_name=null)
     {
+        if($from_name!='')
+        {
+          $this->from_name = $from_name;
+        }
+        
         $this->from = $from;
+        
+       
     }
 
     /**
@@ -101,12 +109,28 @@ class Mail extends Component
         if(!$this->from)
             $this->from = $mailSettings->fromEmail;
 
+        if(!$this->from_name)
+        {
+            $this->from_name= $mailSettings->fromName;
+        }
+
         // Create the message
-        $message = Message::newInstance()
+        
+        /*$message = Message::newInstance()
             ->setSubject($subject)
             ->setTo($to)
             ->setFrom($this->from)
-            ->setBody($template, 'text/html');
+            ->setBody($template, 'text/html');*/
+
+
+            $message = Swift_Message::newInstance()
+              ->setSubject($subject)
+                              ->setTo($to)
+              ->setFrom(array(
+                  $this->from => $this->from_name
+              ))
+              ->setBody($template, 'text/html');
+
 
         // To send HTML mail, the Content-type header must be set
         //$headers  = 'MIME-Version: 1.0' . "\r\n";
