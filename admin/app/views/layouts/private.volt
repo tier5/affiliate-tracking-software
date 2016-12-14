@@ -764,7 +764,7 @@
 {% if agencytype == "agency" AND AgencyInvalidStripe AND ShowAgencyStripePopup %}
     <script>
         $(function(){
-                $('#updateStripeModal').modal('show');
+               // $('#updateStripeModal').modal('show');
         });
     </script>
 {% endif %}
