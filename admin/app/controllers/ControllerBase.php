@@ -880,8 +880,15 @@ class ControllerBase extends Controller {
                      $usersGenerate = Users::getEmployeeListReportGenerate($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
                     $users_report_generate =Users::getEmployeeConversionReportGenerate( $loc->review_invite_type_id,$userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], 'desc');
-
-                    $this->view->review_invite_type_id =$loc->review_invite_type_id;
+                    if($loc->review_invite_type_id!='')
+                    {
+                       $this->view->review_invite_type_id =$loc->review_invite_type_id; 
+                    }
+                    else
+                    {
+                        $this->view->review_invite_type_id =1;
+                    }
+                    
                     $Reviewlist=ReviewInvite::FnallReview(true,2);
                     //$rev_count=[];
                     
