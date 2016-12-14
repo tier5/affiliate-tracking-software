@@ -89,7 +89,7 @@
 
         <div class="form-actions">
             <button type="button" id="register-submit-btn" class="btnsignup uppercase">CREATE MY ACCOUNT</button>
-            <div class="signup-footer">By clicking this button, you agree to GETMOBILEREVIEWS's
+            <div class="signup-footer">By clicking this button, you agree to {{ agency_name }}'s
                 <a href="/session/antispam">Anti-spam Policy</a>, <a href="/session/privacy">Privacy Policy</a> &amp; <a href="/session/terms">Terms of Use</a>.
             </div>
         </div>
@@ -99,10 +99,10 @@
 
     </div>
 <script src="/js/signup.js"></script>
-<div class="logo">
+<!--<div class="logo">
                 <a href="/"><img style="max-width: 300px;" src="http://getmobilereviews.com/img/agency_logos/logo583d066831ff3.png" alt=""></a>
             </div>
-                                    <div class="copyright"> © 2016 All Rights Reserved. </div>
+                                    <div class="copyright"> © 2016 All Rights Reserved. </div>-->
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>

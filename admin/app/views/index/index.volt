@@ -20,6 +20,25 @@
     font-size: 15px;
     font-weight: bold;
 }
+
+.yellow-circle {
+  background: #ffa500 none repeat scroll 0 0;
+  border-radius: 50% !important;
+  color: #fff;
+  float: left;
+  font-size: 18px;
+  font-weight: bold;
+  height: 70px;
+  line-height: 20px;
+  margin: 7px;
+  padding: 16px 12px 12px;
+  text-align: center;
+  width: 70px;
+}
+
+
+
+
 </style>
 
 {{ content() }}
@@ -74,12 +93,19 @@
             ?>
         </div>
 
-		<?php if(strpos($loggedUser->role, "Admin") !== false || !$this->session->get('auth-identity')['is_employee']) { ?>
+		<?php 
+
+
+
+        if(strpos($loggedUser->role, "Admin") !== false || !$this->session->get('auth-identity')['is_employee']) { ?>
             {% if SubscriptionPlan == 'TR' %}
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
                         <div class="portlet dark bordered discount">
-                            <img src="/img/20-percent-off.gif" id="percentoff" alt="20% Off" />
+                            <!--<img src="/img/20-percent-off.gif" id="percentoff" alt="20% Off" /> -->
+                            {% if DiscountAmount > 0 %}
+                            <div class="yellow-circle">{{ DiscountAmount }}% OFF!</div>
+                            {% endif %}
                             <a href="/businessSubscription"><img src="/img/btn-upgrade-now.gif" id="btnupgradenow" alt="Upgrade Now" /></a>
                             <div class="upgrade-middle">
                                 <div class="upgrade-top">Hey <?=$this->session->get('auth-identity')['name']?>!  Upgrade Your Account Today and Boost Results!</div>
