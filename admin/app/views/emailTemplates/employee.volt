@@ -20,7 +20,7 @@
 
                    <p>Looking forward to working with you.</p>
 
-{{ AgencyUser }}<br/>
+                    {{ AgencyUser }}<br/>
                     {{ AgencyName }}
                     <br>
 

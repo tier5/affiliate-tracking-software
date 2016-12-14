@@ -429,7 +429,7 @@ class ControllerBase extends Controller {
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->agency_id}");
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Get Mobile Reviews";
-            $AgencyUser = "Zach";
+            $AgencyUser = "Zach Anderson";
            // $EmailFrom = "zacha@reviewvelocity.co";
             
         }
