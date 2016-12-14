@@ -617,6 +617,11 @@
             if ($employees_only) {
                 $ProfileWhere .= ' AND is_employee = 1';
             }
+
+            if($review_invite_type_id=='')
+            {
+              $review_invite_type_id=1;
+            }
             // A raw SQL statement
             $sql = "SELECT DISTINCT
                       users.name,

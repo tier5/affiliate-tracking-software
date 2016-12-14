@@ -50,6 +50,8 @@
         public function adminAction()
         {
             $identity = $this->auth->getIdentity();
+            //dd($identity);
+            //echo $identity['profilesId'];exit;
             $this->usersFunctionality($identity['profilesId']);
             $this->getSMSReport();
             try {
