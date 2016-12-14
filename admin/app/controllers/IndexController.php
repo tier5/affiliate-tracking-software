@@ -76,48 +76,48 @@ class IndexController extends ControllerBase {
                     //return;
             /** agency redirect 23.11.2016**/
 
-            $this->view->setTemplateBefore('public');
+                $this->view->setTemplateBefore('public');
 
                     
-            $parts = explode(".", $_SERVER['SERVER_NAME']);
-            if(count($parts) > 2 && $parts[0] != 'www') { // Subdomain exists.  Probably should do count($parts) == 3.
-                $subdomain = $parts[0];
+                $parts = explode(".", $_SERVER['SERVER_NAME']);
+                if(count($parts) > 2 && $parts[0] != 'www') { // Subdomain exists.  Probably should do count($parts) == 3.
+                    $subdomain = $parts[0];
 
-                $agency = Agency::findFirst([
-                        "custom_domain = :custom_domain:",
-                        "bind" => ["custom_domain" => $subdomain]
-                    ]);
+                    $agency = Agency::findFirst([
+                            "custom_domain = :custom_domain:",
+                            "bind" => ["custom_domain" => $subdomain]
+                        ]);
 
-                // Subdomain must exist
-                if(!$agency) {
-                    $this->response->setStatusCode(404, "Not Found");
-                    echo "<h1>404 Page Not Found</h1>";
-                    $this->view->disable();
+                    // Subdomain must exist
+                    if(!$agency) {
+                        $this->response->setStatusCode(404, "Not Found");
+                        echo "<h1>404 Page Not Found</h1>";
+                        $this->view->disable();
+                        return;
+                    }
+
+                    $this->view->SubDomain = $subdomain;
+
+                    if(!empty($_GET['name']) && !empty($_GET['phone'])){ // Loaded from GET for preview page from agency signup process
+                        $this->view->Name = $_GET['name'];
+                        $this->view->Phone = $_GET['phone'];
+                        $this->view->PrimaryColor = '#'.$_GET['primary_color'];
+                        $this->view->SecondaryColor = '#'.$_GET['secondary_color'];
+                        $this->view->logo_path = !empty($_GET['logo_path']) ? '/img/agency_logos/'.$_GET['logo_path'] : '';
+                        $this->view->CleanUrl = true;
+                    } else { // Loaded from DB for subdomain
+                        $this->view->Name = !empty($agency->name) ? $agency->name : (!empty($_SESSION['demo_name']) ? $_SESSION['demo_name'] : 'Agency');
+                        $this->view->Phone = !empty($agency->phone) ? $agency->phone : '(888) 555-1212';
+                        $this->view->PrimaryColor = !empty($agency->main_color) ? $agency->main_color : '#2a3644';
+                        $this->view->SecondaryColor = !empty($agency->secondary_color) ? $agency->secondary_color : '#65CE4D';
+                        $this->view->logo_path = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
+                    }
+
+                    $this->view->salesPage = true;
+                    $this->view->pick('agencysignup/sales');
                     return;
-                }
 
-                $this->view->SubDomain = $subdomain;
-
-                if(!empty($_GET['name']) && !empty($_GET['phone'])){ // Loaded from GET for preview page from agency signup process
-                    $this->view->Name = $_GET['name'];
-                    $this->view->Phone = $_GET['phone'];
-                    $this->view->PrimaryColor = '#'.$_GET['primary_color'];
-                    $this->view->SecondaryColor = '#'.$_GET['secondary_color'];
-                    $this->view->logo_path = !empty($_GET['logo_path']) ? '/img/agency_logos/'.$_GET['logo_path'] : '';
-                    $this->view->CleanUrl = true;
-                } else { // Loaded from DB for subdomain
-                    $this->view->Name = !empty($agency->name) ? $agency->name : (!empty($_SESSION['demo_name']) ? $_SESSION['demo_name'] : 'Agency');
-                    $this->view->Phone = !empty($agency->phone) ? $agency->phone : '(888) 555-1212';
-                    $this->view->PrimaryColor = !empty($agency->main_color) ? $agency->main_color : '#2a3644';
-                    $this->view->SecondaryColor = !empty($agency->secondary_color) ? $agency->secondary_color : '#65CE4D';
-                    $this->view->logo_path = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
-                }
-
-                $this->view->salesPage = true;
-                $this->view->pick('agencysignup/sales');
-                return;
-
-                }
+                    }
 
                 else
                 {
@@ -131,10 +131,14 @@ class IndexController extends ControllerBase {
                 }
             }
 
+
             $objUser = \Vokuro\Models\Users::findFirst("id = " . $identity['id']);
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
             $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
-            $this->view->SubscriptionPlan = $objSubscriptionManager->GetBusinessSubscriptionLevel($objBusiness->agency_id);
+            $subsMgr = $objSubscriptionManager->GetBusinessSubscriptionLevel($objBusiness->agency_id);
+            $subsDiscount = $objSubscriptionManager->GetBusinessSubscriptionDiscount($objBusiness->agency_id);
+            $this->view->SubscriptionPlan = $subsMgr;
+            $this->view->DiscountAmount = $subsDiscount;
 
         } else {
             // Check for use of whitelabel domain

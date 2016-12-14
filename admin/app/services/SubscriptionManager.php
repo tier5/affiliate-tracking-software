@@ -56,6 +56,8 @@ class SubscriptionManager extends BaseService {
 
         /* Get the subscription plan */
         $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objBusiness->subscription_id);
+        
+
         //echo 'yyy';print_r($subscriptionPlanData);exit;
         if($subscriptionPlanData['subscriptionPlan']['payment_plan']) {
             return $subscriptionPlanData['subscriptionPlan']['payment_plan'];
@@ -67,6 +69,27 @@ class SubscriptionManager extends BaseService {
         }
     }
 
+    public function GetBusinessSubscriptionDiscount($BusinessID) {
+        $subscriptionManager = $this->di->get('subscriptionManager');
+
+        /* Get Super Admin */
+        $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
+        $objSuperUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $objBusiness->agency_id . ' AND role="Super Admin"');
+
+        /* Get the subscription plan */
+        $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objBusiness->subscription_id);
+
+        //print_r($subscriptionPlanData);
+        //exit;
+        
+
+        //echo 'yyy';print_r($subscriptionPlanData);exit;
+        if($subscriptionPlanData['pricingPlan']['annual_discount']) {
+            return intval($subscriptionPlanData['pricingPlan']['annual_discount']);
+        } else {
+            return  0;
+        }
+    }
     public function GetMaxSMS($BusinessID, $LocationID) {
         $objSuperAdmin = \Vokuro\Models\Users::findFirst("agency_id = {$BusinessID} and role='Super Admin'");
         $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
