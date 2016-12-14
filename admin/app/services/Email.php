@@ -81,7 +81,16 @@ class Email{
             $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
-            $EmailFrom = $objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
+            //$EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
+            if($objParentAgency->email_from_address)
+            {
+            $EmailFrom =$objParentAgency->email_from_name."<".$objParentAgency->email_from_address.">";
+            }
+            else
+            {
+            $EmailFrom ="no_reply@{$objParentAgency->custom_domain}.{$Domain}";
+            }
+            //$EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
         }
          if($AgencyName =='') {
             
