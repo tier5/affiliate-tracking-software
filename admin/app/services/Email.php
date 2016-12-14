@@ -260,7 +260,7 @@ class Email{
             
 
            // $AgencyUser = $objAgencyUser->name;
-            $AgencyUser = $oAgency->name;
+            $AgencyUser = $oAgency->name." ".$oAgency->last_name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $this->from = $from = 'no-reply@reviewvelocity.co';
