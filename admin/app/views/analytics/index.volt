@@ -281,7 +281,7 @@
                     </div>
                     <div class="portlet-body">
                         <?php
-                    echo $Totalclick;      
+                   // echo $Totalclick;      
             if($clickreport) {
             //echo $clickreport;
                // echo count($clickreport);
