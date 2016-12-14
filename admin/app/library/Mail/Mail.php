@@ -115,21 +115,26 @@ class Mail extends Component
         }
 
         // Create the message
-        
-        /*$message = Message::newInstance()
+         if(!$this->from_name)
+        {
+        $message = Message::newInstance()
             ->setSubject($subject)
             ->setTo($to)
             ->setFrom($this->from)
-            ->setBody($template, 'text/html');*/
-
-
-            $message = Swift_Message::newInstance()
-              ->setSubject($subject)
-                              ->setTo($to)
-              ->setFrom(array(
+            ->setBody($template, 'text/html');
+        }
+        else
+        {
+            $message = Message::newInstance()
+            ->setSubject($subject)
+            ->setTo($to)
+            ->setFrom(array(
                   $this->from => $this->from_name
               ))
-              ->setBody($template, 'text/html');
+            ->setBody($template, 'text/html'); 
+        }
+
+
 
 
         // To send HTML mail, the Content-type header must be set
