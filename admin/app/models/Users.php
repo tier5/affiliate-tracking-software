@@ -617,6 +617,11 @@
             if ($employees_only) {
                 $ProfileWhere .= ' AND is_employee = 1';
             }
+
+            if($review_invite_type_id=='')
+            {
+              $review_invite_type_id=1;
+            }
             // A raw SQL statement
             $sql = "SELECT DISTINCT
                       users.name,
@@ -680,7 +685,7 @@
                           (users.profilesId = 3 OR users.is_employee = 1) OR (users.role = 'Super Admin' AND users.agency_id = {$agency_id}) 
                     ORDER BY positive_feedback_this_month desc
                     ;";
-echo $sql . "<BR><BR>";exit;
+//echo $sql . "<BR><BR>";exit;
             $list = new Users();
 
             $params = null;
