@@ -255,23 +255,46 @@ class ControllerBase extends Controller {
                 )
             );
 
-            if ($agency) {
-                $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
-                list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
-                $rgb = $r . ', ' . $g . ', ' . $b;
-                $vars = [
-                    'agency_id' => $agency->agency_id,
-                    'agency' => $agency,
-                    'agency_name' => $agency->name,
-                    'main_color_setting' => $agency->main_color,
-                    'rgb' => $rgb,
-                    'logo_path' => $agency->logo_path,
-                    'main_color' => str_replace('#', '', $agency->main_color),
-                    'primary_color' => str_replace('#', '', $agency->main_color),
-                    'secondary_color' => str_replace('#', '', $agency->secondary_color)
-                ];
-                $this->view->setVars($vars);
-            }
+            
+        }
+
+        else if($this->session->has("sharing_code")) {
+
+            $code = $this->session->get("sharing_code");
+
+            $conditions = "viral_sharing_code = :viral_sharing_code:";
+            $parameters = array(
+                "viral_sharing_code" => $code
+            );
+
+
+            $agency = Agency::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+
+
+        }
+
+
+        if ($agency) {
+            $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
+            list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+            $rgb = $r . ', ' . $g . ', ' . $b;
+            $vars = [
+                'agency_id' => $agency->agency_id,
+                'agency' => $agency,
+                'agency_name' => $agency->name,
+                'main_color_setting' => $agency->main_color,
+                'rgb' => $rgb,
+                'logo_path' => $agency->logo_path,
+                'main_color' => str_replace('#', '', $agency->main_color),
+                'primary_color' => str_replace('#', '', $agency->main_color),
+                'secondary_color' => str_replace('#', '', $agency->secondary_color)
+            ];
+            $this->view->setVars($vars);
         }
         
         $this->agency = $agency;
