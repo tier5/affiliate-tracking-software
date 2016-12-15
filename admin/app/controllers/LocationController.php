@@ -889,8 +889,8 @@
         public function deleteAction($location_id) {
             $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $location_id);
-            $loc = Location::findFirst(array($conditions, "bind" => $parameters));
-            if (!$loc) {
+            $objLocation = Location::findFirst(array($conditions, "bind" => $parameters));
+            if (!$objLocation) {
                 $this->flash->error("The location was not found");
                 return $this->dispatcher->forward(array(
                     'action' => 'index'
@@ -899,7 +899,7 @@
 
             //verify that the user is supposed to be here, by checking to make sure that
             //their agency_id matches the agency_id of the location they are trying to edit
-            $agency_id_to_check = $loc->agency_id;
+            $agency_id_to_check = $objLocation->agency_id;
             if ($agency_id_to_check > 0) {
                 //get the user id
                 $identity = $this->auth->getIdentity();
@@ -923,16 +923,26 @@
                 }
             }
             //end making sure the user should be here
+            $dbLocationReviewSites = \Vokuro\Models\LocationReviewSite::find("location_id = {$objLocation->location_id}");
 
-            //first delete the location review sites
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $loc->location_id);
-            $lrs = LocationReviewSite::find(array($conditions, "bind" => $parameters));
-            $this->updateAgencySubscriptionPlan($loc->location_id, false);
-            $lrs->delete();
+            // Review invites
+            $dbReviewInvite = \Vokuro\Models\ReviewInvite::find("location_id = {$objLocation->location_id}");
+            foreach($dbReviewInvite as $objReviewInvite) {
+                $dbReviewInviteReviewSite = \Vokuro\Models\ReviewInviteReviewSite::find("review_invite_id = {$objReviewInvite->review_invite_id}");
+                foreach($dbReviewInviteReviewSite as $objReviewInviteReviewSite)
+                    $objReviewInviteReviewSite->delete();
 
-            if (!$loc->delete()) {
-                $this->flash->error($loc->getMessages());
+                $objReviewInvite->delete();
+            }
+
+            // Review Sites
+            foreach($dbLocationReviewSites as $objReviewSite)
+                $objReviewSite->delete();
+
+
+            $this->updateAgencySubscriptionPlan($objLocation->location_id, false);
+            if (!$objLocation->delete()) {
+                $this->flash->error($objLocation->getMessages());
             } else {
                 $objFirstLocation = \Vokuro\Models\Location::findFirst("agency_id = {$agency_id_to_check}");
                 if($objFirstLocation)
