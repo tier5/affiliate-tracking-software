@@ -348,13 +348,14 @@
                             //else we have a phone number, so send the message
                            
                             //replace out the variables
+                              $message = $_POST['SMS_message'];
                             $message = str_replace("{location-name}", $loc->name, $message);
                             $message = str_replace("{name}", $invite->name, $message);
                             $link = '';
                             if (isset($_POST['link']) && $_POST['link'] != '') {
                                 $guid = $this->GUID();
                                 $link = 'http://' . $_SERVER['HTTP_HOST'] . '/review/link?a=' . $guid;
-                                $link = $this->googleShortenURL($link);
+                               // $link = $this->googleShortenURL($link);
                             } else {
                                 $guid = $invite->api_key;
                                 $link = $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid);
