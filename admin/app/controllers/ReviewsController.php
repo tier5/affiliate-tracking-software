@@ -391,7 +391,7 @@
                             //echo $message;exit;
                             //The message is saved, so send the SMS message now
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
-                                $this->flash->success("The SMS was sent successfully to: " . $invite->phone.$message);
+                                $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
                             }
                         }
                     } //end checking for formposttype
