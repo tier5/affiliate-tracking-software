@@ -355,7 +355,7 @@
                             if (isset($_POST['link']) && $_POST['link'] != '') {
                                 $guid = $this->GUID();
                                 $link = 'http://' . $_SERVER['HTTP_HOST'] . '/review/link?a=' . $guid;
-                               // $link = $this->googleShortenURL($link);
+                               $link = $this->googleShortenURL($link);
                             } else {
                                 $guid = $invite->api_key;
                                 $link = $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid);
@@ -391,7 +391,7 @@
                             //echo $message;exit;
                             //The message is saved, so send the SMS message now
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
-                                $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
+                                $this->flash->success("The SMS was sent successfully to: " . $invite->phone.$message);
                             }
                         }
                     } //end checking for formposttype
