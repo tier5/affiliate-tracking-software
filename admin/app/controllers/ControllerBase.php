@@ -439,7 +439,7 @@ class ControllerBase extends Controller {
         Talk Soon, 
         </p>
         <br>
-        ".$AgencyUser."<br>".$AgencyName;
+        ".$AgencyUser."<p>".$AgencyName."</p>";
         
         /**** 24.11.2016 ****/
         $this->view->setVars([
