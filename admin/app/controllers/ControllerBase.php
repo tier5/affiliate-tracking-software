@@ -276,6 +276,17 @@ class ControllerBase extends Controller {
             );
 
 
+            if($agency->parent_id) {
+                $agency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+
+                $this->view->agencyId = $agency1->agency_id;
+                $this->view->agency_name = $agency1->name;
+
+             }
+
+             $agency = $agency1;
+
+
         }
 
 
@@ -296,6 +307,8 @@ class ControllerBase extends Controller {
             ];
             $this->view->setVars($vars);
         }
+
+        //dd($agency->name);
         
         $this->agency = $agency;
         if ($this->request->getPost('main_color')) {
