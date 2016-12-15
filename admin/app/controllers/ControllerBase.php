@@ -289,6 +289,8 @@ class ControllerBase extends Controller {
 
         }
 
+        
+
 
         if ($agency) {
             $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
