@@ -518,6 +518,12 @@
                                                            $end_time,
                                                            $location_id,
                                                            $sort_order) {
+
+
+              if($review_invite_type_id=='')
+              {
+                $review_invite_type_id=1;
+              }
             // A raw SQL statement
             $sql = "SELECT distinct
                        users.name,
