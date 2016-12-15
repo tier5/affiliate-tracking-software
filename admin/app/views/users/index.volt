@@ -180,7 +180,7 @@ foreach($users_report_generate as $user) {
                       <li><img src="/img/star2.png" class="img-responsive"></li>
                       <?php }?>
 
-                      <?php echo number_format($get_rating[0]/$get_rating[1],1); ?>
+                      <?php echo number_format(($user->rates/$user->sms_received_this_month),1); ?>
                     </ul>
                   <?php  } else {
 
@@ -340,7 +340,7 @@ foreach($users_report_generate as $user) {
                       <li><img src="/img/star2.png" class="img-responsive"></li>
                       <?php }?>
 
-                      <?php echo number_format($get_rating[0]/$get_rating[1],1); ?>
+                      <?php echo number_format(($user->rates/$user->sms_received_this_month),1); ?>
                     </ul>
                   <?php  } else {
 
