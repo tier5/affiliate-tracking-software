@@ -204,7 +204,7 @@
                         //TODO: Added google URL shortener here
                         'api_key' => $guid,
                         'sms_message' => $message.'  Reply stop to be removed',
-                        'date_sent' => date('Y-m-d H:i:s'),
+                        /*'date_sent' => date('Y-m-d H:i:s'),*/
                         'date_last_sent' => date('Y-m-d H:i:s'),
                         'sent_by_user_id' => $_POST['user_id']
                     ));
@@ -214,6 +214,7 @@
                         echo $invite->getMessages();
                         return;
                     } else {
+                       
 
                         /*echo $twilio_api_key;
                         echo '<br>';
@@ -247,7 +248,13 @@
 
                             //$this->flash->success("The SMS was sent successfully to: " . $phone);
                             //$this->view->render('users', 'reviewmsg');
-                            
+
+                             $last_insert_id=$invite->review_invite_id;
+
+                        $update_review = ReviewInvite::FindFirst('review_invite_id ='.$last_insert_id);
+                        $update_review->date_sent = date('Y-m-d H:i:s');
+                        $update_review->update();
+                        
                             $this->flashSession->success("The SMS was sent successfully to: " . $phone.".This page will automatically refresh in 5 seconds.".$message);
                             $this->view->disable();
                             return $this->response->redirect('link/send_review_invite_employee/'.$uid);
