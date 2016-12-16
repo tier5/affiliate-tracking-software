@@ -285,7 +285,7 @@ class SubscriptionManager extends BaseService {
                     $locations = 1;
                     $smsMessagesPerLocation = $subscriptionPricingPlan->max_messages_on_trial_account;
                 } else {
-                    $paymentPlan = ServicesConsts::$PAYMENT_PLAN_MONTHLY;;
+                    $paymentPlan = ServicesConsts::$PAYMENT_PLAN_MONTHLY;
                     $locations = 0;
                     $smsMessagesPerLocation = 0;
                 }

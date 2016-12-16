@@ -117,7 +117,7 @@
                     <li class="{{ GeneralExpanded }}"><a href="#tab_general" data-toggle="tab"> General </a></li>
                     <li><a href="#tab_review_invite" data-toggle="tab"> Review Invite </a></li>
                     <li><a href="#tab_sms_message" data-toggle="tab"> SMS Message </a></li>
-                    <li><a href="#tab_twitter_message" data-toggle="tab"> Twitter Message </a></li>
+                    <!--<li><a href="#tab_twitter_message" data-toggle="tab"> Twitter Message </a></li>-->
                     <li><a href="#tab_white_label" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
