@@ -133,7 +133,7 @@ class Email{
                     $mail->setFrom($EmailFrom,$EmailFromName);
                     $FullDomain = "{$objAgency->custom_domain}.{$Domain}";
                 } else {
-                    $mail->setFrom('zacha@reviewvelocity.co','zacha');
+                    $mail->setFrom('zacha@reviewvelocity.co','Zacha Anderson');
                     $FullDomain = "{$Domain}";
                 }
             } else {

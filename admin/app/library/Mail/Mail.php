@@ -34,6 +34,7 @@ class Mail extends Component
         
         $this->from = $from;
         
+        
        
     }
 
