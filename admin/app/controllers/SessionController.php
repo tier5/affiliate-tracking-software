@@ -714,12 +714,8 @@ class SessionController extends ControllerBase {
         //Get the sharing code
         $this->getShareInfo($agency);
 
-        /*echo "<PRE>";
-        print_r($agency->toArray());
-        die();*/
-       
-            $AgencyUser = $this->view->AgencyUser;
-            $AgencyName = $this->view->AgencyName; 
+        $AgencyUser = $this->view->AgencyUser;
+        $AgencyName = $this->view->AgencyName;
         //end getting the sharing code
         // Check if the user wants to send emails
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
