@@ -851,11 +851,12 @@
 
             if($this->session->AgencySignup['UserID']=='')
            {
-             $objUser = Users::findFirst("id = " . $identity['id']);
+            $objUser = Users::findFirst("id = " . $identity['id']);
                 if($objUser->active=='Y')
                 {
                     $this->response->redirect('/agency'); 
                 }
+
             $this->view->FirstName=$objUser->name;
             $this->view->LastName=$objUser->last_name;
             $this->view->OwnerEmail=$objUser->email;
