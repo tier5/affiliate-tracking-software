@@ -10,6 +10,17 @@
 
 <body style="-moz-box-sizing:border-box;-ms-text-size-adjust:100%;-webkit-box-sizing:border-box;-webkit-text-size-adjust:100%;Margin:0;box-sizing:border-box;color:#696969;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:1.3;margin:0;min-width:100%;padding:0;text-align:left;width:100%!important">
     <style>
+
+
+    .avgfeedbck ul{
+    list-style-type: none;
+    padding: 0;
+}
+
+.avgfeedbck ul li{
+      display: inline-block;
+      vertical-align: top;
+}
         @media only screen {
             html {
                 min-height: 100%;
@@ -378,7 +389,7 @@
 
                                                                                         <?=($total ?: 0); ?></td>
                                                                                         <!--<td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Employee->positive_feedback_this_month ?: 0; ?></td>-->
-                                                                                        <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word">
+                                                                                        <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word" class="avgfeedbck">
                                                                                         <?php 
                                                                                         if($review_invite_type_id==1){?>
 
@@ -398,7 +409,7 @@
 
                                                                                         for($l=0;$l<$star_full;$l++)
                                                                                         { ?>
-                                                                                        <li><img src="/img/star.png" class="img-responsive"></li>
+                                                                                        <li><img src="http://{$domain}/img/star.png" class="img-responsive"></li>
 
                                                                                         <?php
 
@@ -406,7 +417,7 @@
                                                                                         if($star_half)
                                                                                         {
                                                                                         ?>
-                                                                                            <li><img src="/img/star2.png" class="img-responsive"></li>
+                                                                                            <li><img src="http://{$domain}/img/star2.png" class="img-responsive"></li>
                                                                                         <?php
                                                                                         }
 
