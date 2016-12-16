@@ -101,7 +101,7 @@ public function editAction($agency_id = 0) {
                 // Update subscription
                 $objBusinessSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperUser->id}");
                 if(!$objBusinessSubscription)
-                    $this->createSubsciptionPlan($objSuperUser, $this->request);
+                    $this->createSubscriptionPlan($objSuperUser, $this->request);
                 else
                     $this->updateSubscriptionPlan($objSuperUser, $this->request);
 
