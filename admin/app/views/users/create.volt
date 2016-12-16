@@ -71,7 +71,7 @@ if ($_POST) {
             }
             ?>
                         <div class="location-data">
-                            <input type="hidden" type="checkbox" name="locations[]" value="all" <?=($checked?'checked="checked"':'')?>
+                            <input  type="hidden" type="checkbox" name="locations[]" value="all" <?=($checked?'checked="checked"':'')?>
                             />
                         </div>
                         <?php
@@ -112,6 +112,9 @@ if ($_POST) {
         <div class="error" id="emailerror" style="display: none;">
             Invalid email.
         </div>
+        <div class="error" id="locationerror" style="display: none;">
+            Please select at least one location.
+        </div>
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" class="btnLink btnSecondary" value="Save" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: right;"/>
         </div>
@@ -135,9 +138,14 @@ if ($_POST) {
                 e.preventDefault();
                 $('#emailerror').show();
                 return false;
+            }else if(!$("[name='locations[]']:checked").length){
+                $('#locationerror').show();
+                return false;
+            }else{           
+                $('#emailerror').hide();
+                $('#locationerror').hide();
+                return true;
             }
-            $('#emailerror').hide();
-            return true;
         });
         $('#role').change(function () {
             elem = $(this);
@@ -150,5 +158,7 @@ if ($_POST) {
                 $('input[name=is_employee]').attr('disabled', false);
             }
         });
+
+
     });
 </script>
