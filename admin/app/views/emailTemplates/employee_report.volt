@@ -409,7 +409,7 @@
 
                                                                                         for($l=0;$l<$star_full;$l++)
                                                                                         { ?>
-                                                                                        <li><img src="http://{$domain}/img/star.png" class="img-responsive"></li>
+                                                                                        <li><img src="http://<?php echo $domain;?>/img/star.png" class="img-responsive"></li>
 
                                                                                         <?php
 
@@ -417,7 +417,7 @@
                                                                                         if($star_half)
                                                                                         {
                                                                                         ?>
-                                                                                            <li><img src="http://{$domain}/img/star2.png" class="img-responsive"></li>
+                                                                                            <li><img src="http://<?php echo $domain;?>/img/star2.png" class="img-responsive"></li>
                                                                                         <?php
                                                                                         }
 
