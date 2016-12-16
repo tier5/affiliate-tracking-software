@@ -78,7 +78,7 @@
                     //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
                     // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
                 } else {
-
+                    //exit;
                    
                     $agency->assign(array(
                         'review_invite_type_id' => $this->request->getPost('review_invite_type_id', 'int'),
@@ -248,6 +248,7 @@
         protected function storeSettings($entity, $type) {
         	
             if ($this->request->isPost()) {
+                //dd($entity);
 
                 $form = new SettingsForm($entity);
                 $agencyform = new AgencyForm($entity);
@@ -480,6 +481,7 @@
             ));
 
             if($this->request->isPost() && $SettingsForm->isValid($_POST) && $AgencyForm->isValid($_POST)) {
+                //dd($objAgency);
                 if (!$this->storeSettings($objAgency, 'agency')) {
                     $this->flash->error($objAgency->getMessages());
                 } else {

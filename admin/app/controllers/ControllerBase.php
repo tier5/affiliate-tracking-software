@@ -407,7 +407,7 @@ class ControllerBase extends Controller {
         //$message_set="I just started using this amazing new software for my business. They are giving away a trial account here: {$share_link}";
         //$message_set=$message_set;
 
-
+/*
         $message_set=" Hey Buddy,<p>
         ".$agency->name." just activated a new account with us and thought that your business may be a perfect fit and could greatly benefit from a FREE trial account, NO credit card required.
         </p>
@@ -439,9 +439,11 @@ class ControllerBase extends Controller {
         Talk Soon, 
         </p>
         <br>
-        ".$AgencyUser."<br>".$AgencyName;
+        ".$AgencyUser."<br>".$AgencyName;*/
         
         /**** 24.11.2016 ****/
+
+        $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {$share_link}";
         $this->view->setVars([
             'AgencyUser' => $AgencyUser,
             'AgencyName' =>$AgencyName,
