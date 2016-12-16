@@ -1039,12 +1039,14 @@
             if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
 
                 $EmailFrom = "zacha@reviewvelocity.co";
+                 $EmailFromName="Zacha Anderson";
 
             }
             elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
                 $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
 
                 $EmailFrom =  $objAgency->email;
+                $EmailFromName= $objAgency->name;
 
             }
             elseif($objAgency->parent_id > 0) {
@@ -1054,9 +1056,12 @@
                 if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                     throw new \Exception("Your email from address or your custom domain needs to be set to send email");
                 $EmailFrom = $objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
+
+                 $EmailFromName = $objParentAgency->email_from_name ?: "";
             }
             else {
                $EmailFrom = "zacha@reviewvelocity.co";
+                $EmailFromName="Zacha Anderson";
             }
 
 
@@ -1100,7 +1105,7 @@
                    // echo $message;exit;
                     foreach ($filterEmailArr as $key => $email) {
                         $mail = $this->getDI()->getMail();
-                        $mail->setFrom($EmailFrom);
+                        $mail->setFrom($EmailFrom,$EmailFromName);
                         $mail->send($email, $subject, '', '', $message);
                     }
                    /* $this->getDI()
