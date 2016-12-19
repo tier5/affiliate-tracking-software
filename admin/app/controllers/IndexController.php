@@ -136,7 +136,7 @@ class IndexController extends ControllerBase {
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
             $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
             $subsMgr = $objSubscriptionManager->GetBusinessSubscriptionLevel($objBusiness->agency_id);
-            $subsDiscount = $objSubscriptionManager->GetBusinessSubscriptionDiscount($objBusiness->agency_id);
+            $subsDiscount = $objSubscriptionManager->GetBusinessSubscriptionUpgradeDiscount($objBusiness->agency_id);
             $this->view->SubscriptionPlan = $subsMgr;
             $this->view->DiscountAmount = $subsDiscount;
 

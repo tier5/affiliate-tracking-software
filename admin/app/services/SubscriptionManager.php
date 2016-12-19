@@ -69,7 +69,7 @@ class SubscriptionManager extends BaseService {
         }
     }
 
-    public function GetBusinessSubscriptionDiscount($BusinessID) {
+    public function GetBusinessSubscriptionUpgradeDiscount($BusinessID) {
         $subscriptionManager = $this->di->get('subscriptionManager');
 
         /* Get Super Admin */
@@ -79,15 +79,11 @@ class SubscriptionManager extends BaseService {
         /* Get the subscription plan */
         $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objBusiness->subscription_id);
 
-        //print_r($subscriptionPlanData);
-        //exit;
-        
-
-        //echo 'yyy';print_r($subscriptionPlanData);exit;
-        if($subscriptionPlanData['pricingPlan']['annual_discount']) {
-            return intval($subscriptionPlanData['pricingPlan']['annual_discount']);
+        // GARY_TODO:  Fix this stupid typo in upgrade_discount.
+        if($subscriptionPlanData['pricingPlan']['updgrade_discount']) {
+            return intval($subscriptionPlanData['pricingPlan']['updgrade_discount']);
         } else {
-            return  0;
+            return 0;
         }
     }
     public function GetMaxSMS($BusinessID, $LocationID) {
