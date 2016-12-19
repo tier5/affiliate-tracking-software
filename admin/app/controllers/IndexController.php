@@ -9,7 +9,7 @@ use Vokuro\Models\Review;
 use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\ReviewsMonthly;
 use Vokuro\Models\Users;
-
+use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
 /**
  * Display the default index page.
  */
@@ -424,6 +424,44 @@ class IndexController extends ControllerBase {
             }
             //###  END: find review site config info ###
         }
+        if ($identity['location_id'] > 0) {
+        $sql = "SELECT `sent_by_user_id`  FROM `review_invite` WHERE  `location_id` =".$identity['location_id']." GROUP BY  `sent_by_user_id`";
+        $list = new ReviewInvite();
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $userset = $rs->toArray();
+        $rating_array_set=array();
+        $YNrating_array_set=array();
+        foreach ($userset as $key => $value) {
+            $ss=$value['sent_by_user_id'];
+
+
+
+            $sql = "SELECT COUNT( * ) AS  `number`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ss." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+
+            // Base model
+            $list = new ReviewInvite();
+
+            // Execute the query
+            $params = null;
+            $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+            $YNrating_array_set[$ss] = $rs->toArray();
+            
+            $this->view->YNrating_array_set=$YNrating_array_set;
+            $sql = "SELECT COUNT( * ) AS `number` ,`review_invite_type_id` , SUM(  `rating` ) AS  `total` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ss." GROUP BY  `review_invite_type_id` ";
+
+            // Base model
+            $list = new ReviewInvite();
+
+            // Execute the query
+            $params = null;
+            $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+            $rating_array_set[$ss] = $rs->toArray();
+            
+            $this->view->rating_array_set=$rating_array_set;
+        }
+    }
+
     }
 
 }

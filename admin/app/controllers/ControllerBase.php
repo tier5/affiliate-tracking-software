@@ -875,7 +875,7 @@ class ControllerBase extends Controller {
                     $user_array=array();
 
 
-                   // dd($Reviewlist);
+                    //print_r($Reviewlist);
                    foreach($Reviewlist as $reviews)
                     {
                         if(!in_array($reviews->sent_by_user_id,$user_array))
@@ -959,6 +959,32 @@ class ControllerBase extends Controller {
         if (isset($users))
             $this->view->users = $users;
             $this->view->usersGenerate = $usersGenerate;
+        $rating_array_set=array();
+        $YNrating_array_set=array();
+        foreach($users_report_generate as $ux){
+            $sql = "SELECT COUNT( * ) AS  `number`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+
+        // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $YNrating_array_set[$ux->id] = $rs->toArray();
+        }
+        $this->view->YNrating_array_set=$YNrating_array_set;
+        foreach($users_report_generate as $ux){
+            $sql = "SELECT COUNT( * ) AS `number` ,`review_invite_type_id` , SUM(  `rating` ) AS  `total` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
+
+        // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $rating_array_set[$ux->id] = $rs->toArray();
+        }
+        $this->view->rating_array_set=$rating_array_set;
     }
 
     public function importGoogle($Obj, $location, &$foundagency) {

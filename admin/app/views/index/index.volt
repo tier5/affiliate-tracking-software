@@ -357,9 +357,10 @@
 
                             foreach($employee_conversion_report_generate as $data){
 
-                            $total=$data->sms_sent_this_month+$data->sms_received_this_month;
+                            $total=$data->sms_sent_this_month;
                             $i++;
                             if ($class == '') { $class = 'darker'; } else { $class = ''; }
+
                           	?>
                             <tr>
                                 <td class="<?=$class?>"><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
@@ -367,14 +368,39 @@
                                 <!--<td class="<?=$class?>"><?=$data->sms_sent_this_month?></td>
                                 <td class="<?=$class?>"><?=($data->sms_received_this_month)?></td>-->
                                 <td class="<?=$class;?>"><?php echo $total;?></td>
-                                <?php if($review_invite_type_id==1){?>
-                                <td class="<?=$class?>"><?=($data->sms_sent_this_month > 0?(number_format(($data->positive_feedback_this_month / $data->sms_received_this_month) * 100, 1) . '%'):'0.0%')?> -Yes</td>
+                                <?php if($review_invite_type_id==1){
+                                $yes=0;
+                                $no=0;
+                                foreach($YNrating_array_set[$data->id] as $set){
+                                if($set['rating']==5){
+                                $yes=$set['number'];
+                                }
+                                if($set['rating']==1){
+                                $no=$set['number'];
+                                }
 
-                                <?php } elseif($review_invite_type_id==2)
-                                {
-                                
-                                $full_star=floor($data->rates/ $data->sms_received_this_month);
-                                $half_star=($data->rates % $data->sms_received_this_month);
+                                }
+                                $tot=$yes+$no;
+                                $cal=$yes/$tot;
+                                ?>
+                                <td class="<?=$class?>"><?=($data->sms_sent_this_month > 0?(number_format($cal*100, 1) . '%'):'0.0%')?> -Yes</td>
+
+                                <?php } elseif($review_invite_type_id==2){
+
+
+                                //$full_star=floor($user->rates/$user->sms_received_this_month);
+                                //$half_star=($user->rates%$user->sms_received_this_month);
+                                $sert=0;
+                                $full_star=0;
+                                $half_star=0;
+                                foreach($rating_array_set[$data->id] as $set){
+                                if($set['review_invite_type_id']==2){
+                                $full_star= floor($set['total']/$set['number']);
+                                $half_star=($set['total']%$set['number']);
+                                $sert=$set['total']/$set['number'];
+                                }
+                                }
+
                                 ?>
                                 <td class="<?=$class?> avgfeedbck" >
                                     <ul>
@@ -393,12 +419,18 @@
                                        <li> <img src="/img/star2.png" class="img-responsive"></li>
                                     <?php
                                     }
-                                ?></ul></td>
-                                <?php
-                                } else {
-                                
-                                    ?>
-                                    <td class="<?=$class?>"> <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><center><?php echo round($data->rates/ $data->sms_received_this_month);?></span></center></td>
+                                ?><?php echo number_format(($sert),1); ?></ul></td>
+                                <?php  } else {
+
+                                $number=round($data->rates/$data->sms_received_this_month);
+                                $sert=0;
+                                foreach($rating_array_set[$data->id] as $set){
+                                if($set['review_invite_type_id']==3){
+                                $sert= round($set['total']/$set['number']);
+                                }
+                                }
+                                ?>
+                                    <td class="<?=$class?>"> <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><center><?php echo $sert;?></span></center></td>
                                <?php } ?>
                             </tr>
                             <?php } ?>
