@@ -373,10 +373,10 @@
                                 $no=0;
                                 foreach($YNrating_array_set[$data->id] as $set){
                                 if($set['rating']==5){
-                                $yes=$set['number'];
+                                $yes=$set['numberx'];
                                 }
                                 if($set['rating']==1){
-                                $no=$set['number'];
+                                $no=$set['numberx'];
                                 }
 
                                 }
@@ -395,9 +395,9 @@
                                 $half_star=0;
                                 foreach($rating_array_set[$data->id] as $set){
                                 if($set['review_invite_type_id']==2){
-                                $full_star= floor($set['total']/$set['number']);
-                                $half_star=($set['total']%$set['number']);
-                                $sert=$set['total']/$set['number'];
+                                $full_star= floor($set['totalx']/$set['numberx']);
+                                $half_star=($set['totalx']%$set['numberx']);
+                                $sert=$set['totalx']/$set['numberx'];
                                 }
                                 }
 
@@ -426,7 +426,7 @@
                                 $sert=0;
                                 foreach($rating_array_set[$data->id] as $set){
                                 if($set['review_invite_type_id']==3){
-                                $sert= round($set['total']/$set['number']);
+                                $sert= round($set['totalx']/$set['numberx']);
                                 }
                                 }
                                 ?>
