@@ -432,10 +432,12 @@ class IndexController extends ControllerBase {
         $userset = $rs->toArray();
         $rating_array_set=array();
         $YNrating_array_set=array();
+
         foreach ($userset as $key => $value) {
+            // GARY_TODO:  Need to ask jon why this case ever happens.
+            if(!$value['sent_by_user_id'])
+                continue;
             $ss=$value['sent_by_user_id'];
-
-
 
             $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ss." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 

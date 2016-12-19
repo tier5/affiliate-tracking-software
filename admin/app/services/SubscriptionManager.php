@@ -434,16 +434,12 @@ class SubscriptionManager extends BaseService {
     }
 
     public function isPricingPlanLocked($pricingPlanId) {
-        $subscriptionPlan = BusinessSubscriptionPlan::query()
-            ->where("subscription_pricing_plan_id = :subscription_pricing_plan_id:")
-            ->bind(["subscription_pricing_plan_id" => intval($pricingPlanId)])
-            ->execute()
-            ->getFirst();
+        $objBusinessSubscription = \Vokuro\Models\Agency::findFirst("subscription_id = {$pricingPlanId} AND parent_id != " . \Vokuro\Models\Agency::AGENCY);
 
-
-        if(!$subscriptionPlan) {
+        if(!$objBusinessSubscription) {
             return false;
         }
+
         return true;
     }
 
