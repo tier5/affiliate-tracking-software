@@ -160,7 +160,7 @@ class Email{
             
             //echo $objRecipient->email;exit;
             foreach($tSendTo as $objRecipient) {
-                echo $mail->send($objRecipient->email, "Your monthly employee report!", 'employee_report', $Params);
+                echo $mail->send($objRecipient->email, "Your daily employee report!", 'employee_report', $Params);
                 sleep(1);
             }
         } catch (Exception $e) {

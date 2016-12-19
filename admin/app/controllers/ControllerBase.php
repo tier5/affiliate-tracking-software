@@ -124,9 +124,8 @@ class ControllerBase extends Controller {
                     if (isset($agency->logo_path) && ($agency->logo_path != "")) {
                         //echo $agency->logo_path;//exit;
                        // echo strpos($agency->logo_path,'img/upload');exit;
-                        if(strpos($agency->logo_path,'img/upload')>0)
+                        if(strpos($agency->logo_path,'img/upload') !== false)
                         {
-                           
                             $this->view->logo_path = "{$agency->logo_path}";
                         }
                         else

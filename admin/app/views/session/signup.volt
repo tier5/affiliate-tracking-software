@@ -61,7 +61,17 @@
         
     <!-- BEGIN REGISTRATION FORM -->
     <form class="register-form" id="register-form" action="/session/submitSignup/0" method="post" style="display: block;">
-        
+        {% if subscription_id %}
+            <input type="hidden" name="subscription_id" value="{{ subscription_id }}"/>
+        {% endif %}
+
+        {% if short_code %}
+            <input type="hidden" name="short_code" value="{{ short_code }}"/>
+        {% endif %}
+
+        <?php if($_GET['code']) { ?>
+                <input type="hidden" name="sharing_code" value="<?=$_GET['code']; ?>" />
+        <?php } ?>
         
         
 

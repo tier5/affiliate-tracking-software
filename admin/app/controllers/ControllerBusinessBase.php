@@ -101,7 +101,7 @@ public function editAction($agency_id = 0) {
                 // Update subscription
                 $objBusinessSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperUser->id}");
                 if(!$objBusinessSubscription)
-                    $this->createSubsciptionPlan($objSuperUser, $this->request);
+                    $this->createSubscriptionPlan($objSuperUser, $this->request);
                 else
                     $this->updateSubscriptionPlan($objSuperUser, $this->request);
 
@@ -393,7 +393,7 @@ public function editAction($agency_id = 0) {
         return $markup;
     }
 
-    private function createSubscriptionPlan($user, $request) {
+    protected function createSubscriptionPlan($user, $request) {
         $newSubscriptionParameters = [
             'userAccountId' => $user->id,
             'userEmail' => $user->email,
@@ -404,7 +404,7 @@ public function editAction($agency_id = 0) {
         return $this->di->get('subscriptionManager')->createSubscriptionPlan($newSubscriptionParameters);
     }
 
-    private function updateSubscriptionPlan($user, $request) {
+    protected function updateSubscriptionPlan($user, $request) {
         $objBusinessSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$user->id}");
         if(!$objBusinessSubscription)
             return false;
