@@ -437,7 +437,7 @@ class IndexController extends ControllerBase {
 
 
 
-            $sql = "SELECT COUNT( * ) AS  `number`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ss." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+            $sql = "SELECT COUNT(*) AS  `number`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ss." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 
             // Base model
             $list = new ReviewInvite();
@@ -448,7 +448,7 @@ class IndexController extends ControllerBase {
             $YNrating_array_set[$ss] = $rs->toArray();
             
             $this->view->YNrating_array_set=$YNrating_array_set;
-            $sql = "SELECT COUNT( * ) AS `number` ,`review_invite_type_id` , SUM(  `rating` ) AS  `total` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ss." GROUP BY  `review_invite_type_id` ";
+            $sql = "SELECT COUNT(*) AS `number` ,`review_invite_type_id` , SUM(  `rating` ) AS  `total` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ss." GROUP BY  `review_invite_type_id` ";
 
             // Base model
             $list = new ReviewInvite();

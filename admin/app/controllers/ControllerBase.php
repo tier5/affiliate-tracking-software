@@ -961,7 +961,7 @@ class ControllerBase extends Controller {
         $rating_array_set=array();
         $YNrating_array_set=array();
         foreach($users_report_generate as $ux){
-            $sql = "SELECT COUNT( * ) AS  `number`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+            $sql = "SELECT COUNT(*) AS  `number`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 
         // Base model
         $list = new ReviewInvite();
@@ -973,7 +973,7 @@ class ControllerBase extends Controller {
         }
         $this->view->YNrating_array_set=$YNrating_array_set;
         foreach($users_report_generate as $ux){
-            $sql = "SELECT COUNT( * ) AS `number` ,`review_invite_type_id` , SUM(  `rating` ) AS  `total` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
+            $sql = "SELECT COUNT(*) AS `number` ,`review_invite_type_id` , SUM(  `rating` ) AS  `total` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
 
         // Base model
         $list = new ReviewInvite();
