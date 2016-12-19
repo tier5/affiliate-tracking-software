@@ -729,33 +729,23 @@ class SessionController extends ControllerBase {
                     throw \Exception("Contact customer support.  Email configuration not setup correctly");
 
                 $Domain = $this->config->application->domain;
-                //$EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . ".{$Domain}";
 
-                if(!$objParentAgency->email_from_address)
-                {
-                    $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . ".{$Domain}";
-                }
-                else
-                {
-                   $EmailFrom =  $objParentAgency->email_from_address;
-                }
+                $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . ".{$Domain}";
+                $EmailFromName = $objParentAgency->email_from_name ?: 'No Reply';
             }
 
             $Domain = $this->config->application->domain;
 
-            if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+            if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 $EmailFrom = 'zacha@reviewvelocity.co';
+                $EmailFromName = "Zach Anderson";
+            }
 
             if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                 if(!$agency->email_from_address && !$agency->custom_domain)
                     throw \Exception("Contact customer support.  Email configuration not setup correctly");
-                //$EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
-                if(!$agency->email_from_address) {
-                     $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
-                }
-                else {
-                   $EmailFrom = $agency->email_from_address; 
-                }
+                $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
+                $EmailFromName = $agency->email_from_name ?: 'No Reply';
             }
 
             //loop through all the emails
@@ -768,7 +758,7 @@ class SessionController extends ControllerBase {
                             $header_name="Hey ".$Email_set[0].",";
                             $body_message=$header_name.$message;
                             $Mail = $this->getDI()->getMail();
-                            $Mail->setFrom($EmailFrom);
+                            $Mail->setFrom($EmailFrom, $EmailFromName);
                             $Mail->send($email, $subject, '', '', $message);
                         } catch (Exception $e) {
                             // do nothing, just ignore
@@ -797,15 +787,19 @@ class SessionController extends ControllerBase {
                         if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                             throw \Exception("Contact customer support.  Email configuration not setup correctly");
                         $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
+                        $EmailFromName = $objParentAgency->email_from_name ?: 'No Reply';
                     }
 
-                    if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+                    if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                         $EmailFrom = 'zacha@reviewvelocity.co';
+                        $EmailFromName = "Zach Anderson";
+                    }
 
                     if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                         if(!$agency->email_from_address && !$agency->custom_domain)
                             throw \Exception("Contact customer support.  Email configuration not setup correctly");
                         $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
+                        $EmailFromName = $agency->email_from_name ?: 'No Reply';
                     }
 
                     $Domain = $this->config->application->domain;
@@ -827,7 +821,7 @@ class SessionController extends ControllerBase {
                         <p>Looking forward to helping you build a strong online reputation.</p>';
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                     $Mail = $this->getDI()->getMail();
-                    $Mail->setFrom($EmailFrom);
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
                     $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
                 return $this->response->redirect('/');
                 $this->view->disable();
