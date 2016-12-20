@@ -439,7 +439,7 @@
 
             
 
-            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReportGenerateEmail($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
+            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReportGenerate($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
             //echo '<pre>';print_r($dbEmployees);exit;
             $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
             $this->view->review_invite_type_id=$objReview->review_invite_type_id;
