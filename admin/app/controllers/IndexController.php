@@ -435,7 +435,7 @@ class IndexController extends ControllerBase {
         foreach ($userset as $key => $value) {
             $ss=$value['sent_by_user_id'];
 
-
+if($ss){
 
             $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ss." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 
@@ -459,6 +459,7 @@ class IndexController extends ControllerBase {
             $rating_array_set[$ss] = $rs->toArray();
             
             $this->view->rating_array_set=$rating_array_set;
+            }
         }
     }
 

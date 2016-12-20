@@ -855,6 +855,7 @@ class ControllerBase extends Controller {
                     $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
                    // echo $loc->review_invite_type_id;exit;
+                    //exit;
                      $usersGenerate = Users::getEmployeeListReportGenerate($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
                     $users_report_generate =Users::getEmployeeConversionReportGenerate( $loc->review_invite_type_id,$userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], 'desc');
@@ -960,6 +961,7 @@ class ControllerBase extends Controller {
             $this->view->usersGenerate = $usersGenerate;
         $rating_array_set=array();
         $YNrating_array_set=array();
+
         foreach($users_report_generate as $ux){
             $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 
@@ -984,6 +986,39 @@ class ControllerBase extends Controller {
         $rating_array_set[$ux->id] = $rs->toArray();
         }
         $this->view->rating_array_set=$rating_array_set;
+
+
+
+        $rating_array_set_all=array();
+        $YNrating_array_set_all=array();
+        
+        foreach($usersGenerate as $ux){
+            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+
+        // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $YNrating_array_set_all[$ux->id] = $rs->toArray();
+        }
+        $this->view->YNrating_array_set_all=$YNrating_array_set_all;
+        foreach($usersGenerate as $ux){
+            $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
+
+        // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $rating_array_set_all[$ux->id] = $rs->toArray();
+        }
+        $this->view->rating_array_set_all=$rating_array_set_all;
+
+
+
     }
 
     public function importGoogle($Obj, $location, &$foundagency) {

@@ -523,6 +523,11 @@
             {
               $review_invite_type_id=1;
             }
+            
+            //$first_day_this_month = date('m-01-Y');
+            //echo $end_time;
+            //echo $last_day_this_month  = date('m-t-Y');
+
             // A raw SQL statement
             $sql = "SELECT distinct
                        users.name,
@@ -534,7 +539,7 @@
                               review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
                               sms_broadcast_id IS NULL AND
                               users.id = review_invite.sent_by_user_id AND
-                              review_invite.date_sent >= DATE_FORMAT(NOW(), '%Y-%m')) 
+                              review_invite.date_sent >=".$start_time.")
                           AS
                               sms_sent_this_month,
 
@@ -545,7 +550,7 @@
                                   review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
                                   sms_broadcast_id IS NULL AND
                                   users.id = review_invite.sent_by_user_id AND
-                                  review_invite.date_viewed >= DATE_FORMAT(NOW(), '%Y-%m'))
+                                  review_invite.date_sent >=".$start_time.")
                                   
                             AS
                                   sms_received_this_month ,
@@ -558,7 +563,7 @@
                                   sms_broadcast_id IS NULL AND
                                   users.id = review_invite.sent_by_user_id AND
                                   recommend = 'Y' AND
-                                  review_invite.date_viewed >= DATE_FORMAT(NOW(), '%Y-%m'))
+                                 review_invite.date_sent >=".$start_time.")
                             AS
                                   positive_feedback_this_month,
 
@@ -571,7 +576,7 @@
                                   sms_broadcast_id IS NULL AND
                                   users.id = review_invite.sent_by_user_id AND
                                   recommend = 'Y' AND
-                                  review_invite.date_viewed >= DATE_FORMAT(NOW(), '%Y-%m'))
+                                  review_invite.date_sent >=".$start_time.")
                             AS
                                   rates
 
@@ -583,7 +588,7 @@
                       (users.profilesId = 3 OR users.is_employee = 1) OR (users.role = 'Super Admin' AND users.agency_id = {$agency_id})
                     ORDER BY positive_feedback_this_month desc
                   ;";
-                 // exit;
+                  //exit;
 //echo $sql;exit;
             // Base model  main dashboard
             $list = new Users();
@@ -641,8 +646,7 @@
                               review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND 
                               sms_broadcast_id IS NULL AND
                               users.id = review_invite.sent_by_user_id AND
-                              review_invite.date_sent >= DATE_FORMAT('" . $start_time . "', '%Y-%m-%d') AND
-                              review_invite.date_sent <= DATE_FORMAT('" . $end_time . "', '%Y-%m-%d'))
+                              review_invite.date_sent >= '" . $start_time . "')
                           AS
                               sms_sent_this_month,
 
@@ -653,8 +657,7 @@
                                 review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
                                 sms_broadcast_id IS NULL AND
                                 users.id = review_invite.sent_by_user_id AND
-                                review_invite.date_viewed >= DATE_FORMAT('" . $start_time . "', '%Y-%m-%d') AND
-                                review_invite.date_viewed <= DATE_FORMAT('" . $end_time . "', '%Y-%m-%d'))
+                              review_invite.date_sent >= '" . $start_time . "')
                           AS
                                 sms_received_this_month,
 
@@ -666,8 +669,7 @@
                                 sms_broadcast_id IS NULL AND
                                 users.id = review_invite.sent_by_user_id AND
                                 recommend = 'Y' AND
-                                review_invite.date_viewed >= DATE_FORMAT('" . $start_time . "', '%Y-%m-%d') AND
-                                review_invite.date_viewed <= DATE_FORMAT('" . $end_time . "', '%Y-%m-%d'))
+                              review_invite.date_sent >= '" . $start_time . "')
                           AS
                                 positive_feedback_this_month,
                                    (SELECT sum(review_invite.rating) 
@@ -678,7 +680,7 @@
                                   sms_broadcast_id IS NULL AND
                                   users.id = review_invite.sent_by_user_id AND
                                   recommend = 'Y' AND
-                                  review_invite.date_viewed >= DATE_FORMAT(NOW(), '%Y-%m'))
+                                  review_invite.date_viewed >= '". $start_time . "')
                             AS
                                   rates
 

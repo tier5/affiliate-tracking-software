@@ -341,43 +341,74 @@ foreach($users_report_generate as $user) {
                   <td><span class="btnSecondary link_url btnLink" data-title="/link/createlink/<?=base64_encode($code)?>" style="cursor:pointer;">Link</span></td>
                   <?php
 				    } else {
-            echo $total=$user->sms_sent_this_month+$user->sms_received_this_month;
+             $total=$user->sms_sent_this_month+$user->sms_received_this_month;
 				  ?>
 				      <!--<td class="<?=$class?>"><?=$user->sms_sent_this_month?></td>
 				      <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>
 
               -->
-              <td><?php echo $total; ?></td>
+              <td><?php echo $user->sms_received_this_month; ?></td>
 				       <td class="<?=$class?> avgfeedbck">
 
-                  <?php if($review_invite_type_id==1){?>
-                  <?=($user->sms_received_this_month > 0?(number_format(($user->positive_feedback_this_month / $user->sms_received_this_month) * 100, 1) . '%'):'0.0%')?> - <span style="text-transform: capitalize;"> yes </span>
+                  <?php if($review_invite_type_id==1){
+                     $yes=0;
+                  $no=0;
+                  foreach($YNrating_array_set_all[$user->id] as $set){
+                    if($set['rating']==5){
+                    $yes=$set['numberx'];
+                    }
+                    if($set['rating']==1){
+                    $no=$set['numberx'];
+                    }
+
+                  }
+                  $tot=$yes+$no;
+                  $cal=$yes/$tot;
+
+                  ?>
+                   <?=($user->sms_received_this_month > 0?(number_format($cal*100, 1) . '%'):'0.0%')?> - <span style="text-transform: capitalize;">  yes </span>
 
                   <?php } elseif($review_invite_type_id==2){
                         
-                           $full_star=floor($user->rates/$user->sms_received_this_month);
-                          $half_star=($user->rates%$user->positive_feedback_this_month);
-                       
+                              
+                          //$full_star=floor($user->rates/$user->sms_received_this_month);
+                          //$half_star=($user->rates%$user->sms_received_this_month);
+                          $sert=0;
+                          $full_star=0;
+                          $half_star=0;
+                         foreach($rating_array_set_all[$user->id] as $set){
+                           if($set['review_invite_type_id']==2){
+                             $full_star= floor($set['totalx']/$set['numberx']);
+                             $half_star=($set['totalx']%$set['numberx']);
+                             $sert=$set['totalx']/$set['numberx'];
+                           }
+                         }
 
                   ?>
 
-                    <ul class="ratings">
-                    <?php for($l=0;$l<$full_star;$l++)
+                     <ul class="ratings">
+                    <?php 
+                    for($l=0;$l<$full_star;$l++)
                     { ?>
                       <li><img src="/img/star.png" class="img-responsive"></li>
                       <?php } if($half_star!=0) {?>
                       <li><img src="/img/star2.png" class="img-responsive"></li>
                       <?php }?>
 
-                      <?php echo number_format(($user->rates/$user->sms_received_this_month),1); ?>
+                      <?php echo number_format(($sert),1); ?>
                     </ul>
                   <?php  } else {
 
-                     
-                          $number=round($user->rates/$user->sms_received_this_month);
+                      $number=round($user->rates/$user->sms_received_this_month);
+                         $sert=0;
+                         foreach($rating_array_set_all[$user->id] as $set){
+                           if($set['review_invite_type_id']==3){
+                             $sert= round($set['totalx']/$set['numberx']);
+                           }
+                         }
                   ?>
 
-                      <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><?php echo $number;?></span>
+                      <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><?php echo $sert;?></span>
                   <?php } ?>
 
               </td>

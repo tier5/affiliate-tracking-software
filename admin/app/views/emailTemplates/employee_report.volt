@@ -385,7 +385,11 @@
                                                                                         <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Icon; ?></td>
                                                                                         <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Employee->name; ?></td>
                                                                                         <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word">
-                                                                                        <?php $total=$Employee->sms_sent_this_month+$Employee->positive_feedback_this_month;?>
+                                                                                        <?php //$total=$Employee->sms_sent_this_month+$Employee->positive_feedback_this_month;
+
+                                                                                        $total=$Employee->sms_received_this_month;
+
+                                                                                        ?>
 
                                                                                         <?=($total ?: 0); ?></td>
                                                                                         <!--<td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Employee->positive_feedback_this_month ?: 0; ?></td>-->
@@ -403,13 +407,13 @@
 
                                                                                          $star_half=($Employee->rates%$Employee->sms_received_this_month);
                                                                                          ?>
-                                                                                         <ul>
+                                                                                         <ul style="list-style-type:none;padding: 0 ">
 
                                                                                          <?php
 
                                                                                         for($l=0;$l<$star_full;$l++)
                                                                                         { ?>
-                                                                                        <li><img src="http://<?php echo $domain;?>/img/star.png" class="img-responsive"></li>
+                                                                                        <li style="display:inline-block"><img src="http://<?php echo $domain;?>/img/star.png" class="img-responsive"></li>
 
                                                                                         <?php
 
@@ -417,7 +421,7 @@
                                                                                         if($star_half)
                                                                                         {
                                                                                         ?>
-                                                                                            <li><img src="http://<?php echo $domain;?>/img/star2.png" class="img-responsive"></li>
+                                                                                            <li style="display:inline-block"><img src="http://<?php echo $domain;?>/img/star2.png" class="img-responsive"></li>
                                                                                         <?php
                                                                                         }
 
