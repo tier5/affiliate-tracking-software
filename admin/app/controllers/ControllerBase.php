@@ -357,7 +357,7 @@ class ControllerBase extends Controller {
         {
             $Domain="{$TLDomain}";
         }
-        $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code%3D{$agency->viral_sharing_code}");
+        $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
         //$share_link = urlencode($share_link);
 
         /*$this->view->setVars([
