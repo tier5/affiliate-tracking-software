@@ -413,7 +413,7 @@
 
                                                                                         for($l=0;$l<$star_full;$l++)
                                                                                         { ?>
-                                                                                        <li style="display:inline-block"><img src="http://<?php echo $domain;?>/img/star.png" class="img-responsive"></li>
+                                                                                        <li style="display:inline-block;float: left;"><img src="http://<?php echo $domain;?>/img/star.png" class="img-responsive"></li>
 
                                                                                         <?php
 
@@ -421,7 +421,7 @@
                                                                                         if($star_half)
                                                                                         {
                                                                                         ?>
-                                                                                            <li style="display:inline-block"><img src="http://<?php echo $domain;?>/img/star2.png" class="img-responsive"></li>
+                                                                                            <li style="display:inline-block;float: left;"><img src="http://<?php echo $domain;?>/img/star2.png" class="img-responsive"></li>
                                                                                         <?php
                                                                                         }
 
