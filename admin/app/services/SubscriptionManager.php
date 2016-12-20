@@ -69,7 +69,7 @@ class SubscriptionManager extends BaseService {
         }
     }
 
-    public function GetBusinessSubscriptionDiscount($BusinessID) {
+    public function GetBusinessSubscriptionUpgradeDiscount($BusinessID) {
         $subscriptionManager = $this->di->get('subscriptionManager');
 
         /* Get Super Admin */
@@ -79,15 +79,11 @@ class SubscriptionManager extends BaseService {
         /* Get the subscription plan */
         $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objBusiness->subscription_id);
 
-        //print_r($subscriptionPlanData);
-        //exit;
-        
-
-        //echo 'yyy';print_r($subscriptionPlanData);exit;
-        if($subscriptionPlanData['pricingPlan']['annual_discount']) {
-            return intval($subscriptionPlanData['pricingPlan']['annual_discount']);
+        // GARY_TODO:  Fix this stupid typo in upgrade_discount.
+        if($subscriptionPlanData['pricingPlan']['updgrade_discount']) {
+            return intval($subscriptionPlanData['pricingPlan']['updgrade_discount']);
         } else {
-            return  0;
+            return 0;
         }
     }
     public function GetMaxSMS($BusinessID, $LocationID) {
@@ -434,16 +430,12 @@ class SubscriptionManager extends BaseService {
     }
 
     public function isPricingPlanLocked($pricingPlanId) {
-        $subscriptionPlan = BusinessSubscriptionPlan::query()
-            ->where("subscription_pricing_plan_id = :subscription_pricing_plan_id:")
-            ->bind(["subscription_pricing_plan_id" => intval($pricingPlanId)])
-            ->execute()
-            ->getFirst();
+        $objBusinessSubscription = \Vokuro\Models\Agency::findFirst("subscription_id = {$pricingPlanId} AND parent_id != " . \Vokuro\Models\Agency::AGENCY);
 
-
-        if(!$subscriptionPlan) {
+        if(!$objBusinessSubscription) {
             return false;
         }
+
         return true;
     }
 

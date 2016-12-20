@@ -136,7 +136,7 @@ class IndexController extends ControllerBase {
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
             $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
             $subsMgr = $objSubscriptionManager->GetBusinessSubscriptionLevel($objBusiness->agency_id);
-            $subsDiscount = $objSubscriptionManager->GetBusinessSubscriptionDiscount($objBusiness->agency_id);
+            $subsDiscount = $objSubscriptionManager->GetBusinessSubscriptionUpgradeDiscount($objBusiness->agency_id);
             $this->view->SubscriptionPlan = $subsMgr;
             $this->view->DiscountAmount = $subsDiscount;
 
@@ -432,8 +432,13 @@ class IndexController extends ControllerBase {
         $userset = $rs->toArray();
         $rating_array_set=array();
         $YNrating_array_set=array();
+
         foreach ($userset as $key => $value) {
+            // GARY_TODO:  Need to ask jon why this case ever happens.
+            if(!$value['sent_by_user_id'])
+                continue;
             $ss=$value['sent_by_user_id'];
+
 
 if($ss){
 

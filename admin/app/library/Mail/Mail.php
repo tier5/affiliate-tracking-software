@@ -116,27 +116,22 @@ class Mail extends Component
         }
 
         // Create the message
-         if(!$this->from_name)
-        {
-        $message = Message::newInstance()
-            ->setSubject($subject)
-            ->setTo($to)
-            ->setFrom($this->from)
-            ->setBody($template, 'text/html');
-        }
-        else
-        {
+        if(!$this->from_name) {
             $message = Message::newInstance()
-            ->setSubject($subject)
-            ->setTo($to)
-            ->setFrom(array(
-                  $this->from => $this->from_name
-              ))
-            ->setBody($template, 'text/html'); 
+                ->setSubject($subject)
+                ->setTo($to)
+                ->setFrom($this->from)
+                ->setBody($template, 'text/html');
         }
-
-
-
+        else {
+            $message = Message::newInstance()
+                ->setSubject($subject)
+                ->setTo($to)
+                ->setFrom(array(
+                      $this->from => $this->from_name
+                  ))
+                ->setBody($template, 'text/html');
+        }
 
         // To send HTML mail, the Content-type header must be set
         //$headers  = 'MIME-Version: 1.0' . "\r\n";
