@@ -157,7 +157,7 @@ foreach($users_report_generate as $user) {
                   <td class="<?=$class?>"><?=$user->name?></td>
                   <!--<td class="<?=$class?>"><?=$user->sms_sent_this_month?></td>
                   <td class="<?=$class?>"><?=($user->sms_received_this_month)?></td>-->
-                  <td><?php echo $user->sms_sent_this_month;?></td>
+                  <td><?php echo $user->sms_received_this_month;?></td>
                   <td class="<?=$class?> avgfeedbck">
 
                   <?php if($review_invite_type_id==1){
@@ -188,7 +188,7 @@ foreach($users_report_generate as $user) {
                          foreach($rating_array_set[$user->id] as $set){
                            if($set['review_invite_type_id']==2){
                              $full_star= floor($set['totalx']/$set['numberx']);
-                             $half_star=($set['total']%$set['number']);
+                             $half_star=($set['totalx']%$set['numberx']);
                              $sert=$set['totalx']/$set['numberx'];
                            }
                          }
