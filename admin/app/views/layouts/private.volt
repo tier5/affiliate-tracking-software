@@ -557,13 +557,13 @@
                                                 <!--<input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])? $_POST["phone"]:'')?>"
                                                 />-->
 
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value=""
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Mobile" name="phone" id="smsrequestformphone" value=""
                                                 />
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <i>The phone number that will recieve the SMS message.</i>
+                                                <i>The Mobile number that will recieve the SMS message.</i>
                                             </div>
                                         </div>
                                     </div>
