@@ -7,3 +7,9 @@
     <div class="description">please check your email address <a href="mailto:<?=(isset($_SESSION['email'])?$_SESSION['email']:'')?>"><?=(isset($_SESSION['email'])?$_SESSION['email']:'')?></a> to confirm your account.</div>
 
 </div>
+
+<style>
+   #thankyou .description{
+   	width:100%;
+   }
+</style>
