@@ -96,6 +96,12 @@ class IndexController extends ControllerBase {
                         return;
                     }
 
+                    $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$agency->agency_id} AND role = 'Super Admin'");
+                    $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("is_viral = 1 AND user_id = {$objSuperUser->id}");
+                    if(!$objSubscriptionPricingPlan)
+                        $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("user_id = {$objSuperUser->id}");
+                    $this->view->SubscriptionCode = $objSubscriptionPricingPlan->short_code;
+
                     $this->view->SubDomain = $subdomain;
 
                     if(!empty($_GET['name']) && !empty($_GET['phone'])){ // Loaded from GET for preview page from agency signup process
@@ -179,6 +185,12 @@ class IndexController extends ControllerBase {
                     $this->view->SecondaryColor = !empty($agency->secondary_color) ? $agency->secondary_color : '#65CE4D';
                     $this->view->logo_path = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
                 }
+
+                $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$agency->agency_id} AND role = 'Super Admin'");
+                $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("is_viral = 1 AND user_id = {$objSuperUser->id}");
+                if(!$objSubscriptionPricingPlan)
+                    $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("user_id = {$objSuperUser->id}");
+                $this->view->SubscriptionCode = $objSubscriptionPricingPlan->short_code;
 
                 $this->view->salesPage = true;
                 //$this->view->setTemplateBefore('agencysignup');
