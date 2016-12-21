@@ -559,6 +559,15 @@ header .headercontent{width: 90%; margin: 0 auto;}
 .pnlAddLocation.short{
   width: 100%;
 }
+
+}
+
+@media screen and (max-width: 767px) {
+
+
+.pnlAddLocation.short{
+  width: 100%;
+}
 .pnlAddLocation .buttons a, #page-wrapper a, #createregion a, a.btnLink {
    
     display: block;
@@ -576,8 +585,6 @@ header .headercontent{width: 90%; margin: 0 auto;}
     min-height: 100% !important;
 }
 }
-
-
 
 
 
