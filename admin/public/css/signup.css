@@ -555,6 +555,26 @@ header .headercontent{width: 90%; margin: 0 auto;}
 #register-submit-btn {
     width: 100%;
 }
+
+.pnlAddLocation.short{
+  width: 100%;
+}
+.pnlAddLocation .buttons a, #page-wrapper a, #createregion a, a.btnLink {
+   
+    display: block;
+    font-size: 10px;
+    line-height: 20px;
+    padding: 5px;
+    text-align: center;
+}
+
+.pnlAddLocation .buttons {
+  margin-top: 0 !important;
+}
+
+.pnlAddLocation.short {
+    min-height: 100% !important;
+}
 }
 
 
