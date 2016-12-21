@@ -161,7 +161,7 @@ class SessionController extends ControllerBase {
                 $last_name = $names[1];
             }
             if(!$last_name) $last_name = ' ';
-
+            $this->session->set("password", $this->request->getPost('password'));
             $user->assign(array(
                 'name' => $name,
                 'last_name'=>$last_name,
@@ -738,10 +738,13 @@ class SessionController extends ControllerBase {
                 if(!$objParentAgency->email_from_address)
                 {
                     $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . ".{$Domain}";
+                    $EmailFromName = $objParentAgency->email_from_name ?: "";
+
                 }
                 else
                 {
                    $EmailFrom =  $objParentAgency->email_from_address;
+                   $EmailFromName = $objParentAgency->email_from_name ?: "";
                 }
             }
 
@@ -756,9 +759,11 @@ class SessionController extends ControllerBase {
                 //$EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
                 if(!$agency->email_from_address) {
                      $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
+                     $EmailFromName = $agency->email_from_name ?: "";
                 }
                 else {
                    $EmailFrom = $agency->email_from_address; 
+                   $EmailFromName = $agency->email_from_name;
                 }
             }
 
@@ -772,7 +777,7 @@ class SessionController extends ControllerBase {
                             $header_name="Hey ".$Email_set[0].",";
                             $body_message=$header_name.$message;
                             $Mail = $this->getDI()->getMail();
-                            $Mail->setFrom($EmailFrom);
+                            $Mail->setFrom($EmailFrom,$EmailFromName);
                             $Mail->send($email, $subject, '', '', $message);
                         } catch (Exception $e) {
                             // do nothing, just ignore
@@ -801,15 +806,18 @@ class SessionController extends ControllerBase {
                         if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                             throw \Exception("Contact customer support.  Email configuration not setup correctly");
                         $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
+                        $EmailFromName = $objParentAgency->email_from_name ?: "";
                     }
 
                     if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
                         $EmailFrom = 'zacha@reviewvelocity.co';
+                     $EmailFromName ="Zacha Anderson";
 
                     if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                         if(!$agency->email_from_address && !$agency->custom_domain)
                             throw \Exception("Contact customer support.  Email configuration not setup correctly");
                         $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
+                        $EmailFromName = $agency->email_from_name ?: "";
                     }
 
                     $Domain = $this->config->application->domain;
