@@ -532,17 +532,26 @@ header .headercontent{width: 90%; margin: 0 auto;}
   .search_name_location{width: 100%; margin-bottom: 10px; float: none; margin-right: 0;}
 
   header{height: auto;}
-  header .logo{float: none; margin: 0 auto;}
+  header .logo{float: none; margin: 0 auto; width: 200px;}
+  header .logo img{max-width: 200px !important;}
   header .steps{float: none; margin: 10px auto; width: 100%; text-align: center;}
   header .steps div{float: none; display: inline-block;}
-  header .steps-desc{width: 100%; text-align: center; float: none; height: auto;}
+  header .steps-desc{width: 100%; text-align: center; float: none; height: auto; margin-left: 0;}
   header .steps-desc div{float: none; display: inline-block;}
+
+  .search-name{margin-bottom: 10px;}
+  .pnlAddLocation input{float: none;}
+
 
 }
 
 @media screen and (max-width: 480px) {
 
   header .logo{width: 161px;}
+
+  .step > img {width: 10px;}
+  .divider > img {width: 45px;}
+
 
 }
 
