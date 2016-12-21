@@ -100,6 +100,19 @@ button.get_started{
   width: 400px;
 }
 
+.js-copytextarea
+{
+    background-color: #2a3644;
+    /*cursor: none;*/
+    width:20% !important;
+    border:none;
+
+}
+.js-textareacopybtn
+{
+  background-color: #2a3644;
+}
+
 .controls:focus {
   border-color: #4d90fe;
 }

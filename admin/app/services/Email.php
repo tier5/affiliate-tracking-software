@@ -67,7 +67,7 @@ class Email{
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
-            $EmailFromName="";
+            $EmailFromName="Zach Anderson";
             
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
