@@ -514,3 +514,45 @@ form.register-form .form-control.error{
 form.register-form label.error{
   color: #C01209;
 }
+
+
+@media screen and (max-width: 900px) {
+
+.content {width: 90%; margin: 0 auto;}
+header .headercontent{width: 90%; margin: 0 auto;}
+
+
+
+}
+
+
+@media screen and (max-width: 767px) {
+
+  .search_name{width: 100%; margin-bottom: 10px; float: none; margin-right: 0;}
+  .search_name_location{width: 100%; margin-bottom: 10px; float: none; margin-right: 0;}
+
+  header{height: auto;}
+  header .logo{float: none; margin: 0 auto;}
+  header .steps{float: none; margin: 10px auto; width: 100%; text-align: center;}
+  header .steps div{float: none; display: inline-block;}
+  header .steps-desc{width: 100%; text-align: center; float: none; height: auto;}
+  header .steps-desc div{float: none; display: inline-block;}
+
+}
+
+@media screen and (max-width: 480px) {
+
+  header .logo{width: 161px;}
+
+}
+
+
+
+
+
+
+
+
+
+
+
