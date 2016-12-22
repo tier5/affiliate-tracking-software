@@ -2,7 +2,7 @@
 body { background-color: #F6F6F6; }
 
 .topheader { background-color: #2a3644; width: 100%; height: 8px; }
-header { background-color: #FFFFFF; width: 100%; height: 123px; }
+header { background-color: #FFFFFF; width: 100%; /*height: 123px;*/ display: inline-block; }
 header .headercontent { width: 1050px; margin-left: auto; margin-right: auto; }
 header .logo { float: left; width: 220px; margin-top: 20px; }
 header .steps { float: left; width: 450px; height: 25px; margin-left: 114px; margin-top: 48px; }
@@ -565,35 +565,58 @@ header .headercontent{width: 90%; margin: 0 auto;}
     width: 100%;
 }
 
+.tab-content .phone-wrapper .phone {
+    width: 100%;  
+    background-size: 100%;
+}
+
+.review .rounded-wrapper {
+    padding: 5px;
+}
+
+.page-logo {
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+.review .rounded .question {
+    font-size: 14px;
+    margin-top: 0;
+}
+
+.tab-content .phone-wrapper .phone {
+    width: 100%;
+    background-size: 100%;
+}
+
 }
 
 @media screen and (max-width: 991px) {
 
+  .pnlAddLocation.short{
+    width: 100%;
+  }
+  .pnlAddLocation .buttons a, #page-wrapper a, #createregion a, a.btnLink {
+     
+      display: block;
+      font-size: 10px;
+      line-height: 20px;
+      padding: 5px;
+      text-align: center;
+  }
 
-.pnlAddLocation.short{
-  width: 100%;
-}
-.pnlAddLocation .buttons a, #page-wrapper a, #createregion a, a.btnLink {
-   
-    display: block;
-    font-size: 10px;
-    line-height: 20px;
-    padding: 5px;
-    text-align: center;
-}
+  .pnlAddLocation .buttons {
+    margin-top: 0 !important;
+  }
 
-.pnlAddLocation .buttons {
-  margin-top: 0 !important;
-}
-
-div.pnlAddLocation.short {
-    min-height: 100% !important;
-}
+  div.pnlAddLocation.short {
+      min-height: 100% !important;
+  }
 }
 @media screen and (max-width: 1199px) {
-.content {
-    width: 100%;
-}
+  .content {
+      width: 100%;
+  }
 }
 
 
