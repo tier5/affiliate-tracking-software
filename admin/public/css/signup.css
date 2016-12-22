@@ -542,6 +542,18 @@ header .headercontent{width: 90%; margin: 0 auto;}
   .search-name{margin-bottom: 10px;}
   .pnlAddLocation input{float: none;}
 
+#page-wrapper, #createregion {
+    min-width: auto;
+    left: 10px;
+    width: 90%;
+    right: 10px;
+}
+
+#page-wrapper.create .row, #createregion.create .row {
+    margin-left: 0;
+    height: 84px;
+}
+
 
 }
 
@@ -597,6 +609,10 @@ header .headercontent{width: 90%; margin: 0 auto;}
 
 .nav-tabs > li {
     width: 100%;
+}
+
+  .table-responsive {
+    display: block;
 }
 
 }

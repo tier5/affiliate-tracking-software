@@ -41,7 +41,7 @@
 
         {% for user in employees %}
             {% if loop.first %}
-                <table cellspacing="0" width="100%" class="table table-striped table-bordered dataTable" style="width: 100%;">
+                <table cellspacing="0" width="100%" class="table table-striped table-bordered dataTable table-responsive" style="width: 100%;">
                 <thead>
                 <tr role="row">
                     <th class="" tabindex="0" aria-controls="basic-datatables" rowspan="1" colspan="1" style="width: 141px;" aria-sort="ascending" aria-label="Name: activate to sort column ascending">
