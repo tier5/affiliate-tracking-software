@@ -241,7 +241,7 @@ class PaymentService extends BaseService {
             return false;
 
         if($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY || $objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
-            $this->config->stripe->secret_key;
+            return $this->config->stripe->secret_key;
 
         if($objAgency->parent_id > 0) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
@@ -448,6 +448,7 @@ class PaymentService extends BaseService {
     }
 
     private function updateStripePaymentProfile($ccParameters) {
+
         $required = ['userId', 'tokenID'];
         $supplied = array_keys($ccParameters);
         $intersect = array_intersect($supplied, $required);
@@ -456,23 +457,14 @@ class PaymentService extends BaseService {
             return false;
         }
 
-        $user = Users::query()
-            ->where("id = :id:")
-            ->bind(["id" => $userId])
-            ->execute()
-            ->getFirst();
-        $agency = Agency::query()
-            ->where("agency_id = :agency_id:")
-            ->bind(["agency_id" => $user->agency_id])
-            ->execute()
-            ->getFirst();
+        $objUser = \Vokuro\Models\Users::findFirst("id = " . $ccParameters['userId']);
+        $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
 
         $responseParameters = ['status' => false];
         $Errors = [];
         $userId = $ccParameters['userId'];
 
-        //TODO: This needs to change, saving for last.  Not sure on behavior if stripe key not available.
-        $StripeSecretKey = $agency->stripe_account_secret ?: $this->config->stripe->secret_key;
+        $StripeSecretKey = $this->GetStripeSecretKey($objAgency->agency_id);
         try {
             \Stripe\Stripe::setApiKey($StripeSecretKey);
             $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
