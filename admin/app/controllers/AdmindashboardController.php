@@ -311,8 +311,17 @@ class AdmindashboardController extends ControllerBusinessBase {
     }
 
     protected function DeleteBusiness($BusinessID) {
+      // echo $BusinessID;exit;
+
+
+       $objEmploeeunderbusiness = \Vokuro\Models\Users::findFirst("agency_id = {$BusinessID} AND role='User' AND is_employee=1");
+       if(empty($objEmploeeunderbusiness)){
+
+
         $dbLocations = \Vokuro\Models\Location::find("agency_id = {$BusinessID}");
         // Delete locations, review sites and review invites
+
+        if( $dbLocations){
         foreach ($dbLocations as $objLocation) {
             $dbLocationReviewSites = \Vokuro\Models\LocationReviewSite::find("location_id = {$objLocation->location_id}");
 
@@ -333,16 +342,24 @@ class AdmindashboardController extends ControllerBusinessBase {
             // Location
             $objLocation->delete();
         }
+        }
+
 
         // Delete current business subscription if exists
         $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$BusinessID} AND role='Super Admin'");
-
+//echo $BusinessID;exit;
+        if($objSuperUser)
+        {
         $objSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperUser->id}");
+        }
+       
         $SubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+
         if($objSubscription)
             $objSubscription->delete();
 
         // Delete agency subscription.  Cancel subscription in stripe if exists?
+        //echo 'kk';exit;
         if(!$SubscriptionManager->CancelSubscription($BusinessID)) {
             return false;
         }
@@ -359,6 +376,11 @@ class AdmindashboardController extends ControllerBusinessBase {
         $objBusiness->delete();
 
         return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     protected function DeleteAgency($AgencyID) {
@@ -407,7 +429,10 @@ class AdmindashboardController extends ControllerBusinessBase {
     public function deleteAction($agency_type_id, $agency_id) {
         $this->db->begin();
 
+       
+
         try {
+
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$agency_id}");
             $DeleteType = $objBusiness->parent_id == \Vokuro\Models\Agency::AGENCY ? 'Agency' : 'Business';
             if($DeleteType == 'Agency') {
@@ -442,7 +467,10 @@ class AdmindashboardController extends ControllerBusinessBase {
                 // Deleting an agency works as of 12/05/2016, but we deemed it too powerful to have to the super admins currently.  It will unsubscribe every business.
                 //$this->DeleteAgency($agency_id);
             } else {
+                //echo 'yy';exit;
+                //echo $agency_id;exit;
                 $this->DeleteBusiness($agency_id);
+               // echo 'zz';exit;
             }
         } catch (\Exception $e) {
             $this->flash->error($e->getMessage());
