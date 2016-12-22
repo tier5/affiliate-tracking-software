@@ -560,6 +560,11 @@ header .headercontent{width: 90%; margin: 0 auto;}
   width: 100%;
 }
 
+.pnlAddLocation .field input {
+    margin-top: 5px;
+    width: 100%;
+}
+
 }
 
 @media screen and (max-width: 991px) {
