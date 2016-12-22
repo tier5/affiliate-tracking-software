@@ -554,6 +554,11 @@ header .headercontent{width: 90%; margin: 0 auto;}
     height: 84px;
 }
 
+#page-wrapper.create .field input{
+      width: 100%;
+    margin: 20px 0 !important;
+}
+
 
 }
 
