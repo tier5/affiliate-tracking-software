@@ -562,7 +562,7 @@ header .headercontent{width: 90%; margin: 0 auto;}
 
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 991px) {
 
 
 .pnlAddLocation.short{
@@ -581,8 +581,13 @@ header .headercontent{width: 90%; margin: 0 auto;}
   margin-top: 0 !important;
 }
 
-.pnlAddLocation.short {
+div.pnlAddLocation.short {
     min-height: 100% !important;
+}
+}
+@media screen and (max-width: 1199px) {
+.content {
+    width: 100%;
 }
 }
 
