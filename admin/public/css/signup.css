@@ -586,7 +586,13 @@ header .headercontent{width: 90%; margin: 0 auto;}
 
 .tab-content .phone-wrapper .phone {
     width: 100%;
-    background-size: 100%;
+    background:none;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.tab-content .phone-wrapper .phone .phone-content {
+    width: 100%;
 }
 
 }
