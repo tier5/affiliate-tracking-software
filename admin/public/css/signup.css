@@ -595,6 +595,10 @@ header .headercontent{width: 90%; margin: 0 auto;}
     width: 100%;
 }
 
+.nav-tabs > li {
+    width: 100%;
+}
+
 }
 
 @media screen and (max-width: 991px) {
