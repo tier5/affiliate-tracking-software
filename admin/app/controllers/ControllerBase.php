@@ -179,10 +179,11 @@ class ControllerBase extends Controller {
                 // Disable business if agency has no stripe keys enabled.
                 if (!$objParentAgency->stripe_publishable_keys || !$objParentAgency->stripe_account_secret)
                     $this->view->BusinessDisableBecauseOfStripe = true;
-                else {
-                    $this->view->stripePublishableKey = $objParentAgency->stripe_publishable_keys;
-                }
             }
+
+            if($agency->parent_id > 0)
+                $this->view->stripePublishableKey = $objParentAgency->stripe_publishable_keys;
+
             // End disabled check
 
             $this->view->objAgency = $agency;
