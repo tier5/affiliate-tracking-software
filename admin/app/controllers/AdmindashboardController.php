@@ -379,6 +379,8 @@ class AdmindashboardController extends ControllerBusinessBase {
         }
         else
         {
+             $this->session->set("err_msg", 'This business cannot be deleted as some users are under this business.please delete the users to delete this business');
+             
             return false;
         }
     }
@@ -470,6 +472,8 @@ class AdmindashboardController extends ControllerBusinessBase {
                 //echo 'yy';exit;
                 //echo $agency_id;exit;
                 $this->DeleteBusiness($agency_id);
+
+
                // echo 'zz';exit;
             }
         } catch (\Exception $e) {
