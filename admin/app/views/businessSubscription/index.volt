@@ -2,11 +2,13 @@
 
 <header class="jumbotron subhead" id="reviews">
     <div id="subscription-data" class="hero-unit" data-subscription="{{ subscriptionPlanData | json_encode | escape }}">
-            <div class="col-md-5 col-sm-5">
+            <div class="col-md-12 col-sm-12">
                 <!-- BEGIN PAGE TITLE-->
                 <h3 class="page-title"> Subscription </h3>
                 <!-- END PAGE TITLE-->
             </div>
+
+            <?php if ($TypeSubscriptionId>0){ ?>
             <?php
       if (isset($this->session->get('auth-identity')['agencytype']) &&
             $this->session->get('auth-identity')['agencytype'] == 'business') {
@@ -15,7 +17,7 @@
             100, 0, '.', ''):100);
             if ($percent > 100) $percent = 100;
             ?>
-            <div class="col-md-7 col-sm-7">
+            <div class="col-md-12 col-sm-12">
                 <div class="sms-chart-wrapper">
                     <div class="title">SMS Messages Sent</div>
                     <div class="bar-wrapper">
@@ -36,7 +38,7 @@
             '.', ''):100);
             if ($percent > 100) $percent = 100;
             ?>
-            <div class="col-md-7 col-sm-7">
+            <div class="col-md-12 col-sm-12">
                 <div class="sms-chart-wrapper">
                     <div class="title">SMS Messages Sent</div>
                     <div class="bar-wrapper">
@@ -390,6 +392,8 @@
             </div>
         </div>
     </div>
+
+    <?php } else {  ?><div class="col-md-12 col-sm-12"> You have not yet done any subscription  </div><?php } ?>
 </header>
 
 <?php
