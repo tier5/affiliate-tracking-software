@@ -418,7 +418,7 @@
                                                                                         <?php } elseif($review_invite_type_id==2)
 
                                                                                         {
-
+                                                                                        $sert=0;
                                                                                         $full_star=0;
                                                                                           $half_star=0;
                                                                                          foreach($rating_array_set_all[$Employee->id] as $set){
