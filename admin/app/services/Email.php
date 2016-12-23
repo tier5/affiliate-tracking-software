@@ -243,7 +243,15 @@ class Email{
         }
         else
         {
-            $busi_nam='All Business';
+            $users_info=\Vokuro\Models\Users::findFirst("id = {$u->id}");
+
+            $LocationInfo=\Vokuro\Models\Location::findFirst("location_id = {$users_info->agency_id}");
+             $busi_nam=$LocationInfo->name;
+             if($busi_nam=='')
+             {
+                $busi_nam='All Business';
+             }
+            
         }
 /*
          echo 'mail2';
