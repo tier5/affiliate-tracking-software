@@ -458,6 +458,9 @@
                                                                                                  $sert= round($set['totalx']/$set['numberx']);
                                                                                                }
                                                                                              }
+                                                                                             ?>
+                                                                                              <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><?php echo $sert;?></span>
+                                                                                              <?php
                                                                                         }
                                                                                         ?>
                                                                                         </td>
