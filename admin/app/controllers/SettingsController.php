@@ -4,6 +4,7 @@
     use Phalcon\Image\Adapter\GD;
     use Phalcon\Tag;
     use Phalcon\Mvc\Model\Criteria;
+    use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
     use Phalcon\Paginator\Adapter\Model as Paginator;
     use Vokuro\Forms\AgencyForm;
     use Vokuro\Forms\ChangePasswordForm;
@@ -446,8 +447,9 @@
 
                 /*** new start generator ***/
 
-                $rating_array_set_all=array();
+        $rating_array_set_all=array();
         $YNrating_array_set_all=array();
+       // echo 'kk';exit;
         
         foreach($dbEmployees as $ux){
             $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
@@ -460,6 +462,7 @@
         $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
         $YNrating_array_set_all[$ux->id] = $rs->toArray();
         }
+       // print_r($YNrating_array_set_all);exit;
         $this->view->YNrating_array_set_all=$YNrating_array_set_all;
         foreach($dbEmployees as $ux){
             $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
