@@ -395,41 +395,69 @@
                                                                                         <!--<td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Employee->positive_feedback_this_month ?: 0; ?></td>-->
                                                                                         <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:0;text-align:center;vertical-align:middle;word-wrap:break-word" class="avgfeedbck">
                                                                                         <?php 
-                                                                                        if($review_invite_type_id==1){?>
+                                                                                        if($review_invite_type_id==1){
+                                                                                            $yes=0;
+                                                                                            $no=0;
 
-                                                                                      <?=($Employee->sms_received_this_month > 0?(number_format(($Employee->positive_feedback_this_month / $Employee->sms_received_this_month) * 100, 1) . '%'):'0.0%')?> -Yes
+                                                                                              foreach($YNrating_array_set_all[$Employee->id] as $set){
+                                                                                                if($set['rating']==5){
+                                                                                                $yes=$set['numberx'];
+                                                                                                }
+                                                                                                if($set['rating']==1){
+                                                                                                $no=$set['numberx'];
+                                                                                                }
+
+                                                                                              }
+                                                                                              $tot=$yes+$no;
+                                                                                              $cal=$yes/$tot;
+                                
+                                                                                        ?>
+
+                                                                                      <?=($Employee->sms_received_this_month > 0?(number_format($cal*100, 1) . '%'):'0.0%')?> - <span style="text-transform: capitalize;">  yes </span>
 
                                                                                         <?php } elseif($review_invite_type_id==2)
 
                                                                                         {
 
-                                                                                        $star_full=ceil($Employee->rates/$Employee->sms_received_this_month);
+                                                                                        $full_star=0;
+                                                                                          $half_star=0;
+                                                                                         foreach($rating_array_set_all[$Employee->id] as $set){
+                                                                                           if($set['review_invite_type_id']==2){
+                                                                                             $full_star= floor($set['totalx']/$set['numberx']);
+                                                                                             $half_star=($set['totalx']%$set['numberx']);
+                                                                                             $sert=$set['totalx']/$set['numberx'];
+                                                                                           }
+                                                                                         }
 
-                                                                                         $star_half=($Employee->rates%$Employee->sms_received_this_month);
                                                                                          ?>
                                                                                          <ul style="list-style-type:none;padding: 0 ">
 
                                                                                          <?php
 
-                                                                                        for($l=0;$l<$star_full;$l++)
+                                                                                        for($l=0;$l<$full_star;$l++)
                                                                                         { ?>
                                                                                         <li style="display:inline-block;float: left;"><img src="http://<?php echo $domain;?>/img/star.png" class="img-responsive"></li>
 
                                                                                         <?php
 
                                                                                         }
-                                                                                        if($star_half)
+                                                                                        if($half_star!=0)
                                                                                         {
                                                                                         ?>
                                                                                             <li style="display:inline-block;float: left;"><img src="http://<?php echo $domain;?>/img/star2.png" class="img-responsive"></li>
                                                                                         <?php
                                                                                         }
-
+                                                                                        echo number_format(($sert),1); 
                                                                                         }
                                                                                         else
                                                                                         {
-                                                                                            $number =round($Employee->rates/$Employee->sms_received_this_month);  
-                                                                                            echo $number;
+                                                                                             $number=round($Employee->rates/$Employee->sms_received_this_month);
+                                                                                             $sert=0;
+                                                                                             foreach($rating_array_set_all[$Employee->id] as $set){
+                                                                                               if($set['review_invite_type_id']==3){
+                                                                                                 $sert= round($set['totalx']/$set['numberx']);
+                                                                                               }
+                                                                                             }
                                                                                         }
                                                                                         ?>
                                                                                         </td>

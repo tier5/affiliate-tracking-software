@@ -443,6 +443,39 @@
             //echo '<pre>';print_r($dbEmployees);exit;
             $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
             $this->view->review_invite_type_id=$objReview->review_invite_type_id;
+
+                /*** new start generator ***/
+
+                $rating_array_set_all=array();
+        $YNrating_array_set_all=array();
+        
+        foreach($dbEmployees as $ux){
+            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+
+        // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $YNrating_array_set_all[$ux->id] = $rs->toArray();
+        }
+        $this->view->YNrating_array_set_all=$YNrating_array_set_all;
+        foreach($dbEmployees as $ux){
+            $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
+
+        // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $rating_array_set_all[$ux->id] = $rs->toArray();
+        }
+        $this->view->rating_array_set_all=$rating_array_set_all;
+                /*** new start generator ***/
+
+
             $objEmail = new \Vokuro\Services\Email();
             return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
             
