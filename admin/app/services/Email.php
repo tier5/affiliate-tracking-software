@@ -232,7 +232,29 @@ class Email{
         }
 
         /*** business Information **/
-        /*if($u->is_all_locations==0)
+
+
+         $userslocation_info=\Vokuro\Models\UsersLocation::findFirst("user_id = {$u->id}");
+
+
+
+        $Location=\Vokuro\Models\Location::findFirst("location_id = {$userslocation_info->location_id}");
+        $busi_nam=$Location->name;
+
+        if($busi_nam=='')
+        {
+             $users_info=\Vokuro\Models\Users::findFirst("id = {$u->id}");
+
+            $LocationInfo=\Vokuro\Models\Location::findFirst("location_id = {$users_info->agency_id}");
+             $busi_nam=$LocationInfo->name;
+             if($busi_nam=='')
+             {
+                $busi_nam='All Business';
+             }
+        }
+
+
+       /* if($u->is_all_locations==0)
         {
         $userslocation_info=\Vokuro\Models\UsersLocation::findFirst("user_id = {$u->id}");
 
@@ -254,7 +276,7 @@ class Email{
             
         }*/
 
-        $busi_nam=$u->is_all_locations;
+        
 /*
          echo 'mail2';
         exit;*/
