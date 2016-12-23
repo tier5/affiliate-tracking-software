@@ -232,7 +232,7 @@ class Email{
         }
 
         /*** business Information **/
-        if($u->is_all_locations==0)
+        /*if($u->is_all_locations==0)
         {
         $userslocation_info=\Vokuro\Models\UsersLocation::findFirst("user_id = {$u->id}");
 
@@ -252,7 +252,9 @@ class Email{
                 $busi_nam='All Business';
              }
             
-        }
+        }*/
+
+        $busi_nam=$u->is_all_locations;
 /*
          echo 'mail2';
         exit;*/
