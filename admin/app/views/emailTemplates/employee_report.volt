@@ -353,17 +353,17 @@
                                                                                     case 1:
                                                                                        $Icon = "<img src='http://{$domain}/img/gold_medal.png' />";
                                                                                                     $Class .= "first";
-                                                                                                    $FontSize = "24px";
+                                                                                                    $FontSize = "20px";
                                                                                                 break;
                                                                                             case 2:
                                                                                                     $Icon = "<img src='http://{$domain}/img/silver_medal.png' />";
                                                                                                     $Class .= "second";
-                                                                                                    $FontSize = "17px";
+                                                                                                    $FontSize = "13px";
                                                                                                 break;
                                                                                             case 3:
                                                                                                     $Icon = "<img src='http://{$domain}/img/bronze_medal.png' />";
                                                                                                     $Class .= "third";
-                                                                                                    $FontSize = "15px";
+                                                                                                    $FontSize = "11px";
                                                                                                 break;
                                                                                             default:
                                                                                                 // Fully aware this only works up to 110 employees.  GARY_TODO:  Fix this if it becomes an issue.
