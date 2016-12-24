@@ -29,7 +29,7 @@
                       <div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div>
                     </div>
                   </div>
-                  <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
+                  <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} /  <?=$sms_sent_this_month_total?>)<br/><span class="goal">Allowed</span></div>
                 </div>
               </div>
         <?php

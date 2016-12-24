@@ -29,7 +29,7 @@
                             <div class="bar-text" {{ percent > 60 ? 'style="display: none;"':'' }} >This Month</div>
                         </div>
                     </div>
-                    <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ viral_sms }})<br/><span class="goal">Allowed</span></div>
+                    <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ sms_sent_this_month_total }})<br/><span class="goal">Allowed</span></div>
                 </div>
             </div>
             <?php
@@ -68,7 +68,7 @@
                 </div>-->
             </div>
         </div>
-
+        <?php if($MaxLocationTrial!=1){ ?>
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="growth-bar">
@@ -76,7 +76,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="row subscription-panel-group plans-and-payments-row">
             <div class="col-md-12 col-lg-8">
                 <div class="portlet light bordered dashboard-panel">
@@ -149,7 +149,7 @@
                 </div>
             </div>
         </div>
-
+        <?php } ?>
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="growth-bar">
