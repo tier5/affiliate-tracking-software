@@ -433,10 +433,11 @@
                                                                                          <ul style="list-style-type:none;padding: 0 ">
 
                                                                                          <?php
-
+                                                                                         echo number_format(($sert),1); 
+                                                                                         echo "<br>";
                                                                                         for($l=0;$l<$full_star;$l++)
                                                                                         { ?>
-                                                                                        <li style="display:inline-block;float: left;"><img src="http://<?php echo $domain;?>/img/star.png" class="img-responsive"></li>
+                                                                                        <li style="display:inline-block;float: left;margin-left:1px !important;"><img src="http://<?php echo $domain;?>/img/star.png" class="img-responsive"></li>
 
                                                                                         <?php
 
@@ -444,10 +445,10 @@
                                                                                         if($half_star!=0)
                                                                                         {
                                                                                         ?>
-                                                                                            <li style="display:inline-block;float: left;"><img src="http://<?php echo $domain;?>/img/star2.png" class="img-responsive"></li>
+                                                                                            <li style="display:inline-block;float: left;margin-left:1px !important;"><img src="http://<?php echo $domain;?>/img/star2.png" class="img-responsive"></li>
                                                                                         <?php
                                                                                         }
-                                                                                        echo number_format(($sert),1); 
+                                                                                        
                                                                                         }
                                                                                         else
                                                                                         {
