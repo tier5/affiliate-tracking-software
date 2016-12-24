@@ -88,7 +88,14 @@ class ControllerBase extends Controller {
                     'rgb' => $rgb,
                     'logo_path' =>  "/img/agency_logos/" . $agency->logo_path
                 ]);
-
+                $db = $this->di->get('db');
+                $db->begin();
+                $agency->agency_id;
+                 $result=$this->db->query(" SELECT * FROM `notification` WHERE `to` =".$agency->agency_id." AND `read` = 0");
+                 $x=$result->numRows();
+                 $this->view->NumberOfNotification;
+                 $this->view->setVar('NumberOfNotification', $x);
+                 $this->view->setVar('NumberAgency', $agency->agency_id);
             }
 
     //        $SD_Parts = explode('.', $_SERVER['HTTP_HOST']);
