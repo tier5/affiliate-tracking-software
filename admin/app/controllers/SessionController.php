@@ -849,13 +849,16 @@ class SessionController extends ControllerBase {
 
                         if($_SESSION['password_save'])
                         {   
-                           $feed_back_body=$feed_back_body."Password: ". $_SESSION['password_save'];
+                             $feed_back_body=$feed_back_body.'<p>Please view the Login Credentials Below: </p>'
+                           $feed_back_body=$feed_back_body."Login Password: ". $_SESSION['password_save']."<br>";
+                           $feed_back_body=$feed_back_body."Login Email: ".$feed_back_email;
                         }
 
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                     $Mail = $this->getDI()->getMail();
                     $Mail->setFrom($EmailFrom);
                     $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
+                    $_SESSION['password_save']='';
                 return $this->response->redirect('/');
                 $this->view->disable();
                 return;

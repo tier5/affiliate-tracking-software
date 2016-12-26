@@ -14,7 +14,7 @@
 
                     <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit "reply" and let me know.
                    </P>
-                  <p>{{ Loginpass }}</p>
+                  
                     
                     To get started just confirm your email by <a style="padding:10px; margin-left:-10px;" href="http://{{ publicUrl }}{{ confirmUrl }}">Clicking Here</a><br/><br/>
 
