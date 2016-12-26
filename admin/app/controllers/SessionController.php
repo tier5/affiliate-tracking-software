@@ -161,7 +161,7 @@ class SessionController extends ControllerBase {
                 $last_name = $names[1];
             }
             if(!$last_name) $last_name = ' ';
-            $this->session->set("password", $this->request->getPost('password'));
+            $this->session->set("login_password", $this->request->getPost('password'));
             $user->assign(array(
                 'name' => $name,
                 'last_name'=>$last_name,
@@ -843,10 +843,7 @@ class SessionController extends ControllerBase {
                             </p>
                         <p>Looking forward to helping you build a strong online reputation.</p>';
 
-                        if ($this->session->has("password")) 
-                        {
-                           $feed_back_body=$feed_back_body."<p> Your Password: ". $this->session->get("password")."</p>";
-                        } 
+                        
 
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                     $Mail = $this->getDI()->getMail();

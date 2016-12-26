@@ -56,6 +56,12 @@ class Email{
     public function sendActivationEmailToUser(Users $user) {
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($user->getId());
+         $login_credential='';
+
+        if ($this->session->has("login_password")) 
+                        {
+                           $login_credential="Login Credential: ".$this->session->get("login_password");
+                        } 
 
         $template='confirmation';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
@@ -87,6 +93,7 @@ class Email{
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
             $EmailFromName=$objParentAgency->email_from_name ?: "";
+
            
             //$EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
         }
@@ -104,6 +111,7 @@ class Email{
             'firstName' =>  $user->name,
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
+            'login_credential'=> $login_credential
         ];
 
         try {
