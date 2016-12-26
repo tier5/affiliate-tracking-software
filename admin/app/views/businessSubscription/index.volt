@@ -2,7 +2,7 @@
 
 <header class="jumbotron subhead" id="reviews">
     <div id="subscription-data" class="hero-unit" data-subscription="{{ subscriptionPlanData | json_encode | escape }}">
-  
+
             <div class="col-md-5 col-sm-5">
                 <!-- BEGIN PAGE TITLE-->
                 <h3 class="page-title"> Subscription </h3>
@@ -69,7 +69,9 @@
                 </div>-->
             </div>
         </div>
-        <?php if($MaxLocationTrial!=1){ ?>
+        <?php
+        echo $paymentPlan;
+         if($MaxLocationTrial!=1){ ?>
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="growth-bar">
