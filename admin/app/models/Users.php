@@ -637,7 +637,7 @@
 
             if($review_invite_type_id!=1)
             {
-              $order_by="rates";
+              $order_by="sms_received_this_month";
             }
             // A raw SQL statement
             $sql = "SELECT DISTINCT
