@@ -56,12 +56,8 @@ class Email{
     public function sendActivationEmailToUser(Users $user) {
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($user->getId());
-         $login_credential='';
-
-        if ($this->session->has("login_password")) 
-                        {
-                           $login_credential="Login Credential: ".$this->session->get("login_password");
-                        } 
+        
+        
 
         $template='confirmation';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
@@ -111,7 +107,7 @@ class Email{
             'firstName' =>  $user->name,
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
-            'login_credential'=> $login_credential
+           
         ];
 
         try {
