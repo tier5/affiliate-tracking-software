@@ -3,7 +3,8 @@
             <div class="portlet box red">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-globe"></i>Notification List </div>
+                        <i class="fa fa-globe"></i>Notification List 
+                    </div>
                     <div class="tools"> </div>
                 </div>
                 <div class="portlet-body">
@@ -28,3 +29,8 @@
 							</tr>
 						<?php } ?>
                         </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+</div>

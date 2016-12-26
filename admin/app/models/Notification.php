@@ -14,9 +14,6 @@
         {
             $this->setSource('notification');
 
-
-            // Not sure if this is correct, so commenting out until needed.
-            //$this->hasMany("id", "AgencySubscriptionPlan", "pricing_plan_id");
         }
         public function createOrUpdateBusiness($tData) {
             $this->assign($tData);
