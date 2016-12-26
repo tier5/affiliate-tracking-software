@@ -842,6 +842,12 @@ class SessionController extends ControllerBase {
                             Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. 
                             </p>
                         <p>Looking forward to helping you build a strong online reputation.</p>';
+
+                        if ($this->session->has("password")) 
+                        {
+                           $feed_back_body=$feed_back_body."<p> Your Password: ". $this->session->get("password")."</p>";
+                        } 
+
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                     $Mail = $this->getDI()->getMail();
                     $Mail->setFrom($EmailFrom);
