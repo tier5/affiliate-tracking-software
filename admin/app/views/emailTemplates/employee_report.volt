@@ -354,22 +354,22 @@
                                                                                        $Icon = "<img src='http://{$domain}/img/gold_medal.png' />";
                                                                                                     $Class .= "first";
                                                                                                     $FontSize = "20px";
-                                                                                                    $height="25px";
-                                                                                                    $width="25px";
+                                                                                                    $heights="25px";
+                                                                                                    $widths="25px";
                                                                                                 break;
                                                                                             case 2:
                                                                                                     $Icon = "<img src='http://{$domain}/img/silver_medal.png' />";
                                                                                                     $Class .= "second";
                                                                                                     $FontSize = "13px";
-                                                                                                     $height="18px";
-                                                                                                     $width="18px";
+                                                                                                     $heights="18px";
+                                                                                                     $widths="18px";
                                                                                                 break;
                                                                                             case 3:
                                                                                                     $Icon = "<img src='http://{$domain}/img/bronze_medal.png' />";
                                                                                                     $Class .= "third";
                                                                                                     $FontSize = "11px";
-                                                                                                     $height="13px";
-                                                                                                    $width="13px";
+                                                                                                     $heights="13px";
+                                                                                                    $widths="13px";
                                                                                                 break;
                                                                                             default:
                                                                                                 // Fully aware this only works up to 110 employees.  GARY_TODO:  Fix this if it becomes an issue.
@@ -384,8 +384,8 @@
                                                                                                     $Icon .= "th";
                                                                                                 break;
                                                                                                 $FontSize = "12px";
-                                                                                                $height="14px";
-                                                                                                $width="14px";
+                                                                                                $heights="14px";
+                                                                                                $widths="14px";
 
                                                                                         }
                                                                                     ?>
@@ -471,8 +471,8 @@
                                                                                               <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;  display: block;
                                                                                             border: 3px solid;
                                                                                             border-radius: 50% !important;
-                                                                                            width: 25px;
-                                                                                            height: 25px;
+                                                                                            width:<?php echo $widths;?>;
+                                                                                            height: <?php echo $heights;?>;
                                                                                             font-weight: bold;
                                                                                             margin: 0 0 0 36px;
                                                                                             font-size: <?=$FontSize; ?>"><?php echo $sert;?></span>
