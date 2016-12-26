@@ -161,7 +161,7 @@ class SessionController extends ControllerBase {
                 $last_name = $names[1];
             }
             if(!$last_name) $last_name = ' ';
-            $this->session->set("login_password", $this->request->getPost('password'));
+         
             $user->assign(array(
                 'name' => $name,
                 'last_name'=>$last_name,
@@ -230,6 +230,8 @@ class SessionController extends ControllerBase {
             }
             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
             $_SESSION['email'] = $this->request->getPost('email');
+
+            $_SESSION['password_save'] = $this->request->getPost('password');
             $an=$this->request->getPost('name', 'striptags');
             $msgx=$this->request->getPost('name', 'striptags')." is register under You with email ID ".$this->request->getPost('email', 'striptags');
             $createdxx=date('Y-m-d H:i:s');

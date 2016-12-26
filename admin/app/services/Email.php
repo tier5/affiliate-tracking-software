@@ -57,7 +57,14 @@ class Email{
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($user->getId());
         
-        
+        if($_SESSION['password_save'])
+        {
+            $log_in_password=$_SESSION['password_save'];
+        }
+        else
+        {
+            $log_in_password="";
+        }
 
         $template='confirmation';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
@@ -107,6 +114,7 @@ class Email{
             'firstName' =>  $user->name,
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
+            'Loginpass'=>$log_in_password,
            
         ];
 
