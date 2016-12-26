@@ -466,8 +466,8 @@
                                                                                             width: 25px;
                                                                                             height: 25px;
                                                                                             font-weight: bold;
-                                                                                            text-align: center;
-                                                                                            font-size: 15px;"><?php echo $sert;?></span>
+                                                                                            margin: 0 0 0 36px;
+                                                                                            font-size: 15px !important;"><?php echo $sert;?></span>
                                                                                               <?php
                                                                                         }
                                                                                         ?>
