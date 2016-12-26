@@ -236,8 +236,7 @@ class BusinessPricingPlanController extends ControllerBase {
             if (!$this->request->isPost()) {
                 throw new \Exception('POST request required!!!');
             }
-            print_r($this->request);
-            exit;
+            
             /* Format the request body to an array */
             $validatedParams = $this->validatePricingPlanInput($this->request);
             if (!$validatedParams) {
