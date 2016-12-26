@@ -1,7 +1,6 @@
 {{ content() }}
 
 
-
 <div id="locationlist">
     {{ content() }}
 
@@ -21,7 +20,18 @@ if ($agencies) {
                         <i class="fa fa-globe"></i> <?=($agency_type_id==1?'Agency':'Business')?> List </div>
                     <div class="tools"> </div>
                 </div>
+
+
                 <div class="portlet-body">
+
+                <div>
+
+<?php if($this->session->has("err_msg")){
+     $err="<font color='red'>".$this->session->get("err_msg")."</font>";
+     echo $err;
+     $this->session->set("err_msg","");
+} ?>
+</div>
                     <table id="basic-datatables" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                         <tr>

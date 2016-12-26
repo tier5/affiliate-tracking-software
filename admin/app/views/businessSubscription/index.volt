@@ -451,11 +451,11 @@
                     // GARY_TODO  UGH, why can't I call the UpdateStripeCard method?!?
                     $.post('/businessSubscription/updatePaymentProfile', {
                         tokenID: token.id,
-                        email: token.email,
+                        email: token.email
                     })
                         .done(function (data) {
                             if (data.status !== true) {
-                                alert("Update card failed!!!")
+                                alert("Update card failed!!!");
                             }
 
                             // Otherwise, they're just updating the card
@@ -474,7 +474,7 @@
                 // Open Checkout with further options:
                 handler.open({
                     name: 'Update Payment Info',
-                    description: '',
+                    description: ''
                 });
 
                 // Close Checkout on page navigation:

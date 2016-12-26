@@ -247,7 +247,6 @@
         }
 
         protected function storeSettings($entity, $type) {
-        	
             if ($this->request->isPost()) {
                 //dd($entity);
 
@@ -485,7 +484,6 @@
         }
 
         public function agencyAction() {
-        // echo "agencyAction";
             $Identity = $this->auth->getIdentity();
             if (!is_array($Identity)) {
                 $this->response->redirect('/session/login?return=/settings/agency/');
@@ -517,13 +515,19 @@
             ));
 
             if($this->request->isPost() && $SettingsForm->isValid($_POST) && $AgencyForm->isValid($_POST)) {
-                //dd($objAgency);
                 if (!$this->storeSettings($objAgency, 'agency')) {
                     $this->flash->error($objAgency->getMessages());
                 } else {
                     // Only agencies can store logos
                     if($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY)
                         $this->storeLogo($objAgency);
+
+                    // Somehow the agency is getting updated at this point.  It looks like isValid is saving the object?  It shouldn't...  I have no idea what's going on, so doing this manually.
+                    $objAgency->twilio_api_key = trim($objAgency->twilio_api_key);
+                    $objAgency->twilio_auth_token = trim($objAgency->twilio_auth_token);
+                    $objAgency->twilio_auth_messaging_sid = trim($objAgency->twilio_auth_messaging_sid);
+                    $objAgency->twilio_from_phone = trim($objAgency->twilio_from_phone);
+                    $objAgency->save();
 
                     $this->flash->success("The settings were updated successfully");
                     Tag::resetInput();
@@ -542,9 +546,6 @@
             $this->view->objAgency = $objAgency;
             $this->view->id=$Identity['id'];
             $this->view->location_id=$location->location_id;
-            
-            
-            
         }
 
         public function siteaddAction($location_id = 0, $review_site_id = 0) {
