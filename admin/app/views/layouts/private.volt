@@ -212,7 +212,7 @@
                 {% endif %}
                 {% if agencytype == "agency" %}
                 <li class="dropdown dropdown-user" style="margin-left: 30px;">
-                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                <a href="/notification/allnotification/{{NumberAgency}}" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                         <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-bell"></i> ( {{ NumberOfNotification }} )</span>
                         
                     </a>
@@ -310,13 +310,7 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
-                        <li class="nav-item start">
-                            <a href="/notification/allnotification/{{NumberAgency}}" class="nav-link nav-toggle">
-                                <i class="icon-home"></i>
-                                <span class="title">Notification ( <?php echo $NumberOfNotification?> )</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
+                        
                     {% elseif agencytype == "business" %}
                         <li class="nav-item start">
                             <a href="/" class="nav-link nav-toggle">
