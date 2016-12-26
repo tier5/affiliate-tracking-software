@@ -421,7 +421,7 @@
                                 
                                                                                         ?>
 
-                                                                                      <?=($Employee->sms_received_this_month > 0?(number_format($cal*100, 1) . '%'):'0.0%')?> - <span style="text-transform: capitalize;">  yes </span>
+                                                                                      <?=($Employee->sms_received_this_month > 0?(round($cal*100) . '%'):'0%')?>
 
                                                                                         <?php } elseif($review_invite_type_id==2)
 
