@@ -2,7 +2,8 @@
 
 <header class="jumbotron subhead" id="reviews">
     <div id="subscription-data" class="hero-unit" data-subscription="{{ subscriptionPlanData | json_encode | escape }}">
-            <div class="col-md-12 col-sm-12">
+  
+            <div class="col-md-5 col-sm-5">
                 <!-- BEGIN PAGE TITLE-->
                 <h3 class="page-title"> Subscription </h3>
                 <!-- END PAGE TITLE-->
@@ -17,7 +18,7 @@
             100, 0, '.', ''):100);
             if ($percent > 100) $percent = 100;
             ?>
-            <div class="col-md-12 col-sm-12">
+            <div class="col-md-7 col-sm-7">
                 <div class="sms-chart-wrapper">
                     <div class="title">SMS Messages Sent</div>
                     <div class="bar-wrapper">

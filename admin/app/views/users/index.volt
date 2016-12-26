@@ -54,7 +54,7 @@
           <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
           <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
       </div>
-      <div class="end-title"><?=$total_sms_month?>(<?=$total_sms_month?>/<?=$sms_sent_this_month_total?>)<br /><span class="goal">Allowed</span></div>
+      <div class="end-title"><?=$total_sms_month?> (<?=$total_sms_month?> / <?=$sms_sent_this_month_total?>)<br /><span class="goal">Allowed</span></div>
     </div>
   </div>
   <?php
