@@ -632,6 +632,13 @@
             {
               $review_invite_type_id=1;
             }
+
+            $order_by="positive_feedback_this_month";
+
+            if($review_invite_type_id!=1)
+            {
+              $order_by="rates";
+            }
             // A raw SQL statement
             $sql = "SELECT DISTINCT
                       users.name,
@@ -690,7 +697,7 @@
                     WHERE (users_location.location_id = ".$location_id." OR
                           users.is_all_locations = 1) AND users.agency_id = {$agency_id} AND 
                           (users.profilesId = 3 OR users.is_employee = 1) OR (users.role = 'Super Admin' AND users.agency_id = {$agency_id}) 
-                    ORDER BY positive_feedback_this_month desc
+                    ORDER BY ".$order_by." desc
                     ;";
 //echo $sql . "<BR><BR>";exit;
             $list = new Users();
