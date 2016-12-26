@@ -172,6 +172,8 @@ class SessionController extends ControllerBase {
                 'is_employee' => 1,
             ));
 
+            $_SESSION['password_save'] = $this->request->getPost('password');
+
             $isemailunuique = $user->validation();
             if (!$isemailunuique) {
                 throw new ArrayException("Email address is not unique", 0, null, ['That email address is already taken.']);
@@ -231,7 +233,7 @@ class SessionController extends ControllerBase {
             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
             $_SESSION['email'] = $this->request->getPost('email');
 
-            $_SESSION['password_save'] = $this->request->getPost('password');
+            
             $an=$this->request->getPost('name', 'striptags');
             $msgx=$this->request->getPost('name', 'striptags')." is register under You with email ID ".$this->request->getPost('email', 'striptags');
             $createdxx=date('Y-m-d H:i:s');
