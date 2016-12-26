@@ -462,7 +462,9 @@
                                                                                              ?>
                                                                                               <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;  display: block;
                                                                                                 border: 3px solid;
-                                                                                                border-radius: 50% !important;font-weight: bold"><?php echo $sert;?></span>
+                                                                                                border-radius: 50% !important;
+                                                                                                width: 25px;
+                                                                                                height: 25px;font-weight: bold"><?php echo $sert;?></span>
                                                                                               <?php
                                                                                         }
                                                                                         ?>
