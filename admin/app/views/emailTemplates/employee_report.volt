@@ -460,7 +460,9 @@
                                                                                                }
                                                                                              }
                                                                                              ?>
-                                                                                              <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;"><?php echo $sert;?></span>
+                                                                                              <span class="number-view" style="border-color:#fd8e13; color:#fd8e13;  display: block;
+                                                                                                border: 3px solid;
+                                                                                                border-radius: 50% !important;font-weight: bold"><?php echo $sert;?></span>
                                                                                               <?php
                                                                                         }
                                                                                         ?>
