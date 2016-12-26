@@ -126,5 +126,13 @@ class ContactsController extends ControllerBase
 
     $this->getSMSReport();
   }
+  public function updateReviewDetailsAction(){
+    //echo '<pre>';print_r($_POST);exit;
+    $review_id=$_POST['review_id'];
+    $name_control=$_POST['name_control'];
+    $phone_control=$_POST['phone_control'];
+    $this->db->query(" UPDATE `review_invite` SET `name`='".$name_control."',`phone`='".$phone_control."' WHERE `review_invite_id`=".$review_id);
+    return "done";
+  }
 
 }
