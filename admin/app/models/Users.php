@@ -199,14 +199,14 @@
          */
         public function validation() {
             
-            // if(!$this->id) {
+            if(!$this->id) {
 
-            //   $this->validate(new Uniqueness(array(
-            //       "field" => "email",
-            //       "message" => "The email is already registered"
-            //   )));
+              $this->validate(new Uniqueness(array(
+                  "field" => "email",
+                  "message" => "The email is already registered"
+              )));
             
-            // }
+            }
 
 
             return $this->validationHasFailed() != true;

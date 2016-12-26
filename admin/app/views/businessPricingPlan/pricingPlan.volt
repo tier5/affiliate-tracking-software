@@ -34,7 +34,7 @@
                         <div class="caption font-dark">
                             <div class="form-group">
                             <label>Subscription Name</label>
-                            <input id="name-control" type="text" value="{% if !isNewRecord %}{{ name }}{% else %}My New Subscription{% endif %}" class="caption-subject form-control input-medium" placeholder="Subscription Name" {% if !isNewRecord %} readonly {% endif %}/>
+                            <input id="name-control" type="text" value="{% if !isNewRecord %}{{ name }}{% else %}My New Subscription{% endif %}" class="caption-subject form-control input-medium" placeholder="Subscription Name" /> {% if !isNewRecord %} <button id="update-plan-name" class="btn default btn-lg apple-backgound subscription-btn" data-id="{{subscription_id_plan}}">Update</button> {% endif %}
                                 <hr>
                         </div>
                     </div>
@@ -182,6 +182,7 @@
                                                 <div class="form-group last">
                                                     <div class="col-md-12">
                                                         <div name="summernote" id="summernote_1">{{ pricingDetails }}</div>
+                                                        {% if !isNewRecord %} <button id="update-plan-pricing-details" class="btn default btn-lg apple-backgound subscription-btn" data-id="{{subscription_id_plan}}">Update</button> {% endif %}
                                                     </div>
                                                 </div>
                                             </div>
@@ -315,7 +316,43 @@
         var annualDiscount = $('#annual-discount-value').val();
         var upgradeDiscount = $('#upgrade-discount-value').val();
 
-
+        $('#update-plan-name').click(function() {
+            
+            var subscription_id=$(this).data("id");
+            var subcription_name=$("#name-control").val();
+            
+                $.ajax({
+                type: 'POST',
+                url: "/businessPricingPlan/updateSubcriptionName", 
+                data:{subscription_id :subscription_id,subcription_name:subcription_name},
+                success: function(result){
+                    
+                    if(result=="done"){
+                    location.reload(true);
+                    }
+                    }
+                });
+        });
+        
+        $('#update-plan-pricing-details').click(function() {
+            
+            var subscription_id=$(this).data("id");
+            var subcription_pricing_details=$('#summernote_1').code();
+            
+                $.ajax({
+                type: 'POST',
+                url: "/businessPricingPlan/updateSubcriptionPricingDetails", 
+                data:{subscription_id :subscription_id,subcription_pricing_details:subcription_pricing_details},
+                success: function(result){
+                    
+                    if(result=="done"){
+                    location.reload(true);
+                    }
+                    }
+                });
+                return false;
+        });
+        
         function generatePercentageOptions() {
             var options = "";
             for (var i = 0; i <= 100; i++) {
