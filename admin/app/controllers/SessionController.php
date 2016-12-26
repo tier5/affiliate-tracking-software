@@ -847,7 +847,10 @@ class SessionController extends ControllerBase {
                             </p>
                         <p>Looking forward to helping you build a strong online reputation.</p>';
 
-                        
+                        if($_SESSION['password_save'])
+                        {   
+                           $feed_back_body=$feed_back_body."Password: ". $_SESSION['password_save'];
+                        }
 
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                     $Mail = $this->getDI()->getMail();
@@ -1036,6 +1039,8 @@ class SessionController extends ControllerBase {
                         'remember' => $this->request->getPost('remember')
                     ));
 
+
+
                     $return = '/';
                     if (isset($_GET['return']) && strpos($_GET['return'], '/') !== false)
                         $return = $_GET['return'];
@@ -1063,6 +1068,7 @@ class SessionController extends ControllerBase {
                         if ($agency->signup_page > 0 && $agency->parent_id!=0)
 
                         {
+                            $_SESSION['password_save']=$this->request->getPost('password');
                             $return = '/session/signup' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : '');
                         }
                         elseif($agency->signup_page > 0 && $agency->parent_id==0)
