@@ -70,8 +70,13 @@
             </div>
         </div>
         <?php
-        echo $paymentPlan;
-         if($MaxLocationTrial!=1){ ?>
+        //echo $paymentPlan;
+        /* if($MaxLocationTrial!=1){*/
+
+         if(($paymentPlan!='FREE' || $paymentPlan!='TRIAL') && $paymentPlan >1)
+         {
+         
+         ?>
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="growth-bar">
