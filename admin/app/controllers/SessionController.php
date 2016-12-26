@@ -299,10 +299,12 @@ class SessionController extends ControllerBase {
         $agency = new Agency();
         $record = $agency->findOneBy(['custom_domain'=>$pi]);
 
+
+
         $white_label = 'Sign Up';
         if($record){
             if($record->agency_id)
-            $this->view->agencyId = $record->agency_id;
+                $this->view->agencyId = $record->agency_id;
 
             //if($record->logo_path) $this->view->logo_path = "/img/agency_logos/".$record->logo_path;
             if($record->name){
@@ -316,23 +318,30 @@ class SessionController extends ControllerBase {
 
         elseif(!empty($objUser) && $objUser->name)
         {
-             $this->view->agency_name = $objUser->name;
+
+            
+            $this->view->agency_name = $objUser->name;
         }
 
         
 
-        else if($_GET['code'])
+        else if($this->request->getQuery("code"))
         {
+
+
+            $code = $this->request->getQuery("code");
+
+
+            $this->session->set("sharing_code", $code);
             
+            
+            $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
+            $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
 
-            $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$_GET['code']}'");
-             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
-
-
-             $this->view->agencyId = $objAgency->agency_id;
-             $this->view->agency_name = $objAgency->name;
+            $this->view->agencyId = $objAgency->agency_id;
+            $this->view->agency_name = $objAgency->name;
              
-             if($objAgency->parent_id) {
+            if($objAgency->parent_id) {
                 $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
 
                 $this->view->agencyId = $objAgency1->agency_id;
@@ -932,6 +941,11 @@ class SessionController extends ControllerBase {
      * terms page
      */
     public function termsAction() {
+
+        
+
+         
+
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Get Mobile Reviews | Terms');
     }

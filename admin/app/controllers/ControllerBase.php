@@ -255,23 +255,59 @@ class ControllerBase extends Controller {
                 )
             );
 
-            if ($agency) {
-                $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
-                list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
-                $rgb = $r . ', ' . $g . ', ' . $b;
-                $vars = [
-                    'agency_id' => $agency->agency_id,
-                    'agency' => $agency,
-                    'agency_name' => $agency->name,
-                    'main_color_setting' => $agency->main_color,
-                    'rgb' => $rgb,
-                    'logo_path' => $agency->logo_path,
-                    'main_color' => str_replace('#', '', $agency->main_color),
-                    'primary_color' => str_replace('#', '', $agency->main_color),
-                    'secondary_color' => str_replace('#', '', $agency->secondary_color)
-                ];
-                $this->view->setVars($vars);
-            }
+
+        }
+
+        else if($this->session->has("sharing_code")) {
+
+            $code = $this->session->get("sharing_code");
+
+            $conditions = "viral_sharing_code = :viral_sharing_code:";
+            $parameters = array(
+                "viral_sharing_code" => $code
+            );
+
+
+            $agency = Agency::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+
+
+            if($agency->parent_id) {
+                $agency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+
+                $this->view->agencyId = $agency1->agency_id;
+                $this->view->agency_name = $agency1->name;
+
+             }
+
+             $agency = $agency1;
+
+
+        }
+
+
+
+
+        if ($agency) {
+            $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
+            list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+            $rgb = $r . ', ' . $g . ', ' . $b;
+            $vars = [
+                'agency_id' => $agency->agency_id,
+                'agency' => $agency,
+                'agency_name' => $agency->name,
+                'main_color_setting' => $agency->main_color,
+                'rgb' => $rgb,
+                'logo_path' => $agency->logo_path,
+                'main_color' => str_replace('#', '', $agency->main_color),
+                'primary_color' => str_replace('#', '', $agency->main_color),
+                'secondary_color' => str_replace('#', '', $agency->secondary_color)
+            ];
+            $this->view->setVars($vars);
         }
         
         $this->agency = $agency;
@@ -849,7 +885,7 @@ class ControllerBase extends Controller {
                     $usersGenerate = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId, false);
                 }
             } else {
-                
+
                 $users_report = null;
                 if ($loc) {
                     $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
@@ -876,7 +912,7 @@ class ControllerBase extends Controller {
                     $user_array=array();
 
 
-                    //print_r($Reviewlist);
+                   // dd($Reviewlist);
                    foreach($Reviewlist as $reviews)
                     {
                         if(!in_array($reviews->sent_by_user_id,$user_array))
@@ -992,7 +1028,7 @@ class ControllerBase extends Controller {
 
         $rating_array_set_all=array();
         $YNrating_array_set_all=array();
-        
+
         foreach($usersGenerate as $ux){
             $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 

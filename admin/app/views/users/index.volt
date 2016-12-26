@@ -149,8 +149,8 @@ foreach($users_report_generate as $user) {
   $i++;
   $total=$user->sms_sent_this_month+$user->sms_received_this_month;
   $star_rating=0;
-//echo "<pre>";
-  //print_r($YNrating_array_set);
+
+  
   ?>
                 <tr>
                   <td class="<?=$class?>"><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
@@ -203,7 +203,7 @@ foreach($users_report_generate as $user) {
                       <li><img src="/img/star2.png" class="img-responsive"></li>
                       <?php }?>
 
-                      <?php echo number_format(($sert),1); ?>
+                      <?php echo number_format(($user->rates/$user->sms_received_this_month),1); ?>
                     </ul>
                   <?php  } else {
 
@@ -370,7 +370,7 @@ foreach($users_report_generate as $user) {
 
                   <?php } elseif($review_invite_type_id==2){
                         
-                              
+
                           //$full_star=floor($user->rates/$user->sms_received_this_month);
                           //$half_star=($user->rates%$user->sms_received_this_month);
                           $sert=0;
@@ -387,7 +387,7 @@ foreach($users_report_generate as $user) {
                   ?>
 
                      <ul class="ratings">
-                    <?php 
+                    <?php
                     for($l=0;$l<$full_star;$l++)
                     { ?>
                       <li><img src="/img/star.png" class="img-responsive"></li>
@@ -395,7 +395,7 @@ foreach($users_report_generate as $user) {
                       <li><img src="/img/star2.png" class="img-responsive"></li>
                       <?php }?>
 
-                      <?php echo number_format(($sert),1); ?>
+                      <?php echo number_format(($user->rates/$user->sms_received_this_month),1); ?>
                     </ul>
                   <?php  } else {
 
