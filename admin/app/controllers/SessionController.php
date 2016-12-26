@@ -230,7 +230,12 @@ class SessionController extends ControllerBase {
             }
             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
             $_SESSION['email'] = $this->request->getPost('email');
-
+            $an=$this->request->getPost('name', 'striptags');
+            $msgx=$this->request->getPost('name', 'striptags')." is register under You with email ID ".$this->request->getPost('email', 'striptags');
+            $createdxx=date('Y-m-d H:i:s');
+            $result=$this->db->query(" INSERT INTO notification ( `to`, `from`, `message`, `read`,`created`,`updated`) VALUES ( '".$ParentID."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')");  
+                      
+            
             $this->db->commit();
 
             return $this->response->redirect('/session/thankyou');

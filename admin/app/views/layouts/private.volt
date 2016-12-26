@@ -212,7 +212,7 @@
                 {% endif %}
                 {% if agencytype == "agency" %}
                 <li class="dropdown dropdown-user" style="margin-left: 30px;">
-                <a href="/notification/allnotification/{{NumberAgency}}" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                <a href="/notification/allnotification/{{NumberAgency}}" class="dropdown-toggle">
                         <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-bell"></i> ( {{ NumberOfNotification }} )</span>
                         
                     </a>
