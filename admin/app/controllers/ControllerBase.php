@@ -710,6 +710,21 @@ class ControllerBase extends Controller {
         $params = null;
         $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
         $this->view->sms_sent_this_month_total = $rs->count();
+
+         $sql1 = "SELECT review_invite_id
+              FROM review_invite
+                INNER JOIN location ON location.location_id = review_invite.location_id
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id !=NULL";//exit;
+
+        // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql1, $params));
+        $this->view->sms_sent_this_month_total_non = $rs->count();
+
+
     }
 
     public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_auth_messaging_sid, $twilio_from_phone) {
