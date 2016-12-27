@@ -100,6 +100,19 @@ button.get_started{
   width: 400px;
 }
 
+.js-copytextarea
+{
+    background-color: #2a3644;
+    /*cursor: none;*/
+    width:20% !important;
+    border:none;
+
+}
+.js-textareacopybtn
+{
+  background-color: #2a3644;
+}
+
 .controls:focus {
   border-color: #4d90fe;
 }
@@ -686,14 +699,7 @@ div#image_container img.selected, div#image_container img:hover{
 .sms-chart-wrapper { width: 100%; position: relative; margin-bottom: 0; margin-top: -15px; }
 .sms-chart-wrapper .title { font-weight: bold; float: left; width: 30%; margin-top: 13px; }
 .sms-chart-wrapper .bar-wrapper { float: left; position: relative; width: 60%; }
-.sms-chart-wrapper .end-title { 
-    display: block;
-    float: right;
-    font-weight: bold;
-    margin-top: 5px;
-    text-align: right;
-    width: 100%;
-}
+.sms-chart-wrapper .end-title { display: block; float: right; font-weight: bold; margin-top: 5px; text-align: right; width: 100%;}
 .sms-chart-wrapper .end-title .goal { font-weight: normal; }
 .sms-chart-wrapper .bar-background { background-color: #FFFFFF; height: 16px; position: absolute; width: 100%; left: 0; margin-top: 15px; }
 .sms-chart-wrapper .bar-filled { background-color: #2a3644; height: 16px; position: absolute; min-width: 1px; left: 0; margin-top: 15px; }

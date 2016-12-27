@@ -56,6 +56,15 @@ class Email{
     public function sendActivationEmailToUser(Users $user) {
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($user->getId());
+        
+        if($_SESSION['password_save'])
+        {
+            $log_in_password=$_SESSION['password_save'];
+        }
+        else
+        {
+            $log_in_password="";
+        }
 
         $template='confirmation';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
@@ -67,7 +76,7 @@ class Email{
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
-            $EmailFromName="";
+            $EmailFromName="Zach Anderson";
             
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
@@ -87,6 +96,7 @@ class Email{
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
             $EmailFromName=$objParentAgency->email_from_name ?: "";
+
            
             //$EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
         }
@@ -104,6 +114,8 @@ class Email{
             'firstName' =>  $user->name,
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
+            'Loginpass'=>$log_in_password,
+           
         ];
 
         try {

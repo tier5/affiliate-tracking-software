@@ -88,7 +88,14 @@ class ControllerBase extends Controller {
                     'rgb' => $rgb,
                     'logo_path' =>  "/img/agency_logos/" . $agency->logo_path
                 ]);
-
+                $db = $this->di->get('db');
+                $db->begin();
+                $agency->agency_id;
+                 $result=$this->db->query(" SELECT * FROM `notification` WHERE `to` =".$agency->agency_id." AND `read` = 0");
+                 $x=$result->numRows();
+                 $this->view->NumberOfNotification;
+                 $this->view->setVar('NumberOfNotification', $x);
+                 $this->view->setVar('NumberAgency', $agency->agency_id);
             }
 
     //        $SD_Parts = explode('.', $_SERVER['HTTP_HOST']);
@@ -691,10 +698,10 @@ class ControllerBase extends Controller {
         //Total SMS Sent this month
         $start_time = date("Y-m-d", strtotime("first day of this month"));
         $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
-        $sql = "SELECT review_invite_id
+         $sql = "SELECT review_invite_id
               FROM review_invite
                 INNER JOIN location ON location.location_id = review_invite.location_id
-              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";//exit;
 
         // Base model
         $list = new ReviewInvite();

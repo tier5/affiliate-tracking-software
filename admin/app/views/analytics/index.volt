@@ -305,7 +305,7 @@
                         ?>
                         <div class="click-wrapper">
                             <div class="click-icon"><img src="<?=$click_site->icon_path?>"/></div>
-                            <div class="click-site" style="width: <?=$width?>%;">
+                            <div class="click-site" style="width: <?=$width?>px;">
                                 <span class="num-count"><?=$click_site->num_clicks?></span></div>
                             <div class="click-percent"><?=round($percent)?>%</div>
                         </div>

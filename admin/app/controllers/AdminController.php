@@ -233,18 +233,18 @@ class AdminController extends ControllerBase {
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw \Exception("Contact customer support.  Email configuration not setup correctly");
             $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
-            $EmailFromName = $objParentAgency->email_from_name ?: "No Reply";
+            $EmailFromName = $objParentAgency->email_from_name ?: "";
+
         }
 
         if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
             $EmailFrom = 'zacha@reviewvelocity.co';
-            $EmailFromName = "Zach Anderson";
-
+            $EmailFromName = "Zacha Anderson";
         if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             if(!$agency->email_from_address && !$agency->custom_domain)
                 throw \Exception("Contact customer support.  Email configuration not setup correctly");
             $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
-            $EmailFromName = $agency->email_from_name ?: "No Reply";
+            $EmailFromName = $agency->email_from_name ?: "";
         }
 
         $AgencyUser=$agency->name;
@@ -277,11 +277,29 @@ class AdminController extends ControllerBase {
                         <p>Looking forward to helping you build a strong online reputation.</p>';
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                         $Mail = $this->getDI()->getMail();
-                        $Mail->setFrom($EmailFrom, $EmailFromName);
+                        $Mail->setFrom($EmailFrom,$EmailFromName);
                         $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
 
 
                         /*** Feedback form ***/
+
+                        /*** login information ****/
+                         $password="";
+                         if($this->session->get("sharing_code"))
+                         {
+                           $password=$this->session->get("sharing_code"); 
+                         }
+                         $log_body='Hi '.$confirmation->user->name.',';
+                         $log_body=$log_body."<p>Email:".$feed_back_email."<br> Password: ".$password."</p>";
+
+                         $Mail_log = $this->getDI()->getMail();
+                        $Mail_log->setFrom($EmailFrom,$EmailFromName);
+                        $Mail_log->send($feed_back_email,'Login Details', '', '', $log_body);
+
+                        
+                        /*** login information ****/
+
+
         if ($confirmation->user->mustChangePassword == 'Y') {
             $this->flash->success('The email was successfully confirmed. Now you must change your password');
             return $this->response->redirect($this->_activeLanguage . '/session/changePassword');

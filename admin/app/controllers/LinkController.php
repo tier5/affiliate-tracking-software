@@ -196,6 +196,7 @@
                     $phone = $_POST['phone'];
                    $uid=$_POST['userID'];//exit;
                     //save the message to the database before sending the message
+
                     $invite = new ReviewInvite();
                     $invite->assign(array(
                         'name' => $name,
@@ -204,7 +205,7 @@
                         //TODO: Added google URL shortener here
                         'api_key' => $guid,
                         'sms_message' => $message.'  Reply stop to be removed',
-                        'date_sent' => date('Y-m-d H:i:s'),
+                        /*'date_sent' => date('Y-m-d H:i:s'),*/
                         'date_last_sent' => date('Y-m-d H:i:s'),
                         'sent_by_user_id' => $_POST['user_id']
                     ));
@@ -214,6 +215,7 @@
                         echo $invite->getMessages();
                         return;
                     } else {
+                       
 
                         /*echo $twilio_api_key;
                         echo '<br>';
@@ -247,7 +249,43 @@
 
                             //$this->flash->success("The SMS was sent successfully to: " . $phone);
                             //$this->view->render('users', 'reviewmsg');
+
+                             $last_insert_id=$invite->review_invite_id;
+
+                            $update_review = ReviewInvite::FindFirst('review_invite_id ='.$last_insert_id);
+                            $update_review->date_sent = date('Y-m-d H:i:s');
+                            $update_review->update();
                             
+                            $update_review->sms_message;
+                            $nolengthmessage=strlen($update_review->sms_message);
+                            $no=ceil($nolengthmessage/140)-1;
+                                if($no!=0){
+                                    for($i=1;$i<=$no;$i++){
+                                        
+                                        $invitex = new ReviewInvite();
+                                        $invitex->assign(array(
+                                        'date_sent' => $update_review->date_sent,
+                                        'phone' => $update_review->phone,
+                                        'name' => $update_review->name,
+                                        'followed_link' => $update_review->followed_link,
+                                        'api_key' => $update_review->api_key,
+                                        'location_id' => $update_review->location_id,
+                                        'date_viewed' => $update_review->date_viewed,
+                                        'review_invite_type_id' => $update_review->review_invite_type_id,
+                                        'rating' => $update_review->rating,
+                                        'comments' => $update_review->comments,
+                                        'sms_message' => $update_review->sms_message,
+                                        'recommend' => $update_review->recommend,
+                                        'sent_by_user_id' => $update_review->sent_by_user_id,
+                                        'times_sent' => $update_review->times_sent,
+                                        'date_last_sent' => $update_review->date_last_sent,
+                                        'is_resolved' => $update_review->is_resolved,
+                                        'sms_broadcast_id' => $update_review->sms_broadcast_id,
+                                        'link' => $update_review->link
+                                        ));
+                                        $invitex->save();
+                                    }
+                                }
                             $this->flashSession->success("The SMS was sent successfully to: " . $phone.".This page will automatically refresh in 5 seconds.".$message);
                             $this->view->disable();
                             return $this->response->redirect('link/send_review_invite_employee/'.$uid);

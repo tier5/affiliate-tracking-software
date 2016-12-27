@@ -1346,8 +1346,8 @@
                         'phone' => $phone,
                         //TODO: Added google URL shortener here
                         'api_key' => $guid,
-                        'sms_message' => $message.'  Reply stop to be removed',
-                        'date_sent' => date('Y-m-d H:i:s'),
+                        'sms_message' => $message,
+                        /*'date_sent' => date('Y-m-d H:i:s'),*/
                         'date_last_sent' => date('Y-m-d H:i:s'),
                         'sent_by_user_id' => $identity['id']
                     ));
@@ -1364,6 +1364,13 @@
                         //The message is saved, so send the SMS message now
                         //echo $message;exit;
                         if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
+
+
+                            $last_insert_id=$invite->review_invite_id;
+
+                        $update_review = ReviewInvite::FindFirst('review_invite_id ='.$last_insert_id);
+                        $update_review->date_sent = date('Y-m-d H:i:s');
+                        $update_review->update();
                             $this->flash->success("The SMS was sent successfully");
                         }
 

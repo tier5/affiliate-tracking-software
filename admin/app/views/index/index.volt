@@ -143,8 +143,23 @@
                                     </div>
                                 </div>
                             </div>
+
+
+
+
+
+
+
+
+
                             <div class="row">
-                                <div class="referral-link"><b>Personalized Referral Link:</b> <?=urldecode($share_link); ?></div>
+                                <div class="referral-link"><b>Personalized Referral Link:</b> 
+                                <!--<span id="perso_link">
+                                <?=urldecode($share_link); ?>
+
+                                </span>-->
+                                <input type="text" class="js-copytextarea referral-link" value="<?php echo urldecode($share_link); ?>" readonly >
+                                 <button class="js-textareacopybtn">Copy</button></div>
                             </div>
                         </div>
                     </div>
@@ -532,15 +547,22 @@
         </div>
     </form>
 </div>
+<script type="text/javascript">
+var copyTextareaBtn = document.querySelector('.js-textareacopybtn');
 
+copyTextareaBtn.addEventListener('click', function(event) {
+  var copyTextarea = document.querySelector('.js-copytextarea');
+  copyTextarea.select();
+  //alert(copyTextarea);
 
-<script>
-function googleplusbtn(url) {
-  sharelink = "https://plus.google.com/share?url="+url;
-  newwindow=window.open(sharelink,'name','height=400,width=600');
-  if (window.focus) {newwindow.focus()}                                                                                                                                
-  return false;
-}   
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Copying text command was ' + msg);
+  } catch (err) {
+    console.log('Oops, unable to copy');
+  }
+});
 </script>
 <script type="text/javascript">
     jQuery(document).ready(function($){
