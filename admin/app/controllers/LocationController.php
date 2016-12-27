@@ -4,6 +4,7 @@
     use Phalcon\Tag;
     use Phalcon\Mvc\Model\Criteria;
     use Phalcon\Paginator\Adapter\Model as Paginator;
+    use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
     use Vokuro\Forms\LocationForm;
     use Vokuro\Models\Agency;
     use Vokuro\Models\FacebookScanning;
@@ -1328,6 +1329,35 @@
                     return;
                 } else {
                     //else we have a phone number, so send the message
+                    /*** checking for total sms sent vs total sms allowed to send 27/12/2016 ****/
+                    $location_id=$this->session->get('auth-identity')['location_id'];
+                    $start_time = date("Y-m-d", strtotime("first day of this month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+        $sql = "SELECT review_invite_id
+              FROM review_invite
+                INNER JOIN location ON location.location_id = review_invite.location_id
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "'";
+               // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $total_sms_sent=$rs->count();//exit;
+
+        $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+       // $identity = $this->session->get('auth-identity');
+        //echo $objAgency->agency_id;exit;
+
+        if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $agency->parent_id > 0)
+            $MaxSMS = $objSubscriptionManager->GetMaxSMS($agency->agency_id, $location_id);
+        else
+            $MaxSMS = 0;
+        $NonViralSMS = $MaxSMS;
+        $ViralSMS = $objSubscriptionManager->GetViralSMSCount($agency->agency_id);
+       $MaxSMS += $ViralSMS;
+                    /*** checking for total sms sent vs total sms allowed to send 27/12/2016 ****/
+                    if($total_sms_sent<$MaxSMS){
                     $name = $_POST['name'];
                     $message = $_POST['SMS_message'].'  Reply stop to be removed';
                     //replace out the variables
@@ -1374,6 +1404,11 @@
                             $this->flash->success("The SMS was sent successfully");
                         }
 
+                        }
+                    } //total sms vd allowed checking end
+                    else
+                    {
+                        $this->flash->error("Sorry!! you have exceeded the total number of allowed SMS sent out.");
                     }
                 }
             }

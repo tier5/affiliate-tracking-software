@@ -9,6 +9,7 @@
     use Vokuro\Models\ReviewsMonthly;
     use Vokuro\Models\SMSBroadcast;
     use Vokuro\Models\Users;
+    use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
 
 
     /**
@@ -320,7 +321,34 @@
                     if (!empty($_POST['review_invite_ids'])) {
                         //we have messages to send, so lets first create an SMS Broadcast record
 
+                        /*** check for allowed sms ***/
+                        $start_time = date("Y-m-d", strtotime("first day of this month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+        $sql = "SELECT review_invite_id
+              FROM review_invite
+                INNER JOIN location ON location.location_id = review_invite.location_id
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time ."' AND sms_broadcast_id!=NULL";
+               // Base model
+        $list = new ReviewInvite();
 
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $total_sms_sent=$rs->count();//exit;
+
+        $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+       // $identity = $this->session->get('auth-identity');
+        //echo $objAgency->agency_id;exit;
+        $Val_location_id=$this->session->get('auth-identity')['location_id'];
+        if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $agency->parent_id > 0)
+            $MaxSMS = $objSubscriptionManager->GetMaxSMS($agency->agency_id, $Val_location_id);
+        else
+            $MaxSMS = 0;
+        $NonViralSMS = $MaxSMS;
+        $ViralSMS = $objSubscriptionManager->GetViralSMSCount($agency->agency_id);
+       $MaxSMS += $ViralSMS;
+/*** check for allowed sms ***/
+                        if($total_sms_sent<$MaxSMS){
                         $smsb = new SMSBroadcast();
                         $smsb->assign(array(
                             'api_key' => $this->GUID(),
@@ -394,6 +422,12 @@
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
                             }
                         }
+                        }
+                        else
+                        {
+                            $this->flash->success("You have exceeded the the limit of sending non viral messages.");
+                        }
+
                     } //end checking for formposttype
                 }
             }

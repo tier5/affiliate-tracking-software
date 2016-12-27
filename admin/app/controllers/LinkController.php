@@ -4,6 +4,7 @@
     use Phalcon\Tag;
     use Phalcon\Mvc\Model\Criteria;
     use Phalcon\Paginator\Adapter\Model as Paginator;
+    use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
     use Vokuro\Forms\ChangePasswordForm;
     use Vokuro\Models\Location;
     use Vokuro\Forms\UsersForm;
@@ -183,6 +184,34 @@
                         }
                     
                     //else we have a phone number, so send the message
+
+                        $start_time = date("Y-m-d", strtotime("first day of this month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+        $sql = "SELECT review_invite_id
+              FROM review_invite
+                INNER JOIN location ON location.location_id = review_invite.location_id
+              WHERE location.agency_id = " . $objAgency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time ."' AND sms_broadcast_id IS NULL";
+               // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $total_sms_sent=$rs->count();//exit;
+
+        $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+       // $identity = $this->session->get('auth-identity');
+        //echo $objAgency->agency_id;exit;
+
+        if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $objAgency->parent_id > 0)
+            $MaxSMS = $objSubscriptionManager->GetMaxSMS($objAgency->agency_id, $location_id);
+        else
+            $MaxSMS = 0;
+        $NonViralSMS = $MaxSMS;
+        echo $ViralSMS = $objSubscriptionManager->GetViralSMSCount($objAgency->agency_id);exit;
+       $MaxSMS += $ViralSMS;
+       if($total_sms_sent<$MaxSMS){
+
                     $name = $_POST['name'];
                     $message = $_POST['SMS_message'].'  Reply stop to be removed';
                     //replace out the variables
@@ -293,6 +322,17 @@
                            
                         }
                     }
+                     } // end of total checking
+
+                        else
+                        {
+                            
+                            $this->flashSession->error("Sorry!! this message will not be sent as You have exceeded the total sms allowed for your business to sent.");
+                            
+                            $this->view->disable();
+                            return $this->response->redirect('link/send_review_invite_employee/'.$uid);
+
+                        }
                 }
             }
 
