@@ -214,22 +214,21 @@
                 if($agency->parent_id == Agency::BUSINESS_UNDER_RV) {
                     $twilio_api_key = $this->config->twilio->twilio_api_key;
                     $twilio_auth_token = $this->config->twilio->twilio_auth_token;
-                    $twilio_auth_messaging_sid = $this->config->twilio->twilio_auth_messaging_sid;
+                    
                     $twilio_from_phone = $this->config->twilio->twilio_from_phone;
                 } else {
-                    if (isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != "" && isset($agency->twilio_auth_messaging_sid) && $agency->twilio_auth_messaging_sid != "" && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
+                    if (isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != ""  && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
                         $twilio_api_key = $agency->twilio_api_key;
                         $twilio_auth_token = $agency->twilio_auth_token;
-                        $twilio_auth_messaging_sid = $agency->twilio_auth_messaging_sid;
+                        
                         $twilio_from_phone = $agency->twilio_from_phone;
                     } else if (isset($agency->parent_id)) {
                         $parameters1 = array("agency_id" => $agency->parent_id);
                         $agency1 = Agency::findFirst(array($conditions, "bind" => $parameters1));
 
-                        if (isset($agency1->twilio_api_key) && $agency1->twilio_api_key != "" && isset($agency1->twilio_auth_token) && $agency1->twilio_auth_token != "" && isset($agency1->twilio_auth_messaging_sid) && $agency1->twilio_auth_messaging_sid != "" && isset($agency1->twilio_from_phone) && $agency1->twilio_from_phone != "") {
+                        if (isset($agency1->twilio_api_key) && $agency1->twilio_api_key != "" && isset($agency1->twilio_auth_token) && $agency1->twilio_auth_token != "" && isset($agency1->twilio_from_phone) && $agency1->twilio_from_phone != "") {
                             $twilio_api_key = $agency1->twilio_api_key;
                             $twilio_auth_token = $agency1->twilio_auth_token;
-                            $twilio_auth_messaging_sid = $agency1->twilio_auth_messaging_sid;
                             $twilio_from_phone = $agency1->twilio_from_phone;
                         }
                     }
@@ -312,7 +311,7 @@
 
                    // echo $message;exit;
 
-                    if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
+                    if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $twilio_api_key, $twilio_auth_token, $twilio_from_phone)) {
                         $this->flash->success("The SMS was sent successfully to: " . $_POST['phone']);
                     }
 
@@ -418,7 +417,7 @@
                             $invite2->save();
                             //echo $message;exit;
                             //The message is saved, so send the SMS message now
-                            if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
+                            if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_from_phone)) {
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
                             }
                         }

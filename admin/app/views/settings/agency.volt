@@ -548,23 +548,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="twilio_auth_messaging_sid" class="col-md-4 control-label">Twilio Messaging
-                                    Service SID</label>
-                                <div class="col-md-8">
-                                    {{ form.render("twilio_auth_messaging_sid", ["class": 'form-control', 'placeholder': 'Twilio Messaging Service SID']) }}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <i>Either the Twilio Messaging Service SID or the Twilio Phone number is required.
-                                        The Twilio Messaging Service SID allows for dynamic phone numbers.
-                                        <a href="https://www.twilio.com/copilot" target="_blank">Click here</a> to read
-                                        more about this field.</i>
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="form-group">
                             <div class="row">
                                 <label for="twilio_from_phone" class="col-md-4 control-label">Twilio Phone

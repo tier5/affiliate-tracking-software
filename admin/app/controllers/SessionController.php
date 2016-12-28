@@ -1337,25 +1337,27 @@ class SessionController extends ControllerBase {
         $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
 
         if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            echo "1";
             $TwilioAPIKey = $this->config->twilio->twilio_api_key;
             $TwilioAuthToken = $this->config->twilio->twilio_auth_token;
-            $TwilioAuthMessagingSID = $this->config->twilio->twilio_auth_messaging_sid;
+            
             $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $this->config->twilio->twilio_from_phone;
         } else {
             //echo $objBusiness->parent_id;exit;
+            
             if($objBusiness->parent_id!=0)
             {
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
             $TwilioAPIKey = $objAgency->twilio_api_key;
             $TwilioAuthToken = $objAgency->twilio_auth_token;
-            $TwilioAuthMessagingSID = $objAgency->twilio_auth_messaging_sid;
+            
             $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $objAgency->twilio_from_phone;
             }
             else
             {
                $TwilioAPIKey = $objBusiness->twilio_api_key;
             $TwilioAuthToken = $objBusiness->twilio_auth_token;
-            $TwilioAuthMessagingSID = $objBusiness->twilio_auth_messaging_sid;
+            
             $TwilioFromPhone = $objBusiness->twilio_from_phone; 
             }
         }
@@ -1365,7 +1367,7 @@ class SessionController extends ControllerBase {
       // echo $TwilioAPIKey."-".$TwilioAuthToken."-".$TwilioAuthMessagingSID."-".$TwilioFromPhone;exit;
 
 
-        if(!$TwilioAPIKey || !$TwilioAuthToken || !$TwilioAuthMessagingSID || !$TwilioFromPhone) {
+        if(!$TwilioAPIKey || !$TwilioAuthToken || !$TwilioFromPhone) {
             $this->flash->error("Twilio configuration error.  Please contact customer support.");
         }
         
@@ -1381,7 +1383,7 @@ class SessionController extends ControllerBase {
         }
         }
         //The message is saved, so send the SMS message now
-        if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $TwilioAPIKey, $TwilioAuthToken, $TwilioAuthMessagingSID, $TwilioFromPhone)) {
+        if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $TwilioAPIKey, $TwilioAuthToken,  $TwilioFromPhone)) {
             $this->flash->success("The message was sent!");
         }
         else
