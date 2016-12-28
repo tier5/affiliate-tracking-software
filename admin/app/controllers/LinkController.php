@@ -208,7 +208,7 @@
         else
             $MaxSMS = 0;
         $NonViralSMS = $MaxSMS;
-        echo $ViralSMS = $objSubscriptionManager->GetViralSMSCount($objAgency->agency_id);exit;
+        $ViralSMS = $objSubscriptionManager->GetViralSMSCount($objAgency->agency_id);//exit;
        $MaxSMS += $ViralSMS;
        if($total_sms_sent<$MaxSMS){
 
