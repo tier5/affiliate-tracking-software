@@ -81,6 +81,23 @@ class ControllerBase extends Controller {
             );
 
             if ($agency) {
+
+                if($agency->parent_id!=0)
+                {
+                    $conditions = "agency_id = :agency_id:";
+                    $parameters = array(
+                "agency_id" => $agency->parent_id
+            );
+
+            $parentagency = Agency::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+                 $this->view->setVar('agency_sms', trim($parentagency->SMS_message));
+                }
+
                 list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
                 $rgb = $r . ', ' . $g . ', ' . $b;
                 $this->view->setVars([
