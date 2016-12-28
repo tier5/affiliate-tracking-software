@@ -144,14 +144,14 @@
         if($objAgency->parent_id > 0) {
             // Return parent's keys.
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = " . $objAgency->parent_id);
-            $TwilioSID = $objParentAgency->twilio_auth_messaging_sid;
+            
             $TwilioToken = $objParentAgency->twilio_auth_token;
             // We use the businesses' from number if it exists, otherwise use the agency's.
             $TwilioFrom = $objAgency->twilio_from_phone ?: $objParentAgency->twilio_from_phone;
             $TwilioAPI = $objParentAgency->twilio_api_key;
         } elseif($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $IsAdmin) {
             // Business under RV.  Return default from config.
-            $TwilioSID = $this->config->twilio->twilio_auth_messaging_sid;
+            
             $TwilioToken = $this->config->twilio->twilio_auth_token;
             $TwilioFrom = $this->config->twilio->twilio_from_phone;
             $TwilioAPI = $this->config->twilio->twilio_api_key;
@@ -160,7 +160,7 @@
 
             $twilio_api_key=$TwilioAPI;
             $twilio_auth_token=$TwilioToken;
-            $twilio_auth_messaging_sid=$TwilioSID;
+            
             $twilio_from_phone=$TwilioFrom;
                    
                     //echo 'SMS starts';exit;
@@ -208,7 +208,7 @@
         else
             $MaxSMS = 0;
         $NonViralSMS = $MaxSMS;
-        $ViralSMS = $objSubscriptionManager->GetViralSMSCount($objAgency->agency_id);//exit;
+        $ViralSMS = $objSubscriptionManager->GetViralSMSCount($objAgency->agency_id);
        $MaxSMS += $ViralSMS;
        if($total_sms_sent<$MaxSMS){
 
@@ -273,7 +273,7 @@
                         //exit;
                         
                         //echo $this->twilio_api_key;exit;
-                        if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
+                        if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token,  $twilio_from_phone)) {
                             //echo $uid;exit;
 
                             //$this->flash->success("The SMS was sent successfully to: " . $phone);
