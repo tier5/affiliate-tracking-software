@@ -211,19 +211,24 @@
             $invite->recommend = 'N';
             $invite->save();
             $this->view->setVar('invite', $invite);
-
+            //echo $invite->location_id;exit;
             //we have the invite, now find the location
             $locationobj = new Location();
             $location = $locationobj::findFirst($invite->location_id);
-
+            //echo $location->agency_id;exit;
             //we have the location, now find the agency
             $agencyobj = new Agency();
             $agency = $agencyobj::findFirst($location->agency_id);
+            $parent_agency=$agencyobj::findFirst($agency->parent_id);
+            /*echo $parent_agency->name;
+            echo "<br>";
+            echo $parent_agency->website;exit;*/
             $this->view->sms_button_color = $location->sms_button_color;
             $this->view->logo_path = $location->sms_message_logo_path;
             $this->view->name = $location->name;
             $this->view->objname = $location->name;
             $this->view->objAgency=$agency;
+            $this->view->parent_agency=$parent_agency;
             // Negative feedback comments are being posted
             if ($this->request->isPost()) {
                 if ($invite->comments)
