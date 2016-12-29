@@ -32,89 +32,18 @@
 
         public function indexAction() {
 
-            $conditions = "api_key = :api_key:";
+           $conditions = "api_key = :api_key:";
 
             $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
             $review_invite = new ReviewInvite();
             $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
 
             if($invite->rating)
-                //$this->response->redirect('/review/expired');
+                $this->response->redirect('/review/expired');
 
             if ($invite->location_id > 0) {
 
-                /**** send mail to business and user ***/
-                $user_sent=$invite->sent_by_user_id;
-                $userobj = new Users();
-                $user_info = $userobj::findFirst($user_sent);
-                $emp= $user_info->is_employee;
-                //echo "<br>";
-                $role= $user_info->role;
-
-                if($emp==1 && $role=="Super Admin")
-                {    
-                      $EmailFrom = 'zacha@reviewvelocity.co';
-                      $EmailFromName = "Zach Anderson";
-                      $to=$user_info->email;
-                      $subject="New Feedback Came Aginst Review";
-                      $mail_body="Dear ".$user_info->name;
-                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
-                     $Mail = $this->getDI()->getMail();
-                    $Mail->setFrom($EmailFrom, $EmailFromName);
-                    $Mail->send($to, $subject, '', '', $mail_body);
-                }
-                else
-                {
-                    $TwilioToken = $this->config->twilio->twilio_auth_token;
-                    $TwilioFrom = $this->config->twilio->twilio_from_phone;
-                    $TwilioAPI = $this->config->twilio->twilio_api_key;
-
-                    /*** mail to user ***/
-                      $EmailFrom = 'zacha@reviewvelocity.co';
-                      $EmailFromName = "Zach Anderson";
-                      $to=$user_info->email;
-                      $subject="New Feedback Came Aginst Review";
-                      $mail_body="Dear ".$user_info->name;
-                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
-                     $Mail = $this->getDI()->getMail();
-                    $Mail->setFrom($EmailFrom, $EmailFromName);
-                    $Mail->send($to, $subject, '', '', $mail_body);
-
-                    /*** mail to user end ****/
-
-                    /**** mail to busines ****/
-
-                    $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
-
-                    $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
-
-                      $EmailFrom = 'zacha@reviewvelocity.co';
-                      $EmailFromName = "Zach Anderson";
-                      $to=$business_info->email;
-                      $subject="New Feedback Came Aginst Review";
-                      $mail_body="Dear ".$business_info->name;
-                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link Employee under your business (".$user_info->name.") have sent to user.</p>";
-                    $Mail = $this->getDI()->getMail();
-                    $Mail->setFrom($EmailFrom, $EmailFromName);
-                    $Mail->send($to, $subject, '', '', $mail_body);
-
-                    /**** mail to busines ****/
-
-                    /*** sms to user ***/
-                     if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
-                     }
-                    /*** sms to user ***/
-
-                    /*** sms to business ***/
-
-                     if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
-                     }
-                    /*** sms to business ***/
-
-
-                }
-                //exit;
-                /**** send mail to business and user ***/
+          
                 //echo $invite->location_id;exit;
                 $locationobj = new Location();
                 $location = $locationobj::findFirst($invite->location_id);
@@ -193,6 +122,90 @@
 
                 if ($invite->location_id > 0) {
                    // echo $rating;exit;
+
+                          /**** send mail to business and user ***/
+                $user_sent=$invite->sent_by_user_id;
+                $userobj = new Users();
+                $user_info = $userobj::findFirst($user_sent);
+                $emp= $user_info->is_employee;
+                //echo "<br>";
+                $role= $user_info->role;
+
+                if($emp==1 && $role=="Super Admin")
+                {  
+                    $TwilioToken = $this->config->twilio->twilio_auth_token;
+                    $TwilioFrom = $this->config->twilio->twilio_from_phone;
+                    $TwilioAPI = $this->config->twilio->twilio_api_key;
+
+                      $EmailFrom = 'zacha@reviewvelocity.co';
+                      $EmailFromName = "Zach Anderson";
+                      $to=$user_info->email;
+                      $subject="New Feedback Came Aginst Review";
+                      $mail_body="Dear ".$user_info->name;
+                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
+                     $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
+                    $Mail->send($to, $subject, '', '', $mail_body);
+
+
+                    if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                     }
+                }
+                else
+                {
+                    $TwilioToken = $this->config->twilio->twilio_auth_token;
+                  
+                    $TwilioFrom = $this->config->twilio->twilio_from_phone;
+                  
+                   $TwilioAPI = $this->config->twilio->twilio_api_key;
+                   
+
+                    /*** mail to user ***/
+                      $EmailFrom = 'zacha@reviewvelocity.co';
+                      $EmailFromName = "Zach Anderson";
+                      $to=$user_info->email;
+                      $subject="New Feedback Came Aginst Review";
+                      $mail_body="Dear ".$user_info->name;
+                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
+                    $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
+                    $Mail->send($to, $subject, '', '', $mail_body);
+
+                    /*** mail to user end ****/
+
+                    /**** mail to busines ****/
+
+                    $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
+
+                    $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
+
+                      $EmailFrom = 'zacha@reviewvelocity.co';
+                      $EmailFromName = "Zach Anderson";
+                      $to=$business_info->email;
+                      $subject="New Feedback Came Aginst Review";
+                      $mail_body="Dear ".$business_info->name;
+                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link Employee under your business (".$user_info->name.") have sent to user.</p>";
+                    $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
+                    $Mail->send($to, $subject, '', '', $mail_body);
+
+                    /**** mail to busines ****/
+
+                    /*** sms to user ***/
+                     if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                     }
+                    /*** sms to user ***/
+
+                    /*** sms to business ***/
+
+                     if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                     }
+                    /*** sms to business ***/
+
+
+                }
+                //exit;
+                /**** send mail to business and user ***/
 
                     $locationobj = new Location();
                     $location = $locationobj::findFirst($invite->location_id);
