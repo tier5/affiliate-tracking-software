@@ -17,7 +17,7 @@
     <!-- Begin primary / secondary color css.  Should probably move -->
     <style type="text/css">
         .page-sidebar .page-sidebar-menu > li.active > a {
-            background: {{ primary_color }} none repeat scroll 0 0 !important;
+            /*background: {{ primary_color }} none repeat scroll 0 0 !important;*/
         }
 
         .btnSecondary, .sms-chart-wrapper .bar-filled, .backgroundSecondary {
