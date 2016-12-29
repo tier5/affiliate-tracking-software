@@ -60,6 +60,7 @@
             }
 
             if ($this->request->isPost()) {
+
                 $form = new SettingsForm($agency);
                 $agencyform = new AgencyForm($agency);
                 $form->bind($_POST, $agency);
@@ -79,8 +80,8 @@
                     //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
                     // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
                 } else {
-                    //exit;
-                   
+                    
+                  // echo 'kk';exit;
                     $agency->assign(array(
                         'review_invite_type_id' => $this->request->getPost('review_invite_type_id', 'int'),
                         'review_goal' => $this->request->getPost('review_goal', 'int'),
@@ -114,6 +115,9 @@
                         'postal_code' => $this->request->getPost('postal_code', 'striptags'),
                         'country' => $this->request->getPost('country', 'striptags'),
                         'phone' => $this->request->getPost('phone', 'striptags'),
+                        'welcome_email' => $this->request->getPost('welcome_email', 'striptags'),
+                        'viral_mail' => $this->request->getPost('viral_mail', 'striptags'),
+                       
                     ));
                     //$file_location = $this->uploadAction($agency->agency_id);
                     if ($file_location != '') $agency->logo_path = $file_location;
@@ -187,6 +191,8 @@
             'postal_code'                   => 'string',
             'country'                       => 'string',
             'phone'                         => 'string',
+            'viral_mail'                    =>'string',
+            'welcome_email'                 =>'welcome_email',
         ];
 
         protected $tAgencyFields = [
@@ -210,6 +216,8 @@
             'phone'                         => 'string',
             'main_color'                    => 'string',
             'secondary_color'               => 'string',
+            'viral_mail'                    =>'string',
+            'welcome_email'                 =>'welcome_email',
         ];
 
         public function dismissstripeAction() {
@@ -251,6 +259,7 @@
                 //dd($entity);
 
                 $form = new SettingsForm($entity);
+                //dd($form);
                 $agencyform = new AgencyForm($entity);
                 $form->bind($_POST, $entity);
                 $agencyform->bind($_POST, $entity);
@@ -271,7 +280,10 @@
                 } else {
                     $tEntityArray = [];
                     $tFieldArray = $type == 'agency' ? 'tAgencyFields' : 'tLocationFields';
+                   //echo  $this->request->getPost('welcome_email', 'striptags');exit;
                     foreach($this->$tFieldArray as $Field => $DataType) {
+                       /* echo $this->request->getPost($Field, 'striptags');
+                        echo "<br>";*/
                         switch($DataType) {
                             case 'int':
                                 //$tEntityArray[$Field] = (is_int($this->request->getPost($Field, 'int')) ?$this->request->getPost($Field, 'int'): 0  );
@@ -290,6 +302,7 @@
                     }
 
                     $entity->assign($tEntityArray);
+                    //dd($entity);
                     // Don't hate me for this -- GG
                     $PrimaryID = $type == 'agency' ? 'agency_id' : 'location_id';
                     $Prefix = $type == 'agency' ? 'a' : 'l';
@@ -527,6 +540,9 @@
                     $objAgency->twilio_auth_token = trim($objAgency->twilio_auth_token);
                     $objAgency->twilio_auth_messaging_sid = trim($objAgency->twilio_auth_messaging_sid);
                     $objAgency->twilio_from_phone = trim($objAgency->twilio_from_phone);
+                    $objAgency->welcome_email = trim($objAgency->welcome_email);
+                    $objAgency->welcome_email = trim($objAgency->welcome_email);
+                    $objAgency->viral_mail = trim($objAgency->viral_mail);
                     $objAgency->save();
 
                     $this->flash->success("The settings were updated successfully");

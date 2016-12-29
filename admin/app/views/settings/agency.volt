@@ -134,6 +134,12 @@
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
                         Intercom </a></li>
+
+                         <li class=""><a href="#tab_email" data-toggle="tab" <?=(isset($this->
+                        session->get('auth-identity')['agencytype']) &&
+                        $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
+                        Email </a></li>
+
                     <li><a href="#tab_notification" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>>
@@ -661,6 +667,40 @@
                         </div>
                     </div>
                     <!-- END Stripe Settings  -->
+
+                    <!-- Start Email Settings  -->
+                         <div class="tab-pane fade in" id="tab_email">
+                        
+                        <div class="form-group">
+                               <div class="row">
+                                <label for="welcome_email_business" class="col-md-4 control-label">Welcome Email for business</label>
+                                <div class="col-md-8">
+                                    <textarea style="width: 100%;" class="form-control" name="welcome_email"><?=(isset($_POST['welcome_email'])?$_POST["welcome_email"]:(isset($agency->
+                                        welcome_email)?$agency->welcome_email:''))?></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="intercom_security_hash" class="col-md-4 control-label">Viral Email body</label>
+                               <div class="col-md-8">
+                                    <textarea style="width: 100%;" class="form-control" name="viral_mail"><?=(isset($_POST['viral_mail'])?$_POST["viral_mail"]:(isset($agency->
+                                        viral_mail)?$agency->viral_mail:''))?></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Email Settings  -->
 
                     <!-- START Intercom Settings  -->
                     <div class="tab-pane fade in" id="tab_intercom">
