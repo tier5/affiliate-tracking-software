@@ -520,14 +520,7 @@
 
                     <!-- START Twilio Settings  -->
                     <div class="tab-pane fade" id="tab_twilio">
-                    <style type="text/css">
-    #twilio-connect-button {
-        background: url(https://www.twilio.com/bundles/connect-apps/img/connect-button.png);
-        width: 130px; height: 34px; display: block; margin: 0 auto;
-    }
-    #twilio-connect-button:hover { background-position: 0 34px; }
-</style>
-<a href="https://www.twilio.com/authorize/CN20b7d45c27f923c7bb298a151541300a" id="twilio-connect-button"></a>
+                    
                         <div class="form-group">
                             <div class="row">
                                 <label for="twilio_api_key" class="col-md-4 control-label">Twilio API Key</label>

@@ -106,7 +106,7 @@
 			}
 		});
 		$('#purchased_number_list').click(function(){
-		alert("previous");
+		
 		$("#result_valx").html("");
 		$("#result_valx").html("<span>loading......</span>");
 			$.ajax({
