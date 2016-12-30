@@ -255,6 +255,14 @@ class AdminController extends ControllerBase {
 
         $AgencyName=$parent_agency->name;
         $Domain = $this->config->application->domain;
+
+
+        $_SESSION['Agencyname_log']=$AgencyName;
+        $_SESSION['AgencyUser_log']=$AgencyUser;
+        $_SESSION['EmailFrom_log']=$EmailFrom;
+        $_SESSION['EmailFromName_log']=$EmailFromName;
+        $_SESSION['toemail_log']=$confirmation->user->email;
+        $_SESSION['name_log']=$confirmation->user->name;
             /*** agency information ***/
 
         /*** Feedback form ***/
