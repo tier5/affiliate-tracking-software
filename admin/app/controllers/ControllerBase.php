@@ -749,7 +749,17 @@ class ControllerBase extends Controller {
             $this->flash->error("Missing twilio configuration.");
             return false;
         }
+        $identity = $this->auth->getIdentity();
+        $idxcx=$identity['id'];
+        $result=$this->db->query(" SELECT * FROM `twilio_number_to_business` WHERE `buisness_id`='".$idxcx."'");
 
+        $smsdetails=$result->fetch();
+        $xcd=$result->numRows();
+            if($xcd!=0){
+                $AccountSid=$smsdetails['parent_twilio_api_key'];
+                $AuthToken=$smsdetails['parent_twilio_auth_token'];
+                $twilio_from_phone=$smsdetails['phone_number'];
+            }
         $client = new Services_Twilio($AccountSid, $AuthToken);
 
         try {
