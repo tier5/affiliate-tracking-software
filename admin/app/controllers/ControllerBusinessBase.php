@@ -265,7 +265,7 @@ public function editAction($agency_id = 0) {
                     
                     $EmailFrom = 'zacha@reviewvelocity.co';
                     $EmailFromName = "Zach Anderson";
-                    $subject="New Business Registered uccessfully";
+                    $subject="New Business Registered Successfully";
                     $mail_body='Dear '.$objSuperAdminUser->name.',';
                     $mail_body=$mail_body.'<p>Congratulations a new business has registered successfully with following details:
                         </p>';
