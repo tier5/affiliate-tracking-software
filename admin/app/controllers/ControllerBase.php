@@ -760,7 +760,7 @@ class ControllerBase extends Controller {
                 ));
             }
         } catch (Services_Twilio_RestException $e) {
-            $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
+            $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your SMS configuration and try again. ');
             return false;
         }
         return true;
