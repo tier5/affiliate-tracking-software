@@ -145,7 +145,7 @@ class BusinessPricingPlanController extends ControllerBase {
 
     }
     public function updateSubcriptionNameAction(){
-        //echo '<pre>';print_r($_POST);exit;
+        $this->view->disable();
         $subscription_id=$_POST['subscription_id'];
         $subcription_name=$_POST['subcription_name'];
          $dbQuery=$this->db->query("select * from `subscription_pricing_plan` WHERE `name`='".$subcription_name."' and `id` !=".$subscription_id);
