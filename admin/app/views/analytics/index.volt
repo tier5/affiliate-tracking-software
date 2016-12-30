@@ -517,3 +517,6 @@
         });
     });
 </script>
+<style>
+.click-wrapper .click-site { background-color: {{secondary_color}} !important;}
+</style>
