@@ -257,8 +257,12 @@ public function editAction($agency_id = 0) {
                     $result=$this->db->query(" INSERT INTO notification ( `to`, `from`, `message`, `read`,`created`,`updated`) VALUES ( '".$parent_id."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')");
                     /*** notification mail ***/  
                     $objSuperAdminUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $parent_id . ' AND role="Super Admin"');
-
-                    $subscriptionPricePlan = SubscriptionPricingPlan::findFirst('id = '.$this->request->getPost('subscription_pricing_plan_id', 'striptags'));
+                    $planName = 'Free';
+                    if($this->request->getPost('subscription_pricing_plan_id', 'striptags') != 0){
+                        $subscriptionPricePlan = SubscriptionPricingPlan::findFirst('id = '.$this->request->getPost('subscription_pricing_plan_id', 'striptags'));
+                        $planName = $subscriptionPricePlan->name;
+                    }
+                    
                     $EmailFrom = 'zacha@reviewvelocity.co';
                     $EmailFromName = "Zach Anderson";
                     $subject="New Business Registered uccessfully";
@@ -267,7 +271,7 @@ public function editAction($agency_id = 0) {
                         </p>';
                     $mail_body .= '<p>Name: '.$an.'</p>';
                     $mail_body .= '<p>Email: '.$this->request->getPost('email', 'striptags').'</p>';
-                    $mail_body .= '<p>Subscription: '.$subscriptionPricePlan->name.'</p>';
+                    $mail_body .= '<p>Subscription: '.$planName.'</p>';
                     $mail_body=$mail_body."Thanks";
 
                         $Mail = $this->getDI()->getMail();

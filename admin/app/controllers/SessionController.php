@@ -93,7 +93,7 @@ class SessionController extends ControllerBase {
         try {
             $subscription_id = null;
             $short_code = $this->request->getPost('short_code');
-
+            $subscription_pricing_plan = '';
 
             $ssp = new SubscriptionPricingPlan();
             $sharing_code = $this->request->getPost('sharing_code', 'striptags');
@@ -244,14 +244,24 @@ class SessionController extends ControllerBase {
 
                /*** notification mail ***/  
                     $objSuperAdminUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $ParentID . ' AND role="Super Admin"');
+                    
 
+                    if(isset($subscription_pricing_plan->name)){
+                        $planName = $subscription_pricing_plan->name;
+                    }else{
+                        $planName = 'Free';
+                    }
+                    
                     $EmailFrom = 'zacha@reviewvelocity.co';
                     $EmailFromName = "Zach Anderson";
-                    $subject="New Notification Received";
-                    $mail_body='Hi '.$objSuperAdminUser->name.',';
-                    $mail_body=$mail_body.'<p>A new Business has been sign Up under you. please view your notification panel in dashboard to get the details.
+                    $subject="New Business Registered uccessfully";
+                    $mail_body='Dear '.$objSuperAdminUser->name.',';
+                    $mail_body=$mail_body.'<p>Congratulations a new business has registered successfully with following details:
                         </p>';
-                    $mail_body=$mail_body."Thanks,<br>Zach Anderson";
+                    $mail_body .= '<p>Name: '.$an.'</p>';
+                    $mail_body .= '<p>Email: '.$this->request->getPost('email', 'striptags').'</p>';
+                    $mail_body .= '<p>Subscription: '.$planName.'</p>';
+                    $mail_body=$mail_body."Thanks";
 
                         $Mail = $this->getDI()->getMail();
                     $Mail->setFrom($EmailFrom, $EmailFromName);
