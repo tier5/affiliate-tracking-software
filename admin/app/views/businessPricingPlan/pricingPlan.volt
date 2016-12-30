@@ -328,7 +328,7 @@
                 success: function(result){
                    
                     if(result=="done"){
-                    alert("Successfully updated!");
+                    alert("Successfully updated subscription!");
                     location.reload(true);
                     }
                     else
