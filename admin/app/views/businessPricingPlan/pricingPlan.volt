@@ -326,7 +326,14 @@
                 url: "/businessPricingPlan/updateSubcriptionName", 
                 data:{subscription_id :subscription_id,subcription_name:subcription_name},
                 success: function(result){
-                   alert(result);
+                   if(result==1)
+                   {
+                   alert('done');
+                   }
+                   else
+                   {
+                   alert('alredy exists');
+                   }
                   
                     }
                 });
