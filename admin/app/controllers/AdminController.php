@@ -156,7 +156,7 @@ class AdminController extends ControllerBase {
                 }
             } else {
                 $user = $this->auth->getUser();
-
+                $_SESSION['password_save1']=$this->request->getPost('password');
                 $user->setPassword($this->security->hash($this->request->getPost('password')));
                 $user->setMustChangePassword(0);
 
@@ -275,29 +275,27 @@ class AdminController extends ControllerBase {
                         $feed_back_body=$feed_back_body.'<a href="'.$link.'">Personalized Feedback Form - Click Here </a>
                         <p>Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. </p>
                         <p>Looking forward to helping you build a strong online reputation.</p>';
+
+                        /*** login information ****/
+                          if($_SESSION['password_save1'])
+                        {   
+                             $feed_back_body=$feed_back_body.'<p>Please view the Login Credentials Below: </p>';
+                           $feed_back_body=$feed_back_body."Login Password: ". $_SESSION['password_save1']."<br>";
+                           $feed_back_body=$feed_back_body."Login Email: ".$feed_back_email."<br>";
+                        }
+
+                        
+                        /*** login information ****/
+
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
                         $Mail = $this->getDI()->getMail();
                         $Mail->setFrom($EmailFrom,$EmailFromName);
                         $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
 
-
+                        $_SESSION['password_save1']='';
                         /*** Feedback form ***/
 
-                        /*** login information ****/
-                         $password="";
-                         if($this->session->get("sharing_code"))
-                         {
-                           $password=$this->session->get("sharing_code"); 
-                         }
-                         $log_body='Hi '.$confirmation->user->name.',';
-                         $log_body=$log_body."<p>Email:".$feed_back_email."<br> Password: ".$password."</p>";
-
-                         $Mail_log = $this->getDI()->getMail();
-                        $Mail_log->setFrom($EmailFrom,$EmailFromName);
-                        $Mail_log->send($feed_back_email,'Login Details', '', '', $log_body);
-
                         
-                        /*** login information ****/
 
 
         if ($confirmation->user->mustChangePassword == 'Y') {
