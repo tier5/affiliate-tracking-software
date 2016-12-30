@@ -258,7 +258,7 @@
                             
                             $update_review->sms_message;
                             $nolengthmessage=strlen($update_review->sms_message);
-                            $no=ceil($nolengthmessage/140)-1;
+                            $no=ceil($nolengthmessage/153)-1;
                                 if($no!=0){
                                     for($i=1;$i<=$no;$i++){
                                         

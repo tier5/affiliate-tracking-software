@@ -148,8 +148,17 @@ class BusinessPricingPlanController extends ControllerBase {
         //echo '<pre>';print_r($_POST);exit;
         $subscription_id=$_POST['subscription_id'];
         $subcription_name=$_POST['subcription_name'];
+         $dbQuery=$this->db->query("select * from `subscription_pricing_plan` WHERE `name`='".$subcription_name."' and `id` !=".$subscription_id);
+          $countquery=$dbQuery->fetch();
+           if(empty($countquery))
+           {
         $this->db->query(" UPDATE `subscription_pricing_plan` SET `name`='".$subcription_name."' WHERE `id`=".$subscription_id);
         return "done";
+            }
+            else
+            {
+                return "This name already exists";
+            }
         
         
     }
