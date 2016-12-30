@@ -60,6 +60,7 @@
           <div class="caption">
             <span class="caption-subject bold uppercase">Contact Information</span>
           </div>
+        
         </div>
 
         <div style="border: 1px solid #e7ecf1 !important; display: table; width: 100%; margin-top: 25px;">
@@ -276,7 +277,13 @@ $('#update-review-details').click(function() {
                 data:{review_id:review_id,name_control:name_control,phone_control:phone_control},
                 success: function(result){
                     if(result=="done"){
+                    alert('Contact Updated successfully');
                     location.reload(true);
+                   
+                    }
+                    else
+                    {
+                    alert('Error updating contact');
                     }
                     
                     }
