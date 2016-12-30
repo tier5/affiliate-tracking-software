@@ -241,25 +241,28 @@
             $objLocationReviewSite->review_count = $YelpReviews->review_count;
             $objLocationReviewSite->save();
 
-            foreach($YelpReviews->reviews as $objYelpReview) {
-                $objReview = \Vokuro\Models\Review::findFirst("external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}");
-                if(!$objReview) {
-                    $objReview = new \Vokuro\Models\Review();
-                    $objReview->assign(array(
-                        'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
-                        'rating' => $objYelpReview->rating,
-                        'review_text' => $objYelpReview->excerpt,
-                        'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
-                        'user_name' => $objYelpReview->user->name,
-                        'user_id' => $objYelpReview->user->id,
-                        'user_image' => $objYelpReview->user->image_url,
-                        'external_id' => $objYelpReview->id,
-                        'location_id' => $LocationID,
-                    ));
-                    $objReview->save();
+            if($YelpReviews->reviews) {
+                foreach($YelpReviews->reviews as $objYelpReview) {
+                    $objReview = \Vokuro\Models\Review::findFirst("external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}");
+                    if(!$objReview) {
+                        $objReview = new \Vokuro\Models\Review();
+                        $objReview->assign(array(
+                            'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
+                            'rating' => $objYelpReview->rating,
+                            'review_text' => $objYelpReview->excerpt,
+                            'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
+                            'user_name' => $objYelpReview->user->name,
+                            'user_id' => $objYelpReview->user->id,
+                            'user_image' => $objYelpReview->user->image_url,
+                            'external_id' => $objYelpReview->id,
+                            'location_id' => $LocationID,
+                        ));
+                        $objReview->save();
+                    }
+                    unset($objReview);
                 }
-                unset($objReview);
             }
+            
             return true;
         }
 
