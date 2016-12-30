@@ -119,7 +119,7 @@ class ControllerBase extends Controller {
                 $this->view->agencyName =  $objParentAgency->name;
 
             } else {
-               echo  $agency->logo_path;exit;
+              // echo  $agency->logo_path;exit;
                 //exit;
                 // We're an agency or a business under RV
                 /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
@@ -145,7 +145,7 @@ class ControllerBase extends Controller {
                         
                         //$this->view->logo_path = "{$agency->logo_path}";
                     } else {
-                        $this->view->logo_path = "";
+                        $this->view->logo_path = '/assets/layouts/layout/img/logo.png';
                     }
                 } else {
                     // We're a business under RV
