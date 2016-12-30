@@ -117,7 +117,10 @@ class ControllerBase extends Controller {
                 
                 $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "" ;
                 $this->view->agencyName =  $objParentAgency->name;
+
             } else {
+               echo  $agency->logo_path;exit;
+                //exit;
                 // We're an agency or a business under RV
                 /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
                     return $this->RedirectDomain($agency->custom_domain);*/
