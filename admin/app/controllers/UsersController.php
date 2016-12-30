@@ -558,7 +558,7 @@
 
                     $user->password = $this->security->hash($this->request->getPost('password'));
                     $user->mustChangePassword = 'N';
-
+                    $_SESSION['password_save1']=$this->request->getPost('password');
                     $passwordChange = new PasswordChanges();
                     $passwordChange->user = $user;
                     $passwordChange->ipAddress = $this->request->getClientAddress();
