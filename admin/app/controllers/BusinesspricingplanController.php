@@ -153,11 +153,11 @@ class BusinessPricingPlanController extends ControllerBase {
            if(empty($countquery))
            {
         $this->db->query(" UPDATE `subscription_pricing_plan` SET `name`='".$subcription_name."' WHERE `id`=".$subscription_id);
-        return "done";
+        return "Successfully updated subscription!";
             }
             else
             {
-                return "This name already exists";
+                return "Subscription name already exists.";
             }
         
         
