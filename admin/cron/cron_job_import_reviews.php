@@ -39,7 +39,7 @@
                 try {
                     $objReviewService->importFacebook($objLocation->location_id);
                 } catch (Exception $e) {
-                    $this->LogContents('Yelp', $objLocation->location_id, $e->getMessage());
+                    $this->LogContents('Facebook', $objLocation->location_id, $e->getMessage());
                 }
             }
         }
