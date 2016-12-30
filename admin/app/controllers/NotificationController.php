@@ -37,7 +37,7 @@
             //echo "<pre>";
             //print_r($tUser);
 
-            $result=$this->db->query(" SELECT * FROM `notification` WHERE `to` =".$id." AND `read` = 0");
+            $result=$this->db->query(" SELECT * FROM `notification` WHERE `to` =".$id);
             $this->view->notification=$result->fetchAll();
             $this->db->query(" UPDATE `notification` SET `read`=1 WHERE `to`=".$id);
             $resultx=$this->db->query(" SELECT * FROM `notification` WHERE `to` =".$id." AND `read` = 0");

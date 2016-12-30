@@ -15,6 +15,7 @@
                             <th>Name</th>
                             <th>Message</th>
                             <th>Date Created</th>
+                            <th>Status</th>
                             
                         </tr>
                         </thead>
@@ -25,6 +26,7 @@
 								<td><?php echo $agency['from'];?></td>
 								<td><?php echo $agency['message'];?></td>
 								<td><?=date("Y-m-d",strtotime($agency['created']))?></td>
+                                <td><?=($agency['read']==0)?'Not Viewed':'Already Viewed'?></td>
 								
 							</tr>
 						<?php } ?>

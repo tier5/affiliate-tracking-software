@@ -242,6 +242,22 @@ class SessionController extends ControllerBase {
             
             $this->db->commit();
 
+               /*** notification mail ***/  
+                    $objSuperAdminUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $ParentID . ' AND role="Super Admin"');
+
+                    $EmailFrom = 'zacha@reviewvelocity.co';
+                    $EmailFromName = "Zach Anderson";
+                    $subject="New Notification Received";
+                    $mail_body='Hi '.$objSuperAdminUser->name.',';
+                    $mail_body=$mail_body.'<p>A new Business has been sign Up under you. please view your notification panel in dashboard to get the details.
+                        </p>';
+                    $mail_body=$mail_body."Thanks,<br>Zach Anderson";
+
+                        $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
+                    $Mail->send($objSuperAdminUser->email, $subject, '', '', $mail_body);
+                        /*** notification mail end ***/  
+
             return $this->response->redirect('/session/thankyou');
 
         } catch(ArrayException $e) {

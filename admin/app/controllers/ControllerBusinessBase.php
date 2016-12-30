@@ -253,8 +253,24 @@ public function editAction($agency_id = 0) {
                      $an=$this->request->getPost('name', 'striptags');
                     $msgx=$this->request->getPost('name', 'striptags')." is register under You with email ID ".$this->request->getPost('email', 'striptags');
                     $createdxx=date('Y-m-d H:i:s');
-                    $result=$this->db->query(" INSERT INTO notification ( `to`, `from`, `message`, `read`,`created`,`updated`) VALUES ( '".$parent_id."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')");  
-                    
+                    $result=$this->db->query(" INSERT INTO notification ( `to`, `from`, `message`, `read`,`created`,`updated`) VALUES ( '".$parent_id."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')");
+                    /*** notification mail ***/  
+                    $objSuperAdminUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $parent_id . ' AND role="Super Admin"');
+
+                    $EmailFrom = 'zacha@reviewvelocity.co';
+                    $EmailFromName = "Zach Anderson";
+                    $subject="New Notification Received";
+                    $mail_body='Hi '.$objSuperAdminUser->name.',';
+                    $mail_body=$mail_body.'<p>A new Business has been sign Up under you. please view your notification panel in dashboard to get the details.
+                        </p>';
+                    $mail_body=$mail_body."Thanks,<br>Zach Anderson";
+
+                        $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
+                    $Mail->send($objSuperAdminUser->email, $subject, '', '', $mail_body);
+
+                    /*** notification mail ***/  
+
             $resultx=$this->db->query(" SELECT * FROM `notification` WHERE `to` =".$parent_id." AND `read` = 0");
                  $x=$resultx->numRows();
             $this->view->setVar('NumberOfNotification', $x);  
