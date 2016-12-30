@@ -11,6 +11,7 @@
 
     use Vokuro\Models\LocationReviewSite;
     use Vokuro\Models\Review;
+    use Phalcon\Logger\Adapter\File as FileLogger;
 
     class Reviews extends BaseService {
         protected $const_class;
@@ -240,25 +241,28 @@
             $objLocationReviewSite->review_count = $YelpReviews->review_count;
             $objLocationReviewSite->save();
 
-            foreach($YelpReviews->reviews as $objYelpReview) {
-                $objReview = \Vokuro\Models\Review::findFirst("external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}");
-                if(!$objReview) {
-                    $objReview = new \Vokuro\Models\Review();
-                    $objReview->assign(array(
-                        'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
-                        'rating' => $objYelpReview->rating,
-                        'review_text' => $objYelpReview->excerpt,
-                        'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
-                        'user_name' => $objYelpReview->user->name,
-                        'user_id' => $objYelpReview->user->id,
-                        'user_image' => $objYelpReview->user->image_url,
-                        'external_id' => $objYelpReview->id,
-                        'location_id' => $LocationID,
-                    ));
-                    $objReview->save();
+            if($YelpReviews->reviews) {
+                foreach($YelpReviews->reviews as $objYelpReview) {
+                    $objReview = \Vokuro\Models\Review::findFirst("external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}");
+                    if(!$objReview) {
+                        $objReview = new \Vokuro\Models\Review();
+                        $objReview->assign(array(
+                            'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
+                            'rating' => $objYelpReview->rating,
+                            'review_text' => $objYelpReview->excerpt,
+                            'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
+                            'user_name' => $objYelpReview->user->name,
+                            'user_id' => $objYelpReview->user->id,
+                            'user_image' => $objYelpReview->user->image_url,
+                            'external_id' => $objYelpReview->id,
+                            'location_id' => $LocationID,
+                        ));
+                        $objReview->save();
+                    }
+                    unset($objReview);
                 }
-                unset($objReview);
             }
+            
             return true;
         }
 
@@ -441,7 +445,15 @@
 
             $FB->setAccessToken($objLocationReviewSite->access_token);
 
-            $tobjReviews = $FB->getReviews();
+            $logger = new FileLogger(__dir__."/../logs/ReviewImport.log");
+
+            try {
+                $tobjReviews = $FB->getReviews();
+
+                $logger->log(var_export($tobjReviews, true));
+            } catch(Exception $e) {
+                $logger->error(var_export($e, true));
+            }
 
             $TotalRating = 0;
             $TotalReviews = 0;
@@ -467,6 +479,8 @@
                         $reviewService->saveReviewFromData($arr);
 
                     } catch (Exception $e) {
+                        $logger->error(var_export($e, true));
+
                         continue;
                     }
                 }
