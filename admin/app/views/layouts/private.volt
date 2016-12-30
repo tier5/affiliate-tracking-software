@@ -117,7 +117,7 @@
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > .arrow.open::before,
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > .arrow::before,
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > i {
-                color: #FFFFFF !important;
+                /*color: #FFFFFF !important;*/
             }
             .page-content-wrapper{
                 margin-top:-95px;
