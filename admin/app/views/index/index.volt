@@ -158,8 +158,8 @@
                                 <?=urldecode($share_link); ?>
 
                                 </span>-->
-                                <input type="text" class="js-copytextarea referral-link" value="<?php echo urldecode($share_link); ?>" readonly >
-                                 <button class="js-textareacopybtn btnLink btnSecondary">Copy to clipboard</button></div>
+                                <input type="text" class="js-copytextarea" value="<?php echo urldecode($share_link); ?>" readonly >
+                                 <button class="js-textareacopybtn btnLink btnSecondary">COPY TO CLIPBOARD</button></div>
                             </div>
                         </div>
                     </div>

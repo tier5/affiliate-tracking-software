@@ -110,9 +110,10 @@ button.get_started{
 }
 .js-textareacopybtn
 {
-  
-  border: 1px solid #fff !important;
-  padding: 0 5px !important;
+    border: 1px solid #fff !important;
+    padding: 0 5px !important;
+    font-size: 12px;
+    height: 30px !important;
 }
 
 .controls:focus {
@@ -404,7 +405,7 @@ div#image_container img.selected, div#image_container img:hover{
     margin-left: 15px;
     margin-right: 15px;
     margin-top: 9px;
-    padding: 9px;
+    padding: 3px 9px;
     width: 96%;
 }
 .share-link {
