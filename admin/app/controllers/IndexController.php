@@ -97,7 +97,8 @@ class IndexController extends ControllerBase {
                     }
 
                     $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$agency->agency_id} AND role = 'Super Admin'");
-                    $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("is_viral = 1 AND user_id = {$objSuperUser->id}");
+                    // GARY_TODO:  Hackfix.  Deleting should set the enabled to 0 or something like that, rather than just modifying the name.  Getting this out stat though.
+                    $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("is_viral = 1 AND user_id = {$objSuperUser->id} AND name NOT LIKE 'deleted-%'");
                     if(!$objSubscriptionPricingPlan)
                         $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("user_id = {$objSuperUser->id}");
                     $this->view->SubscriptionCode = $objSubscriptionPricingPlan->short_code;
@@ -187,7 +188,8 @@ class IndexController extends ControllerBase {
                 }
 
                 $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$agency->agency_id} AND role = 'Super Admin'");
-                $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("is_viral = 1 AND user_id = {$objSuperUser->id}");
+                // GARY_TODO:  Hackfix.  Deleting should set the enabled to 0 or something like that, rather than just modifying the name.  Getting this out stat though.
+                $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("is_viral = 1 AND user_id = {$objSuperUser->id} AND name NOT LIKE 'deleted-%'");
                 if(!$objSubscriptionPricingPlan)
                     $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("user_id = {$objSuperUser->id}");
                 $this->view->SubscriptionCode = $objSubscriptionPricingPlan->short_code;
