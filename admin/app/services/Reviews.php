@@ -11,6 +11,7 @@
 
     use Vokuro\Models\LocationReviewSite;
     use Vokuro\Models\Review;
+    use Phalcon\Logger\Adapter\File as FileLogger;
 
     class Reviews extends BaseService {
         protected $const_class;
@@ -441,7 +442,15 @@
 
             $FB->setAccessToken($objLocationReviewSite->access_token);
 
-            $tobjReviews = $FB->getReviews();
+            $logger = new FileLogger(__dir__."/../logs/ReviewImport.log");
+
+            try {
+                $tobjReviews = $FB->getReviews();
+
+                $logger->log(var_export($tobjReviews, true));
+            } catch(Exception $e) {
+                $logger->error(var_export($e, true));
+            }
 
             $TotalRating = 0;
             $TotalReviews = 0;
@@ -467,6 +476,8 @@
                         $reviewService->saveReviewFromData($arr);
 
                     } catch (Exception $e) {
+                        $logger->error(var_export($e, true));
+
                         continue;
                     }
                 }
