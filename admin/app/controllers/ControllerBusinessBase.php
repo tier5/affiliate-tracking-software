@@ -7,6 +7,7 @@ use Vokuro\Forms\AgencyForm;
 use Vokuro\Models\Agency;
 use Vokuro\Models\Users;
 use Vokuro\Models\Notification;
+use Vokuro\Models\SubscriptionPricingPlan;
 class ControllerBusinessBase extends ControllerBase {
     /**
      * BEGIN BUSINESS COMMON FUNCTIONS
@@ -257,13 +258,17 @@ public function editAction($agency_id = 0) {
                     /*** notification mail ***/  
                     $objSuperAdminUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $parent_id . ' AND role="Super Admin"');
 
+                    $subscriptionPricePlan = SubscriptionPricingPlan::findFirst('id = '.$this->request->getPost('subscription_pricing_plan_id', 'striptags'));
                     $EmailFrom = 'zacha@reviewvelocity.co';
                     $EmailFromName = "Zach Anderson";
-                    $subject="New Notification Received";
-                    $mail_body='Hi '.$objSuperAdminUser->name.',';
-                    $mail_body=$mail_body.'<p>A new Business has been sign Up under you. please view your notification panel in dashboard to get the details.
+                    $subject="New Business Registered uccessfully";
+                    $mail_body='Dear '.$objSuperAdminUser->name.',';
+                    $mail_body=$mail_body.'<p>Congratulations a new business has registered successfully with following details:
                         </p>';
-                    $mail_body=$mail_body."Thanks,<br>Zach Anderson";
+                    $mail_body .= '<p>Name: '.$an.'</p>';
+                    $mail_body .= '<p>Email: '.$this->request->getPost('email', 'striptags').'</p>';
+                    $mail_body .= '<p>Subscription: '.$subscriptionPricePlan->name.'</p>';
+                    $mail_body=$mail_body."Thanks";
 
                         $Mail = $this->getDI()->getMail();
                     $Mail->setFrom($EmailFrom, $EmailFromName);

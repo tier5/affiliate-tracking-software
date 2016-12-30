@@ -349,11 +349,11 @@
                 url: "/businessPricingPlan/updateSubcriptionPricingDetails", 
                 data:{subscription_id :subscription_id,subcription_pricing_details:subcription_pricing_details},
                 success: function(result){
-                    
-                    if(result=="done"){
-                        //location.reload(true);
-                        alert('Successfully updated');
-                    }
+                    alert('Successfully updated');
+                    // if(result=="done"){
+                    //     //location.reload(true);
+                    //     alert('Successfully updated');
+                    // }
                     }
                 });
                 return false;
