@@ -186,6 +186,8 @@ class ControllerBase extends Controller {
                 // Disable business if agency has no stripe keys enabled.
                 if (!$objParentAgency->stripe_publishable_keys || !$objParentAgency->stripe_account_secret)
                     $this->view->BusinessDisableBecauseOfStripe = true;
+
+
             }
 
             if($agency->parent_id > 0)
@@ -262,6 +264,26 @@ class ControllerBase extends Controller {
                 )
             );
 
+/*** added on 30th dec 2016 ****/
+             if ($agency) {
+            $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
+            list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+            $rgb = $r . ', ' . $g . ', ' . $b;
+            $vars = [
+                'agency_id' => $agency->agency_id,
+                'agency' => $agency,
+                'agency_name' => $agency->name,
+                'main_color_setting' => $agency->main_color,
+                'rgb' => $rgb,
+                'logo_path' => $agency->logo_path,
+                'main_color' => str_replace('#', '', $agency->main_color),
+                'primary_color' => str_replace('#', '', $agency->main_color),
+                'secondary_color' => str_replace('#', '', $agency->secondary_color)
+            ];
+            $this->view->setVars($vars);
+        }
+
+/*** added on 30th dec 2016 ****/
 
         }
 
@@ -296,10 +318,8 @@ class ControllerBase extends Controller {
 
         }
 
-
-
-
-        if ($agency) {
+/*** commented on 30th dec 2016 ****/
+        /*if ($agency) {
             $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
             list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
             $rgb = $r . ', ' . $g . ', ' . $b;
@@ -315,7 +335,9 @@ class ControllerBase extends Controller {
                 'secondary_color' => str_replace('#', '', $agency->secondary_color)
             ];
             $this->view->setVars($vars);
-        }
+        }*/
+/*** commented on 30th dec 2016 ****/
+
         
         $this->agency = $agency;
         if ($this->request->getPost('main_color')) {
