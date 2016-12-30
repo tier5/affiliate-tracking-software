@@ -276,15 +276,16 @@ $('#update-review-details').click(function() {
                 url: "/contacts/updateReviewDetails", 
                 data:{review_id:review_id,name_control:name_control,phone_control:phone_control},
                 success: function(result){
-                    if(result=="done"){
                     alert('Contact Updated successfully');
-                    location.reload(true);
+                    // if(result=="done"){
+                    // alert('Contact Updated successfully');
+                    // //location.reload(true);
                    
-                    }
-                    else
-                    {
-                    alert('Error updating contact');
-                    }
+                    // }
+                    // else
+                    // {
+                    // alert('Error updating contact');
+                    // }
                     
                     }
                 });

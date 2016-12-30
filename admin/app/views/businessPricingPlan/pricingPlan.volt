@@ -328,11 +328,11 @@
                 success: function(result){
                    if(result==1)
                    {
-                   alert('done');
+                   alert('Successfully updated');
                    }
                    else
                    {
-                   alert('alredy exists');
+                   alert('already exists');
                    }
                   
                     }
@@ -351,7 +351,8 @@
                 success: function(result){
                     
                     if(result=="done"){
-                    location.reload(true);
+                        //location.reload(true);
+                        alert('Successfully updated');
                     }
                     }
                 });
