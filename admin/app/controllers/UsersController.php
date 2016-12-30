@@ -593,6 +593,12 @@
                         $Mail->send($_SESSION['toemail_log'], $feed_back_subj, '', '', $feed_back_body);
 
                         $_SESSION['password_save1']='';
+                        $_SESSION['Agencyname_log']='';
+                        $_SESSION['AgencyUser_log']='';
+                        $_SESSION['EmailFrom_log']='';
+                        $_SESSION['EmailFromName_log']='';
+                        $_SESSION['toemail_log']='';
+                        $_SESSION['name_log']='';
                     }
                         /**** login credentials *****/
 
