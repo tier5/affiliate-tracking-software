@@ -8,9 +8,9 @@
 
     namespace Vokuro\Services;
 
-
     use Vokuro\Models\LocationReviewSite;
     use Vokuro\Models\Review;
+    use Phalcon\Logger\Adapter\File as FileLogger;
 
     class Reviews extends BaseService {
         protected $const_class;
@@ -239,25 +239,27 @@
             $objLocationReviewSite->rating = $YelpReviews->rating;
             $objLocationReviewSite->review_count = $YelpReviews->review_count;
             $objLocationReviewSite->save();
-
-            foreach($YelpReviews->reviews as $objYelpReview) {
-                $objReview = \Vokuro\Models\Review::findFirst("external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}");
-                if(!$objReview) {
-                    $objReview = new \Vokuro\Models\Review();
-                    $objReview->assign(array(
-                        'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
-                        'rating' => $objYelpReview->rating,
-                        'review_text' => $objYelpReview->excerpt,
-                        'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
-                        'user_name' => $objYelpReview->user->name,
-                        'user_id' => $objYelpReview->user->id,
-                        'user_image' => $objYelpReview->user->image_url,
-                        'external_id' => $objYelpReview->id,
-                        'location_id' => $LocationID,
-                    ));
-                    $objReview->save();
+            
+            if($YelpReviews->reviews) {
+                foreach($YelpReviews->reviews as $objYelpReview) {
+                    $objReview = \Vokuro\Models\Review::findFirst("external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}");
+                    if(!$objReview) {
+                        $objReview = new \Vokuro\Models\Review();
+                        $objReview->assign(array(
+                            'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
+                            'rating' => $objYelpReview->rating,
+                            'review_text' => $objYelpReview->excerpt,
+                            'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
+                            'user_name' => $objYelpReview->user->name,
+                            'user_id' => $objYelpReview->user->id,
+                            'user_image' => $objYelpReview->user->image_url,
+                            'external_id' => $objYelpReview->id,
+                            'location_id' => $LocationID,
+                        ));
+                        $objReview->save();
+                    }
+                    unset($objReview);
                 }
-                unset($objReview);
             }
             return true;
         }
@@ -433,16 +435,25 @@
         }
 
         public function importFacebook($LocationID) {
+            
+
             $reviewService = new Reviews();
             $FB = new \Vokuro\Models\FacebookScanning();
             $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
             if(!$objLocationReviewSite->access_token)
                 return false;
-
+            
+            $logger = new FileLogger(__dir__."/../logs/ReviewImport.log");
+            
             $FB->setAccessToken($objLocationReviewSite->access_token);
 
-            $tobjReviews = $FB->getReviews();
-
+            try {
+                $tobjReviews = $FB->getReviews();
+            } catch(Exception $e) {
+                $logger->error(var_export($e, true));
+            }
+            
+            
             $TotalRating = 0;
             $TotalReviews = 0;
 
@@ -467,10 +478,13 @@
                         $reviewService->saveReviewFromData($arr);
 
                     } catch (Exception $e) {
+                        $logger->error(var_export($e, true));
+
                         continue;
                     }
                 }
             }
+
             $dbReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
             $objLocationReviewSite->review_count = count($tobjReviews);
             $objLocationReviewSite->rating = $TotalReviews > 0 ? $TotalRating / $TotalReviews : 0;
