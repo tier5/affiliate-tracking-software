@@ -46,6 +46,8 @@ class AgencyForm extends Form
     $this->add(new Text('website'));
     $this->add(new Text('email_from_name'));
     $this->add(new Text('email_from_address'));
+    $this->add(new Text('welcome_email'));
+    $this->add(new Text('viral_email'));
         
 
   }

@@ -67,6 +67,7 @@ class Email{
         }
 
         $template='confirmation';
+        $email_content='';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
 
         $Domain = $this->config->application->domain;
@@ -85,6 +86,10 @@ class Email{
             $AgencyName = $objAgency->name;
             $EmailFrom =  $objAgency->email;
             $EmailFromName='';
+            if($objAgency->welcome_email!='')
+            {
+                $email_content=$objAgency->welcome_email;
+            }
 
         }
         elseif($objAgency->parent_id > 0) {
