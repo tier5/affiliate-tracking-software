@@ -95,9 +95,8 @@ if (isset($main_color_setting)) {
         </div>
         {% endif %}
         <!-- END LOGO -->
-        <div class="steps" style="<?=$MarginLeftSteps; ?>">
+        <div class="steps">
             <div class="step pull-left">
-                <!--<img src="/img/step-<?=($current_step > 1?'on':'current')?>.gif" alt="Sign up form, Step 1 (Account)" />-->
                 <?=($current_step > 1 ? $redCheckCircle : $redCircle)?>
                 
             </div>
@@ -105,33 +104,28 @@ if (isset($main_color_setting)) {
                 <img src="/img/step-line-<?=($current_step > 1?'on':'off')?>.gif" />
             </div>
             <div class="step pull-left">
-                <!--<img src="/img/step-<?=($current_step == 2?'current':($current_step > 2?'on':'off'))?>.gif" alt="Sign up form, Step 2 (Add Location)" />-->
                 <?=($current_step == 2 ? $redCircle : ($current_step > 2 ? $redCheckCircle : $greyCircle))?>
             </div>
             <div class="divider pull-left">
                 <img src="/img/step-line-<?=($current_step > 2?'on':'off')?>.gif" />
             </div>
             <div class="step pull-left">
-                <!--<img src="/img/step-<?=($current_step == 3?'current':($current_step > 3?'on':'off'))?>.gif" alt="Sign up form, Step 3 (Customize Survey)" />-->
                 <?=($current_step == 3 ? $redCircle : ($current_step > 3 ? $redCheckCircle : $greyCircle))?>
             </div>
             <div class="divider pull-left">
                 <img src="/img/step-line-<?=($current_step > 3?'on':'off')?>.gif" />
             </div>
             <div class="step pull-left">
-                <!--<img src="/img/step-<?=($current_step == 4?'current':($current_step > 4?'on':'off'))?>.gif" alt="Sign up form, Step 4 (Add Employee)" />-->
                 <?=($current_step == 4 ? $redCircle : ($current_step > 4 ? $redCheckCircle : $greyCircle))?>
             </div>
             <div class="divider pull-left">
                 <img src="/img/step-line-<?=($current_step > 4?'on':'off')?>.gif" />
             </div>
             <div class="step pull-left">
-                <!--<img src="/img/step-<?=($current_step == 5?'current':($current_step > 5?'on':'off'))?>.gif" alt="Sign up form, Step 5 (Share)" />-->
                 <?=($current_step == 5 ? $redCircle : ($current_step > 5 ? $redCheckCircle : $greyCircle))?>
             </div>
         </div>
-        <!--<div class="clearfix"></div>-->
-        <div class="steps-desc" style="<?=$MarginLeftWords; ?>">
+        <div class="steps-desc">
             <div id="step1">Account</div>
             <div id="step2">Location<!--Add Location--></div>
             <div id="step3">Survey<!--Customize Survey--></div>
