@@ -133,9 +133,9 @@ if (isset($main_color_setting)) {
         <!--<div class="clearfix"></div>-->
         <div class="steps-desc" style="<?=$MarginLeftWords; ?>">
             <div id="step1">Account</div>
-            <div id="step2">Add Location</div>
-            <div id="step3">Customize Survey</div>
-            <div id="step4">Add Employee</div>
+            <div id="step2">Location<!--Add Location--></div>
+            <div id="step3">Survey<!--Customize Survey--></div>
+            <div id="step4">Employees<!--Add Employee--></div>
             <div id="step5">Share</div>
         </div>
     </div>
