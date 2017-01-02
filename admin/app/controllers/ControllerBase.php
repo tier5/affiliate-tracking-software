@@ -7,6 +7,7 @@ use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
 use Vokuro\Models\Agency;
 use Vokuro\Models\FacebookScanning;
+use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\GoogleScanning;
 use Vokuro\Models\Location;
 use Vokuro\Models\LocationNotifications;
@@ -15,6 +16,7 @@ use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\ReviewsMonthly;
 use Vokuro\Models\SharingCode;
 use Vokuro\Models\Users;
+
 use Vokuro\Models\UsersSubscription;
 use Vokuro\Models\YelpScanning;
 use Vokuro\Services\Permissions;
@@ -62,6 +64,63 @@ class ControllerBase extends Controller {
         $identity = $this->auth->getIdentity();
 
         if (is_array($identity)) {
+
+            
+          $location_id_busi = $this->session->get('auth-identity')['location_id'];//exit;
+
+                /***** business connection *****/
+                //echo TYPE_YELP;exit;
+                     $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
+                $parameters = array("location_id" => $location_id_busi);
+
+
+                $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                //dd($obj);
+                if(!empty($Obj))
+                {
+                  $this->view->fb_connection="connected";
+                }
+                else
+                {
+                  $this->view->fb_connection='';  
+                }
+
+
+                  $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
+                $parameters = array("location_id" => $location_id_busi);
+
+
+                $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                //dd($obj);
+                if(!empty($Obj))
+                {
+                  $this->view->yelp_connection="connected";
+                }
+                else
+                {
+                  $this->view->yelp_connection='';  
+                }
+
+                 $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
+                $parameters = array("location_id" => $location_id_busi);
+
+
+                $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                //dd($obj);
+                if(!empty($Obj))
+                {
+                  $this->view->gl_connection="connected";
+                }
+                else
+                {
+                  $this->view->gl_connection='';  
+                }
+
+
+                //exit;
+
+                /***** business connection *****/
+
             $userObj = $this->getUserObject();
             $this->view->loggedUser = $userObj;
             
@@ -278,7 +337,23 @@ class ControllerBase extends Controller {
                     "bind" => $parameters
                 )
             );
-
+            if ($agency) {
+            $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
+            list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+            $rgb = $r . ', ' . $g . ', ' . $b;
+            $vars = [
+                'agency_id' => $agency->agency_id,
+                'agency' => $agency,
+                'agency_name' => $agency->name,
+                'main_color_setting' => $agency->main_color,
+                'rgb' => $rgb,
+                'logo_path' => $agency->logo_path,
+                'main_color' => str_replace('#', '', $agency->main_color),
+                'primary_color' => str_replace('#', '', $agency->main_color),
+                'secondary_color' => str_replace('#', '', $agency->secondary_color)
+            ];
+            $this->view->setVars($vars);
+        }
 
         }
 
@@ -315,8 +390,8 @@ class ControllerBase extends Controller {
 
 
 
-
-        if ($agency) {
+        /*** commented on 2nd jan 2017 ***/
+       /* if ($agency) {
             $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
             list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
             $rgb = $r . ', ' . $g . ', ' . $b;
@@ -332,7 +407,9 @@ class ControllerBase extends Controller {
                 'secondary_color' => str_replace('#', '', $agency->secondary_color)
             ];
             $this->view->setVars($vars);
-        }
+        }*/
+
+        /*** commented on 2nd jan 2017 ***/
         
         $this->agency = $agency;
         if ($this->request->getPost('main_color')) {

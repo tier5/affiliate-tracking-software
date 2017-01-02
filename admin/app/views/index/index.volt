@@ -169,12 +169,30 @@
         {% endif %}
 
         <div class="row">
+            <?php if($gl_connection=='' && $yelp_connection=='' && $fb_connection==''){ ?>
+            <div class="col-md-4 col-sm-4">
+             <div class="portlet light bordered dashboard-panel">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <span class="">Business Is not Connected</span>
 
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="number">
+                           connect yelp ,google,facebook business
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <?php } else { ?>
             <div class="col-md-2 col-sm-2">
                 <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">
                         <div class="caption">
                             <span class="">Rating</span>
+
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -199,6 +217,8 @@
                     </div>
                 </div>
             </div>
+
+            <?php }?>
 
             <div class="col-md-4 col-sm-4">
                 <div class="portlet light bordered dashboard-panel Monthly-Goal-New-Reviews">
