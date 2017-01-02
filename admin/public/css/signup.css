@@ -680,9 +680,14 @@ header .headercontent{width: 90%; margin: 0 auto;}
   }
 
   div.pnlAddLocation.short {
-      min-height: 100% !important;
+    min-height: 100% !important;
   }
 }
+
+@media screen and (min-width: 887px) {
+  #label-container {float: right !important; }  
+}
+
 @media screen and (max-width: 1199px) {
   .content {
       width: 90%;
