@@ -111,8 +111,8 @@ button.get_started{
 .js-textareacopybtn
 {
     font-size: 10px;
-    height: 36px !important;
-    padding: 0 5px !important;
+    height: 30px !important;
+    padding: 0 6px !important;
 }
 
 .controls:focus {
