@@ -223,8 +223,19 @@
         text-align: left;
     }
 }
+
+.pricing-plans .caption label{
+    display: block;
+}
+
 .pricing-plans .caption .caption-subject {
     margin-top: 1px;
+    display: inline-block;
+    margin-right: 14px;
+}
+
+.pricing-plans .caption .subscription-btn{
+    border: none;
 }
 .pricing-plans span.subscription-name-caption {
     display: inline;
