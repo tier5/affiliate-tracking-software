@@ -535,6 +535,10 @@ header .headercontent{width: 90%; margin: 0 auto;}
   header{height: auto;}
   header .logo{float: none; margin: 0 auto; width: 200px;}
   header .logo img{max-width: 200px !important;}
+  .steps,
+  .steps {
+    width: 100%;
+  }
   /*header .steps{float: none; margin: 10px auto; width: 100%; text-align: center;}
   header .steps div{float: none; display: inline-block;}
   header .steps-desc{width: 100%; text-align: center; float: none; height: auto; margin-left: 0;}
@@ -564,6 +568,21 @@ header .headercontent{width: 90%; margin: 0 auto;}
     width: 100%;
   }
 
+}
+
+@media screen and (max-width: 390px) {
+  .divider img { padding-bottom: 0px; }
+  .steps {
+    margin-left: 0 !important;
+  }
+  .steps-desc {
+    margin-left: -14px !important;
+    font-size: .8em !important;
+  }
+  .fa-check-circle,
+  .fa-circle {
+    font-size: .8em !important;
+  }
 }
 
 @media screen and (max-width: 650px) {
