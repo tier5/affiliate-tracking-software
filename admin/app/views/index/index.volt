@@ -143,23 +143,14 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
-
-
-
-
-
-                            <div class="row">
+                                <div class="row">
                                 <div class="referral-link"><b>Personalized Referral Link:</b> 
                                 <!--<span id="perso_link">
                                 <?=urldecode($share_link); ?>
 
                                 </span>-->
                                 <input type="text" class="js-copytextarea" value="<?php echo urldecode($share_link); ?>" readonly >
-                                 <button class="js-textareacopybtn btnLink">Copy to Clipboard</button></div>
+                                 <button class="js-textareacopybtn btnLink btnSecondary">COPY TO CLIPBOARD</button></div>
                             </div>
                         </div>
                     </div>
