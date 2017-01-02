@@ -190,12 +190,14 @@
                 {% if location_id %}
                     {% if locations %}
                         <li class="location-header" id="">
+                           {% if not is_admin and agencytype != 'agency' %}
                         <span id="locationset">
                             Location: {{ location.name }}
                             {% if locations|length > '1' %}
                                 <a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a>
                             {% endif %}
                         </span>
+                        {% endif %}
                         <span id="locationnotset" style="display: none;"><form action="/" method="post">
                                 Location:
                                 <select name="locationselect" id="locationselect">
