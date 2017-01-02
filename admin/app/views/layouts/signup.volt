@@ -95,42 +95,44 @@ if (isset($main_color_setting)) {
         </div>
         {% endif %}
         <!-- END LOGO -->
-        <div class="steps">
-            <div class="step pull-left">
-                <?=($current_step > 1 ? $redCheckCircle : $redCircle)?>
-                
+        <div id="label-container">
+            <div class="steps">
+                <div class="step pull-left">
+                    <?=($current_step > 1 ? $redCheckCircle : $redCircle)?>
+                    
+                </div>
+                <div class="divider pull-left">
+                    <img src="/img/step-line-<?=($current_step > 1?'on':'off')?>.gif" />
+                </div>
+                <div class="step pull-left">
+                    <?=($current_step == 2 ? $redCircle : ($current_step > 2 ? $redCheckCircle : $greyCircle))?>
+                </div>
+                <div class="divider pull-left">
+                    <img src="/img/step-line-<?=($current_step > 2?'on':'off')?>.gif" />
+                </div>
+                <div class="step pull-left">
+                    <?=($current_step == 3 ? $redCircle : ($current_step > 3 ? $redCheckCircle : $greyCircle))?>
+                </div>
+                <div class="divider pull-left">
+                    <img src="/img/step-line-<?=($current_step > 3?'on':'off')?>.gif" />
+                </div>
+                <div class="step pull-left">
+                    <?=($current_step == 4 ? $redCircle : ($current_step > 4 ? $redCheckCircle : $greyCircle))?>
+                </div>
+                <div class="divider pull-left">
+                    <img src="/img/step-line-<?=($current_step > 4?'on':'off')?>.gif" />
+                </div>
+                <div class="step pull-left">
+                    <?=($current_step == 5 ? $redCircle : ($current_step > 5 ? $redCheckCircle : $greyCircle))?>
+                </div>
             </div>
-            <div class="divider pull-left">
-                <img src="/img/step-line-<?=($current_step > 1?'on':'off')?>.gif" />
+            <div class="steps-desc">
+                <div id="step1">Account</div>
+                <div id="step2">Location<!--Add Location--></div>
+                <div id="step3">Survey<!--Customize Survey--></div>
+                <div id="step4">Employees<!--Add Employee--></div>
+                <div id="step5">Share</div>
             </div>
-            <div class="step pull-left">
-                <?=($current_step == 2 ? $redCircle : ($current_step > 2 ? $redCheckCircle : $greyCircle))?>
-            </div>
-            <div class="divider pull-left">
-                <img src="/img/step-line-<?=($current_step > 2?'on':'off')?>.gif" />
-            </div>
-            <div class="step pull-left">
-                <?=($current_step == 3 ? $redCircle : ($current_step > 3 ? $redCheckCircle : $greyCircle))?>
-            </div>
-            <div class="divider pull-left">
-                <img src="/img/step-line-<?=($current_step > 3?'on':'off')?>.gif" />
-            </div>
-            <div class="step pull-left">
-                <?=($current_step == 4 ? $redCircle : ($current_step > 4 ? $redCheckCircle : $greyCircle))?>
-            </div>
-            <div class="divider pull-left">
-                <img src="/img/step-line-<?=($current_step > 4?'on':'off')?>.gif" />
-            </div>
-            <div class="step pull-left">
-                <?=($current_step == 5 ? $redCircle : ($current_step > 5 ? $redCheckCircle : $greyCircle))?>
-            </div>
-        </div>
-        <div class="steps-desc">
-            <div id="step1">Account</div>
-            <div id="step2">Location<!--Add Location--></div>
-            <div id="step3">Survey<!--Customize Survey--></div>
-            <div id="step4">Employees<!--Add Employee--></div>
-            <div id="step5">Share</div>
         </div>
     </div>
 </header>
