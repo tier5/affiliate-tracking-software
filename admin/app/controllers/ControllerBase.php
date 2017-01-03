@@ -109,7 +109,7 @@ class ControllerBase extends Controller {
             $objGoogleReviewSite = $this->GetLocationReviewSite($location_id_busi, \Vokuro\Models\Location::TYPE_GOOGLE);
             $this->view->GoogleMyBusinessConnected = $objGoogleReviewSite && $objGoogleReviewSite->json_access_token ? true : false;
 
-             $objfacebookReviewSite = $this->GetLocationReviewSite($location_id_busi, \Vokuro\Models\Location::TYPE_GOOGLE);
+             $objfacebookReviewSite = $this->GetLocationReviewSite($location_id_busi, \Vokuro\Models\Location::TYPE_FACEBOOK);
             $this->view->facebookMyBusinessConnected = $objfacebookReviewSite && $objfacebookReviewSite->access_token ? true : false;
 
 

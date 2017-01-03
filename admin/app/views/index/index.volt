@@ -57,6 +57,10 @@
     color: #b70000;
     font-size: 17px;
 }
+.connect-business a
+{
+     font-size: 13px;
+}
 
 </style>
 
@@ -226,10 +230,11 @@
                     </div>
                 </div>
                 <?php
+
                 if(!$facebookMyBusinessConnected || !$GoogleMyBusinessConnected || !YelpMyBusinessConnected)
                 { ?>
                     <div class="connect-business">
-                        <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink">Connect Business pages</a>
+                        <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink">Connect Business</a>
                     </div>
                <?php } ?>
             </div>
@@ -247,9 +252,30 @@
                         </div>
                     </div>
                 </div>
+                <?php
+                if(!$facebookMyBusinessConnected || !$GoogleMyBusinessConnected || !YelpMyBusinessConnected)
+                {
+              
+                    $statement="";
+                    if(!$facebookMyBusinessConnected)
+                    {
+                    $statement="Facebook/";
+                    }
+                    if(!$GoogleMyBusinessConnected)
+                    {
+                    $statement.="Google/";
+                    }
+                    if(!$YelpMyBusinessConnected)
+                    {
+                    $statement.="Yelp/";
+                    }
+
+                   $statement=rtrim($statement,"/"); 
+                 ?>
                 <div class="connect-business">
-                    <p><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Facebook/Google</p>
+                    <p><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <?php echo $statement;?></p>
                 </div>
+                <?php }?>
             </div>
 
             <?php  
