@@ -1483,10 +1483,11 @@ class ControllerBase extends Controller {
         $userSubscription = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
 
         // GARY_TODO Determine if the comment below is accurate.
-        $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] &&
-            ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
-            ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
-            ($userManager->hasLocation($this->session) && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
+        $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] 
+            && ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) 
+            && ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) 
+            && ($userManager->hasLocation($this->session) 
+                && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
 
         $internalNavParams['hasPricingPlans'] = $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];
 
