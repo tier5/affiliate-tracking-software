@@ -43,7 +43,8 @@
     {% set StripeExpanded = 'active' %}
     {% set GeneralExpanded = '' %}
 {% endif %}
-
+ <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-summernote/summernote.css" />
+ <script type="text/javascript" src="/assets/global/plugins/bootstrap-summernote/summernote.min.js"></script>
 <header class="jumbotron subhead <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'agency')?>settingspage" id="reviews">
     <div class="hero-unit">
 
@@ -677,9 +678,13 @@
                                <div class="row">
                                 <label for="welcome_email_business" class="col-md-4 control-label">Welcome Email for business</label>
                                 <div class="col-md-8">
-                                    <textarea style="width: 100%;" class="form-control" name="welcome_email"><?=(isset($_POST['welcome_email'])?$_POST["welcome_email"]:(isset($agency->
+
+                               
+                                  <textarea style="width: 100%;" class="form-control summernote" name="welcome_email" id="welcome_email"><?=(isset($_POST['welcome_email'])?$_POST["welcome_email"]:(isset($agency->
                                         welcome_email)?$agency->welcome_email:''))?></textarea>
-                                </div>
+
+                                       
+                              
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
@@ -692,8 +697,11 @@
                             <div class="row">
                                 <label for="intercom_security_hash" class="col-md-4 control-label">Viral Email body</label>
                                <div class="col-md-8">
-                                    <textarea style="width: 100%;" class="form-control" name="viral_mail"><?=(isset($_POST['viral_mail'])?$_POST["viral_mail"]:(isset($agency->
+                              
+                                 <textarea style="width: 100%;" class="form-control summernote1" name="viral_mail"><?=(isset($_POST['viral_mail'])?$_POST["viral_mail"]:(isset($agency->
                                         viral_mail)?$agency->viral_mail:''))?></textarea>
+
+                                     
                                 </div>
                             </div>
                             <div class="row">
@@ -1125,5 +1133,27 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         });
 
     });
+
+
+    $(document).ready(function() {
+  $('.summernote').summernote({
+                height: 300,
+                /*toolbar: [
+                    ['font', ['bold', 'italic', 'underline']],
+                    ['para', ['ul', 'ol']],
+                    ['insert', ['link']]
+                ]*/
+            });
+
+            $('.summernote1').summernote({
+                height: 300,
+                /*toolbar: [
+                    ['font', ['bold', 'italic', 'underline']],
+                    ['para', ['ul', 'ol']],
+                    ['insert', ['link']]
+                ]*/
+            });
+});
+
 
 </script>

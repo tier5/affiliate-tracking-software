@@ -278,7 +278,8 @@
                     //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
                     // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
                 } else {
-                   // echo 'k';exit;
+                    echo $this->request->getPost('welcome_email', 'striptags');
+                  // echo 'k';exit;
                     $identity = $this->auth->getIdentity();
                     $conditions = "id = :id:";
                     $parameters = array("id" => $identity['id']);
