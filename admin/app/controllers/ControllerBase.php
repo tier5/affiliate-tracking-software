@@ -653,7 +653,7 @@ class ControllerBase extends Controller {
         $NonViralSMS = $MaxSMS;
         $ViralSMS = $objSubscriptionManager->GetViralSMSCount($agency->agency_id);
         $MaxSMS += $ViralSMS;
-
+        
         $this->view->setVars([
             'total_sms_month' => $MaxSMS,
             'num_discount' => $num_discount,
@@ -1628,12 +1628,14 @@ class ControllerBase extends Controller {
 
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isBusinessAdmin']) {
             $internalNavParams['subscriptionController'] = '/businessSubscription';
+            // $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("id = {$objAgency->subscription_id}");
+            
         }
 
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isAgencyAdmin']) {
             $internalNavParams['subscriptionController'] = '/businessPricingPlan';
         }
-
+        $this->view->sub_id=$objAgency->subscription_id;
         $this->view->internalNavParams = $internalNavParams;
     }
 

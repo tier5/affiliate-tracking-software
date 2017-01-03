@@ -92,7 +92,16 @@ class SubscriptionManager extends BaseService {
 
         if(!$objBusiness->subscription_id) {
             // This mean plan is "Unpaid" or free basically
+            $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
             $MaxAllowed = 100;
+            if($objSubscriptionPlan) {
+                // We are a paid member, get subscription details.
+                $MaxAllowed = $objSubscriptionPlan->sms_messages_per_location;
+            } else {
+                // We're in a trial state, use trial numbers
+                $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("id = {$objBusiness->subscription_id}");
+                $MaxAllowed = $objSubscriptionPricingPlan->max_messages_on_trial_account;
+            }
         }
         else {
             $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
