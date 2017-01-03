@@ -182,7 +182,7 @@
                         <div class="number">
                            connect yelp ,google,facebook business
 
-                            <a href="/location/getAccessTokenbusiness/<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">Connect Facebook</a>
+                            <a href="/link/getAccessToken/<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">Connect Facebook</a>
                         </div>
                     </div>
                 </div>
