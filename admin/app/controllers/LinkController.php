@@ -451,6 +451,18 @@
             $this->view->RedirectToSession = $RedirectToSession;
         }
 
+         public function getYelpPagesAction($LocationID, $RedirectToSession ='') {
+            if($RedirectToSession) {
+                $this->view->setTemplateBefore('signup');
+                $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
+                $this->view->current_step = 2;
+            }
+            $objReviewsService = new \Vokuro\Services\Reviews();
 
+            $this->view->RedirectToSession = $RedirectToSession;
+            $this->view->tobjBusinesses = $objReviewsService->getYelpBusinessLocations($LocationID, $this->request->getPost('YelpBusinessName', 'striptags'), $this->request->getPost('YelpPostalCode', 'striptags'));
+            $this->view->LocationID = $LocationID;
+            $this->view->pick('location/getFacebookPages');
+        }
 
     }

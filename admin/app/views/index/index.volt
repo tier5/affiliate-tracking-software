@@ -180,11 +180,23 @@
 
                         </div>
                     </div>
+                    <form id="hiddenLocationForm" class="form-horizontal" role="form" method="post" autocomplete="off">
                     <div class="portlet-body">
                         <div class="number">
                            connect yelp ,google,facebook business
-
+                           <br>
                             <a href="/link/getAccessToken/<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">Connect Facebook</a>
+                            <br>
+                             <a href="{{ authUrl }}" class="btnSecondary" id="gmb_signin">Connect Google My Business</a>
+                             <br>
+
+                               <input id="yelpsearchfield" name="YelpBusinessName" class="yelpnotfound" type="name" value="<?=str_replace("\"","&quot;",$location->name)?>" />
+
+                                <div class="buttons yelpnotfound">
+            <a class="btnLink" href="#" onclick="PickYelpBusiness();"><img src="/img/icon-maglass.gif"/> Connect Yelp Page</a>
+      
+        </div>
+        </form>
                         </div>
                     </div>
                 </div>
@@ -589,6 +601,15 @@ copyTextareaBtn.addEventListener('click', function(event) {
 });
 </script>
 <script type="text/javascript">
+
+
+ function PickYelpBusiness() {
+        $('#hiddenLocationForm').attr('action', '/link/getYelpPages/<?=$location->location_id; ?>');
+        $('#hiddenLocationForm').submit();
+
+    }
+
+
     jQuery(document).ready(function($){
         var primary_color = $('#primary_color').val();
         var secondary_color = $('#secondary_color').val();
