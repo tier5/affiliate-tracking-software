@@ -69,6 +69,21 @@ class ControllerBase extends Controller {
           $location_id_busi = $this->session->get('auth-identity')['location_id'];//exit;
 
                 /***** business connection *****/
+
+
+                 $conditions = "location_id = :location_id:";
+
+            $parameters = array(
+                "location_id" => $location_id_busi
+            );
+
+            $loc = Location::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+            $this->view->location = $loc;
                 //echo TYPE_YELP;exit;
                      $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
                 $parameters = array("location_id" => $location_id_busi);

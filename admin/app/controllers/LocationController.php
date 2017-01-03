@@ -262,6 +262,23 @@
         }
 
 
+            public function getFacebookPagesbusinessAction($LocationID) {
+          
+            $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
+
+            $face = new FacebookScanning();
+            $tResults = [];
+            $face->setAccessToken($objLocation->access_token);
+
+            $tobjBusinesses = $face->getBusinessAccounts();
+            foreach($tobjBusinesses as &$objBusiness)
+                $objBusiness->type = 'Facebook';
+
+            $this->view->tobjBusinesses = $tobjBusinesses;
+            $this->view->LocationID = $LocationID;
+            //$this->view->RedirectToSession = $RedirectToSession;
+        }
+
         /**
          * Searches for yelp locations
          */
@@ -1494,6 +1511,74 @@
                 $this->view->disable();
                 return;
             }
+        }
+
+
+
+        public function getAccessTokenbusinessAction($LocationID,$RedirectToSession='') {
+            require_once __DIR__ . "/../library/Facebook/autoload.php";
+            require_once __DIR__ . "/../library/Facebook/Facebook.php";
+            require_once __DIR__ . "/../library/Facebook/FacebookApp.php";
+            require_once __DIR__ . "/../library/Facebook/FacebookClient.php";
+            require_once __DIR__ . "/../library/Facebook/FacebookRequest.php";
+            require_once __DIR__ . "/../library/Facebook/FacebookResponse.php";
+            require_once __DIR__ . "/../library/Facebook/Authentication/AccessToken.php";
+            require_once __DIR__ . "/../library/Facebook/Authentication/OAuth2Client.php";
+            require_once __DIR__ . "/../library/Facebook/Helpers/FacebookRedirectLoginHelper.php";
+            require_once __DIR__ . "/../library/Facebook/PersistentData/PersistentDataInterface.php";
+            require_once __DIR__ . "/../library/Facebook/PersistentData/FacebookSessionPersistentDataHandler.php";
+            require_once __DIR__ . "/../library/Facebook/Url/UrlDetectionInterface.php";
+            require_once __DIR__ . "/../library/Facebook/Url/FacebookUrlDetectionHandler.php";
+            require_once __DIR__ . "/../library/Facebook/Url/FacebookUrlManipulator.php";
+            require_once __DIR__ . "/../library/Facebook/PseudoRandomString/PseudoRandomStringGeneratorTrait.php";
+            require_once __DIR__ . "/../library/Facebook/PseudoRandomString/PseudoRandomStringGeneratorInterface.php";
+            require_once __DIR__ . "/../library/Facebook/PseudoRandomString/OpenSslPseudoRandomStringGenerator.php";
+            require_once __DIR__ . "/../library/Facebook/PseudoRandomString/McryptPseudoRandomStringGenerator.php";
+            require_once __DIR__ . "/../library/Facebook/HttpClients/FacebookHttpClientInterface.php";
+            require_once __DIR__ . "/../library/Facebook/HttpClients/FacebookCurl.php";
+            require_once __DIR__ . "/../library/Facebook/HttpClients/FacebookCurlHttpClient.php";
+            require_once __DIR__ . "/../library/Facebook/Http/RequestBodyInterface.php";
+            require_once __DIR__ . "/../library/Facebook/Http/RequestBodyUrlEncoded.php";
+            require_once __DIR__ . "/../library/Facebook/Http/GraphRawResponse.php";
+            require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookSDKException.php";
+            require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookAuthenticationException.php";
+            require_once __DIR__ . "/../library/Facebook/Exceptions/FacebookResponseException.php";
+
+            $this->fb = new \Services\Facebook\Facebook(array(
+                'app_id' => $this->config->facebook['app_id'],
+                'app_secret' => $this->config->facebook['app_secret']
+            ));
+            //check for a code
+
+            if (isset($_GET['code']) && $_GET['code'] != '') {
+                //we have a code, so proccess it now
+                try {
+                    $accessToken = $this->fb->getOAuth2Client()->getAccessTokenFromCode(
+                        $_GET['code'],
+                        //$this->getRedirectUrl($LocationID, $RedirectToSession)
+                    );
+
+                    $accessTokenLong = $this->fb->getOAuth2Client()->getLongLivedAccessToken($accessToken);
+
+                    $accessToken = $accessTokenLong->getValue();
+                    $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
+                    $LocationID = $this->session->get('auth-identity')['location_id'];
+                    $parameters = array("location_id" => $LocationID);
+                    $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                    if(!$Obj) {
+                        $Obj = new LocationReviewSite();
+                        $Obj->location_id = $LocationID;
+                        $Obj->review_site_id = \Vokuro\Models\Location::TYPE_FACEBOOK;
+                    }
+                    $Obj->access_token = $accessToken;
+                    $Obj->save();
+                    $this->flash->success("The Facebook code was saved");
+
+                    $this->response->redirect("/location/getFacebookPagesbusiness/{$LocationID}");
+                } catch (\Services\Facebook\Exceptions\FacebookSDKException $e) {
+                    $this->flash->error($e->getMessage());
+                }
+            } 
         }
 
         protected function getRedirectUrl($LocationID, $RedirectToSession=0) {
