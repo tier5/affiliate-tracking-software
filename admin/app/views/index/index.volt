@@ -168,13 +168,6 @@
                             </div>
 
 
-
-
-
-
-
-
-
                             <div class="row">
                                 <div class="referral-link"><b>Personalized Referral Link:</b> 
                                 <!--<span id="perso_link">
@@ -193,8 +186,10 @@
 
         <div class="row">
             <?php 
-                
-            if(!$facebookMyBusinessConnected && !$GoogleMyBusinessConnected && !YelpMyBusinessConnected){ ?>
+               
+            if(!$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected){ 
+           
+            ?>
             <div class="col-md-4 col-sm-4">
              <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">
@@ -205,15 +200,16 @@
                     </div>
                     <div class="portlet-body">
                         <div class="number">
-                           
-
-                            <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink">Connect Business pages</a>
+                           <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink">Connect Business pages</a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <?php } else {  ?>
+            <?php } else {
+
+                
+              ?>
             <div class="row">
             <div class="col-md-2 col-sm-2">
                 <div class="portlet light bordered dashboard-panel">
@@ -275,11 +271,10 @@
                 <div class="connect-business">
                     <p><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <?php echo $statement;?></p>
                 </div>
-                <?php }?>
+                <?php } ?>
             </div>
 
-            <?php  
-            }?>
+            <?php  } ?>
 
             <div class="col-md-4 col-sm-4">
                 <div class="portlet light bordered dashboard-panel Monthly-Goal-New-Reviews">
