@@ -423,6 +423,7 @@
                         </li>
                         {% endif %}
                         {% if internalNavParams['hasSubscriptions'] %}
+                        {% if(sub_id) %}
                             <li class="nav-item">
                                 <a href="{{ internalNavParams['subscriptionController'] }}" class="nav-link nav-toggle">
                                     <i class="icon-wallet"></i>
@@ -431,7 +432,7 @@
                                 </a>
                             </li>
                         {% endif %}
-
+                        {% endif %}
                         <?php } ?>
                     {% endif %}
                 {% endif %}
