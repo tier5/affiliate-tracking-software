@@ -278,17 +278,18 @@
                     //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
                     // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
                 } else {
-                    echo $this->request->getPost('welcome_email', 'striptags');
+                   // echo $this->request->getPost('welcome_email');
                   // echo 'k';exit;
                     $identity = $this->auth->getIdentity();
                     $conditions = "id = :id:";
                     $parameters = array("id" => $identity['id']);
                     $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
                     $Agency_id=$userObj->agency_id; 
+                   // exit;
                    
                     if($this->request->getPost('welcome_email', 'striptags')!='' || $this->request->getPost('viral_mail', 'striptags')!='')
                     {
-                         $this->db->query("UPDATE `agency` SET `welcome_email`='".$this->request->getPost('welcome_email', 'striptags')."' ,  `viral_email`='".$this->request->getPost('viral_mail', 'striptags')."' WHERE `agency_id`=".$Agency_id);
+                         $this->db->query("UPDATE `agency` SET `welcome_email`='".$this->request->getPost('welcome_email')."' ,  `viral_email`='".$this->request->getPost('viral_mail')."' WHERE `agency_id`=".$Agency_id);
                     }
                     $tEntityArray = [];
                     $tFieldArray = $type == 'agency' ? 'tAgencyFields' : 'tLocationFields';
