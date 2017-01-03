@@ -334,7 +334,7 @@ class Email{
         $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
         $params['BusinessName']=$busi_nam;
-        $params['confirmUrl'] = '/admin/confirm/' . $code . '/' . $u->email;
+        $params['confirmUrl'] = '/admin/confirmEmail/' . $code . '/' . $u->email;
        // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
 
         $mail->send($u->email, "Activate your account!", 'employee', $params);
