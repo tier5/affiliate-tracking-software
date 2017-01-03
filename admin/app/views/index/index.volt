@@ -36,8 +36,27 @@
   width: 70px;
 }
 
+.connect-business a{
+    display: inline-block;
+    margin-bottom: 20px;
+}
 
+.connect-business a:hover{
+     text-decoration: none;
+}
 
+.connect-business p{
+    margin: 0;
+    font-size: 14px;
+    padding: 5px;
+    color: #666;
+} 
+
+.connect-business i{  
+    display: inline-block;
+    color: #b70000;
+    font-size: 17px;
+}
 
 </style>
 
@@ -171,7 +190,7 @@
         <div class="row">
             <?php 
                 
-            if(!$facebookMyBusinessConnected && !$YelpMyBusinessConnected && !$GoogleMyBusinessConnected){ ?>
+            if(!$facebookMyBusinessConnected && !$GoogleMyBusinessConnected && !YelpMyBusinessConnected){ ?>
             <div class="col-md-4 col-sm-4">
              <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">
@@ -180,29 +199,18 @@
 
                         </div>
                     </div>
-                    <form id="hiddenLocationForm" class="form-horizontal" role="form" method="post" autocomplete="off">
                     <div class="portlet-body">
                         <div class="number">
-                           connect yelp ,google,facebook business
-                           <br>
-                            <a href="/link/getAccessToken/<?=$location->location_id; ?>" id="btnAuthenticateFacebook" class="btnLink">Connect Facebook</a>
-                            <br>
-                             <a href="{{ authUrl }}" class="btnSecondary" id="gmb_signin">Connect Google My Business</a>
-                             <br>
+                           
 
-                               <input id="yelpsearchfield" name="YelpBusinessName" class="yelpnotfound" type="name" value="<?=str_replace("\"","&quot;",$location->name)?>" />
-
-                                <div class="buttons yelpnotfound">
-            <a class="btnLink" href="#" onclick="PickYelpBusiness();"><img src="/img/icon-maglass.gif"/> Connect Yelp Page</a>
-      
-        </div>
-        </form>
+                            <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink">Connect Business pages</a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <?php } else { ?>
+            <?php } else {  ?>
+            <div class="row">
             <div class="col-md-2 col-sm-2">
                 <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">
@@ -217,6 +225,13 @@
                         </div>
                     </div>
                 </div>
+                <?php
+                if(!$facebookMyBusinessConnected || !$GoogleMyBusinessConnected || !YelpMyBusinessConnected)
+                { ?>
+                    <div class="connect-business">
+                        <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink">Connect Business pages</a>
+                    </div>
+               <?php } ?>
             </div>
 
             <div class="col-md-2 col-sm-2">
@@ -232,9 +247,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="connect-business">
+                    <p><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Facebook/Google</p>
+                </div>
             </div>
 
-            <?php }?>
+            <?php  
+            }?>
 
             <div class="col-md-4 col-sm-4">
                 <div class="portlet light bordered dashboard-panel Monthly-Goal-New-Reviews">
@@ -286,6 +305,7 @@
                         <div class="bottom-header"><div class="num"><?=$sms_sent_this_month?></div>Messages Sent</div>
                     </div>
                 </div>
+            </div>
             </div>
 
         </div>
@@ -601,15 +621,6 @@ copyTextareaBtn.addEventListener('click', function(event) {
 });
 </script>
 <script type="text/javascript">
-
-
- function PickYelpBusiness() {
-        $('#hiddenLocationForm').attr('action', '/link/getYelpPages/<?=$location->location_id; ?>');
-        $('#hiddenLocationForm').submit();
-
-    }
-
-
     jQuery(document).ready(function($){
         var primary_color = $('#primary_color').val();
         var secondary_color = $('#secondary_color').val();
