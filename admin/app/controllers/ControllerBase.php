@@ -56,6 +56,26 @@ class ControllerBase extends Controller {
         return $this->response->redirect($PageURL);
     }
 
+     public function GetLocationReviewSite($location_id, $ReviewSiteType) {
+            
+            $conditions = "location_id = :location_id: AND review_site_id = " . $ReviewSiteType;
+            $parameters = array("location_id" => $location_id);
+            $objLocationReviewSite = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+            
+            if (!$objLocationReviewSite) {
+                $objLocationReviewSite = new LocationReviewSite();
+                $objLocationReviewSite->review_site_id = $ReviewSiteType;
+                $objLocationReviewSite->location_id = $location_id;
+                $objLocationReviewSite->is_on = 0;
+                $objLocationReviewSite->access_token = "";
+                $objLocationReviewSite->json_access_token = "";
+                $objLocationReviewSite->save();
+            }
+            
+            return $objLocationReviewSite;
+        }
+
+
     public function initialize() {
         error_reporting(E_ALL ^ E_NOTICE);
 
@@ -85,7 +105,20 @@ class ControllerBase extends Controller {
             );
             $this->view->location = $loc;
                 //echo TYPE_YELP;exit;
-                     $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
+
+            $objGoogleReviewSite = $this->GetLocationReviewSite($location_id_busi, \Vokuro\Models\Location::TYPE_GOOGLE);
+            $this->view->GoogleMyBusinessConnected = $objGoogleReviewSite && $objGoogleReviewSite->json_access_token ? true : false;
+
+             $objfacebookReviewSite = $this->GetLocationReviewSite($location_id_busi, \Vokuro\Models\Location::TYPE_GOOGLE);
+            $this->view->facebookMyBusinessConnected = $objfacebookReviewSite && $objfacebookReviewSite->access_token ? true : false;
+
+
+             $objyelpReviewSite = $this->GetLocationReviewSite($location_id_busi, \Vokuro\Models\Location::TYPE_YELP);
+            //$this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+            $this->view->YelpMyBusinessConnected = isset($objyelpReviewSite->external_location_id) && $objyelpReviewSite->external_location_id && $objyelpReviewSite->external_location_id != '';
+
+
+                    /* $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
                 $parameters = array("location_id" => $location_id_busi);
 
 
@@ -129,7 +162,7 @@ class ControllerBase extends Controller {
                 else
                 {
                   $this->view->gl_connection='';  
-                }
+                }*/
 
 
                 //exit;

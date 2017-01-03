@@ -169,7 +169,9 @@
         {% endif %}
 
         <div class="row">
-            <?php if($gl_connection=='' && $yelp_connection=='' && $fb_connection==''){ ?>
+            <?php 
+                
+            if(!$facebookMyBusinessConnected && !$YelpMyBusinessConnected && !$GoogleMyBusinessConnected){ ?>
             <div class="col-md-4 col-sm-4">
              <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">
