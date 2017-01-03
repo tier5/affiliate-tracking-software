@@ -210,6 +210,14 @@
                         </li>
                     {% endif %}
                 {% endif %}
+                {% if agencytype == "agency" %}
+                <li class="dropdown dropdown-user" style="margin-left: 30px;">
+                <a href="/notification/allnotification/{{NumberAgency}}" class="dropdown-toggle">
+                        <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-bell"></i> ( {{ NumberOfNotification }} )</span>
+
+                    </a>
+                </li>
+                {% endif %}
                 <li class="dropdown dropdown-user" style="margin-left: 20px;">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                         <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-user"></i> {{ name }} </span>
@@ -415,7 +423,6 @@
                                 </a>
                             </li>
                         {% endif %}
-
                         <?php } ?>
                     {% endif %}
                 {% endif %}
@@ -547,7 +554,9 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <i>This is the name that will be used in the SMS text message.</i>
+                                                <i>This is the name that will be used in the SMS text message.
+
+                                                </i>
                                             </div>
                                         </div>
                                     </div>
@@ -557,13 +566,13 @@
                                                 <!--<input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])? $_POST["phone"]:'')?>"
                                                 />-->
 
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value=""
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Mobile" name="phone" id="smsrequestformphone" value=""
                                                 />
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <i>The phone number that will recieve the SMS message.</i>
+                                                <i>The Mobile number that will receive the SMS message.</i>
                                             </div>
                                         </div>
                                     </div>
@@ -576,7 +585,8 @@
                                             <div class="col-md-12">
                                                 <textarea 
                                                 	style="width: 100%;" 
-                                                	class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{ location.SMS_message }}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
+                                                	class="form-control placeholder-no-fix" name="SMS_message">{% if agency_sms %}
+                                                    {{agency_sms}}{% elseif location.SMS_message %}{{ location.SMS_message }}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
                                                 <i>{location-name} will be the name of the location sending the SMS,
                                                     {name} will be replaced with the name entered when sending the
                                                     message and {link} will be the link to the review.</i>
@@ -650,7 +660,6 @@
                     function updateCard() {
                         $.post('/businessSubscription/updatePaymentProfile', getCCParams())
                                 .done(function (data) {
-                                    console.log(data);
                                     if (data.status !== true) {
                                         alert("Update card failed!!!")
                                     } else {
@@ -672,7 +681,7 @@
                                 /*if (data.status !== true) {
                                     alert("Update card failed!!!")
                                 }*/
-                                console.log(data);
+                                window.location = "/businessSubscription";
                             })
                             .fail(function () {
                             })
@@ -683,13 +692,15 @@
                     $('.fancybox').fancybox();
 
                     var bodyElem = document.getElementsByTagName("body")[0];
-                    console.log(bodyElem);
                     if (bodyElem.dataset.ccprompt === "open") {
                         if(bodyElem.dataset.paymentprovider === "AuthorizeDotNet")
                             $('#updateCardModal').modal('show');
                         else if(bodyElem.dataset.paymentprovider === "Stripe") {
+                            console.log('wee');
                             var handler = StripeCheckout.configure({
                                     key: '{{ stripePublishableKey }}',
+                                    email: '{{ businessEmail }}',
+                                    allowRememberMe: false,
                                     /* GARY_TODO: Replace with agency logo */
                                     /*image: '/img/documentation/checkout/marketplace.png',*/
                                     locale: 'auto',

@@ -12,6 +12,7 @@ use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 
 class SubscriptionManager extends BaseService {
 
+    const CC_NON_TRIAL = 2;
     function __construct($config = null, $di = null) {
         parent::__construct($config, $di);
     }
@@ -32,6 +33,11 @@ class SubscriptionManager extends BaseService {
         $subscriptionPlan = $this->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
         $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
 
+        $EnableTrial = $subscriptionPlan['pricingPlan']['enable_trial_account'];
+
+        if(!$EnableTrial && !$payment_plan)
+            return static::CC_NON_TRIAL;
+
         // GARY_TODO:  Somehow all payment_plans are getting started at Monthly.
         if (!$payment_plan || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE || $payment_plan == ServicesConsts::$PAYMENT_PLAN_TRIAL || $subscriptionPlan['pricing_plan']['enable_trial_account']) {
             return false;
@@ -42,7 +48,7 @@ class SubscriptionManager extends BaseService {
 
         // GARY_TODO:  Add cron script to reset customer_id on expired / invalid cards.
         if(!$paymentProfile || !$paymentProfile['customer_id'])
-            return true;
+            return $EnableTrial ? true : static::CC_NON_TRIAL;
 
         return false;
     }
@@ -92,7 +98,16 @@ class SubscriptionManager extends BaseService {
 
         if(!$objBusiness->subscription_id) {
             // This mean plan is "Unpaid" or free basically
+            $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
             $MaxAllowed = 100;
+            if($objSubscriptionPlan) {
+                // We are a paid member, get subscription details.
+                $MaxAllowed = $objSubscriptionPlan->sms_messages_per_location;
+            } else {
+                // We're in a trial state, use trial numbers
+                $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("id = {$objBusiness->subscription_id}");
+                $MaxAllowed = $objSubscriptionPricingPlan->max_messages_on_trial_account;
+            }
         }
         else {
             $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = {$objSuperAdmin->id}");
@@ -281,8 +296,9 @@ class SubscriptionManager extends BaseService {
                     $locations = 1;
                     $smsMessagesPerLocation = $subscriptionPricingPlan->max_messages_on_trial_account;
                 } else {
-                    $paymentPlan = ServicesConsts::$PAYMENT_PLAN_MONTHLY;
-                    $locations = 0;
+                    // Payment plan used to be set to monthly.  I have it setup so the payment plan is only setup when the payment actually goes through.
+                    $paymentPlan = '';
+                    $locations = 1;
                     $smsMessagesPerLocation = 0;
                 }
 

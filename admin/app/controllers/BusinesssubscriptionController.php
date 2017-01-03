@@ -41,8 +41,6 @@ class BusinessSubscriptionController extends ControllerBase {
     }
 
     public function indexAction() {
-
-
         /* Get services */
         $userManager = $this->di->get('userManager');
         $subscriptionManager = $this->di->get('subscriptionManager');
@@ -55,12 +53,10 @@ class BusinessSubscriptionController extends ControllerBase {
         /* Show sms quota? */
         $this->view->showSmsQuota = $isBusiness;
         if ($isBusiness) {
-
             /* Get sms quota parameters */
             $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams(
                 $userManager->getLocationId($this->session)
             );
-
 
             if ($smsQuotaParams['hasUpgrade']) {
                  //print_r($smsQuotaParams);exit;

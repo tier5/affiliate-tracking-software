@@ -88,7 +88,14 @@ class ControllerBase extends Controller {
                     'rgb' => $rgb,
                     'logo_path' =>  "/img/agency_logos/" . $agency->logo_path
                 ]);
-
+                $db = $this->di->get('db');
+                $db->begin();
+                $agency->agency_id;
+                 $result=$this->db->query(" SELECT * FROM `notification` WHERE `to` =".$agency->agency_id." AND `read` = 0");
+                 $x=$result->numRows();
+                 $this->view->NumberOfNotification;
+                 $this->view->setVar('NumberOfNotification', $x);
+                 $this->view->setVar('NumberAgency', $agency->agency_id);
             }
 
     //        $SD_Parts = explode('.', $_SERVER['HTTP_HOST']);
@@ -161,12 +168,24 @@ class ControllerBase extends Controller {
              */
             $required = $this->di->get('subscriptionManager')->creditCardInfoRequired($this->session);
             $this->view->ccInfoRequired = $required ? "open" : "closed";
-
             $this->view->paymentService = 'Stripe';
-
 
             $objPricingPlan = $agency->subscription_id ? \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $agency->subscription_id) : '';
             $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = '. $identity['id']);
+
+            if($required == \Vokuro\Services\SubscriptionManager::CC_NON_TRIAL) {
+                // Non trial account.  Have we got their credit card yet?
+                if($objStripeSubscription->stripe_customer_id && ($objStripeSubscription->stripe_subscription_id == "N" || !$objStripeSubscription->stripe_subscription_id)) {
+                    // Have CC info, but no subscription.  Redirect to business subscription page
+                    if(strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false)
+                        $this->response->redirect("/businessSubscription");
+                }
+                if(!$objStripeSubscription->stripe_customer_id) {
+                    $this->view->ccInfoRequired = "open";
+                }
+                else
+                    $this->view->ccInfoRequired = "closed";
+            }
 
             // Check if business should be disabled
             $this->view->BusinessDisableBecauseOfStripe = false;
@@ -203,6 +222,8 @@ class ControllerBase extends Controller {
             elseif($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 $this->view->stripePublishableKey = $this->config->stripe->publishable_key;
             }
+
+            $this->view->businessEmail = $agency->email;
             // End stripe modal
 
             if($this->session->StripePopupDisabled)
@@ -273,7 +294,59 @@ class ControllerBase extends Controller {
                 $this->view->setVars($vars);
             }
         }
-        
+
+        else if($this->session->has("sharing_code")) {
+
+            $code = $this->session->get("sharing_code");
+
+            $conditions = "viral_sharing_code = :viral_sharing_code:";
+            $parameters = array(
+                "viral_sharing_code" => $code
+            );
+
+
+            $agency = Agency::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+
+
+            if($agency->parent_id) {
+                $agency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+
+                $this->view->agencyId = $agency1->agency_id;
+                $this->view->agency_name = $agency1->name;
+
+             }
+
+             $agency = $agency1;
+
+
+        }
+
+/*** commented on 30th dec 2016 ****/
+        /*if ($agency) {
+            $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
+            list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+            $rgb = $r . ', ' . $g . ', ' . $b;
+            $vars = [
+                'agency_id' => $agency->agency_id,
+                'agency' => $agency,
+                'agency_name' => $agency->name,
+                'main_color_setting' => $agency->main_color,
+                'rgb' => $rgb,
+                'logo_path' => $agency->logo_path,
+                'main_color' => str_replace('#', '', $agency->main_color),
+                'primary_color' => str_replace('#', '', $agency->main_color),
+                'secondary_color' => str_replace('#', '', $agency->secondary_color)
+            ];
+            $this->view->setVars($vars);
+        }*/
+/*** commented on 30th dec 2016 ****/
+
+
         $this->agency = $agency;
         if ($this->request->getPost('main_color')) {
             list($r, $g, $b) = sscanf($this->request->getPost('main_color'), "#%02x%02x%02x");
@@ -658,7 +731,7 @@ class ControllerBase extends Controller {
         $sql = "SELECT review_invite_id
               FROM review_invite
                 INNER JOIN location ON location.location_id = review_invite.location_id
-              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";//exit;
 
         // Base model
         $list = new ReviewInvite();
@@ -692,7 +765,7 @@ class ControllerBase extends Controller {
                 ));
             }
         } catch (Services_Twilio_RestException $e) {
-            $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
+            $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your SMS configuration and try again. ');
             return false;
         }
         return true;
@@ -1415,10 +1488,11 @@ class ControllerBase extends Controller {
         $userSubscription = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
 
         // GARY_TODO Determine if the comment below is accurate.
-        $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] &&
-            ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
-            ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
-            ($userManager->hasLocation($this->session) && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
+        $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser']
+            && ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin'])
+            && ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE)
+            && ($userManager->hasLocation($this->session)
+                && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
 
         $internalNavParams['hasPricingPlans'] = $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];
 
