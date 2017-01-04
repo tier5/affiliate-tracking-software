@@ -3,14 +3,19 @@ body { background-color: #F6F6F6; }
 
 .topheader { background-color: #2a3644; width: 100%; height: 8px; }
 header { background-color: #FFFFFF; width: 100%; /*height: 123px;*/ display: inline-block; }
-header .headercontent { width: 1050px; margin-left: auto; margin-right: auto; }
-header .logo { float: none; margin: 0 auto; margin-top: 20px; width: 100%; }
-header .logo img { max-width: 300px; margin-top: 15px; }
-#label-wrapper {width: 472px; }
-header .steps { float: left; width: 460px; /*height: 25px; */margin-left: 15px; margin-top: 48px; }
-header .steps div { float: left; margin-right: 8px; }
-header .steps-desc { float: left; width: 472px; height: 20px; margin-top: 1px; font-size: 1.2em; }
-header .steps-desc div { float: left; }
+.headercontent { 
+  width: 90%; 
+  margin-left: auto; 
+  margin-right: auto; 
+  margin-bottom: 132px;
+}
+header .logo {  max-width: 219px; float: left; margin: 0 auto; margin-top: 20px; }
+header .logo img { margin-top: 15px; }
+#label-wrapper {width: 472px; float: right; }
+.steps { float: left; width: 460px; /*height: 25px; */margin-left: 15px; margin-top: 48px; }
+.steps div { float: left; margin-right: 8px; }
+.steps-desc { float: left; width: 472px; height: 20px; margin-top: 1px; font-size: 1.2em; }
+.steps-desc div { float: left; }
 #step2 { margin-left: 47px; }
 #step3 { margin-left: 51px; }
 #step4 { margin-left: 44px; }
@@ -18,7 +23,15 @@ header .steps-desc div { float: left; }
 .divider img {padding-bottom: 5px; }
 h3 { color: #2A3644; font-weight: bold; font-size: 31px; }
 
-.content { width: 1070px; margin-left: auto; margin-right: auto; }
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+
+  display: flex;
+  align-items: center;
+}
+
+.content { width: 90%; margin-left: auto; margin-right: auto; }
 
 .btnsignup { background-color: #c01209; border: medium none; border-radius: 26px !important; color: #ffffff; font-weight: bold; height: 44px; width: 238px; }
 .control-label { color: #2a3644; font-weight: bold; }
@@ -522,7 +535,7 @@ form.register-form label.error{
 @media screen and (max-width: 900px) {
 
 .content {width: 90%; margin: 0 auto;}
-header .headercontent{width: 90%; margin: 0 auto;}
+.headercontent{width: 90%; margin: auto; margin-bottom: 132px;}
 
 
 
@@ -530,6 +543,9 @@ header .headercontent{width: 90%; margin: 0 auto;}
 
 
 @media screen and (max-width: 767px) {
+  .headercontent {
+    margin-bottom: 0;
+  }
 
   .search_name{width: 100%; margin-bottom: 10px; float: none; margin-right: 0;}
   .search_name_location{width: 100%; margin-bottom: 10px; float: none; margin-right: 0;}
@@ -537,10 +553,13 @@ header .headercontent{width: 90%; margin: 0 auto;}
   header{height: auto;}
   header .logo{float: none; margin: 0 auto; width: 200px;}
   header .logo img{max-width: 200px !important;}
-  .steps,
+  #label-wrapper {float: none;}
   .steps {
     width: 100%;
   }
+  .steps-desc {
+  }
+
   /*header .steps{float: none; margin: 10px auto; width: 100%; text-align: center;}
   header .steps div{float: none; display: inline-block;}
   header .steps-desc{width: 100%; text-align: center; float: none; height: auto; margin-left: 0;}
@@ -706,7 +725,6 @@ header .headercontent{width: 90%; margin: 0 auto;}
 }
 
 @media screen and (min-width: 887px) {
-  #label-container {float: right !important; }  
 }
 
 @media screen and (max-width: 1199px) {
