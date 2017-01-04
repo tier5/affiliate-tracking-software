@@ -92,11 +92,18 @@ class SessionController extends ControllerBase {
     public function submitSignupAction() {
         try {
             $subscription_id = null;
-            $short_code = $this->request->getPost('short_code');
-
+                if($this->request->getPost('short_code'))
+                {
+                    $short_code = $this->request->getPost('short_code');  
+                }
+                else
+                {
+                    $short_code =$this->cookies->get('short_code')->getValue();
+                }
            //exit;
             $ssp = new SubscriptionPricingPlan();
             $sharing_code = $this->request->getPost('sharing_code', 'striptags');
+
             $parent_id = null;
             if ($short_code) {
                 $subscription_pricing_plan = $ssp->findOneBy(['short_code' => $short_code]);
@@ -242,6 +249,9 @@ class SessionController extends ControllerBase {
             
             $this->db->commit();
 
+             $this->cookies->get('short_code')->delete();
+             $this->cookies->get('sharing_code')->delete();
+
             return $this->response->redirect('/session/thankyou');
 
         } catch(ArrayException $e) {
@@ -308,7 +318,7 @@ class SessionController extends ControllerBase {
         $objAgency='';
         $objUser='';
 
-        echo $this->request->getQuery("code");exit;
+       // echo $this->request->getQuery("code");exit;
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
         $pi = array_shift($ex);//exit;
@@ -353,6 +363,9 @@ class SessionController extends ControllerBase {
 
 
             $this->session->set("sharing_code", $code);
+
+            $expire = time() + 86400 * 30;
+            $this->cookies->set('sharing_code',$code, $expire);
             
             
             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
@@ -380,7 +393,10 @@ class SessionController extends ControllerBase {
 
         //dd($record->agency_id);
 
-       
+       if(!$this->view->short_code)
+       {
+        $this->view->short_code=$this->cookies->get('short_code')->getValue();
+       }
         //see invite action above
         if($this->view->short_code){
             $subscription = new SubscriptionPricingPlan();
