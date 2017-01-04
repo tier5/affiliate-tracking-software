@@ -92,9 +92,9 @@ class SessionController extends ControllerBase {
     public function submitSignupAction() {
         try {
             $subscription_id = null;
-            $short_code = $this->request->getPost('short_code');
+           echo  $short_code = $this->request->getPost('short_code');
 
-
+           exit;
             $ssp = new SubscriptionPricingPlan();
             $sharing_code = $this->request->getPost('sharing_code', 'striptags');
             $parent_id = null;
