@@ -263,7 +263,7 @@ public function editAction($agency_id = 0) {
                         $planName = $subscriptionPricePlan->name;
                     }
                     
-                     $EmailFrom = 'zacha@reviewvelocity.co';
+                     $EmailFrom = 'no-reply@reviewvelocity.co';
                     $EmailFromName = "Zach Anderson";
                     $subject="New Business Registered Successfully";
                     $mail_body='Dear '.$objSuperAdminUser->name.',';
