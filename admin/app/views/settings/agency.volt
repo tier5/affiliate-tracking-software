@@ -44,6 +44,8 @@
     {% set GeneralExpanded = '' %}
 {% endif %}
 
+<?php $BusinessType = $this->session->get('auth-identity')['agencytype'] == 'business' ? 'Business' : 'Agency'; ?>
+
 <header class="jumbotron subhead <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'agency')?>settingspage" id="reviews">
     <div class="hero-unit">
 
@@ -145,61 +147,61 @@
 
 
                         <div class="form-group">
-                            <label for="name" class="col-md-4 control-label">Business Name</label>
+                            <label for="name" class="col-md-4 control-label">{{ BusinessType }} Name</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("name", ["class": 'form-control', 'placeholder': 'Business Name', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="email" class="col-md-4 control-label">Business Email</label>
+                            <label for="email" class="col-md-4 control-label">{{ BusinessType }} Email</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("email", ["class": 'form-control', 'placeholder': 'Email', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="phone" class="col-md-4 control-label">Business Phone</label>
+                            <label for="phone" class="col-md-4 control-label">{{ BusinessType }} Phone</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("phone", ["class": 'form-control', 'placeholder': 'Phone', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="address" class="col-md-4 control-label">Business Address</label>
+                            <label for="address" class="col-md-4 control-label">{{ BusinessType }} Address</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("address", ["class": 'form-control', 'placeholder': 'Address', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="address" class="col-md-4 control-label">Business Address 2</label>
+                            <label for="address" class="col-md-4 control-label">{{ BusinessType }} Address 2</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("address2", ["class": 'form-control', 'placeholder': 'Address2', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="locality" class="col-md-4 control-label">Business City</label>
+                            <label for="locality" class="col-md-4 control-label">{{ BusinessType }} City</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("locality", ["class": 'form-control', 'placeholder': 'City', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="state_province" class="col-md-4 control-label">Business State/Province</label>
+                            <label for="state_province" class="col-md-4 control-label">{{ BusinessType }} State/Province</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("state_province", ["class": 'form-control', 'placeholder': 'State/Province', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="state_province" class="col-md-4 control-label">Business Country</label>
+                            <label for="state_province" class="col-md-4 control-label">{{ BusinessType }} Country</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("country", ["class": 'form-control', 'placeholder': 'Country', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="postal_code" class="col-md-4 control-label">Business Zip / Postal Code</label>
+                            <label for="postal_code" class="col-md-4 control-label">{{ BusinessType }} Zip / Postal Code</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("postal_code", ["class": 'form-control', 'placeholder': 'Postal Code', 'type': 'name']) }}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="postal_code" class="col-md-4 control-label">Business Website</label>
+                            <label for="postal_code" class="col-md-4 control-label">{{ BusinessType }} Website</label>
                             <div class="col-md-8">
                                 {{ agencyform.render("website", ["class": 'form-control', 'placeholder': 'Website', 'type': 'name']) }}
                             </div>
