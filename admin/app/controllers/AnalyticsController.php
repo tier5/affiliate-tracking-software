@@ -59,16 +59,21 @@
                         if($objReviewInvite->rating > 0)
                             $SMSConvertedLastMonth++;
 
-                        if($objReviewInvite->sms_broadcast_id)
-                            $SMSClickLastMonth++;
+                        /*if($objReviewInvite->sms_broadcast_id)
+                            $SMSClickLastMonth++;*/
+                               if($objReviewInvite->recommend!=NULL) 
+                                $SMSClickLastMonth++;
 
                     } else {
                         $SMSSentThisMonth++;
                         if($objReviewInvite->rating > 0)
                             $SMSConvertedThisMonth++;
 
-                        if($objReviewInvite->sms_broadcast_id)
-                            $SMSClickThisMonth++;
+                       /* if($objReviewInvite->sms_broadcast_id)
+                            $SMSClickThisMonth++;*/
+
+                        if($objReviewInvite->recommend!=NULL) 
+                                $SMSClickThisMonth++;
                     }
                 }
 

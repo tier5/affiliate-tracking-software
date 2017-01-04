@@ -220,6 +220,7 @@
                     </div>
                     <div class="portlet-body">
                         <?php
+                       // echo 'sadasdsa'.$sms_click_this_month;
             //calculate our values
             $thism = ($sms_sent_this_month > 0?round(($sms_click_this_month / $sms_sent_this_month) * 100):0);
                         $last = ($sms_sent_last_month > 0?round(($sms_click_last_month / $sms_sent_last_month) *
