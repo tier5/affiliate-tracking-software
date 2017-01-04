@@ -163,28 +163,34 @@ class ControllerBase extends Controller {
             //internal navigation parameters
             $this->configureNavigation($identity);
 
-            /*
-             * Has this user provided their credit card info?
-             */
-            $required = $this->di->get('subscriptionManager')->creditCardInfoRequired($this->session);
-            $this->view->ccInfoRequired = $required ? "open" : "closed";
-            $this->view->paymentService = 'Stripe';
+            if($objAgency->parent_id > 0 || $objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+                /*
+                 * Has this user provided their credit card info?
+                 */
+                $required = $this->di->get('subscriptionManager')->creditCardInfoRequired($this->session);
+                $this->view->ccInfoRequired = $required ? "open" : "closed";
+                $this->view->paymentService = 'Stripe';
 
-            $objPricingPlan = $agency->subscription_id ? \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $agency->subscription_id) : '';
-            $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = '. $identity['id']);
+                $objPricingPlan = $agency->subscription_id ? \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $agency->subscription_id) : '';
+                $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = ' . $identity['id']);
 
-            if($required == \Vokuro\Services\SubscriptionManager::CC_NON_TRIAL) {
-                // Non trial account.  Have we got their credit card yet?
-                if($objStripeSubscription->stripe_customer_id && ($objStripeSubscription->stripe_subscription_id == "N" || !$objStripeSubscription->stripe_subscription_id)) {
-                    // Have CC info, but no subscription.  Redirect to business subscription page
-                    if(strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false)
-                        $this->response->redirect("/businessSubscription");
+                $this->view->NonTrialNoPlan = false;
+
+                if ($required == \Vokuro\Services\SubscriptionManager::CC_NON_TRIAL) {
+                    // Non trial account.  Have we got their credit card yet?
+                    if ($objStripeSubscription->stripe_customer_id && ($objStripeSubscription->stripe_subscription_id == "N" || !$objStripeSubscription->stripe_subscription_id)) {
+                        // Have CC info, but no subscription.  Redirect to business subscription page
+                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false)
+                            $this->response->redirect("/businessSubscription");
+                        $this->view->NonTrialNoPlan = true;
+                    }
+                    if (!$objStripeSubscription->stripe_customer_id) {
+                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false)
+                            $this->response->redirect("/businessSubscription");
+                        $this->view->ccInfoRequired = "open";
+                    } else
+                        $this->view->ccInfoRequired = "closed";
                 }
-                if(!$objStripeSubscription->stripe_customer_id) {
-                    $this->view->ccInfoRequired = "open";
-                }
-                else
-                    $this->view->ccInfoRequired = "closed";
             }
 
             // Check if business should be disabled

@@ -376,6 +376,42 @@
             </div>
         </div>
     </div>
+    <!-- End change plan pop up -->
+
+    <!-- Subscription explanation popup -->
+    <div class="modal fade" id="explanationModal" tabindex="-1" role="dialog" aria-labelledby="explanationModalLabel">
+        <div class="change-plan modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="growth-bar">
+                        <div class="caption">
+                            <span>Business Subscriptions</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default apple-backgound">
+                        <div class="panel-body">
+                            <div class="subscription-panel-default-caption" style="transform: none; !important">
+                                To start your subscription:
+                                <ul>
+                                    <li>Choose the amount of locations</li>
+                                    <li>Chose the amount of SMS messages</li>
+                                    <li>Click "Begin Plan"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group">
+                            <button type="button" class="btn default golden-poppy-backgound subscription-btn" data-dismiss="modal">Got it!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End change plan pop up -->
 
     <!-- Processing -->
     <div class="modal fade" id="processingModal" tabindex="-1" role="dialog" aria-labelledby="processingLabel">
@@ -430,6 +466,9 @@
 <script type="text/javascript">
 
     jQuery(document).ready(function ($) {
+        {% if NonTrialNoPlan %}
+            $('#explanationModal').modal('show');
+        {% endif %}
         $(".UpdateCard").click(function() {
             var ButtonID = $(this).attr('id');
 
