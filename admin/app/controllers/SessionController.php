@@ -98,11 +98,20 @@ class SessionController extends ControllerBase {
                 }
                 else
                 {
-                    $short_code =$this->cookies->get('short_code')->getValue();
+                    $short_code =$_COOKIE['short_code'];
                 }
            //exit;
             $ssp = new SubscriptionPricingPlan();
-            $sharing_code = $this->request->getPost('sharing_code', 'striptags');
+            //$sharing_code = $this->request->getPost('sharing_code', 'striptags');
+
+            if($this->request->getPost('sharing_code'))
+                {
+                    $sharing_code = $this->request->getPost('sharing_code');  
+                }
+                else
+                {
+                    $sharing_code =$_COOKIE['sharing_code'];
+                }
 
             $parent_id = null;
             if ($short_code) {
@@ -249,12 +258,10 @@ class SessionController extends ControllerBase {
             
                 $this->db->commit();
 
-                if ($this->cookies->has('short_code')) {
-                $this->cookies->get('short_code')->delete();
-                }
-                if ($this->cookies->has('sharing_code')) {
-                $this->cookies->get('sharing_code')->delete();
-                }
+                $expire = time() + 86400 * 30;
+                setcookie( "short_code",'', $expire );
+                setcookie( "sharing_code",'', $expire );
+                
 
             return $this->response->redirect('/session/thankyou');
 
@@ -365,12 +372,9 @@ class SessionController extends ControllerBase {
 
             $code = $this->request->getQuery("code");
 
-
-            $this->session->set("sharing_code", $code);
-
             $expire = time() + 86400 * 30;
-            $this->cookies->set('sharing_code',$code, $expire);
-            
+            //$this->cookies->set('sharing_code',$code, $expire);
+            setcookie("sharing_code",$code, $expire );
             
             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
@@ -399,7 +403,7 @@ class SessionController extends ControllerBase {
 
        if(!$this->view->short_code)
        {
-        $this->view->short_code=$this->cookies->get('short_code')->getValue();
+        $this->view->short_code=$_COOKIE['short_code'];
        }
         //see invite action above
         if($this->view->short_code){
