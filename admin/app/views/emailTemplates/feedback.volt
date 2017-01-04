@@ -18,7 +18,7 @@
 
                  <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online.</p>
 
-                <p style="font-size: 13px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
+                <p style="line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
 
                 	<a href="http://{{ publicUrl }}{{ confirmUrl }}"><i>Personalized Feedback Form - Click Here</i></a>
                  </p>   
@@ -27,7 +27,7 @@
 
                     Login Details:</br>;
                     <p>Please view the Login Credentials Below:<br>
-                       Login URL:<br>
+                       Login URL:<a href="http://{{ publicUrl }}/session/login">Click here To Login</a><br>
                        Login Email:{{email}}<br>
                        Login Password:{{pasword}}
                     </p>   
