@@ -92,9 +92,9 @@ class SessionController extends ControllerBase {
     public function submitSignupAction() {
         try {
             $subscription_id = null;
-           echo  $short_code = $this->request->getPost('short_code');
+            $short_code = $this->request->getPost('short_code');
 
-           exit;
+           //exit;
             $ssp = new SubscriptionPricingPlan();
             $sharing_code = $this->request->getPost('sharing_code', 'striptags');
             $parent_id = null;
@@ -258,6 +258,17 @@ class SessionController extends ControllerBase {
 
     public function inviteAction($short_code = null) {
         $this->view->short_code = $short_code;
+
+            if($short_code!=null)
+            {
+         $expire = time() + 86400 * 30;
+         $this->cookies->set('short_code',$short_code, $expire);
+            }
+            else
+            {
+                $this->view->short_code =$short_code=$this->cookies->get('short_code')->getValue();
+            }
+        
         $this->signupAction();
 
         $this->view->pick('session/signup');
@@ -297,7 +308,7 @@ class SessionController extends ControllerBase {
         $objAgency='';
         $objUser='';
 
-        //echo $subscriptionToken;exit;
+        echo $subscriptionToken;exit;
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
         $pi = array_shift($ex);//exit;
