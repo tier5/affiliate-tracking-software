@@ -410,7 +410,7 @@ class SessionController extends ControllerBase {
                 $this->view->agency_name = $objAgency1->name;
 
              }
-             $this->view->agency_name ='';
+             //$this->view->agency_name ='';
         }
 
         //dd($record->agency_id);
