@@ -374,7 +374,7 @@ class SessionController extends ControllerBase {
 
             $expire = time() + 86400 * 30;
             //$this->cookies->set('sharing_code',$code, $expire);
-            setcookie("sharing_code",$code, $expire );
+            setcookie("code",$code, $expire );
             
             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
@@ -395,7 +395,21 @@ class SessionController extends ControllerBase {
         }
         else
         {
+            $code=$_COOKIE['code'];
 
+             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
+            $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
+
+            $this->view->agencyId = $objAgency->agency_id;
+            $this->view->agency_name = $objAgency->name;
+             
+            if($objAgency->parent_id) {
+                $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+
+                $this->view->agencyId = $objAgency1->agency_id;
+                $this->view->agency_name = $objAgency1->name;
+
+             }
              $this->view->agency_name ='';
         }
 
