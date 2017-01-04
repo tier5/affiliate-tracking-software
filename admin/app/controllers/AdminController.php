@@ -221,7 +221,7 @@ class AdminController extends ControllerBase {
 
 
             /*** agency information ***/
-
+            $_SESSION['confirm_user_id']=$confirmation->user->id;
             $AgencyUser='';
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $confirmation->user->agency_id);
@@ -240,15 +240,17 @@ class AdminController extends ControllerBase {
         }
 
         if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+        {
             $EmailFrom = 'zacha@reviewvelocity.co';
             $EmailFromName = "Zacha Anderson";
+        }
         if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             if(!$agency->email_from_address && !$agency->custom_domain)
                 throw \Exception("Contact customer support.  Email configuration not setup correctly");
             $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
             $EmailFromName = $agency->email_from_name ?: "";
         }
-        if( $AgencyUser='')
+        if( $AgencyUser=='')
         {
              $AgencyUser=$agency->name;
         }
@@ -305,9 +307,9 @@ class AdminController extends ControllerBase {
                         /*** login information ****/
 
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
-                        $Mail = $this->getDI()->getMail();
+                       /* $Mail = $this->getDI()->getMail();
                         $Mail->setFrom($EmailFrom,$EmailFromName);
-                        $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
+                        $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);*/
 
                         $_SESSION['password_save1']='';
                         /*** Feedback form ***/

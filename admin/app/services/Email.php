@@ -353,6 +353,68 @@ class Email{
 
     }
 
+    public function sendLoginDetailsEmployee($user_id,$pasword)
+    {
+
+        $u = \Vokuro\Models\Users::findFirst("id = {$user_id}");
+
+       $agency = new Agency();
+        $record = $agency->findFirst('agency_id = '.$u->agency_id);
+        if($record->parent_id > \Vokuro\Models\Agency::AGENCY) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$record->parent_id}");
+
+
+            //$this->from = $from = $objParentAgency->email_from_name;
+            if($objParentAgency->email_from_address)
+            {
+            $this->from = $from = $objParentAgency->email_from_address;
+            $this->from_name = $from_name = $objParentAgency->email_from_name;
+            }
+            else
+            {
+            $this->from = $from = $objParentAgency->email;
+            $this->from_name = $from_name ="";
+            }
+            //$this->from = $from = 'zacha@reviewvelocity.co';
+
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$u->agency_id} AND role='Super Admin'");
+            $oAgency = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id}");
+
+            
+
+           // $AgencyUser = $objAgencyUser->name;
+            $AgencyUser = $oAgency->name." ".$oAgency->last_name;
+            $AgencyName = $objParentAgency->name;
+        } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            $this->from = $from = 'no-reply@reviewvelocity.co';
+            $AgencyName = "Review Velocity";
+            $AgencyUser = "Zach Anderson";
+            $this->from_name = $from_name = "Zach Anderson";
+        }
+
+        if(!$from) {
+            $this->from = $from = "no-reply@{$objParentAgency->custom_domain}";
+            $this->from_name = $from_name = "Zach Anderson";
+        }
+
+        $Domain = $this->config->application->domain;
+        //$publicUrl="http://{$Domain}";
+                    $code=$u->id."-".$u->name;
+                    $link='/link/createlink/'.base64_encode($code);   
+        $mail = $this->getDI()->getMail();
+        $mail->setFrom($from,$from_name);
+        $params = [];
+        $params['employeeName']=$u->name;
+        $params['AgencyUser']=$AgencyUser;
+        $params['AgencyName']=$AgencyName;
+        $params['BusinessName']=$busi_nam;
+        $params['confirmUrl'] =$link;
+        $params['pasword'] =$pasword;
+        $params['email'] =$u->email;
+       
+        $mail->send($u->email, "Feedback Form!", 'feedback', $params);
+    }
+
     public function sendActivationEmailToEmployeeById($user_id) {
         $users = new Users();
         $record = $users->getById($user_id);
