@@ -308,7 +308,7 @@ class SessionController extends ControllerBase {
         $objAgency='';
         $objUser='';
 
-        echo $subscriptionToken;exit;
+        echo $this->request->getQuery("code");exit;
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
         $pi = array_shift($ex);//exit;
