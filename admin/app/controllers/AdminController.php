@@ -222,7 +222,7 @@ class AdminController extends ControllerBase {
 
             /*** agency information ***/
 
-
+            $AgencyUser='';
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $confirmation->user->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -230,11 +230,13 @@ class AdminController extends ControllerBase {
 
         if($agency->parent_id > 0) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+
+            $objParentAgencyInfo = \Vokuro\Models\Users::findFirst("agency_id = {$agency->parent_id} and is_employee=0");
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw \Exception("Contact customer support.  Email configuration not setup correctly");
             $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
             $EmailFromName = $objParentAgency->email_from_name ?: "";
-
+            $AgencyUser=$objParentAgencyInfo->name." ".$objParentAgencyInfo->last_name;
         }
 
         if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
@@ -246,8 +248,11 @@ class AdminController extends ControllerBase {
             $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
             $EmailFromName = $agency->email_from_name ?: "";
         }
-
-        $AgencyUser=$agency->name;
+        if( $AgencyUser='')
+        {
+             $AgencyUser=$agency->name;
+        }
+       
 
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
@@ -281,16 +286,20 @@ class AdminController extends ControllerBase {
                         <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online.</p>';
 
                         $feed_back_body=$feed_back_body.'<a href="'.$link.'">Personalized Feedback Form - Click Here </a>
-                        <p>Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. </p>
-                        <p>Looking forward to helping you build a strong online reputation.</p>';
+                        <p>Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. </p>';
 
                         /*** login information ****/
                           if($_SESSION['password_save1'])
                         {   
+                             $feed_back_body=$feed_back_body.'Login Details:</br>';
                              $feed_back_body=$feed_back_body.'<p>Please view the Login Credentials Below: </p>';
-                           $feed_back_body=$feed_back_body."Login Password: ". $_SESSION['password_save1']."<br>";
-                           $feed_back_body=$feed_back_body."Login Email: ".$feed_back_email."<br>";
+                             $feed_back_body=$feed_back_body.'Login URL:';
+                             $feed_back_body=$feed_back_body."<br>Login Email: ".$feed_back_email."<br>";
+                             $feed_back_body=$feed_back_body."Login Password: ". $_SESSION['password_save1']."<br>";
+                             
                         }
+
+                        $feed_back_body=$feed_back_body."<p>Looking forward to helping you build a strong online reputation.</p>";                         
 
                         
                         /*** login information ****/
