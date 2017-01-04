@@ -247,10 +247,14 @@ class SessionController extends ControllerBase {
             $result=$this->db->query(" INSERT INTO notification ( `to`, `from`, `message`, `read`,`created`,`updated`) VALUES ( '".$ParentID."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')");  
                       
             
-            $this->db->commit();
+                $this->db->commit();
 
-             $this->cookies->get('short_code')->delete();
-             $this->cookies->get('sharing_code')->delete();
+                if ($this->cookies->has('short_code')) {
+                $this->cookies->get('short_code')->delete();
+                }
+                if ($this->cookies->has('sharing_code')) {
+                $this->cookies->get('sharing_code')->delete();
+                }
 
             return $this->response->redirect('/session/thankyou');
 
@@ -271,7 +275,7 @@ class SessionController extends ControllerBase {
 
             if($short_code!=null)
             {
-         $expire = time() + 86400 * 30;
+         $expire = time() + 86400 * 8;
          $this->cookies->set('short_code',$short_code, $expire);
             }
             else
