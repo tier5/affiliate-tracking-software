@@ -1339,6 +1339,15 @@
                     $phone = $_POST['phone'];
 
                     //save the message to the database before sending the message
+
+                   $error="";
+                   $er_msg='';
+                   $insert_id_array=array();
+                   $nolengthmessage=strlen($message);
+                   $no=ceil($nolengthmessage/153)-1;//exit;
+                    if($no!=0)
+                    {
+                    for($i=1;$i<=$no;$i++){
                     $invite = new ReviewInvite();
                     $invite->assign(array(
                         'name' => $name,
@@ -1351,12 +1360,22 @@
                         'date_last_sent' => date('Y-m-d H:i:s'),
                         'sent_by_user_id' => $identity['id']
                     ));
+                        $invite->save();
+                    array_push($insert_id_array,$invite->review_invite_id);
+                            if (!$invite->save()) {
+
+                                $error=1;
+                                $er_msg=$invite->getMessages();
+                            }
+
+                        }
+                    }
                     
 
 
-                    if (!$invite->save()) {
+                    if ($error==1) {
                         $this->view->disable();
-                        echo $invite->getMessages();
+                        echo $er_msg;
                         return;
                     } else {
 
@@ -1365,12 +1384,13 @@
                         //echo $message;exit;
                         if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
 
-
-                            $last_insert_id=$invite->review_invite_id;
-
-                        $update_review = ReviewInvite::FindFirst('review_invite_id ='.$last_insert_id);
-                        $update_review->date_sent = date('Y-m-d H:i:s');
-                        $update_review->update();
+                        for($i=0;$i<count($insert_id_array);$i++)
+                             {
+                            $last_insert_id=$insert_id_array[$i];
+                            $update_review = ReviewInvite::FindFirst('review_invite_id ='.$last_insert_id);
+                            $update_review->date_sent = date('Y-m-d H:i:s');
+                            $update_review->update();
+                            }
                             $this->flash->success("The SMS was sent successfully");
                         }
 

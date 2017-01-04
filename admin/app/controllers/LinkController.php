@@ -184,19 +184,26 @@
                     
                     //else we have a phone number, so send the message
                     $name = $_POST['name'];
-                    $message = $_POST['SMS_message'].'  Reply stop to be removed';
+                    $message=$_POST['SMS_message'];
                     //replace out the variables
                     $message = str_replace("{location-name}", $location_name, $message);
                     $message = str_replace("{name}", $name, $message);
                     $guid = $this->GUID();//exit;
                    $message = str_replace("{link}", $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid), $message);
 
-                    
+                   $message = $message.'  Reply stop to be removed';
 
                     $phone = $_POST['phone'];
                    $uid=$_POST['userID'];//exit;
                     //save the message to the database before sending the message
-
+                   $error="";
+                   $er_msg='';
+                   $insert_id_array=array();
+                   $nolengthmessage=strlen($message);
+                   $no=ceil($nolengthmessage/153)-1;//exit;
+                    if($no!=0)
+                    {
+                    for($i=1;$i<=$no;$i++){
                     $invite = new ReviewInvite();
                     $invite->assign(array(
                         'name' => $name,
@@ -204,59 +211,40 @@
                         'phone' => $phone,
                         //TODO: Added google URL shortener here
                         'api_key' => $guid,
-                        'sms_message' => $message.'  Reply stop to be removed',
+                        'sms_message' => $message,
                         /*'date_sent' => date('Y-m-d H:i:s'),*/
                         'date_last_sent' => date('Y-m-d H:i:s'),
                         'sent_by_user_id' => $_POST['user_id']
                     ));
 
-                    if (!$invite->save()) {
+                    $invite->save();
+                    array_push($insert_id_array,$invite->review_invite_id);
+                            if (!$invite->save()) {
+
+                                $error=1;
+                                $er_msg=$invite->getMessages();
+                            }
+                        }
+                    }
+
+                    if ($error==1) {
                         $this->view->disable();
-                        echo $invite->getMessages();
+                        echo $er_msg;
                         return;
                     } else {
                        
-
-                        /*echo $twilio_api_key;
-                        echo '<br>';
-                        echo $twilio_auth_token;
-                        echo '<br>';
-                        echo $twilio_auth_messaging_sid;
-                        echo '<br>';
-                        echo $twilio_from_phone;
-                        echo '<br>';
-                        echo 'Agency Id: '.$AgencyID;
-                         echo '<br>';exit;*/
-                        //The message is saved, so send the SMS message now
-
-                     /*$twilio_api_key='AC68cd1cc8fe2ad03d2aa4d388b270577d' ;
-                        $twilio_auth_token='42334ec4880d850d6c9683a4cd9d94b8'; 
-                        $twilio_auth_messaging_sid='MGa8510e68cd75433880ba6ea48c0bd81e';
-                        $twilio_from_phone='+18582120211';*/
-                        //$phone='(559) 425-4015';
-
-                       /* $twilio_api_key='AC00b855893dab69e458170cc524233f47' ;
-                        $twilio_auth_token='8a314c3ff7e285dfb4c02c93c257025e'; 
-                        $twilio_auth_messaging_sid='MG28424d425f7128e97d4c96f2fdc44f2d';
-                        $twilio_from_phone='4253654160';*/
-
-                        //echo $message;
-                        //exit;
-                        
-                        //echo $this->twilio_api_key;exit;
                         if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
-                            //echo $uid;exit;
+                            
 
-                            //$this->flash->success("The SMS was sent successfully to: " . $phone);
-                            //$this->view->render('users', 'reviewmsg');
-
-                             $last_insert_id=$invite->review_invite_id;
-
+                             for($i=0;$i<count($insert_id_array);$i++)
+                             {
+                            $last_insert_id=$insert_id_array[$i];
                             $update_review = ReviewInvite::FindFirst('review_invite_id ='.$last_insert_id);
                             $update_review->date_sent = date('Y-m-d H:i:s');
                             $update_review->update();
+                            }
                             
-                            $update_review->sms_message;
+                           /*$update_review->sms_message;
                             $nolengthmessage=strlen($update_review->sms_message);
                             $no=ceil($nolengthmessage/153)-1;
                                 if($no!=0){
@@ -285,7 +273,9 @@
                                         ));
                                         $invitex->save();
                                     }
-                                }
+                                }*/
+
+                                //print_r($insert_id_array);exit;
                             $this->flashSession->success("The SMS was sent successfully to: " . $phone.".This page will automatically refresh in 5 seconds.".$message);
                             $this->view->disable();
                             return $this->response->redirect('link/send_review_invite_employee/'.$uid);
