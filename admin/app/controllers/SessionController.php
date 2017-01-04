@@ -275,12 +275,12 @@ class SessionController extends ControllerBase {
 
             if($short_code!=null)
             {
-         $expire = time() + 86400 * 8;
-         $this->cookies->set('short_code',$short_code, $expire);
+            $expire = time() + 86400 * 8;
+            setcookie( "short_code",$short_code, $expire );
             }
             else
             {
-                $this->view->short_code =$short_code=$this->cookies->get('short_code')->getValue();
+                $this->view->short_code =$short_code=$_COOKIE['short_code'];
             }
         
         $this->signupAction();
