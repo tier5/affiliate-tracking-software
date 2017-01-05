@@ -89,13 +89,13 @@ if (isset($main_color_setting)) {
             $redCircle = '<i class="fa fa-circle fa-2x" aria-hidden="true" style="color: #c01209;"></i>';
             $greyCircle = '<i class="fa fa-circle fa-2x" aria-hidden="true" style="color: #e6ecf0;"></i>';
          ?>
-        {% if logo_path AND logo_path != "/img/agency_logos/" %}
-        <div class="logo">
-            <a href="/"><img class="img-responsive center-block"  src="{{ logo_path }}" alt="" /></a>
-        </div>
-        {% endif %}
         <!-- END LOGO -->
         <div id="label-wrapper">
+            {% if logo_path AND logo_path != "/img/agency_logos/" %}
+            <div class="logo">
+                <a href="/"><img class="img-responsive center-block"  src="{{ logo_path }}" alt="" /></a>
+            </div>
+            {% endif %}
             <div id="label-container" class="center-block">
                 <div class="steps">
                     <div class="step pull-left">
