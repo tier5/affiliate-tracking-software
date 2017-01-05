@@ -51,7 +51,7 @@
         <!-- END SIDEBAR TOGGLER BUTTON -->
         <!-- BEGIN LOGIN -->
                 <div class="signup-footer">
-    <div class="title">Try us for free</div>
+    <div class="title">Try us for free agency</div>
     <div class="description">No credit card required.  All features included.</div>
    <!--  GETMOBILEREVIEWS -->
 </div>
@@ -69,8 +69,8 @@
             <input type="hidden" name="short_code" value="{{ short_code }}"/>
         {% endif %}
 
-        <?php if($_GET['code']) { ?>
-                <input type="hidden" name="sharing_code" value="<?=$_GET['code']; ?>" />
+        <?php echo 'test'.$_GET['code']; if($_GET['code']) { ?>
+                <input type="text" name="sharing_code" value="<?=$_GET['code']; ?>" />
         <?php } ?>
         
         
