@@ -387,7 +387,7 @@ class SessionController extends ControllerBase {
             if($objAgency->parent_id==0) {
                 $custom_domain=$objAgency->custom_domain;
                  $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
-                $this->view->disable();
+                //$this->view->disable();
                 return;
             }
              
