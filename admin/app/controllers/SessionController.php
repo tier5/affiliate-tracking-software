@@ -289,6 +289,8 @@ class SessionController extends ControllerBase {
             {
                 $this->view->short_code =$short_code=$_COOKIE['short_code'];
             }
+
+            echo $_COOKIE['code'];exit;
         
         $this->signupAction();
 
