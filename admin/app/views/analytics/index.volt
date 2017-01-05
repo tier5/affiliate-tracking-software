@@ -225,7 +225,8 @@
             $thism = ($sms_sent_this_month > 0?round(($sms_click_this_month / $sms_sent_this_month) * 100):0);
                         $last = ($sms_sent_last_month > 0?round(($sms_click_last_month / $sms_sent_last_month) *
                         100):0);
-                        $all_time = ($sms_sent_all_time > 0?round(($sms_click_all_time / $sms_sent_all_time) * 100):0);
+                        //$all_time = ($sms_sent_all_time > 0?round(($sms_click_all_time / $sms_sent_all_time) * 100):0);
+                        $all_time = ($sms_sent_all_time > 0?round(($alltime_click_site_record / $sms_sent_all_time) * 100):0);
                         ?>
                         <div class="row">
                             <div class="col-md-6 col-sm-6 border-right">
