@@ -234,8 +234,10 @@
     float: left;
 }
 
-#cancel-btn{
-    float: right;
+#back-btn-sub{
+    position: absolute;
+    right: -5px;
+    top: -2px;
 }
 
 .pricing-plans .caption .subscription-btn{

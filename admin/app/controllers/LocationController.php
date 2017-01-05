@@ -1343,8 +1343,8 @@
                    $error="";
                    $er_msg='';
                    $insert_id_array=array();
-                   $nolengthmessage=strlen($message);
-                   $no=ceil($nolengthmessage/153)-1;//exit;
+                    $nolengthmessage=strlen($message);
+                    $no=ceil($nolengthmessage/160);//exit;
                     if($no!=0)
                     {
                     for($i=1;$i<=$no;$i++){

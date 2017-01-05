@@ -25,11 +25,11 @@
 
                    <p>Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. </p>
 
-                    Login Details:</br>;
-                    <p>Please view the Login Credentials Below:<br>
-                       Login URL:<a href="http://{{ publicUrl }}/session/login">Click here To Login</a><br>
-                       Login Email:{{email}}<br>
-                       Login Password:{{pasword}}
+                    Login Details:</br>
+                    <p>
+                       Login URL: https://getmobilereviews.com<br>
+                       Login Email: {{email}}<br>
+                       Login Password: {{pasword}}
                     </p>   
 
 

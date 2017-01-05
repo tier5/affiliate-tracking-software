@@ -12,6 +12,11 @@
             display:block;
         }
     }
+
+    .pricing-plans .portlet-title > .caption.subscription-caption{
+        width: 100%;
+        position: relative;
+    }
 </style>
 
 <header class="jumbotron subhead" id="reviews">
@@ -30,16 +35,15 @@
                         <div class="caption font-dark subscription-caption">
                             <i class="fa fa-money"></i>
                             <span class="caption-subject bold uppercase">Subscriptions</span>
+                            <button id="back-btn-sub" class="btn default btn-lg apple-backgound subscription-btn">Back</button>
+                            
                         </div>
                         <div class="caption font-dark">
                             <div class="form-group">
                             <label>Subscription Name</label>
                             <input id="name-control" type="text" value="{% if !isNewRecord %}{{ name }}{% else %}My New Subscription{% endif %}" class="caption-subject form-control input-medium" placeholder="Subscription Name" /> {% if !isNewRecord %} <button id="update-plan-name" class="btn default btn-lg apple-backgound subscription-btn" data-id="{{subscription_id_plan}}">Update</button> {% endif %}
-                                
-                                 <button id="cancel-btn" class="btn default btn-lg apple-backgound subscription-btn">Back</button>
-                                 <hr>
                         </div>
-
+                        <hr>
 
                     </div>
                     <div class="portlet-body">
