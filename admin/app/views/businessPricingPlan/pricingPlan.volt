@@ -856,7 +856,7 @@
             appendDiscountPercentage(options);
 
             /* Init progression button controls */
-            $('#cancel-btn').click(function () {
+            $('#cancel-btn, #back-btn-sub').click(function () {
                 window.location.href = "/businessPricingPlan";
             });
             $('#start-over-btn').click(function () {
