@@ -760,7 +760,7 @@ class ControllerBase extends Controller {
                 ));
             }
         } catch (Services_Twilio_RestException $e) {
-            $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your SMS configuration and try again. ');
+            $this->flash->error('There was an error sending the SMS message to' . $phone);
             return false;
         }
         return true;
@@ -1483,10 +1483,11 @@ class ControllerBase extends Controller {
         $userSubscription = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
 
         // GARY_TODO Determine if the comment below is accurate.
-        $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] &&
-            ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
-            ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
-            ($userManager->hasLocation($this->session) && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
+        $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] 
+            && ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) 
+            && ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) 
+            && ($userManager->hasLocation($this->session) 
+                && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
 
         $internalNavParams['hasPricingPlans'] = $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];
 

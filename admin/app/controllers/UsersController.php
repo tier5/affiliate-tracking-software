@@ -579,18 +579,24 @@
                         /*** login information ****/
                           if($_SESSION['password_save1'])
                         {   
+                             $feed_back_body=$feed_back_body.'Login Details:</br>';
                              $feed_back_body=$feed_back_body.'<p>Please view the Login Credentials Below: </p>';
-                           $feed_back_body=$feed_back_body."Login Password: ". $_SESSION['password_save1']."<br>";
-                           $feed_back_body=$feed_back_body."Login Email: ".$_SESSION['toemail_log']."<br>";
+                             $feed_back_body=$feed_back_body.'Login URL:';
+                             $feed_back_body=$feed_back_body."<br>Login Email: ".$feed_back_email."<br>";
+                             $feed_back_body=$feed_back_body."Login Password: ". $_SESSION['password_save1']."<br>";
                         }
 
                         
                         /*** login information ****/
 
                         $feed_back_body=$feed_back_body."<br>".$_SESSION['AgencyUser_log']."<br>".$_SESSION['Agencyname_log'];
-                        $Mail = $this->getDI()->getMail();
+                       /* $Mail = $this->getDI()->getMail();
                         $Mail->setFrom($_SESSION['EmailFrom_log'],$_SESSION['EmailFromName_log']);
-                        $Mail->send($_SESSION['toemail_log'], $feed_back_subj, '', '', $feed_back_body);
+                        $Mail->send($_SESSION['toemail_log'], $feed_back_subj, '', '', $feed_back_body);*/
+
+
+                         $mail = new Email();
+                         $mail->sendLoginDetailsEmployee($_SESSION['confirm_user_id'],$_SESSION['password_save1']);
 
                         $_SESSION['password_save1']='';
                         $_SESSION['Agencyname_log']='';

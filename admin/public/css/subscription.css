@@ -230,8 +230,12 @@
 
 .pricing-plans .caption .caption-subject {
     margin-top: 1px;
-    display: inline-block;
-    margin-right: 14px;
+    margin-right: 20px;
+    float: left;
+}
+
+#cancel-btn{
+    float: right;
 }
 
 .pricing-plans .caption .subscription-btn{
