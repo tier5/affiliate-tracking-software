@@ -10,7 +10,7 @@ header { background-color: #FFFFFF; width: 100%; /*height: 123px;*/ display: inl
   margin-bottom: 132px;
 }
 header .logo {  max-width: 219px; float: left; margin: 0 auto; margin-top: 20px; }
-header .logo img { margin-top: 15px; }
+header .logo img { margin-top: 18px; min-height: 50px; max-height: 50px;}
 #label-wrapper {width: 472px; float: right; }
 .steps { float: left; width: 460px; /*height: 25px; */margin-left: 15px; margin-top: 48px; }
 .steps div { float: left; margin-right: 8px; }
