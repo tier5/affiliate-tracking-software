@@ -11,25 +11,18 @@ header { background-color: #FFFFFF; width: 100%; /*height: 123px;*/ display: inl
 }
 header .logo {  max-width: 219px; float: left; margin: 0 auto; margin-top: 20px; }
 header .logo img { margin-top: 18px; min-height: 50px; max-height: 50px;}
-#label-wrapper {width: 472px; float: right; }
-.steps { float: left; width: 460px; /*height: 25px; */margin-left: 15px; margin-top: 48px; }
+#label-wrapper {width: 77%; float: right; }
+#label-container {width: 472px;}
+.steps { float: left; width: 460px; /*height: 25px; */margin-left: 8px; margin-top: 48px; }
 .steps div { float: left; margin-right: 8px; }
-.steps-desc { float: left; width: 472px; height: 20px; margin-top: 1px; font-size: 1.2em; }
+.steps-desc { float: left; width: 472px; height: 20px; margin-top: 1px; font-size: 12px; }
 .steps-desc div { float: left; }
-#step2 { margin-left: 47px; }
-#step3 { margin-left: 51px; }
-#step4 { margin-left: 44px; }
-#step5 { margin-left: 46px; }
+#step2 { margin-left: 53px; }
+#step3 { margin-left: 28px; }
+#step4 { margin-left: 25px; }
+#step5 { margin-left: 53px; }
 .divider img {padding-bottom: 5px; }
 h3 { color: #2A3644; font-weight: bold; font-size: 31px; }
-
-.vertical-center {
-  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
-  min-height: 100vh; /* These two lines are counted as one :-)       */
-
-  display: flex;
-  align-items: center;
-}
 
 .content { width: 90%; margin-left: auto; margin-right: auto; }
 
@@ -532,10 +525,12 @@ form.register-form label.error{
 }
 
 
+
+
 @media screen and (max-width: 900px) {
 
 .content {width: 90%; margin: 0 auto;}
-.headercontent{width: 90%; margin: auto; margin-bottom: 132px;}
+/*.headercontent{width: 90%; margin: auto; margin-bottom: 94px;}*/
 
 
 
@@ -543,22 +538,51 @@ form.register-form label.error{
 
 
 @media screen and (max-width: 767px) {
-  .headercontent {
-    margin-bottom: 0;
-  }
 
   .search_name{width: 100%; margin-bottom: 10px; float: none; margin-right: 0;}
   .search_name_location{width: 100%; margin-bottom: 10px; float: none; margin-right: 0;}
+  /*header .logo{width: 200px;}*/
+  .headercontent {
+    margin-bottom: 94px;
+  }
+  header .logo img{max-width: 200px !important; max-height: 40px; min-height: 40px; margin-top: 4px; }
+  
+  .steps {
+    margin-top: 29px;
+    margin-left: 11px;
+  }
+  
+  #step2 {
+    margin-left: 47px;
+  }
 
-  header{height: auto;}
-  header .logo{float: none; margin: 0 auto; width: 200px;}
-  header .logo img{max-width: 200px !important;}
+  #step3 {
+    margin-left: 24px;
+  }
+
+  #step4 {
+    margin-left: 15px;
+  }
+
+  #step5 {
+    margin-left: 49px;
+  }
+
+  .fa-check-circle {
+    font-size: 1.5em;
+  }
+  
+  .fa-circle {
+    font-size: 1.5em;
+  }
+  /*header{height: auto;}
+
   #label-wrapper {float: none;}
   .steps {
     width: 100%;
   }
   .steps-desc {
-  }
+  }*/
 
   /*header .steps{float: none; margin: 10px auto; width: 100%; text-align: center;}
   header .steps div{float: none; display: inline-block;}
@@ -607,33 +631,14 @@ form.register-form label.error{
 }
 
 @media screen and (max-width: 650px) {
-  header .steps {
-    /*margin-left: 35px;*/
-  }
-  header .steps-desc {
-    /*margin-left: 20px;*/
-  }
-}
 
-@media screen and (max-width: 531px) {
-  header .steps {
-    margin-left: 15px;
+  header .logo{width: 161px; margin-bottom: 18px; margin: 0 auto; float: none; width: 200px}
+  header .logo img {margin: 0 auto; float: none; max-width: 200px; min-height: 50px; max-height: 50px; }
+  .pnlAddLocation {
+    margin-top: 15px;
   }
-  header .steps-desc {
-    margin-left: 0;
-  }
-}
-
-
-@media screen and (max-width: 480px) {
-
-  header .logo{width: 161px;}
-  #label-wrapper {width: 359px; }
-  header .steps { margin-left: 15px; }
-  header .steps-desc {
-    margin-left: 0;
-    font-size: 1em;
-  }
+  .headercontent{margin-bottom: 17px; margin-top: 17px; }
+  #label-wrapper { display: none; }
 
   .fa-check-circle,
   .fa-circle {
@@ -701,6 +706,11 @@ form.register-form label.error{
 
 }
 
+
+
+@media screen and (min-width: 887px) {
+}
+
 @media screen and (max-width: 991px) {
 
   .pnlAddLocation.short{
@@ -724,7 +734,8 @@ form.register-form label.error{
   }
 }
 
-@media screen and (min-width: 887px) {
+@media screen and (min-width: 1159px) {
+  #label-wrapper { width: 85%; }
 }
 
 @media screen and (max-width: 1199px) {
