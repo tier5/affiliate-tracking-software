@@ -69,9 +69,11 @@
             <input type="hidden" name="short_code" value="{{ short_code }}"/>
         {% endif %}
 
-        <?php echo 'test'.$_GET['code']; if($_GET['code']) { ?>
+        <?php if($_GET['code']) { ?>
                 <input type="text" name="sharing_code" value="<?=$_GET['code']; ?>" />
-        <?php } ?>
+        <?php } elseif($_GET['code']=='' && $_COOKIE['code']!='') { ?>
+         <input type="text" name="sharing_code" value="<?=$_COOKIE['code']; ?>" />
+         <?php } ?>
         
         
 
