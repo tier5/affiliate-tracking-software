@@ -328,7 +328,7 @@ class SessionController extends ControllerBase {
     public function signupAction($subscriptionToken = '0') {
         $objAgency='';
         $objUser='';
-
+        $Domain=$this->config->application->domain;
        // echo $this->request->getQuery("code");exit;
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
@@ -387,6 +387,10 @@ class SessionController extends ControllerBase {
 
                 $this->view->agencyId = $objAgency1->agency_id;
                 $this->view->agency_name = $objAgency1->name;
+                $custom_domain=$objAgency1->custom_domain;
+                  $this->response->redirect($custom_domain . '/' . $Domain);
+                $this->view->disable();
+                return;
 
              }
              
