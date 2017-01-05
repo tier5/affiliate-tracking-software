@@ -381,6 +381,7 @@ class SessionController extends ControllerBase {
 
             $this->view->agencyId = $objAgency->agency_id;
             $this->view->agency_name = $objAgency->name;
+            echo $objAgency->parent_id;exit;
             if($objAgency->parent_id==0) {
                 $custom_domain=$objAgency->custom_domain;
                  $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
