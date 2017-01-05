@@ -200,7 +200,7 @@
                    $er_msg='';
                    $insert_id_array=array();
                    $nolengthmessage=strlen($message);
-                   $no=ceil($nolengthmessage/153)-1;//exit;
+                   $no=ceil($nolengthmessage/153);//exit;
                    /*$no=ceil($nolengthmessage/160);*/
                     if($no!=0)
                     {

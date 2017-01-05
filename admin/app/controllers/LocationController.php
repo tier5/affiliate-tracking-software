@@ -1331,11 +1331,16 @@
                     $name = $_POST['name'];
                     $message = $_POST['SMS_message'].'  Reply stop to be removed';
                     //replace out the variables
-                    $message = str_replace("{location-name}", $this->session->get('auth-identity')['location_name'], $message);
-                    $message = str_replace("{name}", $name, $message);
-                    $guid = $this->GUID();
-                    $message = str_replace("{link}", $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid), $message);
+                   
 
+                    $message = str_replace("{location-name}", $this->session->get('auth-identity')['location_name'], $message);
+                   
+                    $message = str_replace("{name}", $name, $message);
+                    
+                    $message = str_replace("{link}", $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid), $message);
+                    
+
+                    $guid = $this->GUID();
                     $phone = $_POST['phone'];
 
                     //save the message to the database before sending the message
@@ -1344,8 +1349,9 @@
                    $er_msg='';
                    $insert_id_array=array();
                     $nolengthmessage=strlen($message);
-                    $no=ceil($nolengthmessage/153)-1;
-                    //$no=ceil($nolengthmessage/160);//exit;
+                    $no=ceil($nolengthmessage/153);
+                    //$no=ceil($nolengthmessage/160);
+                   //exit;
                     if($no!=0)
                     {
                     for($i=1;$i<=$no;$i++){
