@@ -35,7 +35,7 @@
         <div class="col-xs-10 col-xs-offset-1">
             <a href="http://{{ SubDomain }}.{{ TLDomain }}/session/invite/{{ SubscriptionCode }}" style="text-decoration: none;">
                 <button class="big-green-button thin-white-text SecondaryColor center-block signup_but">
-                    Click Here To Sign Up Today <?php echo $_COOKIE['code'];?>
+                    Click Here To Sign Up Today
                 </button>
             </a>
         </div>
