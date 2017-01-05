@@ -193,7 +193,7 @@ class IndexController extends ControllerBase {
                 $this->view->SubscriptionCode = $objSubscriptionPricingPlan->short_code;
 
                 $this->view->salesPage = true;
-                echo $_COOKIE['code'];exit;
+                //echo $_COOKIE['code'];exit;
                 //$this->view->setTemplateBefore('agencysignup');
                 $this->view->pick('agencysignup/sales');
                 return;
