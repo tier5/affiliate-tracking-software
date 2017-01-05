@@ -381,6 +381,12 @@ class SessionController extends ControllerBase {
 
             $this->view->agencyId = $objAgency->agency_id;
             $this->view->agency_name = $objAgency->name;
+            if($objAgency->parent_id==0) {
+                $custom_domain=$objAgency->custom_domain;
+                 $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
+                $this->view->disable();
+                return;
+            }
              
             if($objAgency->parent_id) {
                 $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
