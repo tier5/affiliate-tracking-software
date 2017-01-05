@@ -632,7 +632,7 @@ form.register-form label.error{
 
 @media screen and (max-width: 900px) {/*650*/
 
-  header .logo{width: 161px; margin-bottom: 18px; margin: 0 auto; float: none; width: 200px}
+  header .logo{margin-bottom: 18px; margin: 0 auto; float: none;}
   header .logo img {margin: 0 auto; float: none; max-width: 200px; min-height: 50px; max-height: 50px; }
   .pnlAddLocation {
     margin-top: 15px;
