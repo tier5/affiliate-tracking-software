@@ -388,7 +388,7 @@ class SessionController extends ControllerBase {
                 $this->view->agencyId = $objAgency1->agency_id;
                 $this->view->agency_name = $objAgency1->name;
                 $custom_domain=$objAgency1->custom_domain;
-                  $this->response->redirect($custom_domain . '/' . $Domain);
+                  $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
                 $this->view->disable();
                 return;
 
