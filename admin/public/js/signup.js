@@ -130,7 +130,7 @@ function checkEmailAvailability(email, button, returnResult) {
 }
 
 
-var adjustLogoMargins = function() {
+/*var adjustLogoMargins = function() {
 	var headerHeight = eval($('header').height());
 	var imageHeight = eval($('.logo img').height());
 
@@ -142,7 +142,7 @@ var adjustLogoMargins = function() {
 	$('.logo img').css('display', 'block');
 };
 
-adjustLogoMargins();
+adjustLogoMargins();*/
 
 window.addEventListener("resize", adjustLogoMargins);
 
