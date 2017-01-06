@@ -156,7 +156,7 @@ class AdminController extends ControllerBase {
                 }
             } else {
                 $user = $this->auth->getUser();
-
+                $_SESSION['password_save1']=$this->request->getPost('password');
                 $user->setPassword($this->security->hash($this->request->getPost('password')));
                 $user->setMustChangePassword(0);
 
@@ -221,8 +221,8 @@ class AdminController extends ControllerBase {
 
 
             /*** agency information ***/
-
-
+            $_SESSION['confirm_user_id']=$confirmation->user->id;
+            $AgencyUser='';
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $confirmation->user->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -230,24 +230,31 @@ class AdminController extends ControllerBase {
 
         if($agency->parent_id > 0) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+
+            $objParentAgencyInfo = \Vokuro\Models\Users::findFirst("agency_id = {$agency->parent_id} and is_employee=0");
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw \Exception("Contact customer support.  Email configuration not setup correctly");
             $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
-            $EmailFromName = $objParentAgency->email_from_name ?: "No Reply";
+            $EmailFromName = $objParentAgency->email_from_name ?: "";
+            $AgencyUser=$objParentAgencyInfo->name." ".$objParentAgencyInfo->last_name;
         }
 
         if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+        {
             $EmailFrom = 'zacha@reviewvelocity.co';
-            $EmailFromName = "Zach Anderson";
-
+            $EmailFromName = "Zacha Anderson";
+        }
         if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             if(!$agency->email_from_address && !$agency->custom_domain)
                 throw \Exception("Contact customer support.  Email configuration not setup correctly");
             $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
-            $EmailFromName = $agency->email_from_name ?: "No Reply";
+            $EmailFromName = $agency->email_from_name ?: "";
         }
-
-        $AgencyUser=$agency->name;
+        if( $AgencyUser=='')
+        {
+             $AgencyUser=$agency->name;
+        }
+       
 
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency->parent_id);
@@ -255,6 +262,14 @@ class AdminController extends ControllerBase {
 
         $AgencyName=$parent_agency->name;
         $Domain = $this->config->application->domain;
+
+
+        $_SESSION['Agencyname_log']=$AgencyName;
+        $_SESSION['AgencyUser_log']=$AgencyUser;
+        $_SESSION['EmailFrom_log']=$EmailFrom;
+        $_SESSION['EmailFromName_log']=$EmailFromName;
+        $_SESSION['toemail_log']=$confirmation->user->email;
+        $_SESSION['name_log']=$confirmation->user->name;
             /*** agency information ***/
 
         /*** Feedback form ***/
@@ -273,15 +288,35 @@ class AdminController extends ControllerBase {
                         <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online.</p>';
 
                         $feed_back_body=$feed_back_body.'<a href="'.$link.'">Personalized Feedback Form - Click Here </a>
-                        <p>Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. </p>
-                        <p>Looking forward to helping you build a strong online reputation.</p>';
+                        <p>Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. </p>';
+
+                        /*** login information ****/
+                          if($_SESSION['password_save1'])
+                        {   
+                             $feed_back_body=$feed_back_body.'Login Details:</br>';
+                             $feed_back_body=$feed_back_body.'<p>Please view the Login Credentials Below: </p>';
+                             $feed_back_body=$feed_back_body.'Login URL:';
+                             $feed_back_body=$feed_back_body."<br>Login Email: ".$feed_back_email."<br>";
+                             $feed_back_body=$feed_back_body."Login Password: ". $_SESSION['password_save1']."<br>";
+                             
+                        }
+
+                        $feed_back_body=$feed_back_body."<p>Looking forward to helping you build a strong online reputation.</p>";                         
+
+                        
+                        /*** login information ****/
+
                         $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
-                        $Mail = $this->getDI()->getMail();
-                        $Mail->setFrom($EmailFrom, $EmailFromName);
-                        $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
+                       /* $Mail = $this->getDI()->getMail();
+                        $Mail->setFrom($EmailFrom,$EmailFromName);
+                        $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);*/
 
-
+                        $_SESSION['password_save1']='';
                         /*** Feedback form ***/
+
+                        
+
+
         if ($confirmation->user->mustChangePassword == 'Y') {
             $this->flash->success('The email was successfully confirmed. Now you must change your password');
             return $this->response->redirect($this->_activeLanguage . '/session/changePassword');

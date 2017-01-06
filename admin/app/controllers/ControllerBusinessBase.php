@@ -6,7 +6,8 @@ use Vokuro\ArrayException;
 use Vokuro\Forms\AgencyForm;
 use Vokuro\Models\Agency;
 use Vokuro\Models\Users;
-
+use Vokuro\Models\Notification;
+use Vokuro\Models\SubscriptionPricingPlan;
 class ControllerBusinessBase extends ControllerBase {
     /**
      * BEGIN BUSINESS COMMON FUNCTIONS
@@ -171,7 +172,19 @@ public function editAction($agency_id = 0) {
         $this->view->form = $form;
 
         if ($this->request->isPost()) {
-            //print_r($_POST);exit;
+            // $db = $this->di->get('db');
+            //     $db->begin();
+            //     $Notification = new Notification();
+            // $params = ['to' => 1,
+            //         'from' => 1,
+            //         'message' => 1,
+            //         'read' =>1, // 1 = Agency User, 2 = Business User
+                    
+            //     ];
+            //     $Notification->createOrUpdateBusiness($params)
+            //        $Notification->save();
+
+           // print_r($_POST);exit;
             $errors = [];
             $messages = [];
                 $IsEmailUnique = true;
@@ -237,6 +250,39 @@ public function editAction($agency_id = 0) {
                 if (!$age->createOrUpdateBusiness($params)) {
                     $error = true;
                     foreach($age->getMessages() as $error_message) $errors[] = $error_message;
+                }else{
+                     $an=$this->request->getPost('name', 'striptags');
+                    $msgx=$this->request->getPost('name', 'striptags')." is register under You with email ID ".$this->request->getPost('email', 'striptags');
+                    $createdxx=date('Y-m-d H:i:s');
+                    $result=$this->db->query(" INSERT INTO notification ( `to`, `from`, `message`, `read`,`created`,`updated`) VALUES ( '".$parent_id."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')");
+                    /*** notification mail ***/  
+                    $objSuperAdminUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $parent_id . ' AND role="Super Admin"');
+                    $planName = 'Free';
+                    if($this->request->getPost('subscription_pricing_plan_id', 'striptags') != 0){
+                        $subscriptionPricePlan = SubscriptionPricingPlan::findFirst('id = '.$this->request->getPost('subscription_pricing_plan_id', 'striptags'));
+                        $planName = $subscriptionPricePlan->name;
+                    }
+                    
+                     $EmailFrom = 'no-reply@reviewvelocity.co';
+                    $EmailFromName = "Zach Anderson";
+                    $subject="New Business Registered Successfully";
+                    $mail_body='Dear '.$objSuperAdminUser->name.',';
+                    $mail_body=$mail_body.'<p>Congratulations a new business has registered successfully with following details:
+                        </p>';
+                    $mail_body .= '<p>Name: '.$an.'</p>';
+                    $mail_body .= '<p>Email: '.$this->request->getPost('email', 'striptags').'</p>';
+                    $mail_body .= '<p>Subscription: '.$planName.'</p>';
+                    $mail_body=$mail_body."Thanks";
+
+                        $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
+                    $Mail->send($objSuperAdminUser->email, $subject, '', '', $mail_body);
+
+                    /*** notification mail ***/  
+
+            $resultx=$this->db->query(" SELECT * FROM `notification` WHERE `to` =".$parent_id." AND `read` = 0");
+                 $x=$resultx->numRows();
+            $this->view->setVar('NumberOfNotification', $x);  
                 }
 
                 if($errors) {

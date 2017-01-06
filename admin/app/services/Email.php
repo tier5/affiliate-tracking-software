@@ -56,6 +56,15 @@ class Email{
     public function sendActivationEmailToUser(Users $user) {
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($user->getId());
+        
+        if($_SESSION['password_save'])
+        {
+            $log_in_password=$_SESSION['password_save'];
+        }
+        else
+        {
+            $log_in_password="";
+        }
 
         $template='confirmation';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
@@ -67,7 +76,7 @@ class Email{
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
-            $EmailFromName="";
+            $EmailFromName="Zach Anderson";
             
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
@@ -87,6 +96,7 @@ class Email{
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
             $EmailFromName=$objParentAgency->email_from_name ?: "";
+
            
             //$EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
         }
@@ -104,6 +114,8 @@ class Email{
             'firstName' =>  $user->name,
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
+            'Loginpass'=>$log_in_password,
+           
         ];
 
         try {
@@ -339,6 +351,68 @@ class Email{
 
         $mail->send($u->email, "Activate your account!", 'employee', $params);
 
+    }
+
+    public function sendLoginDetailsEmployee($user_id,$pasword)
+    {
+
+        $u = \Vokuro\Models\Users::findFirst("id = {$user_id}");
+
+       $agency = new Agency();
+        $record = $agency->findFirst('agency_id = '.$u->agency_id);
+        if($record->parent_id > \Vokuro\Models\Agency::AGENCY) {
+            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$record->parent_id}");
+
+
+            //$this->from = $from = $objParentAgency->email_from_name;
+            if($objParentAgency->email_from_address)
+            {
+            $this->from = $from = $objParentAgency->email_from_address;
+            $this->from_name = $from_name = $objParentAgency->email_from_name;
+            }
+            else
+            {
+            $this->from = $from = $objParentAgency->email;
+            $this->from_name = $from_name ="";
+            }
+            //$this->from = $from = 'zacha@reviewvelocity.co';
+
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$u->agency_id} AND role='Super Admin'");
+            $oAgency = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id}");
+
+            
+
+           // $AgencyUser = $objAgencyUser->name;
+            $AgencyUser = $oAgency->name." ".$oAgency->last_name;
+            $AgencyName = $objParentAgency->name;
+        } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            $this->from = $from = 'no-reply@reviewvelocity.co';
+            $AgencyName = "Review Velocity";
+            $AgencyUser = "Zach Anderson";
+            $this->from_name = $from_name = "Zach Anderson";
+        }
+
+        if(!$from) {
+            $this->from = $from = "no-reply@{$objParentAgency->custom_domain}";
+            $this->from_name = $from_name = "Zach Anderson";
+        }
+
+        $Domain = $this->config->application->domain;
+        //$publicUrl="http://{$Domain}";
+                    $code=$u->id."-".$u->name;
+                    $link='/link/createlink/'.base64_encode($code);   
+        $mail = $this->getDI()->getMail();
+        $mail->setFrom($from,$from_name);
+        $params = [];
+        $params['employeeName']=$u->name;
+        $params['AgencyUser']=$AgencyUser;
+        $params['AgencyName']=$AgencyName;
+        $params['BusinessName']=$busi_nam;
+        $params['confirmUrl'] =$link;
+        $params['pasword'] =$pasword;
+        $params['email'] =$u->email;
+       
+        $mail->send($u->email, "Feedback Form!", 'feedback', $params);
     }
 
     public function sendActivationEmailToEmployeeById($user_id) {

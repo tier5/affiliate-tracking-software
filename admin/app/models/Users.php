@@ -519,15 +519,11 @@
                                                            $location_id,
                                                            $sort_order) {
 
-               if($review_invite_type_id=='')
-            {
-              $review_invite_type_id=1;
-            }
-            
-            //$first_day_this_month = date('m-01-Y');
-            //echo $end_time;
-            //echo $last_day_this_month  = date('m-t-Y');
 
+              if($review_invite_type_id=='')
+              {
+                $review_invite_type_id=1;
+              }
             // A raw SQL statement
             $sql = "SELECT distinct
                        users.name,
@@ -588,7 +584,7 @@
                       (users.profilesId = 3 OR users.is_employee = 1) OR (users.role = 'Super Admin' AND users.agency_id = {$agency_id})
                     ORDER BY positive_feedback_this_month desc
                   ;";
-                  //exit;
+                 // exit;
 //echo $sql;exit;
             // Base model  main dashboard
             $list = new Users();

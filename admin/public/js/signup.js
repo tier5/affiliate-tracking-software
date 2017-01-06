@@ -1,7 +1,7 @@
 
-$(document).ready(function() {
+/*$(document).ready(function() {*/
 
-	var flag1 = false;
+	/*var flag1 = false;
 	var flag2 = false;
 
 	if ((document.getElementById('email'))) {
@@ -39,16 +39,8 @@ $(document).ready(function() {
 	
 
 	function submitForm() {
-
-		
-
 		checkAvailableEmail();
 	 	//passwordVerification();
-
-			
-
-		
-		
 	}
 	
 	function checkAvailableEmail() {
@@ -98,14 +90,11 @@ $(document).ready(function() {
         	register_button_object.disable = false;
         	return true;
         }
-        
-       
-
 	}
 
 
-//function to check email availability
-function checkEmailAvailability(email, button, returnResult) {
+	//function to check email availability
+	function checkEmailAvailability(email, button, returnResult) {
         //get the email
 
 		if (email.length < 6) { 
@@ -140,8 +129,27 @@ function checkEmailAvailability(email, button, returnResult) {
             }
 
         });  
-} 
+	} */
 
+
+	var adjustLogoMargins = function() {
+		var headerHeight = eval($('header').height());
+		var imageHeight = eval($('.logo img').height());
+
+		console.log(headerHeight);
+		console.log(imageHeight);
+
+		var margins = (headerHeight - imageHeight) / 2;
+		$('.logo').css('margin-top', margins);
+		$('.logo').css('margin-bottom', margins);
+		$('.logo img').css('display', 'block');
+		console.log(margins);
+	};
 	
-	require("/js/checkAvailability.js");
-});
+	adjustLogoMargins();
+
+	window.addEventListener("resize", adjustLogoMargins);
+	//$.resize(adjustLogoMargins);
+	
+	//require("/js/checkAvailability.js");
+/*});*/

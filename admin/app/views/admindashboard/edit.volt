@@ -114,7 +114,7 @@
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-
+        var presubcription=$('#subscription_pricing_plan_id').val();
         $('#send-registration-email-control').change(function () {
             if ($(this).val() == 0) {
                 $(".free_subscription_pricing_plan").addClass('show');
@@ -122,7 +122,10 @@
                 $(".free_subscription_pricing_plan").removeClass('show');
             }
         });
-
+        $('#subscription_pricing_plan_id').prop("disabled", true); 
+        $('#subscription_pricing_plan_id').change(function () {
+            $('#subscription_pricing_plan_id').val(presubcription).change();
+        });
         $('#subscription_pricing_plan_id').change(function () {
             if ($(this).val() == 0) {
                 $(".free_subscription_pricing_plan").addClass('show');
@@ -130,6 +133,7 @@
                 $(".free_subscription_pricing_plan").removeClass('show');
             }
         });
+
 
         $('.validated').validate();
 

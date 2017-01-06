@@ -8,7 +8,6 @@
 
     namespace Vokuro\Services;
 
-
     use Vokuro\Models\LocationReviewSite;
     use Vokuro\Models\Review;
     use Phalcon\Logger\Adapter\File as FileLogger;
@@ -240,7 +239,7 @@
             $objLocationReviewSite->rating = $YelpReviews->rating;
             $objLocationReviewSite->review_count = $YelpReviews->review_count;
             $objLocationReviewSite->save();
-
+            
             if($YelpReviews->reviews) {
                 foreach($YelpReviews->reviews as $objYelpReview) {
                     $objReview = \Vokuro\Models\Review::findFirst("external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}");
@@ -262,7 +261,6 @@
                     unset($objReview);
                 }
             }
-            
             return true;
         }
 
@@ -437,24 +435,25 @@
         }
 
         public function importFacebook($LocationID) {
+            
+
             $reviewService = new Reviews();
             $FB = new \Vokuro\Models\FacebookScanning();
             $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
             if(!$objLocationReviewSite->access_token)
                 return false;
-
-            $FB->setAccessToken($objLocationReviewSite->access_token);
-
+            
             $logger = new FileLogger(__dir__."/../logs/ReviewImport.log");
+            
+            $FB->setAccessToken($objLocationReviewSite->access_token);
 
             try {
                 $tobjReviews = $FB->getReviews();
-
-                $logger->log(var_export($tobjReviews, true));
             } catch(Exception $e) {
                 $logger->error(var_export($e, true));
             }
-
+            
+            
             $TotalRating = 0;
             $TotalReviews = 0;
 
@@ -485,6 +484,7 @@
                     }
                 }
             }
+
             $dbReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
             $objLocationReviewSite->review_count = count($tobjReviews);
             $objLocationReviewSite->rating = $TotalReviews > 0 ? $TotalRating / $TotalReviews : 0;
