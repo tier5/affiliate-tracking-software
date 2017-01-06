@@ -17,7 +17,7 @@
     <!-- Begin primary / secondary color css.  Should probably move -->
     <style type="text/css">
         .page-sidebar .page-sidebar-menu > li.active > a {
-            background: {{ primary_color }} none repeat scroll 0 0 !important;
+            /*background: {{ primary_color }} none repeat scroll 0 0 !important;*/
         }
 
         .btnSecondary, .sms-chart-wrapper .bar-filled, .backgroundSecondary {
@@ -117,7 +117,7 @@
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > .arrow.open::before,
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > .arrow::before,
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > i {
-                color: #FFFFFF !important;
+                /*color: #FFFFFF !important;*/
             }
             .page-content-wrapper{
                 margin-top:-95px;
@@ -190,12 +190,14 @@
                 {% if location_id %}
                     {% if locations %}
                         <li class="location-header" id="">
+                           {% if not is_admin and agencytype != 'agency' %}
                         <span id="locationset">
                             Location: {{ location.name }}
                             {% if locations|length > '1' %}
                                 <a href="#" onclick="$('#locationset').hide();$('#locationnotset').show();return false;">Change</a>
                             {% endif %}
                         </span>
+                        {% endif %}
                         <span id="locationnotset" style="display: none;"><form action="/" method="post">
                                 Location:
                                 <select name="locationselect" id="locationselect">
@@ -209,6 +211,14 @@
                         </span>
                         </li>
                     {% endif %}
+                {% endif %}
+                {% if agencytype == "agency" %}
+                <li class="dropdown dropdown-user" style="margin-left: 30px;">
+                <a href="/notification/allnotification/{{NumberAgency}}" class="dropdown-toggle">
+                        <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-bell"></i> ( {{ NumberOfNotification }} )</span>
+                        
+                    </a>
+                </li>
                 {% endif %}
                 <li class="dropdown dropdown-user" style="margin-left: 20px;">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
@@ -230,6 +240,7 @@
                         </li>
                     </ul>
                 </li>
+                
             </ul>
         </div>
         <!-- END TOP NAVIGATION MENU -->
@@ -301,6 +312,7 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
+                        
                     {% elseif agencytype == "business" %}
                         <li class="nav-item start">
                             <a href="/" class="nav-link nav-toggle">
@@ -557,13 +569,13 @@
                                                 <!--<input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])? $_POST["phone"]:'')?>"
                                                 />-->
 
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value=""
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Mobile" name="phone" id="smsrequestformphone" value=""
                                                 />
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <i>The phone number that will recieve the SMS message.</i>
+                                                <i>The Mobile number that will recieve the SMS message.</i>
                                             </div>
                                         </div>
                                     </div>
@@ -576,7 +588,7 @@
                                             <div class="col-md-12">
                                                 <textarea 
                                                 	style="width: 100%;" 
-                                                	class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{ location.SMS_message }}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
+                                                	class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{location.SMS_message }}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
                                                 <i>{location-name} will be the name of the location sending the SMS,
                                                     {name} will be replaced with the name entered when sending the
                                                     message and {link} will be the link to the review.</i>

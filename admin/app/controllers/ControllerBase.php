@@ -88,7 +88,14 @@ class ControllerBase extends Controller {
                     'rgb' => $rgb,
                     'logo_path' =>  "/img/agency_logos/" . $agency->logo_path
                 ]);
-
+                $db = $this->di->get('db');
+                $db->begin();
+                $agency->agency_id;
+                 $result=$this->db->query(" SELECT * FROM `notification` WHERE `to` =".$agency->agency_id." AND `read` = 0");
+                 $x=$result->numRows();
+                 $this->view->NumberOfNotification;
+                 $this->view->setVar('NumberOfNotification', $x);
+                 $this->view->setVar('NumberAgency', $agency->agency_id);
             }
 
     //        $SD_Parts = explode('.', $_SERVER['HTTP_HOST']);
@@ -110,7 +117,10 @@ class ControllerBase extends Controller {
                 
                 $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "" ;
                 $this->view->agencyName =  $objParentAgency->name;
+
             } else {
+              // echo  $agency->logo_path;exit;
+                //exit;
                 // We're an agency or a business under RV
                 /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
                     return $this->RedirectDomain($agency->custom_domain);*/
@@ -135,7 +145,7 @@ class ControllerBase extends Controller {
                         
                         //$this->view->logo_path = "{$agency->logo_path}";
                     } else {
-                        $this->view->logo_path = "";
+                        $this->view->logo_path = '/assets/layouts/layout/img/logo.png';
                     }
                 } else {
                     // We're a business under RV
@@ -179,6 +189,8 @@ class ControllerBase extends Controller {
                 // Disable business if agency has no stripe keys enabled.
                 if (!$objParentAgency->stripe_publishable_keys || !$objParentAgency->stripe_account_secret)
                     $this->view->BusinessDisableBecauseOfStripe = true;
+
+
             }
 
             if($agency->parent_id > 0)
@@ -255,24 +267,80 @@ class ControllerBase extends Controller {
                 )
             );
 
-            if ($agency) {
-                $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
-                list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
-                $rgb = $r . ', ' . $g . ', ' . $b;
-                $vars = [
-                    'agency_id' => $agency->agency_id,
-                    'agency' => $agency,
-                    'agency_name' => $agency->name,
-                    'main_color_setting' => $agency->main_color,
-                    'rgb' => $rgb,
-                    'logo_path' => $agency->logo_path,
-                    'main_color' => str_replace('#', '', $agency->main_color),
-                    'primary_color' => str_replace('#', '', $agency->main_color),
-                    'secondary_color' => str_replace('#', '', $agency->secondary_color)
-                ];
-                $this->view->setVars($vars);
-            }
+/*** added on 30th dec 2016 ****/
+             if ($agency) {
+            $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
+            list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+            $rgb = $r . ', ' . $g . ', ' . $b;
+            $vars = [
+                'agency_id' => $agency->agency_id,
+                'agency' => $agency,
+                'agency_name' => $agency->name,
+                'main_color_setting' => $agency->main_color,
+                'rgb' => $rgb,
+                'logo_path' => $agency->logo_path,
+                'main_color' => str_replace('#', '', $agency->main_color),
+                'primary_color' => str_replace('#', '', $agency->main_color),
+                'secondary_color' => str_replace('#', '', $agency->secondary_color)
+            ];
+            $this->view->setVars($vars);
         }
+
+/*** added on 30th dec 2016 ****/
+
+        }
+
+        else if($this->session->has("sharing_code")) {
+
+            $code = $this->session->get("sharing_code");
+
+            $conditions = "viral_sharing_code = :viral_sharing_code:";
+            $parameters = array(
+                "viral_sharing_code" => $code
+            );
+
+
+            $agency = Agency::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+
+
+            if($agency->parent_id) {
+                $agency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+
+                $this->view->agencyId = $agency1->agency_id;
+                $this->view->agency_name = $agency1->name;
+
+             }
+
+             $agency = $agency1;
+
+
+        }
+
+/*** commented on 30th dec 2016 ****/
+        /*if ($agency) {
+            $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
+            list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+            $rgb = $r . ', ' . $g . ', ' . $b;
+            $vars = [
+                'agency_id' => $agency->agency_id,
+                'agency' => $agency,
+                'agency_name' => $agency->name,
+                'main_color_setting' => $agency->main_color,
+                'rgb' => $rgb,
+                'logo_path' => $agency->logo_path,
+                'main_color' => str_replace('#', '', $agency->main_color),
+                'primary_color' => str_replace('#', '', $agency->main_color),
+                'secondary_color' => str_replace('#', '', $agency->secondary_color)
+            ];
+            $this->view->setVars($vars);
+        }*/
+/*** commented on 30th dec 2016 ****/
+
         
         $this->agency = $agency;
         if ($this->request->getPost('main_color')) {
@@ -655,10 +723,10 @@ class ControllerBase extends Controller {
         //Total SMS Sent this month
         $start_time = date("Y-m-d", strtotime("first day of this month"));
         $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
-        $sql = "SELECT review_invite_id
+         $sql = "SELECT review_invite_id
               FROM review_invite
                 INNER JOIN location ON location.location_id = review_invite.location_id
-              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";//exit;
 
         // Base model
         $list = new ReviewInvite();
@@ -692,7 +760,7 @@ class ControllerBase extends Controller {
                 ));
             }
         } catch (Services_Twilio_RestException $e) {
-            $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
+            $this->flash->error('There was an error sending the SMS message to' . $phone);
             return false;
         }
         return true;
@@ -849,7 +917,7 @@ class ControllerBase extends Controller {
                     $usersGenerate = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId, false);
                 }
             } else {
-                
+
                 $users_report = null;
                 if ($loc) {
                     $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
@@ -876,7 +944,7 @@ class ControllerBase extends Controller {
                     $user_array=array();
 
 
-                    //print_r($Reviewlist);
+                   // dd($Reviewlist);
                    foreach($Reviewlist as $reviews)
                     {
                         if(!in_array($reviews->sent_by_user_id,$user_array))
@@ -992,7 +1060,7 @@ class ControllerBase extends Controller {
 
         $rating_array_set_all=array();
         $YNrating_array_set_all=array();
-        
+
         foreach($usersGenerate as $ux){
             $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 
@@ -1415,10 +1483,11 @@ class ControllerBase extends Controller {
         $userSubscription = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
 
         // GARY_TODO Determine if the comment below is accurate.
-        $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] &&
-            ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) &&
-            ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) &&
-            ($userManager->hasLocation($this->session) && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
+        $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] 
+            && ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) 
+            && ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) 
+            && ($userManager->hasLocation($this->session) 
+                && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
 
         $internalNavParams['hasPricingPlans'] = $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];
 

@@ -558,7 +558,7 @@
 
                     $user->password = $this->security->hash($this->request->getPost('password'));
                     $user->mustChangePassword = 'N';
-
+                    $_SESSION['password_save1']=$this->request->getPost('password');
                     $passwordChange = new PasswordChanges();
                     $passwordChange->user = $user;
                     $passwordChange->ipAddress = $this->request->getClientAddress();
@@ -567,6 +567,46 @@
                     if (!$passwordChange->save()) {
                         $this->flash->error($passwordChange->getMessages());
                     } else {
+
+
+
+                        /**** login credentials *****/
+                        if($_SESSION['toemail_log']){
+                    $feed_back_subj='Login Credentials';
+                    $feed_back_body='Hi '.$_SESSION['name_log'].',';
+                   
+
+                        /*** login information ****/
+                          if($_SESSION['password_save1'])
+                        {   
+                             $feed_back_body=$feed_back_body.'Login Details:</br>';
+                             $feed_back_body=$feed_back_body.'<p>Please view the Login Credentials Below: </p>';
+                             $feed_back_body=$feed_back_body.'Login URL:';
+                             $feed_back_body=$feed_back_body."<br>Login Email: ".$feed_back_email."<br>";
+                             $feed_back_body=$feed_back_body."Login Password: ". $_SESSION['password_save1']."<br>";
+                        }
+
+                        
+                        /*** login information ****/
+
+                        $feed_back_body=$feed_back_body."<br>".$_SESSION['AgencyUser_log']."<br>".$_SESSION['Agencyname_log'];
+                       /* $Mail = $this->getDI()->getMail();
+                        $Mail->setFrom($_SESSION['EmailFrom_log'],$_SESSION['EmailFromName_log']);
+                        $Mail->send($_SESSION['toemail_log'], $feed_back_subj, '', '', $feed_back_body);*/
+
+
+                         $mail = new Email();
+                         $mail->sendLoginDetailsEmployee($_SESSION['confirm_user_id'],$_SESSION['password_save1']);
+
+                        $_SESSION['password_save1']='';
+                        $_SESSION['Agencyname_log']='';
+                        $_SESSION['AgencyUser_log']='';
+                        $_SESSION['EmailFrom_log']='';
+                        $_SESSION['EmailFromName_log']='';
+                        $_SESSION['toemail_log']='';
+                        $_SESSION['name_log']='';
+                    }
+                        /**** login credentials *****/
 
                         $this->flash->success('Your password was successfully changed');
 

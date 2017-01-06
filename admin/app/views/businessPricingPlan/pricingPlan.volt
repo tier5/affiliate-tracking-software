@@ -12,6 +12,12 @@
             display:block;
         }
     }
+
+    .pricing-plans .portlet-title > .caption.subscription-caption{
+        width: 100%;
+        position: relative;
+    }
+    .update_btn{margin-left: -11px;}
 </style>
 
 <header class="jumbotron subhead" id="reviews">
@@ -30,13 +36,16 @@
                         <div class="caption font-dark subscription-caption">
                             <i class="fa fa-money"></i>
                             <span class="caption-subject bold uppercase">Subscriptions</span>
+                            <button id="back-btn-sub" class="btn default btn-lg apple-backgound subscription-btn">Back</button>
+                            
                         </div>
                         <div class="caption font-dark">
                             <div class="form-group">
                             <label>Subscription Name</label>
-                            <input id="name-control" type="text" value="{% if !isNewRecord %}{{ name }}{% else %}My New Subscription{% endif %}" class="caption-subject form-control input-medium" placeholder="Subscription Name" {% if !isNewRecord %} readonly {% endif %}/>
-                                <hr>
+                            <input id="name-control" type="text" value="{% if !isNewRecord %}{{ name }}{% else %}My New Subscription{% endif %}" class="caption-subject form-control input-medium" placeholder="Subscription Name" /> {% if !isNewRecord %} <button id="update-plan-name" class="btn default btn-lg apple-backgound subscription-btn update_btn" data-id="{{subscription_id_plan}}">Update</button> {% endif %}
                         </div>
+                        <hr>
+
                     </div>
                     <div class="portlet-body">
                         <div class="row">
@@ -182,6 +191,7 @@
                                                 <div class="form-group last">
                                                     <div class="col-md-12">
                                                         <div name="summernote" id="summernote_1">{{ pricingDetails }}</div>
+                                                        {% if !isNewRecord %} <button id="update-plan-pricing-details" class="btn default btn-lg apple-backgound subscription-btn" data-id="{{subscription_id_plan}}">Update</button> {% endif %}
                                                     </div>
                                                 </div>
                                             </div>
@@ -315,7 +325,49 @@
         var annualDiscount = $('#annual-discount-value').val();
         var upgradeDiscount = $('#upgrade-discount-value').val();
 
-
+        $('#update-plan-name').click(function() {
+            
+            var subscription_id=$(this).data("id");
+            var subcription_name=$("#name-control").val();
+            
+                $.ajax({
+                type: 'POST',
+                url: "/businessPricingPlan/updateSubcriptionName", 
+                data:{subscription_id :subscription_id,subcription_name:subcription_name},
+                success: function(result){
+                   if(result==1)
+                   {
+                   alert('Successfully updated');
+                   }
+                   else
+                   {
+                   alert('already exists');
+                   }
+                  
+                    }
+                });
+        });
+        
+        $('#update-plan-pricing-details').click(function() {
+            
+            var subscription_id=$(this).data("id");
+            var subcription_pricing_details=$('#summernote_1').code();
+            
+                $.ajax({
+                type: 'POST',
+                url: "/businessPricingPlan/updateSubcriptionPricingDetails", 
+                data:{subscription_id :subscription_id,subcription_pricing_details:subcription_pricing_details},
+                success: function(result){
+                    alert('Successfully updated');
+                    // if(result=="done"){
+                    //     //location.reload(true);
+                    //     alert('Successfully updated');
+                    // }
+                    }
+                });
+                return false;
+        });
+        
         function generatePercentageOptions() {
             var options = "";
             for (var i = 0; i <= 100; i++) {
@@ -804,7 +856,7 @@
             appendDiscountPercentage(options);
 
             /* Init progression button controls */
-            $('#cancel-btn').click(function () {
+            $('#cancel-btn, #back-btn-sub').click(function () {
                 window.location.href = "/businessPricingPlan";
             });
             $('#start-over-btn').click(function () {

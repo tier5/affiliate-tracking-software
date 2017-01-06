@@ -8,7 +8,6 @@
 
     namespace Vokuro\Services;
 
-
     use Vokuro\Models\LocationReviewSite;
     use Vokuro\Models\Review;
     use Phalcon\Logger\Adapter\File as FileLogger;
@@ -262,7 +261,6 @@
                     unset($objReview);
                 }
             }
-            
             return true;
         }
 
@@ -485,6 +483,7 @@
                     }
                 }
             }
+
             $dbReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
             $objLocationReviewSite->review_count = count($tobjReviews);
             $objLocationReviewSite->rating = $TotalReviews > 0 ? $TotalRating / $TotalReviews : 0;

@@ -58,20 +58,42 @@
                         $SMSSentLastMonth++;
                         if($objReviewInvite->rating > 0)
                             $SMSConvertedLastMonth++;
+                        /*** added on 05/01/206 ****/
+                      $resultx=$this->db->query("SELECT * FROM `review_invite_review_site` WHERE `review_invite_id` =".$objReviewInvite->review_invite_id);
+                        $x=$resultx->numRows();
 
-                        if($objReviewInvite->sms_broadcast_id)
-                            $SMSClickLastMonth++;
+                        /*if($objReviewInvite->sms_broadcast_id)
+                            $SMSClickLastMonth++;*/
+                            
+                               //if($objReviewInvite->recommend!=NULL) 
+                                if($x>0)
+                                $SMSClickLastMonth++;
+
+                            /*** added on 05/01/206 ****/
 
                     } else {
                         $SMSSentThisMonth++;
+
+                        $resulty=$this->db->query("SELECT * FROM `review_invite_review_site` WHERE `review_invite_id` =".$objReviewInvite->review_invite_id);
+                            $y=$resulty->numRows();
                         if($objReviewInvite->rating > 0)
                             $SMSConvertedThisMonth++;
 
-                        if($objReviewInvite->sms_broadcast_id)
-                            $SMSClickThisMonth++;
+                       /* if($objReviewInvite->sms_broadcast_id)
+                            $SMSClickThisMonth++;*/
+
+                        /*if($objReviewInvite->recommend!=NULL) 
+                                $SMSClickThisMonth++;*/
+                                if($y>0)
+                                    $SMSClickThisMonth++;
+
                     }
                 }
+               /* echo $SMSConvertedThisMonth;
+                echo '<br>';
+                echo $SMSClickThisMonth;*/
 
+//exit;
                 $invitelist = ReviewInvite::getReviewInvitesByLocation($LocationID, true);
                 //echo '<pre>';print_r( $invitelist);exit;
                 $this->view->invitelist = $invitelist;
@@ -92,6 +114,26 @@
                     }
                     $this->view->Totalclick = $tot_cal;
                     $this->view->clicklargest=$clicklargest;
+
+                    /*** for click site 05/01/2017 ***/
+                        
+
+                        $click_all_time = \Vokuro\Models\ReviewInvite::find("location_id = {$LocationID} AND rating > 0");
+
+                        $get_click_record_alltime=0;
+                        foreach($click_all_time as $objsentclick_all_time) {
+                            
+                             $resultx=$this->db->query("SELECT * FROM `review_invite_review_site` WHERE `review_invite_id` =".$objsentclick_all_time->review_invite_id);
+                                 $x=$resultx->numRows();
+                                 if($x>0)
+                                 {
+                                    $get_click_record_alltime++;
+                                 }
+                         }
+                         $this->view->alltime_click_site_record = $get_click_record_alltime;
+                         //exit;
+
+                     /*** for click site 05/01/2017 ***/
 
                 $this->view->sms_sent_this_month = $this->view->sms_sent_this_month_total = $SMSSentThisMonth;
                 $this->view->sms_sent_last_month = $SMSSentLastMonth;

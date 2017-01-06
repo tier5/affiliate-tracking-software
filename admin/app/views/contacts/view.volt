@@ -60,6 +60,7 @@
           <div class="caption">
             <span class="caption-subject bold uppercase">Contact Information</span>
           </div>
+        
         </div>
 
         <div style="border: 1px solid #e7ecf1 !important; display: table; width: 100%; margin-top: 25px;">
@@ -67,14 +68,35 @@
             <div class="form-group" style="padding-top: 25px;">
               <label class="col-md-5 control-label" style="font-weight: bold; text-align: right;">Name:</label>
               <div style="padding-top: 2px;" class="col-md-7">
-                <?=$review_invite->name?>
+                
+
+                <?php
+                if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['role'] == 'Super Admin') { ?>
+                        <input id="name-control" type="text" value="<?=$review_invite->name?>" class="caption-subject form-control input-small" />
+
+                <?php  }else{?>
+                        <?=$review_invite->name?>
+                <?php } ?>
               </div>
             </div>
             <div class="form-group" style="padding-top: 25px; padding-bottom: 25px;">
               <label class="col-md-5 control-label" style="font-weight: bold; text-align: right;">Cell Phone Number:</label>
               <div style="padding-top: 2px;" class="col-md-7">
-                <?=$review_invite->phone?>
+                <?php
+                if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['role'] == 'Super Admin') { ?>
+                        <input id="phone-control" type="text" value="<?=$review_invite->phone?>" class="caption-subject form-control input-small" />
+                <?php  }else{?>
+                        <?=$review_invite->phone?>
+                <?php } ?>
               </div>
+            </div>
+            <div class="form-group" style="padding-top: 25px; padding-bottom: 25px;">
+              <?php
+                if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['role'] == 'Super Admin') { ?>
+                <div style="padding-top: 2px;" class="col-md-12">
+                          <button id="update-review-details" class=" btnLink btnSecondary " data-id="<?php echo $review_invite->review_invite_id; ?>" style="float: right;"data-id="">Update</button>                        
+                </div>
+              <?php  }?>
             </div>
 
 
@@ -242,6 +264,32 @@
 <script type="text/javascript">
   jQuery(document).ready(function($){
 
+
+$('#update-review-details').click(function() {
+            
+            var name_control=$("#name-control").val();
+            var phone_control=$("#phone-control").val();
+            var review_id=$(this).data("id");
+            
+                $.ajax({
+                type: 'POST',
+                url: "/contacts/updateReviewDetails", 
+                data:{review_id:review_id,name_control:name_control,phone_control:phone_control},
+                success: function(result){
+                    alert('Contact Updated successfully');
+                    // if(result=="done"){
+                    // alert('Contact Updated successfully');
+                    // //location.reload(true);
+                   
+                    // }
+                    // else
+                    // {
+                    // alert('Error updating contact');
+                    // }
+                    
+                    }
+                });
+        });
 
     $('.starfield').rating({displayOnly: true, step: 0.5});
 

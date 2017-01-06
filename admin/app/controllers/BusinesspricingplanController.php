@@ -122,7 +122,7 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->canEdit = true;
         $this->view->gridEditStatus = "";
         $this->view->isCreateMode = false;
-
+        $this->view->subscription_id_plan=$pricingPlanId;
         //$this->view->progressions = $subscriptionManager->getPricingParameterListsByPricingPlanId($pricingPlanId);
 
         $progressions = $subscriptionManager->getPricingParameterListsByPricingPlanId($pricingPlanId);
@@ -144,7 +144,33 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->pick("businessPricingPlan/pricingPlan");
 
     }
-
+    public function updateSubcriptionNameAction(){
+        $this->view->disable();
+        $subscription_id=$_POST['subscription_id'];
+        $subcription_name=$_POST['subcription_name'];
+         $dbQuery=$this->db->query("select * from `subscription_pricing_plan` WHERE `name`='".$subcription_name."' and `id` !=".$subscription_id);
+          $countquery=$dbQuery->fetch();
+           if(empty($countquery))
+           {
+        $this->db->query(" UPDATE `subscription_pricing_plan` SET `name`='".$subcription_name."' WHERE `id`=".$subscription_id);
+        echo 1;
+            }
+            else
+            {
+                echo 2;
+            }
+        
+        
+    }
+    public function updateSubcriptionPricingDetailsAction(){
+        //echo '<pre>';print_r($_POST);exit;
+        $subscription_id=$_POST['subscription_id'];
+        $subcription_pricing_details=$_POST['subcription_pricing_details'];
+        $this->db->query(" UPDATE `subscription_pricing_plan` SET `pricing_details`='".$subcription_pricing_details."' WHERE `id`=".$subscription_id);
+        return "done";
+        
+        
+    }
     public function showNewPricingPlanAction() {
         $this->view->name = "My New Subscription";
         $this->view->enableTrialAccount = true;
@@ -219,7 +245,7 @@ class BusinessPricingPlanController extends ControllerBase {
             if (!$this->request->isPost()) {
                 throw new \Exception('POST request required!!!');
             }
-
+            
             /* Format the request body to an array */
             $validatedParams = $this->validatePricingPlanInput($this->request);
             if (!$validatedParams) {

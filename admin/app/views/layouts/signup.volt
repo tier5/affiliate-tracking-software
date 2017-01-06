@@ -84,30 +84,57 @@ if (isset($main_color_setting)) {
                     $MarginLeftWords = '';
                 }
             }
+
+            $redCheckCircle = '<i class="fa fa-check-circle fa-2x" aria-hidden="true" style="color: #c01209;" title="Sign up form, Step 1 (Account)"></i>';
+            $redCircle = '<i class="fa fa-circle fa-2x" aria-hidden="true" style="color: #c01209;"></i>';
+            $greyCircle = '<i class="fa fa-circle fa-2x" aria-hidden="true" style="color: #e6ecf0;"></i>';
          ?>
-        {% if logo_path AND logo_path != "/img/agency_logos/" %}
-        <div class="logo">
-            <a href="/"><img style="max-width: 300px; margin-top: 15px;"  src="{{ logo_path }}" alt="" /></a>
-        </div>
-        {% endif %}
         <!-- END LOGO -->
-        <div class="steps" style="<?=$MarginLeftSteps; ?>">
-            <div class="step"><img src="/img/step-<?=($current_step > 1?'on':'current')?>.gif" alt="Sign up form, Step 1 (Account)" /></div>
-            <div class="divider"><img src="/img/step-line-<?=($current_step > 1?'on':'off')?>.gif" /></div>
-            <div class="step"><img src="/img/step-<?=($current_step == 2?'current':($current_step > 2?'on':'off'))?>.gif" alt="Sign up form, Step 2 (Add Location)" /></div>
-            <div class="divider"><img src="/img/step-line-<?=($current_step > 2?'on':'off')?>.gif" /></div>
-            <div class="step"><img src="/img/step-<?=($current_step == 3?'current':($current_step > 3?'on':'off'))?>.gif" alt="Sign up form, Step 3 (Customize Survey)" /></div>
-            <div class="divider"><img src="/img/step-line-<?=($current_step > 3?'on':'off')?>.gif" /></div>
-            <div class="step"><img src="/img/step-<?=($current_step == 4?'current':($current_step > 4?'on':'off'))?>.gif" alt="Sign up form, Step 4 (Add Employee)" /></div>
-            <div class="divider"><img src="/img/step-line-<?=($current_step > 4?'on':'off')?>.gif" /></div>
-            <div class="step"><img src="/img/step-<?=($current_step == 5?'current':($current_step > 5?'on':'off'))?>.gif" alt="Sign up form, Step 5 (Share)" /></div>
-        </div>
-        <div class="steps-desc" style="<?=$MarginLeftWords; ?>">
-            <div id="step1">Account</div>
-            <div id="step2">Add Location</div>
-            <div id="step3">Customize Survey</div>
-            <div id="step4">Add Employee</div>
-            <div id="step5">Share</div>
+        <div id="label-wrapper">
+            {% if logo_path AND logo_path != "/img/agency_logos/" %}
+            <div class="logo">
+                <a href="/"><img class="img-responsive center-block"  src="{{ logo_path }}" alt="" /></a>
+            </div>
+            {% endif %}
+            <div id="label-container" class="center-block">
+                <div class="steps">
+                    <div class="step pull-left">
+                        <?=($current_step > 1 ? $redCheckCircle : $redCircle)?>
+                        
+                    </div>
+                    <div class="divider pull-left">
+                        <img src="/img/step-line-<?=($current_step > 1?'on':'off')?>.gif" />
+                    </div>
+                    <div class="step pull-left">
+                        <?=($current_step == 2 ? $redCircle : ($current_step > 2 ? $redCheckCircle : $greyCircle))?>
+                    </div>
+                    <div class="divider pull-left">
+                        <img src="/img/step-line-<?=($current_step > 2?'on':'off')?>.gif" />
+                    </div>
+                    <div class="step pull-left">
+                        <?=($current_step == 3 ? $redCircle : ($current_step > 3 ? $redCheckCircle : $greyCircle))?>
+                    </div>
+                    <div class="divider pull-left">
+                        <img src="/img/step-line-<?=($current_step > 3?'on':'off')?>.gif" />
+                    </div>
+                    <div class="step pull-left">
+                        <?=($current_step == 4 ? $redCircle : ($current_step > 4 ? $redCheckCircle : $greyCircle))?>
+                    </div>
+                    <div class="divider pull-left">
+                        <img src="/img/step-line-<?=($current_step > 4?'on':'off')?>.gif" />
+                    </div>
+                    <div class="step pull-left">
+                        <?=($current_step == 5 ? $redCircle : ($current_step > 5 ? $redCheckCircle : $greyCircle))?>
+                    </div>
+                </div>
+                <div class="steps-desc">
+                    <div id="step1">Account</div>
+                    <div id="step2">Add Location</div>
+                    <div id="step3">Customize Survey</div>
+                    <div id="step4">Add Employee</div>
+                    <div id="step5">Share</div>
+                </div>
+            </div>
         </div>
     </div>
 </header>

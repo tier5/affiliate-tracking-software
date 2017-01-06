@@ -1331,14 +1331,30 @@
                     $name = $_POST['name'];
                     $message = $_POST['SMS_message'].'  Reply stop to be removed';
                     //replace out the variables
-                    $message = str_replace("{location-name}", $this->session->get('auth-identity')['location_name'], $message);
-                    $message = str_replace("{name}", $name, $message);
-                    $guid = $this->GUID();
-                    $message = str_replace("{link}", $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid), $message);
+                   
 
+                    $message = str_replace("{location-name}", $this->session->get('auth-identity')['location_name'], $message);
+                   
+                    $message = str_replace("{name}", $name, $message);
+                    
+                    $message = str_replace("{link}", $this->googleShortenURL('http://' . $_SERVER['HTTP_HOST'] . '/review/?a=' . $guid), $message);
+                    
+
+                    $guid = $this->GUID();
                     $phone = $_POST['phone'];
 
                     //save the message to the database before sending the message
+
+                   $error="";
+                   $er_msg='';
+                   $insert_id_array=array();
+                    $nolengthmessage=strlen($message);
+                    $no=ceil($nolengthmessage/153);
+                    //$no=ceil($nolengthmessage/160);
+                   //exit;
+                    if($no!=0)
+                    {
+                    for($i=1;$i<=$no;$i++){
                     $invite = new ReviewInvite();
                     $invite->assign(array(
                         'name' => $name,
@@ -1346,17 +1362,27 @@
                         'phone' => $phone,
                         //TODO: Added google URL shortener here
                         'api_key' => $guid,
-                        'sms_message' => $message.'  Reply stop to be removed',
-                        'date_sent' => date('Y-m-d H:i:s'),
+                        'sms_message' => $message,
+                        /*'date_sent' => date('Y-m-d H:i:s'),*/
                         'date_last_sent' => date('Y-m-d H:i:s'),
                         'sent_by_user_id' => $identity['id']
                     ));
+                        $invite->save();
+                    array_push($insert_id_array,$invite->review_invite_id);
+                            if (!$invite->save()) {
+
+                                $error=1;
+                                $er_msg=$invite->getMessages();
+                            }
+
+                        }
+                    }
                     
 
 
-                    if (!$invite->save()) {
+                    if ($error==1) {
                         $this->view->disable();
-                        echo $invite->getMessages();
+                        echo $er_msg;
                         return;
                     } else {
 
@@ -1364,6 +1390,14 @@
                         //The message is saved, so send the SMS message now
                         //echo $message;exit;
                         if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
+
+                        for($i=0;$i<count($insert_id_array);$i++)
+                             {
+                            $last_insert_id=$insert_id_array[$i];
+                            $update_review = ReviewInvite::FindFirst('review_invite_id ='.$last_insert_id);
+                            $update_review->date_sent = date('Y-m-d H:i:s');
+                            $update_review->update();
+                            }
                             $this->flash->success("The SMS was sent successfully");
                         }
 
