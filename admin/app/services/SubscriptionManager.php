@@ -624,7 +624,7 @@ class SubscriptionManager extends BaseService {
         try {
             $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$objSuperUser->id}");
             if ($objStripeSubscription) {
-                if ($objStripeSubscription->stripe_subscription_id) {
+                if ($objStripeSubscription->stripe_subscription_id && $objStripeSubscription->stripe_subscription_id != "N") {
                     // We have a subscription, remove from stripe
                     if($objPaymentService->cancelStripeSubscription($objStripeSubscription->stripe_subscription_id, $AgencyID)) {
                         $objStripeSubscription->stripe_subscription_id = 'N';
