@@ -163,7 +163,7 @@ class ControllerBase extends Controller {
             //internal navigation parameters
             $this->configureNavigation($identity);
 
-            if($objAgency->parent_id > 0 || $objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            if($agency->parent_id > 0 || $agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 /*
                  * Has this user provided their credit card info?
                  */
@@ -182,6 +182,7 @@ class ControllerBase extends Controller {
                         // Have CC info, but no subscription.  Redirect to business subscription page
                         if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false)
                             $this->response->redirect("/businessSubscription");
+
                         $this->view->NonTrialNoPlan = true;
                     }
                     if (!$objStripeSubscription->stripe_customer_id) {

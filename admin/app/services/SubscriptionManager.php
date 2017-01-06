@@ -17,11 +17,11 @@ class SubscriptionManager extends BaseService {
         parent::__construct($config, $di);
     }
 
-    public function creditCardInfoRequired($session) {
+    public function creditCardInfoRequired($session, $iUserID = null) {
         $userManager = $this->di->get('userManager');
         $paymentService = $this->di->get('paymentService');
 
-        $userId = $userManager->getUserId($session);
+        $userId = $iUserID ? $iUserID : $userManager->getUserId($session);
 
         $objUser = \Vokuro\Models\Users::findFirst('id = ' . $userId);
 
@@ -35,7 +35,7 @@ class SubscriptionManager extends BaseService {
 
         $EnableTrial = $subscriptionPlan['pricingPlan']['enable_trial_account'];
 
-        if(!$EnableTrial && !$payment_plan)
+        if(isset($subscriptionPlan['pricingPlan']['enable_trial_account']) && !$EnableTrial && !$payment_plan)
             return static::CC_NON_TRIAL;
 
         // GARY_TODO:  Somehow all payment_plans are getting started at Monthly.

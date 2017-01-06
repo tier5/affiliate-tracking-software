@@ -395,8 +395,8 @@
                             <div class="subscription-panel-default-caption" style="transform: none; !important">
                                 To start your subscription:
                                 <ul>
-                                    <li>Choose the amount of locations</li>
-                                    <li>Chose the amount of SMS messages</li>
+                                    <li>Choose the number of locations</li>
+                                    <li>Choose the number of SMS messages per month</li>
                                     <li>Click "Begin Plan"</li>
                                 </ul>
                             </div>
