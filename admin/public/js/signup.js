@@ -144,6 +144,6 @@ function checkEmailAvailability(email, button, returnResult) {
 
 adjustLogoMargins();*/
 
-window.addEventListener("resize", adjustLogoMargins);
+//window.addEventListener("resize", adjustLogoMargins);
 
 require("/js/checkAvailability.js");
