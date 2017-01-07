@@ -27,6 +27,9 @@
             $StartYear = date('Y', strtotime("-{$MonthsBack} month"));
 
             $InitialCount = \Vokuro\Models\Review::count("location_id = {$location_id} AND time_created < '{$StartYear}-{$StartMonth2}-01 00:00:00'");
+            $objYelpLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP);
+            if($objYelpLocationReviewSite)
+                $InitialCount += $objYelpLocationReviewSite->review_count;
 
             $sql   = "
                 SELECT COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0) AS reviewcount, month, year
