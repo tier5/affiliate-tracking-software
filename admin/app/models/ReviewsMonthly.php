@@ -78,8 +78,9 @@
                         $Prev = $tResult['reviewcount'];
                     } else {
                         $Prev += $tResult['reviewcount'];
-                        $tResult['reviewcount'] = $Prev;
                     }
+
+                    $tResult['reviewcount'] = $Prev + $InitialCount;
 
                     $tFilteredResults[$tResult['month']] = $tResult;
                     $Count++;
