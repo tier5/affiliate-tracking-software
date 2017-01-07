@@ -51,8 +51,10 @@
             $CurrentMonth = $StartMonth;
             for($c = 0 ; $c <= $MonthsBack ; $c++) {
                 if ($c + $StartMonth > 12) {
-                    if($CurrentMonth == 12)
+                    if($CurrentMonth == 12) {
                         $CurrentMonth = 1;
+                        $CurrentYear = $StartYear + 1;
+                    }
                     else {
                         $CurrentMonth++;
                         $CurrentYear = $StartYear + 1;
@@ -69,16 +71,15 @@
                     'year' => $CurrentYear
                 ];
             }
+
             foreach($TotalResults->toArray() as $tResult) {
                 if(strtotime("{$StartYear}-{$StartMonth}-01") <= strtotime("{$tResult['year']}-{$tResult['month']}-01")) {
                     if($Count == 0) {
                         $Prev = $tResult['reviewcount'];
                     } else {
                         $Prev += $tResult['reviewcount'];
-                        $tResult['reviewcount'] = $Prev + $InitialCount;
+                        $tResult['reviewcount'] = $Prev;
                     }
-
-
 
                     $tFilteredResults[$tResult['month']] = $tResult;
                     $Count++;
@@ -91,10 +92,10 @@
                 if($Count == 0) {
                     $Prev = 0;
                 } else {
-                    $Prev = $Index > 1 ? $tFilteredResults[$Index-1]['reviewcount'] : $tFilteredResults[1]['reviewcount'];
+                    $Prev = $Index != 1 ? $tFilteredResults[$Index-1]['reviewcount'] : $tFilteredResults[12]['reviewcount'];
                 }
 
-                $Current = $Index > 12 ? $tFilteredResults[$Index - 12]['reviewcount'] : $tFilteredResults[$Index]['reviewcount'];
+                $Current = $tFilteredResults[$Index]['reviewcount'];
 
                 if($Current <= $Prev)
                     $tResult['reviewcount'] = $Prev;
