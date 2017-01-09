@@ -18,7 +18,7 @@ Revised: October 26, 2016)</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">PLEASE
 READ THIS DOCUMENT CAREFULLY BEFORE ORDERING, ACCESSING OR USING THE
-SOFTWARE AND TRAINING REFERRED TO AS &ldquo;{{ agency.name }}&rdquo;
+SOFTWARE AND TRAINING REFERRED TO AS &ldquo;{{ agency_name }}&rdquo;
 (HEREINAFTER THE &ldquo;SOFTWARE&rdquo;).</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 
@@ -27,7 +27,7 @@ SOFTWARE AND TRAINING REFERRED TO AS &ldquo;{{ agency.name }}&rdquo;
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">IMPORTANT:
 THIS SOFTWARE END USER LICENSE AGREEMENT (&ldquo;EULA&rdquo;) IS A
 LEGAL AGREEMENT BETWEEN YOU (EITHER AN INDIVIDUAL OR, IF PURCHASED OR
-OTHERWISE ACQUIRED BY OR FOR AN ENTITY, AN ENTITY) AND {{ agency.name }}.  READ IT CAREFULLY BEFORE ACCESSING THIS WEB SITE AND USING THE
+OTHERWISE ACQUIRED BY OR FOR AN ENTITY, AN ENTITY) AND {{ agency_name }}.  READ IT CAREFULLY BEFORE ACCESSING THIS WEB SITE AND USING THE
 SOFTWARE AND TRAINING. IT PROVIDES A LICENSE TO USE THE SOFTWARE AND
 CONTAINS WARRANTY INFORMATION AND LIABILITY DISCLAIMERS. BY SELECTING
 TO USE THE SOFTWARE, YOU ARE CONFIRMING YOUR ACCEPTANCE OF THE
@@ -45,7 +45,7 @@ DEFINITIONS</SPAN></FONT></FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">A.
-&ldquo;LICENSOR&rdquo; means {{ agency.name }} a limited liability company with an address of {{ agency.address }}, {{ agency.address2 }}, {{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}
+&ldquo;LICENSOR&rdquo; means {{ agency_name }} a limited liability company with an address of {{ agency.address }}<?php if($agency->address2!=""){?> ,{{ agency.address2 }}<?php } if($agency->locality!=""){?> , {{ agency.locality }} <?php }if($agency->state_province!=""){ ?> ,{{ agency.state_province }}<?php }if($agency->postal_code!=""){ ?> ,{{ agency.postal_code }} <?php } ?>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 
@@ -86,7 +86,7 @@ license.</SPAN></FONT></FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">F.
-&ldquo;Software&rdquo; shall mean the &ldquo;{{ agency.name }}&ldquo; web-hosted software and any subsequent error corrections or updates
+&ldquo;Software&rdquo; shall mean the &ldquo;{{ agency_name }}&ldquo; web-hosted software and any subsequent error corrections or updates
 supplied to LICENSEE by LICENSOR pursuant to this Agreement.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 
@@ -515,7 +515,7 @@ fee we do not offer a refund of any kind.</SPAN></FONT></FONT></P>
 <FONT FACE="Cambria, serif"><SPAN STYLE="text-decoration: none">C.
 When your 30 day&nbsp;trial period expires, or when you exceed the
 trial number of free SMS messages allowed with your trial, you will
-be charged the Subscription price page of your {{ agency.name }} installation
+be charged the Subscription price page of your {{ agency_name }} installation
 to continue using the service. You will be charged monthly
 approximately 30 days from the date you make the first payment.</SPAN></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
@@ -524,7 +524,7 @@ approximately 30 days from the date you make the first payment.</SPAN></FONT></P
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">D.
 If you decide not to continue you plan after your 30 day trial you
-must cancel your account from within the {{ agency.name }} system or cancel your subscription through Paypal.</SPAN></FONT></FONT></P>
+must cancel your account from within the {{ agency_name }} system or cancel your subscription through Paypal.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 
 </P>
@@ -542,8 +542,8 @@ link.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><SPAN STYLE="text-decoration: none">F.
 To cancel your subscription on a paid plan using a credit card, you
-must subscription from with the {{ agency.name }} system.
-Once your {{ agency.name }} account
+must subscription from with the {{ agency_name }} system.
+Once your {{ agency_name }} account
 has been cancelled your monthly payment will be cancelled. You can
 cancel your account at any time simply by logging in, going to the
 payment details page and clicking the &ldquo;Deactivate My Account&rdquo;
@@ -764,7 +764,7 @@ to this EULA.</SPAN></FONT></FONT></FONT></P>
 <P STYLE="margin-bottom: 0in; text-decoration: none">
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">B.
-All questions regarding this agreement should be directed to {{ agency.name }} by mail at {{ agency.address }}, {{ agency.address2 }}, {{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}, or by email at: <A HREF="mailto:{{ agency.email }}">{{ agency.email }}</A>
+All questions regarding this agreement should be directed to {{ agency_name }} by mail at {{ agency.address }}, <?php if($agency->address2!=""){?> ,{{ agency.address2 }}<?php } if($agency->locality!=""){?> , {{ agency.locality }} <?php }if($agency->state_province!=""){ ?> ,{{ agency.state_province }}<?php }if($agency->postal_code!=""){ ?> ,{{ agency.postal_code }} <?php } ?> or by email at: <A HREF="mailto:{{ agency.email }}">{{ agency.email }}</A>
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#373737"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">23.
 REFUND POLICY</SPAN></FONT></FONT></FONT></P>

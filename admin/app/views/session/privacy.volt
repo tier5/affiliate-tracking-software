@@ -19,7 +19,7 @@ Revised: October 26, 2016)</SPAN></FONT></FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
 <FONT FACE="Cambria, serif"><FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">Thank
-you for visiting this web site. We </SPAN></FONT></FONT>{{ agency.name }}<FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">
+you for visiting this web site. We </SPAN></FONT></FONT>{{ agency_name }}<FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">
 understand the importance that Internet users place on privacy, and
 this Privacy Policy describes how we use personal information that is
 collected at this web site.</SPAN></FONT></FONT></FONT></P>
@@ -294,7 +294,7 @@ information that you transmit to us, and you do so at your own risk.</SPAN></FON
 you need to contact us, you can email us at
 </SPAN></FONT></FONT>{{ agency.email }},
 call us at {{ agency.phone }},
-or send us a letter at: {{ agency.address }}, {{ agency.address2 }}, {{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}
+or send us a letter at: {{ agency.address }}<?php if($agency->address2!=""){?> ,{{ agency.address2 }}<?php } if($agency->locality!=""){?> , {{ agency.locality }} <?php }if($agency->state_province!=""){ ?> ,{{ agency.state_province }}<?php }if($agency->postal_code!=""){ ?> ,{{ agency.postal_code }} <?php } ?>
 
 </P>
 <P STYLE="margin-bottom: 0in; widows: 0; orphans: 0; text-decoration: none">
@@ -357,8 +357,16 @@ Please send an email to the Privacy Administrator at {{ agency.email }} or you m
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none">{{ agency.address }}
 </P>
+<?php if($agency->address2!=""){?>
 <P STYLE="margin-bottom: 0in; text-decoration: none">{{ agency.address2 }}</P>
-<P STYLE="margin-bottom: 0in; text-decoration: none">{{ agency.locality }}, {{ agency.state_province }}  {{ agency.postal_code }}</P>
+<?php }if($agency->locality!=""){ ?>
+<P STYLE="margin-bottom: 0in; text-decoration: none">{{ agency.locality }}</p>
+<?php }if($agency->state_province!=""){ ?>
+<P STYLE="margin-bottom: 0in; text-decoration: none">{{ agency.state_province }}</p>
+<?php }if($agency->postal_code!=""){ ?>
+<P STYLE="margin-bottom: 0in; text-decoration: none">
+  {{ agency.postal_code }}</P>
+<?php } ?>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><BR>
 </P>
 <P STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Cambria, serif"><FONT COLOR="#262626"><FONT FACE="PT Sans, serif"><SPAN STYLE="text-decoration: none">All

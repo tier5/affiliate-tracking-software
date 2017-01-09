@@ -313,7 +313,8 @@ class ControllerBase extends Controller {
 
                 $this->view->agencyId = $agency1->agency_id;
                 $this->view->agency_name = $agency1->name;
-
+                $this->view->agency=$agency1;
+                
              }
 
              $agency = $agency1;
