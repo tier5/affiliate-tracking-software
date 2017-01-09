@@ -4,6 +4,7 @@
     use Phalcon\Tag;
     use Phalcon\Mvc\Model\Criteria;
     use Phalcon\Paginator\Adapter\Model as Paginator;
+    use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
     use Vokuro\Forms\ChangePasswordForm;
     use Vokuro\Models\Location;
     use Vokuro\Forms\UsersForm;
@@ -143,14 +144,14 @@
         if($objAgency->parent_id > 0) {
             // Return parent's keys.
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = " . $objAgency->parent_id);
-            $TwilioSID = $objParentAgency->twilio_auth_messaging_sid;
+
             $TwilioToken = $objParentAgency->twilio_auth_token;
             // We use the businesses' from number if it exists, otherwise use the agency's.
             $TwilioFrom = $objAgency->twilio_from_phone ?: $objParentAgency->twilio_from_phone;
             $TwilioAPI = $objParentAgency->twilio_api_key;
         } elseif($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $IsAdmin) {
             // Business under RV.  Return default from config.
-            $TwilioSID = $this->config->twilio->twilio_auth_messaging_sid;
+
             $TwilioToken = $this->config->twilio->twilio_auth_token;
             $TwilioFrom = $this->config->twilio->twilio_from_phone;
             $TwilioAPI = $this->config->twilio->twilio_api_key;
@@ -159,7 +160,7 @@
 
             $twilio_api_key=$TwilioAPI;
             $twilio_auth_token=$TwilioToken;
-            $twilio_auth_messaging_sid=$TwilioSID;
+
             $twilio_from_phone=$TwilioFrom;
                    
                     //echo 'SMS starts';exit;
@@ -183,6 +184,34 @@
                         }
                     
                     //else we have a phone number, so send the message
+
+                        $start_time = date("Y-m-d", strtotime("first day of this month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+        $sql = "SELECT review_invite_id
+              FROM review_invite
+                INNER JOIN location ON location.location_id = review_invite.location_id
+              WHERE location.agency_id = " . $objAgency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time ."' AND sms_broadcast_id IS NULL";
+               // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $total_sms_sent=$rs->count();//exit;
+
+        $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+       // $identity = $this->session->get('auth-identity');
+        //echo $objAgency->agency_id;exit;
+
+        if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $objAgency->parent_id > 0)
+            $MaxSMS = $objSubscriptionManager->GetMaxSMS($objAgency->agency_id, $location_id);
+        else
+            $MaxSMS = 0;
+        $NonViralSMS = $MaxSMS;
+        $ViralSMS = $objSubscriptionManager->GetViralSMSCount($objAgency->agency_id);
+       $MaxSMS += $ViralSMS;
+       if($total_sms_sent<$MaxSMS){
+
                     $name = $_POST['name'];
                     $message=$_POST['SMS_message'];
                     //replace out the variables
@@ -233,8 +262,9 @@
                         echo $er_msg;
                         return;
                     } else {
+                       
 
-                        if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
+                        if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token,  $twilio_from_phone)) {
 
 
                              for($i=0;$i<count($insert_id_array);$i++)
@@ -244,7 +274,7 @@
                             $update_review->date_sent = date('Y-m-d H:i:s');
                             $update_review->update();
                             }
-                            
+
                            /*$update_review->sms_message;
                             $nolengthmessage=strlen($update_review->sms_message);
                             $no=ceil($nolengthmessage/153)-1;
@@ -284,6 +314,17 @@
                            
                         }
                     }
+                     } // end of total checking
+
+                        else
+                        {
+
+                            $this->flashSession->error("Sorry!! this message will not be sent as You have exceeded the total sms allowed for your business to sent.");
+
+                            $this->view->disable();
+                            return $this->response->redirect('link/send_review_invite_employee/'.$uid);
+
+                        }
                 }
             }
 

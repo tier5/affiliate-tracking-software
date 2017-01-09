@@ -92,11 +92,27 @@ class SessionController extends ControllerBase {
     public function submitSignupAction() {
         try {
             $subscription_id = null;
-            $short_code = $this->request->getPost('short_code');
+            if($this->request->getPost('short_code'))
+            {
+                $short_code = $this->request->getPost('short_code');
+            }
+            else
+            {
+                $short_code =$_COOKIE['short_code'];
+            }
             $subscription_pricing_plan = '';
 
             $ssp = new SubscriptionPricingPlan();
-            $sharing_code = $this->request->getPost('sharing_code', 'striptags');
+
+            if($this->request->getPost('sharing_code'))
+            {
+                $sharing_code = $this->request->getPost('sharing_code', 'striptags');
+            }
+            else
+            {
+                $sharing_code = $_COOKIE['sharing_code'];
+            }
+
             $parent_id = null;
             if ($short_code) {
                 $subscription_pricing_plan = $ssp->findOneBy(['short_code' => $short_code]);
@@ -242,31 +258,34 @@ class SessionController extends ControllerBase {
             
             $this->db->commit();
 
-               /*** notification mail ***/  
-                    $objSuperAdminUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $ParentID . ' AND role="Super Admin"');
-                    
+            /*** notification mail ***/
+            $objSuperAdminUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $ParentID . ' AND role="Super Admin"');
 
-                    if(isset($subscription_pricing_plan->name)){
-                        $planName = $subscription_pricing_plan->name;
-                    }else{
-                        $planName = 'Free';
-                    }
-                    
-                    $EmailFrom = 'no-reply@reviewvelocity.co';
-                    $EmailFromName = "Zach Anderson";
-                    $subject="New Business Registered Successfully";
-                    $mail_body='Dear '.$objSuperAdminUser->name.',';
-                    $mail_body=$mail_body.'<p>Congratulations a new business has registered successfully with following details:
-                        </p>';
-                    $mail_body .= '<p>Name: '.$an.'</p>';
-                    $mail_body .= '<p>Email: '.$this->request->getPost('email', 'striptags').'</p>';
-                    $mail_body .= '<p>Subscription: '.$planName.'</p>';
-                    $mail_body=$mail_body."Thanks";
+            if(isset($subscription_pricing_plan->name)){
+                $planName = $subscription_pricing_plan->name;
+            }else{
+                $planName = 'Free';
+            }
 
-                        $Mail = $this->getDI()->getMail();
-                    $Mail->setFrom($EmailFrom, $EmailFromName);
-                    $Mail->send($objSuperAdminUser->email, $subject, '', '', $mail_body);
-                        /*** notification mail end ***/  
+            $EmailFrom = 'no-reply@reviewvelocity.co';
+            $EmailFromName = "Zach Anderson";
+            $subject="New Business Registered Successfully";
+            $mail_body='Dear '.$objSuperAdminUser->name.',';
+            $mail_body=$mail_body.'<p>Congratulations a new business has registered successfully with following details:
+                </p>';
+            $mail_body .= '<p>Name: '.$an.'</p>';
+            $mail_body .= '<p>Email: '.$this->request->getPost('email', 'striptags').'</p>';
+            $mail_body .= '<p>Subscription: '.$planName.'</p>';
+            $mail_body=$mail_body."Thanks";
+
+                $Mail = $this->getDI()->getMail();
+            $Mail->setFrom($EmailFrom, $EmailFromName);
+            $Mail->send($objSuperAdminUser->email, $subject, '', '', $mail_body);
+                /*** notification mail end ***/
+
+            $expire = time() + 86400 * 30;
+            setcookie( "short_code",'', $expire );
+            setcookie( "sharing_code",'', $expire );
 
             return $this->response->redirect('/session/thankyou');
 
@@ -284,6 +303,19 @@ class SessionController extends ControllerBase {
 
     public function inviteAction($short_code = null) {
         $this->view->short_code = $short_code;
+
+            if($short_code!=null)
+            {
+            $expire = time() + 86400 * 8;
+            setcookie( "short_code",$short_code, $expire );
+            }
+            else
+            {
+                $this->view->short_code =$short_code=$_COOKIE['short_code'];
+            }
+
+           //echo $_COOKIE['code'];exit;
+
         $this->signupAction();
 
         $this->view->pick('session/signup');
@@ -322,8 +354,8 @@ class SessionController extends ControllerBase {
     public function signupAction($subscriptionToken = '0') {
         $objAgency='';
         $objUser='';
+        $Domain=$this->config->application->domain;
 
-        //echo $subscriptionToken;exit;
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
         $pi = array_shift($ex);//exit;
@@ -366,21 +398,31 @@ class SessionController extends ControllerBase {
 
             $code = $this->request->getQuery("code");
 
-
-            $this->session->set("sharing_code", $code);
-            
+            $expire = time() + 86400 * 30;
+            setcookie("code", $code, $expire );
             
             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
 
             $this->view->agencyId = $objAgency->agency_id;
             $this->view->agency_name = $objAgency->name;
-             
+           // echo $objAgency->parent_id;exit;
+            if($objAgency->parent_id==0) {
+                $custom_domain=$objAgency->custom_domain;
+                 $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
+                //$this->view->disable();
+                return;
+            }
+
             if($objAgency->parent_id) {
                 $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
 
                 $this->view->agencyId = $objAgency1->agency_id;
                 $this->view->agency_name = $objAgency1->name;
+                $custom_domain=$objAgency1->custom_domain;
+                  $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
+                $this->view->disable();
+                return;
 
              }
              
@@ -389,13 +431,30 @@ class SessionController extends ControllerBase {
         }
         else
         {
+            $code=$_COOKIE['code'];
 
-             $this->view->agency_name ='';
+             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
+            $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
+
+            $this->view->agencyId = $objAgency->agency_id;
+            $this->view->agency_name = $objAgency->name;
+
+            if($objAgency->parent_id) {
+                $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+
+                $this->view->agencyId = $objAgency1->agency_id;
+                $this->view->agency_name = $objAgency1->name;
+
+             }
+             //$this->view->agency_name ='';
         }
 
         //dd($record->agency_id);
 
-       
+       if(!$this->view->short_code)
+       {
+        $this->view->short_code=$_COOKIE['short_code'];
+       }
         //see invite action above
         if($this->view->short_code){
             $subscription = new SubscriptionPricingPlan();
@@ -1365,23 +1424,22 @@ class SessionController extends ControllerBase {
         if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $TwilioAPIKey = $this->config->twilio->twilio_api_key;
             $TwilioAuthToken = $this->config->twilio->twilio_auth_token;
-            $TwilioAuthMessagingSID = $this->config->twilio->twilio_auth_messaging_sid;
+
             $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $this->config->twilio->twilio_from_phone;
         } else {
-            //echo $objBusiness->parent_id;exit;
             if($objBusiness->parent_id!=0)
             {
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
             $TwilioAPIKey = $objAgency->twilio_api_key;
             $TwilioAuthToken = $objAgency->twilio_auth_token;
-            $TwilioAuthMessagingSID = $objAgency->twilio_auth_messaging_sid;
+
             $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $objAgency->twilio_from_phone;
             }
             else
             {
                $TwilioAPIKey = $objBusiness->twilio_api_key;
             $TwilioAuthToken = $objBusiness->twilio_auth_token;
-            $TwilioAuthMessagingSID = $objBusiness->twilio_auth_messaging_sid;
+
             $TwilioFromPhone = $objBusiness->twilio_from_phone; 
             }
         }
@@ -1391,7 +1449,7 @@ class SessionController extends ControllerBase {
       // echo $TwilioAPIKey."-".$TwilioAuthToken."-".$TwilioAuthMessagingSID."-".$TwilioFromPhone;exit;
 
 
-        if(!$TwilioAPIKey || !$TwilioAuthToken || !$TwilioAuthMessagingSID || !$TwilioFromPhone) {
+        if(!$TwilioAPIKey || !$TwilioAuthToken || !$TwilioFromPhone) {
             $this->flash->error("Twilio configuration error.  Please contact customer support.");
         }
         
@@ -1407,7 +1465,7 @@ class SessionController extends ControllerBase {
         }
         }
         //The message is saved, so send the SMS message now
-        if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $TwilioAPIKey, $TwilioAuthToken, $TwilioAuthMessagingSID, $TwilioFromPhone)) {
+        if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $TwilioAPIKey, $TwilioAuthToken,  $TwilioFromPhone)) {
             $this->flash->success("The message was sent!");
         }
         else

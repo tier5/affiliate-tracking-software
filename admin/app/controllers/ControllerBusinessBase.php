@@ -232,6 +232,7 @@ public function editAction($agency_id = 0) {
                     'name'               => $this->request->getPost('name', 'striptags'),
                     'agency_type_id'     => $agency_type_id,
                     'email'              => $this->request->getPost('email', 'striptags'),
+                    'signup_page'=>2,
                     'address'            => $this->request->getPost('address', 'striptags'),
                     'locality'           => $this->request->getPost('locality', 'striptags'),
                     'state_province'     => $this->request->getPost('state_province', 'striptags'),

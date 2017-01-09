@@ -60,6 +60,7 @@
             }
 
             if ($this->request->isPost()) {
+
                 $form = new SettingsForm($agency);
                 $agencyform = new AgencyForm($agency);
                 $form->bind($_POST, $agency);
@@ -79,8 +80,8 @@
                     //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
                     // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
                 } else {
-                    //exit;
-                   
+                    
+                  //echo 'kk';exit;
                     $agency->assign(array(
                         'review_invite_type_id' => $this->request->getPost('review_invite_type_id', 'int'),
                         'review_goal' => $this->request->getPost('review_goal', 'int'),
@@ -114,6 +115,10 @@
                         'postal_code' => $this->request->getPost('postal_code', 'striptags'),
                         'country' => $this->request->getPost('country', 'striptags'),
                         'phone' => $this->request->getPost('phone', 'striptags'),
+                        'welcome_email' => $this->request->getPost('welcome_email', 'striptags'),
+                        'viral_email' => $this->request->getPost('viral_email', 'striptags'),
+                 
+                       
                     ));
                     //$file_location = $this->uploadAction($agency->agency_id);
                     if ($file_location != '') $agency->logo_path = $file_location;
@@ -187,6 +192,7 @@
             'postal_code'                   => 'string',
             'country'                       => 'string',
             'phone'                         => 'string',
+            
         ];
 
         protected $tAgencyFields = [
@@ -210,6 +216,8 @@
             'phone'                         => 'string',
             'main_color'                    => 'string',
             'secondary_color'               => 'string',
+            'viral_mail'                    =>'string',
+            'welcome_email'                 =>'string',
         ];
 
         public function dismissstripeAction() {
@@ -247,10 +255,11 @@
         }
 
         protected function storeSettings($entity, $type) {
+            //echo $type;exit;
             if ($this->request->isPost()) {
-                //dd($entity);
-
+           
                 $form = new SettingsForm($entity);
+                //dd($form);
                 $agencyform = new AgencyForm($entity);
                 $form->bind($_POST, $entity);
                 $agencyform->bind($_POST, $entity);
@@ -269,9 +278,26 @@
                     //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
                     // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
                 } else {
+                   // echo $this->request->getPost('welcome_email');
+                  // echo 'k';exit;
+                    $identity = $this->auth->getIdentity();
+                    $conditions = "id = :id:";
+                    $parameters = array("id" => $identity['id']);
+                    $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+                    $Agency_id=$userObj->agency_id; 
+                   // exit;
+                   
+                    if($this->request->getPost('welcome_email', 'striptags')!='' || $this->request->getPost('viral_mail', 'striptags')!='')
+                    {
+                         $this->db->query("UPDATE `agency` SET `welcome_email`='".$this->request->getPost('welcome_email')."' ,  `viral_email`='".$this->request->getPost('viral_mail')."' WHERE `agency_id`=".$Agency_id);
+                    }
                     $tEntityArray = [];
                     $tFieldArray = $type == 'agency' ? 'tAgencyFields' : 'tLocationFields';
+                  // echo  $this->request->getPost('welcome_email', 'striptags');exit;
                     foreach($this->$tFieldArray as $Field => $DataType) {
+                       /* echo $this->request->getPost($Field, 'striptags');
+                        echo "<br>";*/
+                       // echo $this->request->getPost($Field);echo '<br>';
                         switch($DataType) {
                             case 'int':
                                 //$tEntityArray[$Field] = (is_int($this->request->getPost($Field, 'int')) ?$this->request->getPost($Field, 'int'): 0  );
@@ -288,14 +314,20 @@
                                 break;
                         }
                     }
+                   // exit;
+
+                    //dd($tEntityArray);
 
                     $entity->assign($tEntityArray);
+                   // dd($entity);
                     // Don't hate me for this -- GG
                     $PrimaryID = $type == 'agency' ? 'agency_id' : 'location_id';
                     $Prefix = $type == 'agency' ? 'a' : 'l';
                     //$file_location = $this->uploadAction($Prefix . $entity->$PrimaryID);
                     // This works because agencies and locations have the same column.
+                    //$entity->save();
                     if ($file_location != '')
+                        //echo 'ok';exit;
                         $entity->sms_message_logo_path = $file_location;
                     return $entity->save();
                 }
@@ -504,6 +536,7 @@
             $objUser = Users::findFirst("id = " . $Identity['id']);
 
             $objAgency = Agency::findFirst("agency_id = {$objUser->agency_id}");
+           //echo '<pre>';print_r($objAgency);exit;
             if (!$objAgency)
                 $this->flash->error("Agency not found.  Contact customer support.");
 
@@ -527,6 +560,9 @@
                     $objAgency->twilio_auth_token = trim($objAgency->twilio_auth_token);
                     $objAgency->twilio_auth_messaging_sid = trim($objAgency->twilio_auth_messaging_sid);
                     $objAgency->twilio_from_phone = trim($objAgency->twilio_from_phone);
+                    $objAgency->welcome_email = trim($objAgency->welcome_email);
+                    $objAgency->welcome_email = trim($objAgency->welcome_email);
+                    $objAgency->viral_mail = trim($objAgency->viral_mail);
                     $objAgency->save();
 
                     $this->flash->success("The settings were updated successfully");
@@ -540,6 +576,7 @@
                     $this->flash->error($message);
                 }
             }
+           // echo '<pre>';print_r($objAgency);exit;
             $this->view->form = $SettingsForm;
             $this->view->agencyform = $AgencyForm;
             $this->view->objgetuser=$objUser ;
