@@ -89,6 +89,25 @@ function passwordVerification() {
     	return true;
     }
 }
+function chkchk(){
+    if (document.getElementById('password').value.length < 8) {
+        document.getElementById('Confirm_password_result').innerHTML = 'Requirement: minimum 8 characters';
+        register_button_object.disable = true;
+        return false;
+    }
+    
+    if ( document.getElementById('password').value != document.getElementById('confirmPassword').value ) {
+        document.getElementById('Confirm_password_result').innerHTML = 'Password mismatch';
+        $('#Confirm_password_result').css('color', 'red');
+        register_button_object.disable = true;
+        return false;
+    } else {
+        document.getElementById('Confirm_password_result').innerHTML = 'Passwords Match';
+        $('#Confirm_password_result').css('color', 'green');
+        register_button_object.disable = false;
+        return true;
+    }
+}
 
 
 //function to check email availability
