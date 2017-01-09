@@ -216,7 +216,7 @@
                 <li class="dropdown dropdown-user" style="margin-left: 30px;">
                 <a href="/notification/allnotification/{{NumberAgency}}" class="dropdown-toggle">
                         <span class="username username-hide-on-mobile" style="color: #484848;"><i class="icon-bell"></i> ( {{ NumberOfNotification }} )</span>
-                        
+
                     </a>
                 </li>
                 {% endif %}
@@ -240,7 +240,6 @@
                         </li>
                     </ul>
                 </li>
-                
             </ul>
         </div>
         <!-- END TOP NAVIGATION MENU -->
@@ -312,7 +311,6 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
-                        
                     {% elseif agencytype == "business" %}
                         <li class="nav-item start">
                             <a href="/" class="nav-link nav-toggle">
@@ -583,7 +581,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <i>The Mobile number that will recieve the SMS message.</i>
+                                                <i>The Mobile number that will receive the SMS message.</i>
                                             </div>
                                         </div>
                                     </div>
@@ -671,7 +669,6 @@
                     function updateCard() {
                         $.post('/businessSubscription/updatePaymentProfile', getCCParams())
                                 .done(function (data) {
-                                    console.log(data);
                                     if (data.status !== true) {
                                         alert("Update card failed!!!")
                                     } else {
@@ -693,7 +690,7 @@
                                 /*if (data.status !== true) {
                                     alert("Update card failed!!!")
                                 }*/
-                                console.log(data);
+                                window.location = "/businessSubscription";
                             })
                             .fail(function () {
                             })
@@ -704,13 +701,14 @@
                     $('.fancybox').fancybox();
 
                     var bodyElem = document.getElementsByTagName("body")[0];
-                    console.log(bodyElem);
                     if (bodyElem.dataset.ccprompt === "open") {
                         if(bodyElem.dataset.paymentprovider === "AuthorizeDotNet")
                             $('#updateCardModal').modal('show');
                         else if(bodyElem.dataset.paymentprovider === "Stripe") {
                             var handler = StripeCheckout.configure({
                                     key: '{{ stripePublishableKey }}',
+                                    email: '{{ businessEmail }}',
+                                    allowRememberMe: false,
                                     /* GARY_TODO: Replace with agency logo */
                                     /*image: '/img/documentation/checkout/marketplace.png',*/
                                     locale: 'auto',

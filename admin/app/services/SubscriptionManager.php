@@ -12,15 +12,16 @@ use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 
 class SubscriptionManager extends BaseService {
 
+    const CC_NON_TRIAL = 2;
     function __construct($config = null, $di = null) {
         parent::__construct($config, $di);
     }
 
-    public function creditCardInfoRequired($session) {
+    public function creditCardInfoRequired($session, $iUserID = null) {
         $userManager = $this->di->get('userManager');
         $paymentService = $this->di->get('paymentService');
 
-        $userId = $userManager->getUserId($session);
+        $userId = $iUserID ? $iUserID : $userManager->getUserId($session);
 
         $objUser = \Vokuro\Models\Users::findFirst('id = ' . $userId);
 
@@ -32,6 +33,11 @@ class SubscriptionManager extends BaseService {
         $subscriptionPlan = $this->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
         $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
 
+        $EnableTrial = $subscriptionPlan['pricingPlan']['enable_trial_account'];
+
+        if(isset($subscriptionPlan['pricingPlan']['enable_trial_account']) && !$EnableTrial && !$payment_plan)
+            return static::CC_NON_TRIAL;
+
         // GARY_TODO:  Somehow all payment_plans are getting started at Monthly.
         if (!$payment_plan || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE || $payment_plan == ServicesConsts::$PAYMENT_PLAN_TRIAL || $subscriptionPlan['pricing_plan']['enable_trial_account']) {
             return false;
@@ -42,7 +48,7 @@ class SubscriptionManager extends BaseService {
 
         // GARY_TODO:  Add cron script to reset customer_id on expired / invalid cards.
         if(!$paymentProfile || !$paymentProfile['customer_id'])
-            return true;
+            return $EnableTrial ? true : static::CC_NON_TRIAL;
 
         return false;
     }
@@ -290,8 +296,9 @@ class SubscriptionManager extends BaseService {
                     $locations = 1;
                     $smsMessagesPerLocation = $subscriptionPricingPlan->max_messages_on_trial_account;
                 } else {
-                    $paymentPlan = ServicesConsts::$PAYMENT_PLAN_MONTHLY;
-                    $locations = 0;
+                    // Payment plan used to be set to monthly.  I have it setup so the payment plan is only setup when the payment actually goes through.
+                    $paymentPlan = '';
+                    $locations = 1;
                     $smsMessagesPerLocation = 0;
                 }
 
