@@ -289,7 +289,9 @@ class SessionController extends ControllerBase {
             {
                 $this->view->short_code =$short_code=$_COOKIE['short_code'];
             }
-            //ode_generate
+            //code_generate
+            print_r($_COOKIE);
+            echo $_COOKIE['code_generate_normal'];exit;
             $shar_code=$_COOKIE['code_generate_normal'];
             if($shar_code)
             {
