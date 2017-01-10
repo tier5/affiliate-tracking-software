@@ -10,6 +10,7 @@ use Vokuro\Models\FacebookScanning;
 use Vokuro\Models\GoogleScanning;
 use Vokuro\Models\Location;
 use Vokuro\Models\LocationNotifications;
+use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\Review;
 use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\ReviewsMonthly;
