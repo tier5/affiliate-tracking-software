@@ -106,6 +106,7 @@ class BusinessSubscriptionController extends ControllerBase {
             // GARY_TODO:  Pretty sure this doesn't work the way it was supposed to due to handoff from Michael.
             case ServicesConsts::$PAYMENT_PLAN_TRIAL :
                 $this->view->paymentPlan = "TRIAL";
+                $this->view->DisplaySubPopup = true;
                 break;
             case ServicesConsts::$PAYMENT_PLAN_FREE :
                 $this->view->paymentPlan = "FREE";

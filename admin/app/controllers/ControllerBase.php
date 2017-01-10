@@ -174,7 +174,7 @@ class ControllerBase extends Controller {
                 $objPricingPlan = $agency->subscription_id ? \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $agency->subscription_id) : '';
                 $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = ' . $identity['id']);
 
-                $this->view->NonTrialNoPlan = false;
+                $this->view->DisplaySubPopup = false;
 
                 $this->view->SubscriptionLevel = $objSubscriptionManager->GetBusinessSubscriptionLevel($agency->agency_id);
                 $userManager = $this->di->get('userManager');
@@ -193,7 +193,7 @@ class ControllerBase extends Controller {
                             $this->response->redirect("/businessSubscription");
                         }
                     }
-                    $this->view->NonTrialNoPlan = true;
+                    $this->view->DisplaySubPopup = true;
                     $this->view->ccInfoRequired = "closed";
                 }
             }

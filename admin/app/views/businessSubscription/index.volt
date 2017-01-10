@@ -466,7 +466,7 @@
 <script type="text/javascript">
 
     jQuery(document).ready(function ($) {
-        {% if NonTrialNoPlan %}
+        {% if DisplaySubPopup %}
             $('#explanationModal').modal('show');
         {% endif %}
         $(".UpdateCard").click(function() {
