@@ -54,19 +54,20 @@ class BusinessSubscriptionController extends ControllerBase {
         $this->view->showSmsQuota = $isBusiness;
         if ($isBusiness) {
             /* Get sms quota parameters */
-            $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams(
-                $userManager->getLocationId($this->session)
-            );
+            $LocationID = $userManager->getLocationId($this->session);
+            if($LocationID) {
+                $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams();
 
-            if ($smsQuotaParams['hasUpgrade']) {
-                 //print_r($smsQuotaParams);exit;
-                // REFACTOR: DOESN'T SEEM TO BE GETTING CALLED
-                // $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
-                // if ($percent > 100) $percent = 100;
-            } else {
-                $this->view->showBarText = $smsQuotaParams['percent'] > 60 ? "style=\"display: none;\"" : "";
+                if ($smsQuotaParams['hasUpgrade']) {
+                    //print_r($smsQuotaParams);exit;
+                    // REFACTOR: DOESN'T SEEM TO BE GETTING CALLED
+                    // $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
+                    // if ($percent > 100) $percent = 100;
+                } else {
+                    $this->view->showBarText = $smsQuotaParams['percent'] > 60 ? "style=\"display: none;\"" : "";
+                }
+                $this->view->smsQuotaParams = $smsQuotaParams;
             }
-            $this->view->smsQuotaParams = $smsQuotaParams;
         }
         $this->getSMSReport();
         /* Get subscription paramaters */
