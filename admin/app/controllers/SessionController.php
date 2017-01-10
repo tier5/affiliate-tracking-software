@@ -290,8 +290,8 @@ class SessionController extends ControllerBase {
                 $this->view->short_code =$short_code=$_COOKIE['short_code'];
             }
             //code_generate
-            print_r($_COOKIE);
-            echo $_COOKIE['code_generate_normal'];exit;
+            /*print_r($_COOKIE);
+            echo $_COOKIE['code_generate_normal'];exit;*/
             $shar_code=$_COOKIE['code_generate_normal'];
             if($shar_code)
             {
@@ -397,7 +397,7 @@ class SessionController extends ControllerBase {
             }
              
             if($objAgency->parent_id) {
-                ini_set("session.cookie_domain",'.'.$Domain);
+                
                 setcookie("code_generate_normal",$code, $expire,'/',$custom_domain . '.' . $Domain);
                
                 $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
