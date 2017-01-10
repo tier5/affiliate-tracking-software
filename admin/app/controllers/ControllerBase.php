@@ -176,6 +176,8 @@ class ControllerBase extends Controller {
 
                 $this->view->NonTrialNoPlan = false;
 
+                $this->view->SubscriptionLevel = $objSubscriptionManager->GetBusinessSubscriptionLevel($agency->agency_id);
+
                 if ($required == \Vokuro\Services\SubscriptionManager::CC_NON_TRIAL) {
                     // Non trial account.  Have we got their credit card yet?
                     if ($objStripeSubscription->stripe_customer_id && ($objStripeSubscription->stripe_subscription_id == "N" || !$objStripeSubscription->stripe_subscription_id)) {

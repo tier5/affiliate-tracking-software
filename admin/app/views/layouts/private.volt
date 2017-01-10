@@ -416,7 +416,7 @@
                         </li>
                         {% endif %}
 
-                        {% if internalNavParams['hasSubscriptions'] %}
+                        {% if internalNavParams['hasSubscriptions'] AND SubscriptionLevel != "FR" %}
                             <li class="nav-item">
                                 <a href="{{ internalNavParams['subscriptionController'] }}" class="nav-link nav-toggle">
                                     <i class="icon-wallet"></i>
