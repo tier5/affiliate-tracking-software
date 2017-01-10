@@ -183,37 +183,15 @@ class ControllerBase extends Controller {
                     // Non trial account.  Have we got their credit card yet?
                     if ($objStripeSubscription->stripe_customer_id && ($objStripeSubscription->stripe_subscription_id == "N" || !$objStripeSubscription->stripe_subscription_id)) {
                         // Have CC info, but no subscription.  Redirect to business subscription page
-                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false) {
-                            $isBusiness = $userManager->isBusiness($this->session);
-                            $signupPage = $userManager->currentSignupPage($this->session);
-
-                            // Never redirect to subscription controller in signup process.
-                            if($isBusiness && $signupPage) {
-                                // No redirect loops
-                                if(strpos($_SERVER['REQUEST_URI'], 'session/signup') === false)
-                                    $this->response->redirect('/session/signup' . $signupPage);
-                                return;
-                            } else {
-                                $this->response->redirect("/businessSubscription");
-                            }
+                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false && !$agency->signup_page) {
+                            $this->response->redirect("/businessSubscription");
                         }
 
                         $this->view->NonTrialNoPlan = true;
                     }
                     if (!$objStripeSubscription->stripe_customer_id) {
-                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false) {
-                            $isBusiness = $userManager->isBusiness($this->session);
-                            $signupPage = $userManager->currentSignupPage($this->session);
-
-                            // Never redirect to subscription controller in signup process.
-                            if($isBusiness && $signupPage) {
-                                // No redirect loops
-                                if(strpos($_SERVER['REQUEST_URI'], 'session/signup') === false)
-                                    $this->response->redirect('/session/signup' . $signupPage);
-                                return;
-                            } else {
-                                $this->response->redirect("/businessSubscription");
-                            }
+                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false && !$agency->signup_page) {
+                            $this->response->redirect("/businessSubscription");
                         }
                         $this->view->ccInfoRequired = "open";
                     } else
