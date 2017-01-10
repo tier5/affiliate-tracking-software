@@ -150,7 +150,7 @@ class IndexController extends ControllerBase {
             // Check for use of whitelabel domain
             // Moved to here from AgencySignupController::salesAction (agencysignup/sales)
             // The best way to fully test this is to use your local hosts file to treat your local reviewvelocity server as getmobilereiews.com
-            echo $this->session->get("code");
+            echo $this->view->get_code;
             echo "test";
             echo $_COOKIE['code'];exit;
 
