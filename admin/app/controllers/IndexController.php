@@ -150,7 +150,7 @@ class IndexController extends ControllerBase {
             // Check for use of whitelabel domain
             // Moved to here from AgencySignupController::salesAction (agencysignup/sales)
             // The best way to fully test this is to use your local hosts file to treat your local reviewvelocity server as getmobilereiews.com
-
+            echo $_COOKIE['code'];exit;
 
             $parts = explode(".", $_SERVER['SERVER_NAME']);
             if(count($parts) > 2 && $parts[0] != 'www') { // Subdomain exists.  Probably should do count($parts) == 3.
