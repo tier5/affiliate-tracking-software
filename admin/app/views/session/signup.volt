@@ -74,7 +74,7 @@
         <?php } elseif($_GET['code']=='' && $_COOKIE['code']!='') { ?>
          <input type="hidden" name="sharing_code" value="<?=$_COOKIE['code']; ?>" />
          <?php } elseif($code){ ?>
-          <input type="text" name="sharing_code" value="<?=$code; ?>" />
+          <input type="hidden" name="sharing_code" value="<?=$code; ?>" />
          <?php } ?>
         
         
