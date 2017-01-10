@@ -187,15 +187,14 @@ class ControllerBase extends Controller {
                             $this->response->redirect("/businessSubscription");
                         }
 
-                        $this->view->NonTrialNoPlan = true;
                     }
                     if (!$objStripeSubscription->stripe_customer_id) {
                         if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false && !$agency->signup_page) {
                             $this->response->redirect("/businessSubscription");
                         }
-                        $this->view->ccInfoRequired = "open";
-                    } else
-                        $this->view->ccInfoRequired = "closed";
+                    }
+                    $this->view->NonTrialNoPlan = true;
+                    $this->view->ccInfoRequired = "closed";
                 }
             }
 
