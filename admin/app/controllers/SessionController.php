@@ -397,7 +397,7 @@ class SessionController extends ControllerBase {
             }
              
             if($objAgency->parent_id) {
-
+                ini_set("session.cookie_domain",'.'.$Domain);
                 setcookie("code_generate_normal",$code, $expire,'/');
                
                 $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
