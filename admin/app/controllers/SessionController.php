@@ -378,18 +378,11 @@ class SessionController extends ControllerBase {
             //$this->cookies->set('sharing_code',$code, $expire);
             setcookie("code",$code, $expire );
             $this->session->set("code",$code);
-            return $this->dispatcher->forward([
-        "controller" => "index"
-        "action" => "index",
-        "params" => [
-            $code
-        ]
-]);
-
+           
             $this->view->setVars([
-    'get_code' => $code
+            'get_code' => $code
     
-]);
+            ]);
 
             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
