@@ -290,7 +290,7 @@ class SessionController extends ControllerBase {
                 $this->view->short_code =$short_code=$_COOKIE['short_code'];
             }
 
-           echo $_COOKIE['code'];exit;
+           echo $_COOKIE['code_generate'];exit;
         
         $this->signupAction();
 
@@ -375,7 +375,7 @@ class SessionController extends ControllerBase {
 
             $expire = time() + 86400 * 30;
             //$this->cookies->set('sharing_code',$code, $expire);
-            setcookie("code",$code, $expire );
+            setcookie("code_generate",$code."123", $expire );
             $this->session->set("code",$code);
            
             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
