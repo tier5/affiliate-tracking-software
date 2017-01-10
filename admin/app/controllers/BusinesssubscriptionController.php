@@ -56,7 +56,7 @@ class BusinessSubscriptionController extends ControllerBase {
             /* Get sms quota parameters */
             $LocationID = $userManager->getLocationId($this->session);
             if($LocationID) {
-                $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams();
+                $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams($LocationID);
 
                 if ($smsQuotaParams['hasUpgrade']) {
                     //print_r($smsQuotaParams);exit;
