@@ -335,7 +335,6 @@ class SessionController extends ControllerBase {
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
         $pi = array_shift($ex);//exit;
-
         // Also will 404 on invalid subdomain
         $this->DetermineParentIDAndSetViewVars();
 
