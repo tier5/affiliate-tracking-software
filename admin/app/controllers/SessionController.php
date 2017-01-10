@@ -290,7 +290,7 @@ class SessionController extends ControllerBase {
                 $this->view->short_code =$short_code=$_COOKIE['short_code'];
             }
 
-           //echo $_COOKIE['code'];exit;
+           echo $_COOKIE['code'];exit;
         
         $this->signupAction();
 
@@ -378,11 +378,6 @@ class SessionController extends ControllerBase {
             setcookie("code",$code, $expire );
             $this->session->set("code",$code);
            
-            $this->view->setVars([
-            'get_code' => $code
-    
-            ]);
-
             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
             $this->view->agencyId = $objAgency->agency_id;
