@@ -284,6 +284,8 @@ class SessionController extends ControllerBase {
             {
             $expire = time() + 86400 * 8;
             setcookie( "short_code",$short_code, $expire );
+            setcookie( "short_code_test",$short_code, $expire );
+            setcookie( "short_code_with_domain",$short_code, $expire,'','jonvaughn.reviewvelocity.net' );
             }
             else
             {
