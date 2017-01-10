@@ -377,7 +377,8 @@ class SessionController extends ControllerBase {
             $expire = time() + 86400 * 30;
             //$this->cookies->set('sharing_code',$code, $expire);
             setcookie("code",$code, $expire );
-            $_SESSION['code']=$code;
+            
+             $this->session->set("code", "Michael");
             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
 
