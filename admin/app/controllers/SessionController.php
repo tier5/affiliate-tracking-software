@@ -290,8 +290,12 @@ class SessionController extends ControllerBase {
                 $this->view->short_code =$short_code=$_COOKIE['short_code'];
             }
             //ode_generate
-            print_r($_COOKIE);
-           echo $_COOKIE['code_generate1'];exit;
+            $shar_code=$_COOKIE['code_generate_normal'];
+            if($shar_code)
+            {
+                $this->view->code=$_COOKIE['code_generate_normal'];
+            }
+            
         
         $this->signupAction();
 
@@ -376,18 +380,14 @@ class SessionController extends ControllerBase {
 
             $expire = time() + 86400 * 30;
             //$this->cookies->set('sharing_code',$code, $expire);
-            //set (string $name, [mixed $value], [int $expire], [string $path], [boolean $secure], [string $domain], [boolean $httpOnly])
-
-           $this->cookies->set("code_generate_tt",$code, $expire,"/",false,"jonvaughn.reviewvelocity.net" );
-            //$this->session->set("code",$code);
-           
+            
             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
             $this->view->agencyId = $objAgency->agency_id;
             $this->view->agency_name = $objAgency->name;
            // echo $objAgency->parent_id;exit;
             if($objAgency->parent_id==0) {
-                 setcookie("code_generate1",$code, $expire,'/','jonvaughn.reviewvelocity.net',1);
+                setcookie("code_generate_normal",$code, $expire,'/');
                 $custom_domain=$objAgency->custom_domain;
                  $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
                 //$this->view->disable();
