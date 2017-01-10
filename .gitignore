@@ -12,3 +12,4 @@ admin/vendor/*
 admin/public/img/agency_logos
 /info.php
 /.DS_Store
+admin/app/logs/*
