@@ -117,10 +117,7 @@ class ControllerBase extends Controller {
                 
                 $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "" ;
                 $this->view->agencyName =  $objParentAgency->name;
-
             } else {
-              // echo  $agency->logo_path;exit;
-                //exit;
                 // We're an agency or a business under RV
                 /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
                     return $this->RedirectDomain($agency->custom_domain);*/
@@ -145,7 +142,7 @@ class ControllerBase extends Controller {
                         
                         //$this->view->logo_path = "{$agency->logo_path}";
                     } else {
-                        $this->view->logo_path = '/assets/layouts/layout/img/logo.png';
+                        $this->view->logo_path = "";
                     }
                 } else {
                     // We're a business under RV
@@ -166,17 +163,36 @@ class ControllerBase extends Controller {
             //internal navigation parameters
             $this->configureNavigation($identity);
 
-            /*
-             * Has this user provided their credit card info?
-             */
-            $required = $this->di->get('subscriptionManager')->creditCardInfoRequired($this->session);
-            $this->view->ccInfoRequired = $required ? "open" : "closed";
+            if($agency->parent_id > 0 || $agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+                /*
+                 * Has this user provided their credit card info?
+                 */
+                $required = $this->di->get('subscriptionManager')->creditCardInfoRequired($this->session);
+                $this->view->ccInfoRequired = $required ? "open" : "closed";
+                $this->view->paymentService = 'Stripe';
 
-            $this->view->paymentService = 'Stripe';
+                $objPricingPlan = $agency->subscription_id ? \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $agency->subscription_id) : '';
+                $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = ' . $identity['id']);
 
+                $this->view->NonTrialNoPlan = false;
 
-            $objPricingPlan = $agency->subscription_id ? \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $agency->subscription_id) : '';
-            $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = '. $identity['id']);
+                if ($required == \Vokuro\Services\SubscriptionManager::CC_NON_TRIAL) {
+                    // Non trial account.  Have we got their credit card yet?
+                    if ($objStripeSubscription->stripe_customer_id && ($objStripeSubscription->stripe_subscription_id == "N" || !$objStripeSubscription->stripe_subscription_id)) {
+                        // Have CC info, but no subscription.  Redirect to business subscription page
+                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false)
+                            $this->response->redirect("/businessSubscription");
+
+                        $this->view->NonTrialNoPlan = true;
+                    }
+                    if (!$objStripeSubscription->stripe_customer_id) {
+                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false)
+                            $this->response->redirect("/businessSubscription");
+                        $this->view->ccInfoRequired = "open";
+                    } else
+                        $this->view->ccInfoRequired = "closed";
+                }
+            }
 
             // Check if business should be disabled
             $this->view->BusinessDisableBecauseOfStripe = false;
@@ -189,8 +205,6 @@ class ControllerBase extends Controller {
                 // Disable business if agency has no stripe keys enabled.
                 if (!$objParentAgency->stripe_publishable_keys || !$objParentAgency->stripe_account_secret)
                     $this->view->BusinessDisableBecauseOfStripe = true;
-
-
             }
 
             if($agency->parent_id > 0)
@@ -215,6 +229,8 @@ class ControllerBase extends Controller {
             elseif($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 $this->view->stripePublishableKey = $this->config->stripe->publishable_key;
             }
+
+            $this->view->businessEmail = $agency->email;
             // End stripe modal
 
             if($this->session->StripePopupDisabled)
@@ -314,7 +330,7 @@ class ControllerBase extends Controller {
                 $this->view->agencyId = $agency1->agency_id;
                 $this->view->agency_name = $agency1->name;
                 $this->view->agency=$agency1;
-                
+
              }
 
              $agency = $agency1;
@@ -342,7 +358,7 @@ class ControllerBase extends Controller {
         }*/
 /*** commented on 30th dec 2016 ****/
 
-        
+
         $this->agency = $agency;
         if ($this->request->getPost('main_color')) {
             list($r, $g, $b) = sscanf($this->request->getPost('main_color'), "#%02x%02x%02x");
@@ -727,7 +743,7 @@ class ControllerBase extends Controller {
          $sql = "SELECT review_invite_id
               FROM review_invite
                 INNER JOIN location ON location.location_id = review_invite.location_id
-              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";//exit;
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";
 
         // Base model
         $list = new ReviewInvite();
@@ -761,7 +777,7 @@ class ControllerBase extends Controller {
                 ));
             }
         } catch (Services_Twilio_RestException $e) {
-            $this->flash->error('There was an error sending the SMS message to' . $phone);
+            $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
             return false;
         }
         return true;
@@ -918,15 +934,13 @@ class ControllerBase extends Controller {
                     $usersGenerate = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId, false);
                 }
             } else {
-
+                
                 $users_report = null;
                 if ($loc) {
                     $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
                     $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
-                   // echo $loc->review_invite_type_id;exit;
-                    //exit;
-                     $usersGenerate = Users::getEmployeeListReportGenerate($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
+                    $usersGenerate = Users::getEmployeeListReportGenerate($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
                     $users_report_generate =Users::getEmployeeConversionReportGenerate( $loc->review_invite_type_id,$userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], 'desc');
                     if($loc->review_invite_type_id!='')
@@ -939,13 +953,11 @@ class ControllerBase extends Controller {
                     }
                     
                     $Reviewlist=ReviewInvite::FnallReview(true,2);
-                    //$rev_count=[];
                     
                     $this->view->Reviewlist=$Reviewlist;
                     $user_array=array();
 
 
-                   // dd($Reviewlist);
                    foreach($Reviewlist as $reviews)
                     {
                         if(!in_array($reviews->sent_by_user_id,$user_array))
@@ -1061,7 +1073,7 @@ class ControllerBase extends Controller {
 
         $rating_array_set_all=array();
         $YNrating_array_set_all=array();
-
+        
         foreach($usersGenerate as $ux){
             $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 
@@ -1484,10 +1496,10 @@ class ControllerBase extends Controller {
         $userSubscription = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
 
         // GARY_TODO Determine if the comment below is accurate.
-        $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser'] 
-            && ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin']) 
-            && ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE) 
-            && ($userManager->hasLocation($this->session) 
+        $internalNavParams['hasSubscriptions'] = !$internalNavParams['isSuperUser']
+            && ($internalNavParams['isAgencyAdmin'] || $internalNavParams['isBusinessAdmin'])
+            && ($userSubscription['subscriptionPlan']['payment_plan'] != ServicesConsts::$PAYMENT_PLAN_FREE)
+            && ($userManager->hasLocation($this->session)
                 && $internalNavParams['isBusinessAdmin'] || $internalNavParams['isAgencyAdmin']);
 
         $internalNavParams['hasPricingPlans'] = $internalNavParams['isSuperUser'] || $internalNavParams['isAgencyAdmin'];

@@ -41,8 +41,6 @@ class BusinessSubscriptionController extends ControllerBase {
     }
 
     public function indexAction() {
-
-
         /* Get services */
         $userManager = $this->di->get('userManager');
         $subscriptionManager = $this->di->get('subscriptionManager');
@@ -55,12 +53,10 @@ class BusinessSubscriptionController extends ControllerBase {
         /* Show sms quota? */
         $this->view->showSmsQuota = $isBusiness;
         if ($isBusiness) {
-
             /* Get sms quota parameters */
             $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams(
                 $userManager->getLocationId($this->session)
             );
-
 
             if ($smsQuotaParams['hasUpgrade']) {
                  //print_r($smsQuotaParams);exit;
@@ -278,6 +274,7 @@ class BusinessSubscriptionController extends ControllerBase {
     public function changePlanAction() {
         $this->view->disable();
 
+
         $responseParameters['status'] = false;
 
         try {
@@ -300,6 +297,8 @@ class BusinessSubscriptionController extends ControllerBase {
             $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst('user_id = ' . $objSuperUser->id);
             if(!$objSubscriptionPlan)
                 $objSubscriptionPlan = new \Vokuro\Models\BusinessSubscriptionPlan();
+            else
+                $objSubscriptionPlan->updated_at = date("Y-m-d H:i:s");
 
             // Current location count
             $dbLocations = \Vokuro\Models\Location::find("agency_id = {$objAgency->agency_id}");
@@ -328,8 +327,9 @@ class BusinessSubscriptionController extends ControllerBase {
             $objSubscriptionPlan->sms_messages_per_location = $this->request->getPost('messages', 'striptags');
             $objSubscriptionPlan->locations = $this->request->getPost('locations', 'striptags');
             $objSubscriptionPlan->subscription_pricing_plan_id = $objAgency->subscription_id;
+            $objSubscriptionPlan->payment_plan = $this->request->getPost('planType', 'striptags');
             if(!$objSubscriptionPlan->save())
-                throw new \Exception('Could not save subscription plan.');
+                throw new \Exception('Could not save subscription plan - ' . implode(', ', $objSubscriptionPlan->getMessages()));
 
             /*
              * If they don't have a customer profile, then create one (they shouldn't have one if calling this action,
