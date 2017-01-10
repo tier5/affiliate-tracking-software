@@ -124,9 +124,9 @@ class BusinessSubscriptionController extends ControllerBase {
                 			), 0, '', ',');
                 break;
             default:
-            
                 // No subscription currently in use.
                 $this->view->paymentPlan = $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? "TRIAL" : "UNPAID";
+                $this->view->DisplaySubPopup = true;
                 break;
         }
 
