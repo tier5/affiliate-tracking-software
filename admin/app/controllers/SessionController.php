@@ -384,7 +384,7 @@ class SessionController extends ControllerBase {
             $this->view->agency_name = $objAgency->name;
            // echo $objAgency->parent_id;exit;
             if($objAgency->parent_id==0) {
-                 setcookie("code_generate",$code, $expire,'','http://'.$custom_domain . '.' . $Domain );
+                 setcookie("code_generate",$code, $expire,'/','jonvaughn.reviewvelocity.net' );
                 $custom_domain=$objAgency->custom_domain;
                  $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
                 //$this->view->disable();
@@ -393,7 +393,7 @@ class SessionController extends ControllerBase {
              
             if($objAgency->parent_id) {
 
-                 setcookie("code_generate",$code, $expire,'','http://'.$custom_domain . '.' . $Domain );
+                setcookie("code_generate",$code, $expire,'/','jonvaughn.reviewvelocity.net' );
                 $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
 
                 $this->view->agencyId = $objAgency1->agency_id;
