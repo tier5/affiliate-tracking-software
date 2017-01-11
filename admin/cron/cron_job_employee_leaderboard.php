@@ -31,6 +31,24 @@
     }
 
     foreach ($dbBusinesses as $objBusiness) {
+        $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$objBusiness->agency_id} AND role='Super Admin'");
+        if(!$objSuperUser)
+            continue;
+
+        $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+        $required = $objSubscriptionManager->creditCardInfoRequired(null, $objSuperUser->id);
+        $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = '{$objSuperUser->id}'");
+        if ($required == \Vokuro\Services\SubscriptionManager::CC_NON_TRIAL) {
+            // Non trial account.  Have we got their credit card yet?
+            if ($objStripeSubscription->stripe_customer_id && ($objStripeSubscription->stripe_subscription_id == "N" || !$objStripeSubscription->stripe_subscription_id)) {
+                // Have CC info, but no subscription.
+                continue;
+            }
+            if (!$objStripeSubscription->stripe_customer_id) {
+                continue;
+            }
+        }
+
         $dbLocations = \Vokuro\Models\Location::find("agency_id = {$objBusiness->agency_id}");
 
         $dbAllUsers = \Vokuro\Models\Users::find("agency_id = {$objBusiness->agency_id}");

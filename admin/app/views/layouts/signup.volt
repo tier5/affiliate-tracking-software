@@ -92,8 +92,8 @@ if (isset($main_color_setting)) {
         <!-- END LOGO -->
         <div id="label-wrapper">
             {% if logo_path AND logo_path != "/img/agency_logos/" %}
-            <div class="logo">
-                <a href="/"><img class="img-responsive center-block"  src="{{ logo_path }}" alt="" /></a>
+            <div class="logo" style="margin-top: 43px; margin-bottom: 43px;">
+                <a href="/"><img class="center-block"  src="{{ logo_path }}" alt="" /></a>
             </div>
             {% endif %}
             <div id="label-container" class="center-block">

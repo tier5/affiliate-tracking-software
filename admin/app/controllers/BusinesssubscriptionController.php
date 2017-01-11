@@ -41,8 +41,6 @@ class BusinessSubscriptionController extends ControllerBase {
     }
 
     public function indexAction() {
-
-
         /* Get services */
         $userManager = $this->di->get('userManager');
         $subscriptionManager = $this->di->get('subscriptionManager');
@@ -55,22 +53,21 @@ class BusinessSubscriptionController extends ControllerBase {
         /* Show sms quota? */
         $this->view->showSmsQuota = $isBusiness;
         if ($isBusiness) {
-
             /* Get sms quota parameters */
-            $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams(
-                $userManager->getLocationId($this->session)
-            );
+            $LocationID = $userManager->getLocationId($this->session);
+            if($LocationID) {
+                $smsQuotaParams = $smsManager->getBusinessSmsQuotaParams($LocationID);
 
-
-            if ($smsQuotaParams['hasUpgrade']) {
-                 //print_r($smsQuotaParams);exit;
-                // REFACTOR: DOESN'T SEEM TO BE GETTING CALLED
-                // $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
-                // if ($percent > 100) $percent = 100;
-            } else {
-                $this->view->showBarText = $smsQuotaParams['percent'] > 60 ? "style=\"display: none;\"" : "";
+                if ($smsQuotaParams['hasUpgrade']) {
+                    //print_r($smsQuotaParams);exit;
+                    // REFACTOR: DOESN'T SEEM TO BE GETTING CALLED
+                    // $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
+                    // if ($percent > 100) $percent = 100;
+                } else {
+                    $this->view->showBarText = $smsQuotaParams['percent'] > 60 ? "style=\"display: none;\"" : "";
+                }
+                $this->view->smsQuotaParams = $smsQuotaParams;
             }
-            $this->view->smsQuotaParams = $smsQuotaParams;
         }
         $this->getSMSReport();
         /* Get subscription paramaters */
@@ -109,6 +106,7 @@ class BusinessSubscriptionController extends ControllerBase {
             // GARY_TODO:  Pretty sure this doesn't work the way it was supposed to due to handoff from Michael.
             case ServicesConsts::$PAYMENT_PLAN_TRIAL :
                 $this->view->paymentPlan = "TRIAL";
+                $this->view->DisplaySubPopup = true;
                 break;
             case ServicesConsts::$PAYMENT_PLAN_FREE :
                 $this->view->paymentPlan = "FREE";
@@ -126,9 +124,9 @@ class BusinessSubscriptionController extends ControllerBase {
                 			), 0, '', ',');
                 break;
             default:
-            
                 // No subscription currently in use.
                 $this->view->paymentPlan = $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? "TRIAL" : "UNPAID";
+                $this->view->DisplaySubPopup = true;
                 break;
         }
 
@@ -278,6 +276,7 @@ class BusinessSubscriptionController extends ControllerBase {
     public function changePlanAction() {
         $this->view->disable();
 
+
         $responseParameters['status'] = false;
 
         try {
@@ -300,6 +299,8 @@ class BusinessSubscriptionController extends ControllerBase {
             $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst('user_id = ' . $objSuperUser->id);
             if(!$objSubscriptionPlan)
                 $objSubscriptionPlan = new \Vokuro\Models\BusinessSubscriptionPlan();
+            else
+                $objSubscriptionPlan->updated_at = date("Y-m-d H:i:s");
 
             // Current location count
             $dbLocations = \Vokuro\Models\Location::find("agency_id = {$objAgency->agency_id}");
@@ -328,8 +329,9 @@ class BusinessSubscriptionController extends ControllerBase {
             $objSubscriptionPlan->sms_messages_per_location = $this->request->getPost('messages', 'striptags');
             $objSubscriptionPlan->locations = $this->request->getPost('locations', 'striptags');
             $objSubscriptionPlan->subscription_pricing_plan_id = $objAgency->subscription_id;
+            $objSubscriptionPlan->payment_plan = $this->request->getPost('planType', 'striptags');
             if(!$objSubscriptionPlan->save())
-                throw new \Exception('Could not save subscription plan.');
+                throw new \Exception('Could not save subscription plan - ' . implode(', ', $objSubscriptionPlan->getMessages()));
 
             /*
              * If they don't have a customer profile, then create one (they shouldn't have one if calling this action,

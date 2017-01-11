@@ -376,6 +376,42 @@
             </div>
         </div>
     </div>
+    <!-- End change plan pop up -->
+
+    <!-- Subscription explanation popup -->
+    <div class="modal fade" id="explanationModal" tabindex="-1" role="dialog" aria-labelledby="explanationModalLabel">
+        <div class="change-plan modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="growth-bar">
+                        <div class="caption">
+                            <span>Business Subscriptions</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default apple-backgound">
+                        <div class="panel-body">
+                            <div class="subscription-panel-default-caption" style="transform: none; !important">
+                                To start your subscription:
+                                <ul>
+                                    <li>Choose the number of locations</li>
+                                    <li>Choose the number of SMS messages per month</li>
+                                    <li>Click "Begin Plan"</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group">
+                            <button type="button" class="btn default golden-poppy-backgound subscription-btn" data-dismiss="modal">Got it!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End change plan pop up -->
 
     <!-- Processing -->
     <div class="modal fade" id="processingModal" tabindex="-1" role="dialog" aria-labelledby="processingLabel">
@@ -430,6 +466,9 @@
 <script type="text/javascript">
 
     jQuery(document).ready(function ($) {
+        {% if DisplaySubPopup %}
+            $('#explanationModal').modal('show');
+        {% endif %}
         $(".UpdateCard").click(function() {
             var ButtonID = $(this).attr('id');
 
@@ -589,14 +628,20 @@
             var planType = $("#plan-type > button.active").text();
             if (planType === 'Annually') {
                 monthlyPlanCost = applyAnnualDiscount(monthlyPlanCost);
-                $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(0));
+                $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(0).replace(/./g, function(c, i, a) {
+                    return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+                }));
                 $('#paid-annually-caption').show()
             } else {
                 $('#paid-annually-caption').hide();
             }
 
-            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(0));
-            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(0));
+            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(0).replace(/./g, function(c, i, a) {
+                return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+            }));
+            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(0).replace(/./g, function(c, i, a) {
+                return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+            }));
 
         };
 

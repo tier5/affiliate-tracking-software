@@ -293,6 +293,7 @@ class SessionController extends ControllerBase {
             $plan = $subscription->findOneBy(['short_code' => $this->view->short_code]);
 
             if ($plan) {
+                $this->enable_trial_account = $plan->enable_trial_account;
                 /**
                  * @var $plan \Vokuro\Models\SubscriptionPricingPlan
                  */

@@ -233,9 +233,9 @@
                         echo $er_msg;
                         return;
                     } else {
-                       
+
                         if ($this->SendSMS($phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
-                            
+
 
                              for($i=0;$i<count($insert_id_array);$i++)
                              {
@@ -250,7 +250,7 @@
                             $no=ceil($nolengthmessage/153)-1;
                                 if($no!=0){
                                     for($i=1;$i<=$no;$i++){
-                                        
+
                                         $invitex = new ReviewInvite();
                                         $invitex->assign(array(
                                         'date_sent' => $update_review->date_sent,

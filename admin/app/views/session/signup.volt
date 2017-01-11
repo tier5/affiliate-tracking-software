@@ -51,8 +51,11 @@
         <!-- END SIDEBAR TOGGLER BUTTON -->
         <!-- BEGIN LOGIN -->
                 <div class="signup-footer">
-    <div class="title">Try us for free</div>
-    <div class="description">No credit card required.  All features included.</div>
+
+    {% if enable_trial_account %}
+        <div class="title">Try us for free</div>
+        <div class="description">No credit card required.  All features included.</div>
+    {% endif %}
    <!--  GETMOBILEREVIEWS -->
 </div>
 <div class="content">
@@ -92,7 +95,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">Re-type Your Password:</label><span id="Confirm_password_result" style="margin-left: 10px;"></span>
-            <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" id="confirmPassword" name="confirmPassword" value="" required="">
+            <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Re-type Your Password" id="confirmPassword" onkeyup="chkchk()" name="confirmPassword" value="" required="">
         </div>
 
         <!-- <div class="card-js"></div> -->

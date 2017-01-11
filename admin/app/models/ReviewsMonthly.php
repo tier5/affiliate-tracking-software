@@ -27,6 +27,9 @@
             $StartYear = date('Y', strtotime("-{$MonthsBack} month"));
 
             $InitialCount = \Vokuro\Models\Review::count("location_id = {$location_id} AND time_created < '{$StartYear}-{$StartMonth2}-01 00:00:00'");
+            $objYelpLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP);
+            if($objYelpLocationReviewSite)
+                $InitialCount += $objYelpLocationReviewSite->review_count;
 
             $sql   = "
                 SELECT COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0) AS reviewcount, month, year
@@ -51,8 +54,10 @@
             $CurrentMonth = $StartMonth;
             for($c = 0 ; $c <= $MonthsBack ; $c++) {
                 if ($c + $StartMonth > 12) {
-                    if($CurrentMonth == 12)
+                    if($CurrentMonth == 12) {
                         $CurrentMonth = 1;
+                        $CurrentYear = $StartYear + 1;
+                    }
                     else {
                         $CurrentMonth++;
                         $CurrentYear = $StartYear + 1;
@@ -69,16 +74,16 @@
                     'year' => $CurrentYear
                 ];
             }
+
             foreach($TotalResults->toArray() as $tResult) {
                 if(strtotime("{$StartYear}-{$StartMonth}-01") <= strtotime("{$tResult['year']}-{$tResult['month']}-01")) {
                     if($Count == 0) {
                         $Prev = $tResult['reviewcount'];
                     } else {
                         $Prev += $tResult['reviewcount'];
-                        $tResult['reviewcount'] = $Prev + $InitialCount;
                     }
 
-
+                    $tResult['reviewcount'] = $Prev + $InitialCount;
 
                     $tFilteredResults[$tResult['month']] = $tResult;
                     $Count++;
@@ -91,10 +96,10 @@
                 if($Count == 0) {
                     $Prev = 0;
                 } else {
-                    $Prev = $Index > 1 ? $tFilteredResults[$Index-1]['reviewcount'] : $tFilteredResults[1]['reviewcount'];
+                    $Prev = $Index != 1 ? $tFilteredResults[$Index-1]['reviewcount'] : $tFilteredResults[12]['reviewcount'];
                 }
 
-                $Current = $Index > 12 ? $tFilteredResults[$Index - 12]['reviewcount'] : $tFilteredResults[$Index]['reviewcount'];
+                $Current = $tFilteredResults[$Index]['reviewcount'];
 
                 if($Current <= $Prev)
                     $tResult['reviewcount'] = $Prev;

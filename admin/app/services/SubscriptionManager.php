@@ -13,17 +13,18 @@ use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 class SubscriptionManager extends BaseService
 {
 
+    const CC_NON_TRIAL = 2;
+
     public function __construct($config = null, $di = null)
     {
         parent::__construct($config, $di);
     }
 
-    public function creditCardInfoRequired($session)
-    {
+    public function creditCardInfoRequired($session, $iUserID = null) {
         $userManager = $this->di->get('userManager');
         $paymentService = $this->di->get('paymentService');
 
-        $userId = $userManager->getUserId($session);
+        $userId = $iUserID ? $iUserID : $userManager->getUserId($session);
 
         $objUser = \Vokuro\Models\Users::findFirst('id = ' . $userId);
 
@@ -32,16 +33,28 @@ class SubscriptionManager extends BaseService
             'agency_id = ' . $objUser->agency_id . ' AND role="Super Admin"'
         );
 
-        $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
+        $objAgency = \Vokuro\Models\Agency::findFirst(
+            'agency_id = ' . $objUser->agency_id
+        );
 
-        $subscriptionPlan = $this->getSubscriptionPlan($objSuperUser->id, $objAgency->subscription_id);
+        $subscriptionPlan = $this->getSubscriptionPlan(
+            $objSuperUser->id,
+            $objAgency->subscription_id
+        );
+
         $payment_plan = $subscriptionPlan['subscriptionPlan']['payment_plan'];
+
+        $EnableTrial = $subscriptionPlan['pricingPlan']['enable_trial_account'];
+
+        if (isset($EnableTrial) && !$EnableTrial && !$payment_plan) {
+            return static::CC_NON_TRIAL;
+        }
 
         // GARY_TODO:  Somehow all payment_plans are getting started at Monthly.
         if (!$payment_plan
             || $payment_plan === ServicesConsts::$PAYMENT_PLAN_FREE
             || $payment_plan == ServicesConsts::$PAYMENT_PLAN_TRIAL
-            || $subscriptionPlan['pricing_plan']['enable_trial_account']) {
+            || $EnableTrial) {
             return false;
         }
 
@@ -51,9 +64,9 @@ class SubscriptionManager extends BaseService
         );
 
         // GARY_TODO:  Add cron script to reset customer_id on expired / invalid cards.
-        if (!$paymentProfile || !$paymentProfile['customer_id']) {
-            return true;
-        }
+
+        if (!$paymentProfile || !$paymentProfile['customer_id'])
+            return $EnableTrial ? true : static::CC_NON_TRIAL;
 
         return false;
     }
@@ -97,15 +110,13 @@ class SubscriptionManager extends BaseService
         }
     }
 
-    public function GetBusinessSubscriptionUpgradeDiscount($BusinessID)
-    {
+    public function GetBusinessSubscriptionUpgradeDiscount($BusinessID) {
         $subscriptionManager = $this->di->get('subscriptionManager');
 
         /* Get Super Admin */
         $objBusiness = \Vokuro\Models\Agency::findFirst(
             "agency_id = {$BusinessID}"
         );
-
         $objSuperUser = \Vokuro\Models\Users::findFirst(
             'agency_id = ' . $objBusiness->agency_id . ' AND role="Super Admin"'
         );
@@ -117,7 +128,7 @@ class SubscriptionManager extends BaseService
         );
 
         // GARY_TODO:  Fix this stupid typo in upgrade_discount.
-        if ($subscriptionPlanData['pricingPlan']['updgrade_discount']) {
+        if($subscriptionPlanData['pricingPlan']['updgrade_discount']) {
             return intval($subscriptionPlanData['pricingPlan']['updgrade_discount']);
         } else {
             return 0;
@@ -136,7 +147,22 @@ class SubscriptionManager extends BaseService
 
         if (!$objBusiness->subscription_id) {
             // This mean plan is "Unpaid" or free basically
+            $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst(
+                "user_id = {$objSuperAdmin->id}"
+            );
+
             $MaxAllowed = 100;
+
+            if ($objSubscriptionPlan) {
+                // We are a paid member, get subscription details.
+                $MaxAllowed = $objSubscriptionPlan->sms_messages_per_location;
+            } else {
+                // We're in a trial state, use trial numbers
+                $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
+                    "id = {$objBusiness->subscription_id}"
+                );
+                $MaxAllowed = $objSubscriptionPricingPlan->max_messages_on_trial_account;
+            }
         } else {
             $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst(
                 "user_id = {$objSuperAdmin->id}"
@@ -149,7 +175,6 @@ class SubscriptionManager extends BaseService
                 $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
                     "id = {$objBusiness->subscription_id}"
                 );
-
                 $MaxAllowed = $objSubscriptionPricingPlan->max_messages_on_trial_account;
             }
         }
@@ -366,8 +391,14 @@ class SubscriptionManager extends BaseService
                     $locations = 1;
                     $smsMessagesPerLocation = $subscriptionPricingPlan->max_messages_on_trial_account;
                 } else {
-                    $paymentPlan = ServicesConsts::$PAYMENT_PLAN_MONTHLY;
-                    $locations = 0;
+                    /*
+                    Payment plan used to be set to monthly. 
+                    I have it setup so the payment plan is only setup 
+                    when the payment actually goes through.
+                    */
+
+                    $paymentPlan = '';
+                    $locations = 1;
                     $smsMessagesPerLocation = 0;
                 }
             } else {
@@ -733,7 +764,7 @@ class SubscriptionManager extends BaseService
 
         if ($isUpdate && !$subscriptionPricingPlan->save()) {
             return false;
-        } elseif (!$isUpdate && !$subscriptionPricingPlan->create()) {
+        } else if (!$isUpdate && !$subscriptionPricingPlan->create()) {
             return false;
         }
 
@@ -766,7 +797,7 @@ class SubscriptionManager extends BaseService
         try {
             $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$objSuperUser->id}");
             if ($objStripeSubscription) {
-                if ($objStripeSubscription->stripe_subscription_id) {
+                if ($objStripeSubscription->stripe_subscription_id && $objStripeSubscription->stripe_subscription_id != "N") {
                     // We have a subscription, remove from stripe
                     if ($objPaymentService->cancelStripeSubscription($objStripeSubscription->stripe_subscription_id, $AgencyID)) {
                         $objStripeSubscription->stripe_subscription_id = 'N';
@@ -934,7 +965,7 @@ class SubscriptionManager extends BaseService
             $PlanCost *= (1 - $objSubscriptionPricingPlan->annual_discount / 100);
         }
 
-        return number_format(round($PlanCost), 2);
+        return round($PlanCost);
     }
 
     private function createPricingParameterList($id, $parameters)
