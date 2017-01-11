@@ -13,9 +13,11 @@ class FacebookScanning extends Model {
 
     public function construct()
     {
-        #set facebook App Id & Secret Id
-        $appId = $this->config->facebook->app_id;
-        $appSecret = $this->config->facebook->app_secret;
+        $config = $this->di->get('config');
+
+        # set facebook App Id & Secret Id
+        $appId = $config->facebook->app_id;
+        $appSecret = $config->facebook->app_secret;
 
         $this->setClientId($appId)
              ->setClientSecret($appSecret);
