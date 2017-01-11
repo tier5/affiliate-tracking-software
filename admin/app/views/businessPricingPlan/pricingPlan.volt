@@ -42,7 +42,7 @@
                         <div class="caption font-dark">
                             <div class="form-group">
                             <label>Subscription Name</label>
-                            <input id="name-control" type="text" value="{% if !isNewRecord %}{{ name }}{% else %}My New Subscription{% endif %}" class="caption-subject form-control input-medium" placeholder="Subscription Name" /> {% if !isNewRecord %} <button id="update-plan-name" class="btn default btn-lg apple-backgound subscription-btn update_btn" data-id="{{subscription_id_plan}}">Update</button> {% endif %}
+                            <input id="name-control" type="text" value="{% if !isNewRecord %}{{ name }}{% else %}My New Subscription{% endif %}" class="caption-subject form-control input-medium" placeholder="Subscription Name" />  <button id="update-plan-name" class="btn default btn-lg apple-backgound subscription-btn update_btn" data-id="{{subscription_id_plan}}"{% if isNewRecord %} style="visibility: hidden;"{% endif %}>Update</button>
                         </div>
                         <hr>
 
