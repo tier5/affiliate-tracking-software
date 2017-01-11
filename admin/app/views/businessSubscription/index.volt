@@ -669,6 +669,7 @@
                             $('#current-messages').text(smsMessagesSlider.getValue());
                             $('#processingModal').modal('hide');
                             $('#updatePlanModal').modal('show');
+                            window.location.reload();
                         } else {
                         	$('#processingModal').modal('hide');
                             alert('Change plan failed - ' + data.error);

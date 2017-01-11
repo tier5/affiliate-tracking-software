@@ -8,12 +8,19 @@
                 <p style="font-size: 13px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
                     Hey {{firstName}},<br />
 
+                    <?php if($email_content==''){?>
+
                    <P>Congratulations on joining us at {{ AgencyName }}, I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
                     <P>If you wouldn’t mind, I’d love it if you answered one quick question: Why did you decide to join us at {{ AgencyName }} ?</P>
 
                     <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit "reply" and let me know.
                    </P>
+
+                   <?php } else { ?>
+                        {{email_content}}
+
+                   <?php }?>
                   
                     
                     To get started just confirm your email by <a style="padding:10px; margin-left:-10px;" href="http://{{ publicUrl }}{{ confirmUrl }}">Clicking Here</a><br/><br/>

@@ -46,6 +46,8 @@
 
 <?php $BusinessType = $this->session->get('auth-identity')['agencytype'] == 'business' ? 'Business' : 'Agency'; ?>
 
+ <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-summernote/summernote.css" />
+ <script type="text/javascript" src="/assets/global/plugins/bootstrap-summernote/summernote.min.js"></script>
 <header class="jumbotron subhead <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'agency')?>settingspage" id="reviews">
     <div class="hero-unit">
 
@@ -119,7 +121,7 @@
                     <li class="{{ GeneralExpanded }}"><a href="#tab_general" data-toggle="tab"> General </a></li>
                     <li><a href="#tab_review_invite" data-toggle="tab"> Review Invite </a></li>
                     <li><a href="#tab_sms_message" data-toggle="tab"> SMS Message </a></li>
-                    <!--<li><a href="#tab_twitter_message" data-toggle="tab"> Twitter Message </a></li>-->
+                    <li><a href="#tab_twitter_message" data-toggle="tab"> Twitter Message </a></li>
                     <li><a href="#tab_white_label" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
@@ -136,6 +138,12 @@
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
                         Intercom </a></li>
+
+                         <li class=""><a href="#tab_email" data-toggle="tab" <?=(isset($this->
+                        session->get('auth-identity')['agencytype']) &&
+                        $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
+                        Email </a></li>
+
                     <li><a href="#tab_notification" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>>
@@ -550,23 +558,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="twilio_auth_messaging_sid" class="col-md-4 control-label">Twilio Messaging
-                                    Service SID</label>
-                                <div class="col-md-8">
-                                    {{ form.render("twilio_auth_messaging_sid", ["class": 'form-control', 'placeholder': 'Twilio Messaging Service SID']) }}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <i>Either the Twilio Messaging Service SID or the Twilio Phone number is required.
-                                        The Twilio Messaging Service SID allows for dynamic phone numbers.
-                                        <a href="https://www.twilio.com/copilot" target="_blank">Click here</a> to read
-                                        more about this field.</i>
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="form-group">
                             <div class="row">
                                 <label for="twilio_from_phone" class="col-md-4 control-label">Twilio Phone
@@ -679,6 +671,48 @@
                         </div>
                     </div>
                     <!-- END Stripe Settings  -->
+
+                    <!-- Start Email Settings  -->
+                         <div class="tab-pane fade in" id="tab_email">
+
+                        <div class="form-group">
+                               <div class="row">
+                                <label for="welcome_email_business" class="col-md-4 control-label">Welcome Email for business</label>
+                                <div class="col-md-8">
+
+
+                                  <textarea style="width: 100%;" class="form-control summernote" name="welcome_email" id="welcome_email"><?=(isset($_POST['welcome_email'])?$_POST["welcome_email"]:(isset($agency->
+                                        welcome_email)?$agency->welcome_email:''))?></textarea>
+
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="intercom_security_hash" class="col-md-4 control-label">Viral Email body</label>
+                               <div class="col-md-8">
+
+                                 <textarea style="width: 100%;" class="form-control summernote1" name="viral_mail"><?=(isset($_POST['viral_mail'])?$_POST["viral_mail"]:(isset($agency->
+                                        viral_mail)?$agency->viral_mail:''))?></textarea>
+
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Email Settings  -->
 
                     <!-- START Intercom Settings  -->
                     <div class="tab-pane fade in" id="tab_intercom">
@@ -1100,5 +1134,27 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         });
 
     });
+
+
+    $(document).ready(function() {
+  $('.summernote').summernote({
+                height: 300,
+                /*toolbar: [
+                    ['font', ['bold', 'italic', 'underline']],
+                    ['para', ['ul', 'ol']],
+                    ['insert', ['link']]
+                ]*/
+            });
+
+            $('.summernote1').summernote({
+                height: 300,
+                /*toolbar: [
+                    ['font', ['bold', 'italic', 'underline']],
+                    ['para', ['ul', 'ol']],
+                    ['insert', ['link']]
+                ]*/
+            });
+});
+
 
 </script>

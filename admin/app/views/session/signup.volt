@@ -73,8 +73,10 @@
         {% endif %}
 
         <?php if($_GET['code']) { ?>
-                <input type="hidden" name="sharing_code" value="<?=$_GET['code']; ?>" />
-        <?php } ?>
+                <input type="text" name="sharing_code" value="<?=$_GET['code']; ?>" />
+        <?php } elseif($_GET['code']=='' && $_COOKIE['code']!='') { ?>
+         <input type="text" name="sharing_code" value="<?=$_COOKIE['code']; ?>" />
+         <?php } ?>
         
         
 

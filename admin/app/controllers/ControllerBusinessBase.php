@@ -342,6 +342,54 @@ class ControllerBusinessBase extends ControllerBase
                             'striptags'
                         )
                     );
+
+                $db = $this->di->get('db');
+                $db->begin();
+
+                /* Attempt to create our new business */
+                $params = [
+                    'name'               => $this->request->getPost('name', 'striptags'),
+                    'agency_type_id'     => $agency_type_id,
+                    'email'              => $this->request->getPost('email', 'striptags'),
+                    'signup_page'=>2,
+                    'address'            => $this->request->getPost('address', 'striptags'),
+                    'locality'           => $this->request->getPost('locality', 'striptags'),
+                    'state_province'     => $this->request->getPost('state_province', 'striptags'),
+                    'postal_code'        => $this->request->getPost('postal_code', 'striptags'),
+                    'country'            => ($this->request->getPost('country', 'striptags')) ? $this->request->getPost('country', 'striptags'): 'n/a',
+                    'phone'              => $this->request->getPost('phone', 'striptags'),
+                    'date_created'       => (isset($age->date_created) ? $age->date_created : date('Y-m-d H:i:s')),
+                    'subscription_id'    => $this->request->getPost('subscription_pricing_plan_id', 'striptags'),
+                    'deleted'            => (isset($age->deleted) ? $age->deleted : 0),
+                    'status'             => (isset($age->status) ? $age->status : 1),
+                    'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
+                    'parent_id'          => $parent_id,
+                ];
+
+
+                if (!$age->createOrUpdateBusiness($params)) {
+                    $error = true;
+                    foreach ($age->getMessages() as $error_message) $errors[] = $error_message;
+                } else {
+                    $an = $this->request->getPost('name', 'striptags');
+                    $msgx = $this->request->getPost('name', 'striptags');
+                    $msgx .= " is registered under You with email ID ";
+                    $msgx .= $this->request->getPost('email', 'striptags');
+                    $createdxx = date('Y-m-d H:i:s');
+                    $result = $this->db->query(
+                        "INSERT INTO notification ( `to`, `from`, `message`, `read`,`created`,`updated`) "
+                        . "VALUES ( '".$parent_id."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')"
+                    );
+                    /*** notification mail ***/  
+                    $objSuperAdminUser = \Vokuro\Models\Users::findFirst(
+                        'agency_id = ' . $parent_id . ' AND role="Super Admin"'
+                    );
+                    $planName = 'Free';
+
+                    if($this->request->getPost('subscription_pricing_plan_id', 'striptags') != 0){
+                        $subscriptionPricePlan = SubscriptionPricingPlan::findFirst('id = '.$this->request->getPost('subscription_pricing_plan_id', 'striptags'));
+                        $planName = $subscriptionPricePlan->name;
+                    }
                     
                     $planName = $subscriptionPricePlan->name;
                 }
@@ -364,7 +412,9 @@ class ControllerBusinessBase extends ControllerBase
 
                 /*** notification mail ***/
 
-                $resultx=$this->db->query(" SELECT * FROM `notification` WHERE `to` =".$parent_id." AND `read` = 0");
+                $resultx=$this->db->query(
+                    " SELECT * FROM `notification` WHERE `to` =".$parent_id." AND `read` = 0"
+                );
                 $x=$resultx->numRows();
                 $this->view->setVar('NumberOfNotification', $x);
             }
