@@ -175,7 +175,7 @@
         <!-- BEGIN TOP NAVIGATION MENU -->
         <div class="top-menu">
             <ul class="nav navbar-nav pull-right">
-                {% if not is_admin and agencytype != 'agency' %}
+                {% if not is_admin and agencytype != 'agency' AND NOT NonTrial %}
 
                     {% if ReachedMaxSMS %}
                     <li class="" id="">
@@ -509,11 +509,13 @@
             <div id="sendreviewinvite" style="width:400px; display: none; color: #7A7A7A;">
                 <!-- BEGIN SAMPLE FORM PORTLET-->
                 <div class="portlet light">
+                    {% if not NonTrial %}
                     <div class="portlet-title">
                         <div class="caption">
                             <span class="caption-subject" style="text-align: left; text-transform: none; font-weight: normal; font-size: 27px !important;"> Send Review Invite </span>
                         </div>
                     </div>
+                    {% endif %}
                     <div class="portlet-body form">
                         {%
                             if (twilio_auth_token != ''
