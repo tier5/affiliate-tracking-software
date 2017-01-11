@@ -47,10 +47,14 @@
                 //echo $invite->location_id;exit;
                 $locationobj = new Location();
                 $location = $locationobj::findFirst($invite->location_id);
+
+
                 $this->view->setVar('location', $location);
 
                 $agencyobj = new Agency();
                 $agency = $agencyobj::findFirst($location->agency_id);
+                $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                $this->view->parent_agency=$parent_agency;
                 $this->view->sms_button_color = $location->sms_button_color;
                 $this->view->logo_path = $location->sms_message_logo_path;
                 $this->view->name = $location->name;
@@ -109,6 +113,7 @@
         }
 
         public function recommendAction() {
+
             try {
                 $rating = false;
                 if (isset($_GET["r"])) $rating = htmlspecialchars($_GET["r"]);
