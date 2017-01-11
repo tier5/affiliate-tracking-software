@@ -98,6 +98,7 @@
             $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
             if ($percent > 100) $percent = 100;
             ?>
+            
             <div class="col-md-7 col-sm-7">
                 <div class="sms-chart-wrapper">
                     <div class="title">SMS Messages Sent</div>
@@ -105,7 +106,7 @@
                         <div class="bar-background"></div>
                         <div class="bar-filled" style="width: <?=$percent?>%;"></div>
                         <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-                        <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
+                        <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total+$sms_sent_this_month_total_non?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
                     </div>
                     <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
                 </div>
