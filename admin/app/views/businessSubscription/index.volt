@@ -466,7 +466,7 @@
 <script type="text/javascript">
 
     jQuery(document).ready(function ($) {
-        {% if NonTrialNoPlan %}
+        {% if DisplaySubPopup %}
             $('#explanationModal').modal('show');
         {% endif %}
         $(".UpdateCard").click(function() {
@@ -628,14 +628,20 @@
             var planType = $("#plan-type > button.active").text();
             if (planType === 'Annually') {
                 monthlyPlanCost = applyAnnualDiscount(monthlyPlanCost);
-                $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(0));
+                $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(0).replace(/./g, function(c, i, a) {
+                    return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+                }));
                 $('#paid-annually-caption').show()
             } else {
                 $('#paid-annually-caption').hide();
             }
 
-            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(0));
-            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(0));
+            $(priceDisplay).text(Math.round(monthlyPlanCost).toFixed(0).replace(/./g, function(c, i, a) {
+                return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+            }));
+            $(modalPriceDisplay).text(Math.round(monthlyPlanCost).toFixed(0).replace(/./g, function(c, i, a) {
+                return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+            }));
 
         };
 

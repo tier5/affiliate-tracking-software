@@ -51,8 +51,11 @@
         <!-- END SIDEBAR TOGGLER BUTTON -->
         <!-- BEGIN LOGIN -->
                 <div class="signup-footer">
-    <div class="title">Try us for free agency</div>
-    <div class="description">No credit card required.  All features included.</div>
+
+    {% if enable_trial_account %}
+        <div class="title">Try us for free</div>
+        <div class="description">No credit card required.  All features included.</div>
+    {% endif %}
    <!--  GETMOBILEREVIEWS -->
 </div>
 <div class="content">

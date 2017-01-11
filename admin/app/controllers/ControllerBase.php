@@ -297,23 +297,27 @@ class ControllerBase extends Controller {
                 $objPricingPlan = $agency->subscription_id ? \Vokuro\Models\SubscriptionPricingPlan::findFirst('id = ' . $agency->subscription_id) : '';
                 $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst('user_id = ' . $identity['id']);
 
-                $this->view->NonTrialNoPlan = false;
+                $this->view->DisplaySubPopup = false;
+
+                $this->view->SubscriptionLevel = $objSubscriptionManager->GetBusinessSubscriptionLevel($agency->agency_id);
+                $userManager = $this->di->get('userManager');
 
                 if ($required == \Vokuro\Services\SubscriptionManager::CC_NON_TRIAL) {
                     // Non trial account.  Have we got their credit card yet?
                     if ($objStripeSubscription->stripe_customer_id && ($objStripeSubscription->stripe_subscription_id == "N" || !$objStripeSubscription->stripe_subscription_id)) {
                         // Have CC info, but no subscription.  Redirect to business subscription page
-                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false)
+                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false && !$agency->signup_page) {
                             $this->response->redirect("/businessSubscription");
+                        }
 
-                        $this->view->NonTrialNoPlan = true;
                     }
                     if (!$objStripeSubscription->stripe_customer_id) {
-                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false)
+                        if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false && !$agency->signup_page) {
                             $this->response->redirect("/businessSubscription");
-                        $this->view->ccInfoRequired = "open";
-                    } else
-                        $this->view->ccInfoRequired = "closed";
+                        }
+                    }
+                    $this->view->DisplaySubPopup = true;
+                    $this->view->ccInfoRequired = "closed";
                 }
             }
 
@@ -864,7 +868,7 @@ class ControllerBase extends Controller {
          $sql = "SELECT review_invite_id
               FROM review_invite
                 INNER JOIN location ON location.location_id = review_invite.location_id
-              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";//exit;
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";
 
         // Base model
         $list = new ReviewInvite();
@@ -1079,9 +1083,7 @@ class ControllerBase extends Controller {
                     $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
                     $users = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
-                   // echo $loc->review_invite_type_id;exit;
-                    //exit;
-                     $usersGenerate = Users::getEmployeeListReportGenerate($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
+                    $usersGenerate = Users::getEmployeeListReportGenerate($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
 
                     $users_report_generate =Users::getEmployeeConversionReportGenerate( $loc->review_invite_type_id,$userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], 'desc');
                     if($loc->review_invite_type_id!='')
@@ -1214,7 +1216,7 @@ class ControllerBase extends Controller {
 
         $rating_array_set_all=array();
         $YNrating_array_set_all=array();
-        
+
         foreach($usersGenerate as $ux){
             $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 

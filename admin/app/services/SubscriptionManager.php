@@ -789,7 +789,7 @@ class SubscriptionManager extends BaseService {
             $PlanCost *= (1 - $objSubscriptionPricingPlan->annual_discount / 100);
         }
 
-        return number_format(round($PlanCost), 2);
+        return round($PlanCost);
     }
 
     private function createPricingParameterList($id, $parameters) {
