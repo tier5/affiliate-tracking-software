@@ -10,17 +10,9 @@ use Vokuro\Models\Users as User;
 use Phalcon\Db\Adapter\Pdo\Mysql as Connection;
 use Phalcon\Events\Manager;
 use Vokuro\Controllers\Stripe;
-//$SubscriptionManager = new SubscriptionManager();
-
-// Business id
 
 /*
 
-
-select * from stripe_subscriptions where stripe_subscription_id IN(null,'N');
-cancel them
-then iterate over ids, see if they’re valid and active in stripe
-if not then cancel them?
 
 Select all businesses
 
@@ -49,10 +41,6 @@ parent_id > 0 // Business under an agency
 parent_id = -1 // Business under RV (not a case right now I don't think)
 */
 
-//$agencyId = 1;
-
-//var_dump($SubscriptionManager->GetBusinessSubscriptionLevel($agencyId));
-
 /**
 * 
 */
@@ -63,24 +51,26 @@ class ValidateSubscriptions extends Controller
 
 		$this->connectToStripe();
 
-		$testBusinessId = 75; // 77,75
+		$testBusinessId = 77; // 77,75
 		$testUserId = 157;// 157, 155
 
 		// generate report dry run
 
-		$businesses = $this->getAllBusinesses();
+		/*$businesses = $this->getAllBusinesses();
 
 		if($businesses) {
 			$this->checkEntities($businesses);
-		}
+		}*/
 
 		$agencies = $this->getAllAgencies();
 
 		if ($agencies) {
-			$this->checkEntities($agencies);
+			$disableThese = $this->checkEntities($agencies);
 		}
 
-		// cancel accounts
+		// disable accounts
+
+		var_dump($disableThese);		
 	}
 
 	/**
@@ -92,19 +82,14 @@ class ValidateSubscriptions extends Controller
 
 	private function checkEntities($entities)
 	{
-		$skipped = 0;
 		$paid = 0;
+		$cancelAccounts = [];
 		
 		foreach ($entities as $entity) {
 			$entityId = $entity['agency_id'];
 			$type = $this->getSubscriptionType($entityId);
 
-			// if account is free or trial skip
-			if ($type === 'FR' || $type === 'TR') {
-				$skipped++;
-				
-				continue;
-			} else if ($type === 'PD') {
+			if ($type === 'PD') {
 				$paid++;
 
 				// check db
@@ -115,15 +100,16 @@ class ValidateSubscriptions extends Controller
 					$customerId = $subscription['stripe_customer_id'];
 					
 					if (!empty($subscriptionId) && $subscriptionId != 'N') {
-						$this->subscriptionExistsInStripe($subscriptionId);
-					} else if (!empty($subscriptionId) && $subscriptionId != 'N') {
+						if(!$this->subscriptionExistsInStripe($subscriptionId)) {
+							array_push($cancelAccounts, $entityId);
+						}
+					} else if (!empty($customerId) && $customerId != 'N') {
 						// get subscription by customer id
 					}
 				}
-
-
 			}
 
+			
 			/*PD = if its a paid account and we have no record of a subscription, that's an error and I think its happening*/
 			// check db
 			// if no record in db send report
@@ -134,8 +120,9 @@ class ValidateSubscriptions extends Controller
 
 		}
 
-		print $skipped . ' skipped entities' . "\n";
 		print $paid . ' paid entities' . "\n";
+		
+		return $cancelAccounts;
 	}
 
 	/**
@@ -146,10 +133,10 @@ class ValidateSubscriptions extends Controller
 
 	private function connectToStripe() 
 	{
-		$stripePublic = $this->config->stripe->publishable_key;
-		$stripeSecret = $this->config->stripe->secret_key;
+		$this->stripePublic = $this->config->stripe->publishable_key;
+		$this->stripeSecret = $this->config->stripe->secret_key;
 
-		\Stripe\Stripe::setApiKey($stripeSecret);
+		\Stripe\Stripe::setApiKey($this->stripeSecret);
 	}
 
 	/**
@@ -197,17 +184,6 @@ class ValidateSubscriptions extends Controller
 
 		return $agencies->toArray();
 	}
-
-
-
-	// Check to see if a subscription exists which means it either doesn't have a row, or its set to NULL / ’N'
-	// select * from stripe_subscriptions where stripe_subscription_id IN(null,'N');
-
-	/*
-	Check to see if a subscription exists 
-	which means it has a row and stripe_subscription_id is not set to NULL / ’N'
-	Then check stripe for subscription
-	*/
 
 	/**
 	 * Does the subscription exist in our Database
@@ -317,13 +293,9 @@ class ValidateSubscriptions extends Controller
 	}
 
 
-	/*function cancelSubcriptionInDb() {
+	function cancelSubcriptionInDb() {
 		// set to NULL
-	}*/
-
-	/*function cancelSubscriptionInStripe() {
-
-	}*/
+	}
 
 	/**
 	 * Get Super admin for Business/agency
@@ -345,23 +317,29 @@ class ValidateSubscriptions extends Controller
         return $superUser;
 	}
 
-
-
-
 	private function addStripeSubscriptionToDb($customerId) 
 	{
 		// Subscription
 	}
+
 	/**
 	 * Disable Business
 	 *
-	 * @param (int) $BusinessId
+	 * @param (int) $businessId
 	 * @return bool
 	 */
 
-	private function disableBusiness($BusinessId) 
+	private function disableBusiness($businessId) 
 	{
 		// set agency.status to 0
+		
+		$business = Agency::findFirst(
+			'agency_id = ' . $businessId
+		);
+
+		$business->status = 0;
+
+		$business->save();
 	}
 
 	/**
