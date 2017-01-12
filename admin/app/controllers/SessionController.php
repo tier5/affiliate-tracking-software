@@ -358,51 +358,45 @@ class SessionController extends ControllerBase {
         }
     }
 
-    public function signupAction($subscriptionToken = '0') {
-        $objAgency='';
-        $objUser='';
-        $Domain=$this->config->application->domain;
+    public function signupAction($subscriptionToken = '0')
+    {
+        $objAgency = '';
+        $objUser = '';
+        $Domain = $this->config->application->domain;
 
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
-        $pi = array_shift($ex);//exit;
+        $subdomain = $ex[0];
 
         // Also will 404 on invalid subdomain
         $this->DetermineParentIDAndSetViewVars();
 
         $agency = new Agency();
-        $record = $agency->findOneBy(['custom_domain'=>$pi]);
 
-
+        $record = $agency->findOneBy(
+            ['custom_domain' => $subdomain]
+        );
 
         $white_label = 'Sign Up';
-        if($record){
-            if($record->agency_id)
+
+        if ($record) {
+            if ($record->agency_id) {
                 $this->view->agencyId = $record->agency_id;
+            }
 
             //if($record->logo_path) $this->view->logo_path = "/img/agency_logos/".$record->logo_path;
-            if($record->name){
+            if ($record->name) {
                 $this->view->agency_name = $record->name;
-                //$this->view->agency_name = $record->name;
             }
             
             $this->view->agency_white_label = true;
-            if($record->main_color) $this->view->main_color_setting = $record->main_color;
-        }
 
-        elseif(!empty($objUser) && $objUser->name)
-        {
-
-            
+            if ($record->main_color) {
+                $this->view->main_color_setting = $record->main_color;
+            }
+        } else if (!empty($objUser) && $objUser->name) {
             $this->view->agency_name = $objUser->name;
-        }
-
-        
-
-        else if($this->request->getQuery("code"))
-        {
-
-
+        } else if ($this->request->getQuery("code")) {
             $code = $this->request->getQuery("code");
 
             $expire = time() + 86400 * 30;
@@ -412,17 +406,18 @@ class SessionController extends ControllerBase {
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
             $this->view->agencyId = $objAgency->agency_id;
             $this->view->agency_name = $objAgency->name;
-           // echo $objAgency->parent_id;exit;
-            if($objAgency->parent_id==0) {
+
+            // echo $objAgency->parent_id;exit;
+            
+            if ($objAgency->parent_id == 0) {
                 setcookie("code_generate_normal",$code, $expire,'/');
                 $custom_domain=$objAgency->custom_domain;
-                 $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
+                $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
                 //$this->view->disable();
                 return;
             }
 
-            if($objAgency->parent_id) {
-
+            if ($objAgency->parent_id) {
                 setcookie("code_generate_normal",$code, $expire,'/',$custom_domain . '.' . $Domain);
 
                 $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
@@ -433,43 +428,35 @@ class SessionController extends ControllerBase {
                 $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
                 $this->view->disable();
                 return;
+             } else {
+                $code = $_COOKIE['code'];
+                $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
+                $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
 
-             }
-             
+                $this->view->agencyId = $objAgency->agency_id;
+                $this->view->agency_name = $objAgency->name;
 
+                if($objAgency->parent_id) {
+                    $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
 
+                    $this->view->agencyId = $objAgency1->agency_id;
+                    $this->view->agency_name = $objAgency1->name;
+                 }
+
+                 //$this->view->agency_name ='';
+            }
         }
-        else
-        {
-            $code=$_COOKIE['code'];
-
-             $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
-            $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
-
-            $this->view->agencyId = $objAgency->agency_id;
-            $this->view->agency_name = $objAgency->name;
-
-            if($objAgency->parent_id) {
-                $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
-
-                $this->view->agencyId = $objAgency1->agency_id;
-                $this->view->agency_name = $objAgency1->name;
-
-             }
-             //$this->view->agency_name ='';
-        }
-
         //dd($record->agency_id);
 
-       if(!$this->view->short_code)
-       {
-        $this->view->short_code=$_COOKIE['short_code'];
-       }
+        if (!$this->view->short_code) {
+            $this->view->short_code = $_COOKIE['short_code'];
+        }
+
         //see invite action above
-        if($this->view->short_code){
+        if ($this->view->short_code) {
             $subscription = new SubscriptionPricingPlan();
             $plan = $subscription->findOneBy(['short_code' => $this->view->short_code]);
-            if($plan){
+            if ($plan) {
                 /**
                  * @var $plan \Vokuro\Models\SubscriptionPricingPlan
                  */
