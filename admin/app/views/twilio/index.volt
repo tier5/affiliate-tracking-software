@@ -73,6 +73,7 @@
 				data:{country_select : country_select},
 				success: function(result){
 					if(result){
+					//alert(result);
 					$('#gather_info').prop('disabled', false);
 					$(".number_type").html("");
 					$(".number_type").html(result);

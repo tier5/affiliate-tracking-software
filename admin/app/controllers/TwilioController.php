@@ -84,6 +84,7 @@ use Pricing_Services_Twilio;
             
         }
         public function getTypeNumberAction(){
+             $this->view->disable();
             $country_code=$_REQUEST['country_select'];
             $Twillioset=$this->getTwilioDetails();
             $client = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
@@ -111,7 +112,7 @@ use Pricing_Services_Twilio;
                 }
             }
             $result=$result.'</select>';
-            return $result;
+            echo $result;
         }
         public function getAvailableNumberAction(){
             $this->view->setTemplateBefore('ajax');
