@@ -219,7 +219,8 @@
 
                     $agencyobj = new Agency();
                     $agency = $agencyobj::findFirst($location->agency_id);
-
+                    $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                     $this->view->parent_agency = $parent_agency;
                     $this->view->agency = $agency;
                     $this->view->sms_button_color = $location->sms_button_color;
                     $this->view->logo_path = $location->sms_message_logo_path;
