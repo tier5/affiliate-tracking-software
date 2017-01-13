@@ -790,15 +790,20 @@ class SubscriptionManager extends BaseService
 
     public function CancelSubscription($AgencyID)
     {
+
         $objPaymentService = $this->di->get('paymentService');
         $objSuperUser = \Vokuro\Models\Users::findFirst("role = 'Super Admin' AND agency_id = {$AgencyID}");
         $db = $this->di->get('db');
         $db->begin();
+
         try {
+            if($objSuperUser && $objSuperUser->id) {
             $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$objSuperUser->id}");
+            }
             if ($objStripeSubscription) {
                 if ($objStripeSubscription->stripe_subscription_id && $objStripeSubscription->stripe_subscription_id != "N") {
                     // We have a subscription, remove from stripe
+
                     if ($objPaymentService->cancelStripeSubscription($objStripeSubscription->stripe_subscription_id, $AgencyID)) {
                         $objStripeSubscription->stripe_subscription_id = 'N';
                         $objStripeSubscription->save();
