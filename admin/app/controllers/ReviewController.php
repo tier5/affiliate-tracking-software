@@ -32,7 +32,7 @@
 
         public function indexAction() {
 
-            $conditions = "api_key = :api_key:";
+           $conditions = "api_key = :api_key:";
 
             $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
             $review_invite = new ReviewInvite();
@@ -42,13 +42,19 @@
                 $this->response->redirect('/review/expired');
 
             if ($invite->location_id > 0) {
+
+          
                 //echo $invite->location_id;exit;
                 $locationobj = new Location();
                 $location = $locationobj::findFirst($invite->location_id);
+
+
                 $this->view->setVar('location', $location);
 
                 $agencyobj = new Agency();
                 $agency = $agencyobj::findFirst($location->agency_id);
+                $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                $this->view->parent_agency=$parent_agency;
                 $this->view->sms_button_color = $location->sms_button_color;
                 $this->view->logo_path = $location->sms_message_logo_path;
                 $this->view->name = $location->name;
@@ -107,6 +113,7 @@
         }
 
         public function recommendAction() {
+
             try {
                 $rating = false;
                 if (isset($_GET["r"])) $rating = htmlspecialchars($_GET["r"]);
@@ -121,6 +128,117 @@
                 if ($invite->location_id > 0) {
                    // echo $rating;exit;
 
+                          /**** send mail to business and user ***/
+                $user_sent=$invite->sent_by_user_id;
+                $userobj = new Users();
+                $user_info = $userobj::findFirst($user_sent);
+                $emp= $user_info->is_employee;
+                //echo "<br>";
+                $role= $user_info->role;
+
+                if($emp==1 && $role=="Super Admin")
+                {  
+                    $TwilioToken = $this->config->twilio->twilio_auth_token;
+                    $TwilioFrom = $this->config->twilio->twilio_from_phone;
+                    $TwilioAPI = $this->config->twilio->twilio_api_key;
+
+                    $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $invite->location_id);
+                    $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                    $is_email_alert_on=0;
+
+                    foreach($agencynotifications as $agencynotification) {
+                        if ($agencynotification->user_id == $user_info->id) {
+                            $is_email_alert_on = ($agencynotification->email_alert==1?true:false);
+                        } }
+
+                    if($is_email_alert_on==1)
+                    {
+
+                      $EmailFrom = 'zacha@reviewvelocity.co';
+                      $EmailFromName = "Zach Anderson";
+                      $to=$user_info->email;
+                      $subject="New Feedback Came Aginst Review";
+                      $mail_body="Dear ".$user_info->name;
+                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
+                     $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
+                    $Mail->send($to, $subject, '', '', $mail_body);
+
+
+                    if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                     }
+                 }
+                }
+                else
+                {
+                    $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $invite->location_id);
+                    $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+
+                      $is_email_alert_on=0;
+
+                    foreach($agencynotifications as $agencynotification) {
+                        if ($agencynotification->user_id == $user_info->id) {
+                            $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
+                        } }
+
+                        
+                    $TwilioToken = $this->config->twilio->twilio_auth_token;
+                  
+                    $TwilioFrom = $this->config->twilio->twilio_from_phone;
+                  
+                   $TwilioAPI = $this->config->twilio->twilio_api_key;
+                   
+                   if($is_email_alert_on==1)
+                    {
+                    /*** mail to user ***/
+                      $EmailFrom = 'zacha@reviewvelocity.co';
+                      $EmailFromName = "Zach Anderson";
+                      $to=$user_info->email;
+                      $subject="New Feedback Came Aginst Review";
+                      $mail_body="Dear ".$user_info->name;
+                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
+                    $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
+                    $Mail->send($to, $subject, '', '', $mail_body);
+
+                    /*** mail to user end ****/
+
+                    /**** mail to busines ****/
+
+                    $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
+
+                    $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
+
+                      $EmailFrom = 'zacha@reviewvelocity.co';
+                      $EmailFromName = "Zach Anderson";
+                      $to=$business_info->email;
+                      $subject="New Feedback Came Aginst Review";
+                      $mail_body="Dear ".$business_info->name;
+                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link Employee under your business (".$user_info->name.") have sent to user.</p>";
+                    $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
+                    $Mail->send($to, $subject, '', '', $mail_body);
+
+                    /**** mail to busines ****/
+
+                    /*** sms to user ***/
+                     if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                     }
+                    /*** sms to user ***/
+
+                    /*** sms to business ***/
+
+                     if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                     }
+                    /*** sms to business ***/
+
+
+                }
+                //exit;
+                /**** send mail to business and user ***/
+
                     $locationobj = new Location();
                     $location = $locationobj::findFirst($invite->location_id);
                     $this->view->setVar('location', $location);
@@ -128,7 +246,8 @@
 
                     $agencyobj = new Agency();
                     $agency = $agencyobj::findFirst($location->agency_id);
-
+                    $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                     $this->view->parent_agency = $parent_agency;
                     $this->view->agency = $agency;
                     $this->view->sms_button_color = $location->sms_button_color;
                     $this->view->logo_path = $location->sms_message_logo_path;
@@ -211,19 +330,24 @@
             $invite->recommend = 'N';
             $invite->save();
             $this->view->setVar('invite', $invite);
-
+            //echo $invite->location_id;exit;
             //we have the invite, now find the location
             $locationobj = new Location();
             $location = $locationobj::findFirst($invite->location_id);
-
+            //echo $location->agency_id;exit;
             //we have the location, now find the agency
             $agencyobj = new Agency();
             $agency = $agencyobj::findFirst($location->agency_id);
+            $parent_agency=$agencyobj::findFirst($agency->parent_id);
+            /*echo $parent_agency->name;
+            echo "<br>";
+            echo $parent_agency->website;exit;*/
             $this->view->sms_button_color = $location->sms_button_color;
             $this->view->logo_path = $location->sms_message_logo_path;
             $this->view->name = $location->name;
             $this->view->objname = $location->name;
             $this->view->objAgency=$agency;
+            $this->view->parent_agency=$parent_agency;
             // Negative feedback comments are being posted
             if ($this->request->isPost()) {
                 if ($invite->comments)

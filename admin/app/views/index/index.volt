@@ -36,8 +36,31 @@
   width: 70px;
 }
 
+.connect-business a{
+    display: inline-block;
+    margin-bottom: 20px;
+}
 
+.connect-business a:hover{
+     text-decoration: none;
+}
 
+.connect-business p{
+    margin: 0;
+    font-size: 14px;
+    padding: 5px;
+    color: #666;
+}
+
+.connect-business i{
+    display: inline-block;
+    color: #b70000;
+    font-size: 17px;
+}
+.connect-business a
+{
+     font-size: 13px;
+}
 
 </style>
 
@@ -55,7 +78,7 @@
             <?php
             if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
             if ($is_upgrade) {
-            $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
+            $percent = ($total_sms_month > 0 ? number_format((float)(($sms_sent_this_month_total+$sms_sent_this_month_total_non) / $total_sms_month) * 100, 0, '.', ''):100);
             if ($percent > 100) $percent = 100;
             ?>
             <div class="col-md-7 col-sm-7">
@@ -65,7 +88,7 @@
                         <div class="bar-background"></div>
                         <div class="bar-filled" style="width: <?=$percent?>%;"></div>
                         <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-                        <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
+                        <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total+$sms_sent_this_month_total_non?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
                     </div>
                     <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / <?=$sms_sent_this_month_total?>)<br/><span class="goal">Allowed</span></div>
                 </div>
@@ -75,6 +98,7 @@
             $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
             if ($percent > 100) $percent = 100;
             ?>
+            
             <div class="col-md-7 col-sm-7">
                 <div class="sms-chart-wrapper">
                     <div class="title">SMS Messages Sent</div>
@@ -82,7 +106,7 @@
                         <div class="bar-background"></div>
                         <div class="bar-filled" style="width: <?=$percent?>%;"></div>
                         <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-                        <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
+                        <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total+$sms_sent_this_month_total_non?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
                     </div>
                     <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
                 </div>
@@ -143,7 +167,9 @@
                                     </div>
                                 </div>
                             </div>
-                                <div class="row">
+
+
+                            <div class="row">
                                 <div class="referral-link"><b>Personalized Referral Link:</b> 
                                 <!--<span id="perso_link">
                                 <?=urldecode($share_link); ?>
@@ -160,7 +186,32 @@
         {% endif %}
 
         <div class="row">
+            <?php
 
+            if(!$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected){
+
+            ?>
+            <div class="col-md-4 col-sm-4">
+             <div class="portlet light bordered dashboard-panel">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <span class="">Business Is not Connected</span>
+
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="number">
+                           <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink">Connect Business pages</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <?php } else {
+
+
+              ?>
+            <div class="row">
             <div class="col-md-2 col-sm-2">
                 <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">
@@ -174,6 +225,14 @@
                         </div>
                     </div>
                 </div>
+                <?php
+
+                if(!$facebookMyBusinessConnected || !$GoogleMyBusinessConnected || !YelpMyBusinessConnected)
+                { ?>
+                    <div class="connect-business">
+                        <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink">Connect Business</a>
+                    </div>
+               <?php } ?>
             </div>
 
             <div class="col-md-2 col-sm-2">
@@ -189,7 +248,33 @@
                         </div>
                     </div>
                 </div>
+                <?php
+                if(!$facebookMyBusinessConnected || !$GoogleMyBusinessConnected || !YelpMyBusinessConnected)
+                {
+
+                    $statement="";
+                    if(!$facebookMyBusinessConnected)
+                    {
+                    $statement="Facebook/";
+                    }
+                    if(!$GoogleMyBusinessConnected)
+                    {
+                    $statement.="Google/";
+                    }
+                    if(!$YelpMyBusinessConnected)
+                    {
+                    $statement.="Yelp/";
+                    }
+
+                   $statement=rtrim($statement,"/");
+                 ?>
+                <div class="connect-business">
+                    <p><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <?php echo $statement;?></p>
+                </div>
+                <?php } ?>
             </div>
+
+            <?php  } ?>
 
             <div class="col-md-4 col-sm-4">
                 <div class="portlet light bordered dashboard-panel Monthly-Goal-New-Reviews">
@@ -241,6 +326,7 @@
                         <div class="bottom-header"><div class="num"><?=$sms_sent_this_month?></div>Messages Sent</div>
                     </div>
                 </div>
+            </div>
             </div>
 
         </div>

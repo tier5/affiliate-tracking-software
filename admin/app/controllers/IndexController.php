@@ -151,8 +151,7 @@ class IndexController extends ControllerBase {
             // Check for use of whitelabel domain
             // Moved to here from AgencySignupController::salesAction (agencysignup/sales)
             // The best way to fully test this is to use your local hosts file to treat your local reviewvelocity server as getmobilereiews.com
-
-
+            
             $parts = explode(".", $_SERVER['SERVER_NAME']);
             if(count($parts) > 2 && $parts[0] != 'www') { // Subdomain exists.  Probably should do count($parts) == 3.
                 $subdomain = $parts[0];
@@ -195,6 +194,7 @@ class IndexController extends ControllerBase {
                 $this->view->SubscriptionCode = $objSubscriptionPricingPlan->short_code;
 
                 $this->view->salesPage = true;
+                //echo $_COOKIE['code'];exit;
                 //$this->view->setTemplateBefore('agencysignup');
                 $this->view->pick('agencysignup/sales');
                 return;
@@ -245,6 +245,7 @@ class IndexController extends ControllerBase {
             }
 
             // Yelp stats work differently since we calculate based on the #s yelp gives us, rather than we import since we can only import 1 yelp review at a time.  Leaving code in for when we solve this problem.
+            //echo $LocationID;exit
             $objYelpReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_YELP);
             $TotalYelpRating = $objYelpReviewSite ? $objYelpReviewSite->rating * $objYelpReviewSite->review_count : 0;
 

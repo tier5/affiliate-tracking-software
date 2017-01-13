@@ -67,6 +67,7 @@ class Email{
         }
 
         $template='confirmation';
+        $email_content='';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
 
         $Domain = $this->config->application->domain;
@@ -85,6 +86,10 @@ class Email{
             $AgencyName = $objAgency->name;
             $EmailFrom =  $objAgency->email;
             $EmailFromName='';
+            if($objAgency->welcome_email!='')
+            {
+                $email_content=$objAgency->welcome_email;
+            }
 
         }
         elseif($objAgency->parent_id > 0) {
@@ -96,6 +101,11 @@ class Email{
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
             $EmailFromName=$objParentAgency->email_from_name ?: "";
+
+            if($objAgency->welcome_email!='')
+            {
+                $email_content=$objAgency->welcome_email;
+            }
 
            
             //$EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
