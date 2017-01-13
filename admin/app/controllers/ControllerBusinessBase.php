@@ -50,11 +50,13 @@ class ControllerBusinessBase extends ControllerBase
         */
         if ($agency_id) {
             $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$agency_id} AND role='Super Admin'");
-            $objBusinessSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst(
-                "user_id = {$objSuperUser->id}"
-            );
-            $this->view->sms_messages = $objBusinessSubscription->sms_messages_per_location;
-            $this->view->free_locations = $objBusinessSubscription->locations;
+            if($objSuperUser) {
+                $objBusinessSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst(
+                    "user_id = {$objSuperUser->id}"
+                );
+                $this->view->sms_messages = $objBusinessSubscription->sms_messages_per_location;
+                $this->view->free_locations = $objBusinessSubscription->locations;
+            }
         }
 
 
