@@ -9,7 +9,6 @@ use Vokuro\Services\Container;
 use Vokuro\Utils;
 use Vokuro\Forms\SignUpForm;
 use Vokuro\Forms\CreditCardForm;
-use Vokuro\Services\StripeManager;
 
 /**
  * Vokuro\Controllers\BusinessPricingPlanController
@@ -208,6 +207,8 @@ class BusinessPricingPlanController extends ControllerBase
         $this->view->gridEditStatus = "";
         $this->view->isCreateMode = true;
         $this->view->isNewRecord = true;
+
+        // get available currencies
 
         /* Add progression parameters */
         $progressions = [];
