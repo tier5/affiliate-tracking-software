@@ -162,15 +162,7 @@ class BusinessPricingPlanController extends ControllerBase {
         
         
     }
-    public function updateSubcriptionPricingDetailsAction(){
-        //echo '<pre>';print_r($_POST);exit;
-        $subscription_id=$_POST['subscription_id'];
-        $subcription_pricing_details=$_POST['subcription_pricing_details'];
-        $this->db->query(" UPDATE `subscription_pricing_plan` SET `pricing_details`='".$subcription_pricing_details."' WHERE `id`=".$subscription_id);
-        return "done";
-        
-        
-    }
+
     public function showNewPricingPlanAction() {
         $this->view->name = "My New Subscription";
         $this->view->enableTrialAccount = true;
