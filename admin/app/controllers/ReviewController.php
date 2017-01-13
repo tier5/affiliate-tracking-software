@@ -142,6 +142,19 @@
                     $TwilioFrom = $this->config->twilio->twilio_from_phone;
                     $TwilioAPI = $this->config->twilio->twilio_api_key;
 
+                    $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $invite->location_id);
+                    $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                    $is_email_alert_on=0;
+
+                    foreach($agencynotifications as $agencynotification) {
+                        if ($agencynotification->user_id == $user_info->id) {
+                            $is_email_alert_on = ($agencynotification->email_alert==1?true:false);
+                        } }
+
+                    if($is_email_alert_on==1)
+                    {
+
                       $EmailFrom = 'zacha@reviewvelocity.co';
                       $EmailFromName = "Zach Anderson";
                       $to=$user_info->email;
@@ -155,16 +168,30 @@
 
                     if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                      }
+                 }
                 }
                 else
                 {
+                    $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $invite->location_id);
+                    $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+
+                      $is_email_alert_on=0;
+
+                    foreach($agencynotifications as $agencynotification) {
+                        if ($agencynotification->user_id == $user_info->id) {
+                            $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
+                        } }
+
+                        
                     $TwilioToken = $this->config->twilio->twilio_auth_token;
                   
                     $TwilioFrom = $this->config->twilio->twilio_from_phone;
                   
                    $TwilioAPI = $this->config->twilio->twilio_api_key;
                    
-
+                   if($is_email_alert_on==1)
+                    {
                     /*** mail to user ***/
                       $EmailFrom = 'zacha@reviewvelocity.co';
                       $EmailFromName = "Zach Anderson";
