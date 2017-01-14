@@ -169,6 +169,14 @@
                          if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                           }
                       }
+                      
+                        //find the location review sites
+                        $conditions = "location_id = :location_id: AND is_on = 1";
+                        $parameters = array("location_id" => $invite->location_id);
+                         
+                        $review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
+                        
+                        $this->view->review_site_list = $review_site_list;
                      }
                      else
                      {
