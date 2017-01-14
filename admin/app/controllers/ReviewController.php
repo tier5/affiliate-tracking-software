@@ -114,7 +114,7 @@
 
         public function recommendAction() {
 
-            try {
+        try {
                 $rating = false;
                 if (isset($_GET["r"])) $rating = htmlspecialchars($_GET["r"]);
 
@@ -126,181 +126,184 @@
                     $this->response->redirect('/review/expired');
 
                 if ($invite->location_id > 0) {
-                   // echo $rating;exit;
-
-                          /**** send mail to business and user ***/
-                $user_sent=$invite->sent_by_user_id;
-                $userobj = new Users();
-                $user_info = $userobj::findFirst($user_sent);
-                $emp= $user_info->is_employee;
-                //echo "<br>";
-                $role= $user_info->role;
-
-                if($emp==1 && $role=="Super Admin")
-                {  
-                    $TwilioToken = $this->config->twilio->twilio_auth_token;
-                    $TwilioFrom = $this->config->twilio->twilio_from_phone;
-                    $TwilioAPI = $this->config->twilio->twilio_api_key;
-
-                    $conditions = "location_id = :location_id:";
-                $parameters = array("location_id" => $invite->location_id);
-                    $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
-                    $is_email_alert_on=0;
-
-                    foreach($agencynotifications as $agencynotification) {
-                        if ($agencynotification->user_id == $user_info->id) {
-                            $is_email_alert_on = ($agencynotification->email_alert==1?true:false);
-                        } }
-
-                    if($is_email_alert_on==1)
-                    {
-
-                      $EmailFrom = 'zacha@reviewvelocity.co';
-                      $EmailFromName = "Zach Anderson";
-                      $to=$user_info->email;
-                      $subject="New Feedback Came Aginst Review";
-                      $mail_body="Dear ".$user_info->name;
-                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
-                     $Mail = $this->getDI()->getMail();
-                    $Mail->setFrom($EmailFrom, $EmailFromName);
-                    $Mail->send($to, $subject, '', '', $mail_body);
-
-
-                    if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                        // echo $rating;exit;
+     
+                               /**** send mail to business and user ***/
+                     $user_sent=$invite->sent_by_user_id;
+                     $userobj = new Users();
+                     $user_info = $userobj::findFirst($user_sent);
+                     $emp= $user_info->is_employee;
+                     //echo "<br>";
+                     $role= $user_info->role;
+     
+                     if($emp==1 && $role=="Super Admin")
+                     {  
+                         $TwilioToken = $this->config->twilio->twilio_auth_token;
+                         $TwilioFrom = $this->config->twilio->twilio_from_phone;
+                         $TwilioAPI = $this->config->twilio->twilio_api_key;
+     
+                         $conditions = "location_id = :location_id:";
+                     $parameters = array("location_id" => $invite->location_id);
+                         $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                         $is_email_alert_on=0;
+     
+                         foreach($agencynotifications as $agencynotification) {
+                             if ($agencynotification->user_id == $user_info->id) {
+                                 $is_email_alert_on = ($agencynotification->email_alert==1?true:false);
+                             } }
+     
+                         if($is_email_alert_on==1)
+                         {
+     
+                           $EmailFrom = 'zacha@reviewvelocity.co';
+                           $EmailFromName = "Zach Anderson";
+                           $to='work@tier5.us';//$user_info->email;
+                           $subject="New Feedback Came Aginst Review";
+                           $mail_body="Dear ".$user_info->name;
+                           $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
+                          $Mail = $this->getDI()->getMail();
+                         $Mail->setFrom($EmailFrom, $EmailFromName);
+                         $Mail->send($to, $subject, '', '', $mail_body);
+     
+     
+                         if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                          }
+                      }
                      }
-                 }
-                }
-                else
-                {
-                    $conditions = "location_id = :location_id:";
-                $parameters = array("location_id" => $invite->location_id);
-                    $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
-
-                      $is_email_alert_on=0;
-
-                    foreach($agencynotifications as $agencynotification) {
-                        if ($agencynotification->user_id == $user_info->id) {
-                            $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
-                        } }
-
+                     else
+                     {
+                         $conditions = "location_id = :location_id:";
+                         $parameters = array("location_id" => $invite->location_id);
+                         $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+     
+                           $is_email_alert_on=0;
+     
+                         foreach($agencynotifications as $agencynotification) {
+                             if ($agencynotification->user_id == $user_info->id) {
+                                 $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
+                             } }
+     
+                             
+                         $TwilioToken = $this->config->twilio->twilio_auth_token;
+                       
+                         $TwilioFrom = $this->config->twilio->twilio_from_phone;
+                       
+                        $TwilioAPI = $this->config->twilio->twilio_api_key;
                         
-                    $TwilioToken = $this->config->twilio->twilio_auth_token;
-                  
-                    $TwilioFrom = $this->config->twilio->twilio_from_phone;
-                  
-                   $TwilioAPI = $this->config->twilio->twilio_api_key;
-                   
-                   if($is_email_alert_on==1)
-                    {
-                    /*** mail to user ***/
-                      $EmailFrom = 'zacha@reviewvelocity.co';
-                      $EmailFromName = "Zach Anderson";
-                      $to=$user_info->email;
-                      $subject="New Feedback Came Aginst Review";
-                      $mail_body="Dear ".$user_info->name;
-                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
-                    $Mail = $this->getDI()->getMail();
-                    $Mail->setFrom($EmailFrom, $EmailFromName);
-                    $Mail->send($to, $subject, '', '', $mail_body);
-
-                    /*** mail to user end ****/
-
-                    /**** mail to busines ****/
-
-                    $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
-
-                    $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
-
-                      $EmailFrom = 'zacha@reviewvelocity.co';
-                      $EmailFromName = "Zach Anderson";
-                      $to=$business_info->email;
-                      $subject="New Feedback Came Aginst Review";
-                      $mail_body="Dear ".$business_info->name;
-                      $mail_body=$mail_body."<p>You have received a new feed back against the feedback link Employee under your business (".$user_info->name.") have sent to user.</p>";
-                    $Mail = $this->getDI()->getMail();
-                    $Mail->setFrom($EmailFrom, $EmailFromName);
-                    $Mail->send($to, $subject, '', '', $mail_body);
-
-                    /**** mail to busines ****/
-
-                    /*** sms to user ***/
-                     if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                        if($is_email_alert_on==1)
+                         {
+                             /*** mail to user ***/
+                               $EmailFrom = 'zacha@reviewvelocity.co';
+                               $EmailFromName = "Zach Anderson";
+                               $to=$user_info->email;
+                               $subject="New Feedback Came Aginst Review";
+                               $mail_body="Dear ".$user_info->name;
+                               $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
+                             $Mail = $this->getDI()->getMail();
+                             $Mail->setFrom($EmailFrom, $EmailFromName);
+                             $Mail->send($to, $subject, '', '', $mail_body);
+         
+                             /*** mail to user end ****/
+         
+                             /**** mail to busines ****/
+         
+                             $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
+         
+                             $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
+         
+                               $EmailFrom = 'zacha@reviewvelocity.co';
+                               $EmailFromName = "Zach Anderson";
+                               $to=$business_info->email;
+                               $subject="New Feedback Came Aginst Review";
+                               $mail_body="Dear ".$business_info->name;
+                               $mail_body=$mail_body."<p>You have received a new feed back against the feedback link Employee under your business (".$user_info->name.") have sent to user.</p>";
+                             $Mail = $this->getDI()->getMail();
+                             $Mail->setFrom($EmailFrom, $EmailFromName);
+                             $Mail->send($to, $subject, '', '', $mail_body);
+         
+                             /**** mail to busines ****/
+         
+                             /*** sms to user ***/
+                              if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                              }
+                             /*** sms to user ***/
+         
+                             /*** sms to business ***/
+         
+                              if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                              }
+                             /*** sms to business ***/
+     
+     
+                         }
+                         //exit;
+                         /**** send mail to business and user ***/
+     
+                         $locationobj = new Location();
+                         $location = $locationobj::findFirst($invite->location_id);
+                         $this->view->setVar('location', $location);
+     
+     
+                         $agencyobj = new Agency();
+                         $agency = $agencyobj::findFirst($location->agency_id);
+                         $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                          $this->view->parent_agency = $parent_agency;
+                         $this->view->agency = $agency;
+                         $this->view->sms_button_color = $location->sms_button_color;
+                         $this->view->logo_path = $location->sms_message_logo_path;
+                         $this->view->name = $location->name;
+     
+                         switch($invite->review_invite_type_id) {
+                             case ReviewInvite::RATING_TYPE_YES_NO:
+                                 $threshold = false;
+                                 break;
+                             case ReviewInvite::RATING_TYPE_5_STAR:
+                                 $threshold = $location->rating_threshold_star;
+                                 break;
+                             case ReviewInvite::RATING_TYPE_NPS:
+                                 $threshold = $location->rating_threshold_nps;
+                                 break;
+                         }
+     
+     
+                         //find the location review sites
+                         $conditions = "location_id = :location_id: AND is_on = 1";
+                         $parameters = array("location_id" => $invite->location_id);
+                         
+                         $review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
+                        
+                         $this->view->review_site_list = $review_site_list;
                      }
-                    /*** sms to user ***/
-
-                    /*** sms to business ***/
-
-                     if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+     
+                     if ($rating && $rating < $threshold || ($invite->review_invite_type_id == ReviewInvite::RATING_TYPE_YES_NO && $rating == 1)) {
+                         //redirect to the no thanks page
+                         $this->response->redirect('/review/nothanks?r=' . $rating . '&a=' . htmlspecialchars($_GET["a"]));
+                         $this->view->disable();
+                         return;
                      }
-                    /*** sms to business ***/
-
-
+     
+                     // Query review_invite binding parameters with string placeholders
+                     $conditions = "api_key = :api_key:";
+     
+                     // Parameters whose keys are the same as placeholders
+                     $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
+     
+                     // Perform the query
+                     $review_invite = new ReviewInvite();
+                     $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
+     
+                     //save the rating
+                     
+                     $invite->rating = $rating;
+                     $invite->recommend = 'Y';
+                     $invite->save();
+                     //we have the invite, now find the location
+                     $locationobj = new Location();
+                     $location = $locationobj::findFirst($invite->location_id);
+     
+                     $this->view->setVar('invite', $invite);
+                     $this->view->setVar('location', $location);
                 }
-                //exit;
-                /**** send mail to business and user ***/
-
-                    $locationobj = new Location();
-                    $location = $locationobj::findFirst($invite->location_id);
-                    $this->view->setVar('location', $location);
-
-
-                    $agencyobj = new Agency();
-                    $agency = $agencyobj::findFirst($location->agency_id);
-                    $parent_agency=$agencyobj::findFirst($agency->parent_id);
-                     $this->view->parent_agency = $parent_agency;
-                    $this->view->agency = $agency;
-                    $this->view->sms_button_color = $location->sms_button_color;
-                    $this->view->logo_path = $location->sms_message_logo_path;
-                    $this->view->name = $location->name;
-
-                    switch($invite->review_invite_type_id) {
-                        case ReviewInvite::RATING_TYPE_YES_NO:
-                            $threshold = false;
-                            break;
-                        case ReviewInvite::RATING_TYPE_5_STAR:
-                            $threshold = $location->rating_threshold_star;
-                            break;
-                        case ReviewInvite::RATING_TYPE_NPS:
-                            $threshold = $location->rating_threshold_nps;
-                            break;
-                    }
-
-
-                    //find the location review sites
-                    $conditions = "location_id = :location_id: AND is_on = 1";
-                    $parameters = array("location_id" => $invite->location_id);
-                    $review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
-                    $this->view->review_site_list = $review_site_list;
-                }
-
-                if ($rating && $rating < $threshold || ($invite->review_invite_type_id == ReviewInvite::RATING_TYPE_YES_NO && $rating == 1)) {
-                    //redirect to the no thanks page
-                    $this->response->redirect('/review/nothanks?r=' . $rating . '&a=' . htmlspecialchars($_GET["a"]));
-                    $this->view->disable();
-                    return;
-                }
-
-                // Query review_invite binding parameters with string placeholders
-                $conditions = "api_key = :api_key:";
-
-                // Parameters whose keys are the same as placeholders
-                $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
-
-                // Perform the query
-                $review_invite = new ReviewInvite();
-                $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
-
-                //save the rating
-                
-                $invite->rating = $rating;
-                $invite->recommend = 'Y';
-                $invite->save();
-                //we have the invite, now find the location
-                $locationobj = new Location();
-                $location = $locationobj::findFirst($invite->location_id);
-
-                $this->view->setVar('invite', $invite);
-                $this->view->setVar('location', $location);
 
             } catch (\Exception $e) {
                 echo "Exception: ", $e->getMessage(), "\n";

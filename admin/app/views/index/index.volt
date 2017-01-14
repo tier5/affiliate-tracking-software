@@ -473,7 +473,7 @@
 
                                 }
                                 $tot=$yes+$no;
-                                $cal=$yes/$tot;
+                                $cal=$tot>0?$yes/$tot:0;
                                 ?>
                                 <td class="<?=$class?>"><?=($data->sms_sent_this_month > 0?(number_format($cal*100, 1) . '%'):'0.0%')?> -Yes</td>
 
