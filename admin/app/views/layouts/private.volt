@@ -590,11 +590,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <textarea 
-                                                	style="width: 100%;" 
-                                                	class="form-control placeholder-no-fix" name="SMS_message">{% if agency_sms %}
-                                                    {{agency_sms}}{% elseif location.SMS_message %}{{ location.SMS_message }}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
-                                                	class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{location.SMS_message }}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
+                                                <textarea	style="width: 100%;" class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{location.SMS_message}}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
                                                 <i>{location-name} will be the name of the location sending the SMS,
                                                     {name} will be replaced with the name entered when sending the
                                                     message and {link} will be the link to the review.</i>
