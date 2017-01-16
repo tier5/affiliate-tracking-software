@@ -150,4 +150,14 @@
             $this->tag->setTitle('Manage Businesses');
             $this->view->tBusinesses = $this->findBusinesses();
         }
+        
+        public function emailisexistAction($email){
+            if(!$email) { return 'blank email'; }
+            $objUser = \Vokuro\Models\Users::findFirst('email = "' . $email .'"');
+            if($objUser){
+                return 'exist';
+            }else{
+                return 'not exist';
+            }
+        }
     }

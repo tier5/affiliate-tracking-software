@@ -200,11 +200,11 @@
         public function validation() {
             
             if(!$this->id) {
-
-              $this->validate(new Uniqueness(array(
-                  "field" => "email",
-                  "message" => "The email is already registered"
-              )));
+              // this validation is commented due to removed email field from create business form agency
+              //$this->validate(new Uniqueness(array(
+              //    "field" => "email",
+              //    "message" => "The email is already registered"
+              //)));
             
             }
 
