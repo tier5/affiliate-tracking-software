@@ -501,7 +501,9 @@ class ControllerBusinessBase extends ControllerBase
                 }
             }
 
-            $identity = $this->getIdentity();
+            
+        }
+        $identity = $this->getIdentity();
 
             $tUserIDs = [];
             // Get all user IDs for agency
@@ -553,7 +555,6 @@ class ControllerBusinessBase extends ControllerBase
 
                 return $this->response->redirect('/?saved=1');
             }
-        }
     }
 
     /**
