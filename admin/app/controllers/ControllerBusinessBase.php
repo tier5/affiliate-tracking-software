@@ -377,6 +377,7 @@ class ControllerBusinessBase extends ControllerBase
                         'status'             => (isset($age->status) ? $age->status : 1),
                         'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
                         'parent_id'          => $parent_id,
+                        'upgraded_status'    => 0
                     ];
 
 
