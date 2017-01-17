@@ -114,6 +114,7 @@ class SessionController extends ControllerBase {
                     /**
                      * @var $subscription_pricing_plan \Vokuro\Models\SubscriptionPricingPlan
                      */
+                    /**** 17.01.2017 ***/
                    // $subscription_id = $subscription_pricing_plan->id;
                     $subscription_id = 0;
                     
