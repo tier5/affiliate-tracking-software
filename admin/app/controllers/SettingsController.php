@@ -88,7 +88,7 @@
                         'custom_domain' => $this->request->getPost('custom_domain'),
                         'lifetime_value_customer' => str_replace("$", "", str_replace(",", "", $this->request->getPost('lifetime_value_customer'))),
                         'SMS_message' => $this->request->getPost('SMS_message'),
-                        'twitter_message' => $this->request->getPost('twitter_message'),
+                       /* 'twitter_message' => $this->request->getPost('twitter_message'),*/
                         'message_tries' => $this->request->getPost('message_tries'),
                         'notifications' => $this->request->getPost('notifications'),
                         'rating_threshold_star' => $this->request->getPost('rating_threshold_star'),
@@ -180,7 +180,7 @@
             'lifetime_value_customer'       => 'replace_commas_dollars',
             'SMS_message'                   => 'string',
             'message_tries'                 => 'int',
-            'twitter_message'               => 'string',
+            /*'twitter_message'               => 'string',*/
             'rating_threshold_star'         => 'int',
             'rating_threshold_nps'          => 'int',
             'message_frequency'             => 'int',
@@ -200,7 +200,7 @@
             'review_goal'                   => 'int',
             'lifetime_value_customer'       => 'replace_commas_dollars',
             'SMS_message'                   => 'string',
-            'twitter_message'               => 'string',
+          /*  'twitter_message'               => 'string',*/
             'message_tries'                 => 'int',
             'rating_threshold_star'         => 'int',
             'rating_threshold_nps'          => 'int',
