@@ -49,25 +49,29 @@
             <div class="form-group">
                 <label for="address" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Address</label>
                 <div class="col-md-8">
-                    {{ form.render("address", ["class": 'form-control', 'placeholder': 'Address', 'type': 'name']) }}
+                    <!-- form.render("address", ["class": 'form-control', 'placeholder': 'Address', 'type': 'name']) -->
+                    <input type="text" name="address" placeholder = "Address" class="form-control" value="<?php echo $location->address?$location->address:''; ?>" />
                 </div>
             </div>
             <div class="form-group">
                 <label for="locality" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> City</label>
                 <div class="col-md-8">
-                    {{ form.render("locality", ["class": 'form-control', 'placeholder': 'City', 'type': 'name']) }}
+                    <!--form.render("locality", ["class": 'form-control', 'placeholder': 'City', 'type': 'name'])-->
+                    <input type="text" name="locality" placeholder='City' class="form-control" value="<?php echo $location->locality?$location->locality:''; ?>" />
                 </div>
             </div>
             <div class="form-group">
                 <label for="state_province" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> State/Province</label>
                 <div class="col-md-8">
-                    {{ form.render("state_province", ["class": 'form-control', 'placeholder': 'State/Province', 'type': 'name']) }}
+                     <!--form.render("state_province", ["class": 'form-control', 'placeholder': 'State/Province', 'type': 'name'])-->
+                     <input type="text" name="state_province" placeholder='State/Province' class="form-control" value="<?php echo $location->state_province?$location->state_province:''; ?>" />
                 </div>
             </div>
             <div class="form-group">
                 <label for="postal_code" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Postal Code</label>
                 <div class="col-md-8">
-                    {{ form.render("postal_code", ["class": 'form-control', 'placeholder': 'Postal Code', 'type': 'name']) }}
+                    <!--form.render("postal_code", ["class": 'form-control', 'placeholder': 'Postal Code', 'type': 'name'])-->
+                    <input type="text" name="postal_code" placeholder='Postal Code' class="form-control" value="<?php echo $location->postal_code?$location->postal_code  :''; ?>" />
                 </div>
             </div>
 
