@@ -114,9 +114,9 @@ class SessionController extends ControllerBase {
                     /**
                      * @var $subscription_pricing_plan \Vokuro\Models\SubscriptionPricingPlan
                      */
-                    $subscription_id = $subscription_pricing_plan->id;
-                    echo "1";
-                    echo "<br>";
+                   // $subscription_id = $subscription_pricing_plan->id;
+                    $subscription_id = 0;
+                    
                 }
             }
 
@@ -135,8 +135,7 @@ class SessionController extends ControllerBase {
                 if($objSubscription)
                     $subscription_id = $objSubscription->id;
                 $parent_id = $objBusiness->parent_id;
-                echo "2";
-                    echo "<br>";
+               
             }
             echo $subscription_id;exit;
             if(!$subscription_id) {
