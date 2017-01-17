@@ -44,7 +44,7 @@
             if ($invite->location_id > 0) {
 
           
-                //echo $invite->location_id;exit;
+                echo $invite->location_id;exit;
                 $locationobj = new Location();
                 $location = $locationobj::findFirst($invite->location_id);
 
