@@ -1,4 +1,4 @@
-<form method="post" action="submitorder" id="payment-form">
+<form method="post" action="/agencysignup/submitorder" id="payment-form">
     <?php
         if($_GET['sbyp'] || $_POST['sbyp'])
             $sbyp = $_GET['sbyp'] ? $_GET['sbyp'] : $_POST['sbyp'];
@@ -54,6 +54,17 @@
                         </div>
                         <div class="col-xs-7 col-lg-9">
                         	<input type="text" id="OwnerEmail" maxlength="50" class="form-control" placeholder="Please enter your email" name="OwnerEmail" value="{{ OwnerEmail }}" required />
+                        </div>
+                    </div>
+                    <div class="row contact-row">
+                        <div class="col-xs-5 col-lg-3">
+                            <label>Phone
+                                <span class="required">*</span></label>
+                                <span style="color:red; font-size:80%; float: right,bottom;  white-space:nowrap;" id="Email_availability_result"></span>
+                      
+                        </div>
+                        <div class="col-xs-7 col-lg-9">
+                            <input type="text" id="Phone" maxlength="50" class="form-control" placeholder="Please enter your phone number" name="Phone" value="{{ Phone }}" required />
                         </div>
                     </div>
                     <div class="row contact-row">

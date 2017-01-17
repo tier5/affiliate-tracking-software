@@ -517,7 +517,7 @@
         }
 
         protected function CreateAgency($tData) {
-           // echo $this->session->Signup_step;exit;
+            // echo $this->session->Signup_step;exit;
             /*$objAgency = new Agency();
                 foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
                     if($dbField) {
@@ -759,32 +759,37 @@
         public function submitorderAction() {
 
             
-          //  print_r($_POST);exit;
-/*
-    Already Commented
+            //  print_r($_POST);exit;
+            /*
+                Already Commented
 
-            if(!$this->IsUniqueEmail($this->session->AgencySignup)) {
-                $this->flashSession->error("This email address is already in use.  Please use another one.");
-                $this->response->redirect('/agencysignup/order');
-                return false;
-            }
+                if(!$this->IsUniqueEmail($this->session->AgencySignup)) {
+                    $this->flashSession->error("This email address is already in use.  Please use another one.");
+                    $this->response->redirect('/agencysignup/order');
+                    return false;
+                }
 
-            if(!$this->IsUniqueDomain($this->session->AgencySignup)) {
-                $this->flashSession->error("This domain is already in use.  Please use another one.");
-                $this->response->redirect('/agencysignup/order');
-                return false;
-            }
-*/
+                if(!$this->IsUniqueDomain($this->session->AgencySignup)) {
+                    $this->flashSession->error("This domain is already in use.  Please use another one.");
+                    $this->response->redirect('/agencysignup/order');
+                    return false;
+                }
+            */
             $Token = $this->request->getPost('stripeToken', 'striptags');
 
-           // $Token='sk_test_zNX3s30y9WPK3yuIlXbDuXnF';
-            //print_r($Token);exit;
-           // $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 1]);
+            // $Token='sk_test_zNX3s30y9WPK3yuIlXbDuXnF';
+            // print_r($Token);exit;
+            // $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 1]);
+
             if($Token) {
+                // merge stripe token into agency signup session array 
                 $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['StripeToken' => $Token]);
             }
             else {
-                $this->flashSession->error("Credit card declined.  If you feel this is an error, please contact our customer support.");
+                // if no stripe token set flash message and redirect
+                $this->flashSession->error(
+                    'Credit card declined.  If you feel this is an error, please contact our customer support.'
+                );
                 $this->response->redirect('/agencysignup/order');
                 return false;
             }
@@ -806,7 +811,7 @@
             }
 
             $SubscriptionPlanId = '';
-            $this->view->TodayYear = date("Y");
+            $this->view->TodayYear = date('Y');
 
             try {
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
@@ -908,15 +913,15 @@
             }
 
 
-        if($this->session->AgencySignup['UserID']=='')
-           {
-             $objUser = Users::findFirst("id = " . $identity['id']);
+            if($this->session->AgencySignup['UserID']=='')
+            {
+                $objUser = Users::findFirst("id = " . $identity['id']);
             
-           }
-           else
-           {
-                 $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
-           }
+            }
+            else
+            {
+                $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+            }
             // $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
             
             if($objUser)
@@ -962,7 +967,7 @@
                 $this->UpdateAgency($objUser->agency_id);
         }
 
-         public function loadingpageimageAction()
+        public function loadingpageimageAction()
         {
             if($_POST)
             {
