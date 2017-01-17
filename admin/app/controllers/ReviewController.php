@@ -53,9 +53,9 @@
 
                 $agencyobj = new Agency();
                 $agency = $agencyobj::findFirst($location->agency_id);
-                echo $agency->parent_id;exit;
+                //echo $agency->parent_id;exit;
                 $parent_agency=$agencyobj::findFirst($agency->parent_id);
-
+                echo $parent_agency->name;exit;
                 $this->view->parent_agency=$parent_agency;
                 $this->view->sms_button_color = $location->sms_button_color;
                 $this->view->logo_path = $location->sms_message_logo_path;
