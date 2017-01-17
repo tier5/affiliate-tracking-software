@@ -124,7 +124,7 @@ class SessionController extends ControllerBase {
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
 
-            if($subscription_id =='' && $sharing_code) {
+            if(!$subscription_id && $sharing_code) {
                
                 // Viral signup, get viral subscription
                 $objBusiness = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$sharing_code}'");
@@ -156,7 +156,7 @@ class SessionController extends ControllerBase {
                 }
             }
            
-            //echo $subscription_id;exit;
+            echo $subscription_id;exit;
 
             // Start transaction
             $this->db->begin();
