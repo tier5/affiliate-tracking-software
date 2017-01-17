@@ -96,10 +96,7 @@ class SessionController extends ControllerBase {
             {
                 $short_code = $this->request->getPost('short_code');
             }
-            else
-            {
-                $short_code =$_COOKIE['short_code'];
-            }
+           
             $subscription_pricing_plan = '';
 
             $ssp = new SubscriptionPricingPlan();
@@ -108,10 +105,7 @@ class SessionController extends ControllerBase {
             {
                 $sharing_code = $this->request->getPost('sharing_code', 'striptags');
             }
-            else
-            {
-                $sharing_code = $_COOKIE['sharing_code'];
-            }
+            
 
             $parent_id = null;
             if ($short_code) {
@@ -121,6 +115,8 @@ class SessionController extends ControllerBase {
                      * @var $subscription_pricing_plan \Vokuro\Models\SubscriptionPricingPlan
                      */
                     $subscription_id = $subscription_pricing_plan->id;
+                    echo "1";
+                    echo "<br>";
                 }
             }
 
@@ -139,6 +135,8 @@ class SessionController extends ControllerBase {
                 if($objSubscription)
                     $subscription_id = $objSubscription->id;
                 $parent_id = $objBusiness->parent_id;
+                echo "2";
+                    echo "<br>";
             }
             echo $subscription_id;exit;
             if(!$subscription_id) {
