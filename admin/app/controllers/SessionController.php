@@ -160,7 +160,7 @@ class SessionController extends ControllerBase {
                 $subscription_id=0;
                ///echo $subscription_id;exit;
             }
-            echo $subscription_id;exit;
+            //echo $subscription_id;exit;
 
             // Start transaction
             $this->db->begin();
