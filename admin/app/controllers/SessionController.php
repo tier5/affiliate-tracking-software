@@ -141,7 +141,7 @@ class SessionController extends ControllerBase {
             }
             //echo $subscription_id;exit;
             if($subscription_id=='' && $subscription_id!=0) {
-                echo "2";
+                //echo "2";
                 /**
                  * @var $subscriptionManager \Vokuro\Services\SubscriptionManager
                  */
@@ -155,7 +155,12 @@ class SessionController extends ControllerBase {
                     $subscription_id = $default->id;
                 }
             }
-               echo $subscription_id;exit;
+            if($subscription_id=='')
+            {
+                $subscription_id=0;
+               ///echo $subscription_id;exit;
+            }
+            echo $subscription_id;exit;
 
             // Start transaction
             $this->db->begin();
