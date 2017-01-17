@@ -39,7 +39,7 @@
                     {{ form.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name','required':'']) }}
                 </div>
             </div>
-            <?php if($CreateType == 'Business') { ?>
+            <?php if($agency_type_id == 2 && !$loggedUser->is_admin) { ?>
                 <div class="form-group">
                     <label for="admin_name" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Admin Full Name</label>
                     <div class="col-md-8">
