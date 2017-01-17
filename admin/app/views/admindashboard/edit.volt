@@ -43,7 +43,8 @@
             <div class="form-group">
                 <label for="phone" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Phone</label>
                 <div class="col-md-8">
-                    {{ form.render("phone", ["class": 'form-control', 'placeholder': 'Phone', 'type': 'name']) }}
+                    <!--form.render("phone", ["class": 'form-control', 'placeholder': 'Phone', 'type': 'name'])-->
+                    <input type="text" name="phone" placeholder = "Phone" class="form-control" value="<?php echo $location->phone?$location->phone:''; ?>" />
                 </div>
             </div>
             <div class="form-group">
