@@ -12,6 +12,7 @@ use Vokuro\ArrayException;
 use Vokuro\Forms\AgencyForm;
 use Vokuro\Models\Agency;
 use Vokuro\Models\Users;
+use Vokuro\Models\Location;
 use Vokuro\Models\Notification;
 use Vokuro\Models\SubscriptionPricingPlan;
 
@@ -196,6 +197,8 @@ class ControllerBusinessBase extends ControllerBase
             $parameters = array("agency_id" => $agency_id);
             $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
             $this->view->agency = $age2;
+            $location = Location::findFirst('agency_id = '.$agency_id);
+            $this->view->setVar("location", $location);
         }
 
         if ($errors) {
