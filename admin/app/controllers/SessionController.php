@@ -140,7 +140,7 @@ class SessionController extends ControllerBase {
                     $subscription_id = $objSubscription->id;
                 $parent_id = $objBusiness->parent_id;
             }
-
+            echo $subscription_id;exit;
             if(!$subscription_id) {
                 /**
                  * @var $subscriptionManager \Vokuro\Services\SubscriptionManager
