@@ -115,8 +115,8 @@ class SessionController extends ControllerBase {
                      * @var $subscription_pricing_plan \Vokuro\Models\SubscriptionPricingPlan
                      */
                     /**** 17.01.2017 ***/
-                   // $subscription_id = $subscription_pricing_plan->id;
-                    $subscription_id = 0;
+                    $subscription_id = $subscription_pricing_plan->id;
+                    //$subscription_id = 0;
                     
                 }
             }
@@ -140,7 +140,7 @@ class SessionController extends ControllerBase {
                
             }
             //echo $subscription_id;exit;
-            if($subscription_id=='' && $subscription_id!=0) {
+            if(!$subscription_id) {
                 //echo "2";
                 /**
                  * @var $subscriptionManager \Vokuro\Services\SubscriptionManager
@@ -155,11 +155,7 @@ class SessionController extends ControllerBase {
                     $subscription_id = $default->id;
                 }
             }
-            if($subscription_id=='')
-            {
-                $subscription_id=0;
-               ///echo $subscription_id;exit;
-            }
+           
             //echo $subscription_id;exit;
 
             // Start transaction
