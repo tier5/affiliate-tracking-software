@@ -77,7 +77,7 @@ class BusinessSubscriptionController extends ControllerBase {
         $objAgency = \Vokuro\Models\Agency::findFirst('agency_id = ' . $objUser->agency_id);
 
         $this->view->businessEmail = $objAgency->email;
-        $this->view->TypeSubscriptionId=$objAgency->subscription_id;
+        echo $this->view->TypeSubscriptionId=$objAgency->subscription_id;exit;
 
         $Provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
         $paymentParams = [
