@@ -2,7 +2,7 @@
 {{ content() }}
 <div class="review index">
     <?php
-    echo $parent_agency->name.'fgfdgfdg';
+    
 //verify that we found a review invite
 if (isset($invite)) {
   //we have an invite, so find what type of question we should ask
