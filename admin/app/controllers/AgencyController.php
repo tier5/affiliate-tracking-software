@@ -151,13 +151,20 @@
             $this->view->tBusinesses = $this->findBusinesses();
         }
         
-        public function emailisexistAction($email){
+        public function emailisexistAction(){
+            $email = trim( $this->request->getPost('email') );
             if(!$email) { return 'blank email'; }
-            $objUser = \Vokuro\Models\Users::findFirst('email = "' . $email .'"');
-            if($objUser){
-                return 'exist';
-            }else{
-                return 'not exist';
+            $conditions = "email like :email:";
+            $parameters = array("email" => $email);
+            $userObj = \Vokuro\Models\Users::findFirst("email like '".$email."'");
+            $agencyObj = \Vokuro\Models\Agency::findFirst("email like '".$email."'");
+            if($userObj || $agencyObj){
+                echo 'exist';
+                exit();
             }
+            
+             echo 'not exist';
+             exit();
         }
+
     }

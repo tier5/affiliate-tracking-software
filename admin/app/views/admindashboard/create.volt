@@ -39,7 +39,7 @@
                     {{ form.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name','required':'']) }}
                 </div>
             </div>
-            <?php if($CreateType == 'Business') { ?>
+            <?php if($agency_type_id == 2 && !$loggedUser->is_admin) { ?>
                 <div class="form-group">
                     <label for="admin_name" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Admin Full Name</label>
                     <div class="col-md-8">
@@ -51,6 +51,8 @@
                     <label for="admin_email" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Admin Email</label>
                     <div class="col-md-8">
                         <input class="form-control" type="email" placeholder="Admin Email" name="admin_email" required value="<?=(isset($_POST['admin_email'])?$_POST["admin_email"]:'')?>" />
+                        <input class="form-control" type="hidden" id="hiddenEmail" name="email" value="<?=(isset($_POST['admin_email'])?$_POST["admin_email"]:'')?>" />
+                        <label id="admin_email-error" class="error"></label>
                     </div>
                 </div>
                 <div class="free_subscription_pricing_plan show">
@@ -205,8 +207,11 @@
         
         $('.saveBtn').click(function(){
             var email = $('input[name="admin_email"]').val();
+            $('#hiddenEmail').val(email);
                 $.ajax({
-                    url: '/agency/emailisexist/' + email,
+                    method: 'post',
+                    url: '/agency/emailisexist',
+                    data:{email:email},
                     success:function(res){
                         if(res != 'exist'){
                             $('#agencyform').submit();
