@@ -385,13 +385,7 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="/twilio/" class="nav-link nav-toggle">
-                                <i class="icon-call-out"></i>
-                                <span class="title">Twilio Numbers</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
+                        
                     {% endif %}
                     <?php } ?>
                     {% if profile != "User" %}

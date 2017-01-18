@@ -182,6 +182,8 @@ use Pricing_Services_Twilio;
             $this->view->mobile=$number['Mobile'];
             $this->view->local=$number['Local'];
             $this->view->purchased=$number['purchased'];
+            $this->view->number=$number;
+            //dd($number);
             $this->view->pick("twilio/getlist");
         }
         public function available_numberAction(){
@@ -321,7 +323,7 @@ use Pricing_Services_Twilio;
             $twilio_auth_token=$Twillioset['twilio_auth_token'];
             $twilio_user_id=$Twillioset['twilio_user_id'];
             $result=$this->db->query(" INSERT INTO twilio_number_to_business ( `friendly_name`, `phone_number`, `buisness_id`, `created`,`updated`,`parent_twilio_api_key`,`parent_twilio_auth_token`,`parent_user_id`,`purchased`,`twilio_purchase_token`) VALUES ( '".$friendly_number."', '".$number."', '".$id."','".$createdxx."','".$createdxx."','".$twilio_api_key."','".$twilio_auth_token."','".$twilio_user_id."','0','')");
-            $this->response->redirect('/twilio');
+            $this->response->redirect('/settings/location');
                 $this->view->disable();
                 return;
         }
@@ -391,11 +393,30 @@ use Pricing_Services_Twilio;
                 $identity = $this->auth->getIdentity();
                 $id=$identity['id'];
                 $result=$this->db->query(" INSERT INTO twilio_number_to_business ( `friendly_name`, `phone_number`, `buisness_id`, `created`,`updated`,`parent_twilio_api_key`,`parent_twilio_auth_token`,`parent_user_id`,`purchased`,`twilio_purchase_token`) VALUES ( '".$friendly_number."', '".$number."', '".$id."','".$createdxx."','".$createdxx."','".$twilio_api_key."','".$twilio_auth_token."','".$twilio_user_id."','1','".$twilioNumber->sid."')");
-                $this->response->redirect('/twilio');
+                $this->response->redirect('/settings/location');
                 $this->view->disable();
                 return;
             }
 
+        }
+        public function releseThisnumberAction($numbers){
+            $pieces = explode("||", $numbers);
+            $number=base64_decode($pieces[0]);
+            $friendly_number=base64_decode($pieces[1]);
+            $Twillioset=$this->getTwilioDetails();
+            $client = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
+            $result=$this->db->query(" SELECT * FROM `twilio_number_to_business` WHERE `phone_number`='".$number."'");
+                           $x=$result->fetchAll();
+                           $nm=$x[0]['twilio_purchase_token'];
+            $twilioNumber = $client->account->incoming_phone_numbers->get($nm);
+            
+            $clientx = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
+            $clientx->account->incoming_phone_numbers->delete($twilioNumber->sid);
+            $result=$this->db->query(" DELETE FROM `twilio_number_to_business` WHERE `phone_number`='".$number."'");
+            $this->response->redirect('/settings/location');
+                $this->view->disable();
+                return;
+           
         }
 
     }
