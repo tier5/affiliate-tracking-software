@@ -583,7 +583,6 @@
         }
 
         protected function CreateProfile($tData) {
-
             //echo '<pre>';print_r($tData);exit;
             try {
                 if (!$this->request->isPost())
@@ -611,6 +610,7 @@
                     'tokenID'           => $tData['StripeToken'],
                     'type'              => 'Agency',
                     'userId'            => $UserID,
+                    'phone'             => $tData['Phone'],
                 ];
 
                 if(!$Profile = $objPaymentService->createPaymentProfile($tParameters)) {
@@ -662,6 +662,7 @@
                     'amount'                    => $tData['PricingPlan']['RecurringPayment'] * 100,
                     'initial_amount'            => $SkipInitial ? 0 : $tData['PricingPlan']['InitialFee'] * 100,
                     'type'                      => 'Agency',
+                    'phone'                     => $tData['Phone'],
                 ];
 
                 // GARY_TODO:  Refactor:  No reason to have to query the DB here.
@@ -784,8 +785,7 @@
             if($Token) {
                 // merge stripe token into agency signup session array 
                 $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['StripeToken' => $Token]);
-            }
-            else {
+            } else {
                 // if no stripe token set flash message and redirect
                 $this->flashSession->error(
                     'Credit card declined.  If you feel this is an error, please contact our customer support.'
@@ -798,11 +798,16 @@
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
 
                     if (!$Profile = $this->CreateProfile($this->session->AgencySignup)) {
-                        $this->flashSession->error('Invalid credit card information');
+                        $this->flashSession->error(
+                            'Invalid credit card information'
+                        );
                         return $this->response->redirect('/agencysignup/order');
                     }
                     
-                    $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['AuthProfile' => $Profile]);
+                    $this->session->AgencySignup = array_merge(
+                        $this->session->AgencySignup,
+                        ['AuthProfile' => $Profile]
+                    );
 
                 }
             } catch(Exception $e) {
