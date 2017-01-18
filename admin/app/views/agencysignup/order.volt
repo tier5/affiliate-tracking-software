@@ -58,13 +58,12 @@
                     </div>
                     <div class="row contact-row">
                         <div class="col-xs-5 col-lg-3">
-                            <label>Phone
-                                <span class="required">*</span></label>
-                                <span style="color:red; font-size:80%; float: right,bottom;  white-space:nowrap;" id="Email_availability_result"></span>
+                            <label>Cell Phone</label>
+                                <span style="color:red; font-size:80%; float: right,bottom;  white-space:nowrap;"></span>
                       
                         </div>
                         <div class="col-xs-7 col-lg-9">
-                            <input type="text" id="Phone" maxlength="50" class="form-control" placeholder="Please enter your phone number" name="Phone" value="{{ Phone }}" required />
+                            <input type="text" id="Phone" maxlength="50" class="form-control" placeholder="Please enter your phone number" name="Phone" value="{{ Phone }}" />
                         </div>
                     </div>
                     <div class="row contact-row">
