@@ -116,6 +116,7 @@
 
         public function recommendAction() {
 
+
         try {
                 $rating = false;
                 if (isset($_GET["r"])) $rating = htmlspecialchars($_GET["r"]);
@@ -126,18 +127,28 @@
                 $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
                 if($invite->rating)
                     $this->response->redirect('/review/expired');
-
+                   
                 if ($invite->location_id > 0) {
-                        // echo $rating;exit;
-     
-                               /**** send mail to business and user ***/
+                    
+                     /**** send mail to business and user ***/
                      $user_sent=$invite->sent_by_user_id;
                      $userobj = new Users();
                      $user_info = $userobj::findFirst($user_sent);
                      $emp= $user_info->is_employee;
                      //echo "<br>";
                      $role= $user_info->role;
+
+
+                         $locationobj = new Location();
+                         $location = $locationobj::findFirst($invite->location_id);
+                         $this->view->setVar('location', $location);
      
+                        // echo $invite->location_id;exit;
+                         $agencyobj = new Agency();
+                         $agency = $agencyobj::findFirst($location->agency_id);
+                         $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                          $this->view->parent_agency = $parent_agency;
+                        //echo $parent_agency->name;exit;
                      if($emp==1 && $role=="Super Admin")
                      {  
                          $TwilioToken = $this->config->twilio->twilio_auth_token;
@@ -249,15 +260,6 @@
                          //exit;
                          /**** send mail to business and user ***/
      
-                         $locationobj = new Location();
-                         $location = $locationobj::findFirst($invite->location_id);
-                         $this->view->setVar('location', $location);
-     
-     
-                         $agencyobj = new Agency();
-                         $agency = $agencyobj::findFirst($location->agency_id);
-                         $parent_agency=$agencyobj::findFirst($agency->parent_id);
-                          $this->view->parent_agency = $parent_agency;
                          $this->view->agency = $agency;
                          $this->view->sms_button_color = $location->sms_button_color;
                          $this->view->logo_path = $location->sms_message_logo_path;
@@ -337,7 +339,7 @@
             $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
 
             if((!$invite || $invite->rating) && !$this->request->isPost())
-                $this->response->redirect('/review/expired');
+               // $this->response->redirect('/review/expired');
 
             $invite->rating = $rating;
             $invite->recommend = 'N';

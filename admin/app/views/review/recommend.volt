@@ -58,6 +58,7 @@ function isMobile() {
   </div>
   <br>
 <br>
+
 <?php if($parent_agency->name):?>
   <div class="footer">Powered by:
   <a href="<?=$parent_agency->website; ?>" style="Margin:0;color: #333;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none"><?=$parent_agency->name; ?></a></div>
