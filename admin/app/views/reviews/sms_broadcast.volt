@@ -355,7 +355,7 @@
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="link" style="text-align: left;">Link:</label>
                       <div class="col-md-7">
-                        <input type="text" id="test_link" placeholder="Link" class="form-control url" style="color:#000;" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" onblur="validateURL()" />
+                        <input type="text" id="test_link" placeholder="Link" class="form-control url" style="color:#000;" value="" name="link" id="link" onblur="validateURL()" />
                         <span class="url_err"></span>
                       </div>
                       <div class="col-md-4">
