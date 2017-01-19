@@ -19,6 +19,7 @@
     use Vokuro\Models\ReviewsMonthly;
     use Vokuro\Models\ReviewSite;
     use Vokuro\Models\SharingCode;
+    
     use Vokuro\Models\Users;
 use Services_Twilio;
 use Services_Twilio_RestException;
@@ -356,10 +357,17 @@ use Pricing_Services_Twilio;
                  $this->flash->error("You do not have permission to this page.");
                  $this->view->disable();
             }
-
+            //echo $userObj->agency_id;exit;
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $userObj->agency_id);
             $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+            //echo $agency->custom_sms;exit;
+            $this->view->custom_sms=$agency->custom_sms;
+            $subscription_plan = $subscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = " .$userObj->agency_id);
+            $this->view->planSubscribe=$subscription_plan->payment_plan;
+            //exit;
+
+
             if (!$agency) {
                 $this->flash->error("No settings were found");
             }

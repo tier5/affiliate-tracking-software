@@ -82,7 +82,7 @@
         data:{country_select : country_select,number_type_select:number_type_select,area_code:area_code,Contains:Contains, user_id :$('#user_id').val()},
         success: function(result){
           if(result){
-          alert(result);
+          //alert(result);
             $("#result_valx").html("");
             $("#result_valx").html(result);
           }

@@ -115,6 +115,7 @@ class ControllerBusinessBase extends ControllerBase
                 'deleted'            => (isset($age->deleted) ? $age->deleted : 0),
                 'status'             => (isset($age->status) ? $age->status : 1),
                 'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
+
             ];
 
             if (!$age->createOrUpdateBusiness($params)) {
@@ -291,7 +292,7 @@ class ControllerBusinessBase extends ControllerBase
 
             $db = $this->di->get('db');
             $db->begin();
-            
+            //echo "here";exit;
             
             /* Attempt to create our new business */
             $params = [
@@ -310,6 +311,7 @@ class ControllerBusinessBase extends ControllerBase
                 'status'             => (isset($age->status) ? $age->status : 1),
                 'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
                 'parent_id'          => $parent_id,
+                'custom_sms'=>$this->request->getPost('custom_sms'),
             ];
           
           if($this->request->getPost('subscription_pricing_plan_id')) {
@@ -377,7 +379,8 @@ class ControllerBusinessBase extends ControllerBase
                         'status'             => (isset($age->status) ? $age->status : 1),
                         'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
                         'parent_id'          => $parent_id,
-                        'upgraded_status'    => 0
+                        'upgraded_status'    => 0,
+
                     ];
 
 
