@@ -158,6 +158,7 @@ class SettingsForm extends Form
         $intercom_security_hash = new Text('intercom_security_hash', array());
         $this->add($intercom_security_hash);
 
+        
          $welcome_email = new Text('welcome_email', array(
             'placeholder' => 'Welcome Email'
         ));
@@ -167,7 +168,12 @@ class SettingsForm extends Form
         $viral_mail = new Text('viral_mail', array(
             'placeholder' => 'Viral Email'
         ));
+         $this->add($viral_mail);
 
-        $this->add($viral_mail);
+        $welcome_email_employee=new Text('welcome_email_employee', array(
+            'placeholder' => 'Welcome Email Employee'
+        ));
+
+        $this->add($welcome_email_employee);
     }
 }
