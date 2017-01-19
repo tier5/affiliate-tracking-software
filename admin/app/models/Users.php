@@ -5,6 +5,7 @@
     use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
     use Phalcon\Mvc\Model\Validator\Uniqueness;
     use Vokuro\Models\UsersLocation;
+    use Phalcon\Validation;
 
     /**
      * Vokuro\Models\Users
@@ -199,15 +200,14 @@
          */
         public function validation() {
             
-            if(!$this->id) {
+            /*if(!$this->id) {
 
               $this->validate(new Uniqueness(array(
                   "field" => "email",
                   "message" => "The email is already registered"
               )));
             
-            }
-
+            }*/
 
             return $this->validationHasFailed() != true;
         }

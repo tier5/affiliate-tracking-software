@@ -53,7 +53,8 @@ class StripeService extends BaseService
 	{
 		$this->setAgencyStripeKeys();
     	$this->connectToStripe();
-		return \Stripe\Account::retrieve('acct_17FTSpKdAtMKiGb0')->currencies_supported;
+
+        return \Stripe\Account::retrieve();
 	}
 
     public function getCurrentAgency()
@@ -73,10 +74,9 @@ class StripeService extends BaseService
     {
     	$this->setAgencyStripeKeys();
     	$this->connectToStripe();
-    	// get account country
-    	$accountCountry = 'US';
+        $currencies = $this->getStripeAccountInfo()->currencies_supported;
 
-    	return \Stripe\CountrySpec::retrieve($accountCountry)->supported_payment_currencies;
+    	return $currencies;
     }
 
 }

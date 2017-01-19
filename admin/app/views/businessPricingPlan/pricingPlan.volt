@@ -82,17 +82,21 @@
                             <div class="col-md-3">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label class="control-label">Base Price $</label>
+                                        <label class="control-label">Currency <span class="currency-symbol">$</span></label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="base-price-control" type="number" value="{{ basePrice }}" step="0.01" min="0.00" class="form-control" placeholder="29.00">
+                                        <select id="currency" class="form-control">
+                                        {% for currency in availableCurrencies %}
+                                        <option value="{{ currency }}">{{ currency|upper }}</option>
+                                        {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label class="control-label">Charge Per SMS $</label>
+                                        <label class="control-label">Charge Per SMS <span class="currency-symbol">$</span></label>
                                     </div>
                                     <div class="col-md-6">
                                         <input id="charge-per-sms-control" type="number" value="{{ chargePerSms }}" step="0.01" min="0" class="form-control" placeholder="0.00">
@@ -129,10 +133,10 @@
                             <div class="col-md-3">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label class="control-label">My Cost Per SMS $</label>
+                                        <label class="control-label">Base Price <span class="currency-symbol">$</span></label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="cost-per-sms-control" type="number" value="{{ costPerSms }}" step="0.01" min="0" class="form-control" placeholder="0.00">
+                                        <input id="base-price-control" type="number" value="{{ basePrice }}" step="0.01" min="0.00" class="form-control" placeholder="29.00">
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +178,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3"></div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="control-label">My Cost Per SMS <span class="currency-symbol">$</span></label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="cost-per-sms-control" type="number" value="{{ costPerSms }}" step="0.01" min="0" class="form-control" placeholder="0.00">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-3"></div>
                         </div>
                         <div class="row">

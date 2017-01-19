@@ -5,7 +5,9 @@ namespace Vokuro\Controllers;
 use Exception;
 use Phalcon\Filter;
 use Vokuro\Models\Agency;
+use Vokuro\Models\Users;
 use Vokuro\Services\Container;
+use Vokuro\Services\StripeService as Stripe;
 use Vokuro\Utils;
 use Vokuro\Forms\SignUpForm;
 use Vokuro\Forms\CreditCardForm;
@@ -22,8 +24,8 @@ class BusinessPricingPlanController extends ControllerBase
     public function initialize()
     {
 
-        $identity = $this->session->get('auth-identity');
-        /*if ($identity && $identity['profile'] != 'Employee') {
+        /*$identity = $this->session->get('auth-identity');
+        if ($identity && $identity['profile'] != 'Employee') {
             $this->tag->setTitle('Get Mobile Reviews | Subscription');
             $this->view->setTemplateBefore('private');
         } else {
@@ -81,7 +83,6 @@ class BusinessPricingPlanController extends ControllerBase
             $responseParameters['message'] = $e->getMessage();
 
         }
-
     }
 
     public function editExistingPricingPlanAction($pricingPlanId)
@@ -145,7 +146,6 @@ class BusinessPricingPlanController extends ControllerBase
         }
 
         $this->view->pick("businessPricingPlan/pricingPlan");
-
     }
 
     public function updateSubcriptionNameAction()
@@ -191,6 +191,9 @@ class BusinessPricingPlanController extends ControllerBase
 
     public function showNewPricingPlanAction()
     {
+        $stripe = new Stripe();
+
+        $this->view->availableCurrencies = $stripe->getAvailableCurrencies();
         $this->view->name = "My New Subscription";
         $this->view->enableTrialAccount = true;
         $this->view->enableDiscountOnUpgrade = true;
@@ -209,6 +212,7 @@ class BusinessPricingPlanController extends ControllerBase
         $this->view->isNewRecord = true;
 
         // get available currencies
+        
 
         /* Add progression parameters */
         $progressions = [];
@@ -377,7 +381,6 @@ class BusinessPricingPlanController extends ControllerBase
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
-
     }
 
     public function updateEnablePricingPlanAction($pricingPlanId, $enable)
@@ -414,10 +417,10 @@ class BusinessPricingPlanController extends ControllerBase
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
-
     }
 
-    public function deletePricingPlanAction($pricingPlanId) {
+    public function deletePricingPlanAction($pricingPlanId)
+    {
 
         if (!is_numeric($pricingPlanId)) {
             throw new \Exception('$pricingPlanId is expected to be an integer');
@@ -479,7 +482,6 @@ class BusinessPricingPlanController extends ControllerBase
      */
     private function validatePricingPlanInput()
     {
-
         $validated = [];
 
         $filter = new Filter();
