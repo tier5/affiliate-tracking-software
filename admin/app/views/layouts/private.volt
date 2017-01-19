@@ -311,6 +311,13 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
+                         <li class="nav-item start">
+                            <a href="/agency/customnumber" class="nav-link nav-toggle">
+                                <i class="fa fa-globe"></i>
+                                <span class="title">Custom SMS Number</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     {% elseif agencytype == "business" %}
                         <li class="nav-item start">
                             <a href="/" class="nav-link nav-toggle">
