@@ -8,7 +8,9 @@
     use Vokuro\Models\SharingCode;
     use Vokuro\Models\Users;
     use Vokuro\Models\UsersSubscription;
-
+    use Services_Twilio;
+    use Services_Twilio_RestException;
+    use Pricing_Services_Twilio;
     /**
      * Display the default index page.
      */
@@ -129,10 +131,39 @@
 
             $UserID = $Identity['id'];
             $objUser = Users::findFirst("id = {$UserID}");
-
+           
             $tAgencies = Agency::find("agency_type_id = 2 AND parent_id = {$objUser->agency_id}");
             return $tAgencies;
         }
+
+        public function findBusinessescustom() {
+            $Identity = $this->auth->getIdentity();
+
+            if (!is_array($Identity)) {
+                $this->response->redirect("/session/login?return=/agency");
+                $this->view->disable();
+                return;
+            }
+
+            $UserID = $Identity['id'];
+            $objUser = Users::findFirst("id = {$UserID}");
+            $objUser->agency_id;
+            $tAgencies = Agency::find("agency_type_id = 2 AND parent_id = {$objUser->agency_id}");
+            $businessArray=array();
+            foreach($tAgencies as $agency)
+            {
+                //echo $agency->agency_id;
+                $result=$this->db->query(" SELECT * FROM `users` WHERE `agency_id`='". $agency->agency_id."'");
+                           $x=$result->fetch();
+                           array_push($businessArray, $x);
+                           
+            }
+            /*echo '<pre>';print_r($businessArray);
+            //exit;
+            exit;*/
+            return $businessArray;
+        }
+
 
         /**
          * Default action. Set the public layout (layouts/private.volt)
@@ -149,6 +180,150 @@
 
             $this->tag->setTitle('Manage Businesses');
             $this->view->tBusinesses = $this->findBusinesses();
+        }
+
+        public function assignnumberAction($id)
+        {
+               $user_id=base64_decode($id);
+               $this->view->user_id=$user_id; 
+               $this->view->twilio_details=0;
+                $Twillioset=$this->agencygetTwilioDetails();
+                //dd($Twillioset);
+                $twilio_api_key=$Twillioset['twilio_api_key'];
+                if(($Twillioset['twilio_api_key']==""|| $twilio_api_key==NULL)||($Twillioset['twilio_auth_token']==""|| $Twillioset['twilio_auth_token']==NULL)){
+
+                }
+                $client = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
+            $uri = '/'. $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
+            $numbers = $client->retrieveData($uri);
+            
+            $country=array();
+            foreach ($numbers as $key => $value) {
+                foreach ($value as $key => $nox) {
+                
+                $country[$nox->country_code]=$nox->country;
+                
+                }
+                
+            }
+            asort($country);
+            $this->view->countries=$country;
+        }
+
+
+             public function agencygetTwilioDetails(){
+            $twilio_api_key = "";
+            $twilio_auth_token = "";
+            $twilio_auth_messaging_sid = "";
+            $twilio_from_phone = "";
+            $identity = $this->auth->getIdentity();
+            
+            $conditions = "id = :id:";
+            $parameters = array("id" => $identity['id']);
+            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+            $conditions = "agency_id = :agency_id:";
+            $parameters = array("agency_id" => $userObj->agency_id);
+            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+            if ($agency) {
+                $this->view->agency = $agency;
+                if (isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != ""  && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
+                        $conditionsUser = "agency_id = :agency_id:";
+                        $userParam=$parameters = array("agency_id" => $agency->agency_id);
+                        $userObjNew = Users::findFirst(array($conditionsUser, "bind" => $userParam));
+                        $twilio_user_id=$userObjNew->id;
+                        $twilio_api_key = $agency->twilio_api_key;
+                        $twilio_auth_token = $agency->twilio_auth_token;
+                        $twilio_from_phone = $agency->twilio_from_phone;
+                } 
+                if ($twilio_api_key  == "" && $twilio_auth_token == ""  && $twilio_from_phone == "") {
+                    $parameters1 = array("agency_id" => $agency->parent_id);
+                    $agency1 = Agency::findFirst(array($conditions, "bind" => $parameters1));
+                    $conditionsUser = "agency_id = :agency_id:";
+                    $userParam=$parameters = array("agency_id" => $agency1->agency_id);
+                    $userObjNew = Users::findFirst(array($conditionsUser, "bind" => $userParam));
+                    $twilio_user_id=$userObjNew->id;
+                    $twilio_api_key = $agency1->twilio_api_key;
+                    $twilio_auth_token = $agency1->twilio_auth_token;
+                    $twilio_from_phone = $agency1->twilio_from_phone;   
+                }
+            }
+            $Twiio=array();
+            $Twiio['twilio_user_id']=$twilio_user_id;
+            $Twiio['twilio_api_key']=$twilio_api_key;
+            $Twiio['twilio_auth_token']=$twilio_auth_token;
+            $Twiio['twilio_from_phone']=$twilio_from_phone;
+            return($Twiio);
+        }
+
+
+
+
+        public function customnumberAction()
+        {
+            $UpgradeSubscriptionPlanID = 4;
+            $identity = $this->auth->getIdentity();
+
+            $objUser = \Vokuro\Models\Users::findFirst('id = ' . $identity['id']);
+            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+          $this->tag->setTitle('Custom SMS number');
+          $this->view->tBusinesses = $this->findBusinesses();
+          $business=$this->findBusinesses();
+
+          /*** twilio information ***/
+            $twilio_api_key = "";
+            $twilio_auth_token = "";
+            $twilio_auth_messaging_sid = "";
+            $twilio_from_phone = "";
+            $identity = $this->auth->getIdentity();
+            
+            $conditions = "id = :id:";
+            $parameters = array("id" => $identity['id']);
+            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+            $conditions = "agency_id = :agency_id:";
+            $parameters = array("agency_id" => $userObj->agency_id);
+            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+            if ($agency) {
+                $this->view->agency = $agency;
+                if (isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != ""  && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
+                        $conditionsUser = "agency_id = :agency_id:";
+                        $userParam=$parameters = array("agency_id" => $agency->agency_id);
+                        $userObjNew = Users::findFirst(array($conditionsUser, "bind" => $userParam));
+                        $twilio_user_id=$userObjNew->id;
+                        $twilio_api_key = $agency->twilio_api_key;
+                        $twilio_auth_token = $agency->twilio_auth_token;
+                        $twilio_from_phone = $agency->twilio_from_phone;
+                } 
+                if ($twilio_api_key  == "" && $twilio_auth_token == ""  && $twilio_from_phone == "") {
+                    $parameters1 = array("agency_id" => $agency->parent_id);
+                    $agency1 = Agency::findFirst(array($conditions, "bind" => $parameters1));
+                    $conditionsUser = "agency_id = :agency_id:";
+                    $userParam=$parameters = array("agency_id" => $agency1->agency_id);
+                    $userObjNew = Users::findFirst(array($conditionsUser, "bind" => $userParam));
+                    $twilio_user_id=$userObjNew->id;
+                    $twilio_api_key = $agency1->twilio_api_key;
+                    $twilio_auth_token = $agency1->twilio_auth_token;
+                    $twilio_from_phone = $agency1->twilio_from_phone;   
+                }
+            }
+           // echo $twilio_from_phone;exit;
+          /*** twilio information ***/
+
+          $generate_array=array();
+                 foreach($business as $agent)
+                    {
+                       
+                      $usersinfo = \Vokuro\Models\users::findfirst("agency_id = " .$agent->id );
+                      $result=$this->db->query("SELECT * FROM `twilio_number_to_business` WHERE `buisness_id`='".$usersinfo->id."'");
+                           $x=$result->fetch();
+                           $status=($x['phone_number']!='')?'Custom':'Default';
+                           $phone=($x['phone_number']!='')?$x['phone_number']:$twilio_from_phone;
+                           $friendly_phone=($x['friendly_name']!='')?$x['friendly_name']:'none';
+                           $action=($x['phone_number']!='')? '1':'2';
+                      $generate_array[$agent->id]=$usersinfo->id."?".$status."?".$phone."?".$friendly_phone."-?".$action;
+                    }
+                   $this->view->generate_array=$generate_array;
+           //$this->view->tBusinesses = $this->findBusinessescustom();
+            //echo '<pre>';print_r($this->view->tBusinesses);exit;
         }
         
         public function emailisexistAction(){

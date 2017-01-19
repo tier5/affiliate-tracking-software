@@ -365,11 +365,11 @@
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="name" style="text-align: left;">Name:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Name" id="test_name" class="form-control" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" name="name" id="name" style="color:#000;" />
+                        <input type="text" placeholder="Name"  class="form-control" value="" name="name" id="name" style="color:#000;" />
                       </div>
                       <label class="col-md-1 control-label" for="phone" style="text-align: left;">Phone:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Phone" id="test_phone" class="form-control" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" />
+                        <input type="text" placeholder="Phone"  class="form-control" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" />
                       </div>
                       <div class="col-md-4">
                         <button id="testbutton" type="submit" class="btnLink btnSecondary" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" >Send Test SMS Message</button>
@@ -421,6 +421,7 @@ function validateURL() {
 if(!url_validate.test(textval)){
    $('.url').val('');
    $('.url_err').html('<font color="red">Please enter a proper link</font>');
+
 }
 else{
    //alert('success');
@@ -428,6 +429,7 @@ else{
 }
 }
   jQuery(document).ready(function($){
+
     $('.date-picker').datepicker({
       orientation: "right",
       autoclose: true
@@ -436,7 +438,7 @@ else{
     $('.fancybox').fancybox();
 
     $('#testbutton').click(function (e) {
-        if($('#test_name').val().trim() == '') {
+        if($('#name').val().trim() == '') {
             alert('Name is required');
             return false;
         }
@@ -446,7 +448,7 @@ else{
             return false;
         }
 
-        if($('#test_phone').val().trim() == '') {
+        if($('#phone').val().trim() == '') {
             alert('Phone is required');
             return false;
         }
@@ -456,6 +458,7 @@ else{
         //we are good, go ahead and continue
         $('#testerror').hide();
         $('#formposttype').val('test');
+
         $('#broadcastform').submit();
       } else {
         //we are missing something, tell the user to enter the fields
@@ -465,8 +468,18 @@ else{
       }
     });
     $('#sendbutton').click(function (e) {
+         if ($('#name').val() != '' && $('#name').val() != '') {
+          $('#testerror').show();
       $('#broadcastform').validate();
       $('#formposttype').val('send');
+     // $('#broadcastform').trigger("reset");
+      // e.preventDefault();
+      } else {
+        //we are missing something, tell the user to enter the fields
+        $('#testerror').show();
+        e.preventDefault();
+        return false;
+      }
     });
     $('#searchbutton').click(function (e) {
       $('#formposttype').val('');
