@@ -783,9 +783,8 @@
           </tbody>
         </table>
         <?php } else{
-          echo $planSubscribe;
-          echo $custom_sms;
-          if($planSubscribe!='FR' || ($planSubscribe=='FR' && $custom_sms==1 && $custom_sms!=null) || !$planSubscribe) {
+         
+          if($planSubscribe!='FR' || ($planSubscribe=='FR' && $custom_sms==1 && $custom_sms!=null) || $planSubscribe!='') {
         ?>
             <form class="form-horizontal" id="userform" role="form" method="post" autocomplete="off">
                 <div class="form-group" style="padding-top: 30px;">
