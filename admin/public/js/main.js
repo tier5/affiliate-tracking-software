@@ -131,6 +131,26 @@ function googleClickHandler(google_place_id, address) {
   deeplink.open('comgooglemaps://maps.google.com/geo:0,0?q=' + address + '', 'intent://maps.google.com/geo:0,0?q=' + address + ';/#Intent;scheme=geo;package=com.google.android.apps.maps;end;');//comgooglemaps://?q=' + google_place_id);
   return false;
 }
-
+$(document).ready(function(){
+  $('#tab_email tr td a').click(function(e){
+    var datatitle = $(this).data("title");
+    if(datatitle == "business_conf"){
+      $('.'+datatitle).show();
+      $('.employee_conf').hide();
+      $('.viral_mail').hide();
+    }
+    else if(datatitle == "employee_conf"){
+      $('.'+datatitle).show();
+      $('.business_conf').hide();
+      $('.viral_mail').hide();
+    }
+    else if(datatitle == "viral_mail"){
+      $('.'+datatitle).show();
+      $('.business_conf').hide();
+      $('.employee_conf').hide();
+    }
+    e.preventDefault();
+  });
+});
 //set active link in left menu
 $('a[href="' + this.location.pathname + '"]').parents('li,ul').addClass('active');

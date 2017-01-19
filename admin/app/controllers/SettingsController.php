@@ -221,6 +221,7 @@ use Pricing_Services_Twilio;
             'secondary_color'               => 'string',
             'viral_mail'                    =>'string',
             'welcome_email'                 =>'string',
+            'welcome_email_employee'        =>'string',
         ];
 
         public function dismissstripeAction() {
@@ -332,7 +333,12 @@ use Pricing_Services_Twilio;
                     if ($file_location != '')
                         //echo 'ok';exit;
                         $entity->sms_message_logo_path = $file_location;
-                    return $entity->save();
+                    $saveentity=$entity->save();
+                    if($this->request->getPost('welcome_email', 'striptags')!='' || $this->request->getPost('viral_mail', 'striptags')!='' || $this->request->getPost('welcome_email_employee', 'striptags')!='')
+                    {
+                         $this->db->query("UPDATE `agency` SET `welcome_email`='".$this->request->getPost('welcome_email')."' ,  `viral_email`='".$this->request->getPost('viral_mail')."' ,`welcome_email_employee` ='".$this->request->getPost('welcome_email_employee')."' WHERE `agency_id`=".$Agency_id);
+                    }
+                    return $saveentity;
                 }
             }
             return true;

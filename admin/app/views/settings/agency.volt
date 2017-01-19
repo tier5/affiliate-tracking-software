@@ -673,41 +673,109 @@
                     <!-- END Stripe Settings  -->
 
                     <!-- Start Email Settings  -->
-                         <div class="tab-pane fade in" id="tab_email">
+                    <?php $business_welcome_message="Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
-                        <div class="form-group">
-                               <div class="row">
-                                <label for="welcome_email_business" class="col-md-4 control-label">Welcome Email for business</label>
-                                <div class="col-md-8">
+                    <P>If you wouldn’t mind, I’d love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
 
+                    <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit reply and let me know.
+                   </P>  To get started just confirm your email by {link} Clicking Here</a><br/><br/>Thanks,<br/><br/>
 
-                                  <textarea style="width: 100%;" class="form-control summernote" name="welcome_email" id="welcome_email"><?=(isset($_POST['welcome_email'])?$_POST["welcome_email"]:(isset($agency->
-                                        welcome_email)?$agency->welcome_email:''))?></textarea>
+                    {AgencyUser}<br/>
+                    {AgencyName}";
 
+                   $employee_confirmation_mail="<p>
+                    We’ve just created your profile for {BusinessName} within our software. 
 
+                </p>
+                <p>
 
-                            </div>
+                    When you {link}<i>Click Here and Activate Your Profile Now</i></a> you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+                    <p>
+                 {link}
+                 ACTIVATE HERE </a>
+                  </p> <p>Looking forward to working with you.</p>";
+                   ?>
+                    <div class="tab-pane fade in" id="tab_email">
+                        <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-12">
-                                    <i></i>
-                                </div>
-                            </div>
-                        </div>
+                                <table class="table table-bordered table-responsive table-striped">
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Business Confirmation Mail</td>
+                                        <td><a href="#" data-title="business_conf">Edit</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Employee Confirmation Mail</td>
+                                        <td><a href="#" data-title="employee_conf">Edit</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Viral Mail</td>
+                                        <td><a href="#" data-title="viral_mail">Edit</a></td>
+                                    </tr>
+                                </table>
+                                <div class="editor-box">
+                                    <div class="business_conf">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Subject</label>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control" value="Business Confirmation Mail" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="welcome_email_business" class="col-md-2 control-label">Content</label>
+                                                <div class="col-md-10">
+                                                    <textarea style="width: 100%;" class="form-control summernote" name="welcome_email" id="welcome_email"><?php if($agency->welcome_email!='') { echo $agency->welcome_email;} else { echo $business_welcome_message;} ?></textarea>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <i></i>
+                                                </div>
+                                        </div>
+                                    </div>
 
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="intercom_security_hash" class="col-md-4 control-label">Viral Email body</label>
-                               <div class="col-md-8">
+                                    <div class="employee_conf">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Subject</label>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control" value="Employee Confirmation Mail" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="welcome_email_employee" class="col-md-2 control-label">Content</label>
+                                                <div class="col-md-10">
+                                                    <textarea style="width: 100%;" class="form-control summernote2" name="welcome_email_employee" id="welcome_email_employee">
 
-                                 <textarea style="width: 100%;" class="form-control summernote1" name="viral_mail"><?=(isset($_POST['viral_mail'])?$_POST["viral_mail"]:(isset($agency->
-                                        viral_mail)?$agency->viral_mail:''))?></textarea>
+                                                    <?php if($agency->welcome_email_employee!='')
+                                                    {
+                                                    echo $agency->welcome_email_employee;
+                                                    }else
+                                                    {
+                                                    echo $employee_confirmation_mail;
+                                                    }
+                                                    ?></textarea>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <i></i>
+                                                </div>
+                                        </div>
+                                    </div>
 
-
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <i></i>
+                                    <div class="viral_mail">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Subject</label>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control" value="Viral Mail" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="intercom_security_hash" class="col-md-2 control-label">Content</label>
+                                            <div class="col-md-10">
+                                                <textarea style="width: 100%;" class="form-control summernote1" name="viral_mail"><?=$objAgency->viral_email?></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1135,24 +1203,32 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
     });
 
-
     $(document).ready(function() {
   $('.summernote').summernote({
                 height: 300,
-                /*toolbar: [
+                toolbar: [
                     ['font', ['bold', 'italic', 'underline']],
                     ['para', ['ul', 'ol']],
                     ['insert', ['link']]
-                ]*/
+                ]
             });
 
             $('.summernote1').summernote({
                 height: 300,
-                /*toolbar: [
+                toolbar: [
                     ['font', ['bold', 'italic', 'underline']],
                     ['para', ['ul', 'ol']],
                     ['insert', ['link']]
-                ]*/
+                ]
+            });
+
+            $('.summernote2').summernote({
+                height: 300,
+                toolbar: [
+                    ['font', ['bold', 'italic', 'underline']],
+                    ['para', ['ul', 'ol']],
+                    ['insert', ['link']]
+                ]
             });
 });
 
