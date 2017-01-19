@@ -498,6 +498,7 @@
         public function agencyAction()
         {
             $Identity = $this->auth->getIdentity();
+
             if (!is_array($Identity)) {
                 $this->response->redirect('/session/login?return=/settings/agency/');
                 $this->view->disable();
@@ -518,7 +519,7 @@
             $objAgency = Agency::findFirst("agency_id = {$objUser->agency_id}");
             
             if (!$objAgency) {
-                $this->flash->error("Agency not found.  Contact customer support.");
+                $this->flash->error("Agency not found. Contact customer support.");
             }
 
             $SettingsForm  = new SettingsForm($objAgency, array(
@@ -545,7 +546,7 @@
                     $objAgency->save();
 
                     $this->flash->success("The settings were updated successfully");
-                    Tag::resetInput();
+                    //Tag::resetInput();
                 }
             } else {
                 foreach ($AgencyForm->getMessages() as $message) {
@@ -556,12 +557,13 @@
                 }
             }
 
+
             $this->view->form = $SettingsForm;
             $this->view->agencyform = $AgencyForm;
-            $this->view->objgetuser=$objUser ;
+            $this->view->objgetuser = $objUser ;
             $this->view->objAgency = $objAgency;
-            $this->view->id=$Identity['id'];
-            $this->view->location_id=$location->location_id;
+            $this->view->id = $Identity['id'];
+            $this->view->location_id = $location->location_id;
         }
 
         public function siteaddAction($location_id = 0, $review_site_id = 0)
