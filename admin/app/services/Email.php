@@ -89,6 +89,10 @@ class Email{
             if($objAgency->welcome_email!='')
             {
                 $email_content=$objAgency->welcome_email;
+                $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
+                $link="<a style='padding:10px; margin-left:-10px;' href='http://{{ publicUrl }}{{ confirmUrl }}'>Clicking Here</a>";
+                $email_content = str_replace("{link}", $link, $email_content);
+                $email_content = str_replace("{firstName}", $user->name, $email_content);
             }
 
         }
@@ -105,10 +109,38 @@ class Email{
             if($objAgency->welcome_email!='')
             {
                 $email_content=$objAgency->welcome_email;
+                $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
+                $link="<a style='padding:10px; margin-left:-10px;' href='http://{{ publicUrl }}{{ confirmUrl }}'>Clicking Here</a>";
+                $email_content = str_replace("{link}", $link, $email_content);
+                $email_content = str_replace("{firstName}", $user->name, $email_content);
             }
 
            
             //$EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
+        }
+
+        if($email_content=='')
+        {
+            $email_content="Hey ".$user->name.",<br />
+
+                    
+                    
+                   <P>Congratulations on joining us at ".$AgencyName.", I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+
+                    <P>If you wouldn’t mind, I’d love it if you answered one quick question: Why did you decide to join us at ".$AgencyName." ?</P>
+
+                    <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit 'reply' and let me know.
+                   </P>
+
+                   
+                  
+                    
+                    To get started just confirm your email by <a style='padding:10px; margin-left:-10px;' href='http://".$publicUrl.'/confirm/' . $record->code . '/' . $user->email."'>Clicking Here</a><br/><br/>
+
+                    Thanks,<br/><br/>".$AgencyUser."
+
+                   <br/>
+                    ".$AgencyName.;
         }
          if($AgencyName =='') {
             
@@ -116,6 +148,7 @@ class Email{
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
             $EmailFromName='';
+            $email_content='';
             $template="agencyconfirmation";
          }
 
@@ -125,6 +158,7 @@ class Email{
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
             'Loginpass'=>$log_in_password,
+            'email_content'=>$email_content,
            
         ];
 
