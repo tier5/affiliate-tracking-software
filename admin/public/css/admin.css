@@ -1144,6 +1144,13 @@ body { background-color: #FFFFFF; color: #484848; }
     display: block;
 }
 
+.custom_number_show {
+    display: none;
+}
+.custom_number_show.show {
+    display: block;
+}
+
 .feedback_requests {
     font-weight: bold;
 }

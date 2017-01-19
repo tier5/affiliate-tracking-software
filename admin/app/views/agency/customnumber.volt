@@ -94,7 +94,7 @@ $action=$get_explode[4];
                             <?php if($action==1){ ?>
                             <a  href="/twilio/agencyreleseThisnumber/<?php echo base64_encode($phone);?>||<?php echo base64_encode($friendly_number);?>||"><input id="gather_info" class="btnLink btnPrimary" value="Release This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a>
                             <?php } else { ?>
-                            <a href="assignnumber/<?php echo base64_encode($user_id);?>"><input id="gather_info" class="btnLink btnPrimary" value="Assign This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a>
+                            <a href="assignnumber/<?php echo base64_encode($user_id);?>"><input id="gather_info" class="btnLink btnPrimary" value="Assign Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a>
                             <?php }?>
                             </td>
                             

@@ -782,7 +782,10 @@
           <?php } ?>
           </tbody>
         </table>
-        <?php } else{?>
+        <?php } else{
+
+          if($planSubscribe!='FR' || ($planSubscribe=='FR' && $custom_sms==1)) {
+        ?>
             <form class="form-horizontal" id="userform" role="form" method="post" autocomplete="off">
                 <div class="form-group" style="padding-top: 30px;">
                     <label for="name" class="col-md-2 control-label">Country:</label>
@@ -815,7 +818,7 @@
             </form>
             <div id="result_valx">
             </div>
-        <?php } ?>
+        <?php } } ?>
       </div>
     </div>
   </div>
