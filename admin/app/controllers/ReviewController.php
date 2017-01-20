@@ -184,7 +184,7 @@
                          $Mail->send($to, $subject, '', '', $mail_body);
      
      
-                         if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                         if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                           }
                         }
                       
@@ -250,13 +250,13 @@
                              /**** mail to busines ****/
          
                              /*** sms to user ***/
-                              if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                              if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                               }
                              /*** sms to user ***/
          
                              /*** sms to business ***/
          
-                              if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                              if ($this->SendSMS($business_agency->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                               }
                              /*** sms to business ***/
      
