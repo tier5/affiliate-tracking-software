@@ -762,12 +762,13 @@
       </form>
       <div id="twilio-contain" style="display:none;">
       <?php if($twilio_details!=0){?>
+        <h5> <b> Custom SMS Number </b></h5>
         <table id="basic-datatables" class="table table-striped table-bordered" cellspacing="0" width="100%">
           <thead>
             <tr>
             <th>Number</th>
-            <th>Friendly Number</th>
-            <th>Booking Date & Time</th>
+            <!--<th>Friendly Number</th>
+            <th>Booking Date & Time</th>-->
             <th>Action</th>
             </tr>
           </thead>
@@ -775,8 +776,8 @@
           <?php foreach ($twilio_details as $key => $mobile_number) { ?>
             <tr>
               <td><?php echo $mobile_number['friendly_name']; ?></td>
-              <td><?php echo $mobile_number['phone_number']; ?></td>
-              <td><?php echo $mobile_number['created']; ?></td>
+              <!--<td><?php echo $mobile_number['phone_number']; ?></td>
+              <td><?php echo $mobile_number['created']; ?></td>-->
               <td><a  href="/twilio/releseThisnumber/<?php echo base64_encode($mobile_number['phone_number']);?>||<?php echo base64_encode($mobile_number['friendly_name']);?>||"><input id="gather_info" class="btnLink btnPrimary" value="Release This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a></td>
             </tr>
           <?php } ?>
