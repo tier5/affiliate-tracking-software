@@ -605,7 +605,7 @@ class ControllerBase extends Controller {
 
              $resultx=$this->db->query(" SELECT * FROM `agency` WHERE `agency_id` =".$objAgency->parent_id);
                  $x=$resultx->fetch();
-            echo $x['viral_email'];
+           // echo $x['viral_email'];
             if($x['viral_email']){
             $message_parent=$x['viral_email']; 
             }   
