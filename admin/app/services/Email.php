@@ -135,7 +135,7 @@ class Email{
                    
                   
                     
-                    To get started just confirm your email by <a style='padding:10px; margin-left:-10px;' href='http://".$publicUrl.'/confirm/' . $record->code . '/' . $user->email."'>Clicking Here</a><br/><br/>
+                    To get started just confirm your email by <a style='padding:10px; margin-left:-10px;' href='/confirm/'" . $record->code . '/' . $user->email."'>Clicking Here</a><br/><br/>
 
                     Thanks,<br/><br/>".$AgencyUser."
 
