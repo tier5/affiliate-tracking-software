@@ -684,16 +684,13 @@
                     {AgencyName}";
 
                    $employee_confirmation_mail="<p>
-                    We’ve just created your profile for {BusinessName} within our software. 
-
-                </p>
-                <p>
-
-                    When you {link}<i>Click Here and Activate Your Profile Now</i></a> you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+                    We’ve just created your profile for {BusinessName} within our software.</p> <p>When you {link} Click Here and Activate Your Profile Now you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
                     <p>
                  {link}
                  ACTIVATE HERE </a>
                   </p> <p>Looking forward to working with you.</p>";
+
+                  $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
                    ?>
                     <div class="tab-pane fade in" id="tab_email">
                         <div class="col-md-12">
@@ -772,7 +769,9 @@
                                         <div class="form-group">
                                             <label for="intercom_security_hash" class="col-md-2 control-label">Content</label>
                                             <div class="col-md-10">
-                                                <textarea style="width: 100%;" class="form-control summernote1" name="viral_mail"><?=$objAgency->viral_email?></textarea>
+                                                <textarea style="width: 100%;" class="form-control summernote1" name="viral_mail">
+                                                    <?php if($agency->viral_email!='') { echo $agency->viral_email;} else { echo $message_set;} ?>
+                                                </textarea>
                                             </div>
                                         </div>
                                     </div>
