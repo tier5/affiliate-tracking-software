@@ -148,6 +148,12 @@
                          $agency = $agencyobj::findFirst($location->agency_id);
                          $parent_agency=$agencyobj::findFirst($agency->parent_id);
                           $this->view->parent_agency = $parent_agency;
+
+
+            $TwilioToken = $parent_agency->twilio_auth_token;
+            // We use the businesses' from number if it exists, otherwise use the agency's.
+            $TwilioFrom = $parent_agency->twilio_from_phone;
+            $TwilioAPI = $parent_agency->twilio_api_key;
                         //echo $parent_agency->name;exit;
                      if($emp==1 && $role=="Super Admin")
                      {  
@@ -205,11 +211,11 @@
                              } }
      
                              
-                         $TwilioToken = $this->config->twilio->twilio_auth_token;
+                         /*$TwilioToken = $this->config->twilio->twilio_auth_token;
                        
                          $TwilioFrom = $this->config->twilio->twilio_from_phone;
                        
-                        $TwilioAPI = $this->config->twilio->twilio_api_key;
+                        $TwilioAPI = $this->config->twilio->twilio_api_key;*/
                         
                         if($is_email_alert_on==1)
                          {
