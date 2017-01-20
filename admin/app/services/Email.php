@@ -140,7 +140,7 @@ class Email{
                     Thanks,<br/><br/>".$AgencyUser."
 
                    <br/>
-                    ".$AgencyName.;
+                    ".$AgencyName;
         }
          if($AgencyName =='') {
             
