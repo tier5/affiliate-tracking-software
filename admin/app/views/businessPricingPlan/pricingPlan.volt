@@ -86,8 +86,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <select id="currency" class="form-control">
-                                        {% for currency in availableCurrencies %}
-                                        <option value="{{ currency }}">{{ currency|upper }}</option>
+                                        {% for currency_i in availableCurrencies %}
+                                        <option value="{{ currency_i }}"{% if currency == currency_i %}selected="selected"{% endif %}>{{ currency_i|upper }}</option>
                                         {% endfor %}
                                         </select>
                                     </div>

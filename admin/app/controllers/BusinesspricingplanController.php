@@ -110,10 +110,16 @@ class BusinessPricingPlanController extends ControllerBase
             return;
         }
         
+        $stripe = new Stripe();
+
+        $availableCurrencies = $stripe->getAvailableCurrencies();
+
         /* Set top level parameters */
         $this->view->name = $pricingPlan->name;
         $this->view->enableTrialAccount = $pricingPlan->enable_trial_account;
         $this->view->enableDiscountOnUpgrade = $pricingPlan->enable_discount_on_upgrade;
+        $this->view->currency = $pricingPlan->currency;
+        $this->view->availableCurrencies = $availableCurrencies;
         $this->view->basePrice = $pricingPlan->base_price;
         $this->view->costPerSms = $pricingPlan->cost_per_sms;
         $this->view->maxMessagesOnTrialAccount = $pricingPlan->max_messages_on_trial_account;
