@@ -170,7 +170,7 @@
      
                            $EmailFrom = 'zacha@reviewvelocity.co';
                            $EmailFromName = "Zach Anderson";
-                           $to='work@tier5.us';//$user_info->email;
+                           $to=$user_info->email;
                            $subject="New Feedback Came Aginst Review";
                            $mail_body="Dear ".$user_info->name;
                            $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
