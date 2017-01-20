@@ -371,7 +371,10 @@ use Pricing_Services_Twilio;
             $this->view->custom_sms=$agency->custom_sms;
             $subscription_plan = $subscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = " .$userObj->agency_id);
             $this->view->planSubscribe=$subscription_plan->payment_plan;
-            //exit;
+            $this->view->subscription_id=$agency->subscription_id;
+
+            /*echo $userObj->agency_id;
+            exit;*/
 
 
             if (!$agency) {
