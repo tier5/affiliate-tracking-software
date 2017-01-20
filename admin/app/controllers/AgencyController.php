@@ -180,6 +180,30 @@
 
             $this->tag->setTitle('Manage Businesses');
             $this->view->tBusinesses = $this->findBusinesses();
+            $bagencies=$this->findBusinesses();
+             $generate_array=array();
+             foreach($bagencies as $agent)
+                    {
+                        $usersinfo = \Vokuro\Models\users::find("agency_id = " .$agent->agency_id );
+                        foreach($usersinfo as $use)
+                        {
+                            //echo $use->id;//echo '<br>';
+                            $subscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = " .$use->id);
+                                /*echo $use->id;
+                                echo "-";
+                                echo $subscription->payment_plan;
+                                echo"-";
+                                echo $agent->agency_id;
+                                echo "<br>";*/
+                                if($subscription->payment_plan!='')
+                                {
+                                    $generate_array[$agent->agency_id]=$subscription->payment_plan;
+                                }
+                               
+                        }
+                    }
+                    $this->view->generate_array =$generate_array;
+                    //exit;
         }
 
         public function assignnumberAction($id)

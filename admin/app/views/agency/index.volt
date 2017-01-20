@@ -86,10 +86,11 @@ foreach($tBusinesses as $objBusiness) {
                             <td><?=$objBusiness->name?></td>
                             <td><?=$objBusiness->email?></td>
                             <td><?=date("Y-m-d",strtotime($objBusiness->date_created))?></td>
-                            <td>{{ objBusiness.subscription_id ? objBusiness.subscription.name : 'Free' }}
-                            </td>
-                            <td>{{ objBusiness.subscription_id ? 'Paid':'Free' }}
-                            </td>
+                            <!--<td>{{ objBusiness.subscription_id ? objBusiness.subscription.name : 'Free' }}
+                            </td>-->
+                            <td><?=(isset($objBusiness->subscription_id) && $objBusiness->subscription_id > 0?objBusiness.subscription.name:($generate_array[$objBusiness->id]=='FR')?'Free':"Paid")?></td>
+
+                            <td><?=(isset($objBusiness->subscription_id) && $objBusiness->subscription_id > 0?'Paid':($generate_array[$objBusiness->id]=='FR')?'Free':"Paid")?></td>
                             <td>
                                 <a href="/admindashboard/status/2/{{ objBusiness.agency_id }}/{{ objBusiness.status ? 0 : 1 }}"><img src="/public/img/{{ objBusiness.status ? 'on' : 'off' }}.png" /></a>
                             </td>
