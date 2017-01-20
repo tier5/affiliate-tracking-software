@@ -63,7 +63,7 @@ foreach($agencies as $agency) {
                             <td><?=$agency->email?></td>
                             <td><?=date("Y-m-d",strtotime($agency->date_created))?></td>
                             <td><?=(isset($agency->subscription_id) && $agency->subscription_id > 0?$agency->subscription->name:'Free')?></td>
-                            <td><?=(isset($agency->subscription_id) && $agency->subscription_id > 0?'Paid':($generate_array[$agency->id]=='FR')?'Free':"paid")?></td>
+                            <td><?=(isset($agency->subscription_id) && $agency->subscription_id > 0?'Paid':($generate_array[$agency->id]=='FR')?'Free':"Paid")?></td>
                             <td><a href="/admindashboard/status/<?=$agency_type_id?>/<?=$agency->agency_id?>/<?=($agency->status==0?1:0)?>"><img src="/public/img/<?=($agency->status==0?'off':'on')?>.png" /></td>
                             <td style="text-align: right;">
                                 <div class="actions">
