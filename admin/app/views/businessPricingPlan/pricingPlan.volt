@@ -412,6 +412,7 @@
                 enableTrialAccount: $('input[id="enable-trial-account-control"]').bootstrapSwitch('state') ? true : false,
                 enableDiscountOnUpgrade: $('input[id="enable-discount-on-upgrade-control"]').bootstrapSwitch('state') ? true : false,
                 basePrice: $('input[id="base-price-control"]').val(),
+                currency: $('select[id="currency"]').val(),
                 costPerSms: $('input[id="cost-per-sms-control"]').val(),
                 maxMessagesOnTrialAccount: $('select[id="free-sms-messages-control"]').val(),
                 upgradeDiscount: $('select[id="upgrade-discount-control"]').val(),

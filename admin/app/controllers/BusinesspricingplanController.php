@@ -276,6 +276,7 @@ class BusinessPricingPlanController extends ControllerBase
             
             /* Format the request body to an array */
             $validatedParams = $this->validatePricingPlanInput($this->request);
+
             if (!$validatedParams) {
                 throw new \Exception('One or more request parameters are not valid!!!');
             }
@@ -289,20 +290,32 @@ class BusinessPricingPlanController extends ControllerBase
 
 
             /* If we are creating a new plan, ensure the name of the pricing profile is unique for this user */
-            $pricingPlan = $subscriptionManager->getPricingPlanByName($validatedParams['userId'], $validatedParams['name']);
-            if($pricingPlan && !$isUpdate) {
-                throw new \Exception('Another pricing profile with that name already exists! Please choose a unique name and try again.');
+            $pricingPlan = $subscriptionManager->getPricingPlanByName(
+                $validatedParams['userId'],
+                $validatedParams['name']
+            );
+
+            if ($pricingPlan && !$isUpdate) {
+                throw new \Exception(
+                    'Another pricing profile with that name already exists! Please choose a unique name and try again.'
+                );
             }
 
-            if($validatedParams) foreach($validatedParams as $key => $value) if($key !== 'name'){
-                $validatedParams[$key] = str_replace('$','',$value);
+            if ($validatedParams) {
+                foreach ($validatedParams as $key => $value) {
+                    if ($key !== 'name') {
+                        $validatedParams[$key] = str_replace('$', '', $value);
+                    }
+                }
             }
 
             /* Save the profile */
             $this->db->begin();
-            if(!$subscriptionManager->savePricingProfile($validatedParams, $isUpdate)) {
+
+            if (!$subscriptionManager->savePricingProfile($validatedParams, $isUpdate)) {
                 throw new \Exception('Unable to save pricing profile!!!');
             }
+            
             $this->db->commit();
 
             /*
@@ -501,6 +514,7 @@ class BusinessPricingPlanController extends ControllerBase
             "name",
             "enableTrialAccount",
             "enableDiscountOnUpgrade",
+            "currency",
             "basePrice",
             "costPerSms",
             "maxMessagesOnTrialAccount",
@@ -534,6 +548,7 @@ class BusinessPricingPlanController extends ControllerBase
             "minLocations",
             "maxLocations",
             "locationDiscountPercentage",
+            "currency",
             "basePrice",
             "smsCharge",
             "totalPrice",
@@ -545,7 +560,7 @@ class BusinessPricingPlanController extends ControllerBase
         ];
         foreach ($params as $key => $segment) {
 
-            if (substr($key,0,7) !== "segment") {
+            if (substr($key, 0, 7) !== "segment") {
                 continue;
             }
 

@@ -20,6 +20,7 @@
         public $enabled;
         public $enable_trial_account;
         public $enable_discount_on_upgrade;
+        public $currency;
         public $base_price;
         public $cost_per_sms;
         public $max_messages_on_trial_account;
@@ -101,6 +102,7 @@
                 'enabled' => 'enabled',
                 'enable_trial_account' => 'enable_trial_account',
                 'enable_discount_on_upgrade' => 'enable_discount_on_upgrade',
+                'currency' => 'currency',
                 'base_price' => 'base_price',
                 'cost_per_sms' => 'cost_per_sms',
                 'max_messages_on_trial_account' => 'max_messages_on_trial_account',
@@ -138,15 +140,17 @@
         }
 
         public function generateAndSaveShortCode() {
-            if(!$this->short_code){
+            if (!$this->short_code){
                 $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
                 $short_code = '';
-                while(!$this->short_code) {
+                while (!$this->short_code) {
                     for ($i = 0; $i < 12; $i++) {
                         $short_code .= $characters[mt_rand(0, strlen($characters) - 1)];
                     }
-                    $objSubscriptionPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("short_code = '{$short_code}'");
-                    if(!$objSubscriptionPlan) {
+                    $objSubscriptionPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
+                        "short_code = '{$short_code}'"
+                    );
+                    if (!$objSubscriptionPlan) {
                         $this->short_code = $short_code;
                         $this->save();
                     }
@@ -161,7 +165,7 @@
          */
         public function getShortCode()
         {
-            if(!$this->short_code) $this->generateAndSaveShortCode();
+            if (!$this->short_code) $this->generateAndSaveShortCode();
             return $this->short_code;
         }
     }

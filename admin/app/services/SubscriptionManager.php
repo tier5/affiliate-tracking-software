@@ -595,6 +595,7 @@ class SubscriptionManager extends BaseService
 
         try {
             $id = $this->saveSubscriptionPricingPlan($parameters, $isUpdate);
+
             if (!$id) {
                 throw new \Exception("Unable to obtain pricing plan ID");
             }
@@ -741,6 +742,7 @@ class SubscriptionManager extends BaseService
         if (!$subscriptionPricingPlan) {
             return false;
         }
+        //var_dump($parameters["currency"]); die();
 
         $subscriptionPricingPlan->getShortCode();
         $subscriptionPricingPlan->user_id = $parameters["userId"];
@@ -748,6 +750,7 @@ class SubscriptionManager extends BaseService
         $subscriptionPricingPlan->enabled = $isUpdate ? $subscriptionPricingPlan->enabled : true;
         $subscriptionPricingPlan->enable_trial_account = $parameters["enableTrialAccount"] ? $parameters["enableTrialAccount"] : 0;
         $subscriptionPricingPlan->enable_discount_on_upgrade = $parameters["enableDiscountOnUpgrade"] ? $parameters["enableDiscountOnUpgrade"] : 0;
+        $subscriptionPricingPlan->currency = $parameters["currency"];
         $subscriptionPricingPlan->base_price = $parameters["basePrice"];
         $subscriptionPricingPlan->cost_per_sms = $parameters["costPerSms"];
         $subscriptionPricingPlan->max_messages_on_trial_account = $parameters["maxMessagesOnTrialAccount"];
