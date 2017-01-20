@@ -156,13 +156,13 @@
                          $TwilioAPI = $this->config->twilio->twilio_api_key;
      
                          $conditions = "location_id = :location_id:";
-                     $parameters = array("location_id" => $invite->location_id);
+                         $parameters = array("location_id" => $invite->location_id);
                          $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
                          $is_email_alert_on=0;
      
                          foreach($agencynotifications as $agencynotification) {
                              if ($agencynotification->user_id == $user_info->id) {
-                                 $is_email_alert_on = ($agencynotification->email_alert==1?true:false);
+                                 $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
                              } }
      
                          if($is_email_alert_on==1)
@@ -181,7 +181,7 @@
      
                          if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                           }
-                      }
+                        }
                       
                         //find the location review sites
                         $conditions = "location_id = :location_id: AND is_on = 1";
