@@ -20,7 +20,8 @@ class SubscriptionManager extends BaseService
         parent::__construct($config, $di);
     }
 
-    public function creditCardInfoRequired($session, $iUserID = null) {
+    public function creditCardInfoRequired($session, $iUserID = null)
+    {
         $userManager = $this->di->get('userManager');
         $paymentService = $this->di->get('paymentService');
 
@@ -110,7 +111,8 @@ class SubscriptionManager extends BaseService
         }
     }
 
-    public function GetBusinessSubscriptionUpgradeDiscount($BusinessID) {
+    public function GetBusinessSubscriptionUpgradeDiscount($BusinessID)
+    {
         $subscriptionManager = $this->di->get('subscriptionManager');
 
         /* Get Super Admin */
@@ -860,8 +862,6 @@ class SubscriptionManager extends BaseService
 
         return true;
     }
-
-
 
     public function CreateDefaultSubscriptionPlan($AgencyID, $IsViral = true)
     {

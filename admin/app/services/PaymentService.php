@@ -11,11 +11,13 @@ use Vokuro\Payments\AuthorizeDotNet as AuthorizeDotNetPayment;
 
 class PaymentService extends BaseService {
         
-    function __construct($config, $di) {
+    public function __construct($config, $di)
+    {
         parent::__construct($config, $di);
     }
     
-    public function getRegisteredCardType($userId, $provider) {
+    public function getRegisteredCardType($userId, $provider)
+    {
         $class = $this->getProviderClass($provider);
         switch($class) {
             case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
@@ -35,7 +37,8 @@ class PaymentService extends BaseService {
         return $creditCard ? $creditCard->credit_card_type : false;
     }
 
-    public function getPaymentProfile($paymentParams) {
+    public function getPaymentProfile($paymentParams)
+    {
         $class = $this->getProviderClass($paymentParams['provider']);
         switch($class) {
             case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
@@ -70,7 +73,8 @@ class PaymentService extends BaseService {
         return false;
     }
     
-    public function hasPaymentProfile($paymentParams) {
+    public function hasPaymentProfile($paymentParams)
+    {
         $class = $this->getProviderClass($paymentParams['provider']);
         switch($class) {
             case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
@@ -97,7 +101,8 @@ class PaymentService extends BaseService {
         return $status;
     }
     
-    public function createPaymentProfile($ccParameters) {
+    public function createPaymentProfile($ccParameters)
+    {
         $class = $this->getProviderClass($ccParameters['provider']);
 
         switch($class) {
@@ -115,7 +120,8 @@ class PaymentService extends BaseService {
         return $status;
     }
     
-    public function updatePaymentProfile($ccParameters) {
+    public function updatePaymentProfile($ccParameters)
+    {
         $class = $this->getProviderClass($ccParameters['provider']);
         
         switch($class) {
@@ -130,7 +136,8 @@ class PaymentService extends BaseService {
         return $status;
     }
     
-    public function changeSubscription($subscriptionParameters) {
+    public function changeSubscription($subscriptionParameters)
+    {
         $class = $this->getProviderClass($subscriptionParameters['provider']);
 
         switch($class) {
@@ -148,7 +155,8 @@ class PaymentService extends BaseService {
         return $status;
     }
     
-    private function getProviderClass($provider) {
+    private function getProviderClass($provider)
+    {
         $providerClass = null;
         
         switch($provider) {
@@ -165,14 +173,14 @@ class PaymentService extends BaseService {
         return $providerClass;
     }
 
-    private function createStripePaymentProfile($ccParameters) {
-        
+    private function createStripePaymentProfile($ccParameters)
+    {
         /* Check parameters */
         $required = ['tokenID', 'userEmail'];
         $supplied = array_keys($ccParameters);
         $intersect = array_intersect($supplied, $required);
 
-        if ( count($intersect) !== count($required)) {
+        if (count($intersect) !== count($required)) {
             return false;
         }
 
@@ -187,7 +195,7 @@ class PaymentService extends BaseService {
             ->bind(["id" => $userId])
             ->execute()
             ->getFirst();
-        if($ccParameters['type'] == 'Business') {
+        if ($ccParameters['type'] == 'Business') {
             $objBusiness = Agency::query()
                 ->where("agency_id = :agency_id:")
                 ->bind(["agency_id" => $user->agency_id])
@@ -201,25 +209,26 @@ class PaymentService extends BaseService {
             $StripeSecretKey = $this->config->stripe->secret_key;
         }
 
-        if(!$StripeSecretKey) {
+        if (!$StripeSecretKey) {
             $responseParameters['errors'] = "Invalid stripe key";
             return $responseParameters;
         }
 
         try {
             \Stripe\Stripe::setApiKey($StripeSecretKey);
+
             $customerObject = [
                 'email'     => $ccParameters['userEmail'],
                 'source'    => $ccParameters['tokenID'],
             ];
 
-            if(isset($ccParameters['phone']) && !empty($ccParameters['phone'])) {
+            if (isset($ccParameters['phone']) && !empty($ccParameters['phone'])) {
                 $customerObject['metadata'] = ['cell_phone' => $ccParameters['phone']];
             }
 
             $Customer = \Stripe\Customer::create($customerObject);
 
-            if($Customer->id) {
+            if ($Customer->id) {
                 $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
                 if (!$objStripeSubscription)
                     $objStripeSubscription = new \Vokuro\Models\StripeSubscriptions();
@@ -239,7 +248,8 @@ class PaymentService extends BaseService {
         return $responseParameters;
     }
 
-    private function GetStripeSecretKey($AgencyID) {
+    private function GetStripeSecretKey($AgencyID)
+    {
         if(!$AgencyID)
             return false;
 
@@ -258,7 +268,8 @@ class PaymentService extends BaseService {
         return false;
     }
 
-    public function cancelStripeSubscription($SubscriptionID, $AgencyID) {
+    public function cancelStripeSubscription($SubscriptionID, $AgencyID)
+    {
         if(!$SubscriptionID)
             return false;
 
@@ -279,7 +290,8 @@ class PaymentService extends BaseService {
         return true;
     }
 
-    public function deleteStripeCustomer($CustomerID, $AgencyID) {
+    public function deleteStripeCustomer($CustomerID, $AgencyID)
+    {
         if(!$CustomerID)
             return false;
 
@@ -300,19 +312,20 @@ class PaymentService extends BaseService {
         return true;
     }
 
-    private function changeStripeSubscription($ccParameters) {
+    private function changeStripeSubscription($ccParameters)
+    {
         /* Check parameters */
         $required = ['userId'];
         $supplied = array_keys($ccParameters);
         $intersect = array_intersect($supplied, $required);
 
-        if ( count($intersect) !== count($required))
+        if (count($intersect) !== count($required))
             return false;
 
-        if($ccParameters['type'] == 'Business' && !$ccParameters['planType'])
+        if ($ccParameters['type'] == 'Business' && !$ccParameters['planType'])
             return false;
 
-        if($ccParameters['type'] == 'Agency' && !$ccParameters['amount'])
+        if ($ccParameters['type'] == 'Agency' && !$ccParameters['amount'])
             return false;
 
         $responseParameters = ['status' => false];
@@ -332,12 +345,12 @@ class PaymentService extends BaseService {
             ->getFirst();
 
         // Is a business
-        if($agency->parent_id > 0) {
+        if ($agency->parent_id > 0) {
             $objParentAgency = Agency::findFirst("agency_id = {$agency->parent_id}");
         }
 
         $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
-        if(!$objStripeSubscription->stripe_customer_id)
+        if (!$objStripeSubscription->stripe_customer_id)
             return false;
 
         //GARY_TODO: This needs to change, saving for last.  Not sure on behavior if stripe key not available.
@@ -354,7 +367,7 @@ class PaymentService extends BaseService {
             $Name = $ccParameters['type'] . " Plan {$user->agency_id}";
             $subscriptionManager = $this->di->get('subscriptionManager');
 
-            if($objStripeSubscription->stripe_subscription_id != 'N' && $objStripeSubscription->stripe_subscription_id) {
+            if ($objStripeSubscription->stripe_subscription_id != 'N' && $objStripeSubscription->stripe_subscription_id) {
                 // Delete plan first
                 $StripePlan = \Stripe\Plan::retrieve($PlanID);
                 $StripePlan->delete();
@@ -373,7 +386,7 @@ class PaymentService extends BaseService {
                 'id'        => $PlanID
             ]);
 
-            if($objStripeSubscription->stripe_subscription_id != 'N' && $objStripeSubscription->stripe_subscription_id) {
+            if ($objStripeSubscription->stripe_subscription_id != 'N' && $objStripeSubscription->stripe_subscription_id) {
                 $StripeSubscription = \Stripe\Subscription::retrieve($objStripeSubscription->stripe_subscription_id);
             } else {
                 $StripeSubscription = \Stripe\Subscription::create([
@@ -387,7 +400,7 @@ class PaymentService extends BaseService {
             $StripeSubscription->save();
 
             // Create an initial charge if there is one
-            if(isset($ccParameters['initial_amount']) && $ccParameters['initial_amount']) {
+            if (isset($ccParameters['initial_amount']) && $ccParameters['initial_amount']) {
                 $objCharge = \Stripe\Charge::create([
                     'amount' => $ccParameters['initial_amount'],
                     'currency' => 'usd',
@@ -410,8 +423,8 @@ class PaymentService extends BaseService {
         return false;
     }
     
-    private function createAuthorizeDotNetPaymentProfile($ccParameters) {
-        
+    private function createAuthorizeDotNetPaymentProfile($ccParameters)
+    {
         /* Check parameters */
         $required = ['userEmail', 'cardNumber', 'expirationDate', 'csv'];
         $supplied = array_keys($ccParameters); 
@@ -454,8 +467,8 @@ class PaymentService extends BaseService {
         return $profile;
     }
 
-    private function updateStripePaymentProfile($ccParameters) {
-
+    private function updateStripePaymentProfile($ccParameters)
+    {
         $required = ['userId', 'tokenID'];
         $supplied = array_keys($ccParameters);
         $intersect = array_intersect($supplied, $required);
@@ -497,7 +510,8 @@ class PaymentService extends BaseService {
         return $responseParameters;
     }
     
-    private function updateAuthorizeDotNetPaymentProfile($ccParameters) {
+    private function updateAuthorizeDotNetPaymentProfile($ccParameters)
+    {
         $authorizeDotNet = new AuthorizeDotNetPayment($this->config);
         
         $creditCard = AuthorizeDotNetModel::query()
@@ -536,8 +550,8 @@ class PaymentService extends BaseService {
         return $authorizeDotNet->updatePaymentProfileForCustomer($parameters);
     }
     
-    private function changeAuthorizeDotNetSubscription($subscriptionParameters) {
-
+    private function changeAuthorizeDotNetSubscription($subscriptionParameters)
+    {
         /* Get the customer profile */
         $authorizeDotNetModel = AuthorizeDotNetModel::query()
             ->where("user_id = :userId:")
