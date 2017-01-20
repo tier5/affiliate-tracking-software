@@ -19,7 +19,6 @@ class SettingsForm extends Form
 
     public function initialize($entity = null, $options = null)
     {
-
         // In edition the id is hidden
         if (isset($options['edit']) && $options['edit']) {
             $agency_id = new Hidden('agency_id');

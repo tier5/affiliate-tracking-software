@@ -27,18 +27,19 @@
      */
     class SettingsController extends ControllerBase {
 
-        public function initialize() {
+        public function initialize()
+        {
             $this->tag->setTitle('Get Mobile Reviews | Settings');
             $this->view->setTemplateBefore('private');
             parent::initialize();
-
         }
 
 
         /**
          * Searches for users
          */
-        public function indexAction() {
+        public function indexAction() 
+        {
             $identity = $this->auth->getIdentity();
             if (!is_array($identity)) {
                 $this->response->redirect('/session/login?return=/settings/');
@@ -170,7 +171,6 @@
                 ));
             }
             $this->getSMSReport();
-
         }
 
         // These are used in StoreSettings() because we save both an agency and location there but some fields differ.
@@ -220,14 +220,16 @@
             'welcome_email'                 =>'string',
         ];
 
-        public function dismissstripeAction() {
+        public function dismissstripeAction()
+        {
             $this->session->StripePopupDisabled = 1;
 
             $this->view->disable();
             return "SUCCESS";
         }
 
-        protected function storeLogo($objAgency) {
+        protected function storeLogo($objAgency)
+        {
             if($this->request->hasFiles()) {
 
                 foreach ($this->request->getUploadedFiles() as $file) {
@@ -254,8 +256,8 @@
             }
         }
 
-        protected function storeSettings($entity, $type) {
-            //echo $type;exit;
+        protected function storeSettings($entity, $type)
+        {
             if ($this->request->isPost()) {
            
                 $form = new SettingsForm($entity);
@@ -293,11 +295,8 @@
                     }
                     $tEntityArray = [];
                     $tFieldArray = $type == 'agency' ? 'tAgencyFields' : 'tLocationFields';
-                  // echo  $this->request->getPost('welcome_email', 'striptags');exit;
-                    foreach($this->$tFieldArray as $Field => $DataType) {
-                       /* echo $this->request->getPost($Field, 'striptags');
-                        echo "<br>";*/
-                       // echo $this->request->getPost($Field);echo '<br>';
+
+                    foreach ($this->$tFieldArray as $Field => $DataType) {
                         switch($DataType) {
                             case 'int':
                                 //$tEntityArray[$Field] = (is_int($this->request->getPost($Field, 'int')) ?$this->request->getPost($Field, 'int'): 0  );
@@ -325,10 +324,10 @@
                     $Prefix = $type == 'agency' ? 'a' : 'l';
                     //$file_location = $this->uploadAction($Prefix . $entity->$PrimaryID);
                     // This works because agencies and locations have the same column.
-                    //$entity->save();
-                    if ($file_location != '')
-                        //echo 'ok';exit;
+
+                    if ($file_location != '') {
                         $entity->sms_message_logo_path = $file_location;
+                    }
                     return $entity->save();
                 }
             }
@@ -339,8 +338,8 @@
         /**
          * Updates settings for locations
          */
-        public function locationAction() {
-
+        public function locationAction()
+        {
             $location_id = $this->getLocationId();
             $userObj = $this->getUserObject();
             // If there is no identity available the user is redirected to index/index.  User must be a super admin or admin to view settings page.
@@ -438,7 +437,8 @@
             $this->view->pick("settings/index");
         }
 
-        public function sendSampleEmailAction($EmployeeID) {
+        public function sendSampleEmailAction($EmployeeID)
+        {
             $this->view->disable();
 
             $Identity = $this->session->get('auth-identity');
@@ -448,75 +448,84 @@
             $objRecipient = \Vokuro\Models\Users::findFirst("id = {$EmployeeID}");
 
             $objlocationinfo = \Vokuro\Models\UsersLocation::findFirst("user_id = {$EmployeeID}");
-                if($objlocationinfo)
-                {
-                     $objReview= \Vokuro\Models\Location::findFirst("location_id = {$objlocationinfo->location_id}");
-                     $review_invite_type_id=$objReview->review_invite_type_id;
-                }
-                else
-                {
-                    
-                    $objReview= \Vokuro\Models\Location::findFirst("location_id = {$this->session->get('auth-identity')['location_id']}");
-                     $review_invite_type_id=$objReview->review_invite_type_id;
-                }
+            if ($objlocationinfo) {
+                 $objReview= \Vokuro\Models\Location::findFirst("location_id = {$objlocationinfo->location_id}");
+                 $review_invite_type_id=$objReview->review_invite_type_id;
+            } else {
+                $objReview= \Vokuro\Models\Location::findFirst("location_id = {$this->session->get('auth-identity')['location_id']}");
+                 $review_invite_type_id=$objReview->review_invite_type_id;
+            }
 
            
-            $objBusiness =  \Vokuro\Models\Agency::findFirst("agency_id = {$objCurrentUser->agency_id}");
+            $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objCurrentUser->agency_id}");
             /*echo $objReview->review_invite_type_id;
             exit;*/
 
             $Start = date("Y-m-01", strtotime('now'));
             $End = date("Y-m-t", strtotime('now'));
-           // $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
+            // $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
 
             
 
-            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReportGenerate($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
+            $dbEmployees = \Vokuro\Models\Users::getEmployeeListReportGenerate(
+                $objBusiness->agency_id,
+                $Start,
+                $End,
+                $Identity['location_id'],
+                $objReview->review_invite_type_id,
+                0,
+                1
+            );
             //echo '<pre>';print_r($dbEmployees);exit;
             $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
             $this->view->review_invite_type_id=$objReview->review_invite_type_id;
 
-                /*** new start generator ***/
+            /*** new start generator ***/
 
-        $rating_array_set_all=array();
-        $YNrating_array_set_all=array();
-       // echo 'kk';exit;
+            $rating_array_set_all=array();
+            $YNrating_array_set_all=array();
+            // echo 'kk';exit;
         
-        foreach($dbEmployees as $ux){
-            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+            foreach($dbEmployees as $ux) {
+                $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 
-        // Base model
-        $list = new ReviewInvite();
+                // Base model
+                $list = new ReviewInvite();
 
-        // Execute the query
-        $params = null;
-        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
-        $YNrating_array_set_all[$ux->id] = $rs->toArray();
-        }
-       // print_r($YNrating_array_set_all);exit;
-        $this->view->YNrating_array_set_all=$YNrating_array_set_all;
-        foreach($dbEmployees as $ux){
-            $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
+                // Execute the query
+                $params = null;
+                $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+                $YNrating_array_set_all[$ux->id] = $rs->toArray();
+            }
+            
+            // print_r($YNrating_array_set_all);exit;
+            $this->view->YNrating_array_set_all=$YNrating_array_set_all;
 
-        // Base model
-        $list = new ReviewInvite();
+            foreach ($dbEmployees as $ux) {
+                $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
 
-        // Execute the query
-        $params = null;
-        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
-        $rating_array_set_all[$ux->id] = $rs->toArray();
-        }
-        $this->view->rating_array_set_all=$rating_array_set_all;
-                /*** new start generator ***/
+                // Base model
+                $list = new ReviewInvite();
+
+                // Execute the query
+                $params = null;
+                $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+                $rating_array_set_all[$ux->id] = $rs->toArray();
+            }
+        
+            $this->view->rating_array_set_all=$rating_array_set_all;
+            
+            /*** new start generator ***/
 
 
             $objEmail = new \Vokuro\Services\Email();
             return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
-            
         }
 
-        public function agencyAction() {
+        public function agencyAction()
+        {
             $Identity = $this->auth->getIdentity();
+
             if (!is_array($Identity)) {
                 $this->response->redirect('/session/login?return=/settings/agency/');
                 $this->view->disable();
@@ -524,21 +533,21 @@
             }
 
             $this->view->tab = $this->request->get('tab');
-            if($this->request->get('tab') == 'Stripe') {
+            if ($this->request->get('tab') == 'Stripe') {
                 $this->view->ShowAgencyStripePopup = false;
             }
-                $conditions = "location_id = :location_id:";
+            
+            $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $location = Location::findFirst(array($conditions, "bind" => $parameters));
-       
-
 
             $objUser = Users::findFirst("id = " . $Identity['id']);
 
             $objAgency = Agency::findFirst("agency_id = {$objUser->agency_id}");
-           //echo '<pre>';print_r($objAgency);exit;
-            if (!$objAgency)
-                $this->flash->error("Agency not found.  Contact customer support.");
+
+            if (!$objAgency) {
+                $this->flash->error("Agency not found. Contact customer support.");
+            }
 
             $SettingsForm  = new SettingsForm($objAgency, array(
                 'edit' => true
@@ -547,13 +556,14 @@
                 'edit' => true
             ));
 
-            if($this->request->isPost() && $SettingsForm->isValid($_POST) && $AgencyForm->isValid($_POST)) {
+            if ($this->request->isPost() && $SettingsForm->isValid($_POST) && $AgencyForm->isValid($_POST)) {
                 if (!$this->storeSettings($objAgency, 'agency')) {
                     $this->flash->error($objAgency->getMessages());
                 } else {
                     // Only agencies can store logos
-                    if($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY)
+                    if ($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                         $this->storeLogo($objAgency);
+                    }
 
                     // Somehow the agency is getting updated at this point.  It looks like isValid is saving the object?  It shouldn't...  I have no idea what's going on, so doing this manually.
                     $objAgency->twilio_api_key = trim($objAgency->twilio_api_key);
@@ -566,7 +576,7 @@
                     $objAgency->save();
 
                     $this->flash->success("The settings were updated successfully");
-                    Tag::resetInput();
+                    //Tag::resetInput();
                 }
             } else {
                 foreach ($AgencyForm->getMessages() as $message) {
@@ -576,16 +586,17 @@
                     $this->flash->error($message);
                 }
             }
-           // echo '<pre>';print_r($objAgency);exit;
+
             $this->view->form = $SettingsForm;
             $this->view->agencyform = $AgencyForm;
-            $this->view->objgetuser=$objUser ;
+            $this->view->objgetuser = $objUser ;
             $this->view->objAgency = $objAgency;
-            $this->view->id=$Identity['id'];
-            $this->view->location_id=$location->location_id;
+            $this->view->id = $Identity['id'];
+            $this->view->location_id = $location->location_id;
         }
 
-        public function siteaddAction($location_id = 0, $review_site_id = 0) {
+        public function siteaddAction($location_id = 0, $review_site_id = 0)
+        {
            // $this->checkIntegerOrThrowException($location_id ,"not integer");
            // $this->checkIntegerOrThrowException($review_site_id, "not integer");
 
@@ -612,8 +623,8 @@
             }
         }
 
-
-        public function onAction($id = 0) {
+        public function onAction($id = 0)
+        {
             //$this->checkIntegerOrThrowException($id,'$id was invalid');
             $conditions = "location_review_site_id = :location_review_site_id:";
             $parameters = array("location_review_site_id" => $id);
@@ -621,9 +632,11 @@
 
             $location_id = $Obj->location_id;
             $edit_permissions = $this->getPermissions()->canUserEditLocationId($this->getUserObject(),$location_id);
-            if(!$edit_permissions) throw new \Exception("You cannot edit the parent location for id of:{$location_id}, so you cannot
-            turn off or on a location review site belonging to this location");
-
+            if (!$edit_permissions) {
+                throw new \Exception(
+                    "You cannot edit the parent location for id of:{$location_id}, so you cannot turn off or on a location review site belonging to this location"
+                );
+            }
 
             $Obj->is_on = 0;
             $Obj->save();
@@ -632,15 +645,20 @@
             echo 'true';
         }
 
-        public function offAction($id = 0) {
+        public function offAction($id = 0)
+        {
             $conditions = "location_review_site_id = :location_review_site_id:";
             $parameters = array("location_review_site_id" => $id);
             $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
             $location_id = $Obj->location_id;
             $edit_permissions = $this->getPermissions()->canUserEditLocationId($this->getUserObject(), $location_id);
-            if (!$edit_permissions) throw new \Exception("You cannot edit the parent location for id of:{$location_id}, so you cannot
-            turn off or on a location review site belonging to this location");
+            if (!$edit_permissions) {
+                throw new \Exception(
+                    "You cannot edit the parent location for id of:{$location_id}, so you cannot
+            turn off or on a location review site belonging to this location"
+                );
+            }
 
 
 
@@ -651,7 +669,8 @@
         }
 
 
-        public function notificationAction($id = 0, $fieldname, $value) {
+        public function notificationAction($id = 0, $fieldname, $value)
+        {
 
             $conditions = "location_id = :location_id: AND user_id = :user_id:";
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id'], "user_id" => $id);
@@ -689,7 +708,8 @@
         }
 
 
-        public function uploadAction($agencyid) {
+        public function uploadAction($agencyid)
+        {
             // Check if the user has uploaded files
             if ($this->request->hasFiles() == true) {
                 //echo '<p>hasFiles() == true!</p>';
