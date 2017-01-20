@@ -602,9 +602,12 @@ class ControllerBase extends Controller {
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
-            echo $objAgency->parent_id;
-            if($objParentAgency->viral_email){
-            $message_parent= $objParentAgency->viral_email; 
+
+             $resultx=$this->db->query(" SELECT * FROM `agency` WHERE `agency_id` =".$objAgency->parent_id);
+                 $x=$resultx->fetch();
+            echo $x['viral_email'];
+            if($x['viral_email']){
+            $message_parent=$x['viral_email']; 
             }   
            // $EmailFrom = "zacha@reviewvelocity.co";
         }
