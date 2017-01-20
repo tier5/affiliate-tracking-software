@@ -1,5 +1,18 @@
 {{ content() }}
 
+<script type="text/javascript" src="/js/jquery.validate.js"></script>
+<?php
+if ($this->session->get("success")!='') 
+        {
+            echo '<div class="alert alert-success">';
+            echo $msg= $this->session->get("success");
+           
+            echo '</div>';
+             $this->session->set("success", '');
+        }
+
+ ?>
+
 <header class="jumbotron subhead" id="reviews">
   <div class="hero-unit">
     <form class="form-horizontal" role="form" method="post" autocomplete="off" id="broadcastform">
@@ -355,21 +368,21 @@
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="link" style="text-align: left;">Link:</label>
                       <div class="col-md-7">
-                        <input type="text" id="test_link" placeholder="Link" class="form-control url" style="color:#000;" value="" name="link" id="link" onblur="validateURL()" />
+                        <input type="text" id="test_link" placeholder="Link" class="form-control url required" style="color:#000;" value="" name="link" id="link" onblur="validateURL()" />
                         <span class="url_err"></span>
                       </div>
                       <div class="col-md-4">
-                        <input type="submit" class="btnLink btnSecondary" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" id="sendbutton" />
+                        <input type="submit" class="btnLink btnSecondary" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" id="sendbutton" name="submit" />
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="name" style="text-align: left;">Name:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Name"  class="form-control" value="" name="name" id="name" style="color:#000;" />
+                        <input type="text" placeholder="Name"  class="form-control required" value="" name="name" id="name" style="color:#000;" title="Name is required" />
                       </div>
                       <label class="col-md-1 control-label" for="phone" style="text-align: left;">Phone:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Phone"  class="form-control" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" />
+                        <input type="text" placeholder="Phone"  class="form-control required" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" title="Phone is required" />
                       </div>
                       <div class="col-md-4">
                         <button id="testbutton" type="submit" class="btnLink btnSecondary" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" >Send Test SMS Message</button>
@@ -458,7 +471,6 @@ else{
         //we are good, go ahead and continue
         $('#testerror').hide();
         $('#formposttype').val('test');
-
         $('#broadcastform').submit();
       } else {
         //we are missing something, tell the user to enter the fields
@@ -468,18 +480,11 @@ else{
       }
     });
     $('#sendbutton').click(function (e) {
-         if ($('#name').val() != '' && $('#name').val() != '') {
-          $('#testerror').show();
+
       $('#broadcastform').validate();
       $('#formposttype').val('send');
-     // $('#broadcastform').trigger("reset");
-      // e.preventDefault();
-      } else {
-        //we are missing something, tell the user to enter the fields
-        $('#testerror').show();
-        e.preventDefault();
-        return false;
-      }
+     
+    
     });
     $('#searchbutton').click(function (e) {
       $('#formposttype').val('');

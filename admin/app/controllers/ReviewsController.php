@@ -318,6 +318,8 @@
                     }
 
                 } else if (isset($_POST['formposttype']) && $_POST['formposttype'] == 'send' && $_POST['name']!='') {
+
+                    //echo '<pre>';print_r($_POST);exit;
                     //exit;
                     //check if the user wants to send a message
                     if (!empty($_POST['review_invite_ids'])) {
@@ -421,8 +423,11 @@
                             //echo $message;exit;
                             //The message is saved, so send the SMS message now
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_from_phone)) {
-                                $_POST['name'] ='';
+
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
+
+                                 $this->session->set("success", "The SMS was sent successfully to: " . $invite->phone);
+                               $this->response->redirect('/reviews/sms_broadcast');
                             }
                         }
                         }
