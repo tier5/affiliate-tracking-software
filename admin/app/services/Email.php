@@ -121,6 +121,8 @@ class Email{
 
         if($email_content=='')
         {
+             $Domain = $this->config->application->domain;
+            $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
             $email_content="Hey ".$user->name.",<br />
 
                     
@@ -135,11 +137,10 @@ class Email{
                    
                   
                     
-                    To get started just confirm your email by <a style='padding:10px; margin-left:-10px;' href='/confirm/'" . $record->code . '/' . $user->email."'>Clicking Here</a><br/><br/>
+                    To get started just confirm your email by <a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a><br/><br/>
 
                     Thanks,<br/><br/>".$AgencyUser."
-                    <br>
-                    ".$publicUrl."
+
                    <br/>
                     ".$AgencyName;
         }
