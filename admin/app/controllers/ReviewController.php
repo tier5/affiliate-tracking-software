@@ -158,9 +158,7 @@
                         //echo $parent_agency->name;exit;
                      if($emp==1 && $role=="Super Admin")
                      {  
-                         $TwilioToken = $this->config->twilio->twilio_auth_token;
-                         $TwilioFrom = $this->config->twilio->twilio_from_phone;
-                         $TwilioAPI = $this->config->twilio->twilio_api_key;
+                       
      
                          $conditions = "location_id = :location_id:";
                          $parameters = array("location_id" => $invite->location_id);
