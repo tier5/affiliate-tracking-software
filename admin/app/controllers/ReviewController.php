@@ -9,6 +9,7 @@
     use Vokuro\Models\ReviewInviteReviewSite;
     use Vokuro\Models\ReviewSite;
     use Vokuro\Models\Users;
+    use Vokuro\Services\Reviews;
 
     use Services_Twilio;
     use Services_Twilio_RestException;
