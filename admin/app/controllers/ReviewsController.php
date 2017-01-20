@@ -317,7 +317,7 @@
                         $this->flash->success("The SMS was sent successfully to: " . $_POST['phone']);
                     }
 
-                } else if (isset($_POST['formposttype']) && $_POST['formposttype'] == 'send' && $_POST['name']!='') {
+                } else if (isset($_POST['formposttype']) && $_POST['formposttype'] == 'send') {
 
                     //echo '<pre>';print_r($_POST);exit;
                     //exit;

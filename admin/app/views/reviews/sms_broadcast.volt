@@ -359,7 +359,7 @@ if ($this->session->get("success")!='')
                         <!--
                           <textarea style="width: 100%;" name="SMS_message" class="form-control"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?></textarea>-->
 
-                          <textarea style="width: 100%;" name="SMS_message" class="form-control"></textarea>
+                          <textarea style="width: 100%;" name="SMS_message" class="form-control" id="sms_messg"></textarea>
 
                           <i style="color: #c3c3c3; display: block; font-size: 12px; margin-top: 11px;">{location-name} will be the name of the location sending the SMS, {name} will be replaced with the name entered when sending the message and {link} will be the link to the review.</i>
                         </div>
@@ -368,7 +368,7 @@ if ($this->session->get("success")!='')
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="link" style="text-align: left;">Link:</label>
                       <div class="col-md-7">
-                        <input type="text" id="test_link" placeholder="Link" class="form-control url required" style="color:#000;" value="" name="link" id="link" onblur="validateURL()" />
+                        <input type="text" id="test_link" placeholder="Link" class="form-control url" style="color:#000;" value="" name="link" id="link" onblur="validateURL()" />
                         <span class="url_err"></span>
                       </div>
                       <div class="col-md-4">
@@ -378,11 +378,11 @@ if ($this->session->get("success")!='')
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="name" style="text-align: left;">Name:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Name"  class="form-control required" value="" name="name" id="name" style="color:#000;" title="Name is required" />
+                        <input type="text" placeholder="Name"  class="form-control  t_name" value="" name="name" id="name" style="color:#000;" title="Name is required" />
                       </div>
                       <label class="col-md-1 control-label" for="phone" style="text-align: left;">Phone:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Phone"  class="form-control required" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" title="Phone is required" />
+                        <input type="text" placeholder="Phone"  class="form-control  t_phone" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" title="Phone is required" />
                       </div>
                       <div class="col-md-4">
                         <button id="testbutton" type="submit" class="btnLink btnSecondary" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" >Send Test SMS Message</button>
@@ -480,8 +480,19 @@ else{
       }
     });
     $('#sendbutton').click(function (e) {
-
+      if($('#sms_messg').val()=='')
+      {
+      $('.t_name').addClass('required');
+      $('.t_phone').addClass('required');
+      $('.url').addClass('required');
       $('#broadcastform').validate();
+      }
+      else
+      {
+      $('.t_name').removeClass('required');
+      $('.t_phone').removeClass('required');
+      $('.url').removeClass('required');
+      }
       $('#formposttype').val('send');
      
     
