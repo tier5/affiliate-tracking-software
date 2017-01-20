@@ -316,7 +316,7 @@
                       $result=$this->db->query("SELECT * FROM `twilio_number_to_business` WHERE `buisness_id`='".$usersinfo->id."'");
                            $x=$result->fetch();
                            $status=($x['phone_number']!='')?'Custom':'Default';
-                           $phone=($x['phone_number']!='')?$x['phone_number']:$twilio_from_phone;
+                           $phone=($x['phone_number']!='')?$x['friendly_name']:$twilio_from_phone;
                            $friendly_phone=($x['friendly_name']!='')?$x['friendly_name']:'none';
                            $action=($x['phone_number']!='')? '1':'2';
                       $generate_array[$agent->id]=$usersinfo->id."?".$status."?".$phone."?".$friendly_phone."-?".$action;
