@@ -602,7 +602,7 @@ class ControllerBase extends Controller {
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
-            echo '<pre>';print_r($objParentAgency);
+            echo $objAgency->parent_id;
             if($objParentAgency->viral_email){
             $message_parent= $objParentAgency->viral_email; 
             }   
