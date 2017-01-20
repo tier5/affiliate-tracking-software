@@ -569,6 +569,8 @@ class ControllerBase extends Controller {
             $Domain="{$TLDomain}";
         }
         $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
+
+        $message_parent='';
         //$share_link = urlencode($share_link);
 
         /*$this->view->setVars([
@@ -579,8 +581,9 @@ class ControllerBase extends Controller {
 
 
             /**** 24.11.2016 ****/
-
+           // echo $agency->agency_id;exit;
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->agency_id}");
+            //echo $objAgency->parent_id;exit;
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Get Mobile Reviews";
             $AgencyUser = "Zach Anderson";
@@ -599,6 +602,7 @@ class ControllerBase extends Controller {
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
+            $message_parent= $objParentAgency->viral_email;    
            // $EmailFrom = "zacha@reviewvelocity.co";
         }
 
@@ -652,8 +656,17 @@ class ControllerBase extends Controller {
         ".$AgencyUser."<br>".$AgencyName;*/
         
         /**** 24.11.2016 ****/
+        //echo $message_parent ;exit;
 
-        $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {$share_link}";
+        if($message_parent=='')
+        {
+             $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {$share_link}";
+        }
+        else
+        {
+            $message_set=$message_parent;
+        }
+       
         $this->view->setVars([
             'AgencyUser' => $AgencyUser,
             'AgencyName' =>$AgencyName,

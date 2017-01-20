@@ -86,15 +86,7 @@ class Email{
             $AgencyName = $objAgency->name;
             $EmailFrom =  $objAgency->email;
             $EmailFromName='';
-            if($objAgency->welcome_email!='')
-            {
-                $email_content=$objAgency->welcome_email;
-                $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
-                $link="<a style='padding:10px; margin-left:-10px;' href='http://{$Domain}{$confirmUrl}'>Clicking Here</a>";
-                $email_content = str_replace("{link}", $link, $email_content);
-                $email_content = str_replace("{firstName}", $user->name, $email_content);
-            }
-
+            
         }
         elseif($objAgency->parent_id > 0) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
@@ -106,13 +98,17 @@ class Email{
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
             $EmailFromName=$objParentAgency->email_from_name ?: "";
 
-            if($objAgency->welcome_email!='')
+            if($objParentAgency->welcome_email!='')
             {
+                 $Domain = $this->config->application->domain;
+                 $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
                 $email_content=$objAgency->welcome_email;
                 $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
-                $link="<a style='padding:10px; margin-left:-10px;' href='http://{$Domain}{$confirmUrl}'>Clicking Here</a>";
+                
+                $link="<a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a>";
                 $email_content = str_replace("{link}", $link, $email_content);
                 $email_content = str_replace("{firstName}", $user->name, $email_content);
+                $email_content = str_replace("{AgencyUser}", $AgencyUser, $email_content);
             }
 
            
