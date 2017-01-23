@@ -88,7 +88,27 @@ foreach($tBusinesses as $objBusiness) {
                             <td><?=date("Y-m-d",strtotime($objBusiness->date_created))?></td>
                             <!--<td>{{ objBusiness.subscription_id ? objBusiness.subscription.name : 'Free' }}
                             </td>-->
-                            <td><?=(isset($objBusiness->subscription_id) && $objBusiness->subscription_id > 0?objBusiness.subscription.name:($generate_array[$objBusiness->id]=='FR')?'Free':"Paid")?></td>
+                           <!-- <td><?=(isset($objBusiness->subscription_id) && $objBusiness->subscription_id > 0?objBusiness.subscription.name:($generate_array[$objBusiness->id]=='FR')?'Free':"Paid")?></td>-->
+
+                           <td>
+                           <?php
+                                if(isset($objBusiness->subscription_id) &&$objBusiness->subscription_id > 0)
+                                {
+                                echo $plan_name[$objBusiness->id];
+                                }
+                                else
+                                {
+                                    if ($generate_array[$objBusiness->id]=='FR')
+                                    {
+                                        echo 'Free';
+                                    }
+                                    else
+                                    {
+                                        echo $generate_array[$objBusiness->id];
+                                    }
+                                }
+                                ?>
+                           </td>
 
                             <td><?=(isset($objBusiness->subscription_id) && $objBusiness->subscription_id > 0?'Paid':($generate_array[$objBusiness->id]=='FR')?'Free':"Paid")?></td>
                             <td>

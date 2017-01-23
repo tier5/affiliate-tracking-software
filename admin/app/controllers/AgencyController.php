@@ -185,6 +185,16 @@
              foreach($bagencies as $agent)
                     {
                         $usersinfo = \Vokuro\Models\users::find("agency_id = " .$agent->agency_id );
+
+                         if($agent->subscription_id >0)
+                        {
+                            $subcription_details=\Vokuro\Models\SubscriptionPricingPlan::findFirst("id = " .$agent->subscription_id ); 
+                            $plan_name[$agent->agency_id]=$subcription_details->name;
+                            /*echo $agent->name."-".$agent->agency_id."-".$subcription_details->name;
+                            echo "<br>";*/
+                            
+
+                        }
                         foreach($usersinfo as $use)
                         {
                             //echo $use->id;//echo '<br>';
@@ -203,6 +213,7 @@
                         }
                     }
                     $this->view->generate_array =$generate_array;
+                    $this->view->plan_name =$plan_name;
                     //exit;
         }
 
