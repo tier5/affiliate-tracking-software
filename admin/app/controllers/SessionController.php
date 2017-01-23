@@ -317,6 +317,7 @@ class SessionController extends ControllerBase {
             //code_generate
 
             $shar_code=$_COOKIE['code_generate_normal'];//exit;
+            $cookieAgency=$_COOKIE['cookie_agency_id'];exit;
             if($shar_code)
             {
                 $this->view->code=$_COOKIE['code_generate_normal'];
@@ -407,11 +408,12 @@ class SessionController extends ControllerBase {
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
             $this->view->agencyId = $objAgency->agency_id;
             $this->view->agency_name = $objAgency->name;
-            echo $objAgency->agency_id;exit;
+            $cookie_agency_id= $objAgency->agency_id;//exit;
             // echo $objAgency->parent_id;exit;
             
             if ($objAgency->parent_id == 0) {
                 setcookie("code_generate_normal",$code, $expire,'/');
+                setcookie("cookie_agency_id",$cookie_agency_id, $expire,'/');
                 $custom_domain=$objAgency->custom_domain;
                 $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
                 //$this->view->disable();
@@ -420,7 +422,7 @@ class SessionController extends ControllerBase {
 
             if ($objAgency->parent_id) {
                 setcookie("code_generate_normal",$code, $expire,'/',$custom_domain . '.' . $Domain);
-
+                 setcookie("cookie_agency_id",$cookie_agency_id, $expire,'/');
                 $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
 
                 $this->view->agencyId = $objAgency1->agency_id;
