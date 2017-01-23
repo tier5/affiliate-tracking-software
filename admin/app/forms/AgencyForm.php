@@ -7,6 +7,7 @@ use Phalcon\Forms\Element\Numeric;
 use Phalcon\Forms\Element\Password;
 use Phalcon\Forms\Element\Select;
 use Phalcon\Forms\Element\Text;
+use Phalcon\Forms\Element\TextArea;
 use Phalcon\Validation\Validator\Email;
 use Phalcon\Validation\Validator\PresenceOf;
 use Vokuro\Models\SubscriptionInterval;
@@ -46,9 +47,9 @@ class AgencyForm extends Form
     $this->add(new Text('website'));
     $this->add(new Text('email_from_name'));
     $this->add(new Text('email_from_address'));
-    $this->add(new Text('welcome_email'));
-    $this->add(new Text('viral_mail'));
-    $this->add(new Text('welcome_email_employee'));
+    $this->add(new TextArea('welcome_email'));
+    $this->add(new TextArea('viral_email'));
+    $this->add(new TextArea('welcome_email_employee'));
         
 
   }
