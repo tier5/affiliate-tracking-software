@@ -913,7 +913,7 @@ class SubscriptionManager extends BaseService
             return 0;
         }
 
-        $Referrals = \Vokuro\Models\SharingCode::count("sharecode = '{$objAgency->viral_sharing_code}'");
+        echo $Referrals = \Vokuro\Models\SharingCode::count("sharecode = '{$objAgency->viral_sharing_code}'");exit;
         return $Referrals > 4 ? 100 : $Referrals * 25;
     }
 
