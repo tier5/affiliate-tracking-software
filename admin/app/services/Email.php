@@ -103,6 +103,7 @@ class Email{
             
         }
         elseif($objAgency->parent_id > 0) {
+        
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
@@ -111,12 +112,12 @@ class Email{
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
             $EmailFromName=$objParentAgency->email_from_name ?: "";
-
+           
             if($objParentAgency->welcome_email!='')
             {
                  $Domain = $this->config->application->domain;
                  $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
-                $email_content=$objAgency->welcome_email;
+                $email_content = $objParentAgency->welcome_email;
                 $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
                 
                 $link="<a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a>";
