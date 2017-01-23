@@ -763,7 +763,7 @@
       <div id="twilio-contain" style="display:none;">
       <?php if($twilio_details!=0){?>
         <h5> <b> Custom SMS Number </b></h5>
-        <table id="basic-datatables" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
           <thead>
             <tr>
             <th>Number</th>
