@@ -219,9 +219,9 @@ use Pricing_Services_Twilio;
             'phone'                         => 'string',
             'main_color'                    => 'string',
             'secondary_color'               => 'string',
-            'viral_mail'                    =>'string',
-            'welcome_email'                 =>'string',
-            'welcome_email_employee'        =>'string',
+            'viral_mail'                    => 'html',
+            'welcome_email'                 => 'html',
+            'welcome_email_employee'        => 'html',
         ];
 
         public function dismissstripeAction() {
@@ -309,6 +309,9 @@ use Pricing_Services_Twilio;
                                 break;
                             case 'string':
                                 $tEntityArray[$Field] = $this->request->getPost($Field, 'striptags');
+                                break;
+                             case 'html':
+                                $tEntityArray[$Field] = $this->request->getPost($Field);
                                 break;
                             case 'replace_comma_dollars':
                                 $tEntityArray[$Field] = $this->request->str_replace(["$", ","], ["", ""], $this->request->getPost($Field));
@@ -629,7 +632,7 @@ use Pricing_Services_Twilio;
 
                 	When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
                     <p>
-                  {activateHereLink}
+                  {link}
                   </p>
                    <p>Looking forward to working with you.</p>
 

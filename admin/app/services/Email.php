@@ -299,7 +299,7 @@ class Email{
         //echo $businessname;exit;
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($u->getId());
-
+        $domain = $this->config->application->domain;
         if (!$record){
             //we don't have a confirmation
             $confirmationModel->send_email = false;
@@ -423,7 +423,7 @@ class Email{
 
                 	When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
                     <p>
-                  {activateHereLink}
+                  {link}
                   </p>
                    <p>Looking forward to working with you.</p>
 
@@ -433,13 +433,13 @@ class Email{
                 </p>';
         }
         
-        if(strpos($email_content,'{activateHereLink}') === false){
-          $email_content .= '<p>{activateHereLink}</p>';
+        if(strpos($email_content,'{link}') === false){
+          $email_content .= '<p>{link}</p>';
         }
               
-        $link='<a href="http://'.publicUrl.$params['confirmUrl'].'"> ACTIVATE HERE </a>';
-        $clickHereLink = '<a href="http://'.publicUrl.$params['confirmUrl'].'"><i>Click Here and Activate Your Profile Now</i></a>';
-        $email_content = str_replace("{activateHereLink}", $clickHereLink, $email_content);
+        $link='<a href="http://'.$domain.$params['confirmUrl'].'"> ACTIVATE HERE </a>';
+        $clickHereLink = '<a href="http://'.$domain.$params['confirmUrl'].'"><i>Click Here and Activate Your Profile Now</i></a>';
+        $email_content = str_replace("{link}", $clickHereLink, $email_content);
         $email_content = str_replace("{clickHereAndActivateYourProfileNowLink}", $link, $email_content);
         $email_content = str_replace("{BusinessName}", $busi_nam, $email_content);
         $email_content = str_replace("{employeeName}", $u->name, $email_content);
