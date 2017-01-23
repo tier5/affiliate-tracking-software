@@ -573,6 +573,9 @@ use Pricing_Services_Twilio;
         }
 
         public function agencyAction() {
+          if($_POST){
+              //echo '<pre>'; print_r($_POST);
+          }
             $Identity = $this->auth->getIdentity();
             if (!is_array($Identity)) {
                 $this->response->redirect('/session/login?return=/settings/agency/');
@@ -593,17 +596,47 @@ use Pricing_Services_Twilio;
             $objUser = Users::findFirst("id = " . $Identity['id']);
 
             $objAgency = Agency::findFirst("agency_id = {$objUser->agency_id}");
-           //echo '<pre>';print_r($objAgency);exit;
+           
             if (!$objAgency)
                 $this->flash->error("Agency not found.  Contact customer support.");
 
             $SettingsForm  = new SettingsForm($objAgency, array(
                 'edit' => true
             ));
+            
+            
+            // Set default message welcome_email
+            if(!$objAgency->welcome_email || !$this->request->getPost('welcome_email')) {
+             
+              $objAgency->welcome_email = "Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+
+                    <P>If you wouldn’t mind, I’d love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
+
+                    <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit reply and let me know.
+                   </P>  To get started just confirm your email by {link} Clicking Here</a><br/><br/>Thanks,<br/><br/>
+
+                    {AgencyUser}<br/>
+                    {AgencyName}";
+            }
+            
+            // Set default message for welcome_email_employee
+            if(!$objAgency->welcome_email_employee || !$this->request->getPost('welcome_email_employee')) {
+              $objAgency->welcome_email_employee="<p>
+                    We’ve just created your profile for {BusinessName} within our software.</p> <p>When you {link} Click Here and Activate Your Profile Now you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+                    <p>
+                 {link}
+                 ACTIVATE HERE </a>
+                  </p> <p>Looking forward to working with you.</p>";
+            }
+            
+            // Set default message for viral_email
+            if(!$objAgency->viral_email || !$this->request->getPost('viral_email')) {
+              $objAgency->viral_email = "I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
+            }
             $AgencyForm = new AgencyForm($objAgency, array(
                 'edit' => true
             ));
-
+            
             if($this->request->isPost() && $SettingsForm->isValid($_POST) && $AgencyForm->isValid($_POST)) {
                 if (!$this->storeSettings($objAgency, 'agency')) {
                     $this->flash->error($objAgency->getMessages());
@@ -617,9 +650,9 @@ use Pricing_Services_Twilio;
                     $objAgency->twilio_auth_token = trim($objAgency->twilio_auth_token);
                     $objAgency->twilio_auth_messaging_sid = trim($objAgency->twilio_auth_messaging_sid);
                     $objAgency->twilio_from_phone = trim($objAgency->twilio_from_phone);
-                    $objAgency->welcome_email = trim($objAgency->welcome_email);
-                    $objAgency->welcome_email = trim($objAgency->welcome_email);
-                    $objAgency->viral_mail = trim($objAgency->viral_mail);
+                    //$objAgency->welcome_email = trim($objAgency->welcome_email);
+                    //$objAgency->welcome_email = trim($objAgency->welcome_email);
+                    //$objAgency->viral_mail = trim($objAgency->viral_mail);
                     $objAgency->save();
 
                     $this->flash->success("The settings were updated successfully");
@@ -633,7 +666,7 @@ use Pricing_Services_Twilio;
                     $this->flash->error($message);
                 }
             }
-           // echo '<pre>';print_r($objAgency);exit;
+           
             $this->view->form = $SettingsForm;
             $this->view->agencyform = $AgencyForm;
             $this->view->objgetuser=$objUser ;
