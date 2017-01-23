@@ -574,6 +574,7 @@ class ControllerBase extends Controller {
         $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
 
         $message_parent='';
+        $objParentAgency = '';
         //$share_link = urlencode($share_link);
 
         /*$this->view->setVars([
@@ -605,7 +606,6 @@ class ControllerBase extends Controller {
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
-
              $resultx=$this->db->query(" SELECT * FROM `agency` WHERE `agency_id` =".$objAgency->parent_id);
                  $x=$resultx->fetch();
            // echo $x['viral_email'];
@@ -667,13 +667,13 @@ class ControllerBase extends Controller {
         /**** 24.11.2016 ****/
         //echo $message_parent ;exit;
 
-        if($message_parent=='')
+        if($objParentAgency->viral_email=='')
         {
              $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
         }
         else
         {
-            $message_set=$message_parent;
+            $message_set=$objParentAgency->viral_email;
         }
         
         if($message_set) {
