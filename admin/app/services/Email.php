@@ -92,7 +92,7 @@ class Email{
             {
                  $Domain = $this->config->application->domain;
                  $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
-                $email_content=$objAgency->welcome_email;
+                $email_content = $objParentAgency->welcome_email;
                 $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
                 
                 if(strpos($email_content,'{link}') === false){
@@ -123,6 +123,10 @@ class Email{
                  $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
                 $email_content = $objParentAgency->welcome_email;
                 $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
+                
+                if(strpos($email_content,'{link}') === false) {
+                  $email_content .= '<p>{link}</p>';
+                }
                 
                 $link="<a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a>";
                 $email_content = str_replace("{link}", $link, $email_content);
