@@ -606,7 +606,7 @@ use Pricing_Services_Twilio;
             
             
             // Set default message welcome_email
-            if(!$objAgency->welcome_email || !$this->request->getPost('welcome_email')) {
+            if(!$objAgency->welcome_email || ($this->request->isPost() && !$this->request->getPost('welcome_email'))) {
              
               $objAgency->welcome_email = "Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
@@ -620,7 +620,7 @@ use Pricing_Services_Twilio;
             }
             
             // Set default message for welcome_email_employee
-            if(!$objAgency->welcome_email_employee || !$this->request->getPost('welcome_email_employee')) {
+            if(!$objAgency->welcome_email_employee || ($this->request->isPost() && !$this->request->getPost('welcome_email_employee'))) {
               $objAgency->welcome_email_employee="<p>
                     We’ve just created your profile for {BusinessName} within our software.</p> <p>When you {link} Click Here and Activate Your Profile Now you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
                     <p>
@@ -630,7 +630,7 @@ use Pricing_Services_Twilio;
             }
             
             // Set default message for viral_email
-            if(!$objAgency->viral_email || !$this->request->getPost('viral_email')) {
+            if(!$objAgency->viral_email || ($this->request->isPost() && !$this->request->getPost('viral_email'))) {
               $objAgency->viral_email = "I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
             }
             $AgencyForm = new AgencyForm($objAgency, array(
