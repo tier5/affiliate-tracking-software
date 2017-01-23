@@ -403,17 +403,56 @@ class Email{
         if(!$u->is_employee){
             throw new \Exception('Cannot send an employee activation email to someone that is not an employee');
         }
-            
-        $mail = $this->getDI()->getMail();
-        $mail->setFrom($from,$from_name);
         $params = [];
         $params['employeeName']=$u->name;
         $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
         $params['BusinessName']=$busi_nam;
         $params['confirmUrl'] = '/admin/confirmEmail/' . $code . '/' . $u->email;
-       // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
+        $email_content = '';
+        
+        if($objParentAgency && $objParentAgency->welcome_email_employee){
+          $email_content = $objParentAgency->welcome_email_employee;
+          
+        }else{
+          $email_content = 'Hi {employeeName},
+            	<p>
+            		We’ve just created your profile for {BusinessName} within our software. 
+            	</p>
+                <p style="font-size: 13px;line-height:24px;font-family:\'HelveticaNeue\',\'Helvetica Neue\',Helvetica,Arial,sans-serif;">
 
+                	When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+                    <p>
+                  {activateHereLink}
+                  </p>
+                   <p>Looking forward to working with you.</p>
+
+                    {AgencyUser}<br/>
+                    {AgencyName}
+                    <br>
+                </p>';
+        }
+        
+        if(strpos($email_content,'{activateHereLink}') === false){
+          $email_content .= '<p>{activateHereLink}</p>';
+        }
+              
+        $link='<a href="http://'.publicUrl.$params['confirmUrl'].'"> ACTIVATE HERE </a>';
+        $clickHereLink = '<a href="http://'.publicUrl.$params['confirmUrl'].'"><i>Click Here and Activate Your Profile Now</i></a>';
+        $email_content = str_replace("{activateHereLink}", $clickHereLink, $email_content);
+        $email_content = str_replace("{clickHereAndActivateYourProfileNowLink}", $link, $email_content);
+        $email_content = str_replace("{BusinessName}", $busi_nam, $email_content);
+        $email_content = str_replace("{employeeName}", $u->name, $email_content);
+        $email_content = str_replace("{AgencyUser}", $AgencyUser, $email_content);
+        $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
+        
+        $params['email_content'] = $email_content;
+        
+        $mail = $this->getDI()->getMail();
+        $mail->setFrom($from,$from_name);
+        
+       // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
+  
         $mail->send($u->email, "Activate your account!", 'employee', $params);
 
     }
