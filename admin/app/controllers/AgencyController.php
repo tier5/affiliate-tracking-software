@@ -185,6 +185,16 @@
              foreach($bagencies as $agent)
                     {
                         $usersinfo = \Vokuro\Models\users::find("agency_id = " .$agent->agency_id );
+
+                         if($agent->subscription_id >0)
+                        {
+                            $subcription_details=\Vokuro\Models\SubscriptionPricingPlan::findFirst("id = " .$agent->subscription_id ); 
+                            $plan_name[$agent->agency_id]=$subcription_details->name;
+                            /*echo $agent->name."-".$agent->agency_id."-".$subcription_details->name;
+                            echo "<br>";*/
+                            
+
+                        }
                         foreach($usersinfo as $use)
                         {
                             //echo $use->id;//echo '<br>';
@@ -203,6 +213,7 @@
                         }
                     }
                     $this->view->generate_array =$generate_array;
+                    $this->view->plan_name =$plan_name;
                     //exit;
         }
 
@@ -341,10 +352,11 @@
                            $x=$result->fetch();
                            $status=($x['phone_number']!='')?'Custom':'Default';
                            $phone=($x['phone_number']!='')?$x['friendly_name']:$twilio_from_phone;
-                           $friendly_phone=($x['friendly_name']!='')?$x['friendly_name']:'none';
+                             $friendly_phone=($x['phone_number']!='')?$x['phone_number']:'none';
                            $action=($x['phone_number']!='')? '1':'2';
-                      $generate_array[$agent->id]=$usersinfo->id."?".$status."?".$phone."?".$friendly_phone."-?".$action;
+                      $generate_array[$agent->id]=$usersinfo->id."?".$status."?".$phone."?".$friendly_phone."?".$action;
                     }
+                    //exit;
                    $this->view->generate_array=$generate_array;
            //$this->view->tBusinesses = $this->findBusinessescustom();
             //echo '<pre>';print_r($this->view->tBusinesses);exit;

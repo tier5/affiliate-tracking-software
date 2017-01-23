@@ -420,14 +420,16 @@ use Pricing_Services_Twilio;
         }
 
         public function agencyreleseThisnumberAction($numbers){
+           // echo $numbers;exit;
             $pieces = explode("||", $numbers);
-            $number=base64_decode($pieces[0]);
-            $friendly_number=base64_decode($pieces[1]);
+            $friendly_number=base64_decode($pieces[0]);
+            $number=base64_decode($pieces[1]);//exit;
             $Twillioset=$this->getTwilioDetails();
+            //echo $Twillioset['twilio_auth_token'];exit;
             $client = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
             $result=$this->db->query(" SELECT * FROM `twilio_number_to_business` WHERE `phone_number`='".$number."'");
                            $x=$result->fetchAll();
-                           $nm=$x[0]['twilio_purchase_token'];
+                          echo $nm=$x[0]['twilio_purchase_token'];//exit;
             $twilioNumber = $client->account->incoming_phone_numbers->get($nm);
             
             $clientx = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
