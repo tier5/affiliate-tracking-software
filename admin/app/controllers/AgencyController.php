@@ -352,10 +352,11 @@
                            $x=$result->fetch();
                            $status=($x['phone_number']!='')?'Custom':'Default';
                            $phone=($x['phone_number']!='')?$x['friendly_name']:$twilio_from_phone;
-                           $friendly_phone=($x['friendly_name']!='')?$x['friendly_name']:'none';
+                             $friendly_phone=($x['phone_number']!='')?$x['phone_number']:'none';
                            $action=($x['phone_number']!='')? '1':'2';
-                      $generate_array[$agent->id]=$usersinfo->id."?".$status."?".$phone."?".$friendly_phone."-?".$action;
+                      $generate_array[$agent->id]=$usersinfo->id."?".$status."?".$phone."?".$friendly_phone."?".$action;
                     }
+                    //exit;
                    $this->view->generate_array=$generate_array;
            //$this->view->tBusinesses = $this->findBusinessescustom();
             //echo '<pre>';print_r($this->view->tBusinesses);exit;

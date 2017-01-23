@@ -82,7 +82,7 @@ $get_explode=explode("?",$generate_array[$objBusiness->id]);
 $user_id=$get_explode[0];
 $status=$get_explode[1];
 $phone=$get_explode[2];
-$friendly_number=$get_explode[3];
+$friendly_number=trim($get_explode[3]);
 $action=$get_explode[4];
 ?>
                         <!--Business Name, Email Address, Date Created, Plan Name, Account Type (Free/Paid), Status (can turn on and off from here - Active/Inactive), Action -->
