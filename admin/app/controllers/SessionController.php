@@ -317,7 +317,7 @@ class SessionController extends ControllerBase {
             //code_generate
 
             $shar_code=$_COOKIE['code_generate_normal'];//exit;
-            echo $cookieAgency=$_COOKIE['cookie_agency_id'];exit;
+           // echo $cookieAgency=$_COOKIE['cookie_agency_id'];exit;
             if($shar_code)
             {
                 $this->view->code=$_COOKIE['code_generate_normal'];
