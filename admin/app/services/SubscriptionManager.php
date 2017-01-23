@@ -908,14 +908,14 @@ class SubscriptionManager extends BaseService
 
     public function GetViralSMSCount($AgencyID)
     {
-        echo $AgencyID;exit;
+        //echo $AgencyID;exit;
         
         $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$AgencyID}");
         if (!$objAgency->viral_sharing_code) {
             return 0;
         }
 
-        echo $Referrals = \Vokuro\Models\SharingCode::count("sharecode = '{$objAgency->viral_sharing_code}'");exit;
+        $Referrals = \Vokuro\Models\SharingCode::count("sharecode = '{$objAgency->viral_sharing_code}'");//exit;
         return $Referrals > 4 ? 100 : $Referrals * 25;
     }
 
