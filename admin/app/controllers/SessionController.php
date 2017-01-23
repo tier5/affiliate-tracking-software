@@ -316,7 +316,7 @@ class SessionController extends ControllerBase {
             }
             //code_generate
 
-            $shar_code=$_COOKIE['code_generate_normal'];
+            echo $shar_code=$_COOKIE['code_generate_normal'];exit;
             if($shar_code)
             {
                 $this->view->code=$_COOKIE['code_generate_normal'];
@@ -398,7 +398,7 @@ class SessionController extends ControllerBase {
         } else if (!empty($objUser) && $objUser->name) {
             $this->view->agency_name = $objUser->name;
         } else if ($this->request->getQuery("code")) {
-            echo $code = $this->request->getQuery("code");exit;
+            $code = $this->request->getQuery("code");//exit;
 
             $expire = time() + 86400 * 30;
             setcookie("code", $code, $expire );
@@ -430,7 +430,7 @@ class SessionController extends ControllerBase {
                 $this->view->disable();
                 return;
              } else {
-                $code = $_COOKIE['code'];
+                $code = $_COOKIE['code_generate_normal'];
                 $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
                 $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
 
