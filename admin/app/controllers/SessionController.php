@@ -287,7 +287,7 @@ class SessionController extends ControllerBase {
             $expire = time() + 86400 * 30;
             setcookie( "short_code",'', $expire );
             setcookie( "sharing_code",'', $expire );
-
+            setcookie("code_generate_normal",'', $expire,'/');
             return $this->response->redirect('/session/thankyou');
 
         } catch(ArrayException $e) {
