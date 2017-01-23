@@ -95,6 +95,10 @@ class Email{
                 $email_content=$objAgency->welcome_email;
                 $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
                 
+                if(strpos($email_content,'{link}') === false){
+                  $email_content .= '<p>{link}</p>';
+                }
+                
                 $link="<a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a>";
                 $email_content = str_replace("{link}", $link, $email_content);
                 $email_content = str_replace("{firstName}", $user->name, $email_content);
