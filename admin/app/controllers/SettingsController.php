@@ -621,12 +621,22 @@ use Pricing_Services_Twilio;
             
             // Set default message for welcome_email_employee
             if(!$objAgency->welcome_email_employee || ($this->request->isPost() && !$this->request->getPost('welcome_email_employee'))) {
-              $objAgency->welcome_email_employee="<p>
-                    We’ve just created your profile for {BusinessName} within our software.</p> <p>When you {link} Click Here and Activate Your Profile Now you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+              $objAgency->welcome_email_employee= 'Hi {employeeName},
+            	<p>
+            		We’ve just created your profile for {BusinessName} within our software. 
+            	</p>
+                <p style="font-size: 13px;line-height:24px;font-family:\'HelveticaNeue\',\'Helvetica Neue\',Helvetica,Arial,sans-serif;">
+
+                	When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
                     <p>
-                 {link}
-                 ACTIVATE HERE </a>
-                  </p> <p>Looking forward to working with you.</p>";
+                  {activateHereLink}
+                  </p>
+                   <p>Looking forward to working with you.</p>
+
+                    {AgencyUser}<br/>
+                    {AgencyName}
+                    <br>
+                </p>';
             }
             
             // Set default message for viral_email
