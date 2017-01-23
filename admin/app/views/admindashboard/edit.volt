@@ -77,6 +77,18 @@
             </div>
 
             {% if UnpaidPlan %}
+
+                  <div class="custom_number_show show">
+                <label for="subscription_pricing_plan_id" class="col-md-4 control-label">Assign Customer Number</label>
+                <div class="col-md-8">
+                   <select class="form-control" name="custom_sms">
+                    <option value="1" <?php echo ($custom_sms!='' && $custom_sms==1)?'selected':''?>>Yes</option>
+                    <option value="2" <?php echo ($custom_sms!='' && $custom_sms==2)?'selected':''?>>No</option>
+                        
+                    </select>
+                </div>
+                </div> 
+
                 <div class="free_subscription_pricing_plan show">
                 <hr/>
                 <h4>Free Subscription Plan</h4>
@@ -107,6 +119,8 @@
                     </div>
                 </div>
             </div>
+
+
             {% endif %}
 
             <div class="form-group">
@@ -123,8 +137,10 @@
         $('#send-registration-email-control').change(function () {
             if ($(this).val() == 0) {
                 $(".free_subscription_pricing_plan").addClass('show');
+                $(".custom_number_show").addClass('show');
             } else {
                 $(".free_subscription_pricing_plan").removeClass('show');
+                $(".custom_number_show").removeClass('show');
             }
         });
         $('#subscription_pricing_plan_id').prop("disabled", true); 
@@ -134,8 +150,10 @@
         $('#subscription_pricing_plan_id').change(function () {
             if ($(this).val() == 0) {
                 $(".free_subscription_pricing_plan").addClass('show');
+                $(".custom_number_show").addClass('show');
             } else {
                 $(".free_subscription_pricing_plan").removeClass('show');
+                $(".custom_number_show").removeClass('show');
             }
         });
 

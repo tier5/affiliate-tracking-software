@@ -29,11 +29,13 @@ class ControllerBusinessBase extends ControllerBase
      **/
     public function editAction($agency_id = 0)
     {
-        $this->view->agency_id = $agency_id;
 
+        $this->view->agency_id = $agency_id;
+         $objagencyinfo = \Vokuro\Models\Agency::findFirst("agency_id = {$agency_id}");
+         $this->view->custom_sms = $objagencyinfo->custom_sms;//exit;
         $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
         $this->view->UnpaidPlan = $objSubscriptionManager->GetBusinessSubscriptionLevel($agency_id) == 'FR';
-
+        //echo $agency_id;exit;
         $form = new AgencyForm(null);
         if ($agency_id) {
             $age = Agency::findFirst("agency_id = {$agency_id}");
@@ -98,7 +100,7 @@ class ControllerBusinessBase extends ControllerBase
 
             $db = $this->di->get('db');
             $db->begin();
-
+            //echo $this->request->getPost('custom_sms');exit;
             /* Attempt to create our new business */
             $params = [
                 'agency_id'          => $agency_id,
@@ -115,6 +117,7 @@ class ControllerBusinessBase extends ControllerBase
                 'deleted'            => (isset($age->deleted) ? $age->deleted : 0),
                 'status'             => (isset($age->status) ? $age->status : 1),
                 'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
+                'custom_sms'=>$this->request->getPost('custom_sms'),
 
             ];
 
