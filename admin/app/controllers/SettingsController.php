@@ -311,7 +311,7 @@ use Pricing_Services_Twilio;
                                 $tEntityArray[$Field] = $this->request->getPost($Field, 'striptags');
                                 break;
                              case 'html':
-                                $tEntityArray[$Field] = str_replace(';','', addcslashes(mysql_real_escape_string($this->request->getPost($Field))));
+                                $tEntityArray[$Field] =  $tEntityArray[$Field] = str_replace('&#59;','',(htmlentities($this->request->getPost($Field))));
                                 break;
                             case 'replace_comma_dollars':
                                 $tEntityArray[$Field] = $this->request->str_replace(["$", ","], ["", ""], $this->request->getPost($Field));
