@@ -568,6 +568,9 @@ class ControllerBase extends Controller {
         {
             $Domain="{$TLDomain}";
         }
+        if($Domain==''){
+          $Domain = $_SERVER['HTTP_HOST'];
+        }
         $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
 
         $message_parent='';
@@ -666,11 +669,18 @@ class ControllerBase extends Controller {
 
         if($message_parent=='')
         {
-             $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {$share_link}";
+             $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
         }
         else
         {
             $message_set=$message_parent;
+        }
+        
+        if($message_set) {
+         if(strpos($message_set,'{share_link}') === false) {
+            $message_set .= '{share_link}';
+         }
+         $message_set = str_replace('{share_link}',$share_link,$message_set);
         }
        
         $this->view->setVars([
