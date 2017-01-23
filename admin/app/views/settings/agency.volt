@@ -724,7 +724,8 @@
                                         <div class="form-group">
                                             <label for="welcome_email_business" class="col-md-2 control-label">Content</label>
                                                 <div class="col-md-10">
-                                                    <textarea style="width: 100%;" class="form-control summernote" name="welcome_email" id="welcome_email"><?php if($agency->welcome_email!='') { echo $agency->welcome_email;} else { echo $business_welcome_message;} ?></textarea>
+                                                    <?php /*<textarea autocomplete="off" style="width: 100%;" class="form-control summernote" name="welcome_email" id="welcome_email"><?php if($agency->welcome_email!='') { echo $agency->welcome_email;} else { echo $business_welcome_message;} ?></textarea> */ ?>
+                                                    {{ agencyform.render("welcome_email", ["class": 'form-control summernote', 'id': 'welcome_email', 'type': 'textarea']) }}
                                                 </div>
                                                 <div class="col-md-12">
                                                     <i></i>
@@ -742,7 +743,7 @@
                                         <div class="form-group">
                                             <label for="welcome_email_employee" class="col-md-2 control-label">Content</label>
                                                 <div class="col-md-10">
-                                                    <textarea style="width: 100%;" class="form-control summernote2" name="welcome_email_employee" id="welcome_email_employee">
+                                                    <?php /*<textarea autocomplete="off" style="width: 100%;" class="form-control summernote2" name="welcome_email_employee" id="welcome_email_employee">
 
                                                     <?php if($agency->welcome_email_employee!='')
                                                     {
@@ -751,7 +752,9 @@
                                                     {
                                                     echo $employee_confirmation_mail;
                                                     }
-                                                    ?></textarea>
+                                                    ?></textarea> */ ?>
+                                                    
+                                                    {{ agencyform.render("welcome_email_employee", ["class": 'form-control summernote2', 'id': 'welcome_email_employee']) }}
                                                 </div>
                                                 <div class="col-md-12">
                                                     <i></i>
@@ -769,9 +772,11 @@
                                         <div class="form-group">
                                             <label for="intercom_security_hash" class="col-md-2 control-label">Content</label>
                                             <div class="col-md-10">
-                                                <textarea style="width: 100%;" class="form-control summernote1" name="viral_mail">
+                                               <?php /* <textarea autocomplete="off"style="width: 100%;" class="form-control summernote1" name="viral_mail">
                                                     <?php if($agency->viral_email!='') { echo $agency->viral_email;} else { echo $message_set;} ?>
                                                 </textarea>
+                                                */ ?>
+                                                {{ agencyform.render("viral_email", ["class": 'form-control summernote1']) }}
                                             </div>
                                         </div>
                                     </div>
