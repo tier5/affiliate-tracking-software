@@ -591,7 +591,7 @@
                     throw new \Exception();
 
                 $objPaymentService = $this->di->get('paymentService');
-                //echo '<pre>';print_r($objPaymentService);exit;
+
                 $tData['MonthExpiration'] = strlen($tData['MonthExpiration']) == 1 ? '0'.$tData['MonthExpiration'] : $tData['MonthExpiration'];
 
                 $this->db->begin();
@@ -601,7 +601,8 @@
                     return false;
                 }
 
-                // I hate that this is in here.  Quick fix.  I dont want this function using the session at all.  This is due to wiping Authorize.net out completely and just getting this out.
+                // I dont want this function using the session at all. 
+                // This is due to wiping Authorize.net out completely and just getting this out.
                 $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['UserID' => $UserID]);
 
                 $tParameters = [
@@ -658,7 +659,7 @@
 
                 $objPaymentService = $this->di->get('paymentService');
                 $identity = $this->auth->getIdentity();
-                $user_id=($tData['UserID'])?$tData['UserID']:$identity['id'];
+                $user_id = ($tData['UserID'])?$tData['UserID']:$identity['id'];
                 $tParameters = [
                     'userId'                    => $user_id,
                     'provider'                  => ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
@@ -673,7 +674,9 @@
                 $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
 
                 // This method is potentially called twice (To upgrade in the thank you action)
-                $objAgencySubscriptionPlan = \Vokuro\Models\AgencySubscriptionPlan::findFirst("agency_id = {$objAgency->agency_id}");
+                $objAgencySubscriptionPlan = \Vokuro\Models\AgencySubscriptionPlan::findFirst(
+                    "agency_id = {$objAgency->agency_id}"
+                );
                 if (!$objAgencySubscriptionPlan)
                     $objAgencySubscriptionPlan = new \Vokuro\Models\AgencySubscriptionPlan();
 
@@ -682,7 +685,9 @@
                 $objAgencySubscriptionPlan->save();
 
                 if (!$objPaymentService->changeSubscription($tParameters)) {
-                    $this->flashSession->error('Could not create subscription.  Contact customer support.');
+                    $this->flashSession->error(
+                        'Could not create subscription. Contact customer support.'
+                    );
                     return false;
                 }
 
@@ -690,6 +695,7 @@
                 $this->flashSession->error($e->getMessage());
                 return false;
             }
+            
             return true;
         }
 
@@ -763,27 +769,7 @@
 
         public function submitorderAction()
         {   
-            //  print_r($_POST);exit;
-            /*
-                Already Commented
-
-                if(!$this->IsUniqueEmail($this->session->AgencySignup)) {
-                    $this->flashSession->error("This email address is already in use.  Please use another one.");
-                    $this->response->redirect('/agencysignup/order');
-                    return false;
-                }
-
-                if(!$this->IsUniqueDomain($this->session->AgencySignup)) {
-                    $this->flashSession->error("This domain is already in use.  Please use another one.");
-                    $this->response->redirect('/agencysignup/order');
-                    return false;
-                }
-            */
             $Token = $this->request->getPost('stripeToken', 'striptags');
-
-            // $Token='sk_test_zNX3s30y9WPK3yuIlXbDuXnF';
-            // print_r($Token);exit;
-            // $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => 1]);
 
             if ($Token) {
                 // merge stripe token into agency signup session array 
