@@ -5,7 +5,7 @@
 	<tbody>
         <tr>
             <td style="padding:40px 0 40px 0;">
-              {{email_content}}
+              {!!email_content!!}
             	<!-- Hi [[employeeName]],
             	<p>
             		We’ve just created your profile for [[ BusinessName ]] within our software. 
