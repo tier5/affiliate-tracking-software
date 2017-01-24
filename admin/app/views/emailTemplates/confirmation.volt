@@ -7,7 +7,7 @@
             <td style="padding:0px 0  0 0;">
                 <p style="font-size: 13px;line-height:24px;font-family:'HelveticaNeue','Helvetica Neue',Helvetica,Arial,sans-serif;">
 
-                    {!! email_content !!}
+                    {{ email_content}}
                    <!-- Hey [[firstName]],<br />
 
                     
