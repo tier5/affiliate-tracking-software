@@ -306,7 +306,7 @@ use Pricing_Services_Twilio;
                                 $tEntityArray[$Field] = $this->request->getPost($Field, 'striptags');
                                 break;
                              case 'html':
-                                $tEntityArray[$Field] = htmlentities($this->request->getPost($Field));
+                                $tEntityArray[$Field] = trim(htmlentities($this->request->getPost($Field)));
                                 break;
                             case 'replace_comma_dollars':
                                 $tEntityArray[$Field] = $this->request->str_replace(["$", ","], ["", ""], $this->request->getPost($Field));
@@ -604,7 +604,7 @@ use Pricing_Services_Twilio;
             
             
             // Set default message welcome_email
-            if(!$objAgency->welcome_email || ($this->request->isPost() && !$this->request->getPost('welcome_email'))) {
+            if(!$objAgency->welcome_email || ($this->request->isPost() && !trim($this->request->getPost('welcome_email')))) {
              
               $objAgency->welcome_email = "Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
@@ -618,7 +618,7 @@ use Pricing_Services_Twilio;
             }
             
             // Set default message for welcome_email_employee
-            if(!$objAgency->welcome_email_employee || ($this->request->isPost() && !$this->request->getPost('welcome_email_employee'))) {
+            if(!$objAgency->welcome_email_employee || ($this->request->isPost() && !trim($this->request->getPost('welcome_email_employee')))) {
               $objAgency->welcome_email_employee= 'Hi {employeeName},
             	<p>
             		We’ve just created your profile for {BusinessName} within our software. 
@@ -638,7 +638,7 @@ use Pricing_Services_Twilio;
             }
             
             // Set default message for viral_email
-            if(!$objAgency->viral_email || ($this->request->isPost() && !$this->request->getPost('viral_email'))) {
+            if(!$objAgency->viral_email || ($this->request->isPost() && !trim($this->request->getPost('viral_email')))) {
               $objAgency->viral_email = "I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
             }
             $AgencyForm = new AgencyForm($objAgency, array(
