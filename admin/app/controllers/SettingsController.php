@@ -490,7 +490,7 @@ use Pricing_Services_Twilio;
             $this->view->pick("settings/index");
         }
 
-        public function sendSampleEmailAction($EmployeeID) {
+      public function sendSampleEmailAction($EmployeeID) {
             $this->view->disable();
 
             $Identity = $this->session->get('auth-identity');
@@ -526,7 +526,7 @@ use Pricing_Services_Twilio;
             $dbEmployees = \Vokuro\Models\Users::getEmployeeListReportGenerate($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
             //echo '<pre>';print_r($dbEmployees);exit;
             $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
-            $this->view->review_invite_type_id=$review_invite_type_id;
+            $this->view->review_invite_type_id=$objReview->review_invite_type_id;
 
                 /*** new start generator ***/
 
@@ -566,6 +566,7 @@ use Pricing_Services_Twilio;
             return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
             
         }
+
 
         public function agencyAction() {
           if($_POST){
