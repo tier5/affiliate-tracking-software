@@ -182,9 +182,12 @@
                           $Mail = $this->getDI()->getMail();
                          $Mail->setFrom($EmailFrom, $EmailFromName);
                          $Mail->send($to, $subject, '', '', $mail_body);
+                             $phone='559-425-4015';
      
-     
-                         if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                         /*if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                          }*/
+
+                          if ($this->SendSMS($phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                           }
                         }
                       
