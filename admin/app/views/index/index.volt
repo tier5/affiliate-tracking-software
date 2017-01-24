@@ -191,17 +191,17 @@
             if(!$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected){
 
             ?>
-            <div class="col-md-4 col-sm-4">
-             <div class="portlet light bordered dashboard-panel">
+            <div class="col-md-4 col-sm-4 reviews text-center">
+                <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="">Business Is not Connected</span>
-
+                            <p>Ratings & Reviews</p>
                         </div>
                     </div>
                     <div class="portlet-body">
+                        <p>Business Is not Connected</p>
                         <div class="number">
-                           <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink">Connect Business pages</a>
+                           <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink connect_btn">click here to connect</a>
                         </div>
                     </div>
                 </div>
@@ -211,7 +211,7 @@
 
 
               ?>
-            <div class="row">
+            <div>
             <div class="col-md-2 col-sm-2">
                 <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">
@@ -533,7 +533,7 @@
             <?php } ?>
 
 
-            <?php if (isset($review_report)) { ?>
+            <?php if (isset($review_report) && ($facebookMyBusinessConnected || $GoogleMyBusinessConnected || $YelpMyBusinessConnected)) { ?>
             <div class="col-md-6 col-sm-6">
                 <div class="portlet light bordered dashboard-panel">
                     <div class="portlet-title">

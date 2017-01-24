@@ -132,10 +132,33 @@
     <style type="text/css">
     </style>
     <link rel="stylesheet" href="/dashboard/css?primary_color={{ primary_color }}&secondary_color={{ secondary_color }}">
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.close-div').click(function(){
+            $(this).parent().remove();
+            $('.navbar-fixed-top').removeClass("top-banner-show");
+            $('.page-containert').removeClass("top-banner-show");
+        });
+        $('#click_rate').click(function(){
+            //$('a .connect_btn').trigger("click");
+            var href = $('.connect_btn').attr('href');
+            window.location.href = href; 
+        });
+    });
+</script>
 </head>
 <!-- END HEAD -->
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" data-ccprompt="{{ ccInfoRequired }}" data-paymentprovider="{{ paymentService }}">
+
+<?php 
+  
+if($agencytype=='business' && !$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected && $_SERVER['REQUEST_URI']=="/"):?>
+<!-- Top banner starts -->
+<div class="top-banner">you must connect your google, facebook & yelp account to monitor these review sites <a   id="click_rate">click here to connect</a><span class="close-div">X</span></div>
+<?php endif;?>
+<!-- Top banner ends -->
 {% if BusinessDisableBecauseOfStripe AND 1 == 2 %}
     <div class="container">
         <div class="row">
@@ -147,7 +170,7 @@
 <input type="hidden" id="primary_color" value="{{ primary_color }}" />
 <input type="hidden" id="secondary_color" value="{{ secondary_color}}" />
 <!-- BEGIN HEADER -->
-<div class="page-header navbar navbar-fixed-top">
+<div class="page-header navbar navbar-fixed-top <?php if($agencytype=='business' && !$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected && $_SERVER['REQUEST_URI']=='/'){ ?>top-banner-show <?php } ?>">
     <!-- BEGIN HEADER INNER -->
     <div class="page-header-inner ">
         <!-- BEGIN LOGO -->
@@ -251,7 +274,7 @@
 <div class="clearfix"></div>
 <!-- END HEADER & CONTENT DIVIDER -->
 <!-- BEGIN CONTAINER -->
-<div class="page-container">
+<div class="page-container <?php if($agencytype=='business' && !$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected && $_SERVER['REQUEST_URI']=='/'){ ?>top-banner-show <?php } ?>">
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
         <!-- BEGIN SIDEBAR -->
@@ -268,7 +291,7 @@
                     <li class="nav-item start">
                         <a href="/admindashboard" class="nav-link nav-toggle">
                             <i class="icon-home"></i>
-                            <span class="title">Dashboard</span>
+                            <span class="title">Dashboard</span> 
                             <span class="selected"></span>
                         </a>
                     </li>
@@ -338,6 +361,8 @@
 
                     {% if location_id %}
                         {% if agencytype != "agency" %}
+
+                        <?php if($facebookMyBusinessConnected ||  $GoogleMyBusinessConnected || $YelpMyBusinessConnected){ ?>
                             <li class="nav-item">
                                 <a href="/reviews" class="nav-link nav-toggle">
                                     <i class="icon-diamond"></i>
@@ -345,6 +370,7 @@
                                     <span class="selected"></span>
                                 </a>
                             </li>
+                            <?php } ?>
                             <li class="nav-item">
                                 <a href="/analytics" class="nav-link nav-toggle">
                                     <i class="icon-bar-chart"></i>
