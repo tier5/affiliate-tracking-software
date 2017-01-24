@@ -9,8 +9,8 @@ use Vokuro\Services\ServicesConsts;
 use Vokuro\Models\AuthorizeDotNet as AuthorizeDotNetModel;
 use Vokuro\Payments\AuthorizeDotNet as AuthorizeDotNetPayment;
 
-class PaymentService extends BaseService {
-        
+class PaymentService extends BaseService
+{
     public function __construct($config, $di)
     {
         parent::__construct($config, $di);
@@ -378,11 +378,14 @@ class PaymentService extends BaseService {
 
             $Amount = $ccParameters['type'] == 'Agency' ? $ccParameters['amount'] : $subscriptionManager->getSubscriptionPrice($userId, $ccParameters['planType']) * 100;
 
+            $currency = $subscriptionManager->getSubscriptionCurrency($userId);
+
+            
             \Stripe\Plan::create([
                 'amount'    => $Amount,
                 'interval'  => $Interval,
                 'name'      => $Name,
-                'currency'  => 'usd',
+                'currency'  => $currency,
                 'id'        => $PlanID
             ]);
 
@@ -403,7 +406,7 @@ class PaymentService extends BaseService {
             if (isset($ccParameters['initial_amount']) && $ccParameters['initial_amount']) {
                 $objCharge = \Stripe\Charge::create([
                     'amount' => $ccParameters['initial_amount'],
-                    'currency' => 'usd',
+                    'currency' => $currency,
                     'customer' => $objStripeSubscription->stripe_customer_id,
                     'description' => "Initial Service Fee"
                 ]);
@@ -427,9 +430,9 @@ class PaymentService extends BaseService {
     {
         /* Check parameters */
         $required = ['userEmail', 'cardNumber', 'expirationDate', 'csv'];
-        $supplied = array_keys($ccParameters); 
+        $supplied = array_keys($ccParameters);
         $intersect = array_intersect($supplied, $required);
-        if ( count($intersect) !== count($required)) {
+        if (count($intersect) !== count($required)) {
             return false;
         }
         

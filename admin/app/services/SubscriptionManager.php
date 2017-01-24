@@ -920,6 +920,17 @@ class SubscriptionManager extends BaseService
         return $Referrals > 4 ? 100 : $Referrals * 25;
     }
 
+    public function getSubscriptionCurrency($UserID)
+    {
+        $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst('user_id = ' . $UserID);
+
+        $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
+            'id = ' . $objSubscriptionPlan->subscription_pricing_plan_id
+        );
+
+        return $objSubscriptionPricingPlan->currency;
+    }
+
 
     public function getSubscriptionPrice($UserID, $PlanType)
     {
