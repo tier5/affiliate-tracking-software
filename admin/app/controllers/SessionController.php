@@ -233,12 +233,14 @@ class SessionController extends ControllerBase {
             }
 
             if($this->request->getPost('sharing_code')) {
-                $objSharingCode = new \Vokuro\Models\SharingCode();
+               /* $objSharingCode = new \Vokuro\Models\SharingCode();
                 $objSharingCode->sharecode = $this->request->getPost('sharing_code');
                 $objSharingCode->business_id = $agency->agency_id;
                 $objSharingCode->created_at = date("Y-m-d H:i:s", strtotime('now'));
                 $objSharingCode->subscription_id = $subscription_id;
-                $objSharingCode->save();
+                $objSharingCode->save();*/
+
+                 $result=$this->db->query(" INSERT INTO sharing_code ( `business_id`, `subscription_id`, `created_at`, `sharecode`) VALUES ( '".$agency->agency_id."', '".$subscription_id."', '".date("Y-m-d H:i:s", strtotime('now'))."','".$this->request->getPost('sharing_code')."')");
             }
 
             $user->agency_id = $agency->agency_id;
