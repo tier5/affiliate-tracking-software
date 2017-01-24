@@ -155,7 +155,7 @@
             // We use the businesses' from number if it exists, otherwise use the agency's.
             $TwilioFrom = $parent_agency->twilio_from_phone;
             $TwilioAPI = $parent_agency->twilio_api_key;
-            echo $user_info->phone;
+            //echo $user_info->phone;
                         //echo $parent_agency->name;exit;
                      if($emp==1 && $role=="Super Admin")
                      {  
@@ -165,10 +165,15 @@
                          $parameters = array("location_id" => $invite->location_id);
                          $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
                          $is_email_alert_on=0;
+                         $is_sms_alert_on=0;
      
                          foreach($agencynotifications as $agencynotification) {
                              if ($agencynotification->user_id == $user_info->id) {
                                  $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
+
+                                  $is_sms_alert_on = ($agencynotification->sms_alert==1?1:0);
+
+
                              } }
      
                          if($is_email_alert_on==1)
@@ -184,12 +189,21 @@
                          $Mail->setFrom($EmailFrom, $EmailFromName);
                          $Mail->send($to, $subject, '', '', $mail_body);
                              $phone='8127224722';
-     
-                         /*if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
-                          }*/
-
-                          if ($this->SendSMS($phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                            if($is_sms_alert_on==1)
+                            {
+                                if($user_info->phone!='')
+                                {
+                         if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                           }
+                                }
+                                else
+                                {
+                                    $this->flash->error('Please provide a number to sent sms');
+                                }
+
+                            }
+
+                          
                         }
                       
                         //find the location review sites
@@ -207,10 +221,13 @@
                          $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
      
                            $is_email_alert_on=0;
+                           $is_sms_alert_on=0;
      
                          foreach($agencynotifications as $agencynotification) {
                              if ($agencynotification->user_id == $user_info->id) {
                                  $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
+
+                                  $is_sms_alert_on = ($agencynotification->sms_alert==1?1:0);
                              } }
      
                              
@@ -252,20 +269,31 @@
                              $Mail->send($to, $subject, '', '', $mail_body);
                                 $phone='8127224722';
                              /**** mail to busines ****/
-         
-                             /*** sms to user ***/
-                              /*if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,$TwilioFrom)) {
-                              }*/
 
-                              if ($this->SendSMS($phone, $mail_body, $TwilioAPI, $TwilioToken,$TwilioFrom)) {
+                             if($is_sms_alert_on==1)
+                             {
+         
+                             /*** sms to user ***/
+
+                             if($user_info->phone!='')
+                             {
+                              if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,$TwilioFrom)) {
                               }
+                                }
+
+                            
                              /*** sms to user ***/
          
                              /*** sms to business ***/
-         
-                             /* if ($this->SendSMS($business_agency->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
-                              }*/
+                                if($business_agency->phone!='')
+                             {
+                             if ($this->SendSMS($business_agency->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                              }
+
+                            }
                              /*** sms to business ***/
+
+                            }
      
      
                          }
