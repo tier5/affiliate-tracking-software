@@ -68,12 +68,9 @@ foreach($agencies as $agency) {
                             <!--<td><?=(isset($agency->subscription_id) && $agency->subscription_id > 0?$plan_name[$agency->id]:($generate_array[$agency->id]=='FR')?'Free':$generate_array[$agency->id])?></td>-->
                             <td>
                             <?php
-                                if(isset($agency->subscription_id) &&$agency->subscription_id > 0)
-                                {
-                                echo $plan_name[$agency->id];
-                                }
-                                else
-                                {
+                                if(isset($agency->subscription_id) &&$agency->subscription_id > 0) {
+                                  echo $plan_name[$agency->id];
+                                } elseif (isset($generate_array[$agency->id])) {
                                     if ($generate_array[$agency->id]=='FR')
                                     {
                                         echo 'Free';
@@ -82,37 +79,27 @@ foreach($agencies as $agency) {
                                     {
                                         echo $generate_array[$agency->id];
                                     }
+                                } else {
+                                    echo 'Free';
                                 }
 
                             ?>
                             </td>
 
-                            <!--<td><?=(isset($agency->subscription_id) && $agency->subscription_id > 0?'Paid':($generate_array[$agency->id]=='FR')?'Free':"Paid")?></td>-->
+                            <!--<td><?php //(isset($agency->subscription_id) && $agency->subscription_id > 0?'Paid':($generate_array[$agency->id]=='FR')?'Free':"Paid")?></td>-->
                             <td>
-                                   <?php
-                                if(isset($agency->subscription_id) &&$agency->subscription_id > 0)
-                                {
-                                echo "Paid";
-                                }
-                                else
-                                {
-                                    if ($generate_array[$agency->id]=='FR')
-                                    {
-                                        echo 'Free';
-                                    }
-                                    else
-                                    {
-                                    if($generate_array[$agency->id]=='TR')
-                                    {
-                                        echo 'Trial';
-                                    }
-                                    else
-                                    {
-                                    echo "Paid";
-                                    }
-                                    }
-                                }
-
+                             <?php
+                              if (isset($account_type[$agency->id])) {
+                                  echo $account_type[$agency->id];
+                              }elseif (isset($generate_array[$agency->id])) {
+                                  if ($generate_array[$agency->id]=='FR') {
+                                    echo 'Free';
+                                  }else{
+                                    echo 'Paid';
+                                  }
+                              }else{
+                                  echo 'Free';
+                              }
                             ?>
                             </td>
                             <td><a href="/admindashboard/status/<?=$agency_type_id?>/<?=$agency->agency_id?>/<?=($agency->status==0?1:0)?>"><img src="/public/img/<?=($agency->status==0?'off':'on')?>.png" /></td>
