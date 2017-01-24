@@ -614,7 +614,7 @@ class ControllerBusinessBase extends ControllerBase
         $selected_subscription_id = (int)$selected_subscription_id;
 
         $markup = "<select id=\"subscription_pricing_plan_id\" name=\"subscription_pricing_plan_id\">";
-        $markup .= "    <option value=\"0\">Unpaid</option>";  // This is default plan
+        $markup .= "    <option value=\"0\">Free</option>";  // This is default plan
         foreach ($subscriptionPricingPlans as $subscriptionPricingPlan) {
             $markup .= "<option value=\"";
             $markup .= $subscriptionPricingPlan->id.'"';
