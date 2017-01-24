@@ -706,7 +706,7 @@ class ControllerBase extends Controller {
 
         $NonViralSMS = $MaxSMS;
         $ViralSMS = $objSubscriptionManager->GetViralSMSCount($agency->agency_id);
-        $MaxSMS += $ViralSMS;
+       // $MaxSMS += $ViralSMS;
 
         $this->view->setVars([
             'total_sms_month' => $MaxSMS,
