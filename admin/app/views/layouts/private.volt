@@ -154,7 +154,7 @@
 
 <?php 
   
-if($agencytype=='business' && !$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected && $_SERVER['REQUEST_URI']=="/"):?>
+if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $_SERVER['REQUEST_URI']=="/"):?>
 <!-- Top banner starts -->
 <div class="top-banner">you must connect your google, facebook & yelp account to monitor these review sites <a   id="click_rate">click here to connect</a><span class="close-div">X</span></div>
 <?php endif;?>
@@ -170,7 +170,7 @@ if($agencytype=='business' && !$facebookMyBusinessConnected &&  !$GoogleMyBusine
 <input type="hidden" id="primary_color" value="{{ primary_color }}" />
 <input type="hidden" id="secondary_color" value="{{ secondary_color}}" />
 <!-- BEGIN HEADER -->
-<div class="page-header navbar navbar-fixed-top <?php if($agencytype=='business' && !$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected && $_SERVER['REQUEST_URI']=='/'){ ?>top-banner-show <?php } ?>">
+<div class="page-header navbar navbar-fixed-top <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $_SERVER['REQUEST_URI']=='/'){ ?>top-banner-show <?php } ?>">
     <!-- BEGIN HEADER INNER -->
     <div class="page-header-inner ">
         <!-- BEGIN LOGO -->
@@ -274,7 +274,7 @@ if($agencytype=='business' && !$facebookMyBusinessConnected &&  !$GoogleMyBusine
 <div class="clearfix"></div>
 <!-- END HEADER & CONTENT DIVIDER -->
 <!-- BEGIN CONTAINER -->
-<div class="page-container <?php if($agencytype=='business' && !$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected && $_SERVER['REQUEST_URI']=='/'){ ?>top-banner-show <?php } ?>">
+<div class="page-container <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $_SERVER['REQUEST_URI']=='/'){ ?>top-banner-show <?php } ?>">
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
         <!-- BEGIN SIDEBAR -->
