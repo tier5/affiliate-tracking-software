@@ -12,6 +12,7 @@ use Vokuro\ArrayException;
 use Vokuro\Forms\AgencyForm;
 use Vokuro\Models\Agency;
 use Vokuro\Models\Users;
+use Vokuro\Models\Location;
 use Vokuro\Models\Notification;
 use Vokuro\Models\SubscriptionPricingPlan;
 
@@ -28,11 +29,13 @@ class ControllerBusinessBase extends ControllerBase
      **/
     public function editAction($agency_id = 0)
     {
-        $this->view->agency_id = $agency_id;
 
+        $this->view->agency_id = $agency_id;
+         $objagencyinfo = \Vokuro\Models\Agency::findFirst("agency_id = {$agency_id}");
+         $this->view->custom_sms = $objagencyinfo->custom_sms;//exit;
         $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
         $this->view->UnpaidPlan = $objSubscriptionManager->GetBusinessSubscriptionLevel($agency_id) == 'FR';
-
+        //echo $agency_id;exit;
         $form = new AgencyForm(null);
         if ($agency_id) {
             $age = Agency::findFirst("agency_id = {$agency_id}");
@@ -97,7 +100,7 @@ class ControllerBusinessBase extends ControllerBase
 
             $db = $this->di->get('db');
             $db->begin();
-
+            //echo $this->request->getPost('custom_sms');exit;
             /* Attempt to create our new business */
             $params = [
                 'agency_id'          => $agency_id,
@@ -114,6 +117,8 @@ class ControllerBusinessBase extends ControllerBase
                 'deleted'            => (isset($age->deleted) ? $age->deleted : 0),
                 'status'             => (isset($age->status) ? $age->status : 1),
                 'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
+                'custom_sms'=>$this->request->getPost('custom_sms'),
+
             ];
 
             if (!$age->createOrUpdateBusiness($params)) {
@@ -196,6 +201,8 @@ class ControllerBusinessBase extends ControllerBase
             $parameters = array("agency_id" => $agency_id);
             $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
             $this->view->agency = $age2;
+            $location = Location::findFirst('agency_id = '.$agency_id);
+            $this->view->setVar("location", $location);
         }
 
         if ($errors) {
@@ -224,7 +231,7 @@ class ControllerBusinessBase extends ControllerBase
         $form = new AgencyForm(null);
         $age = new Agency();
         $this->view->form = $form;
-
+        
         if ($this->request->isPost()) {
             // $db = $this->di->get('db');
             //     $db->begin();
@@ -288,7 +295,8 @@ class ControllerBusinessBase extends ControllerBase
 
             $db = $this->di->get('db');
             $db->begin();
-
+            //echo "here";exit;
+            
             /* Attempt to create our new business */
             $params = [
                 'name'               => $this->request->getPost('name', 'striptags'),
@@ -306,8 +314,16 @@ class ControllerBusinessBase extends ControllerBase
                 'status'             => (isset($age->status) ? $age->status : 1),
                 'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
                 'parent_id'          => $parent_id,
+                'custom_sms'=>$this->request->getPost('custom_sms'),
+                'signup_page'=>2,
             ];
-
+          
+          if($this->request->getPost('subscription_pricing_plan_id')) {
+            $subs_plan = SubscriptionPricingPlan::findFirst('id = '.$this->request->getPost('subscription_pricing_plan_id', 'striptags'));
+            if($subs_plan && isset($subs_plan->max_sms_messages)) {
+              $params['review_goal'] = $subs_plan->max_sms_messages;
+            }
+          }
 
             if (!$age->createOrUpdateBusiness($params)) {
                 $error = true;
@@ -367,6 +383,8 @@ class ControllerBusinessBase extends ControllerBase
                         'status'             => (isset($age->status) ? $age->status : 1),
                         'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
                         'parent_id'          => $parent_id,
+                        'upgraded_status'    => 0,
+
                     ];
 
 
@@ -430,79 +448,81 @@ class ControllerBusinessBase extends ControllerBase
                     $this->flash->error(
                         "There was an error creating the {$CreateType}<BR />" . implode("<BR />", $errors)
                     );
-                    
-                    return false;
-                }
+                   /// return false;
+                }else{
 
-                /* Create an admin for this new agency */
-                $user = new Users();
-                $sendRegistrationOn = $this->request->getPost('send_registration_email', 'striptags');
-                $user->send_confirmation = $sendRegistrationOn === "on" ? true : false;
-
-                $user->assign(
-                    array(
-                        'name' => $this->request->getPost('admin_name', 'striptags'),
-                        'email' => $this->request->getPost('admin_email'),
-                        'agency_id' => $age->agency_id,
-                        'profilesId' => $agency_type_id, // 1 = Agency User, 2 = Business User
-                        'is_employee' => 1,
-                        'role' => 'Super Admin',
-                    )
-                );
-
-                if (!$user->save()) {
-                    $error = true;
-
-                    foreach ($user->getMessages() as $error_message) {
-                        $errors[] = $error_message;
-                    }
-                }
-                if ($errors) {
-                    $db->rollback();
-                    $this->flash->error("There was an error creating the {$CreateType}<BR />" . implode("<BR />", $errors));
-                    return false;
-                } else {
-                    $db->commit();
-                }
-
-                $dbUsers = \Vokuro\Models\Users::find(
-                    'email = "' .  $this->request->getPost('admin_email') . '"'
-                );
-                
-                foreach ($dbUsers as $objUser) {
-                    $newAdmin = $objUser;
-                }
-                    unset($objUser);
-
-                $result = $this->createSubscriptionPlan($newAdmin, $this->request);
-                
-                if ($result != true) {
-                    $this->flash->error($messages);
-                }
-
-                if ($age->agency_type_id == 1) {
-                    // Create a default subscription for the agency
-                    $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
-                    $objSubscriptionManager->CreateDefaultSubscriptionPlan($age->agency_id, true);
-                }
-
-                $this->view->isSuccess = 1;
-
-                $this->flash->success(
-                    "The " . ($age->agency_type_id == 1 ? 'agency' : 'business') . " was created successfully"
-                );
-                $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
-                //if(!$errors) $db->commit();
-                
-                if ($errors) {
-                    $db->rollback();
-                    $this->flash->error("There was an error creating <BR />" . implode("<BR />", $errors));
-                    return false;
+                  /* Create an admin for this new agency */
+                  $user = new Users();
+                  $sendRegistrationOn = $this->request->getPost('send_registration_email', 'striptags');
+                  $user->send_confirmation = $sendRegistrationOn === "on" ? true : false;
+  
+                  $user->assign(
+                      array(
+                          'name' => $this->request->getPost('admin_name', 'striptags'),
+                          'email' => $this->request->getPost('admin_email'),
+                          'agency_id' => $age->agency_id,
+                          'profilesId' => $agency_type_id, // 1 = Agency User, 2 = Business User
+                          'is_employee' => 1,
+                          'role' => 'Super Admin',
+                      )
+                  );
+  
+                  if (!$user->save()) {
+                      $error = true;
+  
+                      foreach ($user->getMessages() as $error_message) {
+                          $errors[] = $error_message;
+                      }
+                  }
+                  if ($errors) {
+                      $db->rollback();
+                      $this->flash->error("There was an error creating the {$CreateType}<BR />" . implode("<BR />", $errors));
+                      return false;
+                  } else {
+                      $db->commit();
+                  }
+  
+                  $dbUsers = \Vokuro\Models\Users::find(
+                      'email = "' .  $this->request->getPost('admin_email') . '"'
+                  );
+                  
+                  foreach ($dbUsers as $objUser) {
+                      $newAdmin = $objUser;
+                  }
+                      unset($objUser);
+  
+                  $result = $this->createSubscriptionPlan($newAdmin, $this->request);
+                  
+                  if ($result != true) {
+                      $this->flash->error($messages);
+                  }
+  
+                  if ($age->agency_type_id == 1) {
+                      // Create a default subscription for the agency
+                      $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+                      $objSubscriptionManager->CreateDefaultSubscriptionPlan($age->agency_id, true);
+                  }
+  
+                  $this->view->isSuccess = 1;
+  
+                  $this->flash->success(
+                      "The " . ($age->agency_type_id == 1 ? 'agency' : 'business') . " was created successfully"
+                  );
+                  $this->flash->success('A confirmation email has been sent to ' . $this->request->getPost('admin_email'));
+                  //if(!$errors) $db->commit();
+                  
+                  if ($errors) {
+                      $db->rollback();
+                      $this->flash->error("There was an error creating <BR />" . implode("<BR />", $errors));
+                      //return false;
+                  }
                 }
             }
 
-            $identity = $this->getIdentity();
-
+            
+        }
+        $identity = $this->getIdentity();
+        
             $tUserIDs = [];
             // Get all user IDs for agency
             if ($agency_type_id != 1) {
@@ -533,7 +553,6 @@ class ControllerBusinessBase extends ControllerBase
             if (!$sub_selected) {
                 $sub_selected = 0;
             }
-                
             $markup = $this->buildSubsriptionPricingPlanMarkUp($sub_selected, $tUserIDs);
             $this->view->setVar("subscriptionPricingPlans", $markup);
 
@@ -545,7 +564,7 @@ class ControllerBusinessBase extends ControllerBase
             $this->view->agency = $age2;
 
             if ($errors) {
-                dd($errors);
+                //dd($errors);
             }
 
             if ($this->request->isPost() && $this->view->agency) {
@@ -553,7 +572,6 @@ class ControllerBusinessBase extends ControllerBase
 
                 return $this->response->redirect('/?saved=1');
             }
-        }
     }
 
     /**

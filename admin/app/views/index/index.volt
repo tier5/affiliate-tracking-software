@@ -90,7 +90,7 @@
                         <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
                         <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total+$sms_sent_this_month_total_non?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
                     </div>
-                    <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / <?=$sms_sent_this_month_total?>)<br/><span class="goal">Allowed</span></div>
+                    <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / <?=($sms_sent_this_month_total+$sms_sent_this_month_total_non)?>)<br/><span class="goal">Allowed</span></div>
                 </div>
             </div>
             <?php
@@ -473,7 +473,7 @@
 
                                 }
                                 $tot=$yes+$no;
-                                $cal=$yes/$tot;
+                                $cal=$tot>0?$yes/$tot:0;
                                 ?>
                                 <td class="<?=$class?>"><?=($data->sms_sent_this_month > 0?(number_format($cal*100, 1) . '%'):'0.0%')?> -Yes</td>
 

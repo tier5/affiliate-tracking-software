@@ -43,35 +43,52 @@
             <div class="form-group">
                 <label for="phone" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Phone</label>
                 <div class="col-md-8">
-                    {{ form.render("phone", ["class": 'form-control', 'placeholder': 'Phone', 'type': 'name']) }}
+                    <!--form.render("phone", ["class": 'form-control', 'placeholder': 'Phone', 'type': 'name'])-->
+                    <input type="text" name="phone" placeholder = "Phone" class="form-control" value="<?php echo $location->phone?$location->phone:''; ?>" />
                 </div>
             </div>
             <div class="form-group">
                 <label for="address" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Address</label>
                 <div class="col-md-8">
-                    {{ form.render("address", ["class": 'form-control', 'placeholder': 'Address', 'type': 'name']) }}
+                    <!-- form.render("address", ["class": 'form-control', 'placeholder': 'Address', 'type': 'name']) -->
+                    <input type="text" name="address" placeholder = "Address" class="form-control" value="<?php echo $location->address?$location->address:''; ?>" />
                 </div>
             </div>
             <div class="form-group">
                 <label for="locality" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> City</label>
                 <div class="col-md-8">
-                    {{ form.render("locality", ["class": 'form-control', 'placeholder': 'City', 'type': 'name']) }}
+                    <!--form.render("locality", ["class": 'form-control', 'placeholder': 'City', 'type': 'name'])-->
+                    <input type="text" name="locality" placeholder='City' class="form-control" value="<?php echo $location->locality?$location->locality:''; ?>" />
                 </div>
             </div>
             <div class="form-group">
                 <label for="state_province" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> State/Province</label>
                 <div class="col-md-8">
-                    {{ form.render("state_province", ["class": 'form-control', 'placeholder': 'State/Province', 'type': 'name']) }}
+                     <!--form.render("state_province", ["class": 'form-control', 'placeholder': 'State/Province', 'type': 'name'])-->
+                     <input type="text" name="state_province" placeholder='State/Province' class="form-control" value="<?php echo $location->state_province?$location->state_province:''; ?>" />
                 </div>
             </div>
             <div class="form-group">
                 <label for="postal_code" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Postal Code</label>
                 <div class="col-md-8">
-                    {{ form.render("postal_code", ["class": 'form-control', 'placeholder': 'Postal Code', 'type': 'name']) }}
+                    <!--form.render("postal_code", ["class": 'form-control', 'placeholder': 'Postal Code', 'type': 'name'])-->
+                    <input type="text" name="postal_code" placeholder='Postal Code' class="form-control" value="<?php echo $location->postal_code?$location->postal_code  :''; ?>" />
                 </div>
             </div>
 
             {% if UnpaidPlan %}
+
+                  <div class="custom_number_show show">
+                <label for="subscription_pricing_plan_id" class="col-md-4 control-label">Assign Customer Number</label>
+                <div class="col-md-8">
+                   <select class="form-control" name="custom_sms">
+                    <option value="1" <?php echo ($custom_sms!='' && $custom_sms==1)?'selected':''?>>Yes</option>
+                    <option value="2" <?php echo ($custom_sms!='' && $custom_sms==2)?'selected':''?>>No</option>
+                        
+                    </select>
+                </div>
+                </div> 
+
                 <div class="free_subscription_pricing_plan show">
                 <hr/>
                 <h4>Free Subscription Plan</h4>
@@ -102,6 +119,8 @@
                     </div>
                 </div>
             </div>
+
+
             {% endif %}
 
             <div class="form-group">
@@ -118,8 +137,10 @@
         $('#send-registration-email-control').change(function () {
             if ($(this).val() == 0) {
                 $(".free_subscription_pricing_plan").addClass('show');
+                $(".custom_number_show").addClass('show');
             } else {
                 $(".free_subscription_pricing_plan").removeClass('show');
+                $(".custom_number_show").removeClass('show');
             }
         });
         $('#subscription_pricing_plan_id').prop("disabled", true); 
@@ -129,8 +150,10 @@
         $('#subscription_pricing_plan_id').change(function () {
             if ($(this).val() == 0) {
                 $(".free_subscription_pricing_plan").addClass('show');
+                $(".custom_number_show").addClass('show');
             } else {
                 $(".free_subscription_pricing_plan").removeClass('show');
+                $(".custom_number_show").removeClass('show');
             }
         });
 

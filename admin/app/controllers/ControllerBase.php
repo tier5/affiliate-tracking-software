@@ -571,7 +571,13 @@ class ControllerBase extends Controller {
         {
             $Domain="{$TLDomain}";
         }
+        if($Domain==''){
+          $Domain = $_SERVER['HTTP_HOST'];
+        }
         $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
+
+        $message_parent='';
+        $objParentAgency = '';
         //$share_link = urlencode($share_link);
 
         /*$this->view->setVars([
@@ -582,8 +588,9 @@ class ControllerBase extends Controller {
 
 
             /**** 24.11.2016 ****/
-
+           // echo $agency->agency_id;exit;
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->agency_id}");
+            //echo $objAgency->parent_id;exit;
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Get Mobile Reviews";
             $AgencyUser = "Zach Anderson";
@@ -602,6 +609,12 @@ class ControllerBase extends Controller {
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
+             $resultx=$this->db->query(" SELECT * FROM `agency` WHERE `agency_id` =".$objAgency->parent_id);
+                 $x=$resultx->fetch();
+           // echo $x['viral_email'];
+            if($x['viral_email']){
+            $message_parent=$x['viral_email']; 
+            }   
            // $EmailFrom = "zacha@reviewvelocity.co";
         }
 
@@ -655,8 +668,24 @@ class ControllerBase extends Controller {
         ".$AgencyUser."<br>".$AgencyName;*/
         
         /**** 24.11.2016 ****/
+        //echo $message_parent ;exit;
 
-        $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {$share_link}";
+        if($objParentAgency->viral_email=='')
+        {
+             $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
+        }
+        else
+        {
+            $message_set=$objParentAgency->viral_email;
+        }
+        
+        if($message_set) {
+         if(strpos($message_set,'{share_link}') === false) {
+            $message_set .= '{share_link}';
+         }
+         $message_set = str_replace('{share_link}',$share_link,$message_set);
+        }
+       
         $this->view->setVars([
             'AgencyUser' => $AgencyUser,
             'AgencyName' =>$AgencyName,

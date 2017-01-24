@@ -687,6 +687,28 @@ div#image_container img.selected, div#image_container img:hover{
    width: 80%;
 }
 
+#tab_email table td a{
+  display: inline-block;
+  color: #fff;
+  background: #000;
+  border: 1px solid #000;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 5px 20px;
+  border-radius: 5px !important;
+  text-decoration: none;
+  transition: 0.5s;
+}
+
+#tab_email table td a:hover{
+  background: none;
+  color: #000;
+}
+
+.business_conf,.employee_conf,.viral_mail{
+  display: none;
+}
+
 
 .upsidedown .portlet.light > .portlet-title { border-bottom: none; border-top: 1px solid #eef1f5; min-height: 30px; margin-bottom: 0; }
 .upsidedown .portlet.light { padding: 7px 10px 9px; }
@@ -1141,6 +1163,13 @@ body { background-color: #FFFFFF; color: #484848; }
     display: none;
 }
 .free_subscription_pricing_plan.show {
+    display: block;
+}
+
+.custom_number_show {
+    display: none;
+}
+.custom_number_show.show {
     display: block;
 }
 

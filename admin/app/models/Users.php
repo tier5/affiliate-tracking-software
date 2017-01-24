@@ -199,15 +199,13 @@
          * Validate that emails are unique across users
          */
         public function validation() {
-            
-            /*if(!$this->id) {
-
-              $this->validate(new Uniqueness(array(
-                  "field" => "email",
-                  "message" => "The email is already registered"
-              )));
-            
-            }*/
+            if(!$this->id) {
+              // this validation is commented due to removed email field from create business form agency
+              //$this->validate(new Uniqueness(array(
+              //    "field" => "email",
+              //    "message" => "The email is already registered"
+              //)));            
+            }
 
             return $this->validationHasFailed() != true;
         }
@@ -695,7 +693,7 @@
                           (users.profilesId = 3 OR users.is_employee = 1) OR (users.role = 'Super Admin' AND users.agency_id = {$agency_id}) 
                     ORDER BY ".$order_by." desc
                     ;";
-//echo $sql . "<BR><BR>";exit;
+
             $list = new Users();
 
             $params = null;

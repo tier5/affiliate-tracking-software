@@ -29,7 +29,7 @@
 								<td><?php echo $spfnumber->friendly_name; ?></td>
 								<td><?php echo $spfnumber->iso_country; ?></td>
 								
-								<td><?php if($spfnumber->capabilities->SMS==1){ ?> <a  href="/twilio/booknumber/<?php echo base64_encode($spfnumber->phone_number);?>||<?php echo base64_encode($spfnumber->friendly_name);?>||"><input id="gather_info" class="btnLink btnPrimary" value="Choose This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a> <?php } ?></td>
+								<td><?php if($spfnumber->capabilities->SMS==1){ ?> <a  href="/twilio/booknumberagency/<?php echo base64_encode($spfnumber->phone_number);?>||<?php echo base64_encode($spfnumber->friendly_name);?>||/<?php echo base64_encode($user_id);?>"><input id="gather_info" class="btnLink btnPrimary" value="Choose This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a> <?php } ?></td>
 							</tr>
 						<?php $i++;}}}
 						} if($i==0){?>

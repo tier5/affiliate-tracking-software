@@ -77,6 +77,7 @@ class ReviewInvite extends Model
 
 	public function initialize()
 	{
+    die('123');
 		$this->setSource('review_invite');
 	}
 

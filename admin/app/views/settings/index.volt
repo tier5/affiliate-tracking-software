@@ -22,7 +22,7 @@
               <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
               <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total+$sms_sent_this_month_total_non?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
             </div>
-            <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / <?=$sms_sent_this_month_total?>)<br/><span class="goal">Allowed</span></div>
+            <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / <?=($sms_sent_this_month_total+$sms_sent_this_month_total_non)?>)<br/><span class="goal">Allowed</span></div>
           </div>
         </div>
         <?php
@@ -56,14 +56,14 @@
       <form class="form-horizontal" role="form" method="post" autocomplete="off" enctype="multipart/form-data" id="settingsform">
 
         <ul class="nav nav-tabs">
-          <li class="active"><a href="#tab_general" data-toggle="tab"> General </a></li>
-          <li><a href="#tab_review_invite" data-toggle="tab"> Review Invite </a></li>
-          <li><a href="#tab_sms_message" data-toggle="tab"> SMS Message </a></li>
+          <li class="active"><a href="#tab_general" class="smstwilio" data-toggle="tab"> General </a></li>
+          <li><a href="#tab_review_invite" class="smstwilio" data-toggle="tab"> Review Invite </a></li>
+          <li><a href="#tab_sms_message" class="smstwilio" data-toggle="tab"> SMS Message </a></li>
           <!--<li><a href="#tab_twitter_message" data-toggle="tab"> Twitter Message </a></li>-->
-          <li><a href="#tab_white_label" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> White Label </a></li>
-          <li><a href="#tab_twilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> Twilio </a></li>
-          <li><a href="#tab_stripe" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> Stripe </a></li>
-          <li><a href="#tab_notification" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>> Notifications </a></li>
+          <li><a href="#tab_white_label" class="smstwilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> White Label </a></li>
+          <li><a href="#tab_twilio" class="smstwilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> Twilio </a></li>
+          <li><a href="#tab_stripe" class="smstwilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> Stripe </a></li>
+          <li><a href="#tab_notification" class="smstwilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>> Notifications </a></li>
         </ul>
         <div class="tab-content">
           <!-- START General Settings  -->
@@ -283,7 +283,7 @@
           <div class="tab-pane fade in" id="tab_sms_message">
             <div class="form-group">
               <div class="row">
-                <label for="SMS_message" class="col-md-4 control-label">SMS Message</label>
+                <label for="SMS_message" class="col-md-4 control-label">SMS Message1</label>
                 <div class="col-md-8">
                   <textarea style="width: 100%;" class="form-control" name="SMS_message"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?>
                   </textarea>
@@ -299,6 +299,7 @@
                 </div>
               </div>
             </div>
+
             <div class="form-group">
               <div class="row">
                 <label for="message_tries" class="col-md-4 control-label">Message Tries</label>
@@ -329,7 +330,9 @@
                 </div>
               </div>
             </div>
+
           </div>
+
           <!-- END SMS Message Settings  -->
 
           <!-- START SMS Message Settings  -->
@@ -754,8 +757,70 @@
             {{ submit_button("Save", "class": "btn btn-big btn-success btnLink btnSecondary") }}
           </div>
         </div>
+
         {{ form.render("agency_id") }}
       </form>
+      <div id="twilio-contain" style="display:none;">
+      <?php if($twilio_details!=0){?>
+        <h5> <b> Custom SMS Number </b></h5>
+        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+            <th>Number</th>
+            <!--<th>Friendly Number</th>
+            <th>Booking Date & Time</th>-->
+            <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          <?php foreach ($twilio_details as $key => $mobile_number) { ?>
+            <tr>
+              <td><?php echo $mobile_number['friendly_name']; ?></td>
+              <!--<td><?php echo $mobile_number['phone_number']; ?></td>
+              <td><?php echo $mobile_number['created']; ?></td>-->
+              <td><a  href="/twilio/releseThisnumber/<?php echo base64_encode($mobile_number['phone_number']);?>||<?php echo base64_encode($mobile_number['friendly_name']);?>||"><input id="gather_info" class="btnLink btnPrimary" value="Release This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a></td>
+            </tr>
+          <?php } ?>
+          </tbody>
+        </table>
+        <?php } else{
+         
+          if(($planSubscribe!='FR' && $subscription_id!=0) || ( $custom_sms==1) || ($subscription_id >0)) {
+        ?>
+            <form class="form-horizontal" id="userform" role="form" method="post" autocomplete="off">
+                <div class="form-group" style="padding-top: 30px;">
+                    <label for="name" class="col-md-2 control-label">Country:</label>
+                    <div class="col-md-6">
+              <select name="country" id="country_select" class="form-control" style="width: 100%;" >
+                <option value="">SELECT</option>
+                <?php foreach($countries as $cid=>$country){ ?>
+
+                  <option value="<?php echo $cid; ?>" <?php if($cid=="US"){?> selected <?php }?>><?php echo $country; ?></option>
+                <?php } ?>
+                
+              </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone" class="col-md-2 control-label">Area Code:</label>
+                    <div class="col-md-6">
+                        <input id="area_code" name="area_code" class="form-control"  type="text">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input id="gather_info" class="btnLink btnPrimary" value="Get Available Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button">
+                      
+                    </div>
+                </div> 
+                <div class="form-group"></div>       
+            </form>
+            <div id="result_valx">
+            </div>
+        <?php } } ?>
+      </div>
     </div>
   </div>
   </div>
@@ -816,7 +881,55 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 <?php
 }
 ?>
-
+<script>
+    $( document ).ready(function() {
+    
+    $('#gather_info').click(function(){
+      $("#result_valx").html("");
+      var country_select=$('#country_select').val();
+      var number_type_select="";
+      var area_code=$('#area_code').val();
+      var Contains="";
+      if(country_select!=""){
+      $("#result_valx").html("<span>loading......</span>");
+        
+        $.ajax({
+        type: 'POST',
+        url: "/twilio/getAvailableNumber", 
+        data:{country_select : country_select,number_type_select:number_type_select,area_code:area_code,Contains:Contains},
+        success: function(result){
+          if(result){
+            $("#result_valx").html("");
+            $("#result_valx").html(result);
+          }
+        }
+        });
+      }else{
+      alert("Please Select Country!!!");
+      }
+    });
+    $('#purchased_number_list').click(function(){
+    
+    $("#result_valx").html("");
+    $("#result_valx").html("<span>loading......</span>");
+      $.ajax({
+        type: 'POST',
+        url: "/twilio/getPreviousNumber", 
+        data:{},
+        success: function(result){
+          if(result){
+          $("#result_valx").html("");
+            $("#result_valx").html(result); 
+            
+          }
+        }
+        });
+    return false;
+    });
+    });
+ 
+    
+    </script>
 
 <script type="text/javascript">
   jQuery(document).ready(function($) {
@@ -835,6 +948,15 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
                 }
             }
         });
+    });
+    $(".smstwilio").on('click', function(e) {
+      
+      if($(this).attr('href')=="#tab_sms_message"){
+        $("#twilio-contain").show();
+      }else{
+        $("#twilio-contain").hide();
+      }
+      
     });
 
     $('#btnAddReviewSite').on('click', function(e) {

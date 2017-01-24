@@ -19,8 +19,11 @@
     use Vokuro\Models\ReviewsMonthly;
     use Vokuro\Models\ReviewSite;
     use Vokuro\Models\SharingCode;
+    
     use Vokuro\Models\Users;
-
+use Services_Twilio;
+use Services_Twilio_RestException;
+use Pricing_Services_Twilio;
     /**
      * Vokuro\Controllers\UsersController
      * CRUD to manage users
@@ -89,7 +92,7 @@
                         'custom_domain' => $this->request->getPost('custom_domain'),
                         'lifetime_value_customer' => str_replace("$", "", str_replace(",", "", $this->request->getPost('lifetime_value_customer'))),
                         'SMS_message' => $this->request->getPost('SMS_message'),
-                        'twitter_message' => $this->request->getPost('twitter_message'),
+                       /* 'twitter_message' => $this->request->getPost('twitter_message'),*/
                         'message_tries' => $this->request->getPost('message_tries'),
                         'notifications' => $this->request->getPost('notifications'),
                         'rating_threshold_star' => $this->request->getPost('rating_threshold_star'),
@@ -180,7 +183,7 @@
             'lifetime_value_customer'       => 'replace_commas_dollars',
             'SMS_message'                   => 'string',
             'message_tries'                 => 'int',
-            'twitter_message'               => 'string',
+            /*'twitter_message'               => 'string',*/
             'rating_threshold_star'         => 'int',
             'rating_threshold_nps'          => 'int',
             'message_frequency'             => 'int',
@@ -200,7 +203,7 @@
             'review_goal'                   => 'int',
             'lifetime_value_customer'       => 'replace_commas_dollars',
             'SMS_message'                   => 'string',
-            'twitter_message'               => 'string',
+          /*  'twitter_message'               => 'string',*/
             'message_tries'                 => 'int',
             'rating_threshold_star'         => 'int',
             'rating_threshold_nps'          => 'int',
@@ -216,8 +219,9 @@
             'phone'                         => 'string',
             'main_color'                    => 'string',
             'secondary_color'               => 'string',
-            'viral_mail'                    =>'string',
-            'welcome_email'                 =>'string',
+            'viral_mail'                    => 'html',
+            'welcome_email'                 => 'html',
+            'welcome_email_employee'        => 'html',
         ];
 
         public function dismissstripeAction()
@@ -305,6 +309,9 @@
                             case 'string':
                                 $tEntityArray[$Field] = $this->request->getPost($Field, 'striptags');
                                 break;
+                             case 'html':
+                                $tEntityArray[$Field] =  $tEntityArray[$Field] = htmlentities($this->request->getPost($Field));
+                                break;
                             case 'replace_comma_dollars':
                                 $tEntityArray[$Field] = $this->request->str_replace(["$", ","], ["", ""], $this->request->getPost($Field));
                                 break;
@@ -328,7 +335,16 @@
                     if ($file_location != '') {
                         $entity->sms_message_logo_path = $file_location;
                     }
+
                     return $entity->save();
+
+                    $saveentity = $entity->save();
+
+                    if ($this->request->getPost('welcome_email', 'striptags')!='' || $this->request->getPost('viral_mail', 'striptags')!='' || $this->request->getPost('welcome_email_employee', 'striptags')!='')
+                    {
+                         $this->db->query("UPDATE `agency` SET `welcome_email`='".$this->request->getPost('welcome_email')."' ,  `viral_email`='".$this->request->getPost('viral_mail')."' ,`welcome_email_employee` ='".$this->request->getPost('welcome_email_employee')."' WHERE `agency_id`=".$Agency_id);
+                    }
+                    return $saveentity;
                 }
             }
             return true;
@@ -353,10 +369,20 @@
                  $this->flash->error("You do not have permission to this page.");
                  $this->view->disable();
             }
-
+            //echo $userObj->agency_id;exit;
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $userObj->agency_id);
             $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+            //echo $agency->custom_sms;exit;
+            $this->view->custom_sms=$agency->custom_sms;
+            $subscription_plan = $subscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = " .$userObj->agency_id);
+            $this->view->planSubscribe=$subscription_plan->payment_plan;
+            $this->view->subscription_id=$agency->subscription_id;
+
+            /*echo $userObj->agency_id;
+            exit;*/
+
+
             if (!$agency) {
                 $this->flash->error("No settings were found");
             }
@@ -434,6 +460,44 @@
             ));
 
             $this->getSMSReport();
+            
+            
+            $identity = $this->auth->getIdentity();
+
+            $idxcx=$identity['id'];
+            $db = $this->di->get('db');
+            $db->begin();
+            $result=$this->db->query(" SELECT * FROM `twilio_number_to_business` WHERE `buisness_id`='".$idxcx."'");
+            $xcd=$result->numRows();
+            if($xcd!=0){
+                $this->view->twilio_details=$result->fetchAll();
+                
+            }else{
+                $this->view->twilio_details=0;
+                $Twillioset=$this->getTwilioDetails();
+                //dd($Twillioset);
+                $twilio_api_key=$Twillioset['twilio_api_key'];
+                if(($Twillioset['twilio_api_key']==""|| $twilio_api_key==NULL)||($Twillioset['twilio_auth_token']==""|| $Twillioset['twilio_auth_token']==NULL)){
+
+                }
+                $client = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
+            $uri = '/'. $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
+            $numbers = $client->retrieveData($uri);
+            
+            $country=array();
+            foreach ($numbers as $key => $value) {
+                foreach ($value as $key => $nox) {
+                
+                $country[$nox->country_code]=$nox->country;
+                
+                }
+                
+            }
+            asort($country);
+            $this->view->countries=$country;
+            //dd($country);
+            }
+
             $this->view->pick("settings/index");
         }
 
@@ -522,6 +586,7 @@
             return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
         }
 
+
         public function agencyAction()
         {
             $Identity = $this->auth->getIdentity();
@@ -552,6 +617,46 @@
             $SettingsForm  = new SettingsForm($objAgency, array(
                 'edit' => true
             ));
+            
+            
+            // Set default message welcome_email
+            if(!$objAgency->welcome_email || ($this->request->isPost() && !$this->request->getPost('welcome_email'))) {
+             
+              $objAgency->welcome_email = "Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+
+                    <P>If you wouldn't mind, I'd love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
+
+                    <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit reply and let me know.
+                   </P>  To get started just confirm your email by {link} Clicking Here</a><br/><br/>Thanks,<br/><br/>
+
+                    {AgencyUser}<br/>
+                    {AgencyName}";
+            }
+            
+            // Set default message for welcome_email_employee
+            if(!$objAgency->welcome_email_employee || ($this->request->isPost() && !$this->request->getPost('welcome_email_employee'))) {
+              $objAgency->welcome_email_employee= 'Hi {employeeName},
+            	<p>
+            		We’ve just created your profile for {BusinessName} within our software. 
+            	</p>
+                <p style="font-size: 13px;line-height:24px;font-family:HelveticaNeue,Helvetica Neue,Helvetica,Arial,sans-serif">
+
+                	When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+                    <p>
+                  {link}
+                  </p>
+                   <p>Looking forward to working with you.</p>
+
+                    {AgencyUser}<br/>
+                    {AgencyName}
+                    <br>
+                </p>';
+            }
+            
+            // Set default message for viral_email
+            if(!$objAgency->viral_email || ($this->request->isPost() && !$this->request->getPost('viral_email'))) {
+              $objAgency->viral_email = "I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
+            }
             $AgencyForm = new AgencyForm($objAgency, array(
                 'edit' => true
             ));
@@ -570,9 +675,9 @@
                     $objAgency->twilio_auth_token = trim($objAgency->twilio_auth_token);
                     $objAgency->twilio_auth_messaging_sid = trim($objAgency->twilio_auth_messaging_sid);
                     $objAgency->twilio_from_phone = trim($objAgency->twilio_from_phone);
-                    $objAgency->welcome_email = trim($objAgency->welcome_email);
-                    $objAgency->welcome_email = trim($objAgency->welcome_email);
-                    $objAgency->viral_mail = trim($objAgency->viral_mail);
+                    //$objAgency->welcome_email = trim($objAgency->welcome_email);
+                    //$objAgency->welcome_email = trim($objAgency->welcome_email);
+                    //$objAgency->viral_mail = trim($objAgency->viral_mail);
                     $objAgency->save();
 
                     $this->flash->success("The settings were updated successfully");
@@ -734,5 +839,48 @@
                     }
                 }
             }
+        }
+        public function getTwilioDetails(){
+            $twilio_api_key = "";
+            $twilio_auth_token = "";
+            $twilio_auth_messaging_sid = "";
+            $twilio_from_phone = "";
+            $identity = $this->auth->getIdentity();
+            
+            $conditions = "id = :id:";
+            $parameters = array("id" => $identity['id']);
+            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+            $conditions = "agency_id = :agency_id:";
+            $parameters = array("agency_id" => $userObj->agency_id);
+            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+            if ($agency) {
+                $this->view->agency = $agency;
+                if (isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != ""  && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
+                        $conditionsUser = "agency_id = :agency_id:";
+                        $userParam=$parameters = array("agency_id" => $agency->agency_id);
+                        $userObjNew = Users::findFirst(array($conditionsUser, "bind" => $userParam));
+                        $twilio_user_id=$userObjNew->id;
+                        $twilio_api_key = $agency->twilio_api_key;
+                        $twilio_auth_token = $agency->twilio_auth_token;
+                        $twilio_from_phone = $agency->twilio_from_phone;
+                } 
+                if ($twilio_api_key  == "" && $twilio_auth_token == ""  && $twilio_from_phone == "") {
+                    $parameters1 = array("agency_id" => $agency->parent_id);
+                    $agency1 = Agency::findFirst(array($conditions, "bind" => $parameters1));
+                    $conditionsUser = "agency_id = :agency_id:";
+                    $userParam = $parameters = array("agency_id" => $agency1->agency_id);
+                    $userObjNew = Users::findFirst(array($conditionsUser, "bind" => $userParam));
+                    $twilio_user_id = $userObjNew->id;
+                    $twilio_api_key = $agency1->twilio_api_key;
+                    $twilio_auth_token = $agency1->twilio_auth_token;
+                    $twilio_from_phone = $agency1->twilio_from_phone;   
+                }
+            }
+            $Twiio=array();
+            $Twiio['twilio_user_id'] = $twilio_user_id;
+            $Twiio['twilio_api_key'] = $twilio_api_key;
+            $Twiio['twilio_auth_token'] = $twilio_auth_token;
+            $Twiio['twilio_from_phone'] = $twilio_from_phone;
+            return($Twiio);
         }
     }

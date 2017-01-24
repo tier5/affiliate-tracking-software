@@ -181,7 +181,7 @@
          */
         public function sms_broadcastAction() {
             
-
+            //exit;
             $this->tag->setTitle('Get Mobile Reviews | Reviews | SMS Broadcast');
 
             $twilio_api_key = "";
@@ -245,8 +245,10 @@
             $this->view->locations = $this->auth->getLocationList($userObj);
 
             if (!empty($_POST)) {
+                //exit;
                 //echo "<PRE>";
-                //print_r($_POST);
+               /*print_r($_POST);
+                exit;*/
                 //die();
                 $this->view->invitelist = ReviewInvite::findCustomers($userObj->agency_id);
 
@@ -316,6 +318,9 @@
                     }
 
                 } else if (isset($_POST['formposttype']) && $_POST['formposttype'] == 'send') {
+
+                    //echo '<pre>';print_r($_POST);exit;
+                    //exit;
                     //check if the user wants to send a message
                     if (!empty($_POST['review_invite_ids'])) {
                         //we have messages to send, so lets first create an SMS Broadcast record
@@ -418,7 +423,11 @@
                             //echo $message;exit;
                             //The message is saved, so send the SMS message now
                             if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_from_phone)) {
+
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
+
+                                 $this->session->set("success", "The SMS was sent successfully to: " . $invite->phone);
+                               $this->response->redirect('/reviews/sms_broadcast');
                             }
                         }
                         }
