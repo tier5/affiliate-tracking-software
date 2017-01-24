@@ -283,7 +283,7 @@
           <div class="tab-pane fade in" id="tab_sms_message">
             <div class="form-group">
               <div class="row">
-                <label for="SMS_message" class="col-md-4 control-label">SMS Message1</label>
+                <label for="SMS_message" class="col-md-4 control-label">SMS Message</label>
                 <div class="col-md-8">
                   <textarea style="width: 100%;" class="form-control" name="SMS_message"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?>
                   </textarea>
@@ -785,7 +785,7 @@
         </table>
         <?php } else{
          
-          if(($planSubscribe!='FR' && $subscription_id!=0) || ( $custom_sms==1) || ($subscription_id >0)) {
+          if((($planSubscribe!='FR' && $subscription_id!=0) || ($planSubscribe=='FR' && $custom_sms==1) || ($subscription_id >0) ) && $planSubscribe!='TR') {
         ?>
             <form class="form-horizontal" id="userform" role="form" method="post" autocomplete="off">
                 <div class="form-group" style="padding-top: 30px;">
