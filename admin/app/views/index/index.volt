@@ -230,7 +230,7 @@
                 if(!$facebookMyBusinessConnected || !$GoogleMyBusinessConnected || !YelpMyBusinessConnected)
                 { ?>
                     <div class="connect-business">
-                        <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink">Connect Business</a>
+                        <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink connect_btn">Connect Business</a>
                     </div>
                <?php } ?>
             </div>
