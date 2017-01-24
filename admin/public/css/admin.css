@@ -1261,3 +1261,68 @@ body { background-color: #FFFFFF; color: #484848; }
     height: auto;
   }
 }
+
+
+.reviews p{
+  color: #000 !important;
+  font-size: 15px;
+  font-weight: 400;
+  margin: 0 !important;
+  text-transform: uppercase;
+}
+
+.reviews .number a{
+   background: #e94e55 none repeat scroll 0 0;
+    border-radius: 15px !important;
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    height: auto;
+    margin: 20px 0 0;
+    padding: 15px 40px;
+    text-transform: uppercase;
+}
+
+.reviews .number a:hover, .reviews .number a:focus{
+  text-decoration:none;
+}
+
+.top-banner{
+  background: #e94e55;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 99;
+  text-align: center;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 5px 0;
+}
+
+.top-banner a{
+  display: inline-block;
+  background: #FFC601;
+  color: #000;
+  margin-left: 10px;
+  padding: 5px 15px;
+  border-radius: 12px !important;
+  text-decoration: none;
+}
+
+.top-banner .close-div{
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+}
+
+.page-header-fixed .page-container.top-banner-show {
+    margin-top: 85px;
+}
+
+.top-banner-show.navbar-fixed-top{
+      top: 40px;
+}
