@@ -19,7 +19,7 @@
     use Vokuro\Models\ReviewsMonthly;
     use Vokuro\Models\ReviewSite;
     use Vokuro\Models\SharingCode;
-    
+    use Vokuro\Services\ServicesConsts;
     use Vokuro\Models\Users;
 use Services_Twilio;
 use Services_Twilio_RestException;
@@ -344,7 +344,7 @@ use Pricing_Services_Twilio;
          * Updates settings for locations
          */
         public function locationAction() {
-
+            
             $location_id = $this->getLocationId();
             $userObj = $this->getUserObject();
             // If there is no identity available the user is redirected to index/index.  User must be a super admin or admin to view settings page.
@@ -368,8 +368,47 @@ use Pricing_Services_Twilio;
             $this->view->planSubscribe=$subscription_plan->payment_plan;
             $this->view->subscription_id=$agency->subscription_id;
 
-            /*echo $userObj->agency_id;
-            exit;*/
+             $subscriptionManager = $this->di->get('subscriptionManager');
+         /*** trial account checking **/
+         $objSuperUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $userObj->agency_id . ' AND role="Super Admin"');
+
+         //echo $objSuperUser->id;exit;
+            $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan($objSuperUser->id, $agency->subscription_id);
+                //echo $agency->subscription_id;exit;
+            if($agency->subscription_id):
+             $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("id = {$agency->subscription_id}");
+                endif;
+
+              $subscriptionPlanData['pricingPlan']['pricing_details'] = '';
+        $this->view->subscriptionPlanData = $subscriptionPlanData;
+        switch($this->view->subscriptionPlanData['subscriptionPlan']['payment_plan']) {
+            // GARY_TODO:  Pretty sure this doesn't work the way it was supposed to due to handoff from Michael.
+            case ServicesConsts::$PAYMENT_PLAN_TRIAL :
+                $this->view->paymentPlan = "TRIAL";
+                $this->view->DisplaySubPopup = true;
+                break;
+            case ServicesConsts::$PAYMENT_PLAN_FREE :
+                $this->view->paymentPlan = "FREE";
+                break;
+            case ServicesConsts::$PAYMENT_PLAN_PAID :
+                $this->view->paymentPlan = "PAID";
+                break;
+            case ServicesConsts::$PAYMENT_PLAN_MONTHLY :
+            case ServicesConsts::$PAYMENT_PLAN_YEARLY :
+                $this->view->paymentPlan = 
+                number_format(
+                            floatval($subscriptionManager->getSubscriptionPrice(
+                                $objSuperUser->id, 
+                                $this->view->subscriptionPlanData['subscriptionPlan']['payment_plan'])
+                            ), 0, '', ',');
+                break;
+            default:
+                // No subscription currently in use.
+                $this->view->paymentPlan = $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? "TRIAL" : "UNPAID";
+
+                $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? "TRIAL" : "UNPAID";//exit;
+               
+        }
 
 
             if (!$agency) {
