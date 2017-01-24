@@ -179,7 +179,7 @@ class Email{
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
             'Loginpass'=>$log_in_password,
-            'email_content'=>$email_content,
+            'email_content'=>html_entity_decode($email_content),
            
         ];
 
@@ -446,7 +446,7 @@ class Email{
         $email_content = str_replace("{AgencyUser}", $AgencyUser, $email_content);
         $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
         
-        $params['email_content'] = $email_content;
+        $params['email_content'] = html_entity_decode($email_content);
         
         $mail = $this->getDI()->getMail();
         $mail->setFrom($from,$from_name);
