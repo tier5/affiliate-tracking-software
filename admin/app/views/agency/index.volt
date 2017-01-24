@@ -96,7 +96,7 @@ foreach($tBusinesses as $objBusiness) {
                                 {
                                 echo $plan_name[$objBusiness->id];
                                 }
-                                else
+                                elseif(isset($generate_array[$objBusiness->id]))
                                 {
                                     if ($generate_array[$objBusiness->id]=='FR')
                                     {
@@ -106,11 +106,27 @@ foreach($tBusinesses as $objBusiness) {
                                     {
                                         echo $generate_array[$objBusiness->id];
                                     }
+                                }else{
+                                    echo 'Free';
                                 }
                                 ?>
                            </td>
 
-                            <td><?=(isset($objBusiness->subscription_id) && $objBusiness->subscription_id > 0?'Paid':($generate_array[$objBusiness->id]=='FR')?'Free':"Paid")?></td>
+                            <td>
+                            <?php
+                              if (isset($account_type[$objBusiness->id])) {
+                                  echo $account_type[$objBusiness->id];
+                              }elseif (isset($generate_array[$objBusiness->id])) {
+                                  if ($generate_array[$objBusiness->id]=='FR') {
+                                    echo 'Free';
+                                  }else{
+                                    echo 'Paid';
+                                  }
+                              }else{
+                                  echo 'Free';
+                              }
+                            ?>
+                            </td>
                             <td>
                                 <a href="/admindashboard/status/2/{{ objBusiness.agency_id }}/{{ objBusiness.status ? 0 : 1 }}"><img src="/public/img/{{ objBusiness.status ? 'on' : 'off' }}.png" /></a>
                             </td>

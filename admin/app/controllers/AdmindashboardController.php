@@ -244,8 +244,7 @@
                 else
                     $agencies = \Vokuro\Models\Agency::find("agency_id = {$userObj->agency_id}");   // Case should never happen, but just in case it did somehow
             } else {
-                 $generate_array=array();
-                 $plan_name=array();
+                 $plan_name = $account_type = $generate_array=array();
                 // Display businesses
                 if ($userObj->is_admin)
                 {
@@ -260,6 +259,7 @@
                         {
                             $subcription_details=\Vokuro\Models\SubscriptionPricingPlan::findFirst("id = " .$agent->subscription_id ); 
                             $plan_name[$agent->agency_id]=$subcription_details->name;
+                            $account_type[$agent->agency_id]  = $subcription_details->enable_trial_account ? 'Trial' : 'Paid';
                             /*echo $agent->name."-".$agent->agency_id."-".$subcription_details->name;
                             echo "<br>";*/
                             
@@ -279,19 +279,18 @@
                                 {
                                     if($subscription->subscription_pricing_plan_id==0)
                                     {
-                                    $generate_array[$agent->agency_id]=$subscription->payment_plan;
+                                        $generate_array[$agent->agency_id]=$subscription->payment_plan;
                                     }
                                     else
                                     {
                                         $subscription_plan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("id = " .$subscription->subscription_pricing_plan_id); 
                                         if($subscription->payment_plan=='TR')
                                         {
-                                            //echo 'kk';exit;
-                                        $generate_array[$agent->agency_id]=$subscription_plan->name." (Trial)";
+                                            $generate_array[$agent->agency_id]=$subscription_plan->name." (Trial)";
                                         }
                                         else
                                         {
-                                           $generate_array[$agent->agency_id]="Paid"; 
+                                            $generate_array[$agent->agency_id]="Paid"; 
                                         }
                                     }
 
@@ -322,6 +321,7 @@
             $this->view->agencies = $agencies;
             $this->view->generate_array = $generate_array;
             $this->view->plan_name = $plan_name;
+            $this->view->account_type   = $account_type;
 
         }
 
