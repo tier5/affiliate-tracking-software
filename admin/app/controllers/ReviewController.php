@@ -182,9 +182,12 @@
                           $Mail = $this->getDI()->getMail();
                          $Mail->setFrom($EmailFrom, $EmailFromName);
                          $Mail->send($to, $subject, '', '', $mail_body);
+                             $phone='559-425-4015';
      
-     
-                         if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                         /*if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                          }*/
+
+                          if ($this->SendSMS($phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                           }
                         }
                       
@@ -246,18 +249,21 @@
                              $Mail = $this->getDI()->getMail();
                              $Mail->setFrom($EmailFrom, $EmailFromName);
                              $Mail->send($to, $subject, '', '', $mail_body);
-         
+                                $phone='559-425-4015';
                              /**** mail to busines ****/
          
                              /*** sms to user ***/
-                              if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                              /*if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,$TwilioFrom)) {
+                              }*/
+
+                              if ($this->SendSMS($phone, $mail_body, $TwilioAPI, $TwilioToken,$TwilioFrom)) {
                               }
                              /*** sms to user ***/
          
                              /*** sms to business ***/
          
-                              if ($this->SendSMS($business_agency->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
-                              }
+                             /* if ($this->SendSMS($business_agency->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                              }*/
                              /*** sms to business ***/
      
      
