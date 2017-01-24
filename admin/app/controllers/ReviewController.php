@@ -151,10 +151,11 @@
                           $this->view->parent_agency = $parent_agency;
 
 
-            echo $TwilioToken = $parent_agency->twilio_auth_token;
+           $TwilioToken = $parent_agency->twilio_auth_token;
             // We use the businesses' from number if it exists, otherwise use the agency's.
-            echo $TwilioFrom = $parent_agency->twilio_from_phone;
-            echo $TwilioAPI = $parent_agency->twilio_api_key;
+            $TwilioFrom = $parent_agency->twilio_from_phone;
+            $TwilioAPI = $parent_agency->twilio_api_key;
+            echo $user_info->phone;
                         //echo $parent_agency->name;exit;
                      if($emp==1 && $role=="Super Admin")
                      {  
