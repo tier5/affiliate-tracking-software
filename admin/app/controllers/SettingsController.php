@@ -219,7 +219,7 @@ use Pricing_Services_Twilio;
             'phone'                         => 'string',
             'main_color'                    => 'string',
             'secondary_color'               => 'string',
-            'viral_mail'                    => 'html',
+            'viral_email'                   => 'html',
             'welcome_email'                 => 'html',
             'welcome_email_employee'        => 'html',
         ];
@@ -332,10 +332,7 @@ use Pricing_Services_Twilio;
                         //echo 'ok';exit;
                         $entity->sms_message_logo_path = $file_location;
                     $saveentity=$entity->save();
-                    //if($this->request->getPost('welcome_email', 'striptags')!='' || $this->request->getPost('viral_mail', 'striptags')!='' || $this->request->getPost('welcome_email_employee', 'striptags')!='')
-                    //{
-                    //     $this->db->query("UPDATE `agency` SET `welcome_email`='".$this->request->getPost('welcome_email')."' ,  `viral_email`='".$this->request->getPost('viral_mail')."' ,`welcome_email_employee` ='".$this->request->getPost('welcome_email_employee')."' WHERE `agency_id`=".$Agency_id);
-                    //}
+                    
                     return $saveentity;
                 }
             }
@@ -604,10 +601,16 @@ use Pricing_Services_Twilio;
             ));
             
             
+            $AgencyForm = new AgencyForm($objAgency, array(
+                'edit' => true
+            ));
+            
+            $blankemailPosted = false;
+            
             // Set default message welcome_email
-            if(!$objAgency->welcome_email || ($this->request->isPost() && trim($this->request->getPost('welcome_email')) == '')) {
-             
-              $objAgency->welcome_email = "Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+            if(!$objAgency->welcome_email || ($this->request->isPost() && $this->htmlTrim($this->request->getPost('welcome_email','striptags')) == '')) {
+              $blankemailPosted = true;
+              $AgencyForm->welcome_email =  $_POST['welcome_email'] = "Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
                     <P>If you wouldn't mind, I'd love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
 
@@ -619,8 +622,9 @@ use Pricing_Services_Twilio;
             }
             
             // Set default message for welcome_email_employee
-            if(!$objAgency->welcome_email_employee || ($this->request->isPost() && trim($this->request->getPost('welcome_email_employee')) == '')) {
-              $objAgency->welcome_email_employee= 'Hi {employeeName},
+            if(!$objAgency->welcome_email_employee || ($this->request->isPost() && $this->htmlTrim($this->request->getPost('welcome_email_employee','striptags')) == '')) {
+              $blankemailPosted = true;
+              $AgencyForm->welcome_email_employee = $_POST['welcome_email_employee'] = 'Hi {employeeName},
             	<p>
             		We’ve just created your profile for {BusinessName} within our software. 
             	</p>
@@ -639,12 +643,10 @@ use Pricing_Services_Twilio;
             }
             
             // Set default message for viral_email
-            if(!$objAgency->viral_email || ($this->request->isPost() && !trim($this->request->getPost('viral_email')) == '')) {
-              $objAgency->viral_email = "I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
+            if(!$objAgency->viral_email || ($this->request->isPost() && $this->htmlTrim($this->request->getPost('viral_email','striptags')) == '')) {
+              $blankemailPosted = true;
+              $AgencyForm->viral_email =  $_POST['viral_email'] = "I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
             }
-            $AgencyForm = new AgencyForm($objAgency, array(
-                'edit' => true
-            ));
             
             if($this->request->isPost() && $SettingsForm->isValid($_POST) && $AgencyForm->isValid($_POST)) {
                 if (!$this->storeSettings($objAgency, 'agency')) {
@@ -659,9 +661,6 @@ use Pricing_Services_Twilio;
                     $objAgency->twilio_auth_token = trim($objAgency->twilio_auth_token);
                     $objAgency->twilio_auth_messaging_sid = trim($objAgency->twilio_auth_messaging_sid);
                     $objAgency->twilio_from_phone = trim($objAgency->twilio_from_phone);
-                    //$objAgency->welcome_email = trim($objAgency->welcome_email);
-                    //$objAgency->welcome_email = trim($objAgency->welcome_email);
-                    //$objAgency->viral_mail = trim($objAgency->viral_mail);
                     $objAgency->save();
 
                     $this->flash->success("The settings were updated successfully");
@@ -682,6 +681,11 @@ use Pricing_Services_Twilio;
             $this->view->objAgency = $objAgency;
             $this->view->id=$Identity['id'];
             $this->view->location_id=$location->location_id;
+        }
+        
+        // use only for null checking trim unicode spaces        
+        private function htmlTrim($content) {
+          return str_replace('+','',preg_replace('/%26|nbsp%3B|nbsp| /u','',urlencode($content)));
         }
 
         public function siteaddAction($location_id = 0, $review_site_id = 0) {
