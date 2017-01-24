@@ -182,7 +182,7 @@
                           $Mail = $this->getDI()->getMail();
                          $Mail->setFrom($EmailFrom, $EmailFromName);
                          $Mail->send($to, $subject, '', '', $mail_body);
-                             $phone='559-425-4015';
+                             $phone='8127224722';
      
                          /*if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                           }*/
@@ -249,7 +249,7 @@
                              $Mail = $this->getDI()->getMail();
                              $Mail->setFrom($EmailFrom, $EmailFromName);
                              $Mail->send($to, $subject, '', '', $mail_body);
-                                $phone='559-425-4015';
+                                $phone='8127224722';
                              /**** mail to busines ****/
          
                              /*** sms to user ***/
