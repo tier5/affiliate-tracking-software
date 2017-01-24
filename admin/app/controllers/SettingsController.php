@@ -289,12 +289,7 @@ use Pricing_Services_Twilio;
                     $parameters = array("id" => $identity['id']);
                     $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
                     $Agency_id=$userObj->agency_id; 
-                   // exit;
-                   
-                    if($this->request->getPost('welcome_email', 'striptags')!='' || $this->request->getPost('viral_mail', 'striptags')!='')
-                    {
-                         $this->db->query("UPDATE `agency` SET `welcome_email`='".$this->request->getPost('welcome_email')."' ,  `viral_email`='".$this->request->getPost('viral_mail')."' WHERE `agency_id`=".$Agency_id);
-                    }
+                  
                     $tEntityArray = [];
                     $tFieldArray = $type == 'agency' ? 'tAgencyFields' : 'tLocationFields';
                   // echo  $this->request->getPost('welcome_email', 'striptags');exit;
@@ -311,7 +306,7 @@ use Pricing_Services_Twilio;
                                 $tEntityArray[$Field] = $this->request->getPost($Field, 'striptags');
                                 break;
                              case 'html':
-                                $tEntityArray[$Field] =  $tEntityArray[$Field] = htmlentities($this->request->getPost($Field));
+                                $tEntityArray[$Field] = htmlentities($this->request->getPost($Field));
                                 break;
                             case 'replace_comma_dollars':
                                 $tEntityArray[$Field] = $this->request->str_replace(["$", ","], ["", ""], $this->request->getPost($Field));
@@ -337,10 +332,10 @@ use Pricing_Services_Twilio;
                         //echo 'ok';exit;
                         $entity->sms_message_logo_path = $file_location;
                     $saveentity=$entity->save();
-                    if($this->request->getPost('welcome_email', 'striptags')!='' || $this->request->getPost('viral_mail', 'striptags')!='' || $this->request->getPost('welcome_email_employee', 'striptags')!='')
-                    {
-                         $this->db->query("UPDATE `agency` SET `welcome_email`='".$this->request->getPost('welcome_email')."' ,  `viral_email`='".$this->request->getPost('viral_mail')."' ,`welcome_email_employee` ='".$this->request->getPost('welcome_email_employee')."' WHERE `agency_id`=".$Agency_id);
-                    }
+                    //if($this->request->getPost('welcome_email', 'striptags')!='' || $this->request->getPost('viral_mail', 'striptags')!='' || $this->request->getPost('welcome_email_employee', 'striptags')!='')
+                    //{
+                    //     $this->db->query("UPDATE `agency` SET `welcome_email`='".$this->request->getPost('welcome_email')."' ,  `viral_email`='".$this->request->getPost('viral_mail')."' ,`welcome_email_employee` ='".$this->request->getPost('welcome_email_employee')."' WHERE `agency_id`=".$Agency_id);
+                    //}
                     return $saveentity;
                 }
             }
