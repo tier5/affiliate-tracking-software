@@ -92,7 +92,7 @@ foreach($tBusinesses as $objBusiness) {
 
                            <td>
                            <?php
-                                if(isset($objBusiness->subscription_id) &&$objBusiness->subscription_id > 0)
+                                if(isset($objBusiness->subscription_id) && $objBusiness->subscription_id > 0)
                                 {
                                 echo $plan_name[$objBusiness->id];
                                 }
@@ -114,14 +114,14 @@ foreach($tBusinesses as $objBusiness) {
 
                             <td>
                             <?php
-                              if (isset($account_type[$objBusiness->id])) {
-                                  echo $account_type[$objBusiness->id];
-                              }elseif (isset($generate_array[$objBusiness->id])) {
+                              if (isset($generate_array[$objBusiness->id])) {
                                   if ($generate_array[$objBusiness->id]=='FR') {
                                     echo 'Free';
                                   }else{
                                     echo 'Paid';
                                   }
+                              } elseif (isset($account_type[$objBusiness->id])) {
+                                  echo $account_type[$objBusiness->id];
                               }else{
                                   echo 'Free';
                               }

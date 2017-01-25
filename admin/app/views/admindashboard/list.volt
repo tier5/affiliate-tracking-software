@@ -89,14 +89,14 @@ foreach($agencies as $agency) {
                             <!--<td><?php //(isset($agency->subscription_id) && $agency->subscription_id > 0?'Paid':($generate_array[$agency->id]=='FR')?'Free':"Paid")?></td>-->
                             <td>
                              <?php
-                              if (isset($account_type[$agency->id])) {
-                                  echo $account_type[$agency->id];
-                              }elseif (isset($generate_array[$agency->id])) {
+                              if (isset($generate_array[$agency->id])) {
                                   if ($generate_array[$agency->id]=='FR') {
                                     echo 'Free';
                                   }else{
                                     echo 'Paid';
                                   }
+                              } elseif (isset($account_type[$agency->id])) {
+                                  echo $account_type[$agency->id];
                               }else{
                                   echo 'Free';
                               }
