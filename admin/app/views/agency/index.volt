@@ -117,7 +117,9 @@ foreach($tBusinesses as $objBusiness) {
                               if (isset($generate_array[$objBusiness->id])) {
                                   if ($generate_array[$objBusiness->id]=='FR') {
                                     echo 'Free';
-                                  }else{
+                                  } elseif ($generate_array[$objBusiness->id]=='TR') {
+                                     echo 'Trial';
+                                  } else {
                                     echo 'Paid';
                                   }
                               } elseif (isset($account_type[$objBusiness->id])) {
