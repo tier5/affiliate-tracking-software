@@ -87,6 +87,8 @@ class ControllerBase extends Controller {
 
           $location_id_busi = $this->session->get('auth-identity')['location_id'];//exit;
 
+            
+
                 /***** business connection *****/
 
 
@@ -502,6 +504,8 @@ class ControllerBase extends Controller {
      * @param Dispatcher $dispatcher
      * @return boolean
      */
+
+   
     public function beforeExecuteRoute(Dispatcher $dispatcher) {
         $controllerName = $dispatcher->getControllerName();
 

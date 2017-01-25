@@ -136,10 +136,36 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $('.close-div').click(function(){
-            $(this).parent().remove();
-            $('.navbar-fixed-top').removeClass("top-banner-show");
-            $('.page-containert').removeClass("top-banner-show");
+            $('.dropdown-box').slideToggle(300);
         });
+
+        var user_id=$('#top_id').val();
+        $('.close-all').click(function(){
+            $('.top-banner').remove();
+            $('.navbar-fixed-top').removeClass("top-banner-show");
+            $('.page-container').removeClass("top-banner-show");
+
+        });
+
+        $('.dismiss').click(function(){
+            $('.top-banner').remove();
+            $('.navbar-fixed-top').removeClass("top-banner-show");
+            $('.page-container').removeClass("top-banner-show");
+
+             $.ajax({
+          url: '/review/dismiss',
+          method: "POST",
+          async:false,
+          data: { user_id : user_id},
+          success:function(html)
+              {
+           //alert(html);  
+             
+             }
+           });
+
+        });
+
         $('#click_rate').click(function(){
             //$('a .connect_btn').trigger("click");
             var href = $('.connect_btn').attr('href');
@@ -151,13 +177,54 @@
 <!-- END HEAD -->
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" data-ccprompt="{{ ccInfoRequired }}" data-paymentprovider="{{ paymentService }}">
-
+<input type="hidden" id="top_id" value="<?php echo $this->session->get('auth-identity')['id'];?>">
 <?php 
-  
-if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $_SERVER['REQUEST_URI']=="/"):?>
-<!-- Top banner starts -->
-<div class="top-banner">you must connect your google, facebook & yelp account to monitor these review sites <a   id="click_rate">click here to connect</a><span class="close-div">X</span></div>
-<?php endif;?>
+  //echo $this->session->get('auth-identity')['id'];exit;
+  //echo $top_banner;exit;
+if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1){
+
+ if(!$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected )
+{ ?>
+<div class="top-banner">you must connect your Google,Facebook,Yelp account to monitor these review sites <a   id="click_rate">click here to connect</a>
+  <span class="close-div">X</span>
+    <div class="dropdown-box">
+        <ul>
+            <li><a href="#" class="close-all">Close</a></li>
+            <li><a href="#" class="dismiss">Dismiss</a></li>
+        </ul>
+    </div>
+</div>
+<?php } else { 
+
+$conn_account='';
+    if(!$GoogleMyBusinessConnected)
+    {
+    $conn_account.="Google,";
+    }
+    if(!$facebookMyBusinessConnected)
+    {
+    $conn_account.="Facebook,";
+    }
+    if(!$YelpMyBusinessConnected)
+    {
+    $conn_account.="Yelp,";
+    }
+    $conn_account=rtrim($conn_account,",");
+
+?>
+<div class="top-banner">
+    you must connect your <?php echo $conn_account;?> account to monitor these review sites 
+    <a id="click_rate">click here to connect</a>
+    <span class="close-div">X</span>
+    <div class="dropdown-box">
+        <ul>
+            <li><a href="#" class="close-all">Close</a></li>
+            <li><a href="#" class="dismiss">Dismiss</a></li>
+        </ul>
+    </div>
+</div>  
+
+<?php } }?>
 <!-- Top banner ends -->
 {% if BusinessDisableBecauseOfStripe AND 1 == 2 %}
     <div class="container">
@@ -170,7 +237,7 @@ if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusin
 <input type="hidden" id="primary_color" value="{{ primary_color }}" />
 <input type="hidden" id="secondary_color" value="{{ secondary_color}}" />
 <!-- BEGIN HEADER -->
-<div class="page-header navbar navbar-fixed-top <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $_SERVER['REQUEST_URI']=='/'){ ?>top-banner-show <?php } ?>">
+<div class="page-header navbar navbar-fixed-top <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1){ ?>top-banner-show <?php } ?>">
     <!-- BEGIN HEADER INNER -->
     <div class="page-header-inner ">
         <!-- BEGIN LOGO -->
@@ -274,7 +341,7 @@ if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusin
 <div class="clearfix"></div>
 <!-- END HEADER & CONTENT DIVIDER -->
 <!-- BEGIN CONTAINER -->
-<div class="page-container <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $_SERVER['REQUEST_URI']=='/'){ ?>top-banner-show <?php } ?>">
+<div class="page-container <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1){ ?>top-banner-show <?php } ?>">
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
         <!-- BEGIN SIDEBAR -->

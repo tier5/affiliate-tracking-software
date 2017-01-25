@@ -185,6 +185,8 @@
         </div>
         {% endif %}
 
+        <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="connect_btn" style="display:none;">click here to connect</a>
+
         <div class="row">
             <?php
 
@@ -211,6 +213,7 @@
 
 
               ?>
+
             <div>
             <div class="col-md-2 col-sm-2">
                 <div class="portlet light bordered dashboard-panel">
@@ -226,13 +229,13 @@
                     </div>
                 </div>
                 <?php
-
+                /*
                 if(!$facebookMyBusinessConnected || !$GoogleMyBusinessConnected || !YelpMyBusinessConnected)
                 { ?>
                     <div class="connect-business">
                         <a href="/location/edit/<?php echo $location->location_id?>/0/0" class="btnLink connect_btn">Connect Business</a>
                     </div>
-               <?php } ?>
+               <?php } */?>
             </div>
 
             <div class="col-md-2 col-sm-2">
@@ -249,6 +252,7 @@
                     </div>
                 </div>
                 <?php
+                /*
                 if(!$facebookMyBusinessConnected || !$GoogleMyBusinessConnected || !YelpMyBusinessConnected)
                 {
 
@@ -271,7 +275,7 @@
                 <div class="connect-business">
                     <p><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <?php echo $statement;?></p>
                 </div>
-                <?php } ?>
+                <?php }*/ ?>
             </div>
 
             <?php  } ?>

@@ -30,6 +30,8 @@ class IndexController extends ControllerBase {
             ->addJs('/assets/global/plugins/card-js/card-js.min.js');
     }
 
+   
+
     /**
      * Default action. Set the public layout (layouts/private.volt)
      */
@@ -47,6 +49,16 @@ class IndexController extends ControllerBase {
              * any locations yet.  If not, we know that this action is being called from
              * the create business sequence.
              */
+
+
+            $top_user_id=$this->session->get('auth-identity')['id'];
+            $result=$this->db->query(" SELECT * FROM `users` WHERE `id` =".$top_user_id);
+            $usersTopbanner=$result->fetch();
+            //echo $usersTopbanner['top_banner_show'];exit;
+            $this->view->notification=$result->fetchAll();
+            $this->view->top_banner=$usersTopbanner['top_banner_show'];
+           //exit;
+
             $userManager = $this->di->get('userManager');
 
             $isBusiness = $userManager->isBusiness($this->session);
