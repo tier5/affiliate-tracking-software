@@ -130,14 +130,15 @@
                     $this->response->redirect('/review/expired');
                    
                 if ($invite->location_id > 0) {
-                    
+                   //echo $invite->location_id;exit;
                      /**** send mail to business and user ***/
                      $user_sent=$invite->sent_by_user_id;
                      $userobj = new Users();
                      $user_info = $userobj::findFirst($user_sent);
                      $emp= $user_info->is_employee;
-                     //echo "<br>";
-                     $role= $user_info->role;
+                     /*echo "<br>";
+                    echo  $role= $user_info->role;
+                    exit;*/
 
 
                          $locationobj = new Location();
@@ -159,7 +160,7 @@
                         //echo $parent_agency->name;exit;
                      if($emp==1 && $role=="Super Admin")
                      {  
-                        $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->parent_id}");
+                        $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
