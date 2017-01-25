@@ -655,8 +655,7 @@ use Pricing_Services_Twilio;
                     <P>If you wouldn't mind, I'd love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
 
                     <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit reply and let me know.
-                   </P> To get started just confirm your email by {link} Clicking Here</a><br/><br/>Thanks,<br/><br/>
-
+                   </P> To get started just confirm your email by {link} <br/><br/>Thanks,<br/><br/>
                     {AgencyUser}<br/>
                     {AgencyName}";
             }
