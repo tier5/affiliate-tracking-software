@@ -92,7 +92,9 @@ foreach($agencies as $agency) {
                               if (isset($generate_array[$agency->id])) {
                                   if ($generate_array[$agency->id]=='FR') {
                                     echo 'Free';
-                                  }else{
+                                  } elseif ($generate_array[$agency->id]=='TR') {
+                                    echo 'Trial';
+                                  } else {
                                     echo 'Paid';
                                   }
                               } elseif (isset($account_type[$agency->id])) {
