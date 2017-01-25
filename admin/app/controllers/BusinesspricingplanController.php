@@ -90,15 +90,14 @@ class BusinessPricingPlanController extends ControllerBase
         if (!is_numeric($pricingPlanId)) throw new \Exception("Invalid pricing plan id");
 
         $agency = new Agency();
-        $records = $agency->findBy(['subscription_id'=>$pricingPlanId, 'agency_type_id'=>2]);
 
+        $records = $agency->findBy(['subscription_id'=>$pricingPlanId, 'agency_type_id'=>2]);
 
         /*if($records){
             $this->view->attached_agencies = $records;
             $this->view->pick('businessPricingPlan/attached');
             return;
         } */
-
 
         /* Get services */
         $subscriptionManager = $this->di->get('subscriptionManager');
@@ -114,12 +113,15 @@ class BusinessPricingPlanController extends ControllerBase
 
         $availableCurrencies = $stripe->getAvailableCurrencies();
 
+        $currencySymbols = $stripe->getCurrencySymbols($availableCurrencies);
+
         /* Set top level parameters */
         $this->view->name = $pricingPlan->name;
         $this->view->enableTrialAccount = $pricingPlan->enable_trial_account;
         $this->view->enableDiscountOnUpgrade = $pricingPlan->enable_discount_on_upgrade;
         $this->view->currency = $pricingPlan->currency;
         $this->view->availableCurrencies = $availableCurrencies;
+        $this->view->currencySymbols = $currencySymbols;
         $this->view->basePrice = $pricingPlan->base_price;
         $this->view->costPerSms = $pricingPlan->cost_per_sms;
         $this->view->maxMessagesOnTrialAccount = $pricingPlan->max_messages_on_trial_account;
@@ -199,7 +201,12 @@ class BusinessPricingPlanController extends ControllerBase
     {
         $stripe = new Stripe();
 
-        $this->view->availableCurrencies = $stripe->getAvailableCurrencies();
+        $availableCurrencies = $stripe->getAvailableCurrencies();
+
+        $currencySymbols = $stripe->getCurrencySymbols($availableCurrencies);
+
+        $this->view->availableCurrencies = $availableCurrencies;
+        $this->view->currencySymbols = $currencySymbols;
         $this->view->name = "My New Subscription";
         $this->view->enableTrialAccount = true;
         $this->view->enableDiscountOnUpgrade = true;
