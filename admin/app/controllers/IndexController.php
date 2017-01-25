@@ -55,7 +55,7 @@ class IndexController extends ControllerBase {
             $result=$this->db->query(" SELECT * FROM `users` WHERE `id` =".$top_user_id);
             $usersTopbanner=$result->fetch();
             //echo $usersTopbanner['top_banner_show'];exit;
-            $this->view->notification=$result->fetchAll();
+          
             $this->view->top_banner=$usersTopbanner['top_banner_show'];
            //exit;
 

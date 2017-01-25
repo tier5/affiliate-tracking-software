@@ -84,9 +84,16 @@ class ControllerBase extends Controller {
 
         if (is_array($identity)) {
 
+            $top_user_id=$this->session->get('auth-identity')['id'];
+            $result=$this->db->query(" SELECT * FROM `users` WHERE `id` =".$top_user_id);
+            $usersTopbanner=$result->fetch();
+            //echo $usersTopbanner['top_banner_show'];exit;
+           
+            $this->view->top_banner=$usersTopbanner['top_banner_show'];
+
 
           $location_id_busi = $this->session->get('auth-identity')['location_id'];//exit;
-
+           $this->view->top_location_id=$location_id_busi;
             
 
                 /***** business connection *****/

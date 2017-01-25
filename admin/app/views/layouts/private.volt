@@ -177,6 +177,9 @@
 <!-- END HEAD -->
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" data-ccprompt="{{ ccInfoRequired }}" data-paymentprovider="{{ paymentService }}">
+
+ <a href="/location/edit/<?php echo $top_location_id?>/0/0" class="connect_btn" style="display:none;">click here to connect</a>
+
 <input type="hidden" id="top_id" value="<?php echo $this->session->get('auth-identity')['id'];?>">
 <?php 
   //echo $this->session->get('auth-identity')['id'];exit;
