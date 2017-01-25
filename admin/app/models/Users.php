@@ -615,7 +615,7 @@
 
 
 
-            public static function getEmployeeListReportGenerate($agency_id,
+          public static function getEmployeeListReportGenerate($agency_id,
                                                      $start_time,
                                                      $end_time,
                                                      $location_id,
