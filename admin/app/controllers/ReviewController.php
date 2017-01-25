@@ -159,7 +159,10 @@
                         //echo $parent_agency->name;exit;
                      if($emp==1 && $role=="Super Admin")
                      {  
-                       
+                        $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->parent_id}");
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+            $AgencyName = $objParentAgency->name;
+            $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
      
                          $conditions = "location_id = :location_id:";
                          $parameters = array("location_id" => $invite->location_id);
@@ -178,13 +181,39 @@
      
                          if($is_email_alert_on==1)
                          {
+                            if($invite->review_invite_type_id==3)
+                            {
+                                $rating="rating given ".$invite->rating." out of 10";
+                            }
+                            elseif($invite->review_invite_type_id==2)
+                            {
+                                $rating="Star rating of : ".$invite->rating." star";
+                            }
+                            else
+                            {
+                                if($invite->recommend=='Y')
+                                {
+                                    $rating="Recommended By Customer";
+                                }
+                                else
+                                {
+                                    $rating="Not Recommended By Customer";
+                                }
+                            }
      
                            $EmailFrom = 'zacha@reviewvelocity.co';
                            $EmailFromName = "Zach Anderson";
                            $to=$user_info->email;
-                           $subject="New Feedback Came Aginst Review";
+                           $subject="New Feedback";
                            $mail_body="Dear ".$user_info->name;
-                           $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
+                           $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
+                           $mail_body=$mail_body."<p>Feedback :</p> ".$rating;
+                           $mail_body=$mail_body."<p>Customer Name :</p> ".$invite->name;
+                           $mail_body=$mail_body."<p>Employee :</p> ".$user_info->name;
+                           $mail_body=$mail_body."<p>Thank you,</p>";
+                           $mail_body=$mail_body.$AgencyUser;
+                           $mail_body=$mail_body.'<br>'.$AgencyName;
+
                           $Mail = $this->getDI()->getMail();
                          $Mail->setFrom($EmailFrom, $EmailFromName);
                          $Mail->send($to, $subject, '', '', $mail_body);
@@ -193,7 +222,9 @@
                             {
                                 if($user_info->phone!='')
                                 {
-                         if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+
+                                $message=$invite->name." ".$invite->phone." has submitted ".$rating." for employee ".$user_info->name;
+                         if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                           }
                                 }
                                 else
@@ -239,13 +270,51 @@
                         
                         if($is_email_alert_on==1)
                          {
+                            if($invite->review_invite_type_id==3)
+                            {
+                                $rating="rating given ".$invite->rating." out of 10";
+                            }
+                            elseif($invite->review_invite_type_id==2)
+                            {
+                                $rating="Star rating of : ".$invite->rating." star";
+                            }
+                            else
+                            {
+                                if($invite->recommend=='Y')
+                                {
+                                    $rating="Recommended By Customer";
+                                }
+                                else
+                                {
+                                    $rating="Not Recommended By Customer";
+                                }
+                            }
+
+                            $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
+         
+                             $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
+
+                            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$business_agency->parent_id}");
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+            $AgencyName = $objParentAgency->name;
+            $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+
+
                              /*** mail to user ***/
                                $EmailFrom = 'zacha@reviewvelocity.co';
                                $EmailFromName = "Zach Anderson";
                                $to=$user_info->email;
-                               $subject="New Feedback Came Aginst Review";
-                               $mail_body="Dear ".$user_info->name;
-                               $mail_body=$mail_body."<p>You have received a new feed back against the feedback link you have sent to user.</p>";
+                               $subject="New Feedback";
+
+                           $mail_body="Dear ".$user_info->name;
+                           $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
+                           $mail_body=$mail_body."<p>Feedback :</p> ".$rating;
+                           $mail_body=$mail_body."<p>Customer Name :</p> ".$invite->name;
+                           $mail_body=$mail_body."<p>Employee :</p> ".$user_info->name;
+                           $mail_body=$mail_body."<p>Thank you,</p>";
+                           $mail_body=$mail_body.$AgencyUser;
+                           $mail_body=$mail_body.'<br>'.$AgencyName;
+
                              $Mail = $this->getDI()->getMail();
                              $Mail->setFrom($EmailFrom, $EmailFromName);
                              $Mail->send($to, $subject, '', '', $mail_body);
@@ -254,16 +323,22 @@
          
                              /**** mail to busines ****/
          
-                             $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
-         
-                             $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
+                             
          
                                $EmailFrom = 'zacha@reviewvelocity.co';
                                $EmailFromName = "Zach Anderson";
                                $to=$business_info->email;
-                               $subject="New Feedback Came Aginst Review";
-                               $mail_body="Dear ".$business_info->name;
-                               $mail_body=$mail_body."<p>You have received a new feed back against the feedback link Employee under your business (".$user_info->name.") have sent to user.</p>";
+                               
+                           $subject="New Feedback";
+                           $mail_body="Dear ".$business_info->name;
+                           $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
+                           $mail_body=$mail_body."<p>Feedback :</p> ".$rating;
+                           $mail_body=$mail_body."<p>Customer Name :</p> ".$invite->name;
+                           $mail_body=$mail_body."<p>Employee :</p> ".$user_info->name;
+                           $mail_body=$mail_body."<p>Thank you,</p>";
+                           $mail_body=$mail_body.$AgencyUser;
+                           $mail_body=$mail_body.'<br>'.$AgencyName;
+
                              $Mail = $this->getDI()->getMail();
                              $Mail->setFrom($EmailFrom, $EmailFromName);
                              $Mail->send($to, $subject, '', '', $mail_body);
@@ -277,7 +352,9 @@
 
                              if($user_info->phone!='')
                              {
-                              if ($this->SendSMS($user_info->phone, $mail_body, $TwilioAPI, $TwilioToken,$TwilioFrom)) {
+
+                                $message=$invite->name." ".$invite->phone." has submitted ".$rating." for employee ".$user_info->name;
+                              if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,$TwilioFrom)) {
                               }
                                 }
 
@@ -287,7 +364,8 @@
                              /*** sms to business ***/
                                 if($business_agency->phone!='')
                              {
-                             if ($this->SendSMS($business_agency->phone, $mail_body, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                                 $message=$invite->name." ".$invite->phone." has submitted ".$rating." for employee ".$user_info->name;
+                             if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                               }
 
                             }
@@ -425,7 +503,13 @@
             }
         }
 
+          public function dismissAction()
+                {
 
+        $this->view->disable();
+        $user_id = $_POST['user_id'];
+         $this->db->query(" UPDATE `users` SET `top_banner_show`=1 WHERE `id`=".$user_id);
+                }
         public function trackAction() {
             $review_invite_id = $_POST['i'];
            // exit;
@@ -438,7 +522,119 @@
                        $rirs = new ReviewInviteReviewSite();
             $rirs->review_invite_id = $review_invite_id;
             $rirs->review_site_id = $review_site_id;
-            $rirs->save();  
+            $rirs->save();
+
+            $agencyobj = new Agency();
+                         $agency = $agencyobj::findFirst($location->agency_id);
+                         $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                          $this->view->parent_agency = $parent_agency;
+
+
+           $TwilioToken = $parent_agency->twilio_auth_token;
+            // We use the businesses' from number if it exists, otherwise use the agency's.
+            $TwilioFrom = $parent_agency->twilio_from_phone;
+            $TwilioAPI = $parent_agency->twilio_api_key;
+
+            $objsiteinfo = \Vokuro\Models\ReviewSite::findFirst("review_site_id = {$review_site_id}");
+            $review = \Vokuro\Models\ReviewSite::findFirst("location_id = {$invite->location_id}");
+
+                $conditions = "review_invite_id = :review_invite_id:";
+
+            $parameters = array("review_invite_id" => $review_invite_id);
+            $review_invite = new ReviewInvite();
+            $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
+
+
+                     $user_sent=$invite->sent_by_user_id;
+                     $userobj = new Users();
+                     $user_info = $userobj::findFirst($user_sent);
+                     $emp= $user_info->is_employee;
+                     //echo "<br>";
+                     $role= $user_info->role;
+
+                      if($emp==1 && $role=="Super Admin")
+                        {  
+                        $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->parent_id}");
+            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+            $AgencyName = $objParentAgency->name;
+            $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+     
+                         $conditions = "location_id = :location_id:";
+                         $parameters = array("location_id" => $invite->location_id);
+                         $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                         $is_email_alert_on=0;
+                         $is_sms_alert_on=0;
+     
+                         foreach($agencynotifications as $agencynotification) {
+                             if ($agencynotification->user_id == $user_info->id) {
+                                 $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
+
+                                  $is_sms_alert_on = ($agencynotification->sms_alert==1?1:0);
+
+
+                             } }
+     
+                         if($is_email_alert_on==1)
+                         {
+                            if($invite->review_invite_type_id==3)
+                            {
+                                $rating="rating given ".$invite->rating." out of 10";
+                            }
+                            elseif($invite->review_invite_type_id==2)
+                            {
+                                $rating="Star rating of : ".$invite->rating." star";
+                            }
+                            else
+                            {
+                                if($invite->recommend=='Y')
+                                {
+                                    $rating="Recommended By Customer";
+                                }
+                                else
+                                {
+                                    $rating="Not Recommended By Customer";
+                                }
+                            }
+     
+                           $EmailFrom = 'zacha@reviewvelocity.co';
+                           $EmailFromName = "Zach Anderson";
+                           $to=$user_info->email;
+                           $subject="New Online Review";
+                           $mail_body="Dear ".$user_info->name;
+                           $mail_body=$mail_body."<p>One of your customers just left an online review about your business.</p>";
+                           $mail_body=$mail_body."<p>Star Rating :</p> ".$review->rating;
+                           $mail_body=$mail_body."<p>Review Site :</p> ".$objsiteinfo->name;
+                           $mail_body=$mail_body."<p>Review :</p> ".$review->review_text;
+                           $mail_body=$mail_body."<p>Thank you,</p>";
+                           $mail_body=$mail_body.$AgencyUser;
+                           $mail_body=$mail_body.'<br>'.$AgencyName;
+
+                          $Mail = $this->getDI()->getMail();
+                         $Mail->setFrom($EmailFrom, $EmailFromName);
+                         $Mail->send($to, $subject, '', '', $mail_body);
+                             $phone='8127224722';
+                            if($is_sms_alert_on==1)
+                            {
+                                if($user_info->phone!='')
+                                {
+                                    $review='';
+                                $message='You just received a new review '.$review->rating.' from '.$invite->name.' on '.$objsiteinfo->name.' and the review is:'.$review->review_text ;
+                         if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                          }
+                                }
+                                else
+                                {
+                                    $this->flash->error('Please provide a number to sent sms');
+                                }
+
+                            }
+
+                          
+                        }
+
+                    }
+
+
             echo 'true';
                     }
                     else
@@ -464,6 +660,7 @@
 
             // Parameters whose keys are the same as placeholders
             $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
+            //echo 'kk';exit;
 
             // Perform the query
             $review_invite = new ReviewInvite();

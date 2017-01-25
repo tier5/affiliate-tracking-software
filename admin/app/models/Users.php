@@ -29,6 +29,7 @@
         public $is_all_locations;
         public $is_employee;
         public $role;
+        public $top_banner_show;
 
         const ROLE_SUPER_ADMIN      = 'Super Admin';
         const ROLE_ADMIN            = 'Admin';
@@ -89,6 +90,23 @@
         public function setIsEmployee($is_employee) {
             $this->is_employee = $is_employee;
         }
+
+
+         /**
+         * @return mixed
+         */
+        public function getTopBannerShow() {
+            return $this->top_banner_show;
+        }
+
+        /**
+         * @param mixed $top_banner_show
+         */
+        public function setTopBannerShow($top_banner_show) {
+            $this->top_banner_show = $top_banner_show;
+        }
+
+
 
         /**
          * @param $role
