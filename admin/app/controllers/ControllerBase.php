@@ -310,6 +310,7 @@ class ControllerBase extends Controller {
 
                 $this->view->SubscriptionLevel = $objSubscriptionManager->GetBusinessSubscriptionLevel($agency->agency_id);
                 $userManager = $this->di->get('userManager');
+                $this->view->NonTrial = false;
 
                 if ($required == \Vokuro\Services\SubscriptionManager::CC_NON_TRIAL) {
                     // Non trial account.  Have we got their credit card yet?
@@ -318,12 +319,14 @@ class ControllerBase extends Controller {
                         if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false && !$agency->signup_page) {
                             $this->response->redirect("/businessSubscription");
                         }
+                        $this->view->NonTrial = true;
 
                     }
                     if (!$objStripeSubscription->stripe_customer_id) {
                         if (strpos($_SERVER['REQUEST_URI'], 'businessSubscription') === false && !$agency->signup_page) {
                             $this->response->redirect("/businessSubscription");
                         }
+                        $this->view->NonTrial = true;
                     }
                     $this->view->DisplaySubPopup = true;
                     $this->view->ccInfoRequired = "closed";

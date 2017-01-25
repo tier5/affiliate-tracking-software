@@ -99,7 +99,7 @@ class PaymentService extends BaseService {
     
     public function createPaymentProfile($ccParameters) {
         $class = $this->getProviderClass($ccParameters['provider']);
-        
+
         switch($class) {
             case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
                 $status = $this->createAuthorizeDotNetPaymentProfile($ccParameters);
@@ -132,7 +132,7 @@ class PaymentService extends BaseService {
     
     public function changeSubscription($subscriptionParameters) {
         $class = $this->getProviderClass($subscriptionParameters['provider']);
-        
+
         switch($class) {
             case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
                 $status = $this->changeAuthorizeDotNetSubscription($subscriptionParameters);
@@ -166,6 +166,7 @@ class PaymentService extends BaseService {
     }
 
     private function createStripePaymentProfile($ccParameters) {
+        
         /* Check parameters */
         $required = ['tokenID', 'userEmail'];
         $supplied = array_keys($ccParameters);
@@ -207,10 +208,16 @@ class PaymentService extends BaseService {
 
         try {
             \Stripe\Stripe::setApiKey($StripeSecretKey);
-            $Customer = \Stripe\Customer::create([
+            $customerObject = [
                 'email'     => $ccParameters['userEmail'],
                 'source'    => $ccParameters['tokenID'],
-            ]);
+            ];
+
+            if(isset($ccParameters['phone']) && !empty($ccParameters['phone'])) {
+                $customerObject['metadata'] = ['cell_phone' => $ccParameters['phone']];
+            }
+
+            $Customer = \Stripe\Customer::create($customerObject);
 
             if($Customer->id) {
                 $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
