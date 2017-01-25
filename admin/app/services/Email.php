@@ -142,20 +142,12 @@ class Email{
         {
              $Domain = $this->config->application->domain;
             $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
-            $email_content="Hey ".$user->name.",<br />
-
-                    
-                    
+            $email_content="Hey ".$user->name.",
                    <P>Congratulations on joining us at ".$AgencyName.", I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
                     <P>If you wouldn’t mind, I’d love it if you answered one quick question: Why did you decide to join us at ".$AgencyName." ?</P>
 
-                    <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit 'reply' and let me know.
-                   </P>
-
-                   
-                  
-                    
+                    <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit 'reply' and let me know.</P>
                     To get started just confirm your email by <a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a><br/><br/>
 
                     Thanks,<br/><br/>".$AgencyUser."
@@ -419,17 +411,13 @@ class Email{
             	<p>
             		We’ve just created your profile for {BusinessName} within our software. 
             	</p>
-                <p style="font-size: 13px;line-height:24px;font-family:\'HelveticaNeue\',\'Helvetica Neue\',Helvetica,Arial,sans-serif;">
-
-                	When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
-                    <p>
+                <p>When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard.<p>
                   {link}
-                  </p>
-                   <p>Looking forward to working with you.</p>
-
-                    {AgencyUser}<br/>
-                    {AgencyName}
-                    <br>
+                  
+                <p>Looking forward to working with you.</p>
+                  {AgencyUser}<br/>
+                  {AgencyName}
+                  <br>
                 </p>';
         }
         
