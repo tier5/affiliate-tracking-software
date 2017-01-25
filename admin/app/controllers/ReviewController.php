@@ -139,7 +139,7 @@
                      /*echo "<br>";
                     echo  $role= $user_info->role;
                     exit;*/
-
+                      //  echo $invite->review_invite_type_id;exit;
 
                          $locationobj = new Location();
                          $location = $locationobj::findFirst($invite->location_id);
@@ -179,10 +179,8 @@
 
 
                              } }
-     
-                         if($is_email_alert_on==1)
-                         {
-                            if($invite->review_invite_type_id==3)
+
+                             if($invite->review_invite_type_id==3)
                             {
                                 $rating="rating given ".$invite->rating." out of 10";
                             }
@@ -202,15 +200,19 @@
                                 }
                             }
      
+                         if($is_email_alert_on==1)
+                         {
+                            
+     
                            $EmailFrom = 'zacha@reviewvelocity.co';
                            $EmailFromName = "Zach Anderson";
                            $to=$user_info->email;
                            $subject="New Feedback";
                            $mail_body="Dear ".$user_info->name;
                            $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
-                           $mail_body=$mail_body."<p>Feedback :</p> ".$rating;
-                           $mail_body=$mail_body."<p>Customer Name :</p> ".$invite->name;
-                           $mail_body=$mail_body."<p>Employee :</p> ".$user_info->name;
+                           $mail_body=$mail_body."<p>Feedback : ".$rating."</p>";
+                           $mail_body=$mail_body."<p>Customer Name : ".$invite->name."</p>";
+                           $mail_body=$mail_body."<p>Employee : ".$user_info->name."</p>";
                            $mail_body=$mail_body."<p>Thank you,</p>";
                            $mail_body=$mail_body.$AgencyUser;
                            $mail_body=$mail_body.'<br>'.$AgencyName;
@@ -219,7 +221,11 @@
                          $Mail->setFrom($EmailFrom, $EmailFromName);
                          $Mail->send($to, $subject, '', '', $mail_body);
                              $phone='8127224722';
-                            if($is_sms_alert_on==1)
+                            
+                          
+                        }
+
+                        if($is_sms_alert_on==1)
                             {
                                 if($user_info->phone!='')
                                 {
@@ -235,8 +241,6 @@
 
                             }
 
-                          
-                        }
                       
                         //find the location review sites
                         $conditions = "location_id = :location_id: AND is_on = 1";
@@ -268,10 +272,8 @@
                          $TwilioFrom = $this->config->twilio->twilio_from_phone;
                        
                         $TwilioAPI = $this->config->twilio->twilio_api_key;*/
-                        
-                        if($is_email_alert_on==1)
-                         {
-                            if($invite->review_invite_type_id==3)
+
+                         if($invite->review_invite_type_id==3)
                             {
                                 $rating="rating given ".$invite->rating." out of 10";
                             }
@@ -300,6 +302,10 @@
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
 
+                        
+                        if($is_email_alert_on==1)
+                         {
+                           
 
                              /*** mail to user ***/
                                $EmailFrom = 'zacha@reviewvelocity.co';
@@ -309,9 +315,9 @@
 
                            $mail_body="Dear ".$user_info->name;
                            $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
-                           $mail_body=$mail_body."<p>Feedback :</p> ".$rating;
-                           $mail_body=$mail_body."<p>Customer Name :</p> ".$invite->name;
-                           $mail_body=$mail_body."<p>Employee :</p> ".$user_info->name;
+                           $mail_body=$mail_body."<p>Feedback : ".$rating."</p>";
+                           $mail_body=$mail_body."<p>Customer Name : ".$invite->name."</p>";
+                           $mail_body=$mail_body."<p>Employee :</p> ".$user_info->name."</p>";
                            $mail_body=$mail_body."<p>Thank you,</p>";
                            $mail_body=$mail_body.$AgencyUser;
                            $mail_body=$mail_body.'<br>'.$AgencyName;
@@ -333,9 +339,9 @@
                            $subject="New Feedback";
                            $mail_body="Dear ".$business_info->name;
                            $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
-                           $mail_body=$mail_body."<p>Feedback :</p> ".$rating;
-                           $mail_body=$mail_body."<p>Customer Name :</p> ".$invite->name;
-                           $mail_body=$mail_body."<p>Employee :</p> ".$user_info->name;
+                           $mail_body=$mail_body."<p>Feedback : ".$rating."</p>";
+                           $mail_body=$mail_body."<p>Customer Name : ".$invite->name."</p>";
+                           $mail_body=$mail_body."<p>Employee : ".$user_info->name."</p>";
                            $mail_body=$mail_body."<p>Thank you,</p>";
                            $mail_body=$mail_body.$AgencyUser;
                            $mail_body=$mail_body.'<br>'.$AgencyName;
@@ -346,7 +352,13 @@
                                 $phone='8127224722';
                              /**** mail to busines ****/
 
-                             if($is_sms_alert_on==1)
+                            
+     
+     
+                         }
+
+
+                          if($is_sms_alert_on==1)
                              {
          
                              /*** sms to user ***/
@@ -373,9 +385,6 @@
                              /*** sms to business ***/
 
                             }
-     
-     
-                         }
                          //exit;
                          /**** send mail to business and user ***/
      
