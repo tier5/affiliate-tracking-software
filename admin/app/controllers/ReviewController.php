@@ -221,7 +221,7 @@
                                $EmailFromName = "Zach Anderson";
                                $to=$user_info->email;
                                $subject="New Feedback";
-                               $mail_body="Dear ".$user_info->name;
+                               $mail_body="";
                                $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
                                $mail_body=$mail_body."<p>Feedback : ".$rating."</p>";
                                $mail_body=$mail_body."<p>Customer Name : ".$invite->name."</p>";
@@ -328,7 +328,7 @@
                                $to=$user_info->email;
                                $subject="New Feedback";
 
-                           $mail_body="Dear ".$user_info->name;
+                           $mail_body="";
                            $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
                            $mail_body=$mail_body."<p>Feedback : ".$rating."</p>";
                            $mail_body=$mail_body."<p>Customer Name : ".$invite->name."</p>";
@@ -354,7 +354,7 @@
                               $to=$business_info->email;
                               
                              $subject="New Feedback";
-                             $mail_body="Dear ".$business_info->name;
+                             $mail_body="";
                              $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
                              $mail_body=$mail_body."<p>Feedback : ".$rating."</p>";
                              $mail_body=$mail_body."<p>Customer Name : ".$invite->name."</p>";
