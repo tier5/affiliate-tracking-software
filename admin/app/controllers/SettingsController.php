@@ -650,7 +650,7 @@ use Pricing_Services_Twilio;
             // Set default message welcome_email
             if(!$objAgency->welcome_email || ($this->request->isPost() && $this->htmlTrim($this->request->getPost('welcome_email','striptags')) == '')) {
               $blankemailPosted = true;
-              $AgencyForm->welcome_email =  $_POST['welcome_email'] = "Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+              $objAgency->welcome_email = $AgencyForm->welcome_email =  $_POST['welcome_email'] = "Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
                     <P>If you wouldn't mind, I'd love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
 
@@ -664,7 +664,7 @@ use Pricing_Services_Twilio;
             // Set default message for welcome_email_employee
             if(!$objAgency->welcome_email_employee || ($this->request->isPost() && $this->htmlTrim($this->request->getPost('welcome_email_employee','striptags')) == '')) {
               $blankemailPosted = true;
-              $AgencyForm->welcome_email_employee = $_POST['welcome_email_employee'] = 'Hi {employeeName},
+              $objAgency->welcome_email_employee = $AgencyForm->welcome_email_employee = $_POST['welcome_email_employee'] = 'Hi {employeeName},
             	<p>
             		We’ve just created your profile for {BusinessName} within our software. 
             	</p>
@@ -682,7 +682,7 @@ use Pricing_Services_Twilio;
             // Set default message for viral_email
             if(!$objAgency->viral_email || ($this->request->isPost() && $this->htmlTrim($this->request->getPost('viral_email','striptags')) == '')) {
               $blankemailPosted = true;
-              $AgencyForm->viral_email =  $_POST['viral_email'] = "I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
+              $objAgency->viral_email = $AgencyForm->viral_email =  $_POST['viral_email'] = "I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
             }
             
             if($this->request->isPost() && $SettingsForm->isValid($_POST) && $AgencyForm->isValid($_POST)) {
@@ -711,7 +711,6 @@ use Pricing_Services_Twilio;
                     $this->flash->error($message);
                 }
             }
-           
             $this->view->form = $SettingsForm;
             $this->view->agencyform = $AgencyForm;
             $this->view->objgetuser=$objUser ;
