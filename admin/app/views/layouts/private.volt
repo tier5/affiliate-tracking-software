@@ -145,6 +145,18 @@
             $('.navbar-fixed-top').removeClass("top-banner-show");
             $('.page-container').removeClass("top-banner-show");
 
+              $.ajax({
+          url: '/review/close',
+          method: "POST",
+          async:false,
+          data: { user_id : user_id},
+          success:function(html)
+              {
+           //alert(html);  
+             
+             }
+           });
+
         });
 
         $('.dismiss').click(function(){
@@ -177,11 +189,15 @@
 <!-- END HEAD -->
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" data-ccprompt="{{ ccInfoRequired }}" data-paymentprovider="{{ paymentService }}">
+
+ <a href="/location/edit/<?php echo $top_location_id?>/0/0" class="connect_btn" style="display:none;">click here to connect</a>
+
 <input type="hidden" id="top_id" value="<?php echo $this->session->get('auth-identity')['id'];?>">
 <?php 
   //echo $this->session->get('auth-identity')['id'];exit;
   //echo $top_banner;exit;
-if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1){
+  //echo $top_banner_session;exit;
+if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1 && ($top_banner_session!=2)){
 
  if(!$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected )
 { ?>
@@ -237,7 +253,7 @@ $conn_account='';
 <input type="hidden" id="primary_color" value="{{ primary_color }}" />
 <input type="hidden" id="secondary_color" value="{{ secondary_color}}" />
 <!-- BEGIN HEADER -->
-<div class="page-header navbar navbar-fixed-top <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1){ ?>top-banner-show <?php } ?>">
+<div class="page-header navbar navbar-fixed-top <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1 && ($top_banner_session!=2)){ ?>top-banner-show <?php } ?>">
     <!-- BEGIN HEADER INNER -->
     <div class="page-header-inner ">
         <!-- BEGIN LOGO -->
@@ -341,7 +357,7 @@ $conn_account='';
 <div class="clearfix"></div>
 <!-- END HEADER & CONTENT DIVIDER -->
 <!-- BEGIN CONTAINER -->
-<div class="page-container <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1){ ?>top-banner-show <?php } ?>">
+<div class="page-container <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1 && ($top_banner_session!=2)){ ?>top-banner-show <?php } ?>">
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
         <!-- BEGIN SIDEBAR -->

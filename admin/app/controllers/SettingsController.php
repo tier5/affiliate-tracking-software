@@ -605,6 +605,7 @@ use Pricing_Services_Twilio;
             return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
             
         }
+        
 
 
         public function agencyAction() {

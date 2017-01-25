@@ -194,7 +194,7 @@ class Email{
         return true;
     }
 
-    public function sendEmployeeReport($dbEmployees, $objLocation, $tSendTo) {
+  public function sendEmployeeReport($dbEmployees, $objLocation, $tSendTo) {
         try {
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objLocation->agency_id}");
             $objFacebookReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$objLocation->location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
