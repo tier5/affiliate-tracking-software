@@ -277,22 +277,7 @@
                                 echo "<br>";*/
                                 if($subscription->payment_plan!='')
                                 {
-                                    if($subscription->subscription_pricing_plan_id==0)
-                                    {
-                                        $generate_array[$agent->agency_id]=$subscription->payment_plan;
-                                    }
-                                    else
-                                    {
-                                        $subscription_plan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("id = " .$subscription->subscription_pricing_plan_id); 
-                                        if($subscription->payment_plan=='TR')
-                                        {
-                                            $generate_array[$agent->agency_id]=$subscription_plan->name." (Trial)";
-                                        }
-                                        else
-                                        {
-                                            $generate_array[$agent->agency_id]="Paid"; 
-                                        }
-                                    }
+                                    $generate_array[$agent->agency_id] = $subscription->payment_plan;
 
                                 }
                                

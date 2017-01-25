@@ -655,7 +655,7 @@ use Pricing_Services_Twilio;
                     <P>If you wouldn't mind, I'd love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
 
                     <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit reply and let me know.
-                   </P>  To get started just confirm your email by {link} Clicking Here</a><br/><br/>Thanks,<br/><br/>
+                   </P> To get started just confirm your email by {link} Clicking Here</a><br/><br/>Thanks,<br/><br/>
 
                     {AgencyUser}<br/>
                     {AgencyName}";
@@ -668,18 +668,15 @@ use Pricing_Services_Twilio;
             	<p>
             		We’ve just created your profile for {BusinessName} within our software. 
             	</p>
-                <p style="font-size: 13px;line-height:24px;font-family:HelveticaNeue,Helvetica Neue,Helvetica,Arial,sans-serif">
-
+                <p>
                 	When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
-                    <p>
+                <p>
                   {link}
-                  </p>
-                   <p>Looking forward to working with you.</p>
+                <p>Looking forward to working with you.</p>
 
-                    {AgencyUser}<br/>
-                    {AgencyName}
-                    <br>
-                </p>';
+                {AgencyUser}<br/>
+                {AgencyName}
+                <br>';
             }
             
             // Set default message for viral_email
