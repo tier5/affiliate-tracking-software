@@ -1,3 +1,4 @@
+<script src="/assets/global/plugins/ckeditor/ckeditor.js"></script>
 <style>
 .agencysettingspage{
     position:relative;
@@ -673,7 +674,7 @@
                     <!-- END Stripe Settings  -->
 
                     <!-- Start Email Settings  -->
-                    <?php $business_welcome_message="Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+                    <?php /* $business_welcome_message="Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
                     <P>If you wouldn’t mind, I’d love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
 
@@ -691,7 +692,7 @@
                   </p> <p>Looking forward to working with you.</p>";
 
                   $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
-                   ?>
+                  */ ?>
                     <div class="tab-pane fade in" id="tab_email">
                         <div class="col-md-12">
                             <div class="row">
@@ -1207,34 +1208,38 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
     });
 
-    $(document).ready(function() {
-  $('.summernote').summernote({
-                height: 300,
-                toolbar: [
-                    ['font', ['bold', 'italic', 'underline']],
-                    ['para', ['ul', 'ol']],
-                    ['insert', ['link']]
-                ]
-            });
-
-            $('.summernote1').summernote({
-                height: 300,
-                toolbar: [
-                    ['font', ['bold', 'italic', 'underline']],
-                    ['para', ['ul', 'ol']],
-                    ['insert', ['link']]
-                ]
-            });
-
-            $('.summernote2').summernote({
-                height: 300,
-                toolbar: [
-                    ['font', ['bold', 'italic', 'underline']],
-                    ['para', ['ul', 'ol']],
-                    ['insert', ['link']]
-                ]
-            });
-});
+  $(document).ready(function() {
+    //$('.summernote').summernote({
+    //    height: 300,
+    //    toolbar: [
+    //        ['font', ['bold', 'italic', 'underline']],
+    //        ['para', ['ul', 'ol']],
+    //        ['insert', ['link']]
+    //    ]
+    //});
+    //
+    //$('.summernote1').summernote({
+    //    height: 300,
+    //    toolbar: [
+    //        ['font', ['bold', 'italic', 'underline']],
+    //        ['para', ['ul', 'ol']],
+    //        ['insert', ['link']]
+    //    ]
+    //});
+    //
+    //$('.summernote2').summernote({
+    //    height: 300,
+    //    toolbar: [
+    //        ['font', ['bold', 'italic', 'underline']],
+    //        ['para', ['ul', 'ol']],
+    //        ['insert', ['link']]
+    //    ]
+    //});
+    
+      CKEDITOR.replace( 'welcome_email' );
+      CKEDITOR.replace( 'welcome_email_employee' );
+      CKEDITOR.replace( 'viral_email' );
+    });
 
 
 </script>
