@@ -122,9 +122,9 @@ if (isset($invite)) {
       }
       ?>
             <div class="question">Would You Recommend Us?</div>
-            <div class="row text-center"><a href="/review/recommend?a=<?=htmlspecialchars($_GET["a"])?>&r=5"
+            <div class="row text-center"><a href="/review/recommend?a=<?=htmlspecialchars($_GET["a"])?>&r=5&rec=Y"
                 class="btn-lg btn-recommend">Yes</a></div>
-            <div class="row text-center last"><a href="/review/nothanks?a=<?=htmlspecialchars($_GET["a"])?>&r=1"
+            <div class="row text-center last"><a href="/review/nothanks?a=<?=htmlspecialchars($_GET["a"])?>&r=1&rec=N"
                 class="btn-lg btn-nothanks">No Thanks</a></div>
         </div>
         <div class="subtext text-center">Next Step, Write A Review</div>
