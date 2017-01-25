@@ -1137,6 +1137,8 @@ class SessionController extends ControllerBase {
 
                     // If there is no identity available the user is redirected to index/index
                     if (is_array($identity)) {
+
+                         $this->session->set("top_banner_session", 1);
                         // Query binding parameters with string placeholders
                         $conditions = "id = :id:";
                         $parameters = array("id" => $identity['id']);
