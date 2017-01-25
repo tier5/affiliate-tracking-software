@@ -511,6 +511,13 @@
         $user_id = $_POST['user_id'];
          $this->db->query(" UPDATE `users` SET `top_banner_show`=1 WHERE `id`=".$user_id);
                 }
+
+        public function closeAction()
+        {
+             $this->session->set("top_banner_session", 2);
+        }   
+
+
         public function trackAction() {
             $review_invite_id = $_POST['i'];
            // exit;

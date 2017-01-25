@@ -88,7 +88,7 @@ class ControllerBase extends Controller {
             $result=$this->db->query(" SELECT * FROM `users` WHERE `id` =".$top_user_id);
             $usersTopbanner=$result->fetch();
             //echo $usersTopbanner['top_banner_show'];exit;
-           
+            $this->view->top_banner_session= $_SESSION['top_banner_session'];
             $this->view->top_banner=$usersTopbanner['top_banner_show'];
 
 
