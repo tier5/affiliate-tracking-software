@@ -405,7 +405,6 @@ class Email{
         
         if($objParentAgency && $objParentAgency->welcome_email_employee){
           $email_content = $objParentAgency->welcome_email_employee;
-          
         }else{
           $email_content = 'Hi {employeeName},
             	<p>
@@ -427,8 +426,8 @@ class Email{
               
         $link='<a href="http://'.$domain.$params['confirmUrl'].'"> ACTIVATE HERE </a>';
         $clickHereLink = '<a href="http://'.$domain.$params['confirmUrl'].'"><i>Click Here and Activate Your Profile Now</i></a>';
-        $email_content = str_replace("{link}", $clickHereLink, $email_content);
-        $email_content = str_replace("{clickHereAndActivateYourProfileNowLink}", $link, $email_content);
+        $email_content = str_replace("{link}", $link, $email_content);
+        $email_content = str_replace("{clickHereAndActivateYourProfileNowLink}", $clickHereLink, $email_content);
         $email_content = str_replace("{BusinessName}", $busi_nam, $email_content);
         $email_content = str_replace("{employeeName}", $u->name, $email_content);
         $email_content = str_replace("{AgencyUser}", $AgencyUser, $email_content);

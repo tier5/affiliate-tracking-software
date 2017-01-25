@@ -727,6 +727,12 @@
                                                 <div class="col-md-10">
                                                     <?php /*<textarea autocomplete="off" style="width: 100%;" class="form-control summernote" name="welcome_email" id="welcome_email"><?php if($agency->welcome_email!='') { echo $agency->welcome_email;} else { echo $business_welcome_message;} ?></textarea> */ ?>
                                                     {{ agencyform.render("welcome_email", ["class": 'form-control summernote', 'id': 'welcome_email', 'type': 'textarea']) }}
+                                                    
+                                                    </br>
+                                                    {firstName} First name of business user <br>
+                                                    {AgencyName} The name of your agency <br>
+                                                    {AgencyUser} First name and last name of the agency owner <br>
+                                                    {link} The activation link for the business and shows up as Click here
                                                 </div>
                                                 <div class="col-md-12">
                                                     <i></i>
@@ -756,6 +762,14 @@
                                                     ?></textarea> */ ?>
                                                     
                                                     {{ agencyform.render("welcome_email_employee", ["class": 'form-control summernote2', 'id': 'welcome_email_employee']) }}
+                                                    <br>
+                                                    {employeeName} Employee name <br>
+                                                    {BusinessName} The business name <br>
+                                                    {link} The activation link for the employee and shows up as ACTIVATE HERE <br>
+                                                    {clickHereAndActivateYourProfileNowLink} Another activation link for the employee and show up as Click Here and Activate Your Profile Now <br>
+                                                    {AgencyName} The name of your agency <br>
+                                                    {AgencyUser} First name and last name of the agency owner <br>
+                                                    
                                                 </div>
                                                 <div class="col-md-12">
                                                     <i></i>
@@ -778,6 +792,8 @@
                                                 </textarea>
                                                 */ ?>
                                                 {{ agencyform.render("viral_email", ["class": 'form-control summernote1']) }}
+                                                <br>
+                                                {share_link} Business signup from viral link
                                             </div>
                                         </div>
                                     </div>
