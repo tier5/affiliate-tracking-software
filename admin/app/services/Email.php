@@ -67,6 +67,7 @@ class Email{
         }
 
         $template='confirmation';
+        $email_content='';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
 
         $Domain = $this->config->application->domain;
@@ -85,9 +86,28 @@ class Email{
             $AgencyName = $objAgency->name;
             $EmailFrom =  $objAgency->email;
             $EmailFromName='';
-
+            
+             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+            if($objParentAgency->welcome_email!='')
+            {
+                 $Domain = $this->config->application->domain;
+                 $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
+                $email_content = $objParentAgency->welcome_email;
+                $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
+                
+                if(strpos($email_content,'{link}') === false){
+                  $email_content .= '<p>{link}</p>';
+                }
+                
+                $link="<a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a>";
+                $email_content = str_replace("{link}", $link, $email_content);
+                $email_content = str_replace("{firstName}", $user->name, $email_content);
+                $email_content = str_replace("{AgencyUser}", $AgencyUser, $email_content);
+            }
+            
         }
         elseif($objAgency->parent_id > 0) {
+        
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
@@ -96,9 +116,52 @@ class Email{
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
             $EmailFromName=$objParentAgency->email_from_name ?: "";
+           
+            if($objParentAgency->welcome_email!='')
+            {
+                 $Domain = $this->config->application->domain;
+                 $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
+                $email_content = $objParentAgency->welcome_email;
+                $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
+                
+                if(strpos($email_content,'{link}') === false) {
+                  $email_content .= '<p>{link}</p>';
+                }
+                
+                $link="<a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a>";
+                $email_content = str_replace("{link}", $link, $email_content);
+                $email_content = str_replace("{firstName}", $user->name, $email_content);
+                $email_content = str_replace("{AgencyUser}", $AgencyUser, $email_content);
+            }
 
            
             //$EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
+        }
+
+        if($email_content=='')
+        {
+             $Domain = $this->config->application->domain;
+            $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
+            $email_content="Hey ".$user->name.",<br />
+
+                    
+                    
+                   <P>Congratulations on joining us at ".$AgencyName.", I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+
+                    <P>If you wouldn’t mind, I’d love it if you answered one quick question: Why did you decide to join us at ".$AgencyName." ?</P>
+
+                    <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit 'reply' and let me know.
+                   </P>
+
+                   
+                  
+                    
+                    To get started just confirm your email by <a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a><br/><br/>
+
+                    Thanks,<br/><br/>".$AgencyUser."
+
+                   <br/>
+                    ".$AgencyName;
         }
          if($AgencyName =='') {
             
@@ -106,6 +169,7 @@ class Email{
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
             $EmailFromName='';
+            $email_content='';
             $template="agencyconfirmation";
          }
 
@@ -115,6 +179,7 @@ class Email{
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
             'Loginpass'=>$log_in_password,
+            'email_content'=>$email_content,
            
         ];
 
@@ -234,7 +299,7 @@ class Email{
         //echo $businessname;exit;
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($u->getId());
-
+        $domain = $this->config->application->domain;
         if (!$record){
             //we don't have a confirmation
             $confirmationModel->send_email = false;
@@ -338,17 +403,56 @@ class Email{
         if(!$u->is_employee){
             throw new \Exception('Cannot send an employee activation email to someone that is not an employee');
         }
-            
-        $mail = $this->getDI()->getMail();
-        $mail->setFrom($from,$from_name);
         $params = [];
         $params['employeeName']=$u->name;
         $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
         $params['BusinessName']=$busi_nam;
         $params['confirmUrl'] = '/admin/confirmEmail/' . $code . '/' . $u->email;
-       // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
+        $email_content = '';
+        
+        if($objParentAgency && $objParentAgency->welcome_email_employee){
+          $email_content = $objParentAgency->welcome_email_employee;
+          
+        }else{
+          $email_content = 'Hi {employeeName},
+            	<p>
+            		We’ve just created your profile for {BusinessName} within our software. 
+            	</p>
+                <p style="font-size: 13px;line-height:24px;font-family:\'HelveticaNeue\',\'Helvetica Neue\',Helvetica,Arial,sans-serif;">
 
+                	When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+                    <p>
+                  {link}
+                  </p>
+                   <p>Looking forward to working with you.</p>
+
+                    {AgencyUser}<br/>
+                    {AgencyName}
+                    <br>
+                </p>';
+        }
+        
+        if(strpos($email_content,'{link}') === false){
+          $email_content .= '<p>{link}</p>';
+        }
+              
+        $link='<a href="http://'.$domain.$params['confirmUrl'].'"> ACTIVATE HERE </a>';
+        $clickHereLink = '<a href="http://'.$domain.$params['confirmUrl'].'"><i>Click Here and Activate Your Profile Now</i></a>';
+        $email_content = str_replace("{link}", $clickHereLink, $email_content);
+        $email_content = str_replace("{clickHereAndActivateYourProfileNowLink}", $link, $email_content);
+        $email_content = str_replace("{BusinessName}", $busi_nam, $email_content);
+        $email_content = str_replace("{employeeName}", $u->name, $email_content);
+        $email_content = str_replace("{AgencyUser}", $AgencyUser, $email_content);
+        $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
+        
+        $params['email_content'] = $email_content;
+        
+        $mail = $this->getDI()->getMail();
+        $mail->setFrom($from,$from_name);
+        
+       // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
+  
         $mail->send($u->email, "Activate your account!", 'employee', $params);
 
     }

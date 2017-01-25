@@ -10,6 +10,7 @@ use Vokuro\Models\FacebookScanning;
 use Vokuro\Models\GoogleScanning;
 use Vokuro\Models\Location;
 use Vokuro\Models\LocationNotifications;
+use Vokuro\Models\LocationReviewSite;
 use Vokuro\Models\Review;
 use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\ReviewsMonthly;
@@ -54,6 +55,26 @@ class ControllerBase extends Controller {
         return $this->response->redirect($PageURL);
     }
 
+     public function GetLocationReviewSite($location_id, $ReviewSiteType) {
+
+            $conditions = "location_id = :location_id: AND review_site_id = " . $ReviewSiteType;
+            $parameters = array("location_id" => $location_id);
+            $objLocationReviewSite = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+            if (!$objLocationReviewSite) {
+                $objLocationReviewSite = new LocationReviewSite();
+                $objLocationReviewSite->review_site_id = $ReviewSiteType;
+                $objLocationReviewSite->location_id = $location_id;
+                $objLocationReviewSite->is_on = 0;
+                $objLocationReviewSite->access_token = "";
+                $objLocationReviewSite->json_access_token = "";
+                $objLocationReviewSite->save();
+            }
+
+            return $objLocationReviewSite;
+        }
+
+
     public function initialize() {
         error_reporting(E_ALL ^ E_NOTICE);
 
@@ -62,6 +83,91 @@ class ControllerBase extends Controller {
         $identity = $this->auth->getIdentity();
 
         if (is_array($identity)) {
+
+
+          $location_id_busi = $this->session->get('auth-identity')['location_id'];//exit;
+
+                /***** business connection *****/
+
+
+                 $conditions = "location_id = :location_id:";
+
+            $parameters = array(
+                "location_id" => $location_id_busi
+            );
+
+            $loc = Location::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+            $this->view->location = $loc;
+                //echo TYPE_YELP;exit;
+
+            $objGoogleReviewSite = $this->GetLocationReviewSite($location_id_busi, \Vokuro\Models\Location::TYPE_GOOGLE);
+            $this->view->GoogleMyBusinessConnected = $objGoogleReviewSite && $objGoogleReviewSite->json_access_token ? true : false;
+
+             $objfacebookReviewSite = $this->GetLocationReviewSite($location_id_busi, \Vokuro\Models\Location::TYPE_FACEBOOK);
+            $this->view->facebookMyBusinessConnected = $objfacebookReviewSite && $objfacebookReviewSite->access_token ? true : false;
+
+
+             $objyelpReviewSite = $this->GetLocationReviewSite($location_id_busi, \Vokuro\Models\Location::TYPE_YELP);
+            //$this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+            $this->view->YelpMyBusinessConnected = isset($objyelpReviewSite->external_location_id) && $objyelpReviewSite->external_location_id && $objyelpReviewSite->external_location_id != '';
+
+
+                    /* $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
+                $parameters = array("location_id" => $location_id_busi);
+
+
+                $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                //dd($obj);
+                if(!empty($Obj))
+                {
+                  $this->view->fb_connection="connected";
+                }
+                else
+                {
+                  $this->view->fb_connection='';
+                }
+
+
+                  $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
+                $parameters = array("location_id" => $location_id_busi);
+
+
+                $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                //dd($obj);
+                if(!empty($Obj))
+                {
+                  $this->view->yelp_connection="connected";
+                }
+                else
+                {
+                  $this->view->yelp_connection='';
+                }
+
+                 $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
+                $parameters = array("location_id" => $location_id_busi);
+
+
+                $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                //dd($obj);
+                if(!empty($Obj))
+                {
+                  $this->view->gl_connection="connected";
+                }
+                else
+                {
+                  $this->view->gl_connection='';
+                }*/
+
+
+                //exit;
+
+                /***** business connection *****/
+
             $userObj = $this->getUserObject();
             $this->view->loggedUser = $userObj;
             
@@ -81,6 +187,23 @@ class ControllerBase extends Controller {
             );
 
             if ($agency) {
+
+                if($agency->parent_id!=0)
+                {
+                    $conditions = "agency_id = :agency_id:";
+                    $parameters = array(
+                "agency_id" => $agency->parent_id
+            );
+
+            $parentagency = Agency::findFirst(
+                array(
+                    $conditions,
+                    "bind" => $parameters
+                )
+            );
+                 $this->view->setVar('agency_sms', trim($parentagency->SMS_message));
+                }
+
                 list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
                 $rgb = $r . ', ' . $g . ', ' . $b;
                 $this->view->setVars([
@@ -142,7 +265,7 @@ class ControllerBase extends Controller {
                         
                         //$this->view->logo_path = "{$agency->logo_path}";
                     } else {
-                        $this->view->logo_path = "";
+                        $this->view->logo_path = '/assets/layouts/layout/img/logo.png';
                     }
                 } else {
                     // We're a business under RV
@@ -290,27 +413,23 @@ class ControllerBase extends Controller {
                 )
             );
 
-/*** added on 30th dec 2016 ****/
-             if ($agency) {
-            $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
-            list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
-            $rgb = $r . ', ' . $g . ', ' . $b;
-            $vars = [
-                'agency_id' => $agency->agency_id,
-                'agency' => $agency,
-                'agency_name' => $agency->name,
-                'main_color_setting' => $agency->main_color,
-                'rgb' => $rgb,
-                'logo_path' => $agency->logo_path,
-                'main_color' => str_replace('#', '', $agency->main_color),
-                'primary_color' => str_replace('#', '', $agency->main_color),
-                'secondary_color' => str_replace('#', '', $agency->secondary_color)
-            ];
-            $this->view->setVars($vars);
-        }
-
-/*** added on 30th dec 2016 ****/
-
+            if ($agency) {
+                $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
+                list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
+                $rgb = $r . ', ' . $g . ', ' . $b;
+                $vars = [
+                    'agency_id' => $agency->agency_id,
+                    'agency' => $agency,
+                    'agency_name' => $agency->name,
+                    'main_color_setting' => $agency->main_color,
+                    'rgb' => $rgb,
+                    'logo_path' => $agency->logo_path,
+                    'main_color' => str_replace('#', '', $agency->main_color),
+                    'primary_color' => str_replace('#', '', $agency->main_color),
+                    'secondary_color' => str_replace('#', '', $agency->secondary_color)
+                ];
+                $this->view->setVars($vars);
+            }
         }
 
         else if($this->session->has("sharing_code")) {
@@ -345,8 +464,10 @@ class ControllerBase extends Controller {
 
         }
 
-/*** commented on 30th dec 2016 ****/
-        /*if ($agency) {
+
+
+        /*** commented on 2nd jan 2017 ***/
+       /* if ($agency) {
             $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
             list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
             $rgb = $r . ', ' . $g . ', ' . $b;
@@ -363,8 +484,8 @@ class ControllerBase extends Controller {
             ];
             $this->view->setVars($vars);
         }*/
-/*** commented on 30th dec 2016 ****/
 
+        /*** commented on 2nd jan 2017 ***/
 
         $this->agency = $agency;
         if ($this->request->getPost('main_color')) {
@@ -450,7 +571,13 @@ class ControllerBase extends Controller {
         {
             $Domain="{$TLDomain}";
         }
+        if($Domain==''){
+          $Domain = $_SERVER['HTTP_HOST'];
+        }
         $share_link = $this->googleShortenURL("http://{$Domain}/session/signup?code={$agency->viral_sharing_code}");
+
+        $message_parent='';
+        $objParentAgency = '';
         //$share_link = urlencode($share_link);
 
         /*$this->view->setVars([
@@ -461,8 +588,9 @@ class ControllerBase extends Controller {
 
 
             /**** 24.11.2016 ****/
-
+           // echo $agency->agency_id;exit;
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->agency_id}");
+            //echo $objAgency->parent_id;exit;
         if($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Get Mobile Reviews";
             $AgencyUser = "Zach Anderson";
@@ -481,6 +609,12 @@ class ControllerBase extends Controller {
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
             $AgencyName = $objParentAgency->name;
             $AgencyUser = $objAgencyUser->name;
+             $resultx=$this->db->query(" SELECT * FROM `agency` WHERE `agency_id` =".$objAgency->parent_id);
+                 $x=$resultx->fetch();
+           // echo $x['viral_email'];
+            if($x['viral_email']){
+            $message_parent=$x['viral_email']; 
+            }   
            // $EmailFrom = "zacha@reviewvelocity.co";
         }
 
@@ -534,8 +668,24 @@ class ControllerBase extends Controller {
         ".$AgencyUser."<br>".$AgencyName;*/
         
         /**** 24.11.2016 ****/
+        //echo $message_parent ;exit;
 
-        $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {$share_link}";
+        if($objParentAgency->viral_email=='')
+        {
+             $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
+        }
+        else
+        {
+            $message_set=$objParentAgency->viral_email;
+        }
+        
+        if($message_set) {
+         if(strpos($message_set,'{share_link}') === false) {
+            $message_set .= '{share_link}';
+         }
+         $message_set = str_replace('{share_link}',$share_link,$message_set);
+        }
+       
         $this->view->setVars([
             'AgencyUser' => $AgencyUser,
             'AgencyName' =>$AgencyName,
@@ -759,30 +909,50 @@ class ControllerBase extends Controller {
         $params = null;
         $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
         $this->view->sms_sent_this_month_total = $rs->count();
+
+        $sql1 = "SELECT review_invite_id
+              FROM review_invite
+                INNER JOIN location ON location.location_id = review_invite.location_id
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id >0";
+              //exit;
+
+        // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql1, $params));
+        $this->view->sms_sent_this_month_total_non = $rs->count();
+
+
     }
 
-    public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_auth_messaging_sid, $twilio_from_phone) {
+    public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_from_phone) {
         if(!$AccountSid || !$AuthToken || !$twilio_from_phone) {
             $this->flash->error("Missing twilio configuration.");
             return false;
         }
+        $identity = $this->auth->getIdentity();
+        $idxcx=$identity['id'];
+        $result=$this->db->query(" SELECT * FROM `twilio_number_to_business` WHERE `buisness_id`='".$idxcx."'");
 
+        $smsdetails=$result->fetch();
+        $xcd=$result->numRows();
+            if($xcd!=0){
+                $AccountSid=$smsdetails['parent_twilio_api_key'];
+                $AuthToken=$smsdetails['parent_twilio_auth_token'];
+                $twilio_from_phone=$smsdetails['phone_number'];
+            }
         $client = new Services_Twilio($AccountSid, $AuthToken);
 
         try {
-            if (isset($twilio_auth_messaging_sid) && $twilio_auth_messaging_sid != '') {
-                $message = $client->account->messages->create(array(
-                    "MessagingServiceSid" => $twilio_auth_messaging_sid,
-                    "To" => $phone,
-                    "Body" => $smsBody,
-                ));
-            } else {
+
                 $message = $client->account->messages->create(array(
                     "From" => $this->formatTwilioPhone($twilio_from_phone),
                     "To" => $phone,
                     "Body" => $smsBody,
                 ));
-            }
+
         } catch (Services_Twilio_RestException $e) {
             $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
             return false;
@@ -823,7 +993,7 @@ class ControllerBase extends Controller {
                     //echo '<pre>$user:'.print_r($user,true).'</pre>';
                     //if (isset($user->phone) && $user->phone != '' && $agency->twilio_api_key != '' && $agency->twilio_auth_token != '') {
                     //we have a phone, so send the SMS
-                    $this->SendSMS($this->formatTwilioPhone($user->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_auth_messaging_sid, $agency->twilio_from_phone);
+                    $this->SendSMS($this->formatTwilioPhone($user->phone), $message, $agency->twilio_api_key, $agency->twilio_auth_token, $agency->twilio_from_phone);
                     //}
                 }
             }
@@ -941,7 +1111,6 @@ class ControllerBase extends Controller {
                     $usersGenerate = Users::getEmployeeListReport($userObj->agency_id, false, false, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, $profilesId, false);
                 }
             } else {
-                
                 $users_report = null;
                 if ($loc) {
                     $users_report = Users::getEmployeeListReport($userObj->agency_id, $start_time, $end_time, $this->session->get('auth-identity')['location_id'], $loc->review_invite_type_id, false, true);
@@ -1080,7 +1249,7 @@ class ControllerBase extends Controller {
 
         $rating_array_set_all=array();
         $YNrating_array_set_all=array();
-        
+
         foreach($usersGenerate as $ux){
             $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 
@@ -1518,7 +1687,7 @@ class ControllerBase extends Controller {
         if ($internalNavParams['hasSubscriptions'] && $internalNavParams['isAgencyAdmin']) {
             $internalNavParams['subscriptionController'] = '/businessPricingPlan';
         }
-
+        $this->view->sub_id=$objAgency->subscription_id;
         $this->view->internalNavParams = $internalNavParams;
     }
 

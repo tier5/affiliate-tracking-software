@@ -9,6 +9,7 @@
     use Vokuro\Models\ReviewsMonthly;
     use Vokuro\Models\SMSBroadcast;
     use Vokuro\Models\Users;
+    use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
 
 
     /**
@@ -180,7 +181,7 @@
          */
         public function sms_broadcastAction() {
             
-
+            //exit;
             $this->tag->setTitle('Get Mobile Reviews | Reviews | SMS Broadcast');
 
             $twilio_api_key = "";
@@ -213,22 +214,21 @@
                 if($agency->parent_id == Agency::BUSINESS_UNDER_RV) {
                     $twilio_api_key = $this->config->twilio->twilio_api_key;
                     $twilio_auth_token = $this->config->twilio->twilio_auth_token;
-                    $twilio_auth_messaging_sid = $this->config->twilio->twilio_auth_messaging_sid;
+                    
                     $twilio_from_phone = $this->config->twilio->twilio_from_phone;
                 } else {
-                    if (isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != "" && isset($agency->twilio_auth_messaging_sid) && $agency->twilio_auth_messaging_sid != "" && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
+                    if (isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != ""  && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
                         $twilio_api_key = $agency->twilio_api_key;
                         $twilio_auth_token = $agency->twilio_auth_token;
-                        $twilio_auth_messaging_sid = $agency->twilio_auth_messaging_sid;
+                        
                         $twilio_from_phone = $agency->twilio_from_phone;
                     } else if (isset($agency->parent_id)) {
                         $parameters1 = array("agency_id" => $agency->parent_id);
                         $agency1 = Agency::findFirst(array($conditions, "bind" => $parameters1));
 
-                        if (isset($agency1->twilio_api_key) && $agency1->twilio_api_key != "" && isset($agency1->twilio_auth_token) && $agency1->twilio_auth_token != "" && isset($agency1->twilio_auth_messaging_sid) && $agency1->twilio_auth_messaging_sid != "" && isset($agency1->twilio_from_phone) && $agency1->twilio_from_phone != "") {
+                        if (isset($agency1->twilio_api_key) && $agency1->twilio_api_key != "" && isset($agency1->twilio_auth_token) && $agency1->twilio_auth_token != "" && isset($agency1->twilio_from_phone) && $agency1->twilio_from_phone != "") {
                             $twilio_api_key = $agency1->twilio_api_key;
                             $twilio_auth_token = $agency1->twilio_auth_token;
-                            $twilio_auth_messaging_sid = $agency1->twilio_auth_messaging_sid;
                             $twilio_from_phone = $agency1->twilio_from_phone;
                         }
                     }
@@ -245,8 +245,10 @@
             $this->view->locations = $this->auth->getLocationList($userObj);
 
             if (!empty($_POST)) {
+                //exit;
                 //echo "<PRE>";
-                //print_r($_POST);
+               /*print_r($_POST);
+                exit;*/
                 //die();
                 $this->view->invitelist = ReviewInvite::findCustomers($userObj->agency_id);
 
@@ -311,16 +313,46 @@
 
                    // echo $message;exit;
 
-                    if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
+                    if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $twilio_api_key, $twilio_auth_token, $twilio_from_phone)) {
                         $this->flash->success("The SMS was sent successfully to: " . $_POST['phone']);
                     }
 
                 } else if (isset($_POST['formposttype']) && $_POST['formposttype'] == 'send') {
+
+                    //echo '<pre>';print_r($_POST);exit;
+                    //exit;
                     //check if the user wants to send a message
                     if (!empty($_POST['review_invite_ids'])) {
                         //we have messages to send, so lets first create an SMS Broadcast record
 
+                        /*** check for allowed sms ***/
+                        $start_time = date("Y-m-d", strtotime("first day of this month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+        $sql = "SELECT review_invite_id
+              FROM review_invite
+                INNER JOIN location ON location.location_id = review_invite.location_id
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time ."' AND sms_broadcast_id!=NULL";
+               // Base model
+        $list = new ReviewInvite();
 
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $total_sms_sent=$rs->count();//exit;
+
+        $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+       // $identity = $this->session->get('auth-identity');
+        //echo $objAgency->agency_id;exit;
+        $Val_location_id=$this->session->get('auth-identity')['location_id'];
+        if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $agency->parent_id > 0)
+            $MaxSMS = $objSubscriptionManager->GetMaxSMS($agency->agency_id, $Val_location_id);
+        else
+            $MaxSMS = 0;
+        $NonViralSMS = $MaxSMS;
+        $ViralSMS = $objSubscriptionManager->GetViralSMSCount($agency->agency_id);
+       $MaxSMS += $ViralSMS;
+/*** check for allowed sms ***/
+                        if($total_sms_sent<$MaxSMS){
                         $smsb = new SMSBroadcast();
                         $smsb->assign(array(
                             'api_key' => $this->GUID(),
@@ -390,10 +422,20 @@
                             $invite2->save();
                             //echo $message;exit;
                             //The message is saved, so send the SMS message now
-                            if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_auth_messaging_sid, $twilio_from_phone)) {
+                            if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_from_phone)) {
+
                                 $this->flash->success("The SMS was sent successfully to: " . $invite->phone);
+
+                                 $this->session->set("success", "The SMS was sent successfully to: " . $invite->phone);
+                               $this->response->redirect('/reviews/sms_broadcast');
                             }
                         }
+                        }
+                        else
+                        {
+                            $this->flash->success("You have exceeded the the limit of sending non viral messages.");
+                        }
+
                     } //end checking for formposttype
                 }
             }

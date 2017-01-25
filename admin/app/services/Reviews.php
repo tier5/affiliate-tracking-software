@@ -109,7 +109,9 @@
 
             if ($accounts) {
                 foreach ($accounts as $account) {
-                    $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
+                    $locations = $myBusiness->accounts_locations
+                                            ->listAccountsLocations($account->name)
+                                            ->getLocations();
                     if ($locations) {
                         foreach($locations as $location) {
                             if($location->locationKey->placeId == $BusinessID) {
@@ -240,10 +242,12 @@
             $objLocationReviewSite->review_count = $YelpReviews->review_count;
             $objLocationReviewSite->save();
 
-            if($YelpReviews->reviews) {
-                foreach($YelpReviews->reviews as $objYelpReview) {
-                    $objReview = \Vokuro\Models\Review::findFirst("external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}");
-                    if(!$objReview) {
+            if ($YelpReviews->reviews) {
+                foreach ($YelpReviews->reviews as $objYelpReview) {
+                    $objReview = \Vokuro\Models\Review::findFirst(
+                        "external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}"
+                        );
+                    if (!$objReview) {
                         $objReview = new \Vokuro\Models\Review();
                         $objReview->assign(array(
                             'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
@@ -451,8 +455,10 @@
                 $logger->log(var_export($tobjReviews, true));
             } catch(Exception $e) {
                 $logger->error(var_export($e, true));
+            } catch(Exception $e) {
+                // catch filelogger error
             }
-
+            
             $TotalRating = 0;
             $TotalReviews = 0;
 
@@ -479,6 +485,8 @@
                     } catch (Exception $e) {
                         $logger->error(var_export($e, true));
 
+                        continue;
+                    } catch(Exception $e) {
                         continue;
                     }
                 }

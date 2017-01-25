@@ -14,6 +14,7 @@
     use Vokuro\Models\SharingCode;
     use Vokuro\Models\Subscription;
     use Vokuro\Models\Users;
+    
     use Vokuro\Services\UserManager;
 
     /**
@@ -243,10 +244,68 @@
                 else
                     $agencies = \Vokuro\Models\Agency::find("agency_id = {$userObj->agency_id}");   // Case should never happen, but just in case it did somehow
             } else {
+                 $generate_array=array();
+                 $plan_name=array();
                 // Display businesses
                 if ($userObj->is_admin)
+                {
+                   
                     $agencies = \Vokuro\Models\Agency::find("parent_id = " . \Vokuro\Models\Agency::BUSINESS_UNDER_RV . " OR parent_id > 0");
+                    foreach($agencies as $agent)
+                    {
+                        
+                        $usersinfo = \Vokuro\Models\users::find("agency_id = " .$agent->agency_id );
+
+                        if($agent->subscription_id >0)
+                        {
+                            $subcription_details=\Vokuro\Models\SubscriptionPricingPlan::findFirst("id = " .$agent->subscription_id ); 
+                            $plan_name[$agent->agency_id]=$subcription_details->name;
+                            /*echo $agent->name."-".$agent->agency_id."-".$subcription_details->name;
+                            echo "<br>";*/
+                            
+
+                        }
+                        foreach($usersinfo as $use)
+                        {
+                            //echo $use->id;//echo '<br>';
+                            $subscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst("user_id = " .$use->id);
+                               /* echo $use->id;
+                                echo "-";
+                                echo $subscription->payment_plan;
+                                echo"-";
+                                echo $agent->agency_id;
+                                echo "<br>";*/
+                                if($subscription->payment_plan!='')
+                                {
+                                    if($subscription->subscription_pricing_plan_id==0)
+                                    {
+                                    $generate_array[$agent->agency_id]=$subscription->payment_plan;
+                                    }
+                                    else
+                                    {
+                                        $subscription_plan = \Vokuro\Models\SubscriptionPricingPlan::findFirst("id = " .$subscription->subscription_pricing_plan_id); 
+                                        if($subscription->payment_plan=='TR')
+                                        {
+                                            //echo 'kk';exit;
+                                        $generate_array[$agent->agency_id]=$subscription_plan->name." (Trial)";
+                                        }
+                                        else
+                                        {
+                                           $generate_array[$agent->agency_id]="Paid"; 
+                                        }
+                                    }
+
+                                }
+                               
+                        }
+                    }
+                   //exit; 
+                    //echo "<pre>";print_r($plan_name);exit;
+
+                }
+               
                 else {
+
                     $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$userObj->agency_id}");
                     if ($objAgency->parent_id > 0) {
                         $this->response->setStatusCode(404, "Not Found");
@@ -255,10 +314,15 @@
                         return;
                     }
                     $agencies = \Vokuro\Models\Agency::find("parent_id = {$userObj->agency_id}");
+
+                   
                 }
             }
 
             $this->view->agencies = $agencies;
+            $this->view->generate_array = $generate_array;
+            $this->view->plan_name = $plan_name;
+
         }
 
         /**

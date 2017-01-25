@@ -101,7 +101,8 @@
           </div>
             <textarea 
                                                   style="display:none;" 
-                                                  class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{ location.SMS_message }}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
+                                                  class="form-control placeholder-no-fix" name="SMS_message">{% if agency_sms %}
+                                                    {{agency_sms}}{% elseif location.SMS_message %}{{ location.SMS_message }}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
 
           <input type="hidden" name="agency_id" value="<?php echo $agency;?>">
           <input type="hidden" name="user_id" value="<?php echo $user_id;?>">

@@ -277,7 +277,6 @@ class ReviewfeedsController extends ControllerBase
 
 
     public function facebookAction(){
-
         $fb = new Facebook([
             'app_id' => '1638499289773721',
             'app_secret' => '04dd7d5dc2697ac091e4f67022c41f66',
