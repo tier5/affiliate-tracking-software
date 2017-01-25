@@ -9,6 +9,7 @@
 <!-- BEGIN HEAD -->
 
 <head>
+    <script src="/js/rollbar.js"></script>
  <?php
              if (strpos($_SERVER['REQUEST_URI'],'link/createlink')>0) {?>
  <link href="/css/style_review.css" rel="stylesheet" />
