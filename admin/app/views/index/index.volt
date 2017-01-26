@@ -279,7 +279,13 @@
             </div>
 
             <?php  } ?>
-
+            
+            <?php
+            if(!$GoogleMyBusinessConnected && !$facebookMyBusinessConnected && !$YelpMyBusinessConnected) {
+              $review_goal = $total_reviews_this_month = $revenue_retained = $total_reviews_location = $negative_total = 0;
+            }
+              
+            ?>
             <div class="col-md-4 col-sm-4">
                 <div class="portlet light bordered dashboard-panel Monthly-Goal-New-Reviews">
                     <div class="portlet-title">
@@ -687,7 +693,6 @@ copyTextareaBtn.addEventListener('click', function(event) {
             }
             return 'width : ' + e[ a + 'Width' ] + ': height : ' + e[ a + 'Height' ];
         }
-
         $('.starfield').rating({displayOnly: true, step: 0.5});
             google.charts.load('current', {packages: ['corechart', 'bar']});
             google.charts.setOnLoadCallback(drawBasic);
@@ -701,6 +706,9 @@ copyTextareaBtn.addEventListener('click', function(event) {
                     $strarray = '';
                     $color = ($primary_color) ? $primary_color : '';
                     foreach ($new_reviews as $data) {
+                      if(!$GoogleMyBusinessConnected && !$facebookMyBusinessConnected && !$YelpMyBusinessConnected) {
+                        $data['reviewcount'] = 0;
+                      }
                         /*if (count($new_reviews) > 6 && $count == 0) {
                         } else {*/
                             $strarray = $strarray."['".date("M", mktime(0, 0, 0, $data['month'], 1, 2011))."', ".($data['reviewcount']).", '".$color."'],\n";
