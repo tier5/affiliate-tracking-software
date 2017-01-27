@@ -702,15 +702,15 @@
                                         <th>Action</th>
                                     </tr>
                                     <tr>
-                                        <td>Business Confirmation Mail</td>
+                                        <td>Business Confirmation Email</td>
                                         <td><a href="#" data-title="business_conf">Edit</a></td>
                                     </tr>
                                     <tr>
-                                        <td>Employee Confirmation Mail</td>
+                                        <td>Employee Confirmation Email</td>
                                         <td><a href="#" data-title="employee_conf">Edit</a></td>
                                     </tr>
                                     <tr>
-                                        <td>Viral Mail</td>
+                                        <td>Viral Email</td>
                                         <td><a href="#" data-title="viral_mail">Edit</a></td>
                                     </tr>
                                 </table>
@@ -719,7 +719,7 @@
                                         <div class="form-group">
                                             <label class="col-md-2 control-label">Subject</label>
                                             <div class="col-md-10">
-                                                <input type="text" class="form-control" value="Business Confirmation Mail" readonly>
+                                                <input type="text" class="form-control" value="Business Confirmation Email" readonly>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -744,7 +744,7 @@
                                         <div class="form-group">
                                             <label class="col-md-2 control-label">Subject</label>
                                             <div class="col-md-10">
-                                                <input type="text" class="form-control" value="Employee Confirmation Mail" readonly>
+                                                <input type="text" class="form-control" value="Employee Confirmation Email" readonly>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -781,7 +781,7 @@
                                         <div class="form-group">
                                             <label class="col-md-2 control-label">Subject</label>
                                             <div class="col-md-10">
-                                                <input type="text" class="form-control" value="Viral Mail" readonly>
+                                                <input type="text" class="form-control" value="Viral Email" readonly>
                                             </div>
                                         </div>
                                         <div class="form-group">
