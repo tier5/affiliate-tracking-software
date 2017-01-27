@@ -151,12 +151,12 @@
                      $user_sent=$invite->sent_by_user_id;
                      $userobj = new Users();
                      $user_info = $userobj::findFirst($user_sent);
-                     $emp= $user_info->is_employee;
+                     $emp= $user_info->is_employee;//exit;
                      /*echo "<br>";
                     echo  $role= $user_info->role;
                     exit;*/
                       //  echo $invite->review_invite_type_id;exit;
-
+                        $role= $user_info->role;
                          $locationobj = new Location();
                          $location = $locationobj::findFirst($invite->location_id);
                          $this->view->setVar('location', $location);
@@ -174,7 +174,10 @@
                          $TwilioAPI = $parent_agency->twilio_api_key;
                          //echo $user_info->phone;
                                      //echo $parent_agency->name;exit;
-                        if ($emp==1 && $role=="Super Admin") {                             
+
+                         
+                        if ($emp==1 && $role =="Super Admin") {
+                       // echo 'kk';exit;                             
                              $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
                              $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
                              $AgencyName = $objParentAgency->name;
@@ -263,10 +266,11 @@
                              
                             $review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
                             
-                            $this->view->review_site_list = $review_site_list;
-                         }
+                        $this->view->review_site_list = $review_site_list;
+                    }
                      else
                      {
+                        //echo 'yy';exit;
                          $conditions = "location_id = :location_id:";
                          $parameters = array("location_id" => $invite->location_id);
                          $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
@@ -404,6 +408,7 @@
                              /*** sms to business ***/
 
                             }
+                           
                          //exit;
                          /**** send mail to business and user ***/
      

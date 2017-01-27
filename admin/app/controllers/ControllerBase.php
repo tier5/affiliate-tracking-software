@@ -717,7 +717,13 @@ class ControllerBase extends Controller {
 
         $base_sms_allowed = 100;
         $additional_allowed = 25;
-        $num_signed_up = SharingCode::count("business_id = {$agency->agency_id}");
+        //echo $agency->viral_sharing_code;exit;
+       // $num_signed_up = SharingCode::count("business_id = {$agency->agency_id}");
+       $num_signed_up = SharingCode::count("sharecode = '{$agency->viral_sharing_code}'");
+
+       /*$resultx=$this->db->query(" SELECT * FROM `sharing_code` WHERE `sharecode` ='".$agency->viral_sharing_code."'");
+                 $num_signed_up=$resultx->numRows();*/
+
         $num_discount = (int) ($num_signed_up / 3); //find how many three
         $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
         $identity = $this->session->get('auth-identity');

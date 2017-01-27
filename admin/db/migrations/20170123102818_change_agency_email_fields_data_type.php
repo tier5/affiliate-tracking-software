@@ -27,13 +27,24 @@ class ChangeAgencyEmailFieldsDataType extends AbstractMigration
      */
     public function change()
     {
-      $table = $this->table('agency');
-      $table->changeColumn("welcome_email", "text", array('null'=>true));
-      $table->changeColumn("viral_email", "text", array('null'=>true));
-      $table->changeColumn("welcome_email_employee", "text", array('null'=>true));
-      $table->update();
-    }
-    public function down() {
-     
+        $table = $this->table('agency');
+        $table->changeColumn("welcome_email", "text", array('null' => true));
+        $table->changeColumn("viral_email", "text", array('null' => true));
+
+        if (!$table->hasColumn('welcome_email_employee')) {
+            $table->addColumn(
+                'welcome_email_employee',
+                "text",
+                array('null' => true)
+            );
+        } else {
+            $table->changeColumn(
+                "welcome_email_employee",
+                "text",
+                array('null' => true)
+            );
+        }
+
+        $table->update();
     }
 }
