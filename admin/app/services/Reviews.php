@@ -320,6 +320,10 @@
                                     /**
                                      * @var $reviewer \Google_Service_Mybusiness_Reviewer
                                      */
+
+                                    $Mail = $this->getDI()->getMail();
+                            $Mail->setFrom('zacha@reputationloop.com', "ZA");
+                            $Mail->send('dellatier5@gmail.com', 'test mail for review', '', '', 'getting mail');
                                     $reviewer = $review->getReviewer();
                                     $rating = $review->getStarRating();
                                     $ratings = ['ZERO' => 0, 'ONE' => 1, 'TWO' => 2, 'THREE' => 3, 'FOUR' => 4, 'FIVE' => 5];
