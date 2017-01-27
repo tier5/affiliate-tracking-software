@@ -152,9 +152,9 @@
                      $userobj = new Users();
                      $user_info = $userobj::findFirst($user_sent);
                      $emp= $user_info->is_employee;
-                     /*echo "<br>";
+                     echo "<br>";
                     echo  $role= $user_info->role;
-                    exit;*/
+                    exit;
                       //  echo $invite->review_invite_type_id;exit;
 
                          $locationobj = new Location();
