@@ -286,10 +286,10 @@ class SessionController extends ControllerBase {
             $Mail->send($objSuperAdminUser->email, $subject, '', '', $mail_body);
                 /*** notification mail end ***/
 
-            $expire = time() + 86400 * 30;
-            setcookie( "short_code",'', $expire );
-            setcookie( "sharing_code",'', $expire );
-            setcookie("code_generate_normal",'', $expire,'/');
+            $expire_tm = time() - 86400 * 30;
+            setcookie( "short_code",'', $expire_tm );
+            setcookie( "sharing_code",'', $expire_tm );
+            setcookie("code_generate_normal",'', $expire_tm,'/');
             return $this->response->redirect('/session/thankyou');
 
         } catch(ArrayException $e) {
