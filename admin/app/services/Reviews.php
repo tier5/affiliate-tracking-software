@@ -10,7 +10,15 @@
 
     use Vokuro\Models\LocationReviewSite;
     use Vokuro\Models\Review;
+    use Vokuro\Models\ReviewInvite;
+    use Vokuro\Models\Users;
+    use Vokuro\Models\Location;
+    use Vokuro\Models\Agency;
+    use Vokuro\Models\LocationNotifications;
     use Phalcon\Logger\Adapter\File as FileLogger;
+
+    use Services_Twilio;
+    use Services_Twilio_RestException;
 
     class Reviews extends BaseService {
         protected $const_class;
@@ -22,6 +30,13 @@
             $this->types[] = ServicesConsts::$FACEBOOK_REVIEW_TYPE;
             $this->types[] = ServicesConsts::$YELP_REVIEW_TYPE;
             $this->types[] = 0; //this is the internal review type
+        }
+
+         public function getDI() {
+            if($this->di) return $this->di;
+            $di = new \Phalcon\Di();
+            $this->di = $di->getDefault();
+            return $this->di;
         }
 
         public function DeleteGoogleReviews($LocationID) {
@@ -136,7 +151,35 @@
             return $objBusiness;
         }
 
+           public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_from_phone) {
+        if(!$AccountSid || !$AuthToken || !$twilio_from_phone) {
+            $this->flash->error("Missing twilio configuration.");
+            return false;
+        }
         
+        $client = new Services_Twilio($AccountSid, $AuthToken);
+
+        try {
+
+                $message = $client->account->messages->create(array(
+                    "From" => $this->formatTwilioPhone($twilio_from_phone),
+                    "To" => $phone,
+                    "Body" => $smsBody,
+                ));
+
+        } catch (Services_Twilio_RestException $e) {
+            $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
+            return false;
+        }
+        return true;
+    }
+
+         public function formatTwilioPhone($phone) {
+        $phone = preg_replace('/\D+/', '', $phone);
+        if (strlen($phone) == 10)
+            $phone = '1' . $phone;
+        return '+' . $phone;
+    }
 
         public function getYelpBusinessData($LocationID, $BusinessID) {
             $Yelp = new \Vokuro\Models\YelpScanning();
@@ -321,14 +364,12 @@
                                      * @var $reviewer \Google_Service_Mybusiness_Reviewer
                                      */
 
-                                    $Mail = $this->getDI()->getMail();
-                            $Mail->setFrom('zacha@reputationloop.com', "ZA");
-                            $Mail->send('dellatier5@gmail.com', 'test mail for review', '', '', 'getting mail');
                                     $reviewer = $review->getReviewer();
                                     $rating = $review->getStarRating();
                                     $ratings = ['ZERO' => 0, 'ONE' => 1, 'TWO' => 2, 'THREE' => 3, 'FOUR' => 4, 'FIVE' => 5];
                                     $rating = $ratings[$rating];
-                                    echo $rating . ' - ';
+                                    echo $LocationID . ' - ';
+                                    //echo $review_id."-";
                                     $TotalRating += $rating;
                                     $review_id = str_replace('/reviews', '', $review->getReviewId());
 
@@ -438,6 +479,227 @@
                 $record->user_name = $data['user_name'];
 
             $record->save();
+            /**** send review for new entry ****/
+            if($data['review_type_id']==1)
+            {
+                $site_review='Facebook';
+            }
+            elseif($data['review_type_id']==2)
+            {
+                 $site_review='Yelp';
+            }
+            else
+            {
+                $site_review='Google';
+            }
+                $conditions = "rating != :rating:";
+                $parameters = array("rating" =>'');
+                $review_invite = new ReviewInvite();
+                $invites = $review_invite::find(array($conditions, "bind" => $parameters));
+                foreach($invites as $invite)
+                {
+                     if ($invite->location_id > 0) {
+
+                     $user_sent=$invite->sent_by_user_id;
+                     $userobj = new Users();
+                     $user_info = $userobj::findFirst($user_sent);
+                     $emp= $user_info->is_employee;//exit;
+                     
+                        $role= $user_info->role;
+                         $locationobj = new Location();
+                         $location = $locationobj::findFirst($invite->location_id);
+                         
+     
+                       
+                         $agencyobj = new Agency();
+                         $agency = $agencyobj::findFirst($location->agency_id);
+                         $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                         
+
+
+                         $TwilioToken = $parent_agency->twilio_auth_token;
+                         
+                         $TwilioFrom = $parent_agency->twilio_from_phone;
+                         $TwilioAPI = $parent_agency->twilio_api_key;
+                         if ($emp==1 && $role =="Super Admin") {
+                       // echo 'kk';exit;                             
+                             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
+                             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+                             $AgencyName = $objParentAgency->name;
+                             $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+                    
+                             $conditions = "location_id = :location_id:";
+                             $parameters = array("location_id" => $invite->location_id);
+                             $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                             $is_email_alert_on=0;
+                             $is_sms_alert_on=0;
+                    
+                             foreach($agencynotifications as $agencynotification) {
+                                 if ($agencynotification->user_id == $user_info->id) {
+                                     $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
+                    
+                                      $is_sms_alert_on = ($agencynotification->sms_alert==1?1:0);
+                    
+                    
+                                 } }
+                    
+                             if($is_email_alert_on==1)
+                             {
+                               $EmailFrom = 'zacha@reviewvelocity.co';
+                               $EmailFromName = "Zach Anderson";
+                               $to=$user_info->email;
+                               $subject="New Online Review";
+                               $mail_body="";
+                               $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
+                               $mail_body=$mail_body."<p>Star Rating : ".$data['rating']."</p>";
+                               $mail_body=$mail_body."<p>Review Site : ".$site_review."</p>";
+                               $mail_body=$mail_body."<p>Review : ".$data['review_text']."</p>";
+                              
+                               $mail_body=$mail_body."<p>Thank you,</p>";
+                               $mail_body=$mail_body.$AgencyUser;
+                               $mail_body=$mail_body.'<br>'.$AgencyName;
+                    
+                              $Mail = $this->getDI()->getMail();
+                             $Mail->setFrom($EmailFrom, $EmailFromName);
+                             //$Mail->send($to, $subject, '', '', $mail_body);
+                                 $phone='8127224722';
+                                
+                              
+                            }
+                    
+                            if($is_sms_alert_on==1)
+                                {
+                                    if($user_info->phone!='')
+                                    {
+                    
+                                    $message=$invite->name." ".$invite->phone." has submitted ".$rating." for employee ".$user_info->name;
+
+                                    $message="You just received a new review".$data['rating']." from". $data['user_name']." on ".$site_review." and the review is: ".$data['review_text'];
+                             // if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                             //  }
+                                    }
+                                   
+                    
+                                }
+                    
+                    }
+                        
+                        /**** else part ***/
+                    else
+                     {
+                        //echo 'yy';exit;
+                         $conditions = "location_id = :location_id:";
+                         $parameters = array("location_id" => $invite->location_id);
+                         $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+     
+                           $is_email_alert_on=0;
+                           $is_sms_alert_on=0;
+     
+                         foreach($agencynotifications as $agencynotification) {
+                             if ($agencynotification->user_id == $user_info->id) {
+                                 $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
+
+                                  $is_sms_alert_on = ($agencynotification->sms_alert==1?1:0);
+                             } }
+     
+                              $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
+         
+                             $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
+
+                            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$business_agency->parent_id}");
+                          $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+                          $AgencyName = $objParentAgency->name;
+                          $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+
+                        
+                        if($is_email_alert_on==1)
+                         {
+                           
+
+                             /*** mail to user ***/
+                               $EmailFrom = 'zacha@reviewvelocity.co';
+                               $EmailFromName = "Zach Anderson";
+                               $to=$user_info->email;
+                              $subject="New Online Review";
+                               $mail_body="";
+                               $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
+                               $mail_body=$mail_body."<p>Star Rating : ".$data['rating']."</p>";
+                               $mail_body=$mail_body."<p>Review Site : ".$site_review."</p>";
+                               $mail_body=$mail_body."<p>Review : ".$data['review_text']."</p>";
+                           $mail_body=$mail_body."<p>Thank you,</p>";
+                           $mail_body=$mail_body.$AgencyUser;
+                           $mail_body=$mail_body.'<br>'.$AgencyName;
+
+                            $Mail = $this->getDI()->getMail();
+                            $Mail->setFrom($EmailFrom, $EmailFromName);
+                            //$Mail->send($to, $subject, '', '', $mail_body);
+        
+                            /*** mail to user end ****/
+        
+                            /**** mail to busines ****/
+        
+                            
+        
+                              $EmailFrom = 'zacha@reviewvelocity.co';
+                              $EmailFromName = "Zach Anderson";
+                              $to=$business_info->email;
+                              
+                            $subject="New Online Review";
+                               $mail_body="";
+                               $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
+                               $mail_body=$mail_body."<p>Star Rating : ".$data['rating']."</p>";
+                               $mail_body=$mail_body."<p>Review Site : ".$site_review."</p>";
+                               $mail_body=$mail_body."<p>Review : ".$data['review_text']."</p>";
+                             $mail_body=$mail_body."<p>Thank you,</p>";
+                             $mail_body=$mail_body.$AgencyUser;
+                             $mail_body=$mail_body.'<br>'.$AgencyName;
+
+                             $Mail = $this->getDI()->getMail();
+                             $Mail->setFrom($EmailFrom, $EmailFromName);
+                             //$Mail->send($to, $subject, '', '', $mail_body);
+                                $phone='8127224722';
+                             /**** mail to busines ****/
+
+                            
+     
+     
+                         }
+
+
+                          if($is_sms_alert_on==1)
+                             {
+         
+                             /*** sms to user ***/
+
+                             if($user_info->phone!='')
+                             {
+
+                                  $message="You just received a new review".$data['rating']." from". $data['user_name']." on ".$site_review." and the review is: ".$data['review_text'];
+                              // if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,$TwilioFrom)) {
+                              // }
+                                }
+
+                            
+                             /*** sms to user ***/
+         
+                             /*** sms to business ***/
+                                if($business_agency->phone!='')
+                             {
+                                 $message=$invite->name." ".$invite->phone." has submitted ".$rating." for employee ".$user_info->name;
+                             // if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                             //  }
+
+                            }
+                             /*** sms to business ***/
+
+                            }
+                           
+                         }
+                        /**** else part ***/
+
+                     }
+                }
+            /**** send review for new entry ****/
             $messages = $record->getMessages();
             if ($messages) print_r($messages);
         }

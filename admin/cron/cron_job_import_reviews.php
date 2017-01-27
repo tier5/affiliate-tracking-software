@@ -6,6 +6,7 @@
     class LocationImporter extends \Vokuro\Controllers\LocationController {
 
         function initialize() {
+            echo 'Yeah I reached here!';
             // Purposefully not calling parent
             $path_to_admin = realpath(__DIR__ . '/../');
             include_once $path_to_admin . '/app/library/Google/mybusiness/Mybusiness.php';
