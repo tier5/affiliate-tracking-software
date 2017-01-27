@@ -709,6 +709,7 @@ class ControllerBase extends Controller {
 
         $base_sms_allowed = 100;
         $additional_allowed = 25;
+        echo $agency->agency_id;exit;
         $num_signed_up = SharingCode::count("business_id = {$agency->agency_id}");
         $num_discount = (int) ($num_signed_up / 3); //find how many three
         $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
