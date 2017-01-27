@@ -177,7 +177,7 @@
 
                          
                         if ($emp==1 && $role =="Super Admin") {
-                        echo 'kk';exit;                             
+                       // echo 'kk';exit;                             
                              $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
                              $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
                              $AgencyName = $objParentAgency->name;
@@ -270,7 +270,7 @@
                     }
                      else
                      {
-                        echo 'yy';exit;
+                        //echo 'yy';exit;
                          $conditions = "location_id = :location_id:";
                          $parameters = array("location_id" => $invite->location_id);
                          $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
