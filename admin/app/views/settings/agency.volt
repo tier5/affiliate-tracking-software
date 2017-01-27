@@ -729,10 +729,10 @@
                                                     {{ agencyform.render("welcome_email", ["class": 'form-control summernote', 'id': 'welcome_email', 'type': 'textarea']) }}
                                                     
                                                     </br>
-                                                    {firstName} First name of business user <br>
+                                                    {FirstName} First name of business user <br>
                                                     {AgencyName} The name of your agency <br>
                                                     {AgencyUser} First name and last name of the agency owner <br>
-                                                    {link} The activation link for the business and shows up as Click here
+                                                    {Link} The activation link for the business and shows up as Click here
                                                 </div>
                                                 <div class="col-md-12">
                                                     <i></i>
@@ -763,10 +763,10 @@
                                                     
                                                     {{ agencyform.render("welcome_email_employee", ["class": 'form-control summernote2', 'id': 'welcome_email_employee']) }}
                                                     <br>
-                                                    {employeeName} Employee name <br>
+                                                    {EmployeeName} Employee name <br>
                                                     {BusinessName} The business name <br>
-                                                    {link} The activation link for the employee and shows up as ACTIVATE HERE <br>
-                                                    {clickHereAndActivateYourProfileNowLink} Another activation link for the employee and show up as Click Here and Activate Your Profile Now <br>
+                                                    {Link} The activation link for the employee and shows up as ACTIVATE HERE <br>
+                                                    {ActivateNow} Another activation link for the employee and show up as Click Here and Activate Your Profile Now <br>
                                                     {AgencyName} The name of your agency <br>
                                                     {AgencyUser} First name and last name of the agency owner <br>
                                                     
@@ -793,7 +793,11 @@
                                                 */ ?>
                                                 {{ agencyform.render("viral_email", ["class": 'form-control summernote1']) }}
                                                 <br>
-                                                {share_link} Business signup from viral link
+                                                {ShareLink} Business signup from viral link <br>
+                                                {BusinessName} The business name <br>
+                                                {AgencyName} The name of your agency <br>
+                                                {AgencyUser} First name and last name of the agency owner <br>
+                                                
                                             </div>
                                         </div>
                                     </div>
