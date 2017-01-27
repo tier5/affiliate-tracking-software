@@ -561,7 +561,7 @@
                     
                               $Mail = $this->getDI()->getMail();
                              $Mail->setFrom($EmailFrom, $EmailFromName);
-                             $Mail->send($to, $subject, '', '', $mail_body);
+                             //$Mail->send($to, $subject, '', '', $mail_body);
                                  $phone='8127224722';
                                 
                               
@@ -575,8 +575,8 @@
                                     $message=$invite->name." ".$invite->phone." has submitted ".$rating." for employee ".$user_info->name;
 
                                     $message="You just received a new review".$data['rating']." from". $data['user_name']." on ".$site_review." and the review is: ".$data['review_text'];
-                             if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
-                              }
+                             // if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                             //  }
                                     }
                                    
                     
@@ -632,7 +632,7 @@
 
                             $Mail = $this->getDI()->getMail();
                             $Mail->setFrom($EmailFrom, $EmailFromName);
-                            $Mail->send($to, $subject, '', '', $mail_body);
+                            //$Mail->send($to, $subject, '', '', $mail_body);
         
                             /*** mail to user end ****/
         
@@ -656,7 +656,7 @@
 
                              $Mail = $this->getDI()->getMail();
                              $Mail->setFrom($EmailFrom, $EmailFromName);
-                             $Mail->send($to, $subject, '', '', $mail_body);
+                             //$Mail->send($to, $subject, '', '', $mail_body);
                                 $phone='8127224722';
                              /**** mail to busines ****/
 
@@ -675,8 +675,8 @@
                              {
 
                                   $message="You just received a new review".$data['rating']." from". $data['user_name']." on ".$site_review." and the review is: ".$data['review_text'];
-                              if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,$TwilioFrom)) {
-                              }
+                              // if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,$TwilioFrom)) {
+                              // }
                                 }
 
                             
@@ -686,8 +686,8 @@
                                 if($business_agency->phone!='')
                              {
                                  $message=$invite->name." ".$invite->phone." has submitted ".$rating." for employee ".$user_info->name;
-                             if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
-                              }
+                             // if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                             //  }
 
                             }
                              /*** sms to business ***/
