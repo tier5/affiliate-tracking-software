@@ -124,14 +124,20 @@ if ($locs) {
 
                   <?php
 $rowclass = '';
+//echo $YelpMyBusinessConnected;exit;
 foreach($locs as $location) {
   ?>
                   <tr class="review <?=$rowclass?>">
                     <td><?=$location->name?></td>
                     <td><?=$location->state_province?></td>
                     <td><?=$location->locality?></td>
+                      <?php if($facebookMyBusinessConnected ||  $GoogleMyBusinessConnected || $YelpMyBusinessConnected ){ ?>
                     <td><?=($location->review_count > 0?$location->review_count:0)?></td>
                     <td><?=($location->review_count > 0?number_format((float)($location->rating / $location->review_count), 1, '.', ''):'0.0')?></td>
+                    <?php } else { ?>
+                    <td>0</td>
+                    <td>0</td>
+                    <?php }?>
                     <td><a href="/location/edit/<?=$location->location_id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.png" /></a></td>
                     <td><a href="/location/delete/<?=$location->location_id?>" onclick="return confirm('Are you sure you want to delete this location?');" class="btnLink btnSecondary"><img src="/img/icon-delete.png" /></a></td>
                   </tr>
