@@ -95,13 +95,13 @@ class Email{
                 $email_content = $objParentAgency->welcome_email;
                 $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
                 
-                if(strpos($email_content,'{link}') === false){
-                  $email_content .= '<p>{link}</p>';
+                if(strpos($email_content,'{Link}') === false){
+                  $email_content .= '<p>{Link}</p>';
                 }
                 
-                $link="<a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a>";
-                $email_content = str_replace("{link}", $link, $email_content);
-                $email_content = str_replace("{firstName}", $user->name, $email_content);
+                $link="<a href=".$redirect_uri.">Clicking Here</a>";
+                $email_content = str_replace("{Link}", $link, $email_content);
+                $email_content = str_replace("{FirstName}", $user->name, $email_content);
                 $email_content = str_replace("{AgencyUser}", $AgencyUser, $email_content);
             }
             
@@ -124,13 +124,13 @@ class Email{
                 $email_content = $objParentAgency->welcome_email;
                 $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
                 
-                if(strpos($email_content,'{link}') === false) {
-                  $email_content .= '<p>{link}</p>';
+                if(strpos($email_content,'{Link}') === false) {
+                  $email_content .= '<p>{Link}</p>';
                 }
                 
-                $link="<a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a>";
-                $email_content = str_replace("{link}", $link, $email_content);
-                $email_content = str_replace("{firstName}", $user->name, $email_content);
+                $link="<a  href=".$redirect_uri.">Clicking Here</a>";
+                $email_content = str_replace("{Link}", $link, $email_content);
+                $email_content = str_replace("{FirstName}", $user->name, $email_content);
                 $email_content = str_replace("{AgencyUser}", $AgencyUser, $email_content);
             }
 
@@ -411,7 +411,7 @@ class Email{
             		We’ve just created your profile for {BusinessName} within our software. 
             	</p>
                 <p>When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard.<p>
-                  {link}
+                  {Link}
                   
                 <p>Looking forward to working with you.</p>
                   {AgencyUser}<br/>
@@ -420,16 +420,16 @@ class Email{
                 </p>';
         }
         
-        if(strpos($email_content,'{link}') === false){
-          $email_content .= '<p>{link}</p>';
+        if(strpos($email_content,'{Link}') === false){
+          $email_content .= '<p>{Link}</p>';
         }
               
         $link='<a href="http://'.$domain.$params['confirmUrl'].'"> ACTIVATE HERE </a>';
         $clickHereLink = '<a href="http://'.$domain.$params['confirmUrl'].'"><i>Click Here and Activate Your Profile Now</i></a>';
-        $email_content = str_replace("{link}", $link, $email_content);
-        $email_content = str_replace("{clickHereAndActivateYourProfileNowLink}", $clickHereLink, $email_content);
+        $email_content = str_replace("{Link}", $link, $email_content);
+        $email_content = str_replace("{ActivateNow}", $clickHereLink, $email_content);
         $email_content = str_replace("{BusinessName}", $busi_nam, $email_content);
-        $email_content = str_replace("{employeeName}", $u->name, $email_content);
+        $email_content = str_replace("{EmployeeName}", $u->name, $email_content);
         $email_content = str_replace("{AgencyUser}", $AgencyUser, $email_content);
         $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
         

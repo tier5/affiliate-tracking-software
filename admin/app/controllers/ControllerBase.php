@@ -680,6 +680,11 @@ class ControllerBase extends Controller {
         
         /**** 24.11.2016 ****/
         //echo $message_parent ;exit;
+        //$location_id_busi = $this->session->get('auth-identity')['location_id'];
+        //$Location=\Vokuro\Models\Location::findFirst("location_id = {$location_id_busi}");
+        //$busi_nam=$Location->name;
+        
+        
 
         if($objParentAgency->viral_email=='')
         {
@@ -691,10 +696,13 @@ class ControllerBase extends Controller {
         }
         
         if($message_set) {
-         if(strpos($message_set,'{share_link}') === false) {
-            $message_set .= '{share_link}';
+         if(strpos($message_set,'{ShareLink}') === false) {
+            $message_set .= '{ShareLink}';
          }
-         $message_set = str_replace('{share_link}',$share_link,$message_set);
+         $message_set = str_replace('{ShareLink}',$share_link,$message_set);
+         $message_set = str_replace('{AgencyUser}',$AgencyUser,$message_set);
+         $message_set = str_replace('{AgencyName}',$AgencyName,$message_set);
+         $message_set = str_replace('{BusinessName}',$agency->name,$message_set);
         }
        
         $this->view->setVars([
@@ -727,7 +735,6 @@ class ControllerBase extends Controller {
         $NonViralSMS = $MaxSMS;
         $ViralSMS = $objSubscriptionManager->GetViralSMSCount($agency->agency_id);
        // $MaxSMS += $ViralSMS;
-
         $this->view->setVars([
             'total_sms_month' => $MaxSMS,
             'num_discount' => $num_discount,

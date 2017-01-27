@@ -714,14 +714,17 @@ class SettingsController extends ControllerBase {
 
         if (!$objAgency->welcome_email || ($this->request->isPost() && !$this->request->getPost('welcome_email'))) {
          
-          $objAgency->welcome_email = "Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+          $objAgency->welcome_email = "Hey {FirstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
                 <P>If you wouldn't mind, I'd love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
 
                 <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit reply and let me know.
-               </P> To get started just confirm your email by {link} <br/><br/>Thanks,<br/><br/>
-                {AgencyUser}<br/>
-                {AgencyName}";
+               </P>
+               <p>To get started just confirm your email by {Link}</p>
+               <p></p>
+               <p>Thanks,</p>
+               <p>{AgencyUser}</p>
+               <p>{AgencyName}</p>";
         }
         
         // Set default message for welcome_email_employee
@@ -729,25 +732,25 @@ class SettingsController extends ControllerBase {
         if (!$objAgency->welcome_email_employee
             || ($this->request->isPost()
             && !$this->request->getPost('welcome_email_employee'))) {
-          $objAgency->welcome_email_employee= 'Hi {employeeName},
+          $objAgency->welcome_email_employee= 'Hi {EmployeeName},
         	<p>
         		We’ve just created your profile for {BusinessName} within our software. 
         	</p>
             <p>
-            	When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
-            <p>
-              {link}
+            	When you {ActivateNow} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+            </p>
+            <p> {Link}</p>
             <p>Looking forward to working with you.</p>
-
-            {AgencyUser}<br/>
-            {AgencyName}
-            <br>';
+            <p></p>
+            <p>Thanks,</p>
+            <p>{AgencyUser}</p>
+            <p>{AgencyName}</p>';
         }
         
         // Set default message for viral_email
         if (!$objAgency->viral_email || ($this->request->isPost() && !$this->request->getPost('viral_email'))) {
             $objAgency->viral_email = "I just started using this amazing new software for my business. "
-                                        . "They are giving away a trial account here: {share_link}";
+                                        . "They are giving away a trial account here: {ShareLink}";
         }
 
         $AgencyForm = new AgencyForm($objAgency, array(
