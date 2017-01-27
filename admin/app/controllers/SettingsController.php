@@ -541,9 +541,15 @@ class SettingsController extends ControllerBase {
 
             }
             
-            $client = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
-            $uri = '/'. $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
-            $numbers = $client->retrieveData($uri);
+            $numbers = array();
+            if($Twillioset['twilio_api_key'] && $Twillioset['twilio_auth_token']) {
+              $client = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
+              $uri = '/'. $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
+              
+              if($client){
+               $numbers = $client->retrieveData($uri);
+              }
+            }
         
             $country = array();
 

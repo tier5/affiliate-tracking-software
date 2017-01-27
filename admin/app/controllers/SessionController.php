@@ -16,6 +16,7 @@ use Vokuro\Models\FacebookScanning;
 use Vokuro\Models\GoogleScanning;
 use Vokuro\Models\Location;
 use Vokuro\Models\LocationReviewSite;
+use Vokuro\Models\LocationNotifications;
 use Vokuro\Models\ResetPasswords;
 use Vokuro\Models\Users;
 use Vokuro\Models\EmailConfirmations;
@@ -622,8 +623,32 @@ class SessionController extends ControllerBase {
 
                     $this->importFacebook($lrs);
                 }
+                
+                //set default notification
+                if($loc && $loc->location_id){
+                    $locNoti = new  LocationNotifications();
+                    if($userObj->profilesId == 2 && $userObj->role == 'Super Admin') {
+                        $locNoti->assign(array(
+                            'location_id' => $loc->location_id,
+                            'user_id'     =>   $userObj->id,
+                            'email_alert' => 1,
+                            'sms_alert'   => 1,
+                            'all_reviews' => 1,
+                            'employee_leaderboards' => 1,
+                        ));
+                    } elseif ($userObj->profilesId == 3 && $userObj->role == 'User') {
+                        $locNoti->assign(array(
+                            'location_id' => $loc->location_id,
+                            'user_id'     =>   $userObj->id,
+                            'sms_alert'   => 1,
+                            'employee_leaderboards' => 1,
+                            'individual_reviews'    =>1,
+                        ));
+                    }
+                    $locNoti->save();
+                }
 
-
+        
                 //$this->flash->success("The location was created successfully");
                 $agency->assign(array(
                     'signup_page' => 3, //go to the next page
