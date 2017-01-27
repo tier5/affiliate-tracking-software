@@ -151,7 +151,7 @@
                      $user_sent=$invite->sent_by_user_id;
                      $userobj = new Users();
                      $user_info = $userobj::findFirst($user_sent);
-                     echo $emp= $user_info->is_employee;exit;
+                     //echo $emp= $user_info->is_employee;exit;
                    /*  echo "<br>";
                     echo  $role= $user_info->role;
                     exit;*/
@@ -174,7 +174,7 @@
                          $TwilioAPI = $parent_agency->twilio_api_key;
                          //echo $user_info->phone;
                                      //echo $parent_agency->name;exit;
-                        if ($emp==1 && $role=="Super Admin") {
+                        if ($emp==1 && $role !="users") {
                         echo 'kk';exit;                             
                              $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
                              $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
