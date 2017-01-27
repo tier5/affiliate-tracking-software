@@ -151,7 +151,7 @@
                      $user_sent=$invite->sent_by_user_id;
                      $userobj = new Users();
                      $user_info = $userobj::findFirst($user_sent);
-                     $emp= $user_info->is_employee;
+                     echo $emp= $user_info->is_employee;exit;
                    /*  echo "<br>";
                     echo  $role= $user_info->role;
                     exit;*/
