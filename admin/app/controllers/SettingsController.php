@@ -713,7 +713,7 @@ class SettingsController extends ControllerBase {
         // Set default message welcome_email
 
         if (!$objAgency->welcome_email || ($this->request->isPost() && !$this->request->getPost('welcome_email'))) {
-         
+         $blankemailPosted = true;
           $objAgency->welcome_email = "Hey {FirstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
                 <P>If you wouldn't mind, I'd love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
@@ -732,6 +732,7 @@ class SettingsController extends ControllerBase {
         if (!$objAgency->welcome_email_employee
             || ($this->request->isPost()
             && !$this->request->getPost('welcome_email_employee'))) {
+           $blankemailPosted = true;
           $objAgency->welcome_email_employee= 'Hi {EmployeeName},
         	<p>
         		We’ve just created your profile for {BusinessName} within our software. 
@@ -749,6 +750,7 @@ class SettingsController extends ControllerBase {
         
         // Set default message for viral_email
         if (!$objAgency->viral_email || ($this->request->isPost() && !$this->request->getPost('viral_email'))) {
+            $blankemailPosted = true;
             $objAgency->viral_email = "I just started using this amazing new software for my business. "
                                         . "They are giving away a trial account here: {ShareLink}";
         }
@@ -775,6 +777,9 @@ class SettingsController extends ControllerBase {
 
                 $this->flash->success("The settings were updated successfully");
                 //Tag::resetInput();
+                if($blankemailPosted){
+                  return $this->response->redirect($_SERVER['HTTP_REFERER']);
+                }
             }
         } else {
             foreach ($AgencyForm->getMessages() as $message) {

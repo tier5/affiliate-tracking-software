@@ -148,12 +148,12 @@ class Email{
                     <P>If you wouldn’t mind, I’d love it if you answered one quick question: Why did you decide to join us at ".$AgencyName." ?</P>
 
                     <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit 'reply' and let me know.</P>
-                    To get started just confirm your email by <a style='padding:10px; margin-left:-10px;' href=".$redirect_uri.">Clicking Here</a><br/><br/>
-
-                    Thanks,<br/><br/>".$AgencyUser."
-
-                   <br/>
-                    ".$AgencyName;
+                    
+                    <p>To get started just confirm your email by <a  href=".$redirect_uri.">Clicking Here</a></p>
+                    <p></p>
+                    <p>Thanks,</p>
+                    <p>".$AgencyUser."</p>
+                    <p>".$AgencyName."</p>";
         }
          if($AgencyName =='') {
             
@@ -411,13 +411,12 @@ class Email{
             		We’ve just created your profile for {BusinessName} within our software. 
             	</p>
                 <p>When you {clickHereAndActivateYourProfileNowLink} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard.<p>
-                  {Link}
-                  
+                <p>  {Link} </p>
                 <p>Looking forward to working with you.</p>
-                  {AgencyUser}<br/>
-                  {AgencyName}
-                  <br>
-                </p>';
+                <p></p>
+                <p>Thanks,</p>
+                <p> {AgencyUser}</p>
+                <p> {AgencyName}</p>';
         }
         
         if(strpos($email_content,'{Link}') === false){
