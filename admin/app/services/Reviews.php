@@ -557,7 +557,7 @@
                            $to=$user_info->email;
                            $subject="New Online Review";
                            $mail_body="";
-                           $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
+                           $mail_body=$mail_body."<p>One of your customers just left an online review about your business.</p>";
                            $mail_body=$mail_body."<p>Star Rating : ".$data['rating']."</p>";
                            $mail_body=$mail_body."<p>Review Site : ".$site_review."</p>";
                            $mail_body=$mail_body."<p>Review : ".$data['review_text']."</p>";
@@ -630,7 +630,7 @@
                                $to=$user_info->email;
                               $subject="New Online Review";
                                $mail_body="";
-                               $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
+                               $mail_body=$mail_body."<p>One of your customers just left an online review about your business.</p>";
                                $mail_body=$mail_body."<p>Star Rating : ".$data['rating']."</p>";
                                $mail_body=$mail_body."<p>Review Site : ".$site_review."</p>";
                                $mail_body=$mail_body."<p>Review : ".$data['review_text']."</p>";
@@ -654,7 +654,7 @@
                               $to=$business_info->email;
                             $subject="New Online Review";
                                $mail_body="";
-                               $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
+                               $mail_body=$mail_body."<p>One of your customers just left an online review about your business.</p>";
                                $mail_body=$mail_body."<p>Star Rating : ".$data['rating']."</p>";
                                $mail_body=$mail_body."<p>Review Site : ".$site_review."</p>";
                                $mail_body=$mail_body."<p>Review : ".$data['review_text']."</p>";
