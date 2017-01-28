@@ -79,11 +79,7 @@
         $YNrating_array_set_all = array();
     
         foreach ($dbEmployees as $ux) {
-            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` "
-                    . "FROM `review_invite` "
-                    . "WHERE  `sent_by_user_id` =" . $ux->id . " "
-                    . "AND `review_invite_type_id` =1 "
-                    . "GROUP BY  `rating`";
+            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
 
             // Base model
             $list = new ReviewInvite();
@@ -104,10 +100,7 @@
         $this->view->YNrating_array_set_all = $YNrating_array_set_all;
 
         foreach ($dbEmployees as $ux) {
-            $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id`, SUM(`rating`) AS  `totalx` "
-                    . "FROM  `review_invite` "
-                    . "WHERE  `sent_by_user_id` =" . $ux->id . " "
-                    . "GROUP BY  `review_invite_type_id` ";
+           $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
 
             // Base model
             $list = new ReviewInvite();
