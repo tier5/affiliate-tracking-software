@@ -125,7 +125,7 @@
                 $dbRecipients = \Vokuro\Models\Users::find("id IN (" . implode(',', $tRecipients[$objLocation->location_id]) . ")");
 
                 $objEmail = new \Vokuro\Services\Email();
-                $objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients);
+                $objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients,$objReview->review_invite_type_id);
             }
         }
     }
