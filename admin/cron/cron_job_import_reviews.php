@@ -22,10 +22,12 @@
         }
 
         function ImportGoogleMyBusinessReviews() {
+           
             $dbLocations = \Vokuro\Models\LocationReviewSite::find("review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE . " AND json_access_token IS NOT NULL AND json_access_token != ''");
-            $objReviewService = new \Vokuro\Services\Reviews();
+            
             foreach ($dbLocations as $objLocation) {
                 try {
+                    $objReviewService = new \Vokuro\Services\Reviews();
                     $objReviewService->importGoogleMyBusinessReviews($objLocation->location_id);
                 } catch (Exception $e) {
                     $this->LogContents('Google', $objLocation->location_id, $e->getMessage());
@@ -63,3 +65,4 @@
     $objImporter->ImportGoogleMyBusinessReviews();
     $objImporter->ImportFacebookReviews();
     $objImporter->ImportYelpReviews();
+    dd('finished !!!');   

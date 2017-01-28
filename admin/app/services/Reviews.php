@@ -26,6 +26,8 @@
 
         public function __construct($config = null, $di = null) {
             parent::__construct($config, $di);
+            $this->di = $this->getDI();
+            $this->config = $this->di->get('config');
             $this->types[] = ServicesConsts::$GOOGLE_REVIEW_TYPE;
             $this->types[] = ServicesConsts::$FACEBOOK_REVIEW_TYPE;
             $this->types[] = ServicesConsts::$YELP_REVIEW_TYPE;
@@ -327,7 +329,7 @@
 
             $myBusiness = new \Google_Service_Mybusiness($client);
             $accounts = $myBusiness->accounts->listAccounts()->getAccounts();
-            if ($accounts) {
+        if ($accounts) {
                 foreach ($accounts as $account) {
                     /**
                      * @var $account \Google_Service_Mybusiness_Account
@@ -449,6 +451,14 @@
          * @throws \Exception
          */
         public function saveReviewFromData($data) {
+            $Mail = $this->getDI()->getMail();
+
+            $Mail->setFrom($EmailFrom, $EmailFromName);
+           $Mail->send('work@tier5.us', 'test', '', '', 'test');
+            dd(  $Mail->send('work@tier5.us', 'test', '', '', 'test'));
+            echo 'sent mail';
+            return false;
+
             if (!is_array($data)) throw new \Exception("Invalid data specified, expected array");
             if (!isset($data['rating_type_id'])) throw new \Exception('Invalid rating_type_id');
             $review = new Review();
@@ -492,95 +502,99 @@
             {
                 $site_review='Google';
             }
-                $conditions = "location_id = :location_id:";
-                $parameters = array("location_id" => $data['location_id'] );
-                $review_invite = new ReviewInvite();
-                $invites = $review_invite::find(array($conditions, "bind" => $parameters));
-                foreach($invites as $invite)
-                {
-                     if ($invite->location_id > 0 && $save) {
+            $conditions = "location_id = :location_id:";
+            $parameters = array("location_id" => $data['location_id'] );
+            $review_invite = new ReviewInvite();
+            $invites = $review_invite::find(array($conditions, "bind" => $parameters));
+            foreach($invites as $invite)
+            {
 
-                     $user_sent=$invite->sent_by_user_id;
-                     $userobj = new Users();
-                     $user_info = $userobj::findFirst($user_sent);
-                     $emp= $user_info->is_employee;//exit;
+                 if ($invite->location_id > 0 && $save) {
+
+                 $user_sent=$invite->sent_by_user_id;
+                 $userobj = new Users();
+                 $user_info = $userobj::findFirst($user_sent);
+                 $emp= $user_info->is_employee;//exit;
+                 
+                    $role= $user_info->role;
+                     $locationobj = new Location();
+                     $location = $locationobj::findFirst($invite->location_id);
                      
-                        $role= $user_info->role;
-                         $locationobj = new Location();
-                         $location = $locationobj::findFirst($invite->location_id);
-                         
-     
-                       
-                         $agencyobj = new Agency();
-                         $agency = $agencyobj::findFirst($location->agency_id);
-                         $parent_agency=$agencyobj::findFirst($agency->parent_id);
-                         
+
+                   
+                     $agencyobj = new Agency();
+                     $agency = $agencyobj::findFirst($location->agency_id);
+                     $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                     
 
 
-                         $TwilioToken = $parent_agency->twilio_auth_token;
-                         
-                         $TwilioFrom = $parent_agency->twilio_from_phone;
-                         $TwilioAPI = $parent_agency->twilio_api_key;
-                         if ($emp==1 && $role =="Super Admin") {
-                       // echo 'kk';exit;                             
-                             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
-                             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
-                             $AgencyName = $objParentAgency->name;
-                             $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
-                    
-                             $conditions = "location_id = :location_id:";
-                             $parameters = array("location_id" => $invite->location_id);
-                             $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
-                             $is_email_alert_on=0;
-                             $is_sms_alert_on=0;
-                    
-                             foreach($agencynotifications as $agencynotification) {
-                                 if ($agencynotification->user_id == $user_info->id) {
-                                     $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
-                    
-                                      $is_sms_alert_on = ($agencynotification->sms_alert==1?1:0);
-                    
-                    
-                                 } }
-                    
-                             if($is_email_alert_on==1)
-                             {
-                               $EmailFrom = 'zacha@reviewvelocity.co';
-                               $EmailFromName = "Zach Anderson";
-                               //$to=$user_info->email;
-                               $to="dellatier5@gmail.com";
-                               $subject="New Online Review";
-                               $mail_body="";
-                               $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
-                               $mail_body=$mail_body."<p>Star Rating : ".$data['rating']."</p>";
-                               $mail_body=$mail_body."<p>Review Site : ".$site_review."</p>";
-                               $mail_body=$mail_body."<p>Review : ".$data['review_text']."</p>";
-                              
-                               $mail_body=$mail_body."<p>Thank you,</p>";
-                               $mail_body=$mail_body.$AgencyUser;
-                               $mail_body=$mail_body.'<br>'.$AgencyName;
-                    
-                              $Mail = $this->getDI()->getMail();
-                             $Mail->setFrom($EmailFrom, $EmailFromName);
-                             $Mail->send($to, $subject, '', '', $mail_body);
-                                 $phone='8127224722';
-                                
-                              
-                            }
-                    
-                            if($is_sms_alert_on==1)
+                     $TwilioToken = $parent_agency->twilio_auth_token;
+                     
+                     $TwilioFrom = $parent_agency->twilio_from_phone;
+                     $TwilioAPI = $parent_agency->twilio_api_key;
+                     if ($emp==1 && $role =="Super Admin") {
+                    //echo 'kk';exit;                             
+                         $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
+                         $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+                         $AgencyName = $objParentAgency->name;
+                         $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+                
+                         $conditions = "location_id = :location_id:";
+                         $parameters = array("location_id" => $invite->location_id);
+                         $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                         $is_email_alert_on=0;
+                         $is_sms_alert_on=0;
+                
+                         foreach($agencynotifications as $agencynotification) {
+                             if ($agencynotification->user_id == $user_info->id) {
+                                 $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
+                
+                                  $is_sms_alert_on = ($agencynotification->sms_alert==1?1:0);
+                
+                
+                             } }
+                
+                         if($is_email_alert_on==1)
+                         {
+                           echo '### Email ####';
+                           echo $user_info->email;
+
+                           $EmailFrom = 'zacha@reviewvelocity.co';
+                           $EmailFromName = "Zach Anderson";
+                           //$to=$user_info->email;
+                           $to="work+onlinereview@tier5.us";
+                           $subject="New Online Review";
+                           $mail_body="";
+                           $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
+                           $mail_body=$mail_body."<p>Star Rating : ".$data['rating']."</p>";
+                           $mail_body=$mail_body."<p>Review Site : ".$site_review."</p>";
+                           $mail_body=$mail_body."<p>Review : ".$data['review_text']."</p>";
+                          
+                           $mail_body=$mail_body."<p>Thank you,</p>";
+                           $mail_body=$mail_body.$AgencyUser;
+                           $mail_body=$mail_body.'<br>'.$AgencyName;
+                
+                          $Mail = $this->getDI()->getMail();
+                          $Mail->setFrom($EmailFrom, $EmailFromName);
+                           $Mail->send($to, $subject, '', '', $mail_body);
+                             $phone='8127224722';
+                            
+                          
+                        }
+                
+                        if($is_sms_alert_on==1)
+                            {
+                                if($user_info->phone!='')
                                 {
-                                    if($user_info->phone!='')
-                                    {
-                    
-                                    $message=$invite->name." ".$invite->phone." has submitted ".$rating." for employee ".$user_info->name;
+                
+                                $message=$invite->name." ".$invite->phone." has submitted ".$rating." for employee ".$user_info->name;
 
-                                    $message="You just received a new review".$data['rating']." from". $data['user_name']." on ".$site_review." and the review is: ".$data['review_text'];
-                             // if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
-                             //  }
-                                    }
-                                   
-                    
+                                $message="You just received a new review".$data['rating']." from". $data['user_name']." on ".$site_review." and the review is: ".$data['review_text'];
+                         // if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                         //  }
+                                }
+                               
+                
                                 }
                     
                     }
@@ -616,36 +630,38 @@
                         if($is_email_alert_on==1)
                          {
                            
-
+                            echo '### Email 2 ####';
+                            echo $user_info->email;
                              /*** mail to user ***/
                                $EmailFrom = 'zacha@reviewvelocity.co';
                                $EmailFromName = "Zach Anderson";
                               // $to=$user_info->email;
-                               $to="dellatier5@gmail.com";
+                               $to="work+onlinereview@tier5.us";
                               $subject="New Online Review";
                                $mail_body="";
                                $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
                                $mail_body=$mail_body."<p>Star Rating : ".$data['rating']."</p>";
                                $mail_body=$mail_body."<p>Review Site : ".$site_review."</p>";
                                $mail_body=$mail_body."<p>Review : ".$data['review_text']."</p>";
-                           $mail_body=$mail_body."<p>Thank you,</p>";
-                           $mail_body=$mail_body.$AgencyUser;
-                           $mail_body=$mail_body.'<br>'.$AgencyName;
+                               $mail_body=$mail_body."<p>Thank you,</p>";
+                               $mail_body=$mail_body.$AgencyUser;
+                               $mail_body=$mail_body.'<br>'.$AgencyName;
 
-                            $Mail = $this->getDI()->getMail();
-                            $Mail->setFrom($EmailFrom, $EmailFromName);
-                            $Mail->send($to, $subject, '', '', $mail_body);
+                                $Mail = $this->getDI()->getMail();
+                                $Mail->setFrom($EmailFrom, $EmailFromName);
+                                $Mail->send($to, $subject, '', '', $mail_body);
         
                             /*** mail to user end ****/
         
                             /**** mail to busines ****/
         
                             
-        
+                            echo '### Email 3 ####';
+                            echo $to=$business_info->email;
                               $EmailFrom = 'zacha@reviewvelocity.co';
                               $EmailFromName = "Zach Anderson";
                               //$to=$business_info->email;
-                               $to="dellatier5@gmail.com";
+                               $to="work+onlinereview@tier5.us";
                             $subject="New Online Review";
                                $mail_body="";
                                $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
