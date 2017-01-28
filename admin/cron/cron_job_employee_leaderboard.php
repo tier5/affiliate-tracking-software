@@ -1,6 +1,7 @@
 <?php
     require 'bootstrap.php';
     use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
+    use Vokuro\Models\ReviewInvite;
 
     $Start = date("Y-m-01", strtotime('now'));
     $End = date("Y-m-t", strtotime('now'));
@@ -97,7 +98,7 @@
         }
         
         
-        $this->view->YNrating_array_set_all = $YNrating_array_set_all;
+//        $this->view->YNrating_array_set_all = $YNrating_array_set_all;
 
         foreach ($dbEmployees as $ux) {
            $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
@@ -117,7 +118,7 @@
             $rating_array_set_all[$ux->id] = $rs->toArray();
         }
     
-        $this->view->rating_array_set_all=$rating_array_set_all;
+      //  $this->view->rating_array_set_all=$rating_array_set_all;
         
         /*** new start generator 27/01/2017 ***/
 
