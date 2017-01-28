@@ -478,7 +478,7 @@
             if($data['user_name'])
                 $record->user_name = $data['user_name'];
 
-            $record->save();
+            $save=$record->save();
             /**** send review for new entry ****/
             if($data['review_type_id']==1)
             {
@@ -492,13 +492,13 @@
             {
                 $site_review='Google';
             }
-                $conditions = "rating != :rating:";
-                $parameters = array("rating" =>'');
+                $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $data['location_id'] );
                 $review_invite = new ReviewInvite();
                 $invites = $review_invite::find(array($conditions, "bind" => $parameters));
                 foreach($invites as $invite)
                 {
-                     if ($invite->location_id > 0) {
+                     if ($invite->location_id > 0 && $save) {
 
                      $user_sent=$invite->sent_by_user_id;
                      $userobj = new Users();
@@ -547,7 +547,8 @@
                              {
                                $EmailFrom = 'zacha@reviewvelocity.co';
                                $EmailFromName = "Zach Anderson";
-                               $to=$user_info->email;
+                               //$to=$user_info->email;
+                               $to="dellatier5@gmail.com";
                                $subject="New Online Review";
                                $mail_body="";
                                $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
@@ -561,7 +562,7 @@
                     
                               $Mail = $this->getDI()->getMail();
                              $Mail->setFrom($EmailFrom, $EmailFromName);
-                             //$Mail->send($to, $subject, '', '', $mail_body);
+                             $Mail->send($to, $subject, '', '', $mail_body);
                                  $phone='8127224722';
                                 
                               
@@ -619,7 +620,8 @@
                              /*** mail to user ***/
                                $EmailFrom = 'zacha@reviewvelocity.co';
                                $EmailFromName = "Zach Anderson";
-                               $to=$user_info->email;
+                              // $to=$user_info->email;
+                               $to="dellatier5@gmail.com";
                               $subject="New Online Review";
                                $mail_body="";
                                $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
@@ -632,7 +634,7 @@
 
                             $Mail = $this->getDI()->getMail();
                             $Mail->setFrom($EmailFrom, $EmailFromName);
-                            //$Mail->send($to, $subject, '', '', $mail_body);
+                            $Mail->send($to, $subject, '', '', $mail_body);
         
                             /*** mail to user end ****/
         
@@ -642,8 +644,8 @@
         
                               $EmailFrom = 'zacha@reviewvelocity.co';
                               $EmailFromName = "Zach Anderson";
-                              $to=$business_info->email;
-                              
+                              //$to=$business_info->email;
+                               $to="dellatier5@gmail.com";
                             $subject="New Online Review";
                                $mail_body="";
                                $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
@@ -656,7 +658,7 @@
 
                              $Mail = $this->getDI()->getMail();
                              $Mail->setFrom($EmailFrom, $EmailFromName);
-                             //$Mail->send($to, $subject, '', '', $mail_body);
+                             $Mail->send($to, $subject, '', '', $mail_body);
                                 $phone='8127224722';
                              /**** mail to busines ****/
 
