@@ -451,14 +451,7 @@
          * @throws \Exception
          */
         public function saveReviewFromData($data) {
-            $Mail = $this->getDI()->getMail();
-
-            $Mail->setFrom($EmailFrom, $EmailFromName);
-           $Mail->send('work@tier5.us', 'test', '', '', 'test');
-            dd(  $Mail->send('work@tier5.us', 'test', '', '', 'test'));
-            echo 'sent mail';
-            return false;
-
+            
             if (!is_array($data)) throw new \Exception("Invalid data specified, expected array");
             if (!isset($data['rating_type_id'])) throw new \Exception('Invalid rating_type_id');
             $review = new Review();
@@ -556,13 +549,12 @@
                 
                          if($is_email_alert_on==1)
                          {
-                           echo '### Email ####';
+                           echo '### Email 1 ####';
                            echo $user_info->email;
 
                            $EmailFrom = 'zacha@reviewvelocity.co';
                            $EmailFromName = "Zach Anderson";
-                           //$to=$user_info->email;
-                           $to="work+onlinereview@tier5.us";
+                           $to=$user_info->email;
                            $subject="New Online Review";
                            $mail_body="";
                            $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
@@ -635,8 +627,7 @@
                              /*** mail to user ***/
                                $EmailFrom = 'zacha@reviewvelocity.co';
                                $EmailFromName = "Zach Anderson";
-                              // $to=$user_info->email;
-                               $to="work+onlinereview@tier5.us";
+                               $to=$user_info->email;
                               $subject="New Online Review";
                                $mail_body="";
                                $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
@@ -660,8 +651,7 @@
                             echo $to=$business_info->email;
                               $EmailFrom = 'zacha@reviewvelocity.co';
                               $EmailFromName = "Zach Anderson";
-                              //$to=$business_info->email;
-                               $to="work+onlinereview@tier5.us";
+                              $to=$business_info->email;
                             $subject="New Online Review";
                                $mail_body="";
                                $mail_body=$mail_body."<p>One of your customers just left you feedback about your business.</p>";
