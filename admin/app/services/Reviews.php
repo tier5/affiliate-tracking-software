@@ -510,8 +510,8 @@
             $emailSentArr = array();
             foreach($invites as $invite)
             {
-                echo " (".$save.') - saving data here ->';
-                echo "( ".$invite->location_id." )location";
+                //echo " (".$save.') - saving data here ->';
+                //echo "( ".$invite->location_id." )location";
 
                  if ($invite->location_id > 0 && $newReview) {
                   
@@ -570,6 +570,7 @@
                            echo $user_info->email;
                            
                            if(strpos($user_info->email,'zacha') !== false){
+                              echo 'Skip>>>>'.$user_info->email;
                               continue; // skip send mail to zacha email
                            }
 
@@ -647,6 +648,7 @@
                             echo $user_info->email;
                             
                             if(strpos($user_info->email,'zacha') !== false){
+                              echo 'Skip>>>>'.$user_info->email;
                               continue;  // skip send mail to zacha email
                            }
                              /*** mail to user ***/
