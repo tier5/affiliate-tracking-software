@@ -466,9 +466,13 @@
                 'location_id' => $data['location_id'],
                 'rating_type_review_id' => $data['rating_type_review_id']
             ]);
-            if (!$record) {
-                $newReview = true;
-                $record = new Review();
+            
+            if ($record && $record->review_id) {
+                echo 'exist';
+                return false;
+            }else{
+              $newReview = true;
+              $record = new Review();
             }
             /**
              * @var $record \Vokuro\Models\Review
