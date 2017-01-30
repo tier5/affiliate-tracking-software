@@ -502,7 +502,7 @@
             $invites = $review_invite::find(array($conditions, "bind" => $parameters));
             foreach($invites as $invite)
             {
-                echo "( ".$invite->location_id." )location"
+                echo "( ".$invite->location_id." )location";
 
                  if ($invite->location_id > 0 && $save) {
 
