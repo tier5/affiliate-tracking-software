@@ -506,34 +506,35 @@
             $parameters = array("location_id" => $data['location_id'] );
             $review_invite = new ReviewInvite();
             $invites = $review_invite::find(array($conditions, "bind" => $parameters));
+            $emailSentArr = array();
             foreach($invites as $invite)
             {
                 echo " (".$save.') - saving data here ->';
                 echo "( ".$invite->location_id." )location";
 
                  if ($invite->location_id > 0 && $save) {
-
-                     $Mail = $this->getDI()->getMail();
-                                $Mail->setFrom('zacha','zacha@reputationloop.com');
-                                $Mail->send('work@tier5.us','test mail', '', '', 'reached here !!');
-
-                 $user_sent=$invite->sent_by_user_id;
-                 $userobj = new Users();
-                 $user_info = $userobj::findFirst($user_sent);
-                 $emp= $user_info->is_employee;//exit;
+                  
+                    $user_sent=$invite->sent_by_user_id;
+                    $userobj = new Users();
+                    $user_info = $userobj::findFirst($user_sent);
+                    $emp= $user_info->is_employee;//exit;
                  
                     $role= $user_info->role;
-                     $locationobj = new Location();
-                     $location = $locationobj::findFirst($invite->location_id);
+                    $locationobj = new Location();
+                    $location = $locationobj::findFirst($invite->location_id);
                      
+                     if(count($emailSentArr) && in_array($user_info->email,$emailSentArr)){
+                        echo 'DuplicateEmail';
+                        continue;
+                     }else{
+                       $emailSentArr[] = $user_info->email;
+                     }
 
                    
                      $agencyobj = new Agency();
                      $agency = $agencyobj::findFirst($location->agency_id);
                      $parent_agency=$agencyobj::findFirst($agency->parent_id);
                      
-
-
                      $TwilioToken = $parent_agency->twilio_auth_token;
                      
                      $TwilioFrom = $parent_agency->twilio_from_phone;
@@ -559,6 +560,8 @@
                 
                 
                              } }
+                             
+                         echo 'email='.$user_info->email.' Falg='.$is_email_alert_on;
                  
                          if($is_email_alert_on==1)
                          {
@@ -602,7 +605,7 @@
                 
                                 }
                     
-                    }
+                      }
                         
                         /**** else part ***/
                     else
@@ -630,7 +633,7 @@
                           $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
                           $AgencyName = $objParentAgency->name;
                           $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
-
+                        echo 'email='.$user_info->email.' Falg='.$is_email_alert_on;
                         
                         if($is_email_alert_on==1)
                          {
@@ -661,11 +664,11 @@
         
                             
                             echo '### Email 3 ####';
-                            echo $to=$business_info->email;
+                             echo $to=$business_info->email;
                               $EmailFrom = 'zacha@reviewvelocity.co';
                               $EmailFromName = "Zach Anderson";
                               $to=$business_info->email;
-                            $subject="New Online Review";
+                              $subject="New Online Review";
                                $mail_body="";
                                $mail_body=$mail_body."<p>One of your customers just left an online review about your business.</p>";
                                $mail_body=$mail_body."<p>Star Rating : ".$data['rating']."</p>";
