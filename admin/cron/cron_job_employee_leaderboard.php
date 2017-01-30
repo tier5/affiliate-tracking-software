@@ -1,7 +1,6 @@
 <?php
     require 'bootstrap.php';
     use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
-    use Vokuro\Models\ReviewInvite;
 
     $Start = date("Y-m-01", strtotime('now'));
     $End = date("Y-m-t", strtotime('now'));
@@ -68,64 +67,18 @@
 
        foreach ($dbLocations as $objLocation) {
             if(isset($tRecipients[$objLocation->location_id])) {
-              /*  $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $objLocation->location_id, 0, 0, 1);*/
                 $objReview = \Vokuro\Models\Location::findFirst(
                 "location_id = {$objLocation->location_id}"
             );
-               $dbEmployees = \Vokuro\Models\Users::getEmployeeListReportGenerate($objBusiness->agency_id,$Start,$End,$objLocation->location_id,$objReview->review_invite_type_id,0,1);
-
-        /*** new start generator 27/01/2017 ***/
-
-        $rating_array_set_all = array();
-        $YNrating_array_set_all = array();
-    
-        foreach ($dbEmployees as $ux) {
-            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
-
-            // Base model
-            $list = new ReviewInvite();
-
-            // Execute the query
-            $params = null;
-
-            $rs = new Resultset(
-                null,
-                $list,
-                $list->getReadConnection()->query($sql, $params)
-            );
-
-            $YNrating_array_set_all[$ux->id] = $rs->toArray();
-        }
-        
-        
-//        $this->view->YNrating_array_set_all = $YNrating_array_set_all;
-
-        foreach ($dbEmployees as $ux) {
-           $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
-
-            // Base model
-            $list = new ReviewInvite();
-
-            // Execute the query
-            $params = null;
-            
-            $rs = new Resultset(
-                null,
-                $list,
-                $list->getReadConnection()->query($sql, $params)
-            );
-            
-            $rating_array_set_all[$ux->id] = $rs->toArray();
-        }
-    
-      //  $this->view->rating_array_set_all=$rating_array_set_all;
-        
-        /*** new start generator 27/01/2017 ***/
-
+                $dbEmployees = \Vokuro\Models\Users::getEmployeeListReportGenerate($objBusiness->agency_id, $Start, $End, $objLocation->location_id,$objReview->review_invite_type_id, 0, 1);
                 $dbRecipients = \Vokuro\Models\Users::find("id IN (" . implode(',', $tRecipients[$objLocation->location_id]) . ")");
+                 
 
                 $objEmail = new \Vokuro\Services\Email();
-                $objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients,$objReview->review_invite_type_id);
+                //$objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients);
+
+                 $objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients,$objReview->review_invite_type_id);
             }
         }
     }
+
