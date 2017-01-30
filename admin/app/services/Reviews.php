@@ -482,7 +482,7 @@
                 $record->user_name = $data['user_name'];
 
             $save=$record->save();
-            echo $save;
+            echo $save.' - saving data here';
             /**** send review for new entry ****/
             if($data['review_type_id']==1)
             {

@@ -200,7 +200,7 @@
                     
                                  if($invite->review_invite_type_id==3)
                                 {
-                                    $rating = $userRating .'out of 10';
+                                    $rating = $userRating .' out of 10';
                                 }
                                 elseif($invite->review_invite_type_id==2)
                                 {
