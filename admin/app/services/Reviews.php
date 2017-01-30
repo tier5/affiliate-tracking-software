@@ -315,7 +315,7 @@
 
         public function importGoogleMyBusinessReviews($LocationID) {
             $reviewService = new Reviews();
-
+           // echo '-------->'.$LocationID;
             $client = $this->getGoogleClient($LocationID);
 
             try {
@@ -328,21 +328,24 @@
 
 
             $myBusiness = new \Google_Service_Mybusiness($client);
+           
             $accounts = $myBusiness->accounts->listAccounts()->getAccounts();
+
         if ($accounts) {
                 foreach ($accounts as $account) {
                     /**
                      * @var $account \Google_Service_Mybusiness_Account
                      */
+
                     $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
                     if ($locations) {
                         $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
-                        if(!$objLocationReviewSite->external_location_id)
-                            return false;
+                         if(!$objLocationReviewSite->external_location_id )
+                             return false;
 
                         foreach ($locations as $location) {
-                            if($location->locationKey->placeId != $objLocationReviewSite->external_location_id)
-                                continue;
+                            // if($location->locationKey->placeId != $objLocationReviewSite->external_location_id)
+                            //     continue;
 
                             /**
                              * @var $location \Google_Service_Mybusiness_Location
@@ -352,7 +355,7 @@
                             $reviewCount = $lr->getTotalReviewCount();
                             $avg = $lr->getAverageRating();
 
-                            // Seems to be a bug with google not including the average (the field is blank as of 08/31/2016)
+                            //Seems to be a bug with google not including the average (the field is blank as of 08/31/2016)
                             $TotalRating = 0;
                             $TotalReviews = 0;
 
@@ -365,7 +368,10 @@
                                     /**
                                      * @var $reviewer \Google_Service_Mybusiness_Reviewer
                                      */
+                                    /*echo '***********************';
+                                    echo '$LocationID = '.$LocationID .' \n'. $review->comment;*/
 
+                                    
                                     $reviewer = $review->getReviewer();
                                     $rating = $review->getStarRating();
                                     $ratings = ['ZERO' => 0, 'ONE' => 1, 'TWO' => 2, 'THREE' => 3, 'FOUR' => 4, 'FIVE' => 5];
