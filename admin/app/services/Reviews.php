@@ -482,7 +482,7 @@
                 $record->user_name = $data['user_name'];
 
             $save=$record->save();
-            echo " (".$save.') - saving data here';
+            
             /**** send review for new entry ****/
             if($data['review_type_id']==1)
             {
@@ -502,6 +502,7 @@
             $invites = $review_invite::find(array($conditions, "bind" => $parameters));
             foreach($invites as $invite)
             {
+                echo " (".$save.') - saving data here ->';
                 echo "( ".$invite->location_id." )location";
 
                  if ($invite->location_id > 0 && $save) {
