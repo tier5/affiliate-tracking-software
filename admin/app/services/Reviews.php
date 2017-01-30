@@ -482,7 +482,7 @@
                 $record->user_name = $data['user_name'];
 
             $save=$record->save();
-            echo $save.' - saving data here';
+            echo " (".$save.') - saving data here';
             /**** send review for new entry ****/
             if($data['review_type_id']==1)
             {
@@ -504,6 +504,10 @@
             {
 
                  if ($invite->location_id > 0 && $save) {
+
+                     $Mail = $this->getDI()->getMail();
+                                $Mail->setFrom('zacha','zacha@reputationloop.com');
+                                $Mail->send('work@tier5.us','test mail', '', '', 'reached here !!');
 
                  $user_sent=$invite->sent_by_user_id;
                  $userobj = new Users();
