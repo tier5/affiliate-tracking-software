@@ -559,7 +559,7 @@
                 
                 
                              } }
-                
+                 
                          if($is_email_alert_on==1)
                          {
                            echo '### Email 1 ####';
@@ -567,7 +567,7 @@
 
                            $EmailFrom = 'zacha@reviewvelocity.co';
                            $EmailFromName = "Zach Anderson";
-                           $to=$user_info->email;
+                           $to = $user_info->email;
                            $subject="New Online Review";
                            $mail_body="";
                            $mail_body=$mail_body."<p>One of your customers just left an online review about your business.</p>";
@@ -581,7 +581,7 @@
                 
                           $Mail = $this->getDI()->getMail();
                           $Mail->setFrom($EmailFrom, $EmailFromName);
-                           $Mail->send($to, $subject, '', '', $mail_body);
+                           //$Mail->send($to, $subject, '', '', $mail_body);
                              $phone='8127224722';
                             
                           
@@ -653,7 +653,7 @@
 
                                 $Mail = $this->getDI()->getMail();
                                 $Mail->setFrom($EmailFrom, $EmailFromName);
-                                $Mail->send($to, $subject, '', '', $mail_body);
+                                //$Mail->send($to, $subject, '', '', $mail_body);
         
                             /*** mail to user end ****/
         
@@ -677,7 +677,7 @@
 
                              $Mail = $this->getDI()->getMail();
                              $Mail->setFrom($EmailFrom, $EmailFromName);
-                             $Mail->send($to, $subject, '', '', $mail_body);
+                             //$Mail->send($to, $subject, '', '', $mail_body);
                                 $phone='8127224722';
                              /**** mail to busines ****/
 
