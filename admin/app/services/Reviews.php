@@ -569,10 +569,10 @@
                            echo '### Email 1 ####';
                            echo $user_info->email;
                            
-                           if(strpos($user_info->email,'zacha') !== false){
-                              echo 'Skip>>>>'.$user_info->email;
-                              continue; // skip send mail to zacha email
-                           }
+                           //if(strpos($user_info->email,'zacha') !== false){
+                           //   echo 'Skip>>>>'.$user_info->email;
+                           //   continue; // skip send mail to zacha email
+                           //}
 
                            $EmailFrom = 'zacha@reviewvelocity.co';
                            $EmailFromName = "Zach Anderson";
@@ -647,10 +647,10 @@
                             echo '### Email 2 ####';
                             echo $user_info->email;
                             
-                            if(strpos($user_info->email,'zacha') !== false){
-                              echo 'Skip>>>>'.$user_info->email;
-                              continue;  // skip send mail to zacha email
-                           }
+                           // if(strpos($user_info->email,'zacha') !== false){
+                           //   echo 'Skip>>>>'.$user_info->email;
+                           //   continue;  // skip send mail to zacha email
+                           //}
                              /*** mail to user ***/
                                $EmailFrom = 'zacha@reviewvelocity.co';
                                $EmailFromName = "Zach Anderson";
