@@ -221,6 +221,7 @@ class SessionController extends ControllerBase {
                 'agency_type_id' => 2,
                 'email' => $this->request->getPost('email'),
                 'parent_id' => $ParentID,
+                'review_invite_type_id' => 1,
             ];
 
             if($subscription_id){
