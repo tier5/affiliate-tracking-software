@@ -306,14 +306,14 @@ class Email{
 
 
            
-            if($review_type_id) { // if review type 
+            //if($review_type_id) { // if review type 
               //echo $objRecipient->email;exit;
               foreach($tSendTo as $objRecipient) {
                   echo $mail->send($objRecipient->email, "Your daily employee report!", 'employee_report', $Params);
                   //echo $mail->send('dellatier5@gmail.com', "Your daily employee report!", 'employee_report', $Params);
                   sleep(1);
               }
-            }
+            //}
         } catch (Exception $e) {
             // GARY_TODO: Add logging!
             print $e;
