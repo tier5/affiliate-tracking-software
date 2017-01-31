@@ -2,8 +2,10 @@
 use Vokuro\Models\Agency;
 use Vokuro\Models\EmailConfirmations;
 use Vokuro\Models\Users;
+use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\UsersLocation;
 use Vokuro\Models\Location;
+use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
 
 /**
  * Class Email
@@ -217,7 +219,57 @@ class Email{
             }
             $objEmployees = $dbEmployees;
 
-            $Params = array(
+
+            /** for cron job 31/01/2017 ******/
+
+
+
+
+        /*** new start generator ***/
+    if($review_type_id!=''){
+        $rating_array_set_all = array();
+        $YNrating_array_set_all = array();
+    
+        foreach ($dbEmployees as $ux) {
+            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+
+            // Base model
+            $list = new ReviewInvite();
+
+            // Execute the query
+            $params = null;
+
+            $rs = new Resultset(
+                null,
+                $list,
+                $list->getReadConnection()->query($sql, $params)
+            );
+
+            $YNrating_array_set_all[$ux->id] = $rs->toArray();
+        }
+        
+        // print_r($YNrating_array_set_all);exit;
+       // $this->view->YNrating_array_set_all = $YNrating_array_set_all;
+
+        foreach ($dbEmployees as $ux) {
+           $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
+
+            // Base model
+            $list = new ReviewInvite();
+
+            // Execute the query
+            $params = null;
+            
+            $rs = new Resultset(
+                null,
+                $list,
+                $list->getReadConnection()->query($sql, $params)
+            );
+            
+            $rating_array_set_all[$ux->id] = $rs->toArray();
+        }
+
+         $Params = array(
                 'dbEmployees'           => $dbEmployees,
                 'objLocation'           => $objLocation,
                 'objAgency'             => $objAgency ?: null,
@@ -225,14 +277,40 @@ class Email{
                 'Website'               => $objBusiness->website,
                 'FacebookURL'           => $FacebookURL,
                 'review_type_id'        =>$review_type_id,  
-                'domain'                => $Domain,               
+                'domain'                => $Domain, 
+                'rating_array_set_all'  =>$rating_array_set_all,
+                'YNrating_array_set_all'=>$YNrating_array_set_all,            
 
             );
+        }
+
+
+        else
+        {
+             $Params = array(
+                'dbEmployees'           => $dbEmployees,
+                'objLocation'           => $objLocation,
+                'objAgency'             => $objAgency ?: null,
+                'FullDomain'            => $FullDomain,
+                'Website'               => $objBusiness->website,
+                'FacebookURL'           => $FacebookURL,
+                         
+
+            );
+        }
+    
+       // $this->view->rating_array_set_all=$rating_array_set_all;
+        
+        /*** new start generator ***/
+            /** for cron job 31/01/2017 ******/
+
+
+           
             
             //echo $objRecipient->email;exit;
             foreach($tSendTo as $objRecipient) {
-                $mail->send($objRecipient->email, "Your daily employee report!", 'employee_report', $Params);
-                //echo $mail->send('work@tier5.us', "Your daily employee report!", 'employee_report', $Params);
+                echo $mail->send($objRecipient->email, "Your daily employee report!", 'employee_report', $Params);
+                //echo $mail->send('dellatier5@gmail.com', "Your daily employee report!", 'employee_report', $Params);
                 sleep(1);
             }
         } catch (Exception $e) {
