@@ -696,13 +696,13 @@ class ControllerBase extends Controller {
         }
         
         if($message_set) {
-         if(strpos($message_set,'{ShareLink}') === false) {
+         if(strpos(strtolower($message_set),'{sharelink}') === false) {
             $message_set .= '{ShareLink}';
          }
-         $message_set = str_replace('{ShareLink}',$share_link,$message_set);
-         $message_set = str_replace('{AgencyUser}',$AgencyUser,$message_set);
-         $message_set = str_replace('{AgencyName}',$AgencyName,$message_set);
-         $message_set = str_replace('{BusinessName}',$agency->name,$message_set);
+         $message_set = str_ireplace('{ShareLink}',$share_link,$message_set);
+         $message_set = str_ireplace('{AgencyUser}',$AgencyUser,$message_set);
+         $message_set = str_ireplace('{AgencyName}',$AgencyName,$message_set);
+         $message_set = str_ireplace('{BusinessName}',$agency->name,$message_set);
         }
        
         $this->view->setVars([
