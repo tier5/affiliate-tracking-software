@@ -180,9 +180,12 @@
                        // echo 'kk';exit;
                              $objBusiAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
                              $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiAgency->parent_id}");
-                             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
-                             $AgencyName = $objParentAgency->name;
-                             $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+                             $AgencyName = $AgencyUser = '';
+                             if($objParentAgency->agency_id) {
+                              $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+                              $AgencyName = $objParentAgency->name;
+                              $AgencyUser = $objAgencyUser->name;
+                             }
                     
                              $conditions = "location_id = :location_id:";
                              $parameters = array("location_id" => $invite->location_id);
@@ -316,11 +319,13 @@
                           $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
          
                           $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
-
-                          $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$business_agency->parent_id}");
-                          $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
-                          $AgencyName = $objParentAgency->name;
-                          $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+                          $AgencyName = $AgencyUser = '';
+                          if($business_agency->parent_id) {
+                            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$business_agency->parent_id}");
+                            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+                            $AgencyName = $objParentAgency->name;
+                            $AgencyUser = $objAgencyUser->name;
+                          }
 
                         
                         if($is_email_alert_on==1)

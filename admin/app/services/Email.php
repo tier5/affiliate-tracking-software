@@ -84,7 +84,7 @@ class Email{
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
-            $AgencyUser =$objAgencyUser->name." ".$objAgencyUser->last_name;
+            $AgencyUser =$objAgencyUser->name;
             $AgencyName = $objAgency->name;
             $EmailFrom =  $objAgency->email;
             $EmailFromName='';
@@ -109,11 +109,14 @@ class Email{
             
         }
         elseif($objAgency->parent_id > 0) {
-        
+            $AgencyName = $AgencyUser = '';
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
-            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
-            $AgencyName = $objParentAgency->name;
-            $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+            if($objParentAgency->agency_id) {
+              $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+              $AgencyName = $objParentAgency->name;
+              $AgencyUser = $objAgencyUser->name;
+            }
+            
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
@@ -306,13 +309,14 @@ class Email{
 
 
            
-            
-            //echo $objRecipient->email;exit;
-            foreach($tSendTo as $objRecipient) {
-                echo $mail->send($objRecipient->email, "Your daily employee report!", 'employee_report', $Params);
-                //echo $mail->send('dellatier5@gmail.com', "Your daily employee report!", 'employee_report', $Params);
-                sleep(1);
-            }
+            //if($review_type_id) { // if review type 
+              //echo $objRecipient->email;exit;
+              foreach($tSendTo as $objRecipient) {
+                  echo $mail->send($objRecipient->email, "Your daily employee report!", 'employee_report', $Params);
+                  //echo $mail->send('dellatier5@gmail.com', "Your daily employee report!", 'employee_report', $Params);
+                  sleep(1);
+              }
+            //}
         } catch (Exception $e) {
             // GARY_TODO: Add logging!
             print $e;
@@ -459,7 +463,7 @@ class Email{
             
 
            // $AgencyUser = $objAgencyUser->name;
-            $AgencyUser = $oAgency->name." ".$oAgency->last_name;
+            $AgencyUser = $oAgency->name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $this->from = $from = 'no-reply@reviewvelocity.co';
@@ -554,7 +558,7 @@ class Email{
             
 
            // $AgencyUser = $objAgencyUser->name;
-            $AgencyUser = $oAgency->name." ".$oAgency->last_name;
+            $AgencyUser = $oAgency->name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $this->from = $from = 'no-reply@reviewvelocity.co';

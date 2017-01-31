@@ -76,8 +76,9 @@
 
                 $objEmail = new \Vokuro\Services\Email();
                 //$objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients);
-
-                 $objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients,$objReview->review_invite_type_id);
+                if($objReview->review_invite_type_id) {
+                  $objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients,$objReview->review_invite_type_id);
+                }
             }
         }
     }
