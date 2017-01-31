@@ -344,8 +344,8 @@
                              return false;
 
                         foreach ($locations as $location) {
-                            // if($location->locationKey->placeId != $objLocationReviewSite->external_location_id)
-                            //     continue;
+                             if($location->locationKey->placeId != $objLocationReviewSite->external_location_id)
+                                 continue;
 
                             /**
                              * @var $location \Google_Service_Mybusiness_Location
@@ -376,7 +376,6 @@
                                     $rating = $review->getStarRating();
                                     $ratings = ['ZERO' => 0, 'ONE' => 1, 'TWO' => 2, 'THREE' => 3, 'FOUR' => 4, 'FIVE' => 5];
                                     $rating = $ratings[$rating];
-                                    echo $LocationID . ' - ';
                                     //echo $review_id."-";
                                     $TotalRating += $rating;
                                     $review_id = str_replace('/reviews', '', $review->getReviewId());
@@ -403,7 +402,7 @@
                             $dbReviews = \Vokuro\Models\Review::find("location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
                             $objLocationReviewSite->review_count = count($dbReviews);
                             $objLocationReviewSite->rating = $TotalReviews > 0 ? $TotalRating / $TotalReviews : 0;
-                            echo $objLocationReviewSite->rating;
+                            $objLocationReviewSite->rating;
                             $objLocationReviewSite->save();
 
                         }
