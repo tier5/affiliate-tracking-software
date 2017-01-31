@@ -268,15 +268,8 @@ class Email{
             
             $rating_array_set_all[$ux->id] = $rs->toArray();
         }
-        }
-    
-       // $this->view->rating_array_set_all=$rating_array_set_all;
-        
-        /*** new start generator ***/
-            /** for cron job 31/01/2017 ******/
 
-
-            $Params = array(
+         $Params = array(
                 'dbEmployees'           => $dbEmployees,
                 'objLocation'           => $objLocation,
                 'objAgency'             => $objAgency ?: null,
@@ -289,6 +282,30 @@ class Email{
                 'YNrating_array_set_all'=>$YNrating_array_set_all,            
 
             );
+        }
+
+
+        else
+        {
+             $Params = array(
+                'dbEmployees'           => $dbEmployees,
+                'objLocation'           => $objLocation,
+                'objAgency'             => $objAgency ?: null,
+                'FullDomain'            => $FullDomain,
+                'Website'               => $objBusiness->website,
+                'FacebookURL'           => $FacebookURL,
+                         
+
+            );
+        }
+    
+       // $this->view->rating_array_set_all=$rating_array_set_all;
+        
+        /*** new start generator ***/
+            /** for cron job 31/01/2017 ******/
+
+
+           
             
             //echo $objRecipient->email;exit;
             foreach($tSendTo as $objRecipient) {
