@@ -477,6 +477,7 @@
                 //echo 'exist';
                 return false;
             }else{
+              echo 'new R';
               $newReview = true;
               $record = new Review();
             }
