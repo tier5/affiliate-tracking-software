@@ -470,7 +470,7 @@
             
             if ($record && $record->review_id) {
                 echo 'exist';
-                //return false;
+                return false;
             }else{
               $newReview = true;
               $record = new Review();
@@ -578,10 +578,10 @@
                            echo '### Email 1 ####';
                            echo $user_info->email;
                            
-                           //if(strpos($user_info->email,'zacha') !== false){
-                           //   echo 'Skip>>>>'.$user_info->email;
-                           //   continue; // skip send mail to zacha email
-                           //}
+                           if(strpos($user_info->email,'zacha') !== false){
+                            echo 'Skip>>>>'.$user_info->email;
+                             continue; // skip send mail to zacha email
+                           }
 
                            $EmailFrom = 'zacha@reviewvelocity.co';
                            $EmailFromName = "Zach Anderson";
