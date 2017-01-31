@@ -688,7 +688,7 @@ class ControllerBase extends Controller {
 
         if($objParentAgency->viral_email=='')
         {
-             $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
+             $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {ShareLink}";
         }
         else
         {
