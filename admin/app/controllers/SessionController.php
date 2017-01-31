@@ -559,6 +559,7 @@ class SessionController extends ControllerBase {
                 'latitude' => $this->request->getPost('latitude', 'striptags'),
                 'longitude' => $this->request->getPost('longitude', 'striptags'),
                 'region_id' => $this->request->getPost('region_id', 'striptags'),
+                'review_invite_type_id' => 1,
                 'date_created' => date('Y-m-d H:i:s'),
             ));
 
