@@ -553,7 +553,8 @@
                      $TwilioAPI = $parent_agency->twilio_api_key;
                      if ($emp==1 && $role =="Super Admin") {
                     //echo 'kk';exit;                             
-                         $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
+                         $objBusiAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
+                         $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiAgency->parent_id}");
                          $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
                          $AgencyName = $objParentAgency->name;
                          $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
@@ -650,11 +651,11 @@
                                   $is_all_review = ($agencynotification->all_reviews==1?1:0);
                              } }
      
-                              $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
-         
-                             $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
+                          $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
+       
+                          $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
 
-                            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$business_agency->parent_id}");
+                          $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$business_agency->parent_id}");
                           $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
                           $AgencyName = $objParentAgency->name;
                           $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;

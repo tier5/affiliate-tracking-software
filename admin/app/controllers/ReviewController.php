@@ -177,8 +177,9 @@
 
                          
                         if ($emp==1 && $role =="Super Admin") {
-                       // echo 'kk';exit;                             
-                             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
+                       // echo 'kk';exit;
+                             $objBusiAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user_info->agency_id}");
+                             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiAgency->parent_id}");
                              $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
                              $AgencyName = $objParentAgency->name;
                              $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
@@ -267,7 +268,7 @@
                             $review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
                             
                         $this->view->review_site_list = $review_site_list;
-                    }
+                      }
                      else
                      {
                         //echo 'yy';exit;
@@ -286,9 +287,9 @@
                              } }
      
                              
-                         /*$TwilioToken = $this->config->twilio->twilio_auth_token;
-                       
-                         $TwilioFrom = $this->config->twilio->twilio_from_phone;
+                        /*$TwilioToken = $this->config->twilio->twilio_auth_token;
+
+                        $TwilioFrom = $this->config->twilio->twilio_from_phone;
                        
                         $TwilioAPI = $this->config->twilio->twilio_api_key;*/
 
@@ -312,11 +313,11 @@
                                 }
                             }
 
-                            $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
+                          $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
          
-                             $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
+                          $business_agency= \Vokuro\Models\Agency::findFirst('agency_id = ' . $user_info->agency_id);
 
-                            $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$business_agency->parent_id}");
+                          $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$business_agency->parent_id}");
                           $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
                           $AgencyName = $objParentAgency->name;
                           $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
