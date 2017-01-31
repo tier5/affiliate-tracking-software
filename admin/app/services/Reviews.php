@@ -469,7 +469,7 @@
             ]);
             
             if ($record && $record->review_id) {
-                echo 'exist';
+                //echo 'exist';
                 return false;
             }else{
               $newReview = true;
@@ -513,6 +513,7 @@
             $review_invite = new ReviewInvite();
             $invites = $review_invite::find(array($conditions, "bind" => $parameters));
             $emailSentArr = array();
+
             foreach($invites as $invite)
             {
                 //echo " (".$save.') - saving data here ->';
@@ -582,7 +583,7 @@
                             echo 'Skip>>>>'.$user_info->email;
                              continue; // skip send mail to zacha email
                            }
-
+                            echo 'review text >>>'.$data['review_text'].'>>>>>';
                            $EmailFrom = 'zacha@reviewvelocity.co';
                            $EmailFromName = "Zach Anderson";
                            $to = $user_info->email;
@@ -659,11 +660,15 @@
                            
                             echo '### Email 2 ####';
                             echo $user_info->email;
+
                             
-                           // if(strpos($user_info->email,'zacha') !== false){
-                           //   echo 'Skip>>>>'.$user_info->email;
-                           //   continue;  // skip send mail to zacha email
-                           //}
+                            
+                           if(strpos($user_info->email,'zacha') !== false){
+                             echo 'Skip>>>>'.$user_info->email;
+                             continue;  // skip send mail to zacha email
+                           }
+
+                           echo 'review text >>>'.$data['review_text'].'>>>>>';
                              /*** mail to user ***/
                                $EmailFrom = 'zacha@reviewvelocity.co';
                                $EmailFromName = "Zach Anderson";
@@ -689,6 +694,8 @@
                             
                             echo '### Email 3 ####';
                              echo $to=$business_info->email;
+
+                             
                               $EmailFrom = 'zacha@reviewvelocity.co';
                               $EmailFromName = "Zach Anderson";
                               $to=$business_info->email;
