@@ -469,7 +469,7 @@
             
             if ($record && $record->review_id) {
                 echo 'exist';
-                return false;
+                //return false;
             }else{
               $newReview = true;
               $record = new Review();
