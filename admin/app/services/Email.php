@@ -293,7 +293,7 @@ class Email{
             //echo $objRecipient->email;exit;
             foreach($tSendTo as $objRecipient) {
                 //$mail->send($objRecipient->email, "Your daily employee report!", 'employee_report', $Params);
-                echo $mail->send('work@tier5.us', "Your daily employee report!", 'employee_report', $Params);
+                echo $mail->send('dellatier5@gmail.com', "Your daily employee report!", 'employee_report', $Params);
                 sleep(1);
             }
         } catch (Exception $e) {
