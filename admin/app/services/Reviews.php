@@ -155,7 +155,7 @@
 
            public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_from_phone) {
         if(!$AccountSid || !$AuthToken || !$twilio_from_phone) {
-            $this->flash->error("Missing twilio configuration.");
+           // $this->flash->error("Missing twilio configuration.");
             return false;
         }
         
@@ -170,7 +170,7 @@
                 ));
 
         } catch (Services_Twilio_RestException $e) {
-            $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
+           // $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
             return false;
         }
         return true;
@@ -464,7 +464,8 @@
             $record = $review->findOneBy([
                 'rating_type_id' => $data['rating_type_id'],
                 'location_id' => $data['location_id'],
-                'rating_type_review_id' => $data['rating_type_review_id']
+                'rating_type_review_id' => $data['rating_type_review_id'],
+                'review_text' => $data['review_text']
             ]);
             
             if ($record && $record->review_id) {
@@ -556,19 +557,23 @@
                          $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
                          $is_email_alert_on=0;
                          $is_sms_alert_on=0;
+                         $is_individual_review=0;
+                         $is_all_review=0;
                 
                          foreach($agencynotifications as $agencynotification) {
                              if ($agencynotification->user_id == $user_info->id) {
                                  $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
                 
                                   $is_sms_alert_on = ($agencynotification->sms_alert==1?1:0);
+                                  $is_individual_review = ($agencynotification->individual_reviews==1?1:0);
+                                  $is_all_review = ($agencynotification->all_reviews==1?1:0);
                 
                 
                              } }
                              
                          echo 'email='.$user_info->email.' Falg='.$is_email_alert_on;
                  
-                         if($is_email_alert_on==1)
+                         if($is_email_alert_on==1 && ($is_individual_review==1 || $is_all_review==1))
                          {
                            echo '### Email 1 ####';
                            echo $user_info->email;
@@ -600,7 +605,7 @@
                           
                         }
                 
-                        if($is_sms_alert_on==1)
+                        if($is_sms_alert_on==1 && ($is_individual_review==1 || $is_all_review==1))
                             {
                                 if($user_info->phone!='')
                                 {
@@ -627,12 +632,16 @@
      
                            $is_email_alert_on=0;
                            $is_sms_alert_on=0;
+                           $is_individual_review=0;
+                           $is_all_review=0;
      
                          foreach($agencynotifications as $agencynotification) {
                              if ($agencynotification->user_id == $user_info->id) {
                                  $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
 
                                   $is_sms_alert_on = ($agencynotification->sms_alert==1?1:0);
+                                  $is_individual_review = ($agencynotification->individual_reviews==1?1:0);
+                                  $is_all_review = ($agencynotification->all_reviews==1?1:0);
                              } }
      
                               $business_info =  \Vokuro\Models\Users::findFirst('agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"');
@@ -645,7 +654,7 @@
                           $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
                         echo 'email='.$user_info->email.' Falg='.$is_email_alert_on;
                         
-                        if($is_email_alert_on==1)
+                        if($is_email_alert_on==1 && ($is_individual_review==1 || $is_all_review==1))
                          {
                            
                             echo '### Email 2 ####';
@@ -705,7 +714,7 @@
                          }
 
 
-                          if($is_sms_alert_on==1)
+                          if($is_sms_alert_on==1 && ($is_individual_review==1 || $is_all_review==1))
                              {
          
                              /*** sms to user ***/

@@ -393,7 +393,7 @@
                     <div class="portlet-body">
                         <?php
                         $review_tot=isset($total_reviews)?$total_reviews:0;
-                        if (count($new_reviews) > 0 && $review_tot>0) {
+                        if (count($new_reviews) > 0 ) {
                         ?>
                         <div id="barchart_div"></div>
 
