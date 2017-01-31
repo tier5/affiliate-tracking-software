@@ -314,6 +314,7 @@ class ControllerBusinessBase extends ControllerBase
                 'status'             => (isset($age->status) ? $age->status : 1),
                 'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
                 'parent_id'          => $parent_id,
+                'review_invite_type_id' => 1,
                 'custom_sms'=>$this->request->getPost('custom_sms'),
                 'signup_page'=>2,
             ];
@@ -383,6 +384,7 @@ class ControllerBusinessBase extends ControllerBase
                         'status'             => (isset($age->status) ? $age->status : 1),
                         'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
                         'parent_id'          => $parent_id,
+                        'review_invite_type_id' => 1,
                         'upgraded_status'    => 0,
 
                     ];
