@@ -457,6 +457,7 @@
          * @throws \Exception
          */
         public function saveReviewFromData($data) {
+            echo '*-';
             $newReview = false;
             if (!is_array($data)) throw new \Exception("Invalid data specified, expected array");
             if (!isset($data['rating_type_id'])) throw new \Exception('Invalid rating_type_id');
@@ -474,7 +475,7 @@
             $record = $review->findOneBy($arr_con);
             
             if ($record && $record->review_id) {
-                //echo 'exist';
+                echo '.';
                 return false;
             }else{
               echo 'new R';
@@ -765,7 +766,8 @@
                 }
             /**** send review for new entry ****/
             $messages = $record->getMessages();
-            if ($messages) print_r($messages);
+            //if ($messages) print_r($messages);
+            echo '-*';
         }
 
         public function importFacebook($LocationID) {
