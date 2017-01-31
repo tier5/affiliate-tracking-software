@@ -2,8 +2,10 @@
 use Vokuro\Models\Agency;
 use Vokuro\Models\EmailConfirmations;
 use Vokuro\Models\Users;
+use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\UsersLocation;
 use Vokuro\Models\Location;
+use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
 
 /**
  * Class Email
@@ -224,7 +226,7 @@ class Email{
 
 
         /*** new start generator ***/
-
+    if($review_type_id!=''){
         $rating_array_set_all = array();
         $YNrating_array_set_all = array();
     
@@ -265,6 +267,7 @@ class Email{
             );
             
             $rating_array_set_all[$ux->id] = $rs->toArray();
+        }
         }
     
        // $this->view->rating_array_set_all=$rating_array_set_all;
