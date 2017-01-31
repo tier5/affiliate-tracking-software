@@ -392,8 +392,7 @@
                                             'user_id' => $reviewer->displayName,
                                             'user_name' => $reviewer->displayName,
                                         ];
-                                        $reviewService->saveReviewFromData($arr);
-
+                                       $reviewService->saveReviewFromData($arr);
                                     } catch (Exception $e) {
                                         continue;
                                     }
@@ -473,7 +472,7 @@
             }
             $record = $review->findOneBy($arr_con);
             
-            if ($record && $record->review_id) {
+            if ($record && $record->review_id != '') {
                 echo '.';
                 return false;
             }else{

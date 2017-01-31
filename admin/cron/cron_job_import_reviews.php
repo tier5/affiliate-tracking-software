@@ -8,6 +8,8 @@
         function initialize() {
             echo 'Yeah I reached here!';
             // Purposefully not calling parent
+            $dateTime = date('Y-m-d h:i:s') ;
+            file_put_contents('cron_review_log', $dateTime . "\r\n", FILE_APPEND);
             $path_to_admin = realpath(__DIR__ . '/../');
             include_once $path_to_admin . '/app/library/Google/mybusiness/Mybusiness.php';
             define('APPLICATION_NAME', 'User Query - Google My Business API');
