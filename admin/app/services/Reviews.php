@@ -155,7 +155,7 @@
 
            public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_from_phone) {
         if(!$AccountSid || !$AuthToken || !$twilio_from_phone) {
-            $this->flash->error("Missing twilio configuration.");
+           // $this->flash->error("Missing twilio configuration.");
             return false;
         }
         
@@ -170,7 +170,7 @@
                 ));
 
         } catch (Services_Twilio_RestException $e) {
-            $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
+           // $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
             return false;
         }
         return true;

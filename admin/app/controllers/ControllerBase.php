@@ -1326,6 +1326,7 @@ class ControllerBase extends Controller {
             $conditions = "time_created = :time_created: AND rating_type_id = 3 AND location_id = " . $location->location_id;
             $parameters = array("time_created" => date("Y-m-d H:i:s", $reviewDetails['time']));
             $googlerev = Review::findFirst(array($conditions, "bind" => $parameters));
+            $n=0;
             if (!$googlerev) {
                 //we didn't find the review, so assign the values
                 $r = new Review();
@@ -1341,7 +1342,16 @@ class ControllerBase extends Controller {
                     'location_id' => $location->location_id,
                 ));
                 //save now
-                $r->save();
+                $save=$r->save();
+
+                if($save)
+                {
+                    $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom('zacha','zacha@gmail.com');
+                    $Mail->send('sizukatier5@gmail.com','Testing review mail' , '', '', $reviewDetails['text']);
+                    $n++;
+                            
+                }
 
                 //add agency to our found array
                 if (isset($foundagency[$location->agency_id])) {
@@ -1353,6 +1363,7 @@ class ControllerBase extends Controller {
             }
         } // go to the next google review
 
+            echo $n;
         $s = $this->di->get('ReviewService');
         /**
          * @var $s \Vokuro\Services\Reviews
