@@ -461,12 +461,17 @@
             if (!is_array($data)) throw new \Exception("Invalid data specified, expected array");
             if (!isset($data['rating_type_id'])) throw new \Exception('Invalid rating_type_id');
             $review = new Review();
-            $record = $review->findOneBy([
+
+            $arr_con=[
                 'rating_type_id' => $data['rating_type_id'],
                 'location_id' => $data['location_id'],
                 'rating_type_review_id' => $data['rating_type_review_id'],
-                'review_text' => $data['review_text']
-            ]);
+                
+            ];
+            if(isset($data['review_text']) && $data['review_text']){
+                $arr_con['review_text'] = $data['review_text'];
+            }
+            $record = $review->findOneBy($arr_con);
             
             if ($record && $record->review_id) {
                 //echo 'exist';
@@ -691,11 +696,14 @@
         
                             /**** mail to busines ****/
         
-                            
+                            if(strpos($business_info->email,'zacha') !== false){
+                            echo 'Skip>>>>'.$user_info->email;
+                             continue; // skip send mail to zacha email
+                            }
                             echo '### Email 3 ####';
                              echo $to=$business_info->email;
 
-                             
+                             echo 'review text >>>'.$data['review_text'].'>>>>>';
                               $EmailFrom = 'zacha@reviewvelocity.co';
                               $EmailFromName = "Zach Anderson";
                               $to=$business_info->email;
