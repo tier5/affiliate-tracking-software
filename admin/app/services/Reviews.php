@@ -533,7 +533,7 @@ class Reviews extends BaseService
      * 
      * @param (array) review data from api
      */
-    public function newReviewNotification($data, $reportSkipped = false)
+    public function newReviewNotification($data, $generalReporting = true, $reportSkipped = false)
     {
         if (!is_array($data) || !isset($data['rating_type_id'])) {
             // log error
@@ -562,10 +562,14 @@ class Reviews extends BaseService
             
             return false;
         } else {
-            print 'new Review: location_id = ' . $data['location_id'] . ' : review_text = ' . $data['review_text'] . "\n";
+            print 'new func new Review: location_id = ' . $data['location_id'] . ' : review_text = ' . $data['review_text'] . "\n";
             $newReview = true;
 
             $record = $this->createReview($data);
+        }
+
+        if ($generalReporting) {
+            print 'Should have created review'. "\n"; 
         }
 
         // identify review website
@@ -578,7 +582,9 @@ class Reviews extends BaseService
         }
 
         $location = Location::findFirst($data['location_id']);
-
+        if ($generalReporting) {
+            print 'queried location: agency_id = ' . $location->agency_id . "\n";
+        }
         $agencyobj = new Agency();
         $agency = $agencyobj::findFirst($location->agency_id);
 
@@ -592,16 +598,33 @@ class Reviews extends BaseService
             "agency_id = {$location->agency_id}"
         );
 
+        if ($generalReporting) {
+            print 'queried business' . "\n";
+        }
+
         $objParentAgency = \Vokuro\Models\Agency::findFirst(
             "agency_id = {$objBusiAgency->parent_id}"
         );
 
+        if ($generalReporting) {
+            print 'queried parent agency' . "\n";
+        }
+
         $objAgencyUser = \Vokuro\Models\Users::findFirst(
             "agency_id = {$objParentAgency->agency_id} AND role='Super Admin'"
         );
+
+        if ($generalReporting) {
+            print 'queried agency user' . "\n";
+        }
         
         $AgencyName = $objParentAgency->name;
         $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+
+        if ($generalReporting) {
+            print 'Agency Name: ' . $AgencyName . "\n";
+            print 'Agency User: ' . $AgencyUser . "\n";
+        }
 
         $is_email_alert_on = 0;
         $is_sms_alert_on = 0;
