@@ -7,7 +7,7 @@ class LocationImporter extends \Vokuro\Controllers\LocationController {
 
     public function initialize()
     {
-        echo 'Yeah I reached here!';
+        print 'Yeah I reached here!'."\n";
         // Purposefully not calling parent
         $dateTime = date('Y-m-d h:i:s') ;
         file_put_contents('cron_review_log', $dateTime . "\r\n", FILE_APPEND);
