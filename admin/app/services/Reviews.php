@@ -556,10 +556,10 @@ class Reviews extends BaseService
 
         // if review exists return false
         if ($record && $record->review_id != '') {
-            echo '.';
+            print 'skipped existing review: review_id = ' . $record->review_id . "\n";
             return false;
         } else {
-            echo 'new R';
+            print 'new Review: location_id = ' . $data['location_id'] . ' : review_text = ' . $data['review_text'] . "\n";
             $newReview = true;
 
             $record = $this->createReview($data);
@@ -700,10 +700,10 @@ class Reviews extends BaseService
         
         // if review exists return false
         if ($record && $record->review_id != '') {
-            echo '.';
+            print 'skipped existing review: review_id = ' . $record->review_id . "\n";
             return false;
         } else {
-            echo 'new R';
+            print 'new Review: location_id = ' . $data['location_id'] . ' : review_text = ' . $data['review_text'] . "\n";
             $newReview = true;
 
             $record = $this->createReview($data);
