@@ -1346,9 +1346,9 @@ class ControllerBase extends Controller {
 
                 if($save)
                 {
-                    $Mail = $this->getDI()->getMail();
-                    $Mail->setFrom('zacha','zacha@gmail.com');
-                    $Mail->send('sizukatier5@gmail.com','Testing review mail' , '', '', $reviewDetails['text']);
+                    //$Mail = $this->getDI()->getMail();
+                    //$Mail->setFrom('zacha','zacha@gmail.com');
+                    //$Mail->send('sizukatier5@gmail.com','Testing review mail' , '', '', $reviewDetails['text']);
                     $n++;
                             
                 }
