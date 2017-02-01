@@ -533,7 +533,7 @@ class Reviews extends BaseService
      * 
      * @param (array) review data from api
      */
-    public function newReviewNotification($data)
+    public function newReviewNotification($data, $reportSkipped = false)
     {
         if (!is_array($data) || !isset($data['rating_type_id'])) {
             // log error
@@ -553,10 +553,13 @@ class Reviews extends BaseService
         }
 
         $record = $review->findOneBy($arr_con);
-
+        var_dump($record->review_text);
         // if review exists return false
         if ($record && $record->review_id != '') {
-            print 'skipped existing review: review_id = ' . $record->review_id . "\n";
+            if ($reportSkipped) {
+                print 'skipped existing review: review_id = ' . $record->review_id . "\n";
+            }
+            
             return false;
         } else {
             print 'new Review: location_id = ' . $data['location_id'] . ' : review_text = ' . $data['review_text'] . "\n";
@@ -668,7 +671,7 @@ class Reviews extends BaseService
      * @param array $data
      * @throws \Exception
      */
-    public function saveReviewFromData($data)
+    public function saveReviewFromData($data, $reportSkipped = false)
     {
         $newReview = false;
 
@@ -700,7 +703,10 @@ class Reviews extends BaseService
         
         // if review exists return false
         if ($record && $record->review_id != '') {
-            print 'skipped existing review: review_id = ' . $record->review_id . "\n";
+            if ($reportSkipped) {
+                print 'skipped existing review: review_id = ' . $record->review_id . "\n";
+            }
+            
             return false;
         } else {
             print 'new Review: location_id = ' . $data['location_id'] . ' : review_text = ' . $data['review_text'] . "\n";
@@ -1001,9 +1007,9 @@ class Reviews extends BaseService
     {
         // to, data['rating'], site_review, data['review_text'], $AgencyUser, $AgencyName
 
-        echo $to;
+        print $to . ' : ';
 
-        echo 'review text >>>' . $reviewText . '>>>>>';
+        print 'review text >>>' . $reviewText . '>>>>>' . "\n";
         $EmailFrom = 'zacha@reviewvelocity.co';
         $EmailFromName = "Zach Anderson";
 
