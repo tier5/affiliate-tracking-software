@@ -234,7 +234,7 @@
                                $mail_body=$mail_body."<p>Customer Name : ".$invite->name."</p>";
                                $mail_body=$mail_body."<p>Customer Phone Number : ".$invite->phone."</p>";
                                $mail_body=$mail_body."<p>Employee : ".$user_info->name."</p>";
-                               $mail_body=$mail_body."<p>View Customer : <a href='http://".$domain."/session/login?return=/contacts/view/".$invite->review_invite_id."'>Click Here</a></p>";
+                               $mail_body=$mail_body."<p>View Customer : <a href='http://".$domain."/contacts/view/".$invite->review_invite_id."'>Click Here</a></p>";
                                $mail_body=$mail_body."<p>Thank you,</p>";
                                $mail_body=$mail_body.$AgencyUser;
                                $mail_body=$mail_body.'<br>'.$AgencyName;
