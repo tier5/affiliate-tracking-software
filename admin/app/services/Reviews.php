@@ -626,10 +626,10 @@ class Reviews extends BaseService
             if ((isset($email) && !empty($email))
                 && $is_email_alert_on == 1 
                 && ($is_individual_review == 1 || $is_all_review == 1)) {
-                if (strpos($user_info->email, 'zacha') !== false) {
+                /*if (strpos($user_info->email, 'zacha') !== false) {
                     echo 'Skip>>>>' . $user_info->email;
                     continue; // skip send mail to zacha email
-                }
+                }*/
 
                 $this->sendEmail(
                     $email,
@@ -802,10 +802,10 @@ class Reviews extends BaseService
                         echo '### Email 1 ####';
                         echo $user_info->email;
 
-                        if (strpos($user_info->email,'zacha') !== false) {
+                       /* if (strpos($user_info->email,'zacha') !== false) {
                             echo 'Skip>>>>'.$user_info->email;
                             continue; // skip send mail to zacha email
-                        }
+                        }*/
 
                         $this->sendEmail(
                             $user_info->email,
@@ -884,10 +884,10 @@ class Reviews extends BaseService
                         echo '### Email 2 ####';
                         echo $user_info->email;
 
-                        if (strpos($user_info->email, 'zacha') !== false) {
+                       /* if (strpos($user_info->email, 'zacha') !== false) {
                             echo 'Skip>>>>' . $user_info->email;
                             continue;  // skip send mail to zacha email
-                        }
+                        }*/
 
                         $this->sendEmail(
                             $user_info->email,
@@ -902,10 +902,10 @@ class Reviews extends BaseService
 
                         /**** mail to business ****/
     
-                        if (strpos($business_info->email, 'zacha') !== false) {
+                       /* if (strpos($business_info->email, 'zacha') !== false) {
                             echo 'Skip>>>>'.$user_info->email;
                             continue; // skip send mail to zacha email
-                        }
+                        }*/
 
                         echo '### Email 3 ####';
 
