@@ -553,7 +553,7 @@ class Reviews extends BaseService
         }
 
         $record = $review->findOneBy($arr_con);
-        var_dump($record->review_text);
+
         // if review exists return false
         if ($record && $record->review_id != '') {
             if ($reportSkipped) {
