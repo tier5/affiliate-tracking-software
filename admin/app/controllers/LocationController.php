@@ -162,7 +162,7 @@
             					  $objGoogleBusiness->locality . " " .
             					  $objGoogleBusiness->state_province . " " .
             					  $objGoogleBusiness->country;
-//print_r($objGoogleBusiness);
+
             $objLocation->url = "https://www.google.com/search?q=".str_replace(" ", "+", $objLocation->name)."&ludocid=".$objLocation->cid."#lrd=".$objLocation->lrd.",3,5";
             $objLocation->save();
 			
@@ -285,7 +285,7 @@
         public function yelpurlAction() {
             //yelp web service api call
             $id = $_GET['i'];
-//echo $id;
+            //echo $id;
             $yelp = new YelpScanning();
             $yelp->construct();
             $results = $yelp->get_business($id);
@@ -491,7 +491,6 @@
             $this->view->form = new LocationForm(null);
             $this->view->SignupProcess = false;
             $this->view->pick("session/signup2");
-
         }
 
         /**
@@ -500,7 +499,6 @@
          * @return bool
          */
         protected function updateAgencySubscriptionPlan($LocationID, $Creating) {
-
             if(!$LocationID)
                 return false;
 
@@ -510,15 +508,17 @@
             // First check this business subscription level.  If trial, we can ignore.  Trial accounts can only have 1 location and they are not paid.
             $SubscriptionLevel = $objSubscriptionManager->GetBusinessSubscriptionLevel($objLocation->agency_id);
 
-            if($SubscriptionLevel == \Vokuro\Services\ServicesConsts::$PAYMENT_PLAN_TRIAL)
+            if ($SubscriptionLevel == \Vokuro\Services\ServicesConsts::$PAYMENT_PLAN_TRIAL) {
                 return true;
+            }
 
             // Get a list of all businesses under the Agency and count total locations
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objLocation->agency_id}");
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
 
-            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+            if ($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 return true;
+            }
 
             $dbBusinesses = \Vokuro\Models\Agency::find("parent_id = {$objAgency->agency_id}");
             $LocationCount = 0;
@@ -529,20 +529,36 @@
             }
 
             // Determine if we need to expand / shrink agency subscription plan
-            $objAgencySuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} and role='Super Admin'");
-            $objAgencySubscription = \Vokuro\Models\AgencySubscriptionPlan::findFirst("agency_id = {$objAgency->id}");
-            $objAgencyPricingPlan = \Vokuro\Models\AgencyPricingPlan::findFirst("id = {$objAgencySubscription->pricing_plan_id}");
+            $objAgencySuperUser = \Vokuro\Models\Users::findFirst(
+                "agency_id = {$objAgency->agency_id} and role='Super Admin'"
+            );
 
+            $objAgencySubscription = \Vokuro\Models\AgencySubscriptionPlan::findFirst(
+                "agency_id = {$objAgency->id}"
+            );
+
+            if (!$objAgencySubscription) {
+
+            }
+
+            $objAgencyPricingPlan = \Vokuro\Models\AgencyPricingPlan::findFirst(
+                "id = {$objAgencySubscription->pricing_plan_id}"
+            );
 
             $objPaymentService = new \Vokuro\Services\PaymentService();
-            if(($Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses) || (!$Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses)) {
+
+            if (($Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses)
+                || (!$Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses)) {
+
                 $NewPayment = $Creating ? ($LocationCount * $objAgencyPricingPlan->price_per_business * 100) : (($LocationCount-1) * $objAgencyPricingPlan->price_per_business * 100);
+
                 $ccParameters = [
                     'userId' => $objAgencySuperUser->id,
                     'type' => 'Agency',
                     'amount' => $NewPayment,
                     'provider' => \Vokuro\Services\ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
                 ];
+
                 $objPaymentService->changeSubscription($ccParameters);
             }
 
@@ -675,7 +691,7 @@
             $lifetimevalue = $this->request->getPost('lifetimevalue');
             $querystring = '?review_goal=' . $reviewgoal . '&lifetime_value_customer=' . $lifetimevalue;
             $url = '/location/create3/' . ($location_id > 0 ? $location_id : '') . $querystring;
-//echo '<pre>post:'.print_r($_POST,true).'</pre>';
+            //echo '<pre>post:'.print_r($_POST,true).'</pre>';
 
             //get the user id, to find the settings
             $identity = $this->auth->getIdentity();
@@ -1142,11 +1158,11 @@
         }
 
 
-         public function send_emailfnAction() {
+        public function send_emailfnAction() {
             // Only process POST reqeusts.
             if ($_POST) {
                 echo 'kk';exit;
-           // echo $_POST["email"];exit;
+                // echo $_POST["email"];exit;
 
                 /***  Email From  29.11.2012 ***/
                 /***  Email From  29.11.2012 ***/

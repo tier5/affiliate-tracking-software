@@ -375,8 +375,6 @@ class Reviews extends BaseService
             exit();
         }
 
-
-
         $myBusiness = new \Google_Service_Mybusiness($client);
        
         $accounts = $myBusiness->accounts->listAccounts()->getAccounts();
@@ -458,7 +456,8 @@ class Reviews extends BaseService
                                         'user_id' => $reviewer->displayName,
                                         'user_name' => $reviewer->displayName,
                                     ];
-                                   $reviewService->saveReviewFromData($arr);
+                                    $this->newReviewNotification($arr);
+                                    $reviewService->saveReviewFromData($arr);
                                 } catch (Exception $e) {
                                     continue;
                                 }
@@ -529,6 +528,141 @@ class Reviews extends BaseService
         foreach ($this->types as $type_id) $this->updateCount($type_id, $location_id);
     }
 
+    /**
+     * Send sms and email notifications out for new reviews
+     * 
+     * @param (array) review data from api
+     */
+    public function newReviewNotification($data)
+    {
+        if (!is_array($data) || !isset($data['rating_type_id'])) {
+            // log error
+            return false;
+        }
+
+        $review = new Review();
+
+        $arr_con = [
+            'rating_type_id' => $data['rating_type_id'],
+            'location_id' => $data['location_id'],
+            'rating_type_review_id' => $data['rating_type_review_id'],
+        ];
+
+        if (isset($data['review_text']) && $data['review_text']) {
+            $arr_con['review_text'] = $data['review_text'];
+        }
+
+        $record = $review->findOneBy($arr_con);
+
+        // if review exists return false
+        if ($record && $record->review_id != '') {
+            echo '.';
+            return false;
+        } else {
+            echo 'new R';
+            $newReview = true;
+
+            $record = $this->createReview($data);
+        }
+
+        // identify review website
+        if ($data['review_type_id'] == 1) {
+            $site_review = 'Facebook';
+        } else if ($data['review_type_id'] == 2) {
+            $site_review = 'Yelp';
+        } else {
+            $site_review = 'Google';
+        }
+
+        $location = Location::findFirst($data['location_id']);
+
+        $agencyobj = new Agency();
+        $agency = $agencyobj::findFirst($location->agency_id);
+
+        // get parent agency's twilio API keys
+        $parent_agency = $agencyobj::findFirst($agency->parent_id);
+        $TwilioToken = $parent_agency->twilio_auth_token;
+        $TwilioFrom = $parent_agency->twilio_from_phone;
+        $TwilioAPI = $parent_agency->twilio_api_key;
+
+        $objBusiAgency = \Vokuro\Models\Agency::findFirst(
+            "agency_id = {$location->agency_id}"
+        );
+
+        $objParentAgency = \Vokuro\Models\Agency::findFirst(
+            "agency_id = {$objBusiAgency->parent_id}"
+        );
+
+        $objAgencyUser = \Vokuro\Models\Users::findFirst(
+            "agency_id = {$objParentAgency->agency_id} AND role='Super Admin'"
+        );
+        
+        $AgencyName = $objParentAgency->name;
+        $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+
+        $is_email_alert_on = 0;
+        $is_sms_alert_on = 0;
+        $is_individual_review = 0;
+        $is_all_review = 0;
+
+        $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $data['location_id']);
+
+        // get notification settings for each user at location
+        $agencynotifications = LocationNotifications::find(
+            array($conditions, "bind" => $parameters)
+        );
+
+        foreach ($agencynotifications as $agencynotification) {
+            $is_email_alert_on = ($agencynotification->email_alert == 1 ? 1 : 0);
+            $is_sms_alert_on = ($agencynotification->sms_alert == 1 ? 1 : 0);
+            $is_individual_review = ($agencynotification->individual_reviews == 1 ? 1 : 0);
+            $is_all_review = ($agencynotification->all_reviews == 1 ? 1 : 0);
+
+            $user = Users::findFirst($agencynotification->user_id);
+            $email = $user->email;
+            $phone = $user->phone;
+
+            if ((isset($email) && !empty($email))
+                && $is_email_alert_on == 1 
+                && ($is_individual_review == 1 || $is_all_review == 1)) {
+                if (strpos($user_info->email, 'zacha') !== false) {
+                    echo 'Skip>>>>' . $user_info->email;
+                    continue; // skip send mail to zacha email
+                }
+
+                $this->sendEmail(
+                    $email,
+                    $data['rating'],
+                    $site_review,
+                    $data['review_text'],
+                    $AgencyUser,
+                    $AgencyName
+                );
+            }
+
+            if ((isset($phone) && !empty($phone))
+                && $is_sms_alert_on == 1
+                && ($is_individual_review == 1 || $is_all_review == 1)) {
+                if ($user_info->phone != '') {
+                    $message = $invite->name . " " . $invite->phone . " has submitted " . $rating . " for employee " . $user_info->name;
+
+                    $message = "You just received a new review " . $data['rating'] . " from " . $data['user_name'] . " on " . $site_review . " and the review is: " . $data['review_text'];
+
+                    if ($this->SendSMS(
+                            $phone,
+                            $message,
+                            $TwilioAPI,
+                            $TwilioToken,
+                            $TwilioFrom)) {
+
+                    }
+                }
+            }
+        }
+             
+        echo 'email=' . $user_info->email . ' Falg=' . $is_email_alert_on;
+    }
 
     /**
      * @param array $data
@@ -564,40 +698,18 @@ class Reviews extends BaseService
 
         $record = $review->findOneBy($arr_con);
         
+        // if review exists return false
         if ($record && $record->review_id != '') {
             echo '.';
             return false;
         } else {
-          echo 'new R';
-          $newReview = true;
-          $record = new Review();
+            echo 'new R';
+            $newReview = true;
+
+            $record = $this->createReview($data);
         }
 
-        /**
-         * @var $record \Vokuro\Models\Review
-         */
-        $record->external_id = $data['review_type_id'];
-        $record->review_text = $data['review_text'];
-        $record->rating = $data['rating'];
-        $record->rating_type_id = $data['rating_type_id'];
-        $record->location_id = $data['location_id'];
-        $record->rating_type_review_id = $data['rating_type_review_id'];
-
-        if ($data['time_created']) {
-            $record->time_created = date("Y-m-d H:i:s", strtotime($data['time_created']));
-        }
-
-        if ($data['user_id']) {
-            $record->user_id = $data['user_id'];
-        }
-
-        if ($data['user_name']) {
-            $record->user_name = $data['user_name'];
-        }
-
-        $save = $record->save();
-        
-        /**** send review for new entry ****/
+        // identify review website
         if ($data['review_type_id'] == 1) {
             $site_review = 'Facebook';
         } else if ($data['review_type_id'] == 2) {
@@ -611,6 +723,16 @@ class Reviews extends BaseService
         $review_invite = new ReviewInvite();
         $invites = $review_invite::find(array($conditions, "bind" => $parameters));
         $emailSentArr = array();
+        
+        /*var_dump($data, $parameters);
+        $this->sendEmail(
+            'adam@reviewvelocity.co',
+            $data['rating'],
+            $site_review,
+            $data['review_text'],
+            'Adam',
+            'Agency Co'
+        );*/
 
         foreach ($invites as $invite) {
             if ($invite->location_id > 0 && $newReview) {
@@ -621,8 +743,8 @@ class Reviews extends BaseService
                 $role = $user_info->role;
                 $locationobj = new Location();
                 $location = $locationobj::findFirst($invite->location_id);
-                 
-                if (count($emailSentArr) && in_array($user_info->email,$emailSentArr)) {
+                
+                if (count($emailSentArr) && in_array($user_info->email, $emailSentArr)) {
                     continue;
                 } else {
                     $emailSentArr[] = $user_info->email;
@@ -655,7 +777,9 @@ class Reviews extends BaseService
 
                     $conditions = "location_id = :location_id:";
                     $parameters = array("location_id" => $invite->location_id);
-                    $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                    $agencynotifications = LocationNotifications::find(
+                        array($conditions, "bind" => $parameters)
+                    );
 
                     $is_email_alert_on = 0;
                     $is_sms_alert_on = 0;
@@ -683,7 +807,7 @@ class Reviews extends BaseService
                             continue; // skip send mail to zacha email
                         }
 
-                        $this->sentEmail(
+                        $this->sendEmail(
                             $user_info->email,
                             $data['rating'],
                             $site_review,
@@ -701,7 +825,12 @@ class Reviews extends BaseService
 
                             $message = "You just received a new review".$data['rating']." from". $data['user_name']." on ".$site_review." and the review is: ".$data['review_text'];
 
-                            if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken, $TwilioFrom)) {
+                            if ($this->SendSMS(
+                                    $user_info->phone,
+                                    $message,
+                                    $TwilioAPI,
+                                    $TwilioToken,
+                                    $TwilioFrom)) {
 
                             }
                         }
@@ -734,7 +863,7 @@ class Reviews extends BaseService
                         'agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"'
                     );
 
-                    $business_agency= \Vokuro\Models\Agency::findFirst(
+                    $business_agency = \Vokuro\Models\Agency::findFirst(
                         'agency_id = ' . $user_info->agency_id
                     );
 
@@ -760,7 +889,7 @@ class Reviews extends BaseService
                             continue;  // skip send mail to zacha email
                         }
 
-                        $this->sentEmail(
+                        $this->sendEmail(
                             $user_info->email,
                             $data['rating'],
                             $site_review,
@@ -769,19 +898,18 @@ class Reviews extends BaseService
                             $AgencyName
                         );
 
-
                         /*** mail to user end ****/
 
-                        /**** mail to busines ****/
+                        /**** mail to business ****/
     
-                        if (strpos($business_info->email,'zacha') !== false) {
+                        if (strpos($business_info->email, 'zacha') !== false) {
                             echo 'Skip>>>>'.$user_info->email;
                             continue; // skip send mail to zacha email
                         }
 
                         echo '### Email 3 ####';
 
-                        $this->sentEmail(
+                        $this->sendEmail(
                             $business_info->email,
                             $data['rating'],
                             $site_review,
@@ -799,10 +927,15 @@ class Reviews extends BaseService
 
                         /*** sms to user ***/
 
-                        if ($user_info->phone!='') {
-
+                        if ($user_info->phone != '') {
                             $message = "You just received a new review".$data['rating']." from". $data['user_name']." on ".$site_review." and the review is: ".$data['review_text'];
-                            if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken, $TwilioFrom)) {
+
+                            if ($this->SendSMS(
+                                    $user_info->phone,
+                                    $message,
+                                    $TwilioAPI,
+                                    $TwilioToken,
+                                    $TwilioFrom)) {
                             }
                         }
 
@@ -811,8 +944,15 @@ class Reviews extends BaseService
 
                         /*** sms to business ***/
                         if ($business_agency->phone != '') {
-                            $message = $invite->name." ".$invite->phone." has submitted ".$rating." for employee ".$user_info->name;
-                            if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
+                            $message = $invite->name . " " . $invite->phone . " has submitted "
+                                . $rating . " for employee " . $user_info->name;
+
+                            if ($this->SendSMS(
+                                    $business_agency->phone,
+                                    $message,
+                                    $TwilioAPI,
+                                    $TwilioToken,
+                                    $TwilioFrom)) {
                             }
                         }
                         /*** sms to business ***/
@@ -822,8 +962,39 @@ class Reviews extends BaseService
                 /**** else part ***/
             }
         }
+
         /**** send review for new entry ****/
         $messages = $record->getMessages();
+    }
+
+    private function createReview($data)
+    {
+            $record = new Review();
+            /**
+             * @var $record \Vokuro\Models\Review
+             */
+            $record->external_id = $data['review_type_id'];
+            $record->review_text = $data['review_text'];
+            $record->rating = $data['rating'];
+            $record->rating_type_id = $data['rating_type_id'];
+            $record->location_id = $data['location_id'];
+            $record->rating_type_review_id = $data['rating_type_review_id'];
+
+            if ($data['time_created']) {
+                $record->time_created = date("Y-m-d H:i:s", strtotime($data['time_created']));
+            }
+
+            if ($data['user_id']) {
+                $record->user_id = $data['user_id'];
+            }
+
+            if ($data['user_name']) {
+                $record->user_name = $data['user_name'];
+            }
+
+            $record->save();
+
+            return $record;
     }
 
     private function sendEmail($to, $rating, $siteReview, $reviewText, $agencyUser, $agencyName)
@@ -898,6 +1069,7 @@ class Reviews extends BaseService
                         // Assuming one user per location can only leave one review.  Currently, they do not provide any other identifier, and I believe this is true.
                         'rating_type_review_id' => $objReview->reviewer->id,
                     ];
+                    $this->newReviewNotification($arr);
                     $reviewService->saveReviewFromData($arr);
 
                 } catch (Exception $e) {
