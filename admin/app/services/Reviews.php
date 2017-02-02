@@ -553,7 +553,7 @@ class Reviews extends BaseService
         }
 
         $record = $review->findOneBy($arr_con);
-        var_dump($record->review_text);
+
         // if review exists return false
         if ($record && $record->review_id != '') {
             if ($reportSkipped) {
@@ -569,9 +569,9 @@ class Reviews extends BaseService
         }
 
         // identify review website
-        if ($data['review_type_id'] == 1) {
+        if ($data['rating_type_id'] == 1) {
             $site_review = 'Facebook';
-        } else if ($data['review_type_id'] == 2) {
+        } else if ($data['rating_type_id'] == 2) {
             $site_review = 'Yelp';
         } else {
             $site_review = 'Google';
@@ -717,9 +717,9 @@ class Reviews extends BaseService
         }
 
         // identify review website
-        if ($data['review_type_id'] == 1) {
+        if ($data['rating_type_id'] == 1) {
             $site_review = 'Facebook';
-        } else if ($data['review_type_id'] == 2) {
+        } else if ($data['rating_type_id'] == 2) {
             $site_review = 'Yelp';
         } else {
             $site_review = 'Google';
