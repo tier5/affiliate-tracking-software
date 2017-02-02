@@ -637,6 +637,7 @@ class Reviews extends BaseService
                 $this->sendEmail(
                     $email,
                     $data['rating'],
+                    $data['user_name'],
                     $site_review,
                     $data['review_text'],
                     $AgencyUser,
@@ -816,6 +817,7 @@ class Reviews extends BaseService
                         $this->sendEmail(
                             $user_info->email,
                             $data['rating'],
+                            $data['user_name'],
                             $site_review,
                             $data['review_text'],
                             $AgencyUser,
@@ -898,6 +900,7 @@ class Reviews extends BaseService
                         $this->sendEmail(
                             $user_info->email,
                             $data['rating'],
+                            $data['user_name'],
                             $site_review,
                             $data['review_text'],
                             $AgencyUser,
@@ -1003,7 +1006,7 @@ class Reviews extends BaseService
             return $record;
     }
 
-    private function sendEmail($to, $rating, $siteReview, $reviewText, $agencyUser, $agencyName)
+    private function sendEmail($to, $rating, $name, $siteReview, $reviewText, $agencyUser, $agencyName)
     {
         // to, data['rating'], site_review, data['review_text'], $AgencyUser, $AgencyName
 
@@ -1015,7 +1018,8 @@ class Reviews extends BaseService
 
         $subject = "New Online Review";
         $mail_body = "";
-        $mail_body = $mail_body . "<p>One of your customers just left an online review about your business.</p>";
+        //$mail_body = $mail_body . "<p>One of your customers just left an online review about your business.</p>";
+        $mail_body = $mail_body . "<p>$name just left an online review about your business.</p>";
         $mail_body = $mail_body . "<p>Star Rating : " . $rating . "</p>";
         $mail_body = $mail_body . "<p>Review Site : " . $siteReview . "</p>";
         $mail_body = $mail_body . "<p>Review : " . $reviewText . "</p>";
