@@ -138,7 +138,7 @@
             $objLocation->save();
 
             $objReviewsService->DeleteYelpReviews($LocationID);
-            $objReviewsService->importYelpReviews($LocationID);
+            $objReviewsService->importYelpReviews($LocationID, false);
  
             $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}"); 
         }
@@ -167,7 +167,7 @@
             $objLocation->save();
 			
             $objReviewsService->DeleteGoogleReviews($LocationID);
-            $objReviewsService->importGoogleMyBusinessReviews($LocationID);
+            $objReviewsService->importGoogleMyBusinessReviews($LocationID, false);
 
             $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
         }
@@ -196,7 +196,7 @@
                         $this->flash->success("Your business has been successfully synced with our system.");
                         $objReviewService = new \Vokuro\Services\Reviews();
                         $objReviewService->DeleteFacebookReviews($LocationID);
-                        $objReviewService->importFacebook($LocationID);
+                        $objReviewService->importFacebook($LocationID, false);
                     }
                     break;
                 }
