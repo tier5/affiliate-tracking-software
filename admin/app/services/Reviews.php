@@ -627,6 +627,7 @@ class Reviews extends BaseService
         
         $AgencyName = $objParentAgency->name;
         $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+        $AgencyEmail = $objAgencyUser->email;
 
         if ($generalReporting) {
             print 'Agency Name: ' . $AgencyName . "\n";
@@ -666,6 +667,7 @@ class Reviews extends BaseService
 
                 $this->sendEmail(
                     $email,
+                    $AgencyEmail,
                     $data['rating'],
                     $data['user_name'],
                     $site_review,
@@ -846,6 +848,7 @@ class Reviews extends BaseService
 
                         $this->sendEmail(
                             $user_info->email,
+                            $AgencyEmail,
                             $data['rating'],
                             $data['user_name'],
                             $site_review,
@@ -929,6 +932,7 @@ class Reviews extends BaseService
 
                         $this->sendEmail(
                             $user_info->email,
+                            $AgencyEmail,
                             $data['rating'],
                             $data['user_name'],
                             $site_review,
@@ -950,7 +954,9 @@ class Reviews extends BaseService
 
                         $this->sendEmail(
                             $business_info->email,
+                            $AgencyEmail,
                             $data['rating'],
+                            $data['user_name'],
                             $site_review,
                             $data['review_text'],
                             $AgencyUser,
@@ -1036,15 +1042,15 @@ class Reviews extends BaseService
             return $record;
     }
 
-    private function sendEmail($to, $rating, $name, $siteReview, $reviewText, $agencyUser, $agencyName)
+    private function sendEmail($to, $agencyEmail, $rating, $name, $siteReview, $reviewText, $agencyUser, $agencyName)
     {
         // to, data['rating'], site_review, data['review_text'], $AgencyUser, $AgencyName
 
         print $to . ' : ';
 
         print 'review text >>>' . $reviewText . '>>>>>' . "\n";
-        $EmailFrom = 'zacha@reviewvelocity.co';
-        $EmailFromName = "Zach Anderson";
+        $EmailFrom = $agencyEmail;
+        $EmailFromName = $agencyUser;
 
         $subject = "New Feedback";
         $mail_body = "";
