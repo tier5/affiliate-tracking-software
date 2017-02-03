@@ -555,7 +555,7 @@ class Reviews extends BaseService
      * @param (bool) $sendNotifications should we send notifications new reviews?
      * @param (bool) $reportSkipped should we report skipped reviews in the console?
      */
-    public function newReviewNotification($data, $sendNotifications, $generalReporting = true, $reportSkipped = false)
+    public function newReview($data, $sendNotifications, $generalReporting = true, $reportSkipped = false)
     {
         if (!is_array($data) || !isset($data['rating_type_id'])) {
             // log error
