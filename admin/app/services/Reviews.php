@@ -321,7 +321,7 @@ class Reviews extends BaseService
         return $tobjBusinesses;
     }
 
-    public function importYelpReviews($LocationID)
+    public function importYelpReviews($LocationID, $sendNotifications = true)
     {
         $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst(
             "location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP
@@ -342,13 +342,13 @@ class Reviews extends BaseService
 
         if ($YelpReviews->reviews) {
             foreach ($YelpReviews->reviews as $objYelpReview) {
-                $objReview = \Vokuro\Models\Review::findFirst(
+                /*$objReview = \Vokuro\Models\Review::findFirst(
                     "external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}"
                 );
 
-                if (!$objReview) {
-                    $objReview = new \Vokuro\Models\Review();
-                    $objReview->assign(array(
+                if (!$objReview) {*/
+                    //$objReview = new \Vokuro\Models\Review();
+                    /*$objReview->assign(array(
                         'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
                         'rating' => $objYelpReview->rating,
                         'review_text' => $objYelpReview->excerpt,
@@ -358,16 +358,29 @@ class Reviews extends BaseService
                         'user_image' => $objYelpReview->user->image_url,
                         'external_id' => $objYelpReview->id,
                         'location_id' => $LocationID,
-                    ));
-                    $objReview->save();
-                }
-                unset($objReview);
+                    ));*/
+                    $arr = array(
+                        'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
+                        'rating_type_review_id' => $objYelpReview->id,
+                        'rating' => $objYelpReview->rating,
+                        'review_text' => $objYelpReview->excerpt,
+                        'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
+                        'user_name' => $objYelpReview->user->name,
+                        'user_id' => $objYelpReview->user->id,
+                        'user_image' => $objYelpReview->user->image_url,
+                        'external_id' => $objYelpReview->id,
+                        'location_id' => $LocationID,
+                    );
+                    //$objReview->save();
+                    $this->newReview($arr, $sendNotifications);
+                //}
+                //unset($objReview);
             }
         }
         return true;
     }
 
-    public function importGoogleMyBusinessReviews($LocationID)
+    public function importGoogleMyBusinessReviews($LocationID, $sendNotifications = true)
     {
         $reviewService = new Reviews();
 
@@ -460,7 +473,7 @@ class Reviews extends BaseService
                                         'user_id' => $reviewer->displayName,
                                         'user_name' => $reviewer->displayName,
                                     ];
-                                    $this->newReviewNotification($arr);
+                                    $this->newReview($arr, $sendNotifications);
                                     //$reviewService->saveReviewFromData($arr);
                                 } catch (Exception $e) {
                                     continue;
@@ -533,11 +546,13 @@ class Reviews extends BaseService
     }
 
     /**
-     * Send sms and email notifications out for new reviews
+     * Save new review and send out notifications
      * 
-     * @param (array) review data from api
+     * @param (array) $data review data from api
+     * @param (bool) $sendNotifications should we send notifications new reviews?
+     * @param (bool) $reportSkipped should we report skipped reviews in the console?
      */
-    public function newReviewNotification($data, $reportSkipped = false)
+    public function newReview($data, $sendNotifications, $reportSkipped = false)
     {
         if (!is_array($data) || !isset($data['rating_type_id'])) {
             // log error
@@ -571,6 +586,16 @@ class Reviews extends BaseService
 
             $record = $this->createReview($data);
         }
+
+        if (!$sendNotifications) {
+            if ($reportSkipped) {
+                print 'don\'t send notification' . "\n";
+            }
+
+            return false;
+        }
+
+        // everything after this line has to do with sending out notifications
 
         // identify review website
         if ($data['rating_type_id'] == 1) {
@@ -1042,7 +1067,7 @@ class Reviews extends BaseService
         $Mail->send($to, $subject, '', '', $mail_body);
     }
 
-    public function importFacebook($LocationID)
+    public function importFacebook($LocationID, $sendNotifications = true)
     {
         $reviewService = new Reviews();
         $FB = new \Vokuro\Models\FacebookScanning();
@@ -1089,8 +1114,8 @@ class Reviews extends BaseService
                         // Assuming one user per location can only leave one review.  Currently, they do not provide any other identifier, and I believe this is true.
                         'rating_type_review_id' => $objReview->reviewer->id,
                     ];
-                    $this->newReviewNotification($arr);
-                    $reviewService->saveReviewFromData($arr);
+                    $this->newReview($arr, $sendNotifications);
+                    //$reviewService->saveReviewFromData($arr);
 
                 } catch (Exception $e) {
                     $logger->error(var_export($e, true));
