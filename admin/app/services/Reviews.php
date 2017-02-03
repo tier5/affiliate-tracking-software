@@ -78,13 +78,16 @@ class Reviews extends BaseService
 
     public function getGoogleClient($LocationID, $RedirectToSession = 0)
     {
+        $protocol = 'http';
+
         $Domain = $this->config->application->domain;
 
         if (!empty($ngrok = $this->config->ngrok->subdomain)) {
             $Domain = $ngrok . '.' . $Domain;
+            $protocol = 'https';
         }
 
-        $redirect_uri = "https://{$Domain}/location/googlemybusiness";
+        $redirect_uri = $protocol . "://{$Domain}/location/googlemybusiness";
 
         $client = new \Google_Client();
         $client->setApplicationName(APPLICATION_NAME);
