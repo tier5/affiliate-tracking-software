@@ -79,7 +79,12 @@ class Reviews extends BaseService
     public function getGoogleClient($LocationID, $RedirectToSession = 0)
     {
         $Domain = $this->config->application->domain;
-        $redirect_uri = "http://{$Domain}/location/googlemybusiness";
+
+        if (!empty($ngrok = $this->config->ngrok->subdomain)) {
+            $Domain = $ngrok . '.' . $Domain;
+        }
+
+        $redirect_uri = "https://{$Domain}/location/googlemybusiness";
 
         $client = new \Google_Client();
         $client->setApplicationName(APPLICATION_NAME);
@@ -386,6 +391,7 @@ class Reviews extends BaseService
                  */
 
                 $locations = $myBusiness->accounts_locations->listAccountsLocations($account->name)->getLocations();
+
                 if ($locations) {
                     $objLocationReviewSite = \Vokuro\Models\LocationReviewSite::findFirst(
                         "location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE
@@ -399,13 +405,11 @@ class Reviews extends BaseService
                         if ($location->locationKey->placeId != $objLocationReviewSite->external_location_id) {
                             continue;
                         }
-
                         /**
                          * @var $location \Google_Service_Mybusiness_Location
                          */
                         $lr = $myBusiness->accounts_locations_reviews
                                          ->listAccountsLocationsReviews($location->name);
-
                         $reviews = $lr->getReviews();
                         $reviewCount = $lr->getTotalReviewCount();
                         $avg = $lr->getAverageRating();
@@ -457,7 +461,7 @@ class Reviews extends BaseService
                                         'user_name' => $reviewer->displayName,
                                     ];
                                     $this->newReviewNotification($arr);
-                                    $reviewService->saveReviewFromData($arr);
+                                    //$reviewService->saveReviewFromData($arr);
                                 } catch (Exception $e) {
                                     continue;
                                 }
@@ -1016,7 +1020,7 @@ class Reviews extends BaseService
         $EmailFrom = 'zacha@reviewvelocity.co';
         $EmailFromName = "Zach Anderson";
 
-        $subject = "New Online Review";
+        $subject = "New Feedback";
         $mail_body = "";
         //$mail_body = $mail_body . "<p>One of your customers just left an online review about your business.</p>";
         $mail_body = $mail_body . "<p>$name just left an online review about your business.</p>";
