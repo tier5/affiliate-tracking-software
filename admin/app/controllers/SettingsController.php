@@ -397,6 +397,28 @@
                 $this->view->review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
             }
 
+            $this->view->users = \Vokuro\Models\Users::find("agency_id = {$userObj->agency_id}");
+            $this->view->agency = $agency;
+            $this->view->location = $location;
+
+            if ($location) {
+                $conditions = "location_id = :location_id:";
+                $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+
+                $agencynotifications = $this->view->agencynotifications = LocationNotifications::find(
+                    array($conditions, "bind" => $parameters)
+                );
+
+                //find the location review sites
+                $conditions = "location_id = :location_id:";
+            
+                $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+                
+                $this->view->review_site_list = LocationReviewSite::find(
+                    array($conditions, "bind" => $parameters, "order" => "sort_order ASC")
+                );
+            }
+
             $this->view->review_sites = ReviewSite::find();
 
             $this->view->form = new SettingsForm($location, array(
