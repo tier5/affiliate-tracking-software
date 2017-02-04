@@ -497,13 +497,18 @@ class SettingsController extends ControllerBase {
             $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
 
-            $agencynotifications = $this->view->agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+            $agencynotifications = $this->view->agencynotifications = LocationNotifications::find(
+                array($conditions, "bind" => $parameters)
+            );
 
             //find the location review sites
             $conditions = "location_id = :location_id:";
         
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $this->view->review_site_list = LocationReviewSite::find(array($conditions, "bind" => $parameters, "order" => "sort_order ASC"));
+            
+            $this->view->review_site_list = LocationReviewSite::find(
+                array($conditions, "bind" => $parameters, "order" => "sort_order ASC")
+            );
         }
 
         $this->view->review_sites = ReviewSite::find();
