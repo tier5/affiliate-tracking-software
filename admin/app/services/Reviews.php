@@ -197,6 +197,8 @@ class Reviews extends BaseService
     {
         if (!$AccountSid || !$AuthToken || !$twilio_from_phone) {
             // $this->flash->error("Missing twilio configuration.");
+            print 'SMS Send failed: absent Twilio info' . "\n";
+            var_dump($AccountSid, $AuthToken, $twilio_from_phone);
             return false;
         }
         
@@ -212,6 +214,8 @@ class Reviews extends BaseService
 
         } catch (Services_Twilio_RestException $e) {
             // $this->flash->error('There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. ');
+            print 'SMS Send failed: Twilio error' . "\n";
+            var_dump($e); 
             return false;
         }
 
@@ -345,39 +349,19 @@ class Reviews extends BaseService
 
         if ($YelpReviews->reviews) {
             foreach ($YelpReviews->reviews as $objYelpReview) {
-                /*$objReview = \Vokuro\Models\Review::findFirst(
-                    "external_id = '{$objYelpReview->id}' AND rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP . " AND location_id = {$LocationID}"
+                $arr = array(
+                    'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
+                    'rating_type_review_id' => $objYelpReview->id,
+                    'rating' => $objYelpReview->rating,
+                    'review_text' => $objYelpReview->excerpt,
+                    'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
+                    'user_name' => $objYelpReview->user->name,
+                    'user_id' => $objYelpReview->user->id,
+                    'user_image' => $objYelpReview->user->image_url,
+                    'external_id' => $objYelpReview->id,
+                    'location_id' => $LocationID,
                 );
-
-                if (!$objReview) {*/
-                    //$objReview = new \Vokuro\Models\Review();
-                    /*$objReview->assign(array(
-                        'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
-                        'rating' => $objYelpReview->rating,
-                        'review_text' => $objYelpReview->excerpt,
-                        'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
-                        'user_name' => $objYelpReview->user->name,
-                        'user_id' => $objYelpReview->user->id,
-                        'user_image' => $objYelpReview->user->image_url,
-                        'external_id' => $objYelpReview->id,
-                        'location_id' => $LocationID,
-                    ));*/
-                    $arr = array(
-                        'rating_type_id' => \Vokuro\Models\Location::TYPE_YELP,
-                        'rating_type_review_id' => $objYelpReview->id,
-                        'rating' => $objYelpReview->rating,
-                        'review_text' => $objYelpReview->excerpt,
-                        'time_created' => date("Y-m-d H:i:s", $objYelpReview->time_created),
-                        'user_name' => $objYelpReview->user->name,
-                        'user_id' => $objYelpReview->user->id,
-                        'user_image' => $objYelpReview->user->image_url,
-                        'external_id' => $objYelpReview->id,
-                        'location_id' => $LocationID,
-                    );
-                    //$objReview->save();
-                    $this->newReview($arr, $sendNotifications);
-                //}
-                //unset($objReview);
+                $this->newReview($arr, $sendNotifications);
             }
         }
         return true;
@@ -476,8 +460,8 @@ class Reviews extends BaseService
                                         'user_id' => $reviewer->displayName,
                                         'user_name' => $reviewer->displayName,
                                     ];
+
                                     $this->newReview($arr, $sendNotifications);
-                                    //$reviewService->saveReviewFromData($arr);
                                 } catch (Exception $e) {
                                     continue;
                                 }
@@ -725,7 +709,10 @@ class Reviews extends BaseService
         echo 'email=' . $user_info->email . ' Falg=' . $is_email_alert_on;
     }
 
+    // Still used in ReviewFeedsController
+    // consider deprecation
     /**
+     * Saves review and sends notifications
      * @param array $data
      * @throws \Exception
      */
@@ -1141,7 +1128,6 @@ class Reviews extends BaseService
                         'rating_type_review_id' => $objReview->reviewer->id,
                     ];
                     $this->newReview($arr, $sendNotifications);
-                    //$reviewService->saveReviewFromData($arr);
 
                 } catch (Exception $e) {
                     $logger->error(var_export($e, true));
