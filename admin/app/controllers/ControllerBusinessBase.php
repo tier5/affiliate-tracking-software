@@ -31,17 +31,20 @@ class ControllerBusinessBase extends ControllerBase
     {
 
         $this->view->agency_id = $agency_id;
-         $objagencyinfo = \Vokuro\Models\Agency::findFirst("agency_id = {$agency_id}");
-         $this->view->custom_sms = $objagencyinfo->custom_sms;//exit;
+        $objagencyinfo = \Vokuro\Models\Agency::findFirst("agency_id = {$agency_id}");
+        $this->view->custom_sms = $objagencyinfo->custom_sms;
         $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
         $this->view->UnpaidPlan = $objSubscriptionManager->GetBusinessSubscriptionLevel($agency_id) == 'FR';
-        //echo $agency_id;exit;
+        
         $form = new AgencyForm(null);
+        
         if ($agency_id) {
             $age = Agency::findFirst("agency_id = {$agency_id}");
+
             if (!$age) {
                 $this->flash->error("The Entity with id:>" . $agency_id . "<:was not found");
             }
+
             $form = new AgencyForm($age);
         } else {
             $this->flash->error("The Entity with id:>" . $agency_id . "<:is not valid");
@@ -52,8 +55,11 @@ class ControllerBusinessBase extends ControllerBase
         I'm putting the check in just to make sure I don't break something else.
         */
         if ($agency_id) {
-            $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$agency_id} AND role='Super Admin'");
-            if($objSuperUser) {
+            $objSuperUser = \Vokuro\Models\Users::findFirst(
+                "agency_id = {$agency_id} AND role='Super Admin'"
+            );
+
+            if ($objSuperUser) {
                 $objBusinessSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst(
                     "user_id = {$objSuperUser->id}"
                 );
@@ -69,6 +75,7 @@ class ControllerBusinessBase extends ControllerBase
             $IsEmailUnique = true;
             $IsEmailValid = true;
             $IsNameValid = true;
+
             // If is agency...
             if ($agency_id == 0) {
                 $user = new Users();
@@ -86,6 +93,7 @@ class ControllerBusinessBase extends ControllerBase
                 $IsEmailValid = ($this->request->getPost('admin_email') != '');
                 $IsNameValid = ($this->request->getPost('admin_name') != '');
             }
+
             /* Form valid? (Refactored from a maze of "nested ifs".  This is the best I could do on short notice) */
             $messages = [];
 
@@ -100,7 +108,7 @@ class ControllerBusinessBase extends ControllerBase
 
             $db = $this->di->get('db');
             $db->begin();
-            //echo $this->request->getPost('custom_sms');exit;
+
             /* Attempt to create our new business */
             $params = [
                 'agency_id'          => $agency_id,
@@ -117,7 +125,7 @@ class ControllerBusinessBase extends ControllerBase
                 'deleted'            => (isset($age->deleted) ? $age->deleted : 0),
                 'status'             => (isset($age->status) ? $age->status : 1),
                 'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
-                'custom_sms'=>$this->request->getPost('custom_sms'),
+                'custom_sms'         => $this->request->getPost('custom_sms'),
 
             ];
 
@@ -136,6 +144,7 @@ class ControllerBusinessBase extends ControllerBase
                 $objBusinessSubscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst(
                     "user_id = {$objSuperUser->id}"
                 );
+
                 if (!$objBusinessSubscription) {
                     $this->createSubscriptionPlan($objSuperUser, $this->request);
                 } else {
@@ -169,17 +178,28 @@ class ControllerBusinessBase extends ControllerBase
             // Creating a business
             // Are we a super user?
             if ($identity['is_admin']) {
-                $dbUsers = \Vokuro\Models\Users::find("is_admin = 1");
+                $dbUsers = \Vokuro\Models\Users::find(
+                    "is_admin = 1"
+                );
+                
                 foreach ($dbUsers as $objUser) {
                     $tUserIDs[] = $objUser->id;
                 }
+
                 unset($objUser);
             } else {
-                $objLoggedInUser = \Vokuro\Models\Users::findFirst("id = " . $identity['id']);
-                $dbUsers = \Vokuro\Models\Users::find("agency_id = " . $objLoggedInUser->agency_id);
+                $objLoggedInUser = \Vokuro\Models\Users::findFirst(
+                    "id = " . $identity['id']
+                );
+                
+                $dbUsers = \Vokuro\Models\Users::find(
+                    "agency_id = " . $objLoggedInUser->agency_id
+                );
+                
                 foreach ($dbUsers as $objUser) {
                     $tUserIDs[] = $objUser->id;
                 }
+
                 unset($objUser);
             }
         }
@@ -190,7 +210,11 @@ class ControllerBusinessBase extends ControllerBase
             $sub_selected = 0;
         }
         
-        $markup = $this->buildSubsriptionPricingPlanMarkUp($sub_selected, $tUserIDs);
+        $markup = $this->buildSubsriptionPricingPlanMarkUp(
+            $sub_selected,
+            $tUserIDs
+        );
+
         $this->view->setVar("subscriptionPricingPlans", $markup);
 
         $this->view->agency = new Agency();
@@ -199,9 +223,17 @@ class ControllerBusinessBase extends ControllerBase
         if ($agency_id > 0) {
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $agency_id);
-            $age2 = Agency::findFirst(array($conditions, "bind" => $parameters));
+            
+            $age2 = Agency::findFirst(
+                array($conditions, "bind" => $parameters)
+            );
+            
             $this->view->agency = $age2;
-            $location = Location::findFirst('agency_id = '.$agency_id);
+
+            $location = Location::findFirst(
+                'agency_id = ' . $agency_id
+            );
+            
             $this->view->setVar("location", $location);
         }
 
@@ -224,12 +256,12 @@ class ControllerBusinessBase extends ControllerBase
      */
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0)
     {
-
         $this->view->agency_type_id = $agency_type_id;
         $this->view->agency_id = $agency_id;
 
         $form = new AgencyForm(null);
         $age = new Agency();
+
         $this->view->form = $form;
         
         if ($this->request->isPost()) {
@@ -244,8 +276,6 @@ class ControllerBusinessBase extends ControllerBase
             //     ];
             //     $Notification->createOrUpdateBusiness($params)
             //        $Notification->save();
-
-            // print_r($_POST);exit;
 
             $errors = [];
             $messages = [];
@@ -280,22 +310,25 @@ class ControllerBusinessBase extends ControllerBase
             if (!$form->isValid($this->request->getPost())) {
                 $messages[] = $form->getMessages();
             }
+
             if (!$IsEmailUnique) {
                 $messages[] = 'The admin email is already used.  Please enter a different email address.';
             }
+
             if (!$IsEmailValid) {
                 $messages[] = 'Please enter an Admin Email.';
             }
+
             if (!$IsNameValid) {
                 $messages[] = 'Please enter an Admin Full Name.';
             }
+
             if (count($messages) > 0) {
                 $error = true;
             }
 
             $db = $this->di->get('db');
             $db->begin();
-            //echo "here";exit;
             
             /* Attempt to create our new business */
             $params = [
@@ -319,12 +352,15 @@ class ControllerBusinessBase extends ControllerBase
                 'signup_page'=>2,
             ];
           
-          if($this->request->getPost('subscription_pricing_plan_id')) {
-            $subs_plan = SubscriptionPricingPlan::findFirst('id = '.$this->request->getPost('subscription_pricing_plan_id', 'striptags'));
-            if($subs_plan && isset($subs_plan->max_sms_messages)) {
-              $params['review_goal'] = $subs_plan->max_sms_messages;
+            if ($this->request->getPost('subscription_pricing_plan_id')) {
+                $subs_plan = SubscriptionPricingPlan::findFirst(
+                    'id = ' . $this->request->getPost('subscription_pricing_plan_id', 'striptags')
+                );
+
+                if ($subs_plan && isset($subs_plan->max_sms_messages)) {
+                    $params['review_goal'] = $subs_plan->max_sms_messages;
+                }
             }
-          }
 
             if (!$age->createOrUpdateBusiness($params)) {
                 $error = true;
@@ -337,15 +373,16 @@ class ControllerBusinessBase extends ControllerBase
 
                 $msgx = $this->request
                              ->getPost('name', 'striptags')
-                             ." is register under You with email ID "
-                             .$this->request->getPost('email', 'striptags');
+                             . " is register under You with email ID "
+                             . $this->request->getPost('email', 'striptags');
 
                 $createdxx = date('Y-m-d H:i:s');
+
                 $result = $this->db->query(
                     "INSERT INTO notification "
-                    ."( `to`, `from`, `message`, `read`,`created`,`updated`) "
-                    ."VALUES "
-                    ."( '".$parent_id."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')"
+                    . "( `to`, `from`, `message`, `read`,`created`,`updated`) "
+                    . "VALUES "
+                    . "( '".$parent_id."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')"
                 );
 
                 /*** notification mail ***/
@@ -388,7 +425,6 @@ class ControllerBusinessBase extends ControllerBase
                         'upgraded_status'    => 0,
 
                     ];
-
 
                     if (!$age->createOrUpdateBusiness($params)) {
                         $error = true;
