@@ -105,7 +105,10 @@ class Reviews extends BaseService
     public function setGoogleRefreshToken($refresh_token, $LocationID)
     {
         return;
-        $objLocation = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE);
+        $objLocation = \Vokuro\Models\LocationReviewSite::findFirst(
+            "location_id = {$LocationID} AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE
+        );
+        
         if (!$objLocation) {
             $objLocation = new \Vokuro\Models\LocationReviewSite();
             $objLocation->location_id = $LocationID;
@@ -689,7 +692,6 @@ class Reviews extends BaseService
             if ((isset($phone) && !empty($phone))
                 && $is_sms_alert_on == 1
                 && ($is_individual_review == 1 || $is_all_review == 1)) {
-                if ($user_info->phone != '') {
                     $message = $invite->name . " " . $invite->phone . " has submitted " . $rating . " for employee " . $user_info->name;
 
                     $message = "You just received a new review " . $data['rating'] . " from " . $data['user_name'] . " on " . $site_review . " and the review is: " . $data['review_text'];
@@ -702,7 +704,6 @@ class Reviews extends BaseService
                             $TwilioFrom)) {
 
                     }
-                }
             }
         }
              
