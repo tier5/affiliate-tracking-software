@@ -188,3 +188,4 @@ $di->set('smsManager', new SmsManager($config));
  */
 $di->set('paymentService', new PaymentService($config, $di));
 
+$di->set('Emailservice', new \Vokuro\Services\Email($config,$di));

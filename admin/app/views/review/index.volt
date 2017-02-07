@@ -2,6 +2,7 @@
 {{ content() }}
 <div class="review index">
     <?php
+    
 //verify that we found a review invite
 if (isset($invite)) {
   //we have an invite, so find what type of question we should ask
@@ -121,9 +122,9 @@ if (isset($invite)) {
       }
       ?>
             <div class="question">Would You Recommend Us?</div>
-            <div class="row text-center"><a href="/review/recommend?a=<?=htmlspecialchars($_GET["a"])?>&r=5"
+            <div class="row text-center"><a href="/review/recommend?a=<?=htmlspecialchars($_GET["a"])?>&r=5&rec=Y"
                 class="btn-lg btn-recommend">Yes</a></div>
-            <div class="row text-center last"><a href="/review/nothanks?a=<?=htmlspecialchars($_GET["a"])?>&r=1"
+            <div class="row text-center last"><a href="/review/nothanks?a=<?=htmlspecialchars($_GET["a"])?>&r=1&rec=N"
                 class="btn-lg btn-nothanks">No Thanks</a></div>
         </div>
         <div class="subtext text-center">Next Step, Write A Review</div>
@@ -151,4 +152,12 @@ if (isset($invite)) {
     <?php
 } //end checking for a review invite
 ?>
+</div>
+<br>
+<br>
+
+<?php if($parent_agency->name):?>
+  <div class="footer">Powered by:
+  <a href="<?=$parent_agency->website; ?>" style="Margin:0;color: #333;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none"><?=$parent_agency->name; ?></a></div>
+  <?php endif;?>
 </div>

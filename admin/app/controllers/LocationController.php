@@ -4,6 +4,7 @@
     use Phalcon\Tag;
     use Phalcon\Mvc\Model\Criteria;
     use Phalcon\Paginator\Adapter\Model as Paginator;
+    use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
     use Vokuro\Forms\LocationForm;
     use Vokuro\Models\Agency;
     use Vokuro\Models\FacebookScanning;
@@ -137,7 +138,7 @@
             $objLocation->save();
 
             $objReviewsService->DeleteYelpReviews($LocationID);
-            $objReviewsService->importYelpReviews($LocationID);
+            $objReviewsService->importYelpReviews($LocationID, false);
  
             $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}"); 
         }
@@ -161,12 +162,12 @@
             					  $objGoogleBusiness->locality . " " .
             					  $objGoogleBusiness->state_province . " " .
             					  $objGoogleBusiness->country;
-//print_r($objGoogleBusiness);
+
             $objLocation->url = "https://www.google.com/search?q=".str_replace(" ", "+", $objLocation->name)."&ludocid=".$objLocation->cid."#lrd=".$objLocation->lrd.",3,5";
             $objLocation->save();
 			
             $objReviewsService->DeleteGoogleReviews($LocationID);
-            $objReviewsService->importGoogleMyBusinessReviews($LocationID);
+            $objReviewsService->importGoogleMyBusinessReviews($LocationID, false);
 
             $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
         }
@@ -195,7 +196,7 @@
                         $this->flash->success("Your business has been successfully synced with our system.");
                         $objReviewService = new \Vokuro\Services\Reviews();
                         $objReviewService->DeleteFacebookReviews($LocationID);
-                        $objReviewService->importFacebook($LocationID);
+                        $objReviewService->importFacebook($LocationID, false);
                     }
                     break;
                 }
@@ -284,7 +285,7 @@
         public function yelpurlAction() {
             //yelp web service api call
             $id = $_GET['i'];
-//echo $id;
+            //echo $id;
             $yelp = new YelpScanning();
             $yelp->construct();
             $results = $yelp->get_business($id);
@@ -490,7 +491,6 @@
             $this->view->form = new LocationForm(null);
             $this->view->SignupProcess = false;
             $this->view->pick("session/signup2");
-
         }
 
         /**
@@ -499,7 +499,6 @@
          * @return bool
          */
         protected function updateAgencySubscriptionPlan($LocationID, $Creating) {
-
             if(!$LocationID)
                 return false;
 
@@ -509,15 +508,17 @@
             // First check this business subscription level.  If trial, we can ignore.  Trial accounts can only have 1 location and they are not paid.
             $SubscriptionLevel = $objSubscriptionManager->GetBusinessSubscriptionLevel($objLocation->agency_id);
 
-            if($SubscriptionLevel == \Vokuro\Services\ServicesConsts::$PAYMENT_PLAN_TRIAL)
+            if ($SubscriptionLevel == \Vokuro\Services\ServicesConsts::$PAYMENT_PLAN_TRIAL) {
                 return true;
+            }
 
             // Get a list of all businesses under the Agency and count total locations
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objLocation->agency_id}");
             $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
 
-            if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV)
+            if ($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 return true;
+            }
 
             $dbBusinesses = \Vokuro\Models\Agency::find("parent_id = {$objAgency->agency_id}");
             $LocationCount = 0;
@@ -528,20 +529,36 @@
             }
 
             // Determine if we need to expand / shrink agency subscription plan
-            $objAgencySuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} and role='Super Admin'");
-            $objAgencySubscription = \Vokuro\Models\AgencySubscriptionPlan::findFirst("agency_id = {$objAgency->id}");
-            $objAgencyPricingPlan = \Vokuro\Models\AgencyPricingPlan::findFirst("id = {$objAgencySubscription->pricing_plan_id}");
+            $objAgencySuperUser = \Vokuro\Models\Users::findFirst(
+                "agency_id = {$objAgency->agency_id} and role='Super Admin'"
+            );
 
+            $objAgencySubscription = \Vokuro\Models\AgencySubscriptionPlan::findFirst(
+                "agency_id = {$objAgency->id}"
+            );
+
+            if (!$objAgencySubscription) {
+
+            }
+
+            $objAgencyPricingPlan = \Vokuro\Models\AgencyPricingPlan::findFirst(
+                "id = {$objAgencySubscription->pricing_plan_id}"
+            );
 
             $objPaymentService = new \Vokuro\Services\PaymentService();
-            if(($Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses) || (!$Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses)) {
+
+            if (($Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses)
+                || (!$Creating && $LocationCount > $objAgencyPricingPlan->number_of_businesses)) {
+
                 $NewPayment = $Creating ? ($LocationCount * $objAgencyPricingPlan->price_per_business * 100) : (($LocationCount-1) * $objAgencyPricingPlan->price_per_business * 100);
+
                 $ccParameters = [
                     'userId' => $objAgencySuperUser->id,
                     'type' => 'Agency',
                     'amount' => $NewPayment,
                     'provider' => \Vokuro\Services\ServicesConsts::$PAYMENT_PROVIDER_STRIPE,
                 ];
+
                 $objPaymentService->changeSubscription($ccParameters);
             }
 
@@ -674,7 +691,7 @@
             $lifetimevalue = $this->request->getPost('lifetimevalue');
             $querystring = '?review_goal=' . $reviewgoal . '&lifetime_value_customer=' . $lifetimevalue;
             $url = '/location/create3/' . ($location_id > 0 ? $location_id : '') . $querystring;
-//echo '<pre>post:'.print_r($_POST,true).'</pre>';
+            //echo '<pre>post:'.print_r($_POST,true).'</pre>';
 
             //get the user id, to find the settings
             $identity = $this->auth->getIdentity();
@@ -1141,11 +1158,11 @@
         }
 
 
-         public function send_emailfnAction() {
+        public function send_emailfnAction() {
             // Only process POST reqeusts.
             if ($_POST) {
                 echo 'kk';exit;
-           // echo $_POST["email"];exit;
+                // echo $_POST["email"];exit;
 
                 /***  Email From  29.11.2012 ***/
                 /***  Email From  29.11.2012 ***/
@@ -1271,7 +1288,7 @@
                          //echo '<br>';exit;
                         exit;*/
 
-                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
+                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token,  $this->twilio_from_phone)) {
                             $this->flash->success("The SMS was sent successfully");
                         }
                             
@@ -1328,6 +1345,35 @@
                     return;
                 } else {
                     //else we have a phone number, so send the message
+                    /*** checking for total sms sent vs total sms allowed to send 27/12/2016 ****/
+                    $location_id=$this->session->get('auth-identity')['location_id'];
+                    $start_time = date("Y-m-d", strtotime("first day of this month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+        $sql = "SELECT review_invite_id
+              FROM review_invite
+                INNER JOIN location ON location.location_id = review_invite.location_id
+              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "'";
+               // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $total_sms_sent=$rs->count();//exit;
+
+        $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+       // $identity = $this->session->get('auth-identity');
+        //echo $objAgency->agency_id;exit;
+
+        if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $agency->parent_id > 0)
+            $MaxSMS = $objSubscriptionManager->GetMaxSMS($agency->agency_id, $location_id);
+        else
+            $MaxSMS = 0;
+        $NonViralSMS = $MaxSMS;
+        $ViralSMS = $objSubscriptionManager->GetViralSMSCount($agency->agency_id);
+       $MaxSMS += $ViralSMS;
+                    /*** checking for total sms sent vs total sms allowed to send 27/12/2016 ****/
+                    if($total_sms_sent<$MaxSMS){
                     $name = $_POST['name'];
                     $message = $_POST['SMS_message'].'  Reply stop to be removed';
                     //replace out the variables
@@ -1387,7 +1433,7 @@
                        
                         //The message is saved, so send the SMS message now
                         //echo $message;exit;
-                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_auth_messaging_sid, $this->twilio_from_phone)) {
+                        if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token, $this->twilio_from_phone)) {
 
                         for($i=0;$i<count($insert_id_array);$i++)
                              {
@@ -1399,6 +1445,11 @@
                             $this->flash->success("The SMS was sent successfully");
                         }
 
+                        }
+                    } //total sms vd allowed checking end
+                    else
+                    {
+                        $this->flash->error("Sorry!! you have exceeded the total number of allowed SMS sent out.");
                     }
                 }
             }

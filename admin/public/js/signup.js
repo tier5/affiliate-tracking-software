@@ -3,13 +3,13 @@ var flag1 = false;
 var flag2 = false;
 
 if ((document.getElementById('email'))) {
-	document.getElementById('email').addEventListener("focusout", checkAvailableEmail);
+	document.getElementById('email').addEventListener("focusout", emailValidandAvailable);
 }
 if ((document.getElementById('confirmPassword'))) {
-	document.getElementById('confirmPassword').addEventListener("focusout", passwordVerification);
+	document.getElementById('confirmPassword').addEventListener("focusout", passwordValid);
 }
 if ((document.getElementById('password'))) {
-	document.getElementById('password').addEventListener("focusout", passwordVerification);
+	document.getElementById('password').addEventListener("focusout", passwordValid);
 }
 if ((document.getElementById('register-submit-btn'))) {
 	document.getElementById('register-submit-btn').addEventListener("click", submitForm);
@@ -21,7 +21,8 @@ if ((document.getElementById('register-submit-btn'))) {
 
 
 // function to include javscript files necessary 
-function require(script) {
+function require(script)
+{
     $.ajax({
         url: script,
         dataType: "script",
@@ -35,46 +36,89 @@ function require(script) {
     });
 }
 
+function submitForm()
+{
+    var validPassword = passwordValid();
+    var validEmail = emailValid();
 
-function submitForm() {
-	checkAvailableEmail();
- 	//passwordVerification();
+    console.log(validPassword, validEmail);
+
+	if (validPassword && validEmail) {
+        emailAvailable(function() {
+            document.getElementById('register-form').submit();
+        });
+    }
 }
 
-function checkAvailableEmail() {
-			
+function emailValidandAvailable()
+{
+    emailValid();
+    emailAvailable();
+}
+
+function emailValid()
+{
 	var return_field_name = 'Email_availability_result';
 	var return_field_object = document.getElementById(return_field_name);
 	var email_field_name = 'email';
 	var email_field_object = document.getElementById(email_field_name);
-
 	
 	if ( !validEmail(email_field_object.value) ) {
 		return_field_object.innerHTML = 'Invalid Email Address';
-
 		$('#Email_availability_result').css('color', 'red');
 		register_button_object.disable = true;
+
 		return false;
-	} else {
+	} else if (email.length < 6) { 
+        document.getElementById(returnResult).innerHTML = 'Min length is 6';
+
+        return false;
+    } else {
 		return_field_object.innerHTML = '';
 		register_button_object.disable = false;
-		var p = checkEmailAvailability(email_field_object.value, register_button_name, return_field_name);
-
-		return p;
+        return true;
 	}
-	
+}
+
+//function to check email availability
+function emailAvailable(callback)
+{
+    var callback = callback || 0;
+    var email_field_name = 'email';
+    var returnResult = 'Email_availability_result';
+    var button = register_button_name; // defined in global scope
+    var email = document.getElementById(email_field_name).value;
     
     
-    
+    $.post("/session/checkForAvailableEmail", { 'email': email },
+        function(result, status) {
+            if (result == 0) {          
+                //show that the email is available
+                document.getElementById(returnResult).innerHTML = 'Available';
+                $('#' + returnResult).css('color', 'green');
+                document.getElementById(button).disabled = false;
+                if (callback) {
+                    callback();
+                }
+                return true
+            } else {
+                //show that the email is NOT available
+                document.getElementById(returnResult).innerHTML = 'Not Available';
+                $('#' + returnResult).css('color', 'red');
+                document.getElementById(button).disabled = true;
+                return false;
+            }
+    });  
 }
 
 
-function passwordVerification() {
+function passwordValid()
+{
 
 	 if (document.getElementById('password').value.length < 8) {
     	document.getElementById('Confirm_password_result').innerHTML = 'Requirement: minimum 8 characters';
     	register_button_object.disable = true;
-    	return false;
+    	validPassword = false;
     }
 	
     if ( document.getElementById('password').value != document.getElementById('confirmPassword').value ) {
@@ -89,7 +133,9 @@ function passwordVerification() {
     	return true;
     }
 }
-function chkchk(){
+
+function chkchk()
+{
     if (document.getElementById('password').value.length < 8) {
         document.getElementById('Confirm_password_result').innerHTML = 'Requirement: minimum 8 characters';
         register_button_object.disable = true;
@@ -108,46 +154,6 @@ function chkchk(){
         return true;
     }
 }
-
-
-//function to check email availability
-function checkEmailAvailability(email, button, returnResult) {
-    //get the email
-
-	if (email.length < 6) { 
-		document.getElementById(returnResult).innerHTML = 'Min length is 6';
-		return false;
-	}
-	
-	
-    $.post("/session/checkForAvailableEmail", { 'email': email },
-        function(result, status) {
-    	if (result == 0) {  		
-            //show that the email is available
-        	document.getElementById(returnResult).innerHTML = 'Available';
-        	$('#' + returnResult).css('color', 'green');
-            document.getElementById(button).disabled = false;
-            ///alert(flag2)
-
-            //passwordVerification();
-
-            if(passwordVerification())
-            	document.getElementById('register-form').submit();
-
-            //alert(result)
-            
-            return true
-        } else {
-            //show that the email is NOT available
-        	document.getElementById(returnResult).innerHTML = 'Not Available';
-        	$('#' + returnResult).css('color', 'red');
-            document.getElementById(button).disabled = true;
-            return false;
-        }
-
-    });  
-}
-
 
 /*var adjustLogoMargins = function() {
 	var headerHeight = eval($('header').height());

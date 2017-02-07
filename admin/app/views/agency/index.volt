@@ -86,9 +86,48 @@ foreach($tBusinesses as $objBusiness) {
                             <td><?=$objBusiness->name?></td>
                             <td><?=$objBusiness->email?></td>
                             <td><?=date("Y-m-d",strtotime($objBusiness->date_created))?></td>
-                            <td>{{ objBusiness.subscription_id ? objBusiness.subscription.name : 'Free' }}
-                            </td>
-                            <td>{{ objBusiness.subscription_id ? 'Paid':'Free' }}
+                            <!--<td>{{ objBusiness.subscription_id ? objBusiness.subscription.name : 'Free' }}
+                            </td>-->
+                           <!-- <td><?=(isset($objBusiness->subscription_id) && $objBusiness->subscription_id > 0?objBusiness.subscription.name:($generate_array[$objBusiness->id]=='FR')?'Free':"Paid")?></td>-->
+
+                           <td>
+                           <?php
+                                if(isset($objBusiness->subscription_id) && $objBusiness->subscription_id > 0)
+                                {
+                                echo $plan_name[$objBusiness->id];
+                                }
+                                elseif(isset($generate_array[$objBusiness->id]))
+                                {
+                                    if ($generate_array[$objBusiness->id]=='FR')
+                                    {
+                                        echo 'Free';
+                                    }
+                                    else
+                                    {
+                                        echo $generate_array[$objBusiness->id];
+                                    }
+                                }else{
+                                    echo 'Free';
+                                }
+                                ?>
+                           </td>
+
+                            <td>
+                            <?php
+                              if (isset($generate_array[$objBusiness->id])) {
+                                  if ($generate_array[$objBusiness->id]=='FR') {
+                                    echo 'Free';
+                                  } elseif ($generate_array[$objBusiness->id]=='TR') {
+                                     echo 'Trial';
+                                  } else {
+                                    echo 'Paid';
+                                  }
+                              } elseif (isset($account_type[$objBusiness->id])) {
+                                  echo $account_type[$objBusiness->id];
+                              }else{
+                                  echo 'Free';
+                              }
+                            ?>
                             </td>
                             <td>
                                 <a href="/admindashboard/status/2/{{ objBusiness.agency_id }}/{{ objBusiness.status ? 0 : 1 }}"><img src="/public/img/{{ objBusiness.status ? 'on' : 'off' }}.png" /></a>

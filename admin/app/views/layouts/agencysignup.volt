@@ -6,6 +6,7 @@
 <!--<![endif]-->
 
 <head>
+    <script src="/js/rollbar.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <meta charset="utf-8" />
     {{ get_title() }}

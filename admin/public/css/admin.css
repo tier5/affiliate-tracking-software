@@ -687,6 +687,28 @@ div#image_container img.selected, div#image_container img:hover{
    width: 80%;
 }
 
+#tab_email table td a{
+  display: inline-block;
+  color: #fff;
+  background: #000;
+  border: 1px solid #000;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 5px 20px;
+  border-radius: 5px !important;
+  text-decoration: none;
+  transition: 0.5s;
+}
+
+#tab_email table td a:hover{
+  background: none;
+  color: #000;
+}
+
+.business_conf,.employee_conf,.viral_mail{
+  display: none;
+}
+
 
 .upsidedown .portlet.light > .portlet-title { border-bottom: none; border-top: 1px solid #eef1f5; min-height: 30px; margin-bottom: 0; }
 .upsidedown .portlet.light { padding: 7px 10px 9px; }
@@ -1144,6 +1166,13 @@ body { background-color: #FFFFFF; color: #484848; }
     display: block;
 }
 
+.custom_number_show {
+    display: none;
+}
+.custom_number_show.show {
+    display: block;
+}
+
 .feedback_requests {
     font-weight: bold;
 }
@@ -1231,4 +1260,98 @@ body { background-color: #FFFFFF; color: #484848; }
   #reviews .ui-state-default{
     height: auto;
   }
+}
+
+
+.reviews p{
+  color: #000 !important;
+  font-size: 15px;
+  font-weight: 400;
+  margin: 0 !important;
+  text-transform: uppercase;
+}
+
+.reviews .number a{
+   background: #ea4335 none repeat scroll 0 0;
+    border-radius: 15px !important;
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    height: auto;
+    margin: 20px 0 0;
+    padding: 15px 40px;
+    text-transform: uppercase;
+}
+
+.reviews .number a:hover, .reviews .number a:focus{
+  text-decoration:none;
+}
+
+.top-banner{
+  background: #ea4335;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 99;
+  text-align: center;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 5px 0;
+}
+
+.top-banner a{
+  display: inline-block;
+  background: #FFC601;
+  color: #000;
+  margin-left: 10px;
+  padding: 5px 15px;
+  border-radius: 12px !important;
+  text-decoration: none;
+}
+
+.top-banner .close-div{
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+}
+
+.page-header.navbar.navbar-fixed-top, .page-header.navbar.navbar-static-top{
+  z-index: 95 !important;
+}
+
+.dropdown-box{
+  position: absolute;
+  right: 0;
+  background: #fff;
+  display: none;
+}
+
+.dropdown-box ul{
+  padding: 0;
+}
+
+.dropdown-box ul li a{
+  background: none;
+  font-size: 12px;
+  margin: 0;
+  width: 100%;
+  border-radius: 0 !important;
+  transition: 0.5s;
+  padding: 10px 20px;
+}
+
+.dropdown-box ul li a:hover{
+  background: #FFC601;
+}
+
+.page-header-fixed .page-container.top-banner-show {
+    margin-top: 85px;
+}
+
+.top-banner-show.navbar-fixed-top{
+      top: 40px;
 }

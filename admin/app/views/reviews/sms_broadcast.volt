@@ -1,5 +1,18 @@
 {{ content() }}
 
+<script type="text/javascript" src="/js/jquery.validate.js"></script>
+<?php
+if ($this->session->get("success")!='') 
+        {
+            echo '<div class="alert alert-success">';
+            echo $msg= $this->session->get("success");
+           
+            echo '</div>';
+             $this->session->set("success", '');
+        }
+
+ ?>
+
 <header class="jumbotron subhead" id="reviews">
   <div class="hero-unit">
     <form class="form-horizontal" role="form" method="post" autocomplete="off" id="broadcastform">
@@ -12,7 +25,7 @@
         <?php
           if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
             if ($is_upgrade) {
-              $percent = ($total_sms_month > 0 ? number_format((float)($sms_sent_this_month_total / $total_sms_month) * 100, 0, '.', ''):100);
+              $percent = ($total_sms_month > 0 ? number_format((float)(($sms_sent_this_month_total+$sms_sent_this_month_total_non) / $total_sms_month) * 100, 0, '.', ''):100);
               if ($percent > 100) {
                 $percent = 100;
               }
@@ -25,11 +38,11 @@
                     <div class="bar-filled" style="width: <?=$percent?>%;"></div>
                     <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
                     <div class="bar-number" style="margin-left: <?=$percent?>%;">
-                      <div class="ball"><?=$sms_sent_this_month_total?></div>
+                      <div class="ball"><?=$sms_sent_this_month_total+$sms_sent_this_month_total_non?></div>
                       <div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div>
                     </div>
                   </div>
-                  <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} /  <?=$sms_sent_this_month_total?>)<br/><span class="goal">Allowed</span></div>
+                  <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} /  <?=($sms_sent_this_month_total+$sms_sent_this_month_total_non)?>)<br/><span class="goal">Allowed</span></div>
                 </div>
               </div>
         <?php
@@ -346,7 +359,7 @@
                         <!--
                           <textarea style="width: 100%;" name="SMS_message" class="form-control"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?></textarea>-->
 
-                          <textarea style="width: 100%;" name="SMS_message" class="form-control"></textarea>
+                          <textarea style="width: 100%;" name="SMS_message" class="form-control" id="sms_messg"></textarea>
 
                           <i style="color: #c3c3c3; display: block; font-size: 12px; margin-top: 11px;">{location-name} will be the name of the location sending the SMS, {name} will be replaced with the name entered when sending the message and {link} will be the link to the review.</i>
                         </div>
@@ -355,21 +368,21 @@
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="link" style="text-align: left;">Link:</label>
                       <div class="col-md-7">
-                        <input type="text" id="test_link" placeholder="Link" class="form-control url" style="color:#000;" value="<?=(isset($_POST['link'])?$_POST["link"]:'')?>" name="link" id="link" onblur="validateURL()" />
+                        <input type="text" id="test_link" placeholder="Link" class="form-control url" style="color:#000;" value="" name="link" id="link" onblur="validateURL()" />
                         <span class="url_err"></span>
                       </div>
                       <div class="col-md-4">
-                        <input type="submit" class="btnLink btnSecondary" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" id="sendbutton" />
+                        <input type="submit" class="btnLink btnSecondary" value="Send SMS Message" style="height: 34px; padding: 6px; width: 100%;" id="sendbutton" name="submit" />
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-md-1 control-label" for="name" style="text-align: left;">Name:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Name" id="test_name" class="form-control" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>" name="name" id="name" style="color:#000;" />
+                        <input type="text" placeholder="Name"  class="form-control  t_name" value="" name="name" id="name" style="color:#000;" title="Name is required" />
                       </div>
                       <label class="col-md-1 control-label" for="phone" style="text-align: left;">Phone:</label>
                       <div class="col-md-3">
-                        <input type="text" placeholder="Phone" id="test_phone" class="form-control" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" />
+                        <input type="text" placeholder="Phone"  class="form-control  t_phone" value="<?=(isset($_POST['phone'])?$_POST["phone"]:'')?>" name="phone" id="phone" style="color:#000;" title="Phone is required" />
                       </div>
                       <div class="col-md-4">
                         <button id="testbutton" type="submit" class="btnLink btnSecondary" value="Send Test SMS Message" style="height: 34px; padding: 6px; width: 100%;" >Send Test SMS Message</button>
@@ -421,6 +434,7 @@ function validateURL() {
 if(!url_validate.test(textval)){
    $('.url').val('');
    $('.url_err').html('<font color="red">Please enter a proper link</font>');
+
 }
 else{
    //alert('success');
@@ -428,6 +442,7 @@ else{
 }
 }
   jQuery(document).ready(function($){
+
     $('.date-picker').datepicker({
       orientation: "right",
       autoclose: true
@@ -436,7 +451,7 @@ else{
     $('.fancybox').fancybox();
 
     $('#testbutton').click(function (e) {
-        if($('#test_name').val().trim() == '') {
+        if($('#name').val().trim() == '') {
             alert('Name is required');
             return false;
         }
@@ -446,7 +461,7 @@ else{
             return false;
         }
 
-        if($('#test_phone').val().trim() == '') {
+        if($('#phone').val().trim() == '') {
             alert('Phone is required');
             return false;
         }
@@ -465,8 +480,22 @@ else{
       }
     });
     $('#sendbutton').click(function (e) {
+      if($('#sms_messg').val()=='')
+      {
+      $('.t_name').addClass('required');
+      $('.t_phone').addClass('required');
+      $('.url').addClass('required');
       $('#broadcastform').validate();
+      }
+      else
+      {
+      $('.t_name').removeClass('required');
+      $('.t_phone').removeClass('required');
+      $('.url').removeClass('required');
+      }
       $('#formposttype').val('send');
+     
+    
     });
     $('#searchbutton').click(function (e) {
       $('#formposttype').val('');

@@ -2,8 +2,10 @@
 use Vokuro\Models\Agency;
 use Vokuro\Models\EmailConfirmations;
 use Vokuro\Models\Users;
+use Vokuro\Models\ReviewInvite;
 use Vokuro\Models\UsersLocation;
 use Vokuro\Models\Location;
+use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
 
 /**
  * Class Email
@@ -67,6 +69,7 @@ class Email{
         }
 
         $template='confirmation';
+        $email_content='';
         if(!$record) throw new \Exception("Could not find an Email Confirmation for user with email of:".$user->email);
 
         $Domain = $this->config->application->domain;
@@ -81,24 +84,81 @@ class Email{
         }
         elseif($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) { // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
             $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
-            $AgencyUser =$objAgencyUser->name." ".$objAgencyUser->last_name;
+            $AgencyUser =$objAgencyUser->name;
             $AgencyName = $objAgency->name;
             $EmailFrom =  $objAgency->email;
             $EmailFromName='';
-
+            
+             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+            if($objParentAgency->welcome_email!='')
+            {
+                 $Domain = $this->config->application->domain;
+                 $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
+                $email_content = $objParentAgency->welcome_email;
+                $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
+                
+                if(strpos( strtolower($email_content,'{link}')) === false){
+                  $email_content .= '<p>{Link}</p>';
+                }
+                
+                $link="<a href=".$redirect_uri.">Clicking Here</a>";
+                $email_content = str_ireplace("{Link}", $link, $email_content);
+                $email_content = str_ireplace("{FirstName}", $user->name, $email_content);
+                $email_content = str_ireplace("{AgencyUser}", $AgencyUser, $email_content);
+            }
+            
         }
         elseif($objAgency->parent_id > 0) {
+            $AgencyName = $AgencyUser = '';
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
-            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
-            $AgencyName = $objParentAgency->name;
-            $AgencyUser = $objAgencyUser->name." ".$objAgencyUser->last_name;
+            if($objParentAgency->agency_id) {
+              $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objParentAgency->agency_id} AND role='Super Admin'");
+              $AgencyName = $objParentAgency->name;
+              $AgencyUser = $objAgencyUser->name;
+            }
+            
             if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
                 throw new \Exception("Your email from address or your custom domain needs to be set to send email");
             $EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
             $EmailFromName=$objParentAgency->email_from_name ?: "";
+           
+            if($objParentAgency->welcome_email!='')
+            {
+                 $Domain = $this->config->application->domain;
+                 $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
+                $email_content = $objParentAgency->welcome_email;
+                $email_content = str_replace("{AgencyName}", $AgencyName, $email_content);
+                
+                if(strpos( strtolower($email_content),'{link}') === false) {
+                  $email_content .= '<p>{Link}</p>';
+                }
+                
+                $link="<a  href=".$redirect_uri.">Clicking Here</a>";
+                $email_content = str_ireplace("{Link}", $link, $email_content);
+                $email_content = str_ireplace("{FirstName}", $user->name, $email_content);
+                $email_content = str_ireplace("{AgencyUser}", $AgencyUser, $email_content);
+            }
 
            
             //$EmailFrom =$objParentAgency->email_from_address ?: "no_reply@{$objParentAgency->custom_domain}.{$Domain}";
+        }
+
+        if($email_content=='')
+        {
+             $Domain = $this->config->application->domain;
+            $redirect_uri = "http://{$Domain}/confirm/".$record->code."/". $user->email;
+            $email_content="Hey ".$user->name.",
+                   <P>Congratulations on joining us at ".$AgencyName.", I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+
+                    <P>If you wouldn’t mind, I’d love it if you answered one quick question: Why did you decide to join us at ".$AgencyName." ?</P>
+
+                    <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit 'reply' and let me know.</P>
+                    
+                    <p>To get started just confirm your email by <a  href=".$redirect_uri.">Clicking Here</a></p>
+                    <p></p>
+                    <p>Thanks,</p>
+                    <p>".$AgencyUser."</p>
+                    <p>".$AgencyName."</p>";
         }
          if($AgencyName =='') {
             
@@ -106,6 +166,7 @@ class Email{
             $AgencyUser = "Zach Anderson";
             $EmailFrom = "zacha@reviewvelocity.co";
             $EmailFromName='';
+            $email_content='';
             $template="agencyconfirmation";
          }
 
@@ -115,6 +176,7 @@ class Email{
             'AgencyName' => $AgencyName,
             'AgencyUser' => $AgencyUser,
             'Loginpass'=>$log_in_password,
+            'email_content'=>html_entity_decode($email_content),
            
         ];
 
@@ -129,7 +191,7 @@ class Email{
         return true;
     }
 
-    public function sendEmployeeReport($dbEmployees, $objLocation, $tSendTo) {
+  public function sendEmployeeReport($dbEmployees, $objLocation, $tSendTo,$review_type_id=null) {
         try {
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objLocation->agency_id}");
             $objFacebookReviewSite = \Vokuro\Models\LocationReviewSite::findFirst("location_id = {$objLocation->location_id} AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK);
@@ -160,21 +222,101 @@ class Email{
             }
             $objEmployees = $dbEmployees;
 
-            $Params = array(
+
+            /** for cron job 31/01/2017 ******/
+
+
+
+
+        /*** new start generator ***/
+    if($review_type_id!=''){
+        $rating_array_set_all = array();
+        $YNrating_array_set_all = array();
+    
+        foreach ($dbEmployees as $ux) {
+            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+
+            // Base model
+            $list = new ReviewInvite();
+
+            // Execute the query
+            $params = null;
+
+            $rs = new Resultset(
+                null,
+                $list,
+                $list->getReadConnection()->query($sql, $params)
+            );
+
+            $YNrating_array_set_all[$ux->id] = $rs->toArray();
+        }
+        
+        // print_r($YNrating_array_set_all);exit;
+       // $this->view->YNrating_array_set_all = $YNrating_array_set_all;
+
+        foreach ($dbEmployees as $ux) {
+           $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
+
+            // Base model
+            $list = new ReviewInvite();
+
+            // Execute the query
+            $params = null;
+            
+            $rs = new Resultset(
+                null,
+                $list,
+                $list->getReadConnection()->query($sql, $params)
+            );
+            
+            $rating_array_set_all[$ux->id] = $rs->toArray();
+        }
+
+         $Params = array(
                 'dbEmployees'           => $dbEmployees,
                 'objLocation'           => $objLocation,
                 'objAgency'             => $objAgency ?: null,
                 'FullDomain'            => $FullDomain,
                 'Website'               => $objBusiness->website,
                 'FacebookURL'           => $FacebookURL,
+                'review_type_id'        =>$review_type_id,  
+                'domain'                => $Domain, 
+                'rating_array_set_all'  =>$rating_array_set_all,
+                'YNrating_array_set_all'=>$YNrating_array_set_all,            
 
             );
-            
-            //echo $objRecipient->email;exit;
-            foreach($tSendTo as $objRecipient) {
-                echo $mail->send($objRecipient->email, "Your daily employee report!", 'employee_report', $Params);
-                sleep(1);
-            }
+        }
+
+
+        else
+        {
+             $Params = array(
+                'dbEmployees'           => $dbEmployees,
+                'objLocation'           => $objLocation,
+                'objAgency'             => $objAgency ?: null,
+                'FullDomain'            => $FullDomain,
+                'Website'               => $objBusiness->website,
+                'FacebookURL'           => $FacebookURL,
+                         
+
+            );
+        }
+    
+       // $this->view->rating_array_set_all=$rating_array_set_all;
+        
+        /*** new start generator ***/
+            /** for cron job 31/01/2017 ******/
+
+
+           
+            //if($review_type_id) { // if review type 
+              //echo $objRecipient->email;exit;
+              foreach($tSendTo as $objRecipient) {
+                  echo $mail->send($objRecipient->email, "Your daily employee report!", 'employee_report', $Params);
+                  //echo $mail->send('dellatier5@gmail.com', "Your daily employee report!", 'employee_report', $Params);
+                  sleep(1);
+              }
+            //}
         } catch (Exception $e) {
             // GARY_TODO: Add logging!
             print $e;
@@ -234,7 +376,7 @@ class Email{
         //echo $businessname;exit;
         $confirmationModel = new EmailConfirmations();
         $record = $confirmationModel->getByUserId($u->getId());
-
+        $domain = $this->config->application->domain;
         if (!$record){
             //we don't have a confirmation
             $confirmationModel->send_email = false;
@@ -321,7 +463,7 @@ class Email{
             
 
            // $AgencyUser = $objAgencyUser->name;
-            $AgencyUser = $oAgency->name." ".$oAgency->last_name;
+            $AgencyUser = $oAgency->name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $this->from = $from = 'no-reply@reviewvelocity.co';
@@ -338,17 +480,50 @@ class Email{
         if(!$u->is_employee){
             throw new \Exception('Cannot send an employee activation email to someone that is not an employee');
         }
-            
-        $mail = $this->getDI()->getMail();
-        $mail->setFrom($from,$from_name);
         $params = [];
         $params['employeeName']=$u->name;
         $params['AgencyUser']=$AgencyUser;
         $params['AgencyName']=$AgencyName;
         $params['BusinessName']=$busi_nam;
         $params['confirmUrl'] = '/admin/confirmEmail/' . $code . '/' . $u->email;
+        $email_content = '';
+        
+        if($objParentAgency && $objParentAgency->welcome_email_employee){
+          $email_content = $objParentAgency->welcome_email_employee;
+        }else{
+          $email_content = 'Hi {EmployeeName},
+            	<p>
+            		We’ve just created your profile for {BusinessName} within our software. 
+            	</p>
+                <p>When you {ActivateNow} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard.<p>
+                <p>{Link}</p>
+                <p>Looking forward to working with you.</p>
+                <p></p>
+                <p>Thanks,</p>
+                <p>{AgencyUser}</p>
+                <p>{AgencyName}</p>';
+        }
+        
+        if(strpos( strtolower($email_content),'{link}') === false){
+          $email_content .= '<p>{Link}</p>';
+        }
+              
+        $link='<a href="http://'.$domain.$params['confirmUrl'].'"> ACTIVATE HERE </a>';
+        $clickHereLink = '<a href="http://'.$domain.$params['confirmUrl'].'"><i>Click Here and Activate Your Profile Now</i></a>';
+        $email_content = str_ireplace("{Link}", $link, $email_content);
+        $email_content = str_ireplace("{ActivateNow}", $clickHereLink, $email_content);
+        $email_content = str_ireplace("{BusinessName}", $busi_nam, $email_content);
+        $email_content = str_ireplace("{EmployeeName}", $u->name, $email_content);
+        $email_content = str_ireplace("{AgencyUser}", $AgencyUser, $email_content);
+        $email_content = str_ireplace("{AgencyName}", $AgencyName, $email_content);
+        
+        $params['email_content'] = html_entity_decode($email_content);
+        
+        $mail = $this->getDI()->getMail();
+        $mail->setFrom($from,$from_name);
+        
        // $mail->send($u->email, "Welcome aboard!", 'employee', $params);
-
+  
         $mail->send($u->email, "Activate your account!", 'employee', $params);
 
     }
@@ -383,7 +558,7 @@ class Email{
             
 
            // $AgencyUser = $objAgencyUser->name;
-            $AgencyUser = $oAgency->name." ".$oAgency->last_name;
+            $AgencyUser = $oAgency->name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $this->from = $from = 'no-reply@reviewvelocity.co';

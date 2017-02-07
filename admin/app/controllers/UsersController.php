@@ -11,6 +11,7 @@
     use Vokuro\Models\UsersLocation;
     use Vokuro\Models\PasswordChanges;
     use Vokuro\Services\Email;
+    use Vokuro\Models\LocationNotifications;
 
     /**
      * Vokuro\Controllers\UsersController
@@ -238,6 +239,20 @@
                     if($user->is_employee){
                         $mail = new Email();
                         $mail->sendActivationEmailToEmployee($user,'',$businessname);
+                    }
+                    
+                   
+                    
+                    if ($this->session->get('auth-identity')['location_id'] && $user->is_employee) {
+                        $locNoti = new  LocationNotifications();
+                        $locNoti->assign(array(
+                            'location_id' => $this->session->get('auth-identity')['location_id'],
+                            'user_id'     => $user->id,
+                            'sms_alert'   => 1,
+                            'employee_leaderboards' => 1,
+                            'individual_reviews'    =>1,
+                            ));
+                        $locNoti->save();
                     }
 
                     $this->flash->success("The user was created successfully");

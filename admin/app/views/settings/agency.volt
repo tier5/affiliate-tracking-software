@@ -1,3 +1,4 @@
+<script src="/assets/global/plugins/ckeditor/ckeditor.js"></script>
 <style>
 .agencysettingspage{
     position:relative;
@@ -46,6 +47,8 @@
 
 <?php $BusinessType = $this->session->get('auth-identity')['agencytype'] == 'business' ? 'Business' : 'Agency'; ?>
 
+ <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-summernote/summernote.css" />
+ <script type="text/javascript" src="/assets/global/plugins/bootstrap-summernote/summernote.min.js"></script>
 <header class="jumbotron subhead <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'agency')?>settingspage" id="reviews">
     <div class="hero-unit">
 
@@ -119,7 +122,7 @@
                     <li class="{{ GeneralExpanded }}"><a href="#tab_general" data-toggle="tab"> General </a></li>
                     <li><a href="#tab_review_invite" data-toggle="tab"> Review Invite </a></li>
                     <li><a href="#tab_sms_message" data-toggle="tab"> SMS Message </a></li>
-                    <!--<li><a href="#tab_twitter_message" data-toggle="tab"> Twitter Message </a></li>-->
+                   <!-- <li><a href="#tab_twitter_message" data-toggle="tab"> Twitter Message </a></li> -->
                     <li><a href="#tab_white_label" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
@@ -136,6 +139,12 @@
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
                         Intercom </a></li>
+
+                         <li class=""><a href="#tab_email" data-toggle="tab" <?=(isset($this->
+                        session->get('auth-identity')['agencytype']) &&
+                        $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>>
+                        Email </a></li>
+
                     <li><a href="#tab_notification" data-toggle="tab" <?=(isset($this->
                         session->get('auth-identity')['agencytype']) &&
                         $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>>
@@ -431,7 +440,7 @@
 
 
                     <!-- START Twitter Message Settings  -->
-                    <div class="tab-pane fade in" id="tab_twitter_message">
+                    <!-- <div class="tab-pane fade in" id="tab_twitter_message">
                         <div class="form-group">
                             <div class="row">
                                 <label for="twitter_message" class="col-md-4 control-label">Twitter Message</label>
@@ -443,7 +452,7 @@
                             
                         </div>
 
-                    </div>
+                    </div> -->
                     <!-- END SMS Twitter Settings  -->
 
                     <!-- START White Label Settings  -->
@@ -550,23 +559,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <label for="twilio_auth_messaging_sid" class="col-md-4 control-label">Twilio Messaging
-                                    Service SID</label>
-                                <div class="col-md-8">
-                                    {{ form.render("twilio_auth_messaging_sid", ["class": 'form-control', 'placeholder': 'Twilio Messaging Service SID']) }}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <i>Either the Twilio Messaging Service SID or the Twilio Phone number is required.
-                                        The Twilio Messaging Service SID allows for dynamic phone numbers.
-                                        <a href="https://www.twilio.com/copilot" target="_blank">Click here</a> to read
-                                        more about this field.</i>
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="form-group">
                             <div class="row">
                                 <label for="twilio_from_phone" class="col-md-4 control-label">Twilio Phone
@@ -679,6 +672,140 @@
                         </div>
                     </div>
                     <!-- END Stripe Settings  -->
+
+                    <!-- Start Email Settings  -->
+                    <?php /* $business_welcome_message="Hey {firstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you’ll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+
+                    <P>If you wouldn’t mind, I’d love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
+
+                    <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit reply and let me know.
+                   </P>  To get started just confirm your email by {link} Clicking Here</a><br/><br/>Thanks,<br/><br/>
+
+                    {AgencyUser}<br/>
+                    {AgencyName}";
+
+                   $employee_confirmation_mail="<p>
+                    We’ve just created your profile for {BusinessName} within our software.</p> <p>When you {link} Click Here and Activate Your Profile Now you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+                    <p>
+                 {link}
+                 ACTIVATE HERE </a>
+                  </p> <p>Looking forward to working with you.</p>";
+
+                  $message_set="I just started using this amazing new software for my business.  They are giving away a trial account here: {share_link}";
+                  */ ?>
+                    <div class="tab-pane fade in" id="tab_email">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <table class="table table-bordered table-responsive table-striped">
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Business Confirmation Email</td>
+                                        <td><a href="#" data-title="business_conf">Edit</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Employee Confirmation Email</td>
+                                        <td><a href="#" data-title="employee_conf">Edit</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Viral Email</td>
+                                        <td><a href="#" data-title="viral_mail">Edit</a></td>
+                                    </tr>
+                                </table>
+                                <div class="editor-box">
+                                    <div class="business_conf">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Subject</label>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control" value="Business Confirmation Email" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="welcome_email_business" class="col-md-2 control-label">Content</label>
+                                                <div class="col-md-10">
+                                                    <?php /*<textarea autocomplete="off" style="width: 100%;" class="form-control summernote" name="welcome_email" id="welcome_email"><?php if($agency->welcome_email!='') { echo $agency->welcome_email;} else { echo $business_welcome_message;} ?></textarea> */ ?>
+                                                    {{ agencyform.render("welcome_email", ["class": 'form-control summernote', 'id': 'welcome_email', 'type': 'textarea']) }}
+                                                    
+                                                    </br>
+                                                    {FirstName} First name of business user <br>
+                                                    {AgencyName} The name of your agency <br>
+                                                    {AgencyUser} First name and last name of the agency owner <br>
+                                                    {Link} The activation link for the business and shows up as Click here
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <i></i>
+                                                </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="employee_conf">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Subject</label>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control" value="Employee Confirmation Email" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="welcome_email_employee" class="col-md-2 control-label">Content</label>
+                                                <div class="col-md-10">
+                                                    <?php /*<textarea autocomplete="off" style="width: 100%;" class="form-control summernote2" name="welcome_email_employee" id="welcome_email_employee">
+
+                                                    <?php if($agency->welcome_email_employee!='')
+                                                    {
+                                                    echo $agency->welcome_email_employee;
+                                                    }else
+                                                    {
+                                                    echo $employee_confirmation_mail;
+                                                    }
+                                                    ?></textarea> */ ?>
+                                                    
+                                                    {{ agencyform.render("welcome_email_employee", ["class": 'form-control summernote2', 'id': 'welcome_email_employee']) }}
+                                                    <br>
+                                                    {EmployeeName} Employee name <br>
+                                                    {BusinessName} The business name <br>
+                                                    {Link} The activation link for the employee and shows up as ACTIVATE HERE <br>
+                                                    {ActivateNow} Another activation link for the employee and show up as Click Here and Activate Your Profile Now <br>
+                                                    {AgencyName} The name of your agency <br>
+                                                    {AgencyUser} First name and last name of the agency owner <br>
+                                                    
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <i></i>
+                                                </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="viral_mail">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Subject</label>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control" value="Viral Email" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="intercom_security_hash" class="col-md-2 control-label">Content</label>
+                                            <div class="col-md-10">
+                                               <?php /* <textarea autocomplete="off"style="width: 100%;" class="form-control summernote1" name="viral_mail">
+                                                    <?php if($agency->viral_email!='') { echo $agency->viral_email;} else { echo $message_set;} ?>
+                                                </textarea>
+                                                */ ?>
+                                                {{ agencyform.render("viral_email", ["class": 'form-control summernote1']) }}
+                                                <br>
+                                                {ShareLink} Business signup from viral link <br>
+                                                {BusinessName} The business name <br>
+                                                {AgencyName} The name of your agency <br>
+                                                {AgencyUser} First name and last name of the agency owner <br>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Email Settings  -->
 
                     <!-- START Intercom Settings  -->
                     <div class="tab-pane fade in" id="tab_intercom">
@@ -1100,5 +1227,39 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         });
 
     });
+
+  $(document).ready(function() {
+    //$('.summernote').summernote({
+    //    height: 300,
+    //    toolbar: [
+    //        ['font', ['bold', 'italic', 'underline']],
+    //        ['para', ['ul', 'ol']],
+    //        ['insert', ['link']]
+    //    ]
+    //});
+    //
+    //$('.summernote1').summernote({
+    //    height: 300,
+    //    toolbar: [
+    //        ['font', ['bold', 'italic', 'underline']],
+    //        ['para', ['ul', 'ol']],
+    //        ['insert', ['link']]
+    //    ]
+    //});
+    //
+    //$('.summernote2').summernote({
+    //    height: 300,
+    //    toolbar: [
+    //        ['font', ['bold', 'italic', 'underline']],
+    //        ['para', ['ul', 'ol']],
+    //        ['insert', ['link']]
+    //    ]
+    //});
+    
+      CKEDITOR.replace( 'welcome_email' );
+      CKEDITOR.replace( 'welcome_email_employee' );
+      CKEDITOR.replace( 'viral_email' );
+    });
+
 
 </script>

@@ -9,6 +9,7 @@
 <!-- BEGIN HEAD -->
 
 <head>
+    <script src="/js/rollbar.js"></script>
  <?php
              if (strpos($_SERVER['REQUEST_URI'],'link/createlink')>0) {?>
  <link href="/css/style_review.css" rel="stylesheet" />
@@ -132,10 +133,116 @@
     <style type="text/css">
     </style>
     <link rel="stylesheet" href="/dashboard/css?primary_color={{ primary_color }}&secondary_color={{ secondary_color }}">
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.close-div').click(function(){
+            $('.dropdown-box').slideToggle(300);
+        });
+
+        var user_id=$('#top_id').val();
+        $('.close-all').click(function(){
+            $('.top-banner').remove();
+            $('.navbar-fixed-top').removeClass("top-banner-show");
+            $('.page-container').removeClass("top-banner-show");
+
+              $.ajax({
+          url: '/review/close',
+          method: "POST",
+          async:false,
+          data: { user_id : user_id},
+          success:function(html)
+              {
+           //alert(html);  
+             
+             }
+           });
+
+        });
+
+        $('.dismiss').click(function(){
+            $('.top-banner').remove();
+            $('.navbar-fixed-top').removeClass("top-banner-show");
+            $('.page-container').removeClass("top-banner-show");
+
+             $.ajax({
+          url: '/review/dismiss',
+          method: "POST",
+          async:false,
+          data: { user_id : user_id},
+          success:function(html)
+              {
+           //alert(html);  
+             
+             }
+           });
+
+        });
+
+        $('#click_rate').click(function(){
+            //$('a .connect_btn').trigger("click");
+            var href = $('.connect_btn').attr('href');
+            window.location.href = href; 
+        });
+    });
+</script>
 </head>
 <!-- END HEAD -->
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" data-ccprompt="{{ ccInfoRequired }}" data-paymentprovider="{{ paymentService }}">
+
+ <a href="/location/edit/<?php echo $top_location_id?>/0/0" class="connect_btn" style="display:none;">click here to connect</a>
+
+<input type="hidden" id="top_id" value="<?php echo $this->session->get('auth-identity')['id'];?>">
+<?php 
+  //echo $this->session->get('auth-identity')['id'];exit;
+  //echo $top_banner;exit;
+  //echo $top_banner_session;exit;
+if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1 && ($top_banner_session!=2)){
+
+ if(!$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected )
+{ ?>
+<div class="top-banner">you must connect your Google,Facebook,Yelp account to monitor these review sites <a   id="click_rate">click here to connect</a>
+  <span class="close-div">X</span>
+    <div class="dropdown-box">
+        <ul>
+            <li><a href="#" class="close-all">Close</a></li>
+            <li><a href="#" class="dismiss">Dismiss</a></li>
+        </ul>
+    </div>
+</div>
+<?php } else { 
+
+$conn_account='';
+    if(!$GoogleMyBusinessConnected)
+    {
+    $conn_account.="Google,";
+    }
+    if(!$facebookMyBusinessConnected)
+    {
+    $conn_account.="Facebook,";
+    }
+    if(!$YelpMyBusinessConnected)
+    {
+    $conn_account.="Yelp,";
+    }
+    $conn_account=rtrim($conn_account,",");
+
+?>
+<div class="top-banner">
+    you must connect your <?php echo $conn_account;?> account to monitor these review sites 
+    <a id="click_rate">click here to connect</a>
+    <span class="close-div">X</span>
+    <div class="dropdown-box">
+        <ul>
+            <li><a href="#" class="close-all">Close</a></li>
+            <li><a href="#" class="dismiss">Dismiss</a></li>
+        </ul>
+    </div>
+</div>  
+
+<?php } }?>
+<!-- Top banner ends -->
 {% if BusinessDisableBecauseOfStripe AND 1 == 2 %}
     <div class="container">
         <div class="row">
@@ -147,7 +254,7 @@
 <input type="hidden" id="primary_color" value="{{ primary_color }}" />
 <input type="hidden" id="secondary_color" value="{{ secondary_color}}" />
 <!-- BEGIN HEADER -->
-<div class="page-header navbar navbar-fixed-top">
+<div class="page-header navbar navbar-fixed-top <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1 && ($top_banner_session!=2)){ ?>top-banner-show <?php } ?>">
     <!-- BEGIN HEADER INNER -->
     <div class="page-header-inner ">
         <!-- BEGIN LOGO -->
@@ -251,7 +358,7 @@
 <div class="clearfix"></div>
 <!-- END HEADER & CONTENT DIVIDER -->
 <!-- BEGIN CONTAINER -->
-<div class="page-container">
+<div class="page-container <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1 && ($top_banner_session!=2)){ ?>top-banner-show <?php } ?>">
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
         <!-- BEGIN SIDEBAR -->
@@ -268,7 +375,7 @@
                     <li class="nav-item start">
                         <a href="/admindashboard" class="nav-link nav-toggle">
                             <i class="icon-home"></i>
-                            <span class="title">Dashboard</span>
+                            <span class="title">Dashboard</span> 
                             <span class="selected"></span>
                         </a>
                     </li>
@@ -311,6 +418,13 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
+                         <li class="nav-item start">
+                            <a href="/agency/customnumber" class="nav-link nav-toggle">
+                                <i class="fa fa-globe"></i>
+                                <span class="title">Custom SMS Number</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     {% elseif agencytype == "business" %}
                         <li class="nav-item start">
                             <a href="/" class="nav-link nav-toggle">
@@ -331,6 +445,8 @@
 
                     {% if location_id %}
                         {% if agencytype != "agency" %}
+
+                        <?php if($facebookMyBusinessConnected ||  $GoogleMyBusinessConnected || $YelpMyBusinessConnected){ ?>
                             <li class="nav-item">
                                 <a href="/reviews" class="nav-link nav-toggle">
                                     <i class="icon-diamond"></i>
@@ -338,6 +454,7 @@
                                     <span class="selected"></span>
                                 </a>
                             </li>
+                            <?php } ?>
                             <li class="nav-item">
                                 <a href="/analytics" class="nav-link nav-toggle">
                                     <i class="icon-bar-chart"></i>
@@ -385,6 +502,7 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
+                        
                     {% endif %}
                     <?php } ?>
                     {% if profile != "User" %}
@@ -585,9 +703,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <textarea 
-                                                	style="width: 100%;" 
-                                                	class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{location.SMS_message }}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
+                                                <textarea	style="width: 100%;" class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{location.SMS_message}}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
                                                 <i>{location-name} will be the name of the location sending the SMS,
                                                     {name} will be replaced with the name entered when sending the
                                                     message and {link} will be the link to the review.</i>

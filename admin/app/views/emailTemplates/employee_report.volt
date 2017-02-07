@@ -403,7 +403,7 @@
                                                                                         <!--<td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:15px;text-align:center;vertical-align:top;word-wrap:break-word"><?=$Employee->positive_feedback_this_month ?: 0; ?></td>-->
                                                                                         <td valign="middle" style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#474747;font-family:Helvetica,Arial,sans-serif;font-size:<?=$FontSize; ?>;font-weight:400;hyphens:auto;line-height:1.3;margin:0;padding:0;text-align:center;vertical-align:middle;word-wrap:break-word" class="avgfeedbck">
                                                                                         <?php 
-                                                                                        if($review_invite_type_id==1){
+                                                                                        if($review_invite_type_id==1 || $review_type_id==1){
                                                                                             $yes=0;
                                                                                             $no=0;
 
@@ -423,7 +423,7 @@
 
                                                                                       <?=($Employee->sms_received_this_month > 0?(round($cal*100) . '%'):'0%')?>
 
-                                                                                        <?php } elseif($review_invite_type_id==2)
+                                                                                        <?php } elseif($review_invite_type_id==2 || $review_type_id==2)
 
                                                                                         {
                                                                                         $sert=0;

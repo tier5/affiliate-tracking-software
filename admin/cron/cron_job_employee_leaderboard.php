@@ -67,11 +67,19 @@
 
        foreach ($dbLocations as $objLocation) {
             if(isset($tRecipients[$objLocation->location_id])) {
-                $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $objLocation->location_id, 0, 0, 1);
+                $objReview = \Vokuro\Models\Location::findFirst(
+                "location_id = {$objLocation->location_id}"
+            );
+                $dbEmployees = \Vokuro\Models\Users::getEmployeeListReportGenerate($objBusiness->agency_id, $Start, $End, $objLocation->location_id,$objReview->review_invite_type_id, 0, 1);
                 $dbRecipients = \Vokuro\Models\Users::find("id IN (" . implode(',', $tRecipients[$objLocation->location_id]) . ")");
+                 
 
                 $objEmail = new \Vokuro\Services\Email();
-                $objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients);
+                //$objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients);
+                if($objReview->review_invite_type_id) {
+                  $objEmail->sendEmployeeReport($dbEmployees, $objLocation, $dbRecipients,$objReview->review_invite_type_id);
+                }
             }
         }
     }
+
