@@ -20,7 +20,8 @@ class SubscriptionManager extends BaseService
         parent::__construct($config, $di);
     }
 
-    public function creditCardInfoRequired($session, $iUserID = null) {
+    public function creditCardInfoRequired($session, $iUserID = null)
+    {
         $userManager = $this->di->get('userManager');
         $paymentService = $this->di->get('paymentService');
 
@@ -110,7 +111,8 @@ class SubscriptionManager extends BaseService
         }
     }
 
-    public function GetBusinessSubscriptionUpgradeDiscount($BusinessID) {
+    public function GetBusinessSubscriptionUpgradeDiscount($BusinessID)
+    {
         $subscriptionManager = $this->di->get('subscriptionManager');
 
         /* Get Super Admin */
@@ -205,6 +207,7 @@ class SubscriptionManager extends BaseService
         $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
         $sms_sent_this_month = 0;
         $FreePlan = false;
+        
         if ($LocationID) {
             $CurrentCount = \Vokuro\Models\ReviewInvite::count(
                 array(
@@ -314,11 +317,12 @@ class SubscriptionManager extends BaseService
     public function getActiveSubscriptionPlan()
     {
         $results = $this->getActiveSubscriptionPlans();
-        //echo '<pre>';print_r($results);exit;
+
         //if we only have one active.. or the one with the latest id.. then we return that one
         if ($results && $results[0]) {
             return $results[0];
         }
+
         throw new \Exception('No active subscription plans found');
     }
 
@@ -441,6 +445,7 @@ class SubscriptionManager extends BaseService
             ->bind(["userId" => $subscriptionParameters['userId']])
             ->execute()
             ->getFirst();
+
         if (!$subscriptionPlan) {
             throw new \Exception(
                 "Could not find subscription plan for user id " . $subscriptionParameters['userId']
@@ -452,6 +457,7 @@ class SubscriptionManager extends BaseService
         $subscriptionPlan->locations = $subscriptionParameters['locations'];
         $subscriptionPlan->sms_messages_per_location = $subscriptionParameters['messages'];
         $subscriptionPlan->payment_plan = $subscriptionParameters['planType'];
+
         if (!$subscriptionPlan->save()) {
             throw new \Exception(
                 "Could not save subscription plan - " . implode('.  ', $subscriptionPlan->getMessages())
@@ -489,6 +495,7 @@ class SubscriptionManager extends BaseService
             ->bind(["id" => intval($subscription_pricing_plan_id)])
             ->execute()
             ->getFirst();
+
         if (!$pricingPlan) {
             return false;
         }
@@ -821,7 +828,9 @@ class SubscriptionManager extends BaseService
             $db->rollback();
             return false;
         }
+
         $db->commit();
+        
         return true;
     }
 
@@ -910,19 +919,27 @@ class SubscriptionManager extends BaseService
     {
         //echo $AgencyID;exit;
         
-        $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$AgencyID}");
+        $objAgency = \Vokuro\Models\Agency::findFirst(
+            "agency_id = {$AgencyID}"
+        );
+        
         if (!$objAgency->viral_sharing_code) {
             return 0;
         }
 
-        $Referrals = \Vokuro\Models\SharingCode::count("sharecode = '{$objAgency->viral_sharing_code}'");//exit;
+        $Referrals = \Vokuro\Models\SharingCode::count(
+            "sharecode = '{$objAgency->viral_sharing_code}'"
+        );
+
         return $Referrals > 4 ? 100 : $Referrals * 25;
     }
 
 
     public function getSubscriptionPrice($UserID, $PlanType)
     {
-        $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst('user_id = ' . $UserID);
+        $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst(
+            'user_id = ' . $UserID
+        );
         
         $objSubscriptionParameters = \Vokuro\Models\SubscriptionPricingPlanParameterList::find(
             'subscription_pricing_plan_id = ' . $objSubscriptionPlan->subscription_pricing_plan_id
@@ -981,9 +998,11 @@ class SubscriptionManager extends BaseService
         $subscriptionPricingPlanParameterList->subscription_pricing_plan_id = intval($id);
         $subscriptionPricingPlanParameterList->min_locations = intval($parameters['minLocations']);
         $subscriptionPricingPlanParameterList->max_locations = intval($parameters['maxLocations']);
+        
         $subscriptionPricingPlanParameterList->location_discount_percentage = floatval(
             $parameters['locationDiscountPercentage']
         );
+
         $subscriptionPricingPlanParameterList->base_price = floatval($parameters['basePrice']);
         $subscriptionPricingPlanParameterList->sms_charge = floatval($parameters['smsCharge']);
         $subscriptionPricingPlanParameterList->total_price = floatval($parameters['totalPrice']);

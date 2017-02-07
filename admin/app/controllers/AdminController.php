@@ -5,7 +5,7 @@ namespace Vokuro\Controllers;
 error_reporting(E_ALL);
 ini_set("display_errors", "on");
 
-use Phalcon\UserPlugin\Models\User\User;
+use Phalcon\UserPlugin\Models\User\User as User;
 use Vokuro\Models\Agency;
 use Phalcon\UserPlugin\Models\User\UserResetPasswords;
 use Phalcon\UserPlugin\Models\User\UserPasswordChanges;
