@@ -42,6 +42,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    
                                     {% for pricingProfile in pricingProfiles %}
                                         <tr id="{{ pricingProfile.id }}" role="row">
                                             <td>{{ pricingProfile.name }}</td>
@@ -73,6 +74,7 @@
                                             <td><button id="delete-pricing-plan-control" class="btn default btn-lg apple-backgound subscription-btn"><i class="fa fa-trash"></i></button></td>
                                         </tr>
                                     {% endfor %}
+                                    
                                     </tbody>
                                 </table>
                             </div>

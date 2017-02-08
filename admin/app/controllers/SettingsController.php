@@ -1,52 +1,689 @@
 <?php
-namespace Vokuro\Controllers;
 
-use Phalcon\Image\Adapter\GD;
+namespace Vokuro\Controllers;
+use Vokuro\Models\SubscriptionPricingPlan;
+use Vokuro\Services\SubscriptionManager;
+use Vokuro\Utils;
+use Vokuro\ArrayException;
 use Phalcon\Tag;
-use Phalcon\Mvc\Model\Criteria;
-use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
-use Phalcon\Paginator\Adapter\Model as Paginator;
-use Vokuro\Forms\AgencyForm;
-use Vokuro\Forms\ChangePasswordForm;
-use Vokuro\Forms\SettingsForm;
+use Vokuro\Forms\LoginForm;
+use Vokuro\Forms\SignUpForm;
+use Vokuro\Forms\CreditCardForm;
+use Vokuro\Forms\ForgotPasswordForm;
+use Vokuro\Auth\Exception as AuthException;
 use Vokuro\Models\Agency;
+use Vokuro\Models\FacebookScanning;
+use Vokuro\Models\GoogleScanning;
 use Vokuro\Models\Location;
-use Vokuro\Models\UsersLocation;
-use Vokuro\Models\LocationNotifications;
 use Vokuro\Models\LocationReviewSite;
-use Vokuro\Models\PasswordChanges;
-use Vokuro\Models\ReviewInvite;
-use Vokuro\Models\ReviewsMonthly;
-use Vokuro\Models\ReviewSite;
-use Vokuro\Models\SharingCode;
-use Vokuro\Services\ServicesConsts;
+use Vokuro\Models\LocationNotifications;
+use Vokuro\Models\ResetPasswords;
 use Vokuro\Models\Users;
-use Services_Twilio;
-use Services_Twilio_RestException;
-use Pricing_Services_Twilio;
+use Vokuro\Models\EmailConfirmations;
 
 /**
- * Vokuro\Controllers\UsersController
- * CRUD to manage users
+ * Controller used handle non-authenticated session actions like login/logout, user signup, and forgotten passwords
  */
-class SettingsController extends ControllerBase {
+class SessionController extends ControllerBase {
 
-    public function initialize()
-    {
-        $this->tag->setTitle('Get Mobile Reviews | Settings');
-        $this->view->setTemplateBefore('private');
-        parent::initialize();
-    }
+    public $validSubDomains = [ 'my', 'www', 'reviewvelocity', '104', 'dev', 'stage', 'dev2', 'localhost'];
+
+    public $facebook_access_token;
 
 
     /**
-     * Searches for users
+     * Default action. Set the public layout (layouts/private.volt)
      */
-    public function indexAction() 
+    public function initialize() {
+        if (!$this->facebook_access_token) {
+            $face = new FacebookScanning();
+            $this->facebook_access_token = $face->getAccessToken();
+        }
+        parent::initialize();
+    }
+
+    public function indexAction() {
+        $this->view->setTemplateBefore('login');
+
+        $this->tag->setTitle('Get Mobile Reviews | Subscription');
+    }
+
+    // Also will 404 on invalid subdomain
+    protected function DetermineParentIDAndSetViewVars($objPricingPlan = null) {
+        // First try to determine parent id from pricing plan if present
+        if($objPricingPlan) {
+            $objUser = \Vokuro\Models\Users::findFirst("id = {$objPricingPlan->user_id}");
+            return $objUser->agency_id;
+        }
+        // Determine if business under an agency or Get Mobile Reviews
+            $parts = explode(".", $_SERVER['SERVER_NAME']);
+            if(count($parts) == 3 && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
+                $subdomain = $parts[0];
+
+                $objParentAgency = Agency::findFirst([
+                        "custom_domain = :custom_domain:",
+                        "bind" => ["custom_domain" => $subdomain]
+                    ]);
+
+                // Subdomain must exist
+                if(!$objParentAgency) {
+                    $this->response->setStatusCode(404, "Not Found");
+                    echo "<h1>404 Page Not Found</h1>";
+                    $this->view->disable();
+                    return;
+                }
+
+                $ParentID = $objParentAgency->agency_id;
+                //echo '<pre>';print_r($objParentAgency);exit;
+                $this->view->main_color_setting = $this->view->PrimaryColor = !empty($objParentAgency->main_color) ? $objParentAgency->main_color : '#2a3644';
+                $this->view->SecondaryColor = !empty($objParentAgency->secondary_color) ? $objParentAgency->secondary_color : '#65CE4D';
+                //$this->view->logo_path = (!empty($objParentAgency->logo_path)) ? '/img/agency_logos/'.$objParentAgency->logo_path : '';
+
+            } else {
+                // Get Mobile Reviews
+                $ParentID = \Vokuro\Models\Agency::BUSINESS_UNDER_RV;
+                $this->view->main_color_setting = $this->view->PrimaryColor = '#2a3644';
+                $this->view->SecondaryColor = '#65CE4D';
+                //$this->view->logo_path =  '';
+            }
+
+        return $ParentID;
+    }
+
+    public function submitSignupAction() {
+        try {
+            $subscription_id = null;
+            if($this->request->getPost('short_code'))
+            {
+                $short_code = $this->request->getPost('short_code');
+            }
+           
+            $subscription_pricing_plan = '';
+
+            $ssp = new SubscriptionPricingPlan();
+
+            if($this->request->getPost('sharing_code'))
+            {
+                $sharing_code = $this->request->getPost('sharing_code', 'striptags');
+            }
+            
+
+            $parent_id = null;
+            if ($short_code) {
+                $subscription_pricing_plan = $ssp->findOneBy(['short_code' => $short_code]);
+                if($subscription_pricing_plan) {
+                    /**
+                     * @var $subscription_pricing_plan \Vokuro\Models\SubscriptionPricingPlan
+                     */
+                    /**** 17.01.2017 ***/
+                    $subscription_id = $subscription_pricing_plan->id;
+                    //$subscription_id = 0;
+                    
+                }
+            }
+
+            /* Get services */
+            $subscriptionManager = $this->di->get('subscriptionManager');
+
+            if(!$subscription_id && $sharing_code) {
+               
+                // Viral signup, get viral subscription
+                $objBusiness = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$sharing_code}'");
+                if(!$objBusiness)
+                    throw new \Exception("Viral code not set properly.  Please contact customer support.");
+
+                $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$objBusiness->parent_id} and role = 'Super Admin'");
+
+                $objSubscription = \Vokuro\Models\SubscriptionPricingPlan::findFirst("is_viral = 1 AND user_id = {$objSuperUser->id} AND name NOT LIKE 'deleted-%'");
+                if($objSubscription)
+                    $subscription_id = $objSubscription->id;
+                $parent_id = $objBusiness->parent_id;
+               
+            }
+            //echo $subscription_id;exit;
+            if(!$subscription_id) {
+                //echo "2";
+                /**
+                 * @var $subscriptionManager \Vokuro\Services\SubscriptionManager
+                 */
+
+                $default = $subscriptionManager->getActiveSubscriptionPlan();
+                if($default){
+                   /**
+                    * @var $default \Vokuro\Models\SubscriptionPricingPlan
+                    */
+                    $short_code = $default->getShortCode();
+                    $subscription_id = $default->id;
+                }
+            }
+           
+            //echo $subscription_id;exit;
+
+            // Start transaction
+            $this->db->begin();
+
+            if (!$this->request->isPost()) {
+                throw new ArrayException("", 0, null, ['POST request required!!!']);
+            }
+
+            $form = new SignUpForm();
+
+            // Check user email unuique
+            $user = new Users();
+            $name = $this->request->getPost('name', 'striptags');
+            if(strpos($name,' ') > -1) {
+                $names = explode(' ', $name);
+            }
+            if($names){
+                $first_name = $names[0];
+                $last_name = $names[1];
+            }
+            if(!$last_name) $last_name = ' ';
+         
+            $user->assign(array(
+                'name' => $name,
+                'last_name'=>$last_name,
+                'email' => $this->request->getPost('email'),
+                'password' => $this->security->hash($this->request->getPost('password')),
+                'profilesId' => 2,
+                'role' => 'Super Admin',
+                'is_employee' => 1,
+            ));
+
+            $_SESSION['password_save'] = $this->request->getPost('password');
+
+            $isemailunuique = $user->validation();
+            if (!$isemailunuique) {
+                throw new ArrayException("Email address is not unique", 0, null, ['That email address is already taken.']);
+            }
+
+
+            $uservalid = $form->isValid($this->request->getPost());
+            if (!$uservalid) {
+                $messages = $form->getMessages();
+                if(!$messages) $messages = ['Invalid User'];
+
+                throw new ArrayException("The user was not valid", 0, null, $messages);
+            }
+            // First create an agency
+            $agency_name = $this->request->getPost('agency_name', 'striptags');
+            if(!$agency_name) $agency_name = $this->request->getPost('name','striptags');
+
+            // Also will 404 on invalid subdomain.  If its a viral code, it will use that instead.  This is hacky, but it removes some reliance on the subdomain being correct.
+            $ParentID = $parent_id ?: $this->DetermineParentIDAndSetViewVars($subscription_pricing_plan);
+
+            $agency = new Agency();
+            $agency_save_arr = [
+                'name' => $agency_name,
+                /*'referrer_code' => $this->request->getPost('sharecode'),*/
+                'date_created' => date('Y-m-d H:i:s'),
+                'signup_page' => 2, //go to the next page,
+                'agency_type_id' => 2,
+                'email' => $this->request->getPost('email'),
+                'parent_id' => $ParentID,
+                'review_invite_type_id' => 1,
+            ];
+
+            if($subscription_id){
+                $agency_save_arr['subscription_id'] = $subscription_id;
+            }
+
+            $agency->assign($agency_save_arr);
+
+            if (!$agency->save()) {
+                throw new ArrayException('Could not save Agency', 0, null, $agency->getMessages());
+            }
+
+            if($this->request->getPost('sharing_code')) {
+               /* $objSharingCode = new \Vokuro\Models\SharingCode();
+                $objSharingCode->sharecode = $this->request->getPost('sharing_code');
+                $objSharingCode->business_id = $agency->agency_id;
+                $objSharingCode->created_at = date("Y-m-d H:i:s", strtotime('now'));
+                $objSharingCode->subscription_id = $subscription_id;
+                $objSharingCode->save();*/
+
+                 $result=$this->db->query(" INSERT INTO sharing_code ( `business_id`, `subscription_id`, `created_at`, `sharecode`) VALUES ( '".$agency->agency_id."', '".$subscription_id."', '".date("Y-m-d H:i:s", strtotime('now'))."','".$this->request->getPost('sharing_code')."')");
+            }
+
+            $user->agency_id = $agency->agency_id;
+            $user->send_confirmation = true;
+            if (!$user->save() && $user->getMessages()) {
+
+                throw new ArrayException('Could not save the user', 0, null, $user->getMessages());
+            }
+            $_SESSION['name'] = $this->request->getPost('name', 'striptags');
+            $_SESSION['email'] = $this->request->getPost('email');
+
+            
+            $an=$this->request->getPost('name', 'striptags');
+            $msgx=$this->request->getPost('name', 'striptags')." is register under You with email ID ".$this->request->getPost('email', 'striptags');
+            $createdxx=date('Y-m-d H:i:s');
+            $result=$this->db->query(" INSERT INTO notification ( `to`, `from`, `message`, `read`,`created`,`updated`) VALUES ( '".$ParentID."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')");  
+                      
+            
+            $this->db->commit();
+
+            /*** notification mail ***/
+            $objSuperAdminUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $ParentID . ' AND role="Super Admin"');
+
+            if(isset($subscription_pricing_plan->name)){
+                $planName = $subscription_pricing_plan->name;
+            }else{
+                $planName = 'Free';
+            }
+
+            $EmailFrom = 'no-reply@reviewvelocity.co';
+            $EmailFromName = "Zach Anderson";
+            $subject="New Business Registered Successfully";
+            $mail_body='Dear '.$objSuperAdminUser->name.',';
+            $mail_body=$mail_body.'<p>Congratulations a new business has registered successfully with following details:
+                </p>';
+            $mail_body .= '<p>Name: '.$an.'</p>';
+            $mail_body .= '<p>Email: '.$this->request->getPost('email', 'striptags').'</p>';
+            $mail_body .= '<p>Subscription: '.$planName.'</p>';
+            $mail_body=$mail_body."Thanks";
+
+                $Mail = $this->getDI()->getMail();
+            $Mail->setFrom($EmailFrom, $EmailFromName);
+            $Mail->send($objSuperAdminUser->email, $subject, '', '', $mail_body);
+                /*** notification mail end ***/
+
+            $expire_tm = time() - 86400 * 30;
+            setcookie( "short_code",'', $expire_tm );
+            setcookie( "sharing_code",'', $expire_tm );
+            setcookie("code_generate_normal",'', $expire_tm,'/');
+            return $this->response->redirect('/session/thankyou');
+
+        } catch(ArrayException $e) {
+
+            $this->db->rollback();
+
+            if($e->getOptions()) foreach($e->getOptions() as $message) {
+                $this->flash->error($message);
+            }
+
+        }
+
+    }
+
+    public function inviteAction($short_code = null) {
+        $this->view->short_code = $short_code;
+
+            if($short_code!=null)
+            {
+            $expire = time() + 86400 * 8;
+            setcookie( "short_code",$short_code, $expire );
+            }
+            else
+            {
+                $this->view->short_code =$short_code=$_COOKIE['short_code'];
+            }
+            //code_generate
+
+            $shar_code=$_COOKIE['code_generate_normal'];//exit;
+           // echo $cookieAgency=$_COOKIE['cookie_agency_id'];exit;
+            if($shar_code)
+            {
+                $this->view->code=$_COOKIE['code_generate_normal'];
+            }
+
+        
+        $this->signupAction();
+
+        $this->view->pick('session/signup');
+        $subscription = new SubscriptionPricingPlan();
+
+        if($short_code) {
+            $plan = $subscription->findOneBy(['short_code' => $this->view->short_code]);
+
+            if ($plan) {
+                $this->enable_trial_account = $plan->enable_trial_account;
+                /**
+                 * @var $plan \Vokuro\Models\SubscriptionPricingPlan
+                 */
+                $objUser = \Vokuro\Models\Users::findFirst("id = {$plan->user_id}");
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+                //$this->view->logo_path = $objAgency->logo_path;
+                //$this->view->logo_path = "/img/agency_logos/{$objAgency->logo_path}";
+                $this->view->agency_name = $objAgency->name;
+                $status = $plan->enabled;
+
+                if(!$status) {
+                    //get the active plan
+                    $service = new SubscriptionManager();
+                    $active = $service->getActiveSubscriptionPlan();
+                    if($active){
+                        $this->view->short_code = $active->getShortCode();
+                        $this->view->setTemplateBefore('login');
+
+                        $this->view->pick('businessPricingPlan/inactive');
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public function signupAction($subscriptionToken = '0')
     {
+        $objAgency = '';
+        $objUser = '';
+        $Domain = $this->config->application->domain;
+
+        $host = $_SERVER['HTTP_HOST'];
+        $ex = explode(".", $host);
+        $subdomain = $ex[0];
+
+        // Also will 404 on invalid subdomain
+        $this->DetermineParentIDAndSetViewVars();
+
+        $agency = new Agency();
+
+        $record = $agency->findOneBy(
+            ['custom_domain' => $subdomain]
+        );
+
+        $white_label = 'Sign Up';
+
+        if ($record) {
+            if ($record->agency_id) {
+                $this->view->agencyId = $record->agency_id;
+            }
+
+            //if($record->logo_path) $this->view->logo_path = "/img/agency_logos/".$record->logo_path;
+            if ($record->name) {
+                $this->view->agency_name = $record->name;
+            }
+            
+            $this->view->agency_white_label = true;
+
+            if ($record->main_color) {
+                $this->view->main_color_setting = $record->main_color;
+            }
+        } else if (!empty($objUser) && $objUser->name) {
+            $this->view->agency_name = $objUser->name;
+        } else if ($this->request->getQuery("code")) {
+            $code = $this->request->getQuery("code");//exit;
+
+            $expire = time() + 86400 * 30;
+            setcookie("code", $code, $expire );
+            
+            $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
+            $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
+            $this->view->agencyId = $objAgency->agency_id;
+            $this->view->agency_name = $objAgency->name;
+            $cookie_agency_id= $objAgency->agency_id;//exit;
+            // echo $objAgency->parent_id;exit;
+            
+            if ($objAgency->parent_id == 0) {
+                setcookie("code_generate_normal",$code, $expire,'/');
+                setcookie("cookie_agency_id",$cookie_agency_id, $expire,'/');
+                $custom_domain=$objAgency->custom_domain;
+                $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
+                //$this->view->disable();
+                return;
+            }
+
+            if ($objAgency->parent_id) {
+                setcookie("code_generate_normal",$code, $expire,'/',$custom_domain . '.' . $Domain);
+                 setcookie("cookie_agency_id",$cookie_agency_id, $expire,'/');
+                $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+
+                $this->view->agencyId = $objAgency1->agency_id;
+                $this->view->agency_name = $objAgency1->name;
+                $custom_domain=$objAgency1->custom_domain;
+                $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
+                $this->view->disable();
+                return;
+             } else {
+                $code = $_COOKIE['code_generate_normal'];
+                $objAgency = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$code}'");
+                $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
+
+                $this->view->agencyId = $objAgency->agency_id;
+                $this->view->agency_name = $objAgency->name;
+
+                if($objAgency->parent_id) {
+                    $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
+
+                    $this->view->agencyId = $objAgency1->agency_id;
+                    $this->view->agency_name = $objAgency1->name;
+                 }
+
+                 //$this->view->agency_name ='';
+            }
+        }
+        //dd($record->agency_id);
+
+        if (!$this->view->short_code) {
+            $this->view->short_code = $_COOKIE['short_code'];
+        }
+
+        //see invite action above
+        if ($this->view->short_code) {
+            $subscription = new SubscriptionPricingPlan();
+            $plan = $subscription->findOneBy(['short_code' => $this->view->short_code]);
+            if ($plan) {
+                /**
+                 * @var $plan \Vokuro\Models\SubscriptionPricingPlan
+                 */
+                $this->view->subscription_plan_name = $plan->name;
+                $white_label = 'Sign Up '.$plan->name;
+
+            }
+        }
+
+        $this->tag->setTitle('Get Mobile Reviews | Plan: '.$white_label);
+        $this->view->setTemplateBefore('login');
+
+        /* Get services */
+        $userManager = $this->di->get('userManager');
+        $subscriptionManager = $this->di->get('subscriptionManager');
+
+        /* Are we are logged in? */
+        $userId = $userManager->getUserId($this->session);
+
+        /* Is this a valid subscription? */
+        $isValid = $subscriptionManager->isValidInvitation($subscriptionToken);
+
+        /* Simply redirect to the home if we are logged in or the form is invalid  */
+        if ($userId || (!$isValid && $this->request->isPost())) {
+            //$this->response->redirect('/');
+            // $this->view->setTemplateBefore('private');
+        }
+
+        //Utils::noSubDomains(1, $this->validSubDomains, $subscriptionToken);
+        $form = new SignUpForm();
+        $ccform = new CreditCardForm();
+
+        $this->view->userId = $userId;
+        $this->view->maxLimitReached = false;
+        $this->view->token = $subscriptionToken;
+        if (!$userId) {
+            $this->view->maxLimitReached = $userManager->isMaxLimitReached();
+        }
+
+        $this->view->form = $form;
+        $this->view->ccform = $ccform;
+        $this->view->current_step = 1;
+    }
+
+    /**
+     * Sign up form, Step 2 (Add Location)
+     */
+    /* public function signup2Action($subscription_id = 0) { */
+    public function signup2Action($pricingProfileToken = 0) {
+
+        /* $this->noSubDomains(2, $subscription_id); */
+        if($this->request->getPost('short_code')){
+            $short_code = $this->request->getPost('short_code');
+        }
+        $this->view->setTemplateBefore('signup');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
+
+        //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
+        //echo '<pre>$identity:'.print_r($identity,true).'</pre>';
+        // If there is no identity available the user is redirected to index/index
         if (!is_array($identity)) {
-            $this->response->redirect('/session/login?return=/settings/');
+            /* $this->response->redirect('/session/login?return=/session/signup2/' . ($pricingProfileToken > 0 ? $subscription_id : '')); */
+            $this->response->redirect('/session/login');
+            $this->view->disable();
+            return;
+        }
+        $conditions = "id = :id:";
+        $parameters = array("id" => $identity['id']);
+        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $userObj->agency_id);
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency->parent_id);
+        $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        
+        //$this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
+        $this->view->parent_agency = $parent_agency->name;
+        
+        if ($this->request->isPost()) {
+            $loc = new Location();
+            $loc->assign(array(
+                'name' => $this->request->getPost('name', 'striptags'),
+                'agency_id' => $agency->agency_id,
+                'phone' => $this->request->getPost('phone', 'striptags'),
+                'address' => $this->request->getPost('address', 'striptags'),
+                'locality' => $this->request->getPost('locality', 'striptags'),
+                'state_province' => $this->request->getPost('state_province', 'striptags'),
+                'postal_code' => $this->request->getPost('postal_code', 'striptags'),
+                'country' => $this->request->getPost('country', 'striptags'),
+                'latitude' => $this->request->getPost('latitude', 'striptags'),
+                'longitude' => $this->request->getPost('longitude', 'striptags'),
+                'region_id' => $this->request->getPost('region_id', 'striptags'),
+                'review_invite_type_id' => 1,
+                'date_created' => date('Y-m-d H:i:s'),
+            ));
+
+
+            if (!$loc->save()) {
+                $this->flash->error($loc->getMessages());
+            } else {
+                $foundagency = array();
+
+                //check for yelp
+                $yelp_api_id = $this->request->getPost('yelp_id', 'striptags');
+                $yelp_id = $this->yelpId($yelp_api_id);
+                if ($yelp_api_id != '' && !(strpos($yelp_api_id, '>') !== false)) {
+                    $lrs = new LocationReviewSite();
+                    $lrs->assign(array(
+                        'location_id' => $loc->location_id,
+                        'review_site_id' => \Vokuro\Models\Location::TYPE_YELP,
+                        'external_id' => $yelp_id,
+                        'api_id' => $yelp_api_id,
+                        'date_created' => date('Y-m-d H:i:s'),
+                        'is_on' => 1,
+                    ));
+
+                    //find the review info
+                    $this->importYelp($lrs, $loc, $foundagency);
+                }
+
+                //check for google
+                $google_place_id = $this->request->getPost('google_place_id', 'striptags');
+
+                $google_api_id = $this->request->getPost('google_api_id', 'striptags');
+
+                if ($google_place_id != '') {
+                    $googleScan = new GoogleScanning();
+                    $lrs = new LocationReviewSite();
+                    $lrs->assign(array(
+                        'location_id' => $loc->location_id,
+                        'review_site_id' => \Vokuro\Models\Location::TYPE_GOOGLE,
+                        'external_id' => $google_place_id,
+                        'api_id' => $google_api_id,
+                        'date_created' => date('Y-m-d H:i:s'),
+                        'is_on' => 1,
+                        'lrd' => $googleScan->getLRD($google_place_id),
+                    ));
+
+                    //find the review info
+                    $this->importGoogle($lrs, $loc, $foundagency);
+                }
+
+                //check for facebook
+                $facebook_page_id = $this->request->getPost('facebook_page_id', 'striptags');
+                if ($facebook_page_id != '') {
+                    $lrs = new LocationReviewSite();
+                    $lrs->assign(array(
+                        'location_id' => $loc->location_id,
+                        'review_site_id' => \Vokuro\Models\Location::TYPE_FACEBOOK,
+                        'external_id' => $facebook_page_id,
+                        'date_created' => date('Y-m-d H:i:s'),
+                        'is_on' => 1,
+                    ));
+
+
+                    $this->importFacebook($lrs);
+                }
+                
+                //set default notification
+                if($loc && $loc->location_id){
+                    $locNoti = new  LocationNotifications();
+                    if($userObj->profilesId == 2 && $userObj->role == 'Super Admin') {
+                        $locNoti->assign(array(
+                            'location_id' => $loc->location_id,
+                            'user_id'     =>   $userObj->id,
+                            'email_alert' => 1,
+                            'sms_alert'   => 1,
+                            'all_reviews' => 1,
+                            'employee_leaderboards' => 1,
+                        ));
+                    } elseif ($userObj->profilesId == 3 && $userObj->role == 'User') {
+                        $locNoti->assign(array(
+                            'location_id' => $loc->location_id,
+                            'user_id'     =>   $userObj->id,
+                            'sms_alert'   => 1,
+                            'employee_leaderboards' => 1,
+                            'individual_reviews'    =>1,
+                        ));
+                    }
+                    $locNoti->save();
+                }
+
+        
+                //$this->flash->success("The location was created successfully");
+                $agency->assign(array(
+                    'signup_page' => 3, //go to the next page
+                ));
+                if (!$agency->save()) {
+                    //$this->flash->error($agency->getMessages());
+                }
+                
+                $this->auth->setLocation($loc->location_id);
+
+                return $this->response->redirect('/location/edit/' . $loc->location_id . '/0/1');
+            }
+        }
+
+        
+        $this->view->SignupProcess = true;
+        $this->view->facebook_access_token = $this->facebook_access_token;
+
+        $this->view->current_step = 2;   
+    }
+
+    /**
+     * Sign up form, Step 3 (Customize Survey)
+     */
+    /* public function signup3Action($subscription_id = 0) { */
+    public function signup3Action($pricingProfileToken = 0) {
+        $this->view->setTemplateBefore('signup');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 3 | Customize Survey');
+
+        $identity = $this->auth->getIdentity();
+        // If there is no identity available the user is redirected to index/index
+        if (!is_array($identity)) {
+            $this->response->redirect('/session/login?return=/session/signup3/' . ($subscription_id > 0 ? $subscription_id : ''));
             $this->view->disable();
             return;
         }
@@ -55,966 +692,938 @@ class SettingsController extends ControllerBase {
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
 
-        if($userObj->agency_id) {
-            $conditions = "agency_id = :agency_id:";
-            $parameters = array("agency_id" => $userObj->agency_id);
-            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-            if (!$agency) {
-                $this->flash->error("No settings were found");
-            }
-        }
-
-        if ($this->request->isPost()) {
-
-            $form = new SettingsForm($agency);
-            $agencyform = new AgencyForm($agency);
-            $form->bind($_POST, $agency);
-            $agencyform->bind($_POST, $agency);
-
-            $formvalid = $form->isValid($_POST);
-            $agencyformvalid = $agencyform->isValid($_POST);
-
-            if (!$formvalid || !$agencyformvalid) {
-                foreach ($agencyform->getMessages() as $message) {
-                    $this->flash->error($message);
-                }
-                foreach ($form->getMessages() as $message) {
-                    $this->flash->error($message);
-                }
-                
-                //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
-                // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
-            } else {
-                
-              //echo 'kk';exit;
-                $agency->assign(array(
-                    'review_invite_type_id' => $this->request->getPost('review_invite_type_id', 'int'),
-                    'review_goal' => $this->request->getPost('review_goal', 'int'),
-                    'custom_domain' => $this->request->getPost('custom_domain'),
-                    'lifetime_value_customer' => str_replace("$", "", str_replace(",", "", $this->request->getPost('lifetime_value_customer'))),
-                    'SMS_message' => $this->request->getPost('SMS_message'),
-                   /* 'twitter_message' => $this->request->getPost('twitter_message'),*/
-                    'message_tries' => $this->request->getPost('message_tries'),
-                    'notifications' => $this->request->getPost('notifications'),
-                    'rating_threshold_star' => $this->request->getPost('rating_threshold_star'),
-                    'rating_threshold_nps' => $this->request->getPost('rating_threshold_nps'),
-                    'twilio_api_key' => $this->request->getPost('twilio_api_key'),
-                    'twilio_auth_token' => $this->request->getPost('twilio_auth_token'),
-                    'twilio_auth_messaging_sid' => $this->request->getPost('twilio_auth_messaging_sid'),
-                    'twilio_from_phone' => $this->request->getPost('twilio_from_phone'),
-                    'main_color' => $this->request->getPost('main_color'),
-                    'stripe_account_id' => $this->request->getPost('stripe_account_id'),
-                    'stripe_account_secret' => $this->request->getPost('stripe_account_secret'),
-                    'stripe_publishable_keys' => $this->request->getPost('stripe_publishable_keys'),
-                    'viral_sharing_code' => $this->request->getPost('viral_sharing_code'),
-                    'review_order_facebook' => $this->request->getPost('review_order_facebook'),
-                    'review_order_google' => $this->request->getPost('review_order_google'),
-                    'review_order_yelp' => $this->request->getPost('review_order_yelp'),
-                    'message_frequency' => $this->request->getPost('message_frequency'),
-                    'name' => $this->request->getPost('name', 'striptags'),
-                    'email' => $this->request->getPost('email', 'striptags'),
-                    'address' => $this->request->getPost('address', 'striptags'),
-                	'address2' => $this->request->getPost('address2', 'striptags'),
-                    'locality' => $this->request->getPost('locality', 'striptags'),
-                    'state_province' => $this->request->getPost('state_province', 'striptags'),
-                    'postal_code' => $this->request->getPost('postal_code', 'striptags'),
-                    'country' => $this->request->getPost('country', 'striptags'),
-                    'phone' => $this->request->getPost('phone', 'striptags'),
-                    'welcome_email' => $this->request->getPost('welcome_email', 'striptags'),
-                    'viral_email' => $this->request->getPost('viral_email', 'striptags'),
-             
-                   
-                ));
-                //$file_location = $this->uploadAction($agency->agency_id);
-                if ($file_location != '') $agency->logo_path = $file_location;
-
-                //delete all notification users for this agency
-                $conditions = "location_id = :location_id:";
-                $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-                $notificationdelete = LocationNotifications::find(array($conditions, "bind" => $parameters));
-                //$notificationdelete->delete();
-
-                if (!empty($_POST['users'])) {
-                    foreach ($_POST['users'] as $check) {
-                        $agencyInsert = new LocationNotifications();
-                        $agencyInsert->location_id = $this->session->get('auth-identity')['location_id'];
-                        $agencyInsert->user_id = $check;
-                        $agencyInsert->save();
-                    }
-                }
-
-                if (!$agency->save()) {
-                    $this->flash->error($agency->getMessages());
-                } else {
-                    $this->flash->success("The settings were updated successfully");
-                    Tag::resetInput();
-                }
-            }
-        }
-
-        $location_id = $this->session->get('auth-identity')['location_id'];
-        if ($location_id) {
-            // Query binding parameters with string placeholders
-            $conditions = "agency_id = :agency_id:";
-            $parameters = array("agency_id" => $userObj->agency_id);
-            $users = Users::find(array($conditions, "bind" => $parameters));
-            $this->view->users = $users;
-
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
-
-            $this->view->agency = $agency;
-            $this->view->location = $agency;
-
-            $this->view->form = new SettingsForm($agency, array(
-                'edit' => true
-            ));
-            $this->view->agencyform = new AgencyForm($agency, array(
-                'edit' => true
-            ));
-        }
-        $this->getSMSReport();
-    }
-
-    // These are used in StoreSettings() because we save both an agency and location there but some fields differ.
-    protected $tLocationFields = [
-        'review_invite_type_id'         => 'int',
-        'review_goal'                   => 'int',
-        'lifetime_value_customer'       => 'replace_commas_dollars',
-        'SMS_message'                   => 'string',
-        'message_tries'                 => 'int',
-        /*'twitter_message'               => 'string',*/
-        'rating_threshold_star'         => 'int',
-        'rating_threshold_nps'          => 'int',
-        'message_frequency'             => 'int',
-        'name'                          => 'string',
-        'email'                         => 'string',
-        'address'                       => 'string',
-        'locality'                      => 'string',
-        'state_province'                => 'string',
-        'postal_code'                   => 'string',
-        'country'                       => 'string',
-        'phone'                         => 'string',
-        
-    ];
-
-    protected $tAgencyFields = [
-        'review_invite_type_id'         => 'int',
-        'review_goal'                   => 'int',
-        'lifetime_value_customer'       => 'replace_commas_dollars',
-        'SMS_message'                   => 'string',
-      /*  'twitter_message'               => 'string',*/
-        'message_tries'                 => 'int',
-        'rating_threshold_star'         => 'int',
-        'rating_threshold_nps'          => 'int',
-        'message_frequency'             => 'int',
-        'name'                          => 'string',
-        'email'                         => 'string',
-        'address'                       => 'string',
-    	'address2'                      => 'string',
-        'locality'                      => 'string',
-        'state_province'                => 'string',
-        'postal_code'                   => 'string',
-        'country'                       => 'string',
-        'phone'                         => 'string',
-        'main_color'                    => 'string',
-        'secondary_color'               => 'string',
-        'viral_email'                   => 'html',
-        'welcome_email'                 => 'html',
-        'welcome_email_employee'        => 'html',
-    ];
-
-    public function dismissstripeAction()
-    {
-        $this->session->StripePopupDisabled = 1;
-
-        $this->view->disable();
-        return "SUCCESS";
-    }
-
-    protected function storeLogo($objAgency)
-    {
-        if($this->request->hasFiles()) {
-
-            foreach ($this->request->getUploadedFiles() as $file) {
-                // This is for handling page reloads.
-                if($file->getTempName()) {
-                    if(isset($objAgency->logo_path) && $objAgency->logo_path) {
-                        $logoFilename = __DIR__ . DIRECTORY_SEPARATOR . "..". DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR  . $this->session->AgencySignup['LogoFilename'];
-                        if (is_file($logoFilename)) {
-                          unlink($logoFilename);
-                        }
-                        //$objAgency->logo_path = '';
-                        $objAgency->save();
-                    }
-
-                    $FileName = uniqid('logo') . '.' . $file->getExtension();
-                    file_put_contents(__DIR__ .  DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR . "{$FileName}", file_get_contents($file->getTempName()));
-                    $objAgency->logo_path = $FileName;
-
-                    $objAgency->save();
-                    $this->view->logo_path = DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR . "{$FileName}";
-                    break;
-                }
-            }
-        }
-    }
-
-    protected function storeSettings($entity, $type)
-    {
-        if ($this->request->isPost()) {
-       
-            $form = new SettingsForm($entity);
-            //dd($form);
-            $agencyform = new AgencyForm($entity);
-            $form->bind($_POST, $entity);
-            $agencyform->bind($_POST, $entity);
-
-            $formvalid = $form->isValid($_POST);
-            $agencyformvalid = $agencyform->isValid($_POST);
-
-
-            if (!$formvalid || !$agencyformvalid) {
-                foreach ($agencyform->getMessages() as $message) {
-                    $this->flash->error($message);
-                }
-                foreach ($form->getMessages() as $message) {
-                    $this->flash->error($message);
-                }
-                //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
-                // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
-            } else {
-               // echo $this->request->getPost('welcome_email');
-              // echo 'k';exit;
-                $identity = $this->auth->getIdentity();
-                $conditions = "id = :id:";
-                $parameters = array("id" => $identity['id']);
-                $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
-                $Agency_id = $userObj->agency_id; 
-              
-                $tEntityArray = [];
-                $tFieldArray = $type == 'agency' ? 'tAgencyFields' : 'tLocationFields';
-
-                foreach ($this->$tFieldArray as $Field => $DataType) {
-                    switch($DataType) {
-                        case 'int':
-                            //$tEntityArray[$Field] = (is_int($this->request->getPost($Field, 'int')) ?$this->request->getPost($Field, 'int'): 0  );
-                            $tEntityArray[$Field] = $this->request->getPost($Field, 'int');
-                            break;
-                        case 'string':
-                            $tEntityArray[$Field] = $this->request->getPost($Field, 'striptags');
-                            break;
-                         case 'html':
-                            $tEntityArray[$Field] = trim(htmlentities($this->request->getPost($Field)));
-                            break;
-                        case 'replace_comma_dollars':
-                            $tEntityArray[$Field] = $this->request->str_replace(["$", ","], ["", ""], $this->request->getPost($Field));
-                            break;
-                        default:
-                            $tEntityArray[$Field] = $this->request->getPost($Field, 'striptags');
-                            break;
-                    }
-                }
-
-                $entity->assign($tEntityArray);
-
-                // Don't hate me for this -- GG
-                $PrimaryID = $type == 'agency' ? 'agency_id' : 'location_id';
-                $Prefix = $type == 'agency' ? 'a' : 'l';
-
-                // This works because agencies and locations have the same column.
-
-                if ($file_location != '') {
-                    $entity->sms_message_logo_path = $file_location;
-                }
-
-                $saveentity = $entity->save();
-
-                if ($this->request->getPost('welcome_email', 'striptags') != ''
-                    || $this->request->getPost('viral_mail', 'striptags') != ''
-                    || $this->request->getPost('welcome_email_employee', 'striptags') != '')
-                {
-                    $this->db->query(
-                        "UPDATE `agency` "
-                        . "SET `welcome_email`='" . $this->request->getPost('welcome_email') . "' ,  "
-                        . "`viral_email`='" . $this->request->getPost('viral_mail') . "' , "
-                        . "`welcome_email_employee`='" . $this->request->getPost('welcome_email_employee') . "' "
-                        . "WHERE `agency_id`=" . $Agency_id
-                    );
-                }
-
-                return $saveentity;
-            }
-        }
-        return true;
-    }
-
-
-    /**
-     * Updates settings for locations
-     */
-    public function locationAction()
-    {
-        $location_id = $this->getLocationId();
-        $userObj = $this->getUserObject();
-        // If there is no identity available the user is redirected to index/index.  User must be a super admin or admin to view settings page.
-        if (!$userObj) {
-            $this->response->redirect('/session/login?return=/settings/location/');
-            $this->view->disable();
-            return;
-        }
-
-        if ($userObj->role != \Vokuro\Models\Users::ROLE_SUPER_ADMIN
-            && $userObj->role != \Vokuro\Models\Users::ROLE_ADMIN) {
-             $this->flash->error("You do not have permission to this page.");
-             $this->view->disable();
-        }
-
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-
-        $this->view->custom_sms = $agency->custom_sms;
-
-        $subscription_plan = $subscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst(
-            "user_id = " .$userObj->agency_id
-        );
-
-
-        $this->view->users = \Vokuro\Models\Users::find("agency_id = {$userObj->agency_id}");
-        $this->view->agency = $agency;
-        $this->view->location = $location;
-
-        if ($location) {
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-
-            $agencynotifications = $this->view->agencynotifications = LocationNotifications::find(
-                array($conditions, "bind" => $parameters)
-            );
-
-            //find the location review sites
-            $conditions = "location_id = :location_id:";
         
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            
-            $this->view->review_site_list = LocationReviewSite::find(
-                array($conditions, "bind" => $parameters, "order" => "sort_order ASC")
-            );
-        }
-
-        $this->view->review_sites = ReviewSite::find();
-        $this->view->planSubscribe = $subscription_plan->payment_plan;
-        $this->view->subscription_id = $agency->subscription_id;
-
-        $subscriptionManager = $this->di->get('subscriptionManager');
-
-        /*** trial account checking **/
-        $objSuperUser = \Vokuro\Models\Users::findFirst(
-            'agency_id = ' . $userObj->agency_id . ' AND role="Super Admin"'
-        );
-
-        $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan(
-            $objSuperUser->id, $agency->subscription_id
-        );
-
-        if($agency->subscription_id) {
-            $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
-                "id = {$agency->subscription_id}"
-            );
-        }
-
-        $subscriptionPlanData['pricingPlan']['pricing_details'] = '';
-
-        $this->view->subscriptionPlanData = $subscriptionPlanData;
-        
-        switch ($this->view->subscriptionPlanData['subscriptionPlan']['payment_plan']) {
-            // GARY_TODO:  Pretty sure this doesn't work the way it was supposed to due to handoff from Michael.
-            case ServicesConsts::$PAYMENT_PLAN_TRIAL :
-                $this->view->paymentPlan = "TRIAL";
-                $this->view->DisplaySubPopup = true;
-                break;
-            case ServicesConsts::$PAYMENT_PLAN_FREE :
-                $this->view->paymentPlan = "FREE";
-                break;
-            case ServicesConsts::$PAYMENT_PLAN_PAID :
-                $this->view->paymentPlan = "PAID";
-                break;
-            case ServicesConsts::$PAYMENT_PLAN_MONTHLY :
-            case ServicesConsts::$PAYMENT_PLAN_YEARLY :
-                $this->view->paymentPlan = 
-                number_format(
-                            floatval($subscriptionManager->getSubscriptionPrice(
-                                $objSuperUser->id, 
-                                $this->view->subscriptionPlanData['subscriptionPlan']['payment_plan'])
-                            ), 0, '', ',');
-                break;
-            default:
-                // No subscription currently in use.
-                $this->view->paymentPlan = $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? "TRIAL" : "UNPAID";
-
-                $subscriptionPlanData['pricingPlan']['enable_trial_account'] ? "TRIAL" : "UNPAID";//exit;
-               
-        }
-
-
-        if (!$agency) {
-            $this->flash->error("No settings were found");
-        }
-
-        if ($location_id) {
-            //find the location
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $location = Location::findFirst(array($conditions, "bind" => $parameters));
-            $location->message_frequency = ($location->message_frequency == "" ? 0: $location->message_frequency );
-        }
-
-        if (!$location)
-            $location = new Location();
-
-        // Save the sort order of the review sites
-
-        if (!empty($_POST['review_order'])) {
-        	
-        	$order = 0;
-        	$pieces = explode(",", $_POST['review_order']);
-        	foreach ($pieces as $siteid) {
-        		$order++;
-        		$conditions = "location_review_site_id = :location_review_site_id:";
-        		$parameters = array("location_review_site_id" => $siteid);
-        		$Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-        		$Obj->sort_order = $order;
-        		$Obj->save();
-        	}
-        }
-            
-        if (!$this->storeSettings($location, 'location')) {
-            $this->flash->error($location->getMessages());
-        } elseif($this->request->isPost()) {
-            $this->flash->success("The settings were updated successfully");
-            Tag::resetInput();
-        }
-
-        if ($location_id) {
-            $notificationdelete = LocationNotifications::find("location_id = " . $location_id);
-            //$notificationdelete->delete();
-        }
-
-        if (!empty($_POST['users'])) {
-            foreach ($_POST['users'] as $check) {
-                $agencyInsert = new LocationNotifications();
-                $agencyInsert->location_id = $this->session->get('auth-identity')['location_id'];
-                $agencyInsert->user_id = $check;
-                $agencyInsert->save();
-            }
-        }
-
-
-
-        $this->view->users = \Vokuro\Models\Users::find("agency_id = {$userObj->agency_id}");
-        $this->view->agency = $agency;
-        $this->view->location = $location;
-
-        if ($location) {
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-
-            $agencynotifications = $this->view->agencynotifications = LocationNotifications::find(
-                array($conditions, "bind" => $parameters)
-            );
-
-            //find the location review sites
-            $conditions = "location_id = :location_id:";
-        
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            
-            $this->view->review_site_list = LocationReviewSite::find(
-                array($conditions, "bind" => $parameters, "order" => "sort_order ASC")
-            );
-        }
-
-        $this->view->review_sites = ReviewSite::find();
-
-        $this->view->form = new SettingsForm(
-            $location,
-            array(
-                'edit' => true
-            )
-        );
-
-        $this->view->agencyform = new AgencyForm($location, array(
-            'edit' => true
-        ));
-
-        $this->getSMSReport();
-        
-        
-        $identity = $this->auth->getIdentity();
-
-        $idxcx = $identity['id'];
-        $db = $this->di->get('db');
-        $db->begin();
-        $result = $this->db->query(" SELECT * FROM `twilio_number_to_business` WHERE `buisness_id`='".$idxcx."'");
-        $xcd = $result->numRows();
-        if ($xcd != 0) {
-            $this->view->twilio_details = $result->fetchAll();
-        } else {
-            $this->view->twilio_details = 0;
-            $Twillioset = $this->getTwilioDetails();
-            $twilio_api_key = $Twillioset['twilio_api_key'];
-
-            if (($Twillioset['twilio_api_key'] == "" || $twilio_api_key == NULL)
-                || ($Twillioset['twilio_auth_token'] == "" || $Twillioset['twilio_auth_token'] == NULL)) {
-
-            }
-            
-            $numbers = array();
-            if($Twillioset['twilio_api_key'] && $Twillioset['twilio_auth_token']) {
-              $client = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
-              $uri = '/'. $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
-              
-              if($client){
-               $numbers = $client->retrieveData($uri);
-              }
-            }
-        
-            $country = array();
-
-            foreach ($numbers as $key => $value) {
-                foreach ($value as $key => $nox) {
-                    $country[$nox->country_code] = $nox->country;
-                }
-            }
-
-            asort($country);
-            
-            $this->view->countries = $country;
-        }
-
-        $this->view->pick("settings/index");
-    }
-
-    public function sendSampleEmailAction($EmployeeID)
-    {
-        $this->view->disable();
-
-        $Identity = $this->session->get('auth-identity');
-        //echo $Identity['id'];exit;
-        //echo $this->session->get('auth-identity')['location_id'];exit;
-        $objCurrentUser = \Vokuro\Models\Users::findFirst("id = " . $Identity['id']);
-        $objRecipient = \Vokuro\Models\Users::findFirst("id = {$EmployeeID}");
-
-        $objlocationinfo = \Vokuro\Models\UsersLocation::findFirst("user_id = {$EmployeeID}");
-        if ($objlocationinfo) {
-            $objReview = \Vokuro\Models\Location::findFirst(
-                "location_id = {$objlocationinfo->location_id}"
-            );
-
-            $review_invite_type_id = $objReview->review_invite_type_id;
-        } else {
-            $objReview = \Vokuro\Models\Location::findFirst(
-                "location_id = {$this->session->get('auth-identity')['location_id']}"
-            );
-            $review_invite_type_id=$objReview->review_invite_type_id;
-        }
-
-       
-        $objBusiness = \Vokuro\Models\Agency::findFirst(
-            "agency_id = {$objCurrentUser->agency_id}"
-        );
-        /*echo $objReview->review_invite_type_id;
-        exit;*/
-
-        $Start = date("Y-m-01", strtotime('now'));
-        $End = date("Y-m-t", strtotime('now'));
-        // $dbEmployees = \Vokuro\Models\Users::getEmployeeListReport($objBusiness->agency_id, $Start, $End, $Identity['location_id'], $objReview->review_invite_type_id, 0, 1);
-
-        
-
-        $dbEmployees = \Vokuro\Models\Users::getEmployeeListReportGenerate(
-            $objBusiness->agency_id,
-            $Start,
-            $End,
-            $Identity['location_id'],
-            $objReview->review_invite_type_id,
-            0,
-            1
-        );
-
-        $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
-        $this->view->review_invite_type_id=$objReview->review_invite_type_id;
-
-        /*** new start generator ***/
-
-        $rating_array_set_all = array();
-        $YNrating_array_set_all = array();
-    
-        foreach ($dbEmployees as $ux) {
-            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
-
-            // Base model
-            $list = new ReviewInvite();
-
-            // Execute the query
-            $params = null;
-
-            $rs = new Resultset(
-                null,
-                $list,
-                $list->getReadConnection()->query($sql, $params)
-            );
-
-            $YNrating_array_set_all[$ux->id] = $rs->toArray();
-        }
-        
-        // print_r($YNrating_array_set_all);exit;
-        $this->view->YNrating_array_set_all = $YNrating_array_set_all;
-
-        foreach ($dbEmployees as $ux) {
-           $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
-
-            // Base model
-            $list = new ReviewInvite();
-
-            // Execute the query
-            $params = null;
-            
-            $rs = new Resultset(
-                null,
-                $list,
-                $list->getReadConnection()->query($sql, $params)
-            );
-            
-            $rating_array_set_all[$ux->id] = $rs->toArray();
-        }
-    
-        $this->view->rating_array_set_all=$rating_array_set_all;
-        
-        /*** new start generator ***/
-
-        $objEmail = new \Vokuro\Services\Email();
-        return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
-    }
-    
-
-
-    public function agencyAction()
-    {
-        $Identity = $this->auth->getIdentity();
-
-        if (!is_array($Identity)) {
-            $this->response->redirect('/session/login?return=/settings/agency/');
-            $this->view->disable();
-            return;
-        }
-
-        $this->view->tab = $this->request->get('tab');
-        if ($this->request->get('tab') == 'Stripe') {
-            $this->view->ShowAgencyStripePopup = false;
-        }
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency->parent_id);
+        $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        //$this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
+        $this->view->parent_agency = $parent_agency->name;
         
         $conditions = "location_id = :location_id:";
         $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
         $location = Location::findFirst(array($conditions, "bind" => $parameters));
 
-        $objUser = Users::findFirst("id = " . $Identity['id']);
-
-        $objAgency = Agency::findFirst("agency_id = {$objUser->agency_id}");
         
-        if (!$objAgency) {
-            $this->flash->error("Agency not found. Contact customer support.");
-        }
 
-        $SettingsForm  = new SettingsForm($objAgency, array(
-            'edit' => true
-        ));
-        
-        
-        $AgencyForm = new AgencyForm($objAgency, array(
-            'edit' => true
-        ));
-        
-        $blankemailPosted = false;
-        
-        // Set default message welcome_email
-
-        if (!$objAgency->welcome_email || ($this->request->isPost() && !$this->request->getPost('welcome_email'))) {
-         $blankemailPosted = true;
-          $objAgency->welcome_email = "Hey {FirstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
-
-                <P>If you wouldn't mind, I'd love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
-
-                <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit reply and let me know.
-               </P>
-               <p>To get started just confirm your email by {Link}</p>
-               <p></p>
-               <p>Thanks,</p>
-               <p>{AgencyUser}</p>
-               <p>{AgencyName}</p>";
-        }
-        
-        // Set default message for welcome_email_employee
-
-        if (!$objAgency->welcome_email_employee
-            || ($this->request->isPost()
-            && !$this->request->getPost('welcome_email_employee'))) {
-           $blankemailPosted = true;
-          $objAgency->welcome_email_employee= 'Hi {EmployeeName},
-        	<p>
-        		We’ve just created your profile for {BusinessName} within our software. 
-        	</p>
-            <p>
-            	When you {ActivateNow} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
-            </p>
-            <p> {Link}</p>
-            <p>Looking forward to working with you.</p>
-            <p></p>
-            <p>Thanks,</p>
-            <p>{AgencyUser}</p>
-            <p>{AgencyName}</p>';
-        }
-        
-        // Set default message for viral_email
-        if (!$objAgency->viral_email || ($this->request->isPost() && !$this->request->getPost('viral_email'))) {
-            $blankemailPosted = true;
-            $objAgency->viral_email = "I just started using this amazing new software for my business. "
-                                        . "They are giving away a trial account here: {ShareLink}";
-        }
-
-        $AgencyForm = new AgencyForm($objAgency, array(
-            'edit' => true
-        ));
-
-        if ($this->request->isPost() && $SettingsForm->isValid($_POST) && $AgencyForm->isValid($_POST)) {
-            if (!$this->storeSettings($objAgency, 'agency')) {
-                $this->flash->error($objAgency->getMessages());
+        if ($this->request->isPost()) {
+            $location->assign(array(
+                'name' => $this->request->getPost('agency_name', 'striptags'),
+                'sms_button_color' => $this->request->getPost('sms_button_color', 'striptags'),
+                'sms_top_bar' => $this->request->getPost('sms_top_bar', 'striptags'),
+                'SMS_message' => $this->request->getPost('sms_text_message_default', 'striptags'),
+            ));
+            $file_location = $this->uploadAction($agency->agency_id);
+            if ($file_location != '')
+                $location->sms_message_logo_path = $file_location;
+            if (!$location->save()) {
+                $this->flash->error($location->getMessages());
             } else {
-                // Only agencies can store logos
-                if ($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) {
-                    $this->storeLogo($objAgency);
-                }
-
-                // Somehow the agency is getting updated at this point.  It looks like isValid is saving the object?  It shouldn't...  I have no idea what's going on, so doing this manually.
-                $objAgency->twilio_api_key = trim($objAgency->twilio_api_key);
-                $objAgency->twilio_auth_token = trim($objAgency->twilio_auth_token);
-                $objAgency->twilio_auth_messaging_sid = trim($objAgency->twilio_auth_messaging_sid);
-                $objAgency->twilio_from_phone = trim($objAgency->twilio_from_phone);
-                $objAgency->save();
-
-                $this->flash->success("The settings were updated successfully");
-                //Tag::resetInput();
-                if($blankemailPosted){
-                  return $this->response->redirect($_SERVER['HTTP_REFERER']);
-                }
+                $agency->signup_page = 4;
+                $agency->save();
+                return $this->response->redirect('/session/signup4/' . ($subscription_id > 0 ? $subscription_id : ''));
             }
         } else {
-            foreach ($AgencyForm->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-            foreach ($SettingsForm->getMessages() as $message) {
-                $this->flash->error($message);
-            }
-        }
-
-        $this->view->form = $SettingsForm;
-        $this->view->agencyform = $AgencyForm;
-        $this->view->objgetuser = $objUser ;
-        $this->view->objAgency = $objAgency;
-        $this->view->id = $Identity['id'];
-        $this->view->location_id = $location->location_id;
-    }
-    
-    // use only for null checking trim unicode spaces        
-    private function htmlTrim($content) {
-      return str_replace('+','',preg_replace('/%26|nbsp%3B|nbsp| /u','',urlencode($content)));
-    }
-
-    public function siteaddAction($location_id = 0, $review_site_id = 0)
-    {
-       // $this->checkIntegerOrThrowException($location_id ,"not integer");
-       // $this->checkIntegerOrThrowException($review_site_id, "not integer");
-
-        if ($location_id > 0 && $review_site_id > 0) {
-            $lrs = new LocationReviewSite();
-            $lrs->location_id = $location_id;
-            $lrs->review_site_id = $review_site_id;
-            $lrs->url = $_GET['url'];
-            $lrs->date_created = date('Y-m-d H:i:s');
-            $lrs->is_on = 1;
-            $lrs->save();
-
-            $conditions = "review_site_id = :review_site_id:";
-            $parameters = array("review_site_id" => $review_site_id);
-            $site = ReviewSite::findFirst(array($conditions, "bind" => $parameters));
-
-            $this->view->disable();
-            echo json_encode(array('location_review_site_id' => $lrs->location_review_site_id,
-                'img_path' => $site->icon_path,
-                'name' => $site->name));
-        } else {
-            $this->view->disable();
-            echo 'false';
-        }
-    }
-
-    public function onAction($id = 0)
-    {
-        //$this->checkIntegerOrThrowException($id,'$id was invalid');
-        $conditions = "location_review_site_id = :location_review_site_id:";
-        $parameters = array("location_review_site_id" => $id);
-        $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-
-        $location_id = $Obj->location_id;
-        $edit_permissions = $this->getPermissions()->canUserEditLocationId($this->getUserObject(),$location_id);
-        if (!$edit_permissions) {
-            throw new \Exception(
-                "You cannot edit the parent location for id of:{$location_id}, so you cannot turn off or on a location review site belonging to this location"
-            );
-        }
-
-        $Obj->is_on = 0;
-        $Obj->save();
-
-        $this->view->disable();
-        echo 'true';
-    }
-
-    public function offAction($id = 0)
-    {
-        $conditions = "location_review_site_id = :location_review_site_id:";
-        $parameters = array("location_review_site_id" => $id);
-        $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
-
-        $location_id = $Obj->location_id;
-        $edit_permissions = $this->getPermissions()->canUserEditLocationId($this->getUserObject(), $location_id);
-        if (!$edit_permissions) {
-            throw new \Exception(
-                "You cannot edit the parent location for id of:{$location_id}, so you cannot
-        turn off or on a location review site belonging to this location"
-            );
+            
         }
 
 
-
-        $Obj->is_on = 1;
-        $Obj->save();
-        $this->view->disable();
-        echo 'true';
+        $this->view->agency = $agency;
+        $this->view->location = $location;
+        $this->view->current_step = 3;
+        $this->view->id = $agency->agency_id;
+        $this->view->default_sms_agency=$parent_agency->SMS_message;
     }
 
+    /**
+     * Sign up form, Step 4 (Add Employee)
+     */
+    /* public function signup4Action($subscription_id = 0) { */
+    public function signup4Action($pricingProfileToken = 0) {
 
-    public function notificationAction($id = 0, $fieldname, $value)
-    {
+        /* $this->noSubDomains(4, $subscription_id); */
+        Utils::noSubDomains(4, $this->validSubDomains, $pricingProfileToken);
 
-        $conditions = "location_id = :location_id: AND user_id = :user_id:";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id'], "user_id" => $id);
+        $this->view->setTemplateBefore('signup');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 4 | Add Employee');
 
-        $Obj = LocationNotifications::findFirst(array($conditions, "bind" => $parameters));
-        if (isset($Obj) && isset($Obj->user_id) && $Obj->user_id == $id) {
-            //lets edit the field and save the changes
-            if ($fieldname == 'ea') $Obj->email_alert = $value;
-            if ($fieldname == 'sa') $Obj->sms_alert = $value;
-            if ($fieldname == 'ar') $Obj->all_reviews = $value;
-            if ($fieldname == 'ir') $Obj->individual_reviews = $value;
-            if ($fieldname == 'el') $Obj->employee_leaderboards = $value;
-
-            $Obj->save();
-        } else {
-            //else we need to create a record
-            $locationNotification = new LocationNotifications();
-
-            $loc_array = array(
-                'location_id' => $parameters['location_id'],
-                'user_id' => $id,
-            );
-            if ($fieldname == 'ea') { $loc_array['email_alert'] = $value; }
-            if ($fieldname == 'sa') { $loc_array['sms_alert'] = $value; }
-            if ($fieldname == 'ar') { $loc_array['all_reviews'] = $value; }
-            if ($fieldname == 'ir') { $loc_array['individual_reviews'] = $value; }
-            if ($fieldname == 'el') { $loc_array['employee_leaderboards'] = $value; }
-
-            $locationNotification->assign($loc_array);
-            $locationNotification->save();
-        }
-
-        $this->view->disable();
-        echo 'true';
-    }
-
-
-    public function uploadAction($agencyid)
-    {
-        // Check if the user has uploaded files
-        if ($this->request->hasFiles() == true) {
-            //echo '<p>hasFiles() == true!</p>';
-            $baseLocation = __DIR__ . '/../../public/img/agency_logos/';
-
-            // Print the real file names and sizes
-            foreach ($this->request->getUploadedFiles() as $file) {
-                if ($file->getName() != '') {
-                    //Move the file into the application
-                    $filepath = $baseLocation . uniqid('logo');
-                    $file->moveTo($filepath);
-
-                    //resize
-                    $image = new \Phalcon\Image\Adapter\GD($filepath);
-                    $image->resize(200, 30)->save($filepath);
-
-                    $tFilepath = explode('/', $filepath);
-                    $filepath = "/img/agency_logos/" . array_pop($tFilepath);
-
-                    $this->view->logo_path = $filepath;
-                    return $filepath;
-                }
-            }
-        }
-    }
-
-    public function getTwilioDetails(){
-        $twilio_api_key = "";
-        $twilio_auth_token = "";
-        $twilio_auth_messaging_sid = "";
-        $twilio_from_phone = "";
+        //get the user id, to find the settings
         $identity = $this->auth->getIdentity();
-        
-        $conditions = "id = :id:";
-        $parameters = array("id" => $identity['id']);
-        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+        // If there is no identity available the user is redirected to index/index
+        if (!is_array($identity)) {
+            $this->response->redirect('/session/login?return=/session/signup4/' . ($subscription_id > 0 ? $subscription_id : ''));
+            $this->view->disable();
+            return;
+        }
+
+        // Query binding parameters with string placeholders
+        $conditions = 'id = :id:';
+        $parameters = array('id' => $identity['id']);
+        $userObj = Users::findFirst(array($conditions, 'bind' => $parameters));
+
+        // Get employees
+        $this->view->employees = Users::find("agency_id = {$userObj->agency_id} AND is_employee = 1");
+
+        //find the agency
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
-        if ($agency) {
-            $this->view->agency = $agency;
 
-            if (isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != ""  && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
-                    $conditionsUser = "agency_id = :agency_id:";
-                    $userParam = $parameters = array("agency_id" => $agency->agency_id);
-                    $userObjNew = Users::findFirst(array($conditionsUser, "bind" => $userParam));
-                    $twilio_user_id = $userObjNew->id;
-                    $twilio_api_key = $agency->twilio_api_key;
-                    $twilio_auth_token = $agency->twilio_auth_token;
-                    $twilio_from_phone = $agency->twilio_from_phone;
-            }
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency->parent_id);
+        $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        //$this->view->logo_path = "/img/agency_logos/" .$parent_agency->logo_path;
+        $this->view->parent_agency = $parent_agency->name;
+        
+        //find the location
+        $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        $location = Location::findFirst(array($conditions, "bind" => $parameters));
 
-            if ($twilio_api_key  == "" && $twilio_auth_token == ""  && $twilio_from_phone == "") {
-                $parameters1 = array("agency_id" => $agency->parent_id);
-                $agency1 = Agency::findFirst(array($conditions, "bind" => $parameters1));
-                $conditionsUser = "agency_id = :agency_id:";
-                $userParam = $parameters = array("agency_id" => $agency1->agency_id);
-                $userObjNew = Users::findFirst(array($conditionsUser, "bind" => $userParam));
-                $twilio_user_id = $userObjNew->id;
-                $twilio_api_key = $agency1->twilio_api_key;
-                $twilio_auth_token = $agency1->twilio_auth_token;
-                $twilio_from_phone = $agency1->twilio_from_phone;   
+        if ($this->request->isPost()) {
+            $agency->assign(array(
+                'signup_page' => 5, //go to the next page
+            ));
+            $location->assign(array(
+                'lifetime_value_customer' => $this->request->getPost('lifetime_value_customer', 'striptags'),
+                'review_goal' => $this->request->getPost('review_goal', 'striptags'),
+            ));
+
+            if (!$location->save()) {
+                $this->flash->error($location->getMessages());
+            } else {
+                $agency->save();
+                return $this->response->redirect('/session/signup5/' . ($subscription_id > 0 ? $subscription_id : ''));
+                $this->view->disable();
+                return;
             }
         }
-        $Twiio = array();
-        $Twiio['twilio_user_id'] = $twilio_user_id;
-        $Twiio['twilio_api_key'] = $twilio_api_key;
-        $Twiio['twilio_auth_token'] = $twilio_auth_token;
-        $Twiio['twilio_from_phone'] = $twilio_from_phone;
-        return($Twiio);
+
+
+        $this->usersFunctionality(3, $this->session->get('auth-identity')['location_id']);
+        $this->view->location = $location;
+        $this->view->current_step = 4;
     }
+
+    /**
+     * Sign up form, Step 5 (Share)
+     */
+    /* public function signup5Action($subscription_id = 0) { */
+    public function signup5Action($pricingProfileToken = 0,$email = null) {
+        /* $this->noSubDomains(5, $subscription_id); */
+        Utils::noSubDomains(5, $this->validSubDomains, $pricingProfileToken);
+
+        $this->view->setTemplateBefore('signup');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 5 | Share');
+        $this->view->messages_sent = false;;
+        //get the user id, to find the settings
+        $identity = $this->auth->getIdentity();
+
+        // If there is no identity available the user is redirected to index/index
+        if (!is_array($identity)) {
+            $this->response->redirect('/session/login?return=/session/signup5/' . ($subscription_id > 0 ? $subscription_id : ''));
+            $this->view->disable();
+            return;
+        }
+
+        // Query binding parameters with string placeholders
+        $conditions = "id = :id:";
+        $parameters = array("id" => $identity['id']);
+        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+        //echo '<pre>$userObj:'.print_r($userObj->agency_id,true).'</pre>';
+        //find the agency
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $userObj->agency_id);
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $agency->parent_id);
+        $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        //$this->view->logo_path = "/img/agency_logos/" .$parent_agency->logo_path;
+        $this->view->parent_agency = $parent_agency->name;
+        //Get the sharing code
+        $this->getShareInfo($agency);
+
+        $AgencyUser = $this->view->AgencyUser;
+        $AgencyName = $this->view->AgencyName;
+        //end getting the sharing code
+        // Check if the user wants to send emails
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // Get the form fields and remove whitespace.
+            $subject = $this->view->share_subject;
+            $message = $this->view->share_message;
+
+            if($agency->parent_id > 0) {
+                $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+                if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                    throw \Exception("Contact customer support.  Email configuration not setup correctly");
+
+                $Domain = $this->config->application->domain;
+
+
+                $EmailFrom = $objParentAgency->email_from_address ?: 'no-reply@' . $objParentAgency->custom_domain . ".{$Domain}";
+                $EmailFromName = $objParentAgency->email_from_name ?: 'No Reply';
+            }
+
+            $Domain = $this->config->application->domain;
+
+            if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+                $EmailFrom = 'zacha@reviewvelocity.co';
+                $EmailFromName = "Zach Anderson";
+            }
+
+            if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+                if(!$agency->email_from_address && !$agency->custom_domain)
+                    throw \Exception("Contact customer support.  Email configuration not setup correctly");
+                $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
+                $EmailFromName = $agency->email_from_name ?: 'No Reply';
+            }
+
+            //loop through all the emails
+            for ($i = 1; $i < 16; $i++) {
+                if ($_POST['email_' . $i]) {
+                    $email = $_POST['email_' . $i];
+                    if ($email != '') {
+                        try {
+                            $Email_set=explode('@',$email);
+                            $header_name="Hey ".$Email_set[0].",";
+                            $body_message=$header_name.$message;
+                            $Mail = $this->getDI()->getMail();
+                            $Mail->setFrom($EmailFrom, $EmailFromName);
+                            $Mail->send($email, $subject, '', '', $message);
+                        } catch (Exception $e) {
+                            // do nothing, just ignore
+                        }
+                    }
+                }
+            }
+            $this->view->messages_sent = true;
+            $this->flash->success('The emails have been sent.  Use the form to send some more.  Click the "FINISHED" button to leave this page.');
+            Tag::resetInput();
+        }
+
+        if (isset($_GET['q']) && $_GET['q'] == 's') {
+          //print_r($_GET);
+            $agency->assign(array(
+                'signup_page' => '0', //go to the next page
+            ));
+
+            $Domain = $this->config->application->domain;
+
+            if (!$agency->save()) {
+                $this->flash->error($agency->getMessages());
+            } else {
+                    if($agency->parent_id > 0) {
+                        $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
+                        if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
+                            throw \Exception("Contact customer support.  Email configuration not setup correctly");
+                        $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
+                        $EmailFromName = $objParentAgency->email_from_name ?: "";
+                    }
+
+                    if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+                        $EmailFrom = 'zacha@reviewvelocity.co';
+                        $EmailFromName = "Zach Anderson";
+                    }
+                    if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+                        if(!$agency->email_from_address && !$agency->custom_domain)
+                            throw \Exception("Contact customer support.  Email configuration not setup correctly");
+                        $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
+                        $EmailFromName = $agency->email_from_name ?: "";
+
+                    }
+
+                    $Domain = $this->config->application->domain;
+
+                    $publicUrl="http://{$Domain}";
+                    $code=$userObj->id."-".$userObj->name;
+                    $link=$publicUrl.'/link/createlink/'.base64_encode($code);
+                    $feed_back_email=$userObj->email;
+                    $feed_back_subj='Feedback Form';
+                    $feed_back_body='Hi '.$userObj->name.',';
+                    $feed_back_body=$feed_back_body.'<p>Thank you for activating your account, we have created a mobile landing page so that you can request feedback from your customers in person from your mobile phone.</p><p>Click on the link below and add the the page to your home screen so that you can easily access this page. This link is customized to you so that all feedback and reviews will be tracked back to your account. 
+                        </p>
+
+                        <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online. </p>';
+                        $feed_back_body=$feed_back_body.'<a href="'.$link.'">Personalized Feedback Form - Click Here </a>
+                            <p>
+                            Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. 
+                            </p>
+                        <p>Looking forward to helping you build a strong online reputation.</p>';
+
+                        if($_SESSION['password_save'])
+                        {   
+                             $feed_back_body=$feed_back_body.'<p>Please view the Login Credentials Below: </p>';
+                           $feed_back_body=$feed_back_body."Login Password: ". $_SESSION['password_save']."<br>";
+                           $feed_back_body=$feed_back_body."Login Email: ".$feed_back_email."<br>";
+                        }
+
+                        $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
+                    $Mail = $this->getDI()->getMail();
+                    $Mail->setFrom($EmailFrom, $EmailFromName);
+                    $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
+                    $_SESSION['password_save']='';
+                return $this->response->redirect('/');
+                $this->view->disable();
+                return;
+            }
+        }
+
+        $this->view->current_step = 5;
+    }
+
+    /**
+     * thankyou page
+     */
+    public function thankyouAction() {
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Thank You');
+
+        //test code below, uncomment to test
+        //$_SESSION['name']='Test Tester';
+        //$_SESSION['email']='test@tester.com';
+    }
+
+    public function changePasswordAction() {
+        $this->tag->setTitle('Get Mobile Reviews | Change Password');
+        $this->view->setTemplateBefore('login');
+    }
+    /**
+     * privacy page
+     */
+    public function resetPasswordAction($code = 0, $userId = 0) {
+        //$this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Change Password');
+
+        $resetPassword = ResetPasswords::findFirstByCode($code);
+        $conditions = "id = :id:";
+        $parameters = array("id" => $resetPassword->usersId);
+        $User = Users::findFirst(array($conditions, "bind" => $parameters));
+
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $User->agency_id);
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+        //$this->view->logo_path = "/img/agency_logos/" . $agency->logo_path;
+
+        if (!$resetPassword) {
+            return $this->dispatcher->forward(array(
+                    'controller' => 'index',
+                    'action' => 'index'
+            ));
+        }
+        if ($resetPassword->reset != 'N') {
+            return $this->dispatcher->forward(array(
+                    'controller' => 'session',
+                    'action' => 'login'
+            ));
+        }
+        $resetPassword->reset = 'Y';
+        
+        /**
+         * Change the confirmation to 'reset'
+         */
+        if (!$resetPassword->save()) {
+            foreach ($resetPassword->getMessages() as $message) {
+                $this->flash->error($message);
+            }
+        
+            return $this->dispatcher->forward(array(
+                    'controller' => 'session',
+                    'action' => 'changePassword'
+            ));
+        }
+        
+        /**
+         * Identify the user in the application
+         */
+
+        $this->auth->authUserById($resetPassword->usersId);
+        
+        $this->flash->success('Please reset your password');
+        
+        return $this->dispatcher->forward(array(
+                'controller' => 'session',
+                'action' => 'changePassword'
+        ));
+        
+    }
+    
+
+    /**
+     * privacy page
+     */
+    public function privacyAction() {
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Privacy');
+    
+    }
+
+    /**
+     * reseller page
+     */
+    public function resellerAction() {
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Reseller Agreement');
+    
+    }
+    
+    /**
+     * terms page
+     */
+    public function termsAction() {
+
+        
+
+         
+
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Terms');
+    }
+
+    /**
+     * Anti-spam Policy page
+     */
+    public function antispamAction() {
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Anti-spam Policy');
+    }
+
+    /**
+     * RVprivacy page
+     */
+    public function RVprivacyAction() {
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Privacy');
+    
+    }
+    
+    /**
+     * RVreseller page
+     */
+    public function RVresellerAction() {
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Reseller Agreement');
+    
+    }
+    
+    /**
+     * RVterms page
+     */
+    public function RVtermsAction() {
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Terms');
+    }
+    
+    /**
+     * RVAnti-spam Policy page
+     */
+    public function RVantispamAction() {
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Anti-span Policy');
+    }
+    
+    
+    /**
+     * Starts a session in the admin backend
+     */
+    public function loginAction() {
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Login');
+        $form = new LoginForm();
+        $email = $this->dispatcher->getParam('email');
+        $this->view->email = $email;
+        $this->DetermineParentIDAndSetViewVars();
+        try {
+            if (!$this->request->isPost()) {
+                if ($this->auth->hasRememberMe()) {
+                    return $this->auth->loginWithRememberMe();
+                }
+            } else {
+                if ($form->isValid($this->request->getPost()) == false) {
+                    foreach ($form->getMessages() as $message) {
+                        $this->flash->error($message);
+                    }
+                } else {
+                    $this->auth->check(array(
+                        'email' => $this->request->getPost('email'),
+                        'password' => $this->request->getPost('password'),
+                        'remember' => $this->request->getPost('remember')
+                    ));
+
+
+
+                    $return = '/';
+                    if (isset($_GET['return']) && strpos($_GET['return'], '/') !== false)
+                        $return = $_GET['return'];
+
+                    //get the user id, to find the settings
+                    $identity = $this->auth->getIdentity();
+
+                    // If there is no identity available the user is redirected to index/index
+                    if (is_array($identity)) {
+
+                         $this->session->set("top_banner_session", 1);
+                        // Query binding parameters with string placeholders
+                        $conditions = "id = :id:";
+                        $parameters = array("id" => $identity['id']);
+                        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+
+                        $conditions = "agency_id = :agency_id:";
+                        $parameters = array("agency_id" => $userObj->agency_id);
+                        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+                       /* if ($agency->signup_page > 0 && $userObj->role=='Super Admin')
+                        {
+                            
+                             $return = '/agencysignup/step' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : '');
+                        }*/
+
+
+                        if ($agency->signup_page > 0 && $agency->parent_id!=0)
+
+                        {
+                            $_SESSION['password_save']=$this->request->getPost('password');
+                            $return = '/session/signup' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : '');
+                        }
+                        elseif($agency->signup_page > 0 && $agency->parent_id==0)
+                        {
+                             $return = '/agencysignup/step' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : ''); 
+                        }
+
+
+                            
+                    }
+                    return $this->response->redirect($return);
+                }
+            }
+        } catch (AuthException $e) {
+            $this->flash->error($e->getMessage());
+        }
+        if (isset($_GET['n']) && $_GET['n'] == 1)
+            $this->flash->success('Your account has been created and a confirmation email has been sent to your email address.');
+        $this->view->form = $form;
+    }
+
+    /**
+     * Shows the forgot password form
+     */
+    public function forgotPasswordAction() {
+
+        $this->view->setTemplateBefore('login');
+        $this->tag->setTitle('Get Mobile Reviews | Forgot password');
+        $form = new ForgotPasswordForm();
+
+        if ($this->request->isPost()) {
+            if ($form->isValid($this->request->getPost()) == false) {
+                foreach ($form->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
+            } else {
+                $user = Users::findFirstByEmail($this->request->getPost('email'));
+                if (!$user) {
+                    $this->flash->success('There is no account associated with this email');
+                } else {
+                    if ($user->active == 'N') {
+                      $email = new \Vokuro\Services\Email();
+                      $email->sendActivationEmailByUserId($user->id);
+                      $this->flash->success('Success! Please check your messages for a confirmation email');
+
+                    } else {
+                      $resetPassword = new ResetPasswords();
+                      $resetPassword->usersId = $user->id;
+                      if ($resetPassword->save()) {
+                          $this->flash->success('Success! Please check your messages for an email reset password');
+                      } else {
+                          foreach ($resetPassword->getMessages() as $message) {
+                              $this->flash->error($message);
+                          }
+                      }
+                    }
+                }
+            }
+        }
+
+        $this->view->form = $form;
+    }
+
+    /**
+     * Closes the session
+     */
+    public function logoutAction() {
+        $this->auth->remove();
+        return $this->response->redirect('/');
+    }
+
+    function curl_get_contents($url) {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        return $data;
+    }
+
+    /**
+     * This is Search using Google place API.
+     * This is used at: /session/signup2/
+     * @return Json
+     */
+    public function googlesearchapiAction() {
+
+        #check form post
+        $request = $this->request;
+
+        if ($this->request->isPost()) {
+
+            #get data from post
+            $businessName = trim($request->getPost('location_name'));
+            $zip = trim($request->getPost('zip'));
+
+            try {
+                #call map api
+                $googleApiKey = 'AIzaSyAPisblAqZJJ7mGWcORf4FBjNMQKV20J20';
+                $keyword = urlencode($businessName . ', ' . $zip);
+
+                if (!empty($keyword)) {
+
+                    #get place of an business with business name and zip using Google API
+                    $strFindPlaceUrl = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" . $keyword . "&key=" . $googleApiKey;
+                    //echo '<p>$strFindPlaceUrl:'.$strFindPlaceUrl.'</p>';
+                    $resultFindPlace = $this->curl_get_contents($strFindPlaceUrl);
+                    $arrResultFindPlace = json_decode($resultFindPlace, true);
+
+                    //echo '<pre>'.print_r($arrResultFindPlace,true).'</pre>';
+                    //die();
+
+                    $admincode = '0';
+                    //echo '<pre>'.print_r($_POST,true).'</pre>';
+                    if (isset($_POST['admin']) && $_POST['admin'] != '') {
+                        //we need to save results
+                        $admincode = '1';
+                    }
+
+                    #get place details from place ID using Google API
+                    if ($arrResultFindPlace['status'] == "OK" && !empty($arrResultFindPlace['results'])) {
+
+                        #initialize variables
+                        $intCounter = 0;
+                        $strHTML = "<h3>Choose the most relevant result</h3>";
+
+                        foreach ($arrResultFindPlace['results'] as $singleResultFindPlace) {
+                            #break after 10 result
+                            if ($intCounter == 10)
+                                break;
+
+                            $strPlaceId = $singleResultFindPlace['place_id'];
+
+                            $strFindPlaceDetail = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" . $strPlaceId . "&key=" . $googleApiKey;
+                            $resultFindPlaceDetail = $this->curl_get_contents($strFindPlaceDetail);
+                            $arrResultFindPlaceDetail = json_decode($resultFindPlaceDetail, true);
+
+                            $returnAddress = @$arrResultFindPlaceDetail['result']['formatted_address'];
+
+                            $returnPhoneNumber = @$arrResultFindPlaceDetail['result']['formatted_phone_number'];
+                            $returnBusinessName = @$arrResultFindPlaceDetail['result']['name'];
+
+                            $street_number = $this->extractFromAdress(@$arrResultFindPlaceDetail['result']['address_components'], 'street_number');
+                            $route = $this->extractFromAdress(@$arrResultFindPlaceDetail['result']['address_components'], 'route');
+                            $locality = $this->extractFromAdress(@$arrResultFindPlaceDetail['result']['address_components'], 'locality');
+                            $administrative_area_level_1 = $this->extractFromAdress(@$arrResultFindPlaceDetail['result']['address_components'], 'administrative_area_level_1');
+                            $postal_code = $this->extractFromAdress(@$arrResultFindPlaceDetail['result']['address_components'], 'postal_code');
+                            $country = $this->extractFromAdress(@$arrResultFindPlaceDetail['result']['address_components'], 'country');
+
+                            $strURL = "";
+                            $strButton = "";
+
+                            if (isset($returnBusinessName) && $returnBusinessName != '') {
+
+                                //check to see if this location is already in the database, by checking the place id
+                                $conditions = "api_id = :api_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
+                                $parameters = array("api_id" => @$arrResultFindPlaceDetail['result']['place_id']);
+                                // Skip duplicate check if we're dev environment.
+                                $SkipCheck = $this->config->application->environment == 'dev' ? true : false;
+
+                                $loc = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+                                if (!$loc || $SkipCheck) {
+                                    $strURL = "onclick=\"selectLocation('" . $this->encode(@$arrResultFindPlaceDetail['result']['place_id']) . "', '" .
+                                      $this->encode(@$arrResultFindPlaceDetail['result']['url']) . "', '" . $this->encode($returnBusinessName) . "', '" .
+                                      $this->encode($street_number) . "', '" . $this->encode($route) . "', '" . $this->encode($locality) . "', '" .
+                                      $this->encode($administrative_area_level_1) . "', '" . $this->encode($postal_code) . "', '" .
+                                      $this->encode($country) . "', '" . $this->encode(@$arrResultFindPlaceDetail['result']['formatted_phone_number']) . "', '" .
+                                      $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lat']) . "', '" .
+                                      $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng']) . "');return false;\" href=\"javascript:void(0);\"";
+                                    $strButton = "<a class=\"business-name-link btnLink btnSecondary\" id=\"business-name-link\" " . $strURL . " style=\"float: right; height: 40px; line-height: 24px;\" >Choose This Listing</a>";
+                                } else {
+                                    //the location was found, so tell the user that
+                                    $strURL = "href=\"javascript:void(0);\"";
+                                    $strButton = "<div style=\"float: right; margin-top: -10px; padding: 5px; text-align: center; width: 215px;\">Already Registered Contact Support</div>";
+                                }
+
+
+                                $strHTML .= "<div class=\"border-box-s\" style=\"min-height: 110px;\">
+                    <p class=\"business-name\"><a class=\"business-name-link\" id=\"business-name-link\" " . $strURL . ">" . $returnBusinessName . "</a></p>
+                    " . $strButton . "
+                    <ul>
+                    <li>" . $returnAddress . "</li>
+                    <li>" . $returnPhoneNumber . "</li>
+                    </ul>
+                    </div>";
+
+                                #increment counter
+                                $intCounter++;
+                            }
+                        }
+
+                        #set response
+                        $responseArr = array('HTML' => $strHTML);
+                    } else {
+                        //echo '<pre>'.print_r($arrResultFindPlace,true).'</pre>';
+                        #set response
+                        $responseArr = array('errorMsg' => 'Result not found.');
+                    }
+                } else {
+                    #set response
+                    $responseArr = array('errorMsg' => 'Result not found');
+                }
+            } catch (Exception $e) {
+                #set response
+                $responseArr = array('errorMsg' => 'There was an error processing your request.');
+            }
+
+            echo json_encode($responseArr);
+            exit;
+        }
+    }
+
+    
+    public function checkForAvailableEmailAction() {
+        
+        $testThisEmail =  $_POST['email'];
+        //find the User
+        $conditions = "email = :email:";
+        $parameters = array("email" => $testThisEmail);
+        $Users = Users::findfirst(array($conditions, "bind" => $parameters));
+        if ((isset($Users)) && ($Users->id > 0)) {
+            echo  $Users->id;
+        } else {
+            echo  $Users->id;
+        }
+    }
+    
+    
+    public function checkForAvailableSubDomainAction() {
+         
+        $testThisCustomDomain =  $_POST['custom_domain'];
+        //find the User
+        $conditions = "custom_domain = :custom_domain:";
+        $parameters = array("custom_domain" => $testThisCustomDomain);
+        $Agency = Agency::findfirst(array($conditions, "bind" => $parameters));
+        if (isset($Agency) && $Agency->agency_id > 0) {
+            echo  1;
+        } else {
+            echo  0;
+        }
+    }
+    
+    /**
+     * Sends a review invite to the selected location
+     */
+    public function sendsmsAction() {
+        //$results = 'There was a problem sending the message.';
+        $results ='';
+        $message = $_GET['body'].'  Reply stop to be removed';
+        $original_message = $message;
+        $name = $_GET['name'];
+        $cell_phone = $_GET['cell_phone'];
+        $id = intval($_GET['id']);
+        $locationID = intval($_GET['location_id']);
+        $this->checkIntegerOrThrowException($id);
+        $message = str_replace("%7D", "}", $message);
+        $message = str_replace("%7B", "{", $message);
+        $message = str_replace("{location-name}", $name, $message);
+        $message = str_replace("{name}", 'Name', $message);
+        $message = str_replace("{link}", 'Link', $message);
+
+        $identity = $this->auth->getIdentity();
+        $objUser = \Vokuro\Models\Users::findFirst("id = {$identity['id']}");
+        $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+
+        if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            $TwilioAPIKey = $this->config->twilio->twilio_api_key;
+            $TwilioAuthToken = $this->config->twilio->twilio_auth_token;
+
+            $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $this->config->twilio->twilio_from_phone;
+        } else {
+            if($objBusiness->parent_id!=0)
+            {
+            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+            $TwilioAPIKey = $objAgency->twilio_api_key;
+            $TwilioAuthToken = $objAgency->twilio_auth_token;
+
+            $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $objAgency->twilio_from_phone;
+            }
+            else
+            {
+               $TwilioAPIKey = $objBusiness->twilio_api_key;
+            $TwilioAuthToken = $objBusiness->twilio_auth_token;
+
+            $TwilioFromPhone = $objBusiness->twilio_from_phone; 
+            }
+        }
+
+            
+
+      // echo $TwilioAPIKey."-".$TwilioAuthToken."-".$TwilioAuthMessagingSID."-".$TwilioFromPhone;exit;
+
+
+        if(!$TwilioAPIKey || !$TwilioAuthToken || !$TwilioFromPhone) {
+            $this->flash->error("Twilio configuration error.  Please contact customer support.");
+        }
+        
+
+        if($locationID)
+        {
+        $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $locationID);
+        $location = Location::findFirst(array($conditions, "bind" => $parameters));
+        if (isset($location)) {
+            $location->SMS_message = $original_message;
+            $location->save();
+        }
+        }
+        //The message is saved, so send the SMS message now
+        if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $TwilioAPIKey, $TwilioAuthToken,  $TwilioFromPhone)) {
+            $this->flash->success("The message was sent!");
+        }
+        else
+        {
+            $this->flash->error("There was a problem sending messages");
+        }
+        $this->view->disable();
+        echo $results;
+    }
+
 }
+
+
+/**
+     * Allow a user to signup to the system
+     */
+    /*
+    public function subscribeAction($subscription_stripe_id = 0) {
+
+          $this->view->setTemplateBefore('login');
+          $this->tag->setTitle('Get Mobile Reviews | Sign up');
+          $form = new SignUpForm();
+
+          $this->view->maxlimitreached = $this->isMaxLimitReached();
+
+          //find the agency
+          $conditions = "agency_id = :agency_id:";
+          $parameters = array("agency_id" => $this->view->agency_id);
+          $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+          if (!$agency) {
+          $this->flash->error("No agency found");
+          } else {
+          $this->view->agency = $agency;
+
+          if ($subscription_stripe_id > 0) {
+          $conditions = "subscription_stripe_id = :subscription_stripe_id:";
+          $parameters = array("subscription_stripe_id" => $subscription_stripe_id);
+          $subscriptionobj = SubscriptionStripe::findFirst(array($conditions, "bind" => $parameters));
+          $this->view->subscription = $subscriptionobj;
+
+          if ($this->request->isPost()) {
+          try {
+
+          $ccformvalid = false;
+          //check to make sure credit card values were filled out
+          if (isset($_POST['stripeToken']) && $_POST['stripeToken'] != '' &&
+          isset($_POST['stripeEmail']) && $_POST['stripeEmail'] != '') {
+          //$_POST['email'] = $_POST['stripeEmail'];
+          //we have values, assume valid
+          $ccformvalid = true;
+          }
+          //check user email unuique
+          $user = new Users();
+          $user->assign(array(
+          'name' => $this->request->getPost('name', 'striptags'),
+          'email' => $this->request->getPost('email'),
+          'password' => $this->security->hash($this->request->getPost('password')),
+          'profilesId' => 1, //All new users will be "Agency Admin"
+          ));
+          $isemailunuique = $user->validation();
+
+          if ($form->isValid($this->request->getPost()) != false && $ccformvalid && $isemailunuique) {
+          //create the Stripe subscription account
+          \Stripe\Stripe::setApiKey($agency->stripe_account_secret);
+          $customer = \Stripe\Customer::create(array(
+          'source' => $_POST['stripeToken'],
+          'email' => $_POST['stripeEmail'],
+          'plan' => $subscriptionobj->plan,
+          ));
+          //echo '<pre>$customer:'.print_r($customer,true).'</pre>';
+          //first create an agency
+          $agency_name = $this->request->getPost('agency_name', 'striptags');
+          $agency2 = new Agency();
+          $agency2->assign(array(
+          'name' => $agency_name,
+          'stripe_token' => $_POST['stripeToken'],
+          'parent_agency_id' => $agency->agency_id,
+          'stripe_customer_id' => $customer->id,
+          'stripe_subscription_id' => $customer->subscriptions->data[0]->id,
+          'date_created' => date('Y-m-d H:i:s'),
+          ));
+          if (!$agency2->save()) {
+          $this->flash->error($agency2->getMessages());
+          } else {
+          $user->agency_id = $agency2->agency_id;
+
+          if ($user->save()) {
+          //$this->flash->error('A confirmation email has been sent to ' . $this->request->getPost('email'));
+          //redirect
+          return $this->response->redirect('/session/login?n=1');
+          }
+          }
+
+          $this->flash->error($user->getMessages());
+          } else {
+          if (!$isemailunuique)
+          $this->flash->error('That email address is already taken.');
+          if (!$ccformvalid)
+          $this->flash->error('Please enter your credit card information.');
+          }
+          } catch (Stripe_CardError $e) {
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_InvalidRequestError $e) {
+          // Invalid parameters were supplied to Stripe's API
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_AuthenticationError $e) {
+          // Authentication with Stripe's API failed
+          // (maybe you changed API keys recently)
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_ApiConnectionError $e) {
+          // Network communication with Stripe failed
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Stripe_Error $e) {
+          // Display a very generic error to the user, and maybe send
+          // yourself an email
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (Exception $e) {
+          // Something else happened, completely unrelated to Stripe
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          } catch (\Stripe\Error\Base $e) {
+          // Code to do something with the $e exception object when an error occurs
+          $this->flash->error('There was a problem proccessing the credit card.  Please check the information and try again. <!--' . $e->getMessage() . '-->');
+          }
+          }
+          }
+          }
+         *
+    }
+     *
+     */

@@ -34,7 +34,8 @@ class SessionController extends ControllerBase {
     /**
      * Default action. Set the public layout (layouts/private.volt)
      */
-    public function initialize() {
+    public function initialize()
+    {
         if (!$this->facebook_access_token) {
             $face = new FacebookScanning();
             $this->facebook_access_token = $face->getAccessToken();
@@ -42,22 +43,24 @@ class SessionController extends ControllerBase {
         parent::initialize();
     }
 
-    public function indexAction() {
+    public function indexAction()
+    {
         $this->view->setTemplateBefore('login');
 
         $this->tag->setTitle('Get Mobile Reviews | Subscription');
     }
 
     // Also will 404 on invalid subdomain
-    protected function DetermineParentIDAndSetViewVars($objPricingPlan = null) {
+    protected function DetermineParentIDAndSetViewVars($objPricingPlan = null)
+    {
         // First try to determine parent id from pricing plan if present
-        if($objPricingPlan) {
+        if ($objPricingPlan) {
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objPricingPlan->user_id}");
             return $objUser->agency_id;
         }
         // Determine if business under an agency or Get Mobile Reviews
             $parts = explode(".", $_SERVER['SERVER_NAME']);
-            if(count($parts) == 3 && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
+            if (count($parts) == 3 && $parts[0] != 'www') { // Index loaded from getmobilereviews subdomain
                 $subdomain = $parts[0];
 
                 $objParentAgency = Agency::findFirst([
@@ -66,7 +69,7 @@ class SessionController extends ControllerBase {
                     ]);
 
                 // Subdomain must exist
-                if(!$objParentAgency) {
+                if (!$objParentAgency) {
                     $this->response->setStatusCode(404, "Not Found");
                     echo "<h1>404 Page Not Found</h1>";
                     $this->view->disable();
@@ -90,28 +93,30 @@ class SessionController extends ControllerBase {
         return $ParentID;
     }
 
-    public function submitSignupAction() {
+    public function submitSignupAction()
+    {
         try {
             $subscription_id = null;
-            if($this->request->getPost('short_code'))
-            {
+            
+            if ($this->request->getPost('short_code')) {
                 $short_code = $this->request->getPost('short_code');
             }
-           
+
             $subscription_pricing_plan = '';
 
             $ssp = new SubscriptionPricingPlan();
 
-            if($this->request->getPost('sharing_code'))
-            {
+            if ($this->request->getPost('sharing_code')) {
                 $sharing_code = $this->request->getPost('sharing_code', 'striptags');
             }
-            
 
             $parent_id = null;
+
+            // if shortcode set get pricing plan by shortcode
             if ($short_code) {
                 $subscription_pricing_plan = $ssp->findOneBy(['short_code' => $short_code]);
-                if($subscription_pricing_plan) {
+                
+                if ($subscription_pricing_plan) {
                     /**
                      * @var $subscription_pricing_plan \Vokuro\Models\SubscriptionPricingPlan
                      */
@@ -125,30 +130,29 @@ class SessionController extends ControllerBase {
             /* Get services */
             $subscriptionManager = $this->di->get('subscriptionManager');
 
-            if(!$subscription_id && $sharing_code) {
-               
+            if (!$subscription_id && $sharing_code) {
+
                 // Viral signup, get viral subscription
                 $objBusiness = \Vokuro\Models\Agency::findFirst("viral_sharing_code = '{$sharing_code}'");
-                if(!$objBusiness)
+                if (!$objBusiness)
                     throw new \Exception("Viral code not set properly.  Please contact customer support.");
 
                 $objSuperUser = \Vokuro\Models\Users::findFirst("agency_id = {$objBusiness->parent_id} and role = 'Super Admin'");
 
                 $objSubscription = \Vokuro\Models\SubscriptionPricingPlan::findFirst("is_viral = 1 AND user_id = {$objSuperUser->id} AND name NOT LIKE 'deleted-%'");
-                if($objSubscription)
+                if ($objSubscription)
                     $subscription_id = $objSubscription->id;
                 $parent_id = $objBusiness->parent_id;
                
             }
-            //echo $subscription_id;exit;
-            if(!$subscription_id) {
-                //echo "2";
+
+            if (!$subscription_id) {
                 /**
                  * @var $subscriptionManager \Vokuro\Services\SubscriptionManager
                  */
 
                 $default = $subscriptionManager->getActiveSubscriptionPlan();
-                if($default){
+                if ($default) {
                    /**
                     * @var $default \Vokuro\Models\SubscriptionPricingPlan
                     */
@@ -171,18 +175,18 @@ class SessionController extends ControllerBase {
             // Check user email unuique
             $user = new Users();
             $name = $this->request->getPost('name', 'striptags');
-            if(strpos($name,' ') > -1) {
+            if (strpos($name,' ') > -1) {
                 $names = explode(' ', $name);
             }
-            if($names){
+            if ($names) {
                 $first_name = $names[0];
                 $last_name = $names[1];
             }
-            if(!$last_name) $last_name = ' ';
+            if (!$last_name) $last_name = ' ';
          
             $user->assign(array(
                 'name' => $name,
-                'last_name'=>$last_name,
+                'last_name' => $last_name,
                 'email' => $this->request->getPost('email'),
                 'password' => $this->security->hash($this->request->getPost('password')),
                 'profilesId' => 2,
@@ -194,20 +198,29 @@ class SessionController extends ControllerBase {
 
             $isemailunuique = $user->validation();
             if (!$isemailunuique) {
-                throw new ArrayException("Email address is not unique", 0, null, ['That email address is already taken.']);
+                throw new ArrayException(
+                    "Email address is not unique",
+                    0,
+                    null,
+                    ['That email address is already taken.']
+                );
             }
-
 
             $uservalid = $form->isValid($this->request->getPost());
             if (!$uservalid) {
                 $messages = $form->getMessages();
                 if(!$messages) $messages = ['Invalid User'];
 
-                throw new ArrayException("The user was not valid", 0, null, $messages);
+                throw new ArrayException(
+                    "The user was not valid",
+                    0,
+                    null,
+                    $messages
+                );
             }
             // First create an agency
             $agency_name = $this->request->getPost('agency_name', 'striptags');
-            if(!$agency_name) $agency_name = $this->request->getPost('name','striptags');
+            if (!$agency_name) $agency_name = $this->request->getPost('name','striptags');
 
             // Also will 404 on invalid subdomain.  If its a viral code, it will use that instead.  This is hacky, but it removes some reliance on the subdomain being correct.
             $ParentID = $parent_id ?: $this->DetermineParentIDAndSetViewVars($subscription_pricing_plan);
@@ -224,7 +237,7 @@ class SessionController extends ControllerBase {
                 'review_invite_type_id' => 1,
             ];
 
-            if($subscription_id){
+            if ($subscription_id) {
                 $agency_save_arr['subscription_id'] = $subscription_id;
             }
 
@@ -234,56 +247,64 @@ class SessionController extends ControllerBase {
                 throw new ArrayException('Could not save Agency', 0, null, $agency->getMessages());
             }
 
-            if($this->request->getPost('sharing_code')) {
-               /* $objSharingCode = new \Vokuro\Models\SharingCode();
+
+            if ($this->request->getPost('sharing_code')) {
+                /* $objSharingCode = new \Vokuro\Models\SharingCode();
                 $objSharingCode->sharecode = $this->request->getPost('sharing_code');
                 $objSharingCode->business_id = $agency->agency_id;
                 $objSharingCode->created_at = date("Y-m-d H:i:s", strtotime('now'));
                 $objSharingCode->subscription_id = $subscription_id;
                 $objSharingCode->save();*/
 
-                 $result=$this->db->query(" INSERT INTO sharing_code ( `business_id`, `subscription_id`, `created_at`, `sharecode`) VALUES ( '".$agency->agency_id."', '".$subscription_id."', '".date("Y-m-d H:i:s", strtotime('now'))."','".$this->request->getPost('sharing_code')."')");
+                $result = $this->db->query(
+                    "INSERT INTO sharing_code ( `business_id`, `subscription_id`, `created_at`, `sharecode`) "
+                    . "VALUES ( '" . $agency->agency_id . "', '" . $subscription_id . "', '" . date("Y-m-d H:i:s", strtotime('now')) . "', '" . $this->request->getPost('sharing_code') . "')"
+                );
             }
 
             $user->agency_id = $agency->agency_id;
             $user->send_confirmation = true;
+
             if (!$user->save() && $user->getMessages()) {
 
                 throw new ArrayException('Could not save the user', 0, null, $user->getMessages());
             }
+
             $_SESSION['name'] = $this->request->getPost('name', 'striptags');
             $_SESSION['email'] = $this->request->getPost('email');
 
             
-            $an=$this->request->getPost('name', 'striptags');
-            $msgx=$this->request->getPost('name', 'striptags')." is register under You with email ID ".$this->request->getPost('email', 'striptags');
-            $createdxx=date('Y-m-d H:i:s');
-            $result=$this->db->query(" INSERT INTO notification ( `to`, `from`, `message`, `read`,`created`,`updated`) VALUES ( '".$ParentID."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')");  
+            $an = $this->request->getPost('name', 'striptags');
+            $msgx = $this->request->getPost('name', 'striptags')." is register under You with email ID ".$this->request->getPost('email', 'striptags');
+            $createdxx = date('Y-m-d H:i:s');
+            $result = $this->db->query(" INSERT INTO notification ( `to`, `from`, `message`, `read`,`created`,`updated`) VALUES ( '".$ParentID."', '".$an."', '".$msgx."', '0','".$createdxx."','".$createdxx."')");  
                       
             
             $this->db->commit();
 
             /*** notification mail ***/
-            $objSuperAdminUser = \Vokuro\Models\Users::findFirst('agency_id = ' . $ParentID . ' AND role="Super Admin"');
+            $objSuperAdminUser = \Vokuro\Models\Users::findFirst(
+                'agency_id = ' . $ParentID . ' AND role="Super Admin"'
+            );
 
-            if(isset($subscription_pricing_plan->name)){
+            if (isset($subscription_pricing_plan->name)) {
                 $planName = $subscription_pricing_plan->name;
-            }else{
+            } else {
                 $planName = 'Free';
             }
 
             $EmailFrom = 'no-reply@reviewvelocity.co';
             $EmailFromName = "Zach Anderson";
-            $subject="New Business Registered Successfully";
-            $mail_body='Dear '.$objSuperAdminUser->name.',';
-            $mail_body=$mail_body.'<p>Congratulations a new business has registered successfully with following details:
+            $subject = "New Business Registered Successfully";
+            $mail_body = 'Dear '.$objSuperAdminUser->name.',';
+            $mail_body = $mail_body.'<p>Congratulations a new business has registered successfully with following details:
                 </p>';
             $mail_body .= '<p>Name: '.$an.'</p>';
             $mail_body .= '<p>Email: '.$this->request->getPost('email', 'striptags').'</p>';
             $mail_body .= '<p>Subscription: '.$planName.'</p>';
-            $mail_body=$mail_body."Thanks";
+            $mail_body = $mail_body."Thanks";
 
-                $Mail = $this->getDI()->getMail();
+            $Mail = $this->getDI()->getMail();
             $Mail->setFrom($EmailFrom, $EmailFromName);
             $Mail->send($objSuperAdminUser->email, $subject, '', '', $mail_body);
                 /*** notification mail end ***/
@@ -298,7 +319,7 @@ class SessionController extends ControllerBase {
 
             $this->db->rollback();
 
-            if($e->getOptions()) foreach($e->getOptions() as $message) {
+            if ($e->getOptions()) foreach($e->getOptions() as $message) {
                 $this->flash->error($message);
             }
 
@@ -306,26 +327,23 @@ class SessionController extends ControllerBase {
 
     }
 
-    public function inviteAction($short_code = null) {
+    public function inviteAction($short_code = null)
+    {
         $this->view->short_code = $short_code;
 
-            if($short_code!=null)
-            {
+        if ($short_code!=null) {
             $expire = time() + 86400 * 8;
             setcookie( "short_code",$short_code, $expire );
-            }
-            else
-            {
-                $this->view->short_code =$short_code=$_COOKIE['short_code'];
-            }
-            //code_generate
+        } else {
+            $this->view->short_code = $short_code = $_COOKIE['short_code'];
+        }
+        
+        //code_generate
+        $shar_code = $_COOKIE['code_generate_normal'];
 
-            $shar_code=$_COOKIE['code_generate_normal'];//exit;
-           // echo $cookieAgency=$_COOKIE['cookie_agency_id'];exit;
-            if($shar_code)
-            {
-                $this->view->code=$_COOKIE['code_generate_normal'];
-            }
+        if ($shar_code) {
+            $this->view->code=$_COOKIE['code_generate_normal'];
+        }
 
         
         $this->signupAction();
@@ -333,7 +351,7 @@ class SessionController extends ControllerBase {
         $this->view->pick('session/signup');
         $subscription = new SubscriptionPricingPlan();
 
-        if($short_code) {
+        if ($short_code) {
             $plan = $subscription->findOneBy(['short_code' => $this->view->short_code]);
 
             if ($plan) {
@@ -348,11 +366,11 @@ class SessionController extends ControllerBase {
                 $this->view->agency_name = $objAgency->name;
                 $status = $plan->enabled;
 
-                if(!$status) {
+                if (!$status) {
                     //get the active plan
                     $service = new SubscriptionManager();
                     $active = $service->getActiveSubscriptionPlan();
-                    if($active){
+                    if ($active){
                         $this->view->short_code = $active->getShortCode();
                         $this->view->setTemplateBefore('login');
 
@@ -412,27 +430,27 @@ class SessionController extends ControllerBase {
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
             $this->view->agencyId = $objAgency->agency_id;
             $this->view->agency_name = $objAgency->name;
-            $cookie_agency_id= $objAgency->agency_id;//exit;
+            $cookie_agency_id = $objAgency->agency_id;//exit;
             // echo $objAgency->parent_id;exit;
             
             if ($objAgency->parent_id == 0) {
-                setcookie("code_generate_normal",$code, $expire,'/');
-                setcookie("cookie_agency_id",$cookie_agency_id, $expire,'/');
-                $custom_domain=$objAgency->custom_domain;
-                $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
+                setcookie("code_generate_normal", $code, $expire, '/');
+                setcookie("cookie_agency_id", $cookie_agency_id, $expire, '/');
+                $custom_domain = $objAgency->custom_domain;
+                $this->response->redirect('http://' . $custom_domain . '.' . $Domain);
                 //$this->view->disable();
                 return;
             }
 
             if ($objAgency->parent_id) {
-                setcookie("code_generate_normal",$code, $expire,'/',$custom_domain . '.' . $Domain);
-                 setcookie("cookie_agency_id",$cookie_agency_id, $expire,'/');
+                setcookie("code_generate_normal", $code, $expire, '/', $custom_domain . '.' . $Domain);
+                 setcookie("cookie_agency_id", $cookie_agency_id, $expire, '/');
                 $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
 
                 $this->view->agencyId = $objAgency1->agency_id;
                 $this->view->agency_name = $objAgency1->name;
-                $custom_domain=$objAgency1->custom_domain;
-                $this->response->redirect('http://'.$custom_domain . '.' . $Domain);
+                $custom_domain = $objAgency1->custom_domain;
+                $this->response->redirect('http://' . $custom_domain . '.' . $Domain);
                 $this->view->disable();
                 return;
              } else {
@@ -443,14 +461,14 @@ class SessionController extends ControllerBase {
                 $this->view->agencyId = $objAgency->agency_id;
                 $this->view->agency_name = $objAgency->name;
 
-                if($objAgency->parent_id) {
+                if ($objAgency->parent_id) {
                     $objAgency1 = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
 
                     $this->view->agencyId = $objAgency1->agency_id;
                     $this->view->agency_name = $objAgency1->name;
-                 }
+                }
 
-                 //$this->view->agency_name ='';
+                //$this->view->agency_name ='';
             }
         }
         //dd($record->agency_id);
@@ -512,12 +530,14 @@ class SessionController extends ControllerBase {
      * Sign up form, Step 2 (Add Location)
      */
     /* public function signup2Action($subscription_id = 0) { */
-    public function signup2Action($pricingProfileToken = 0) {
+    public function signup2Action($pricingProfileToken = 0)
+    {
 
         /* $this->noSubDomains(2, $subscription_id); */
-        if($this->request->getPost('short_code')){
+        if ($this->request->getPost('short_code')){
             $short_code = $this->request->getPost('short_code');
         }
+
         $this->view->setTemplateBefore('signup');
         $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
 
@@ -531,6 +551,7 @@ class SessionController extends ControllerBase {
             $this->view->disable();
             return;
         }
+
         $conditions = "id = :id:";
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
@@ -676,7 +697,8 @@ class SessionController extends ControllerBase {
      * Sign up form, Step 3 (Customize Survey)
      */
     /* public function signup3Action($subscription_id = 0) { */
-    public function signup3Action($pricingProfileToken = 0) {
+    public function signup3Action($pricingProfileToken = 0)
+    {
         $this->view->setTemplateBefore('signup');
         $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 3 | Customize Survey');
 
@@ -741,7 +763,8 @@ class SessionController extends ControllerBase {
      * Sign up form, Step 4 (Add Employee)
      */
     /* public function signup4Action($subscription_id = 0) { */
-    public function signup4Action($pricingProfileToken = 0) {
+    public function signup4Action($pricingProfileToken = 0)
+    {
 
         /* $this->noSubDomains(4, $subscription_id); */
         Utils::noSubDomains(4, $this->validSubDomains, $pricingProfileToken);
@@ -811,7 +834,8 @@ class SessionController extends ControllerBase {
      * Sign up form, Step 5 (Share)
      */
     /* public function signup5Action($subscription_id = 0) { */
-    public function signup5Action($pricingProfileToken = 0,$email = null) {
+    public function signup5Action($pricingProfileToken = 0, $email = null)
+    {
         /* $this->noSubDomains(5, $subscription_id); */
         Utils::noSubDomains(5, $this->validSubDomains, $pricingProfileToken);
 
@@ -855,10 +879,15 @@ class SessionController extends ControllerBase {
             $subject = $this->view->share_subject;
             $message = $this->view->share_message;
 
-            if($agency->parent_id > 0) {
-                $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
-                if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
-                    throw \Exception("Contact customer support.  Email configuration not setup correctly");
+            if ($agency->parent_id > 0) {
+                $objParentAgency = \Vokuro\Models\Agency::findFirst(
+                    "agency_id = {$agency->parent_id}"
+                );
+                if (!$objParentAgency->email_from_address && !$objParentAgency->custom_domain) {
+                    throw \Exception(
+                        "Contact customer support.  Email configuration not setup correctly"
+                    );
+                }
 
                 $Domain = $this->config->application->domain;
 
@@ -869,14 +898,17 @@ class SessionController extends ControllerBase {
 
             $Domain = $this->config->application->domain;
 
-            if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+            if ($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
                 $EmailFrom = 'zacha@reviewvelocity.co';
                 $EmailFromName = "Zach Anderson";
             }
 
-            if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
-                if(!$agency->email_from_address && !$agency->custom_domain)
-                    throw \Exception("Contact customer support.  Email configuration not setup correctly");
+            if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+                if (!$agency->email_from_address && !$agency->custom_domain) {
+                    throw \Exception(
+                        "Contact customer support.  Email configuration not setup correctly"
+                    );
+                }
                 $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
                 $EmailFromName = $agency->email_from_name ?: 'No Reply';
             }
@@ -887,9 +919,9 @@ class SessionController extends ControllerBase {
                     $email = $_POST['email_' . $i];
                     if ($email != '') {
                         try {
-                            $Email_set=explode('@',$email);
-                            $header_name="Hey ".$Email_set[0].",";
-                            $body_message=$header_name.$message;
+                            $Email_set = explode('@', $email);
+                            $header_name = "Hey " . $Email_set[0] . ",";
+                            $body_message = $header_name . $message;
                             $Mail = $this->getDI()->getMail();
                             $Mail->setFrom($EmailFrom, $EmailFromName);
                             $Mail->send($email, $subject, '', '', $message);
@@ -900,7 +932,9 @@ class SessionController extends ControllerBase {
                 }
             }
             $this->view->messages_sent = true;
-            $this->flash->success('The emails have been sent.  Use the form to send some more.  Click the "FINISHED" button to leave this page.');
+            $this->flash->success(
+                'The emails have been sent.  Use the form to send some more.  Click the "FINISHED" button to leave this page.'
+            );
             Tag::resetInput();
         }
 
@@ -915,56 +949,67 @@ class SessionController extends ControllerBase {
             if (!$agency->save()) {
                 $this->flash->error($agency->getMessages());
             } else {
-                    if($agency->parent_id > 0) {
-                        $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
-                        if(!$objParentAgency->email_from_address && !$objParentAgency->custom_domain)
-                            throw \Exception("Contact customer support.  Email configuration not setup correctly");
-                        $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
-                        $EmailFromName = $objParentAgency->email_from_name ?: "";
+                if ($agency->parent_id > 0) {
+                    $objParentAgency = \Vokuro\Models\Agency::findFirst(
+                        "agency_id = {$agency->parent_id}"
+                    );
+
+                    if (!$objParentAgency->email_from_address && !$objParentAgency->custom_domain) {
+                        throw \Exception(
+                            "Contact customer support.  Email configuration not setup correctly"
+                        );
                     }
 
-                    if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
-                        $EmailFrom = 'zacha@reviewvelocity.co';
-                        $EmailFromName = "Zach Anderson";
+                    $EmailFrom = $objParentAgency->email_from_address ?: "no-reply@{$objParentAgency->custom_domain}.{$Domain}";
+                    $EmailFromName = $objParentAgency->email_from_name ?: "";
+                }
+
+                if ($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+                    $EmailFrom = 'zacha@reviewvelocity.co';
+                    $EmailFromName = "Zach Anderson";
+                }
+
+                if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+                    if (!$agency->email_from_address && !$agency->custom_domain) {
+                        throw \Exception(
+                            "Contact customer support.  Email configuration not setup correctly"
+                        );
                     }
-                    if($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
-                        if(!$agency->email_from_address && !$agency->custom_domain)
-                            throw \Exception("Contact customer support.  Email configuration not setup correctly");
-                        $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
-                        $EmailFromName = $agency->email_from_name ?: "";
+                    $EmailFrom = $agency->email_from_address ?: "no-reply@{$agency->custom_domain}.{$Domain}";
+                    $EmailFromName = $agency->email_from_name ?: "";
 
-                    }
+                }
 
-                    $Domain = $this->config->application->domain;
+                $Domain = $this->config->application->domain;
 
-                    $publicUrl="http://{$Domain}";
-                    $code=$userObj->id."-".$userObj->name;
-                    $link=$publicUrl.'/link/createlink/'.base64_encode($code);
-                    $feed_back_email=$userObj->email;
-                    $feed_back_subj='Feedback Form';
-                    $feed_back_body='Hi '.$userObj->name.',';
-                    $feed_back_body=$feed_back_body.'<p>Thank you for activating your account, we have created a mobile landing page so that you can request feedback from your customers in person from your mobile phone.</p><p>Click on the link below and add the the page to your home screen so that you can easily access this page. This link is customized to you so that all feedback and reviews will be tracked back to your account. 
+                $publicUrl = "http://{$Domain}";
+                $code = $userObj->id . "-" . $userObj->name;
+                $link = $publicUrl . '/link/createlink/' . base64_encode($code);
+                $feed_back_email = $userObj->email;
+                $feed_back_subj = 'Feedback Form';
+                $feed_back_body = 'Hi ' . $userObj->name . ',';
+                $feed_back_body = $feed_back_body . '<p>Thank you for activating your account, we have created a mobile landing page so that you can request feedback from your customers in person from your mobile phone.</p><p>Click on the link below and add the the page to your home screen so that you can easily access this page. This link is customized to you so that all feedback and reviews will be tracked back to your account. 
+                    </p>
+
+                    <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online. </p>';
+                $feed_back_body .= '<a href="' . $link . '">Personalized Feedback Form - Click Here </a>
+                        <p>
+                        Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. 
                         </p>
+                    <p>Looking forward to helping you build a strong online reputation.</p>';
 
-                        <p>The best practices is to ask your customer for feedback right after you have completed the services for them. We recommend that you ask them to please leave a review on one of the sites we suggest and to mention your name in the review online. </p>';
-                        $feed_back_body=$feed_back_body.'<a href="'.$link.'">Personalized Feedback Form - Click Here </a>
-                            <p>
-                            Do not give this link out to any one else it is a personalized link for you and will track all your feedback requests. Each employee has their own personalized feedback form. 
-                            </p>
-                        <p>Looking forward to helping you build a strong online reputation.</p>';
+                if ($_SESSION['password_save'])
+                {   
+                    $feed_back_body .= '<p>Please view the Login Credentials Below: </p>';
+                    $feed_back_body .= "Login Password: " . $_SESSION['password_save'] . "<br>";
+                    $feed_back_body .= "Login Email: " . $feed_back_email . "<br>";
+                }
 
-                        if($_SESSION['password_save'])
-                        {   
-                             $feed_back_body=$feed_back_body.'<p>Please view the Login Credentials Below: </p>';
-                           $feed_back_body=$feed_back_body."Login Password: ". $_SESSION['password_save']."<br>";
-                           $feed_back_body=$feed_back_body."Login Email: ".$feed_back_email."<br>";
-                        }
-
-                        $feed_back_body=$feed_back_body."<br>".$AgencyUser."<br>".$AgencyName;
-                    $Mail = $this->getDI()->getMail();
-                    $Mail->setFrom($EmailFrom, $EmailFromName);
-                    $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
-                    $_SESSION['password_save']='';
+                $feed_back_body .= "<br>" . $AgencyUser . "<br>" . $AgencyName;
+                $Mail = $this->getDI()->getMail();
+                $Mail->setFrom($EmailFrom, $EmailFromName);
+                $Mail->send($feed_back_email, $feed_back_subj, '', '', $feed_back_body);
+                $_SESSION['password_save'] = '';
                 return $this->response->redirect('/');
                 $this->view->disable();
                 return;
@@ -977,7 +1022,8 @@ class SessionController extends ControllerBase {
     /**
      * thankyou page
      */
-    public function thankyouAction() {
+    public function thankyouAction()
+    {
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Get Mobile Reviews | Thank You');
 
@@ -986,14 +1032,16 @@ class SessionController extends ControllerBase {
         //$_SESSION['email']='test@tester.com';
     }
 
-    public function changePasswordAction() {
+    public function changePasswordAction()
+    {
     	$this->tag->setTitle('Get Mobile Reviews | Change Password');
     	$this->view->setTemplateBefore('login');
     }
     /**
      * privacy page
      */
-    public function resetPasswordAction($code = 0, $userId = 0) {
+    public function resetPasswordAction($code = 0, $userId = 0)
+    {
     	//$this->view->setTemplateBefore('login');
     	$this->tag->setTitle('Get Mobile Reviews | Change Password');
 
@@ -1010,14 +1058,14 @@ class SessionController extends ControllerBase {
 
     	if (!$resetPassword) {
     		return $this->dispatcher->forward(array(
-    				'controller' => 'index',
-    				'action' => 'index'
+				'controller' => 'index',
+				'action' => 'index'
     		));
     	}
     	if ($resetPassword->reset != 'N') {
     		return $this->dispatcher->forward(array(
-    				'controller' => 'session',
-    				'action' => 'login'
+				'controller' => 'session',
+				'action' => 'login'
     		));
     	}
     	$resetPassword->reset = 'Y';
@@ -1031,8 +1079,8 @@ class SessionController extends ControllerBase {
     		}
     	
     		return $this->dispatcher->forward(array(
-    				'controller' => 'session',
-    				'action' => 'changePassword'
+				'controller' => 'session',
+				'action' => 'changePassword'
     		));
     	}
     	
@@ -1045,40 +1093,35 @@ class SessionController extends ControllerBase {
     	$this->flash->success('Please reset your password');
     	
     	return $this->dispatcher->forward(array(
-    			'controller' => 'session',
-    			'action' => 'changePassword'
+			'controller' => 'session',
+			'action' => 'changePassword'
     	));
-    	
     }
     
 
     /**
      * privacy page
      */
-    public function privacyAction() {
+    public function privacyAction()
+    {
     	$this->view->setTemplateBefore('login');
     	$this->tag->setTitle('Get Mobile Reviews | Privacy');
-    
     }
 
     /**
      * reseller page
      */
-    public function resellerAction() {
+    public function resellerAction()
+    {
     	$this->view->setTemplateBefore('login');
     	$this->tag->setTitle('Get Mobile Reviews | Reseller Agreement');
-    
     }
     
     /**
      * terms page
      */
-    public function termsAction() {
-
-        
-
-         
-
+    public function termsAction()
+    {
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Get Mobile Reviews | Terms');
     }
@@ -1086,7 +1129,8 @@ class SessionController extends ControllerBase {
     /**
      * Anti-spam Policy page
      */
-    public function antispamAction() {
+    public function antispamAction()
+    {
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Get Mobile Reviews | Anti-spam Policy');
     }
@@ -1094,25 +1138,26 @@ class SessionController extends ControllerBase {
     /**
      * RVprivacy page
      */
-    public function RVprivacyAction() {
+    public function RVprivacyAction()
+    {
     	$this->view->setTemplateBefore('login');
     	$this->tag->setTitle('Get Mobile Reviews | Privacy');
-    
     }
     
     /**
      * RVreseller page
      */
-    public function RVresellerAction() {
+    public function RVresellerAction()
+    {
     	$this->view->setTemplateBefore('login');
     	$this->tag->setTitle('Get Mobile Reviews | Reseller Agreement');
-    
     }
     
     /**
      * RVterms page
      */
-    public function RVtermsAction() {
+    public function RVtermsAction()
+    {
     	$this->view->setTemplateBefore('login');
     	$this->tag->setTitle('Get Mobile Reviews | Terms');
     }
@@ -1120,7 +1165,8 @@ class SessionController extends ControllerBase {
     /**
      * RVAnti-spam Policy page
      */
-    public function RVantispamAction() {
+    public function RVantispamAction()
+    {
     	$this->view->setTemplateBefore('login');
     	$this->tag->setTitle('Get Mobile Reviews | Anti-span Policy');
     }
@@ -1129,7 +1175,8 @@ class SessionController extends ControllerBase {
     /**
      * Starts a session in the admin backend
      */
-    public function loginAction() {
+    public function loginAction()
+    {
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Get Mobile Reviews | Login');
         $form = new LoginForm();
@@ -1181,19 +1228,12 @@ class SessionController extends ControllerBase {
                         }*/
 
 
-                        if ($agency->signup_page > 0 && $agency->parent_id!=0)
-
-                        {
+                        if ($agency->signup_page > 0 && $agency->parent_id != 0) {
                             $_SESSION['password_save']=$this->request->getPost('password');
                             $return = '/session/signup' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : '');
-                        }
-                        elseif($agency->signup_page > 0 && $agency->parent_id==0)
-                        {
+                        } else if ($agency->signup_page > 0 && $agency->parent_id==0) {
                              $return = '/agencysignup/step' . $agency->signup_page . '/' . ($agency->subscription_id > 0 ? $subscription_id : ''); 
                         }
-
-
-                            
                     }
                     return $this->response->redirect($return);
                 }
@@ -1201,16 +1241,20 @@ class SessionController extends ControllerBase {
         } catch (AuthException $e) {
             $this->flash->error($e->getMessage());
         }
-        if (isset($_GET['n']) && $_GET['n'] == 1)
-            $this->flash->success('Your account has been created and a confirmation email has been sent to your email address.');
+
+        if (isset($_GET['n']) && $_GET['n'] == 1) {
+            $this->flash->success(
+                'Your account has been created and a confirmation email has been sent to your email address.'
+            );
+        }
         $this->view->form = $form;
     }
 
     /**
      * Shows the forgot password form
      */
-    public function forgotPasswordAction() {
-
+    public function forgotPasswordAction()
+    {
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Get Mobile Reviews | Forgot password');
         $form = new ForgotPasswordForm();
@@ -1251,12 +1295,14 @@ class SessionController extends ControllerBase {
     /**
      * Closes the session
      */
-    public function logoutAction() {
+    public function logoutAction()
+    {
         $this->auth->remove();
         return $this->response->redirect('/');
     }
 
-    function curl_get_contents($url) {
+    public function curl_get_contents($url)
+    {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
@@ -1272,7 +1318,8 @@ class SessionController extends ControllerBase {
      * This is used at: /session/signup2/
      * @return Json
      */
-    public function googlesearchapiAction() {
+    public function googlesearchapiAction()
+    {
 
         #check form post
         $request = $this->request;
@@ -1400,8 +1447,8 @@ class SessionController extends ControllerBase {
     }
 
     
-    public function checkForAvailableEmailAction() {
-    	
+    public function checkForAvailableEmailAction()
+    {
     	$testThisEmail =  $_POST['email'];
     	//find the User
     	$conditions = "email = :email:";
@@ -1415,8 +1462,8 @@ class SessionController extends ControllerBase {
     }
     
     
-    public function checkForAvailableSubDomainAction() {
-    	 
+    public function checkForAvailableSubDomainAction()
+    {
     	$testThisCustomDomain =  $_POST['custom_domain'];
     	//find the User
     	$conditions = "custom_domain = :custom_domain:";
@@ -1432,7 +1479,8 @@ class SessionController extends ControllerBase {
     /**
      * Sends a review invite to the selected location
      */
-    public function sendsmsAction() {
+    public function sendsmsAction()
+    {
         //$results = 'There was a problem sending the message.';
         $results ='';
         $message = $_GET['body'].'  Reply stop to be removed';
@@ -1452,61 +1500,52 @@ class SessionController extends ControllerBase {
         $objUser = \Vokuro\Models\Users::findFirst("id = {$identity['id']}");
         $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
 
-        if($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
+        if ($objBusiness->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $TwilioAPIKey = $this->config->twilio->twilio_api_key;
             $TwilioAuthToken = $this->config->twilio->twilio_auth_token;
 
             $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $this->config->twilio->twilio_from_phone;
         } else {
-            if($objBusiness->parent_id!=0)
-            {
-            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
-            $TwilioAPIKey = $objAgency->twilio_api_key;
-            $TwilioAuthToken = $objAgency->twilio_auth_token;
-
-            $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $objAgency->twilio_from_phone;
-            }
-            else
-            {
-               $TwilioAPIKey = $objBusiness->twilio_api_key;
-            $TwilioAuthToken = $objBusiness->twilio_auth_token;
-
-            $TwilioFromPhone = $objBusiness->twilio_from_phone; 
+            if ($objBusiness->parent_id != 0) {
+                $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+                $TwilioAPIKey = $objAgency->twilio_api_key;
+                $TwilioAuthToken = $objAgency->twilio_auth_token;
+                $TwilioFromPhone = $objBusiness->twilio_from_phone ?: $objAgency->twilio_from_phone;
+            } else {
+                $TwilioAPIKey = $objBusiness->twilio_api_key;
+                $TwilioAuthToken = $objBusiness->twilio_auth_token;
+                $TwilioFromPhone = $objBusiness->twilio_from_phone; 
             }
         }
 
             
 
-      // echo $TwilioAPIKey."-".$TwilioAuthToken."-".$TwilioAuthMessagingSID."-".$TwilioFromPhone;exit;
+        // echo $TwilioAPIKey."-".$TwilioAuthToken."-".$TwilioAuthMessagingSID."-".$TwilioFromPhone;exit;
 
 
-        if(!$TwilioAPIKey || !$TwilioAuthToken || !$TwilioFromPhone) {
+        if (!$TwilioAPIKey || !$TwilioAuthToken || !$TwilioFromPhone) {
             $this->flash->error("Twilio configuration error.  Please contact customer support.");
         }
         
 
-        if($locationID)
-        {
-        $conditions = "location_id = :location_id:";
-        $parameters = array("location_id" => $locationID);
-        $location = Location::findFirst(array($conditions, "bind" => $parameters));
-        if (isset($location)) {
-            $location->SMS_message = $original_message;
-            $location->save();
-        }
+        if ($locationID) {
+            $conditions = "location_id = :location_id:";
+            $parameters = array("location_id" => $locationID);
+            $location = Location::findFirst(array($conditions, "bind" => $parameters));
+            if (isset($location)) {
+                $location->SMS_message = $original_message;
+                $location->save();
+            }
         }
         //The message is saved, so send the SMS message now
         if ($this->SendSMS($this->formatTwilioPhone($cell_phone), $message, $TwilioAPIKey, $TwilioAuthToken,  $TwilioFromPhone)) {
             $this->flash->success("The message was sent!");
-        }
-        else
-        {
+        } else {
             $this->flash->error("There was a problem sending messages");
         }
         $this->view->disable();
         echo $results;
     }
-
 }
 
 

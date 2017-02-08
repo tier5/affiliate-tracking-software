@@ -9,7 +9,8 @@
     use \Phalcon\Mvc\Model\Validator\Regex;
     use \Phalcon\Mvc\Model\Validator\Email;
 
-    class Agency extends BaseModel {
+    class Agency extends BaseModel
+    {
 
         //public $id;
         public $agency_id;
@@ -36,7 +37,8 @@
         /**
          * Validate that custom_domain is unique across agencies
          */
-        public function validation() {
+        public function validation()
+        {
             /*$this->validate(new Regex([
                 'field'   => 'name',
                 'pattern' => '/^[a-zA-Z\.0-9 ]+$/',
@@ -61,10 +63,11 @@
             return $this->validationHasFailed() != true;
         }
 
-        public function initialize() {
+        public function initialize()
+        {
            // $this->skipAttributes(['address2']);
 
-            if(isset($this->parent_id) && $this->parent_id != static::AGENCY) {
+            if (isset($this->parent_id) && $this->parent_id != static::AGENCY) {
                 $this->skipAttributes(['website']);
                 $this->skipAttributes(['email_from_name']);
                 $this->skipAttributes(['email_from_address']);
@@ -72,19 +75,33 @@
 
             $this->setSource('agency');
 
-            $this->belongsTo('subscription_id', __NAMESPACE__ . '\Subscription', 'subscription_id', array(
-                'alias' => 'subscription',
-                'reusable' => true
-            ));
+            $this->belongsTo(
+                'subscription_id',
+                __NAMESPACE__ . '\Subscription',
+                'subscription_id',
+                array(
+                    'alias' => 'subscription',
+                    'reusable' => true
+                )
+            );
             //if (!$this->_skipped) $this->skipAttributes(['address2']); //address2 should NOT be required
             parent::initialize();
+        }
+
+        public function getStripeKeys()
+        {
+            return [
+                'public' => $this->stripe_publishable_keys,
+                'secret' => $this->stripe_account_secret
+            ];
         }
 
         /**
          * Creates (or updates if exists) business.
          * @param $tData array Form fields for business
          */
-        public function createOrUpdateBusiness($tData) {
+        public function createOrUpdateBusiness($tData)
+        {
             $this->assign($tData);
             return $this->save();
         }

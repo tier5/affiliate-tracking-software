@@ -5,24 +5,27 @@ namespace Vokuro\Controllers;
 use Exception;
 use Phalcon\Filter;
 use Vokuro\Models\Agency;
+use Vokuro\Models\Users;
 use Vokuro\Services\Container;
+use Vokuro\Services\StripeService as Stripe;
 use Vokuro\Utils;
 use Vokuro\Forms\SignUpForm;
 use Vokuro\Forms\CreditCardForm;
-use Vokuro\Services\StripeManager;
 
 /**
  * Vokuro\Controllers\BusinessPricingPlanController
  * CRUD to manage users
  */
-class BusinessPricingPlanController extends ControllerBase {
+class BusinessPricingPlanController extends ControllerBase
+{
 
     const MAX_PROGRESSION_SEGMENTS = 10;
 
-    public function initialize() {
+    public function initialize()
+    {
 
-        $identity = $this->session->get('auth-identity');
-        /*if ($identity && $identity['profile'] != 'Employee') {
+        /*$identity = $this->session->get('auth-identity');
+        if ($identity && $identity['profile'] != 'Employee') {
             $this->tag->setTitle('Get Mobile Reviews | Subscription');
             $this->view->setTemplateBefore('private');
         } else {
@@ -36,19 +39,20 @@ class BusinessPricingPlanController extends ControllerBase {
 
         //add needed css
         $this->assets
-            ->addCss('/assets/global/plugins/bootstrap-summernote/summernote.css')
-            ->addCss('/css/subscription.css')
-            ->addCss('/css/slider-extended.css')
-            ->addCss('/assets/global/plugins/card-js/card-js.min.css')
-            ->addCss('/css/login.css');
+             ->addCss('/assets/global/plugins/bootstrap-summernote/summernote.css')
+             ->addCss('/css/subscription.css')
+             ->addCss('/css/slider-extended.css')
+             ->addCss('/assets/global/plugins/card-js/card-js.min.css')
+             ->addCss('/css/login.css');
 
         //add needed js
         $this->assets
-            ->addJs('/assets/global/plugins/bootstrap-summernote/summernote.min.js')
-            ->addJs('/assets/global/plugins/card-js/card-js.min.js');
+             ->addJs('/assets/global/plugins/bootstrap-summernote/summernote.min.js')
+             ->addJs('/assets/global/plugins/card-js/card-js.min.js');
     }
 
-    public function indexAction() {
+    public function indexAction()
+    {
 
         $responseParameters['status'] = false;
 
@@ -74,20 +78,20 @@ class BusinessPricingPlanController extends ControllerBase {
             $this->view->pricingProfiles = $pricingProfiles;
             $this->view->custom_domain = $objAgency->custom_domain;
 
-        }  catch(Exception $e) {
+        }  catch (Exception $e) {
 
             $responseParameters['message'] = $e->getMessage();
 
         }
-
     }
 
-    public function editExistingPricingPlanAction($pricingPlanId) {
-        if(!is_numeric($pricingPlanId)) throw new \Exception("Invalid pricing plan id");
+    public function editExistingPricingPlanAction($pricingPlanId)
+    {
+        if (!is_numeric($pricingPlanId)) throw new \Exception("Invalid pricing plan id");
 
         $agency = new Agency();
-        $records = $agency->findBy(['subscription_id'=>$pricingPlanId, 'agency_type_id'=>2]);
 
+        $records = $agency->findBy(['subscription_id'=>$pricingPlanId, 'agency_type_id'=>2]);
 
         /*if($records){
             $this->view->attached_agencies = $records;
@@ -95,21 +99,29 @@ class BusinessPricingPlanController extends ControllerBase {
             return;
         } */
 
-
         /* Get services */
         $subscriptionManager = $this->di->get('subscriptionManager');
 
         /* Ensure the name of the pricing profile is unique for this user */
         $pricingPlan = (object)$subscriptionManager->getPricingPlanById($pricingPlanId);
-        if(!$pricingPlan) {
+        if (!$pricingPlan) {
             $this->flash->error("Could not open pricing plan for editing.");
             return;
         }
         
+        $stripe = new Stripe();
+
+        $availableCurrencies = $stripe->getAvailableCurrencies();
+
+        $currencySymbols = $stripe->getCurrencySymbols($availableCurrencies);
+
         /* Set top level parameters */
         $this->view->name = $pricingPlan->name;
         $this->view->enableTrialAccount = $pricingPlan->enable_trial_account;
         $this->view->enableDiscountOnUpgrade = $pricingPlan->enable_discount_on_upgrade;
+        $this->view->currency = $pricingPlan->currency;
+        $this->view->availableCurrencies = $availableCurrencies;
+        $this->view->currencySymbols = $currencySymbols;
         $this->view->basePrice = $pricingPlan->base_price;
         $this->view->costPerSms = $pricingPlan->cost_per_sms;
         $this->view->maxMessagesOnTrialAccount = $pricingPlan->max_messages_on_trial_account;
@@ -136,42 +148,65 @@ class BusinessPricingPlanController extends ControllerBase {
 
 
         $pricingPlanLocked = $subscriptionManager->isPricingPlanLocked($pricingPlanId);
-        if($pricingPlanLocked) {
+        if ($pricingPlanLocked) {
             $this->view->gridEditStatus = "disabled";
             // $this->flash->notice("This plan is currently associated to active an business subscription.  Grid parameters may not be edited.");
         }
 
         $this->view->pick("businessPricingPlan/pricingPlan");
+    }
 
-    }
-    public function updateSubcriptionNameAction(){
+    public function updateSubcriptionNameAction()
+    {
         $this->view->disable();
-        $subscription_id=$_POST['subscription_id'];
-        $subcription_name=$_POST['subcription_name'];
-         $dbQuery=$this->db->query("select * from `subscription_pricing_plan` WHERE `name`='".$subcription_name."' and `id` !=".$subscription_id);
-          $countquery=$dbQuery->fetch();
-           if(empty($countquery))
-           {
-        $this->db->query(" UPDATE `subscription_pricing_plan` SET `name`='".$subcription_name."' WHERE `id`=".$subscription_id);
-        echo 1;
-            }
-            else
-            {
-                echo 2;
-            }
+        $subscription_id = $_POST['subscription_id'];
+        $subcription_name = $_POST['subcription_name'];
         
-        
+        $dbQuery=$this->db->query(
+            "select * "
+            . "from `subscription_pricing_plan` "
+            . "WHERE `name`='".$subcription_name."' "
+            . "and `id` !=".$subscription_id
+        );
+
+        $countquery = $dbQuery->fetch();
+        if (empty($countquery)) {
+            $this->db->query(
+                "UPDATE `subscription_pricing_plan` "
+                . "SET `name`='".$subcription_name."'"
+                . " WHERE `id`=".$subscription_id
+            );
+            echo 1;
+        } else {
+            echo 2;
+        }
     }
-    public function updateSubcriptionPricingDetailsAction(){
+
+    public function updateSubcriptionPricingDetailsAction()
+    {
         //echo '<pre>';print_r($_POST);exit;
-        $subscription_id=$_POST['subscription_id'];
-        $subcription_pricing_details=$_POST['subcription_pricing_details'];
-        $this->db->query(" UPDATE `subscription_pricing_plan` SET `pricing_details`='".$subcription_pricing_details."' WHERE `id`=".$subscription_id);
+        $subscription_id = $_POST['subscription_id'];
+        $subcription_pricing_details = $_POST['subcription_pricing_details'];
+
+        $this->db->query(
+            "UPDATE `subscription_pricing_plan` "
+            . "SET `pricing_details`='" . $subcription_pricing_details . "' "
+            . "WHERE `id`=" . $subscription_id
+        );
+
         return "done";
-        
-        
     }
-    public function showNewPricingPlanAction() {
+
+    public function showNewPricingPlanAction()
+    {
+        $stripe = new Stripe();
+
+        $availableCurrencies = $stripe->getAvailableCurrencies();
+
+        $currencySymbols = $stripe->getCurrencySymbols($availableCurrencies);
+
+        $this->view->availableCurrencies = $availableCurrencies;
+        $this->view->currencySymbols = $currencySymbols;
         $this->view->name = "My New Subscription";
         $this->view->enableTrialAccount = true;
         $this->view->enableDiscountOnUpgrade = true;
@@ -188,6 +223,9 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->gridEditStatus = "";
         $this->view->isCreateMode = true;
         $this->view->isNewRecord = true;
+
+        // get available currencies
+        
 
         /* Add progression parameters */
         $progressions = [];
@@ -216,7 +254,8 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->view->pick("businessPricingPlan/pricingPlan");
     }
 
-    public function createPricingPlanAction() {
+    public function createPricingPlanAction()
+    {
         $this->view->disable();
 
         $responseParameters = $this->savePricingPlanAction(false);
@@ -226,7 +265,8 @@ class BusinessPricingPlanController extends ControllerBase {
         return $this->response;
     }
 
-    public function updatePricingPlanAction() {
+    public function updatePricingPlanAction()
+    {
         $this->view->disable();
 
         $responseParameters = $this->savePricingPlanAction(true);
@@ -236,7 +276,8 @@ class BusinessPricingPlanController extends ControllerBase {
         return $this->response;
     }
 
-    private function savePricingPlanAction($isUpdate) {
+    private function savePricingPlanAction($isUpdate)
+    {
 
         $responseParameters['status'] = false;
 
@@ -248,6 +289,7 @@ class BusinessPricingPlanController extends ControllerBase {
             
             /* Format the request body to an array */
             $validatedParams = $this->validatePricingPlanInput($this->request);
+
             if (!$validatedParams) {
                 throw new \Exception('One or more request parameters are not valid!!!');
             }
@@ -261,20 +303,32 @@ class BusinessPricingPlanController extends ControllerBase {
 
 
             /* If we are creating a new plan, ensure the name of the pricing profile is unique for this user */
-            $pricingPlan = $subscriptionManager->getPricingPlanByName($validatedParams['userId'], $validatedParams['name']);
-            if($pricingPlan && !$isUpdate) {
-                throw new \Exception('Another pricing profile with that name already exists! Please choose a unique name and try again.');
+            $pricingPlan = $subscriptionManager->getPricingPlanByName(
+                $validatedParams['userId'],
+                $validatedParams['name']
+            );
+
+            if ($pricingPlan && !$isUpdate) {
+                throw new \Exception(
+                    'Another pricing profile with that name already exists! Please choose a unique name and try again.'
+                );
             }
 
-            if($validatedParams) foreach($validatedParams as $key => $value) if($key !== 'name'){
-                $validatedParams[$key] = str_replace('$','',$value);
+            if ($validatedParams) {
+                foreach ($validatedParams as $key => $value) {
+                    if ($key !== 'name') {
+                        $validatedParams[$key] = str_replace('$', '', $value);
+                    }
+                }
             }
 
             /* Save the profile */
             $this->db->begin();
-            if(!$subscriptionManager->savePricingProfile($validatedParams, $isUpdate)) {
+
+            if (!$subscriptionManager->savePricingProfile($validatedParams, $isUpdate)) {
                 throw new \Exception('Unable to save pricing profile!!!');
             }
+            
             $this->db->commit();
 
             /*
@@ -297,7 +351,8 @@ class BusinessPricingPlanController extends ControllerBase {
         return $responseParameters;
     }
 
-    public function previewSignUpPageAction() {
+    public function previewSignUpPageAction()
+    {
         // $this->view->setTemplateBefore('private');
         $this->view->setTemplateBefore('private');
         $form = new SignUpForm();
@@ -318,7 +373,8 @@ class BusinessPricingPlanController extends ControllerBase {
 
 
 
-    public function updateViralSwitchAction($pricingPlanId, $enable) {
+    public function updateViralSwitchAction($pricingPlanId, $enable)
+    {
 
         $this->view->disable();
 
@@ -351,10 +407,10 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
-
     }
 
-    public function updateEnablePricingPlanAction($pricingPlanId, $enable) {
+    public function updateEnablePricingPlanAction($pricingPlanId, $enable)
+    {
         $this->view->disable();
 
         $responseParameters['status'] = false;
@@ -369,7 +425,7 @@ class BusinessPricingPlanController extends ControllerBase {
             $subscriptionManager = $this->di->get('subscriptionManager');
 
             /* Ensure the name of the pricing profile is unique for this user */
-            if(!$subscriptionManager->enablePricingPlanById($pricingPlanId, $enable)) {
+            if (!$subscriptionManager->enablePricingPlanById($pricingPlanId, $enable)) {
                 throw new \Exception('Failed to enable/disable pricing plan.');
             }
 
@@ -378,7 +434,7 @@ class BusinessPricingPlanController extends ControllerBase {
              */
             $responseParameters['status'] = true;
 
-        }  catch(Exception $e) {
+        }  catch (Exception $e) {
 
             $responseParameters['message'] = $e->getMessage();
 
@@ -387,12 +443,15 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
-
     }
 
-    public function deletePricingPlanAction($pricingPlanId) {
+    public function deletePricingPlanAction($pricingPlanId)
+    {
 
-        if(!is_numeric($pricingPlanId)) throw new \Exception('$pricingPlanId is expected to be an integer');
+        if (!is_numeric($pricingPlanId)) {
+            throw new \Exception('$pricingPlanId is expected to be an integer');
+        }
+
         $this->view->disable();
 
         $responseParameters['status'] = false;
@@ -409,13 +468,17 @@ class BusinessPricingPlanController extends ControllerBase {
             /* Ensure the name of the pricing profile is unique for this user */
 
             $BusinessCount = \Vokuro\Models\Agency::count("subscription_id = {$pricingPlanId}");
-            if($BusinessCount > 0) {
-                throw new \Exception('Cannot delete a subscription that businesses are subscribed to.');
+            if ($BusinessCount > 0) {
+                throw new \Exception(
+                    'Cannot delete a subscription that businesses are subscribed to.'
+                );
             }
 
             /* REFACTOR - Temporary raw sql.  Soft deletes don't appear to be working via Phalcon */
             $sql = "UPDATE subscription_pricing_plan SET name='deleted-". time() ."', deleted_at='" . date('Y-m-h h:m:s') . "' WHERE id=" . $pricingPlanId;
+
             $result = $this->db->query($sql); // Working now
+            
             if (!$result) {
                 return false;
             }
@@ -428,8 +491,7 @@ class BusinessPricingPlanController extends ControllerBase {
              * Success!!!
              */
             $responseParameters['status'] = true;
-
-        }  catch(Exception $e) {
+        }  catch (Exception $e) {
 
             $responseParameters['message'] = $e->getMessage();
 
@@ -438,15 +500,14 @@ class BusinessPricingPlanController extends ControllerBase {
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setContent(json_encode($responseParameters));
         return $this->response;
-
     }
 
     /*
      * REFACTOR
      * Needs to moved into a generic request validation systems
      */
-    private function validatePricingPlanInput() {
-
+    private function validatePricingPlanInput()
+    {
         $validated = [];
 
         $filter = new Filter();
@@ -466,6 +527,7 @@ class BusinessPricingPlanController extends ControllerBase {
             "name",
             "enableTrialAccount",
             "enableDiscountOnUpgrade",
+            "currency",
             "basePrice",
             "costPerSms",
             "maxMessagesOnTrialAccount",
@@ -483,16 +545,15 @@ class BusinessPricingPlanController extends ControllerBase {
         }
 
         /* Sanitize */
-        foreach($params as $key => $value){
+        foreach ($params as $key => $value) {
             if (!array_key_exists($key, $validated)) {
                 $validated[$key] = [];
             }
-            if ($key === "pricingDetails"){
+            if ($key === "pricingDetails") {
                 $validated[$key] = Utils::purifyHtml($value);
             } else {
                 $validated[$key] = $filter->sanitize($value, "string");
             }
-
         }
 
         /* Minimum segments found */
@@ -500,6 +561,7 @@ class BusinessPricingPlanController extends ControllerBase {
             "minLocations",
             "maxLocations",
             "locationDiscountPercentage",
+            "currency",
             "basePrice",
             "smsCharge",
             "totalPrice",
@@ -509,9 +571,9 @@ class BusinessPricingPlanController extends ControllerBase {
             "smsCost",
             "profitPerLocation"
         ];
-        foreach($params as $key => $segment){
+        foreach ($params as $key => $segment) {
 
-            if(substr($key,0,7) !== "segment") {
+            if (substr($key, 0, 7) !== "segment") {
                 continue;
             }
 
@@ -526,7 +588,7 @@ class BusinessPricingPlanController extends ControllerBase {
             if (!array_key_exists($key, $validated)) {
                 $validated[$key] = [];
             }
-            foreach($segment as $segmentKey => $value) {
+            foreach ($segment as $segmentKey => $value) {
                 $validated[$key][$segmentKey] = $filter->sanitize($value, "string");
             }
 
