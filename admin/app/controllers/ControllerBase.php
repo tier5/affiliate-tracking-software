@@ -464,27 +464,6 @@ class ControllerBase extends Controller
             $agency = $agency1;
         }
 
-        /*** commented on 2nd jan 2017 ***/
-        /* if ($agency) {
-            $agency->logo_path = ($agency->logo_path == "") ? "" : "/img/agency_logos/" . $agency->logo_path;
-            list($r, $g, $b) = sscanf($agency->main_color, "#%02x%02x%02x");
-            $rgb = $r . ', ' . $g . ', ' . $b;
-            $vars = [
-                'agency_id' => $agency->agency_id,
-                'agency' => $agency,
-                'agency_name' => $agency->name,
-                'main_color_setting' => $agency->main_color,
-                'rgb' => $rgb,
-                'logo_path' => $agency->logo_path,
-                'main_color' => str_replace('#', '', $agency->main_color),
-                'primary_color' => str_replace('#', '', $agency->main_color),
-                'secondary_color' => str_replace('#', '', $agency->secondary_color)
-            ];
-            $this->view->setVars($vars);
-        }*/
-
-        /*** commented on 2nd jan 2017 ***/
-
         $this->agency = $agency;
 
         if ($this->request->getPost('main_color')) {
@@ -904,13 +883,11 @@ class ControllerBase extends Controller
         $params = null;
         $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql1, $params));
         $this->view->sms_sent_this_month_total_non = $rs->count();
-
-
     }
 
     public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_from_phone)
     {
-        if(!$AccountSid || !$AuthToken || !$twilio_from_phone) {
+        if (!$AccountSid || !$AuthToken || !$twilio_from_phone) {
             $this->flash->error("Missing twilio configuration.");
             return false;
         }
@@ -1288,7 +1265,7 @@ class ControllerBase extends Controller
         }
 
         $this->view->YNrating_array_set_all = $YNrating_array_set_all;
-        
+
         foreach ($usersGenerate as $ux) {
             $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =" . $ux->id . " GROUP BY  `review_invite_type_id` ";
 
@@ -1645,7 +1622,8 @@ class ControllerBase extends Controller
     /**
      * Searches for yelp id
      */
-    public function yelpId($id) {
+    public function yelpId($id)
+    {
         //$this->view->disable();
 
         $yelp = new YelpScanning();
