@@ -137,6 +137,9 @@ class SubscriptionManager extends BaseService
         }
     }
 
+    /**
+     * Get max 
+     **/
     public function GetMaxSMS($BusinessID, $LocationID)
     {
         $objSuperAdmin = \Vokuro\Models\Users::findFirst(
@@ -671,6 +674,12 @@ class SubscriptionManager extends BaseService
         return true;
     }
 
+    /**
+     * Enable Pricing Plan
+     * @param (int) $pricingPlanId
+     * @param (string) if 'true' enable
+     * @return (bool)
+     */
     public function enablePricingPlanById($pricingPlanId, $enable)
     {
         // Second param is a dirty filthy hack :(, See comment below for details
@@ -686,6 +695,7 @@ class SubscriptionManager extends BaseService
 
         $subscriptionPricingPlan->enabled = $enable === 'true' ? 1 : 0;
         $subscriptionPricingPlan->updated_at = time();
+
         if (!$subscriptionPricingPlan->update()) {
             return false;
         }
@@ -693,6 +703,11 @@ class SubscriptionManager extends BaseService
         return true;
     }
 
+    /**
+     * Delete Pricing plan
+     * @param (int) $pricingPlanId
+     * @return (bool)
+     */
     public function deletePricingPlanById($pricingPlanId)
     {
         $subscriptionPricingPlan = SubscriptionPricingPlan::query()
@@ -721,7 +736,7 @@ class SubscriptionManager extends BaseService
     public function getPricingParameterListsByPricingPlanId($pricingPlanId)
     {
         return SubscriptionPricingPlanParameterList::find(
-            "subscription_pricing_plan_id = ".$pricingPlanId
+            "subscription_pricing_plan_id = " . $pricingPlanId
         )->toArray();
     }
 
@@ -909,18 +924,28 @@ class SubscriptionManager extends BaseService
         return true;
     }
 
+    /**
+     * 
+     **/
+
     public function GetViralSMSCount($AgencyID)
-    {
-        //echo $AgencyID;exit;
-        
+    {        
         $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$AgencyID}");
+
         if (!$objAgency->viral_sharing_code) {
             return 0;
         }
 
-        $Referrals = \Vokuro\Models\SharingCode::count("sharecode = '{$objAgency->viral_sharing_code}'");//exit;
+        $Referrals = \Vokuro\Models\SharingCode::count("sharecode = '{$objAgency->viral_sharing_code}'");
+
         return $Referrals > 4 ? 100 : $Referrals * 25;
     }
+
+    /**
+     * Get Subscription Currency
+     * @param (int) $UserID
+     * @return (string) 3 letter currency signifier
+     */
 
     public function getSubscriptionCurrency($UserID)
     {
@@ -932,7 +957,6 @@ class SubscriptionManager extends BaseService
 
         return $objSubscriptionPricingPlan->currency;
     }
-
 
     public function getSubscriptionPrice($UserID, $PlanType)
     {

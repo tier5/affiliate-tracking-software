@@ -7,6 +7,7 @@ use Vokuro\Models\BusinessSubscriptionPlan;
 use Vokuro\Models\Users;
 use Vokuro\Models\Agency;
 use Vokuro\Services\ServicesConsts;
+use Vokuro\Services\StripeService as Stripe;
 
 /**
  * Vokuro\Controllers\BusinessSubscriptionController
@@ -78,6 +79,7 @@ class BusinessSubscriptionController extends ControllerBase
         /* Get subscription paramaters */
         $userId = $userManager->getUserId($this->session);
         $objUser = \Vokuro\Models\Users::findFirst('id = ' . $userId);
+
         $objSuperUser = \Vokuro\Models\Users::findFirst(
             'agency_id = ' . $objUser->agency_id . ' AND role="Super Admin"'
         );
@@ -87,7 +89,7 @@ class BusinessSubscriptionController extends ControllerBase
         );
 
         $this->view->businessEmail = $objAgency->email;
-        $this->view->TypeSubscriptionId=$objAgency->subscription_id;
+        $this->view->TypeSubscriptionId = $objAgency->subscription_id;
 
         $Provider = ServicesConsts::$PAYMENT_PROVIDER_STRIPE;
 
@@ -100,12 +102,12 @@ class BusinessSubscriptionController extends ControllerBase
 
         /* Get the subscription plan */
         $subscriptionPlanData = $subscriptionManager->getSubscriptionPlan(
-            $objSuperUser->id, $objAgency->subscription_id
+            $objSuperUser->id,
+            $objAgency->subscription_id
         );
 
         /* Filter out the pricing plan details into its own view because it contains markup */
         $this->view->pricingDetails = $subscriptionPlanData['pricingPlan']['pricing_details'];
-
 
         $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
             "id = {$objAgency->subscription_id}"
@@ -117,6 +119,11 @@ class BusinessSubscriptionController extends ControllerBase
         /* Set pricing plan details to empty so it doesn't display when attaching the json string to the data attribute */
         $subscriptionPlanData['pricingPlan']['pricing_details'] = '';
         $this->view->subscriptionPlanData = $subscriptionPlanData;
+        $currency = $objSubscriptionPricingPlan->currency;
+        $stripe = new Stripe();
+        $currencySymbol = $stripe->getCurrencySymbol($currency);
+
+        $this->view->currencySymbol = $currencySymbol;
 
         switch ($this->view->subscriptionPlanData['subscriptionPlan']['payment_plan']) {
             // GARY_TODO:  Pretty sure this doesn't work the way it was supposed to due to handoff from Michael.
