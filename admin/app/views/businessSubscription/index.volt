@@ -106,7 +106,7 @@
                                     <div><span id="current-locations" class="bold">{{ ActiveLocations }} Location(s)</div>
                                     <div><span id="current-messages" class="bold">{{ ActiveSMS }}</span> Text Messages</div>
                                 </div>
-                                <div class="responsive-float-right subscription-panel-large-caption"><sup class="subscription-panel-default-caption">$</sup>{{ paymentPlan }}<sub class="subscription-panel-default-caption">/mo</sub></div>
+                                <div class="responsive-float-right subscription-panel-large-caption"><sup class="subscription-panel-default-caption">{{ currencySymbol }}</sup>{{ paymentPlan }}<sub class="subscription-panel-default-caption">/mo</sub></div>
                             </div>
                         </div>
                         <div class="panel panel-default">
@@ -179,7 +179,7 @@
                                         </div>
                                         <div id="pricing-attr"
                                              class="responsive-float-right subscription-panel-large-caption">
-                                            <sup class="subscription-panel-default-caption">$</sup><span id="change-plan-final-price"></span><sub class="subscription-panel-default-caption">/mo</sub>
+                                            <sup class="subscription-panel-default-caption">{{ currencySymbol }}</sup><span id="change-plan-final-price"></span><sub class="subscription-panel-default-caption">/mo</sub>
                                             <div id="paid-annually-caption">
                                                 <span id="annual-cost"></span><span>Paid Annually</span>
                                             </div>
@@ -463,19 +463,19 @@
 
 
 <script type="text/javascript">
-
     jQuery(document).ready(function ($) {
         {% if DisplaySubPopup %}
-            $('#explanationModal').modal('show');
+        $('#explanationModal').modal('show');
         {% endif %}
+
         $(".UpdateCard").click(function() {
             var ButtonID = $(this).attr('id');
 
             var bodyElem = document.getElementsByTagName("body")[0];
-            if(bodyElem.dataset.paymentprovider === "AuthorizeDotNet") {
+
+            if (bodyElem.dataset.paymentprovider === "AuthorizeDotNet") {
                 $('#updateCardModal').modal('show');
-            }
-            else if(bodyElem.dataset.paymentprovider === "Stripe") {
+            } else if (bodyElem.dataset.paymentprovider === "Stripe") {
                 var handler = StripeCheckout.configure({
                     key: '{{ stripePublishableKey }}',
                     email: '{{ businessEmail }}',
@@ -484,13 +484,13 @@
                     /*image: '/img/documentation/checkout/marketplace.png',*/
                     locale: 'auto',
                     token: function(token) {
-                    // You can access the token ID with `token.id`.
-                    // Get the token ID to your server-side code for use.
-                    // GARY_TODO  UGH, why can't I call the UpdateStripeCard method?!?
-                    $.post('/businessSubscription/updatePaymentProfile', {
-                        tokenID: token.id,
-                        email: token.email
-                    })
+                        // You can access the token ID with `token.id`.
+                        // Get the token ID to your server-side code for use.
+                        // GARY_TODO  UGH, why can't I call the UpdateStripeCard method?!?
+                        $.post('/businessSubscription/updatePaymentProfile', {
+                            tokenID: token.id,
+                            email: token.email
+                        })
                         .done(function (data) {
                             if (data.status !== true) {
                                 alert("Update card failed!!!");
@@ -502,10 +502,8 @@
 
                             window.location.reload();
                         })
-                        .fail(function () {
-                        })
-                        .always(function () {
-                        });
+                        .fail(function () {})
+                        .always(function () {});
                     }
                 });
 
@@ -553,7 +551,6 @@
 
             /* Calculate the initial plan value */
             refreshPlanValue();
-
         }
 
         function calculateMonthlyPlanCost() {
@@ -627,7 +624,7 @@
             var planType = $("#plan-type > button.active").text();
             if (planType === 'Annually') {
                 monthlyPlanCost = applyAnnualDiscount(monthlyPlanCost);
-                $('#annual-cost').text('$' + (monthlyPlanCost * 12).toFixed(0).replace(/./g, function(c, i, a) {
+                $('#annual-cost').text('{{ currencySymbol }}' + (monthlyPlanCost * 12).toFixed(0).replace(/./g, function(c, i, a) {
                     return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
                 }));
                 $('#paid-annually-caption').show()
@@ -738,6 +735,7 @@
             $('#slider-locations').text(values.newValue);
             $('#modal-locations').text(values.newValue);
         });
+
         smsMessagesSlider.on('change', function (values) {
             refreshPlanValue();
             updateLargeCaption(values.newValue, maxMessages);
