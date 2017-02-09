@@ -224,7 +224,7 @@
                           
                              if($is_email_alert_on==1)
                              {
-                               $EmailFrom = 'zacha@reviewvelocity.co';
+                               $EmailFrom = 'no-reply@getmobilereviews.com';
                                $EmailFromName = "Zach Anderson";
                                $to=$user_info->email;
                                $subject="New Feedback";
@@ -333,7 +333,7 @@
                            
 
                              /*** mail to user ***/
-                               $EmailFrom = 'zacha@reviewvelocity.co';
+                               $EmailFrom = 'no-reply@getmobilereviews.com';
                                $EmailFromName = "Zach Anderson";
                                $to=$user_info->email;
                                $subject="New Feedback";
@@ -359,7 +359,7 @@
         
                             
         
-                              $EmailFrom = 'zacha@reviewvelocity.co';
+                              $EmailFrom = 'no-reply@getmobilereviews.com';
                               $EmailFromName = "Zach Anderson";
                               $to=$business_info->email;
                               
