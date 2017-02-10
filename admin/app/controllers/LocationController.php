@@ -319,7 +319,6 @@ class LocationController extends ControllerBase
         $this->view->RedirectToSession = $RedirectToSession;
     }
 
-
     /**
      * Searches for yelp locations
      */
@@ -337,7 +336,6 @@ class LocationController extends ControllerBase
         echo json_decode($results);
     }
 
-
     /**
      * Searches for yelp locations
      */
@@ -354,12 +352,10 @@ class LocationController extends ControllerBase
         echo $results;
     }
 
-
     static public function noformat($input)
     {
         return round($input, 1);
     }
-
 
     /**
      * Default index view
@@ -842,7 +838,6 @@ class LocationController extends ControllerBase
     {
     }
 
-
     /**
      * Saves the location from the 'edit' action
      */
@@ -994,7 +989,6 @@ class LocationController extends ControllerBase
         ));
     }
 
-
     /**
      * Deletes a User
      *
@@ -1090,7 +1084,6 @@ class LocationController extends ControllerBase
         ));
     }
 
-
     /**
      * This is an ajax function that creates regions
      *
@@ -1133,7 +1126,6 @@ class LocationController extends ControllerBase
         echo json_encode($form_data);
     }
 
-
     /**
      * This is an ajax function that deletes regions
      *
@@ -1170,7 +1162,6 @@ class LocationController extends ControllerBase
             echo 'true';
         }
     }
-
 
     /**
      * Sends an email to the selected address
@@ -1283,7 +1274,6 @@ class LocationController extends ControllerBase
             exit;
         }
     }
-
 
     public function send_emailfnAction()
     {
@@ -1404,7 +1394,6 @@ class LocationController extends ControllerBase
     }
 
     /*** get post value ***/
-
          
     /**
      * Sends a review invite to the selected location
@@ -1537,8 +1526,10 @@ class LocationController extends ControllerBase
                                 'date_last_sent' => date('Y-m-d H:i:s'),
                                 'sent_by_user_id' => $identity['id']
                             ));
-
-                            $inviteSaved = $invite->save();
+                            
+                            if(!isset($inviteSaved)) {
+                                $inviteSaved = $invite->save();
+                            }
 
                             array_push($insert_id_array, $invite->review_invite_id);
 
