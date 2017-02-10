@@ -22,7 +22,6 @@ class ReviewController extends ControllerBase
     /**
      * Default action. Set the public layout (layouts/public.volt)
      */
-    
 
     public function initialize()
     {
@@ -198,8 +197,8 @@ class ReviewController extends ControllerBase
                     $conditions = "location_id = :location_id:";
                     $parameters = array("location_id" => $invite->location_id);
                     $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
-                    $is_email_alert_on=0;
-                    $is_sms_alert_on=0;
+                    $is_email_alert_on = 0;
+                    $is_sms_alert_on = 0;
 
                     foreach($agencynotifications as $agencynotification) {
                         if ($agencynotification->user_id == $user_info->id) {
@@ -212,7 +211,7 @@ class ReviewController extends ControllerBase
                     if ($invite->review_invite_type_id == 3) {
                         $rating = $userRating .' out of 10';
                     } else if ($invite->review_invite_type_id == 2) {
-                        $rating = $userRating." star";
+                        $rating = $userRating . " star";
                     } else {
                         if ($recomended == 'Y') {
                             $rating = "Yes";
@@ -222,8 +221,11 @@ class ReviewController extends ControllerBase
                     }
                     
                     if ($is_email_alert_on == 1) {
-                        $EmailFrom = 'no-reply@getmobilereviews.com';
-                        $EmailFromName = "Zach Anderson";
+                        // $EmailFrom = 'no-reply@getmobilereviews.com';
+                        // $EmailFromName = "Zach Anderson";
+                        $EmailFrom = $objParentAgency->email;
+                        $EmailFromName = $AgencyUser;
+
                         $to = $user_info->email;
                         $subjec = "New Feedback";
                         $mail_body = "";
@@ -320,8 +322,11 @@ class ReviewController extends ControllerBase
 
                     if ($is_email_alert_on == 1) {
                         /*** mail to user ***/
-                        $EmailFrom = 'no-reply@getmobilereviews.com';
-                        $EmailFromName = "Zach Anderson";
+                        //$EmailFrom = 'no-reply@getmobilereviews.com';
+                        //$EmailFromName = "Zach Anderson";
+                        $EmailFrom = $objParentAgency->email;
+                        $EmailFromName = $AgencyUser;
+
                         $to = $user_info->email;
                         $subject = "New Feedback";
 
@@ -344,8 +349,11 @@ class ReviewController extends ControllerBase
 
                         /**** mail to busines ****/
 
-                        $EmailFrom = 'no-reply@getmobilereviews.com';
-                        $EmailFromName = "Zach Anderson";
+                        // $EmailFrom = 'no-reply@getmobilereviews.com';
+                        // $EmailFromName = "Zach Anderson";
+                        $EmailFrom = $objParentAgency->email;
+                        $EmailFromName = $AgencyUser;
+
                         $to = $business_info->email;
                           
                         $subject = "New Feedback";
@@ -363,7 +371,7 @@ class ReviewController extends ControllerBase
                         $Mail = $this->getDI()->getMail();
                         $Mail->setFrom($EmailFrom, $EmailFromName);
                         $Mail->send($to, $subject, '', '', $mail_body);
-                        $phone='8127224722';
+                        $phone = '8127224722';
                         /**** mail to busines ****/
                     }
 
