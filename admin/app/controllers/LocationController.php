@@ -1513,21 +1513,21 @@ class LocationController extends ControllerBase
 
                     if ($no != 0) {
                         for ($i = 1; $i <= $no; $i++) {
-                            $invite = new ReviewInvite();
-
-                            $invite->assign(array(
-                                'name' => $name,
-                                'location_id' => $this->session->get('auth-identity')['location_id'],
-                                'phone' => $phone,
-                                //TODO: Added google URL shortener here
-                                'api_key' => $guid,
-                                'sms_message' => $message,
-                                /*'date_sent' => date('Y-m-d H:i:s'),*/
-                                'date_last_sent' => date('Y-m-d H:i:s'),
-                                'sent_by_user_id' => $identity['id']
-                            ));
-                            
                             if(!isset($inviteSaved)) {
+                                $invite = new ReviewInvite();
+
+                                $invite->assign(array(
+                                    'name' => $name,
+                                    'location_id' => $this->session->get('auth-identity')['location_id'],
+                                    'phone' => $phone,
+                                    //TODO: Added google URL shortener here
+                                    'api_key' => $guid,
+                                    'sms_message' => $message,
+                                    /*'date_sent' => date('Y-m-d H:i:s'),*/
+                                    'date_last_sent' => date('Y-m-d H:i:s'),
+                                    'sent_by_user_id' => $identity['id']
+                                ));
+
                                 $inviteSaved = $invite->save();
                             }
 
