@@ -1454,7 +1454,7 @@ class LocationController extends ControllerBase
             } else {
                 //else we have a phone number, so send the message
                 /*** checking for total sms sent vs total sms allowed to send 27/12/2016 ****/
-                $location_id=$this->session->get('auth-identity')['location_id'];
+                $location_id = $this->session->get('auth-identity')['location_id'];
                 $start_time = date("Y-m-d", strtotime("first day of this month"));
                 $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
                 $sql = "SELECT review_invite_id "
@@ -1538,11 +1538,11 @@ class LocationController extends ControllerBase
                                 'sent_by_user_id' => $identity['id']
                             ));
 
-                            $invite->save();
+                            $inviteSaved = $invite->save();
 
-                            array_push($insert_id_array,$invite->review_invite_id);
+                            array_push($insert_id_array, $invite->review_invite_id);
 
-                            if (!$invite->save()) {
+                            if (!$inviteSaved) {
                                 $error = 1;
                                 $er_msg = $invite->getMessages();
                             }
@@ -1565,8 +1565,8 @@ class LocationController extends ControllerBase
 
                         if ($sentSMS) {
                             for ($i = 0; $i < count($insert_id_array); $i++) {
-                                $last_insert_id=$insert_id_array[$i];
-                                $update_review = ReviewInvite::FindFirst('review_invite_id ='.$last_insert_id);
+                                $last_insert_id = $insert_id_array[$i];
+                                $update_review = ReviewInvite::FindFirst('review_invite_id =' . $last_insert_id);
                                 $update_review->date_sent = date('Y-m-d H:i:s');
                                 $update_review->update();
                             }
