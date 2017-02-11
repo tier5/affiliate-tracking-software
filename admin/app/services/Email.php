@@ -13,8 +13,8 @@ use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
  */
 class Email{
 
-    protected $from = 'no-reply@no-domain.com';
-    protected $from_name = '';
+    protected $from = 'no-reply@getmobilereviews.com';
+    protected $from_name = 'Review Velocity';
 
     /**
      * @var \Phalcon\DiInterface
@@ -443,7 +443,6 @@ class Email{
         if($record->parent_id > \Vokuro\Models\Agency::AGENCY) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$record->parent_id}");
 
-
             //$this->from = $from = $objParentAgency->email_from_name;
             if($objParentAgency->email_from_address)
             {
@@ -466,7 +465,7 @@ class Email{
             $AgencyUser = $oAgency->name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
-            $this->from = $from = 'no-reply@reviewvelocity.co';
+            $this->from = $from = 'no-reply@getmobilereviews.com';
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
             $this->from_name = $from_name = "Zach Anderson";
@@ -561,15 +560,15 @@ class Email{
             $AgencyUser = $oAgency->name;
             $AgencyName = $objParentAgency->name;
         } elseif($record->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
-            $this->from = $from = 'no-reply@reviewvelocity.co';
+            $this->from = $from = 'no-reply@getmobilereviews.com';
             $AgencyName = "Review Velocity";
             $AgencyUser = "Zach Anderson";
-            $this->from_name = $from_name = "Zach Anderson";
+            $this->from_name = $from_name = "Review Velocity";
         }
 
         if(!$from) {
             $this->from = $from = "no-reply@{$objParentAgency->custom_domain}";
-            $this->from_name = $from_name = "Zach Anderson";
+            $this->from_name = $from_name = "Review Velocity";
         }
 
         $Domain = $this->config->application->domain;

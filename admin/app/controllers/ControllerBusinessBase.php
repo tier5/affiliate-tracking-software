@@ -455,8 +455,8 @@ class ControllerBusinessBase extends ControllerBase
                         $planName = $subscriptionPricePlan->name;
                     }
                 
-                    $EmailFrom = 'no-reply@reviewvelocity.co';
-                    $EmailFromName = "Zach Anderson";
+                    $EmailFrom = 'no-reply@getmobilereviews.com';
+                    $EmailFromName = "Review Velocity";
                     $subject = "New Business Registered Successfully";
                     $mail_body = 'Dear '.$objSuperAdminUser->name.',';
                     $mail_body = $mail_body;
@@ -513,9 +513,11 @@ class ControllerBusinessBase extends ControllerBase
                       }
                   }
                   if ($errors) {
-                      $db->rollback();
-                      $this->flash->error("There was an error creating the {$CreateType}<BR />" . implode("<BR />", $errors));
-                      return false;
+                    $db->rollback();
+                    $this->flash->error(
+                        "There was an error creating the {$CreateType}<BR />" . implode("<BR />", $errors)
+                    );
+                    return false;
                   } else {
                       $db->commit();
                   }

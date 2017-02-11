@@ -24,8 +24,8 @@ use Vokuro\Models\EmailConfirmations;
 /**
  * Controller used handle non-authenticated session actions like login/logout, user signup, and forgotten passwords
  */
-class SessionController extends ControllerBase {
-
+class SessionController extends ControllerBase
+{
     public $validSubDomains = [ 'my', 'www', 'reviewvelocity', '104', 'dev', 'stage', 'dev2', 'localhost'];
 
     public $facebook_access_token;
@@ -293,8 +293,8 @@ class SessionController extends ControllerBase {
                 $planName = 'Free';
             }
 
-            $EmailFrom = 'no-reply@reviewvelocity.co';
-            $EmailFromName = "Zach Anderson";
+            $EmailFrom = 'no-reply@getmobilereviews.com';
+            $EmailFromName = "Review Velocity";
             $subject = "New Business Registered Successfully";
             $mail_body = 'Dear '.$objSuperAdminUser->name.',';
             $mail_body = $mail_body.'<p>Congratulations a new business has registered successfully with following details:
@@ -324,7 +324,6 @@ class SessionController extends ControllerBase {
             }
 
         }
-
     }
 
     public function inviteAction($short_code = null)
