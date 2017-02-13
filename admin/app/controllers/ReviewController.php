@@ -162,7 +162,7 @@ class ReviewController extends ControllerBase
 
                 $agencyobj = new Agency();
                 $agency = $agencyobj::findFirst($location->agency_id);
-                $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                $parent_agency = $agencyobj::findFirst($agency->parent_id);
                 $this->view->parent_agency = $parent_agency;
 
                 $TwilioToken = $parent_agency->twilio_auth_token;
@@ -189,6 +189,8 @@ class ReviewController extends ControllerBase
                         );
 
                         $AgencyName = $objParentAgency->name;
+
+                        // Agency Super Admin
                         $AgencyUser = $objAgencyUser->name;
                     }
 
@@ -210,7 +212,7 @@ class ReviewController extends ControllerBase
                         }
                     }
 
-                    $rating = $this->ratingText($invite->review_invite_type_id);
+                    $rating = $this->ratingText($invite->review_invite_type_id, $rating);
                     
                     if ($is_email_alert_on == 1) {
                         $this->sendEmail(
@@ -268,7 +270,7 @@ class ReviewController extends ControllerBase
                         }
                     }
 
-                    $rating = $this->ratingText($invite->review_invite_type_id);
+                    $rating = $this->ratingText($invite->review_invite_type_id, $rating);
 
                     $business_info =  \Vokuro\Models\Users::findFirst(
                         'agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"'
@@ -335,7 +337,15 @@ class ReviewController extends ControllerBase
                             $message .= " has submitted " . $rating;
                             $message .= " for employee " . $user_info->name;
 
-                            if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken, $TwilioFrom)) {
+                            $sentSMS = $this->SendSMS(
+                                $user_info->phone,
+                                $message,
+                                $TwilioAPI,
+                                $TwilioToken,
+                                $TwilioFrom
+                            );
+
+                            if ($sentSMS) {
                             }
                         }
 
@@ -347,7 +357,15 @@ class ReviewController extends ControllerBase
                             $message .= " has submitted " . $rating;
                             $message .= " for employee " . $user_info->name;
 
-                            if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken, $TwilioFrom)) {
+                            $sentSMS = $this->SendSMS(
+                                $business_agency->phone,
+                                $message,
+                                $TwilioAPI,
+                                $TwilioToken,
+                                $TwilioFrom
+                            );
+
+                            if ($sentSMS) {
                             }
                         }
                         /*** sms to business ***/
@@ -422,12 +440,12 @@ class ReviewController extends ControllerBase
         }
     }
 
-    private function ratingText($reviewTypeId)
+    private function ratingText($reviewTypeId, $rating)
     {
         if ($invite->review_invite_type_id == 3) {
-            $rating = $userRating .' out of 10';
+            $rating = $rating .' out of 10';
         } else if ($invite->review_invite_type_id == 2) {
-            $rating = $userRating . " star";
+            $rating = $rating . " star";
         } else {
             // is it recommended type
             if ($_GET['rec'] == 'Y') {
@@ -465,6 +483,7 @@ class ReviewController extends ControllerBase
     public function nothanksAction()
     {
         $rating = ($_GET["r"]) ? htmlspecialchars($_GET["r"]) : '';
+
         // Query review_invite binding parameters with string placeholders
         $conditions = "api_key = :api_key:";
 
@@ -483,14 +502,14 @@ class ReviewController extends ControllerBase
         $invite->save();
         $this->view->setVar('invite', $invite);
 
-        //we have the invite, now find the location
+        // we have the invite, now find the location
         $locationobj = new Location();
         $location = $locationobj::findFirst($invite->location_id);
 
-        //we have the location, now find the agency
+        // we have the location, now find the agency
         $agencyobj = new Agency();
         $agency = $agencyobj::findFirst($location->agency_id);
-        $parent_agency=$agencyobj::findFirst($agency->parent_id);
+        $parent_agency = $agencyobj::findFirst($agency->parent_id);
 
         $this->view->sms_button_color = $location->sms_button_color;
         $this->view->logo_path = $location->sms_message_logo_path;
@@ -520,13 +539,72 @@ class ReviewController extends ControllerBase
             $message = 'Notification: Review invite feedback has been posted for ' . $location->name . ': http://' . $_SERVER['HTTP_HOST'] . '/reviews/';
 
             parent::sendFeedback(
-                $agency,
-                $message,
+                $agency, // business 
+                $parent_agency, // agency
                 $location->location_id,
-                'Notification: Review invite feedback',
-                $invite->sent_by_user_id
+                $invite
             );
+        }
+    }
 
+    public function sendFeedback($business, $agency, $location_id, $invite)
+    {
+        $rating = $this->ratingText(
+            $invite->review_invite_type_id,
+            $invite->rating
+        );
+
+        $domain = $this->config->application->domain;
+
+        $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $location_id);
+        $notifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+        $agencyUser = \Vokuro\Models\Users::findFirst(
+            "agency_id = {$agency->agency_id} AND role='Super Admin'"
+        )->name;
+
+        // invite sent by this user
+        $user_info = Users::findFirst($invite->sent_by_user_id);
+
+        foreach ($notifications as $an) {
+            // check if the user wants new reviews
+            if (($an->all_reviews == 1 || ($an->individual_reviews == 1 && $an->user_id == $user_id)) 
+                && ($an->email_alert == 1 || $an->sms_alert == 1)) {
+
+                // find the user
+                $conditions = "id = :id:";
+                $parameters = array("id" => $an->user_id);
+
+                // send email/sms to this user
+                $user = Users::findFirst(array($conditions, "bind" => $parameters));
+
+                if ($an->email_alert == 1 && isset($user->email)) {
+                    // the user wants an email, so send it now
+                    $this->sendEmail(
+                        $agency->email,
+                        $agencyUser,
+                        $user->email,
+                        $rating,
+                        $invite->name,
+                        $invite->phone,
+                        $user_info->name,
+                        $domain,
+                        $invite->review_invite_id,
+                        $agency->name
+                    );
+                }
+
+                if ($an->sms_alert == 1 && isset($user->phone) && $user->phone != '') {
+                    // we have a phone, so send the SMS
+                    $this->SendSMS(
+                        $this->formatTwilioPhone($user->phone),
+                        'Notification: Review invite feedback',
+                        $agency->twilio_api_key,
+                        $agency->twilio_auth_token,
+                        $agency->twilio_from_phone
+                    );
+                }
+            }
         }
     }
 
@@ -540,8 +618,7 @@ class ReviewController extends ControllerBase
     public function closeAction()
     {
          $this->session->set("top_banner_session", 2);
-    }   
-
+    }
 
     public function trackAction()
     {
@@ -573,14 +650,12 @@ class ReviewController extends ControllerBase
 
         // Parameters whose keys are the same as placeholders
         $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
-        //echo 'kk';exit;
 
         // Perform the query
         $review_invite = new ReviewInvite();
         $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
 
-        if ($this->validateGoogleBotIP($_SERVER['REMOTE_ADDR'])) {
-        } else {
+        if (!$this->validateGoogleBotIP($_SERVER['REMOTE_ADDR'])) {
             //save when the user viewed this invite
             $invite->date_viewed = date('Y-m-d H:i:s');
             $invite->save();
