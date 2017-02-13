@@ -135,12 +135,9 @@ class ReviewController extends ControllerBase
             $this->di = $this->getDI();
             $this->config = $this->di->get('config');
             $rating = false;
-            $recomended = 'N';
             $domain = $this->config->application->domain;
 
             if (isset($_GET["r"])) $rating = $userRating = htmlspecialchars($_GET["r"]);
-            
-            if (isset($_GET["rec"])) $recomended = htmlspecialchars($_GET["rec"]);
             
             $conditions = "api_key = :api_key:";
             $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
@@ -153,7 +150,7 @@ class ReviewController extends ControllerBase
                
             if ($invite->location_id > 0) {
                 /**** send mail to business and user ***/
-                $user_sent=$invite->sent_by_user_id;
+                $user_sent = $invite->sent_by_user_id;
                 $userobj = new Users();
                 $user_info = $userobj::findFirst($user_sent);
                 $emp = $user_info->is_employee;
@@ -169,6 +166,7 @@ class ReviewController extends ControllerBase
                 $this->view->parent_agency = $parent_agency;
 
                 $TwilioToken = $parent_agency->twilio_auth_token;
+
                 // We use the businesses' from number if it exists, otherwise use the agency's.
                 $TwilioFrom = $parent_agency->twilio_from_phone;
                 $TwilioAPI = $parent_agency->twilio_api_key;
@@ -196,11 +194,15 @@ class ReviewController extends ControllerBase
 
                     $conditions = "location_id = :location_id:";
                     $parameters = array("location_id" => $invite->location_id);
-                    $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                    
+                    $agencynotifications = LocationNotifications::find(
+                        array($conditions, "bind" => $parameters)
+                    );
+                    
                     $is_email_alert_on = 0;
                     $is_sms_alert_on = 0;
 
-                    foreach($agencynotifications as $agencynotification) {
+                    foreach ($agencynotifications as $agencynotification) {
                         if ($agencynotification->user_id == $user_info->id) {
                             $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
 
@@ -208,17 +210,7 @@ class ReviewController extends ControllerBase
                         }
                     }
 
-                    if ($invite->review_invite_type_id == 3) {
-                        $rating = $userRating .' out of 10';
-                    } else if ($invite->review_invite_type_id == 2) {
-                        $rating = $userRating . " star";
-                    } else {
-                        if ($recomended == 'Y') {
-                            $rating = "Yes";
-                        } else {
-                            $rating = "No";
-                        }
-                    }
+                    $rating = $this->ratingText($invite->review_invite_type_id);
                     
                     if ($is_email_alert_on == 1) {
                         $this->sendEmail(
@@ -276,17 +268,7 @@ class ReviewController extends ControllerBase
                         }
                     }
 
-                    if ($invite->review_invite_type_id == 3) {
-                        $rating = $userRating." out of 10";
-                    } else if ($invite->review_invite_type_id == 2) {
-                        $rating = $userRating." star";
-                    } else {
-                        if ($recomended == 'Y') {
-                            $rating = "Yes";
-                        } else {
-                            $rating = "No";
-                        }
-                    }
+                    $rating = $this->ratingText($invite->review_invite_type_id);
 
                     $business_info =  \Vokuro\Models\Users::findFirst(
                         'agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"'
@@ -440,6 +422,24 @@ class ReviewController extends ControllerBase
         }
     }
 
+    private function ratingText($reviewTypeId)
+    {
+        if ($invite->review_invite_type_id == 3) {
+            $rating = $userRating .' out of 10';
+        } else if ($invite->review_invite_type_id == 2) {
+            $rating = $userRating . " star";
+        } else {
+            // is it recommended type
+            if ($_GET['rec'] == 'Y') {
+                $rating = "Yes";
+            } else {
+                $rating = "No";
+            }
+        }
+
+        return $rating;
+    }
+
     private function sendEmail($emailFrom, $emailFromName, $to, $rating, $customerName, $customerPhone, $employeeName, $domain, $reviewInviteId, $agencyName)
     {
         $EmailFrom = $objParentAgency->email;
@@ -526,6 +526,7 @@ class ReviewController extends ControllerBase
                 'Notification: Review invite feedback',
                 $invite->sent_by_user_id
             );
+
         }
     }
 
