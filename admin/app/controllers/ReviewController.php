@@ -221,28 +221,18 @@ class ReviewController extends ControllerBase
                     }
                     
                     if ($is_email_alert_on == 1) {
-                        // $EmailFrom = 'no-reply@getmobilereviews.com';
-                        // $EmailFromName = "Zach Anderson";
-                        $EmailFrom = $objParentAgency->email;
-                        $EmailFromName = $AgencyUser;
-
-                        $to = $user_info->email;
-                        $subjec = "New Feedback";
-                        $mail_body = "";
-                        $mail_body .= "<p>One of your customers just left you feedback about your business.</p>";
-                        $mail_body .= "<p>Feedback : " . $rating . "</p>";
-                        $mail_body .= "<p>Customer Name : " . $invite->name . "</p>";
-                        $mail_body .= "<p>Customer Phone Number : " . $invite->phone . "</p>";
-                        $mail_body .= "<p>Employee : " . $user_info->name . "</p>";
-                        $mail_body .= "<p>View Customer : <a href='http://" . $domain . "/contacts/view/" . $invite->review_invite_id . "'>Click Here</a></p>";
-                        $mail_body .= "<p>Thank you,</p>";
-                        $mail_body .= $AgencyUser;
-                        $mail_body .= '<br>' . $AgencyName;
-
-                        $Mail = $this->getDI()->getMail();
-                        $Mail->setFrom($EmailFrom, $EmailFromName);
-                        $Mail->send($to, $subject, '', '', $mail_body);
-                        $phone = '8127224722';
+                        $this->sendEmail(
+                            $objParentAgency->email,
+                            $AgencyUser,
+                            $user_info->email,
+                            $rating,
+                            $invite->name,
+                            $invite->phone,
+                            $user_info->name,
+                            $domain,
+                            $invite->review_invite_id,
+                            $AgencyName
+                        );
                     }
                 
                     if ($is_sms_alert_on == 1) {
@@ -322,56 +312,37 @@ class ReviewController extends ControllerBase
 
                     if ($is_email_alert_on == 1) {
                         /*** mail to user ***/
-                        //$EmailFrom = 'no-reply@getmobilereviews.com';
-                        //$EmailFromName = "Zach Anderson";
-                        $EmailFrom = $objParentAgency->email;
-                        $EmailFromName = $AgencyUser;
 
-                        $to = $user_info->email;
-                        $subject = "New Feedback";
-
-                        $mail_body = "";
-                        $mail_body .= "<p>One of your customers just left you feedback about your business.</p>";
-                        $mail_body .= "<p>Feedback : " . $rating . "</p>";
-                        $mail_body .= "<p>Customer Name : " . $invite->name . "</p>";
-                        $mail_body .= "<p>Customer Phone Number : " . $invite->phone . "</p>";
-                        $mail_body .= "<p>Employee : " . $user_info->name . "</p>";
-                        $mail_body .= "<p>View Customer : <a href='http://" . $domain . "/contacts/view/" . $invite->review_invite_id . "'>Click Here</a></p>";
-                        $mail_body .= "<p>Thank you,</p>";
-                        $mail_body .= $AgencyUser;
-                        $mail_body .= $mail_body . '<br>' . $AgencyName;
-
-                        $Mail = $this->getDI()->getMail();
-                        $Mail->setFrom($EmailFrom, $EmailFromName);
-                        $Mail->send($to, $subject, '', '', $mail_body);
+                        $this->sendEmail(
+                            $objParentAgency->email,
+                            $AgencyUser,
+                            $user_info->email,
+                            $rating,
+                            $invite->name,
+                            $invite->phone,
+                            $user_info->name,
+                            $domain,
+                            $invite->review_invite_id,
+                            $AgencyName
+                        );       
 
                         /*** mail to user end ****/
 
-                        /**** mail to busines ****/
+                        /**** mail to business ****/
 
-                        // $EmailFrom = 'no-reply@getmobilereviews.com';
-                        // $EmailFromName = "Zach Anderson";
-                        $EmailFrom = $objParentAgency->email;
-                        $EmailFromName = $AgencyUser;
+                        $this->sendEmail(
+                            $objParentAgency->email,
+                            $AgencyUser,
+                            $business_info->email,
+                            $rating,
+                            $invite->name,
+                            $invite->phone,
+                            $user_info->name,
+                            $domain,
+                            $invite->review_invite_id,
+                            $AgencyName
+                        );
 
-                        $to = $business_info->email;
-                          
-                        $subject = "New Feedback";
-                        $mail_body = "";
-                        $mail_body .= "<p>One of your customers just left you feedback about your business.</p>";
-                        $mail_body .= "<p>Feedback : " . $rating . "</p>";
-                        $mail_body .= "<p>Customer Name : " . $invite->name . "</p>";
-                        $mail_body .= "<p>Customer Phone Number : " . $invite->phone . "</p>";
-                        $mail_body .= "<p>Employee : " . $user_info->name . "</p>";
-                        $mail_body .= "<p>View Customer : <a href='http://" . $domain . "/contacts/view/" . $invite->review_invite_id . "'>Click Here</a></p>";
-                        $mail_body .= "<p>Thank you,</p>";
-                        $mail_body .= $AgencyUser;
-                        $mail_body .= '<br>'.$AgencyName;
-
-                        $Mail = $this->getDI()->getMail();
-                        $Mail->setFrom($EmailFrom, $EmailFromName);
-                        $Mail->send($to, $subject, '', '', $mail_body);
-                        $phone = '8127224722';
                         /**** mail to busines ****/
                     }
 
@@ -469,6 +440,27 @@ class ReviewController extends ControllerBase
         }
     }
 
+    private function sendEmail($emailFrom, $emailFromName, $to, $rating, $customerName, $customerPhone, $employeeName, $domain, $reviewInviteId, $agencyName)
+    {
+        $EmailFrom = $objParentAgency->email;
+
+        $to = $user_info->email;
+        $subject = "New Feedback";
+        $mail_body = "";
+        $mail_body .= "<p>One of your customers just left you feedback about your business.</p>";
+        $mail_body .= "<p>Feedback : " . $rating . "</p>";
+        $mail_body .= "<p>Customer Name : " . $invite->name . "</p>";
+        $mail_body .= "<p>Customer Phone Number : " . $invite->phone . "</p>";
+        $mail_body .= "<p>Employee : " . $user_info->name . "</p>";
+        $mail_body .= "<p>View Customer : <a href='http://" . $domain . "/contacts/view/" . $invite->review_invite_id . "'>Click Here</a></p>";
+        $mail_body .= "<p>Thank you,</p>";
+        $mail_body .= $emailFromName;
+        $mail_body .= '<br>' . $AgencyName;
+
+        $Mail = $this->getDI()->getMail();
+        $Mail->setFrom($emailFrom, $emailFromName);
+        $Mail->send($to, $subject, '', '', $mail_body);
+    }
 
     public function nothanksAction()
     {
