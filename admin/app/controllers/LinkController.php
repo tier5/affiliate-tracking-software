@@ -163,23 +163,30 @@ class LinkController extends ControllerBase
 
                 $start_time = date("Y-m-d", strtotime("first day of this month"));
                 $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
-                $sql = "SELECT review_invite_id
-                FROM review_invite
-                INNER JOIN location ON location.location_id = review_invite.location_id
-                WHERE location.agency_id = " . $objAgency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time ."' AND sms_broadcast_id IS NULL";
+                $sql = 'SELECT review_invite_id '
+                . 'FROM review_invite '
+                . 'INNER JOIN location ON location.location_id = review_invite.location_id '
+                . 'WHERE location.agency_id = ' . $objAgency->agency_id . ' '
+                . 'AND date_sent >= "' . $start_time . '" '
+                . 'AND date_sent <= "' . $end_time . '" '
+                . 'AND sms_broadcast_id IS NULL';
+
                 // Base model
                 $list = new ReviewInvite();
 
                 // Execute the query
                 $params = null;
                 $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
-                $total_sms_sent=$rs->count();
+                $total_sms_sent = $rs->count();
 
                 $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
 
                 if ($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV 
                     || $objAgency->parent_id > 0) {
-                    $MaxSMS = $objSubscriptionManager->GetMaxSMS($objAgency->agency_id, $location_id);
+                    $MaxSMS = $objSubscriptionManager->GetMaxSMS(
+                        $objAgency->agency_id,
+                        $location_id
+                    );
                 } else {
                     $MaxSMS = 0;
                 }
@@ -192,7 +199,7 @@ class LinkController extends ControllerBase
                     $name = $_POST['name'];
                     $message = $_POST['SMS_message'];
 
-                    //replace out the variables
+                    // replace out the variables
                     $message = str_replace("{location-name}", $location_name, $message);
                     $message = str_replace("{name}", $name, $message);
                     $guid = $this->GUID();
@@ -207,7 +214,7 @@ class LinkController extends ControllerBase
                     $phone = $_POST['phone'];
                     $uid = $_POST['userID'];
 
-                    //save the message to the database before sending the message
+                    // save the message to the database before sending the message
                     $error = "";
                     $er_msg = '';
                     $insert_id_array = array();
@@ -255,7 +262,7 @@ class LinkController extends ControllerBase
                         );
 
                         if ($sentSMS) {
-                            for($i = 0;$i < count($insert_id_array);$i++) {
+                            for ($i = 0;$i < count($insert_id_array);$i++) {
                                 $last_insert_id = $insert_id_array[$i];
                                 
                                 $update_review = ReviewInvite::FindFirst(
