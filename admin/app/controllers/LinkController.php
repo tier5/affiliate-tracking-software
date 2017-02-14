@@ -223,26 +223,28 @@ class LinkController extends ControllerBase
 
                     if ($no != 0) {
                         for ($i = 1;$i <= $no;$i++) {
-                            $invite = new ReviewInvite();
-                            $invite->assign(array(
-                                'name' => $name,
-                                'location_id' => $location_id,
-                                'phone' => $phone,
-                                //TODO: Added google URL shortener here
-                                'api_key' => $guid,
-                                'sms_message' => $message,
-                                /*'date_sent' => date('Y-m-d H:i:s'),*/
-                                'date_last_sent' => date('Y-m-d H:i:s'),
-                                'sent_by_user_id' => $_POST['user_id']
-                            ));
+                            if (!isset($inviteSaved)) {
+                                $invite = new ReviewInvite();
+                                $invite->assign(array(
+                                    'name' => $name,
+                                    'location_id' => $location_id,
+                                    'phone' => $phone,
+                                    //TODO: Added google URL shortener here
+                                    'api_key' => $guid,
+                                    'sms_message' => $message,
+                                    /*'date_sent' => date('Y-m-d H:i:s'),*/
+                                    'date_last_sent' => date('Y-m-d H:i:s'),
+                                    'sent_by_user_id' => $_POST['user_id']
+                                ));
 
-                            $invite->save();
+                                $inviteSaved = $invite->save();
 
-                            array_push($insert_id_array,$invite->review_invite_id);
-                            
-                            if (!$invite->save()) {
-                                $error = 1;
-                                $er_msg = $invite->getMessages();
+                                array_push($insert_id_array, $invite->review_invite_id);
+                                
+                                if (!$inviteSaved) {
+                                    $error = 1;
+                                    $er_msg = $invite->getMessages();
+                                }
                             }
                         }
                     }
