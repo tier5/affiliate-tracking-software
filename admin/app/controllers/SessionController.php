@@ -386,19 +386,23 @@ class SessionController extends ControllerBase
         $objAgency = '';
         $objUser = '';
         $Domain = $this->config->application->domain;
+        $record = false;
 
         $host = $_SERVER['HTTP_HOST'];
         $ex = explode(".", $host);
-        $subdomain = $ex[0];
+        
+        if (count($ex) > 2) {
+            $subdomain = $ex[0];
+
+            $agency = new Agency();
+
+            $record = $agency->findOneBy(
+                ['custom_domain' => $subdomain]
+            );
+        }
 
         // Also will 404 on invalid subdomain
         $this->DetermineParentIDAndSetViewVars();
-
-        $agency = new Agency();
-
-        $record = $agency->findOneBy(
-            ['custom_domain' => $subdomain]
-        );
 
         $white_label = 'Sign Up';
 
@@ -429,8 +433,7 @@ class SessionController extends ControllerBase
             $objUser = \Vokuro\Models\Users::findFirst("id = {$objAgency->parent_id}");
             $this->view->agencyId = $objAgency->agency_id;
             $this->view->agency_name = $objAgency->name;
-            $cookie_agency_id = $objAgency->agency_id;//exit;
-            // echo $objAgency->parent_id;exit;
+            $cookie_agency_id = $objAgency->agency_id;
             
             if ($objAgency->parent_id == 0) {
                 setcookie("code_generate_normal", $code, $expire, '/');
@@ -470,7 +473,6 @@ class SessionController extends ControllerBase
                 //$this->view->agency_name ='';
             }
         }
-        //dd($record->agency_id);
 
         if (!$this->view->short_code) {
             $this->view->short_code = $_COOKIE['short_code'];
