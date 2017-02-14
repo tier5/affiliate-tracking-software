@@ -135,12 +135,9 @@ class ReviewController extends ControllerBase
             $this->di = $this->getDI();
             $this->config = $this->di->get('config');
             $rating = false;
-            $recomended = 'N';
             $domain = $this->config->application->domain;
 
             if (isset($_GET["r"])) $rating = $userRating = htmlspecialchars($_GET["r"]);
-            
-            if (isset($_GET["rec"])) $recomended = htmlspecialchars($_GET["rec"]);
             
             $conditions = "api_key = :api_key:";
             $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
@@ -153,7 +150,7 @@ class ReviewController extends ControllerBase
                
             if ($invite->location_id > 0) {
                 /**** send mail to business and user ***/
-                $user_sent=$invite->sent_by_user_id;
+                $user_sent = $invite->sent_by_user_id;
                 $userobj = new Users();
                 $user_info = $userobj::findFirst($user_sent);
                 $emp = $user_info->is_employee;
@@ -165,10 +162,11 @@ class ReviewController extends ControllerBase
 
                 $agencyobj = new Agency();
                 $agency = $agencyobj::findFirst($location->agency_id);
-                $parent_agency=$agencyobj::findFirst($agency->parent_id);
+                $parent_agency = $agencyobj::findFirst($agency->parent_id);
                 $this->view->parent_agency = $parent_agency;
 
                 $TwilioToken = $parent_agency->twilio_auth_token;
+
                 // We use the businesses' from number if it exists, otherwise use the agency's.
                 $TwilioFrom = $parent_agency->twilio_from_phone;
                 $TwilioAPI = $parent_agency->twilio_api_key;
@@ -191,16 +189,22 @@ class ReviewController extends ControllerBase
                         );
 
                         $AgencyName = $objParentAgency->name;
+
+                        // Agency Super Admin
                         $AgencyUser = $objAgencyUser->name;
                     }
 
                     $conditions = "location_id = :location_id:";
                     $parameters = array("location_id" => $invite->location_id);
-                    $agencynotifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+                    
+                    $agencynotifications = LocationNotifications::find(
+                        array($conditions, "bind" => $parameters)
+                    );
+                    
                     $is_email_alert_on = 0;
                     $is_sms_alert_on = 0;
 
-                    foreach($agencynotifications as $agencynotification) {
+                    foreach ($agencynotifications as $agencynotification) {
                         if ($agencynotification->user_id == $user_info->id) {
                             $is_email_alert_on = ($agencynotification->email_alert==1?1:0);
 
@@ -208,41 +212,21 @@ class ReviewController extends ControllerBase
                         }
                     }
 
-                    if ($invite->review_invite_type_id == 3) {
-                        $rating = $userRating .' out of 10';
-                    } else if ($invite->review_invite_type_id == 2) {
-                        $rating = $userRating . " star";
-                    } else {
-                        if ($recomended == 'Y') {
-                            $rating = "Yes";
-                        } else {
-                            $rating = "No";
-                        }
-                    }
+                    $rating = $this->ratingText($invite->review_invite_type_id, $rating);
                     
                     if ($is_email_alert_on == 1) {
-                        // $EmailFrom = 'no-reply@getmobilereviews.com';
-                        // $EmailFromName = "Zach Anderson";
-                        $EmailFrom = $objParentAgency->email;
-                        $EmailFromName = $AgencyUser;
-
-                        $to = $user_info->email;
-                        $subjec = "New Feedback";
-                        $mail_body = "";
-                        $mail_body .= "<p>One of your customers just left you feedback about your business.</p>";
-                        $mail_body .= "<p>Feedback : " . $rating . "</p>";
-                        $mail_body .= "<p>Customer Name : " . $invite->name . "</p>";
-                        $mail_body .= "<p>Customer Phone Number : " . $invite->phone . "</p>";
-                        $mail_body .= "<p>Employee : " . $user_info->name . "</p>";
-                        $mail_body .= "<p>View Customer : <a href='http://" . $domain . "/contacts/view/" . $invite->review_invite_id . "'>Click Here</a></p>";
-                        $mail_body .= "<p>Thank you,</p>";
-                        $mail_body .= $AgencyUser;
-                        $mail_body .= '<br>' . $AgencyName;
-
-                        $Mail = $this->getDI()->getMail();
-                        $Mail->setFrom($EmailFrom, $EmailFromName);
-                        $Mail->send($to, $subject, '', '', $mail_body);
-                        $phone = '8127224722';
+                        $this->sendEmail(
+                            $objParentAgency->email,
+                            $AgencyUser,
+                            $user_info->email,
+                            $rating,
+                            $invite->name,
+                            $invite->phone,
+                            $user_info->name,
+                            $domain,
+                            $invite->review_invite_id,
+                            $AgencyName
+                        );
                     }
                 
                     if ($is_sms_alert_on == 1) {
@@ -286,17 +270,7 @@ class ReviewController extends ControllerBase
                         }
                     }
 
-                    if ($invite->review_invite_type_id == 3) {
-                        $rating = $userRating." out of 10";
-                    } else if ($invite->review_invite_type_id == 2) {
-                        $rating = $userRating." star";
-                    } else {
-                        if ($recomended == 'Y') {
-                            $rating = "Yes";
-                        } else {
-                            $rating = "No";
-                        }
-                    }
+                    $rating = $this->ratingText($invite->review_invite_type_id, $rating);
 
                     $business_info =  \Vokuro\Models\Users::findFirst(
                         'agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"'
@@ -322,56 +296,37 @@ class ReviewController extends ControllerBase
 
                     if ($is_email_alert_on == 1) {
                         /*** mail to user ***/
-                        //$EmailFrom = 'no-reply@getmobilereviews.com';
-                        //$EmailFromName = "Zach Anderson";
-                        $EmailFrom = $objParentAgency->email;
-                        $EmailFromName = $AgencyUser;
 
-                        $to = $user_info->email;
-                        $subject = "New Feedback";
-
-                        $mail_body = "";
-                        $mail_body .= "<p>One of your customers just left you feedback about your business.</p>";
-                        $mail_body .= "<p>Feedback : " . $rating . "</p>";
-                        $mail_body .= "<p>Customer Name : " . $invite->name . "</p>";
-                        $mail_body .= "<p>Customer Phone Number : " . $invite->phone . "</p>";
-                        $mail_body .= "<p>Employee : " . $user_info->name . "</p>";
-                        $mail_body .= "<p>View Customer : <a href='http://" . $domain . "/contacts/view/" . $invite->review_invite_id . "'>Click Here</a></p>";
-                        $mail_body .= "<p>Thank you,</p>";
-                        $mail_body .= $AgencyUser;
-                        $mail_body .= $mail_body . '<br>' . $AgencyName;
-
-                        $Mail = $this->getDI()->getMail();
-                        $Mail->setFrom($EmailFrom, $EmailFromName);
-                        $Mail->send($to, $subject, '', '', $mail_body);
+                        $this->sendEmail(
+                            $objParentAgency->email,
+                            $AgencyUser,
+                            $user_info->email,
+                            $rating,
+                            $invite->name,
+                            $invite->phone,
+                            $user_info->name,
+                            $domain,
+                            $invite->review_invite_id,
+                            $AgencyName
+                        );       
 
                         /*** mail to user end ****/
 
-                        /**** mail to busines ****/
+                        /**** mail to business ****/
 
-                        // $EmailFrom = 'no-reply@getmobilereviews.com';
-                        // $EmailFromName = "Zach Anderson";
-                        $EmailFrom = $objParentAgency->email;
-                        $EmailFromName = $AgencyUser;
+                        $this->sendEmail(
+                            $objParentAgency->email,
+                            $AgencyUser,
+                            $business_info->email,
+                            $rating,
+                            $invite->name,
+                            $invite->phone,
+                            $user_info->name,
+                            $domain,
+                            $invite->review_invite_id,
+                            $AgencyName
+                        );
 
-                        $to = $business_info->email;
-                          
-                        $subject = "New Feedback";
-                        $mail_body = "";
-                        $mail_body .= "<p>One of your customers just left you feedback about your business.</p>";
-                        $mail_body .= "<p>Feedback : " . $rating . "</p>";
-                        $mail_body .= "<p>Customer Name : " . $invite->name . "</p>";
-                        $mail_body .= "<p>Customer Phone Number : " . $invite->phone . "</p>";
-                        $mail_body .= "<p>Employee : " . $user_info->name . "</p>";
-                        $mail_body .= "<p>View Customer : <a href='http://" . $domain . "/contacts/view/" . $invite->review_invite_id . "'>Click Here</a></p>";
-                        $mail_body .= "<p>Thank you,</p>";
-                        $mail_body .= $AgencyUser;
-                        $mail_body .= '<br>'.$AgencyName;
-
-                        $Mail = $this->getDI()->getMail();
-                        $Mail->setFrom($EmailFrom, $EmailFromName);
-                        $Mail->send($to, $subject, '', '', $mail_body);
-                        $phone = '8127224722';
                         /**** mail to busines ****/
                     }
 
@@ -382,7 +337,15 @@ class ReviewController extends ControllerBase
                             $message .= " has submitted " . $rating;
                             $message .= " for employee " . $user_info->name;
 
-                            if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken, $TwilioFrom)) {
+                            $sentSMS = $this->SendSMS(
+                                $user_info->phone,
+                                $message,
+                                $TwilioAPI,
+                                $TwilioToken,
+                                $TwilioFrom
+                            );
+
+                            if ($sentSMS) {
                             }
                         }
 
@@ -394,7 +357,15 @@ class ReviewController extends ControllerBase
                             $message .= " has submitted " . $rating;
                             $message .= " for employee " . $user_info->name;
 
-                            if ($this->SendSMS($business_agency->phone, $message, $TwilioAPI, $TwilioToken, $TwilioFrom)) {
+                            $sentSMS = $this->SendSMS(
+                                $business_agency->phone,
+                                $message,
+                                $TwilioAPI,
+                                $TwilioToken,
+                                $TwilioFrom
+                            );
+
+                            if ($sentSMS) {
                             }
                         }
                         /*** sms to business ***/
@@ -469,10 +440,50 @@ class ReviewController extends ControllerBase
         }
     }
 
+    private function ratingText($reviewTypeId, $rating)
+    {
+        if ($invite->review_invite_type_id == 3) {
+            $rating = $rating .' out of 10';
+        } else if ($invite->review_invite_type_id == 2) {
+            $rating = $rating . " star";
+        } else {
+            // is it recommended type
+            if ($_GET['rec'] == 'Y') {
+                $rating = "Yes";
+            } else {
+                $rating = "No";
+            }
+        }
+
+        return $rating;
+    }
+
+    private function sendEmail($emailFrom, $emailFromName, $to, $rating, $customerName, $customerPhone, $employeeName, $domain, $reviewInviteId, $agencyName)
+    {
+        $EmailFrom = $objParentAgency->email;
+
+        $to = $user_info->email;
+        $subject = "New Feedback";
+        $mail_body = "";
+        $mail_body .= "<p>One of your customers just left you feedback about your business.</p>";
+        $mail_body .= "<p>Feedback : " . $rating . "</p>";
+        $mail_body .= "<p>Customer Name : " . $invite->name . "</p>";
+        $mail_body .= "<p>Customer Phone Number : " . $invite->phone . "</p>";
+        $mail_body .= "<p>Employee : " . $user_info->name . "</p>";
+        $mail_body .= "<p>View Customer : <a href='http://" . $domain . "/contacts/view/" . $invite->review_invite_id . "'>Click Here</a></p>";
+        $mail_body .= "<p>Thank you,</p>";
+        $mail_body .= $emailFromName;
+        $mail_body .= '<br>' . $AgencyName;
+
+        $Mail = $this->getDI()->getMail();
+        $Mail->setFrom($emailFrom, $emailFromName);
+        $Mail->send($to, $subject, '', '', $mail_body);
+    }
 
     public function nothanksAction()
     {
         $rating = ($_GET["r"]) ? htmlspecialchars($_GET["r"]) : '';
+
         // Query review_invite binding parameters with string placeholders
         $conditions = "api_key = :api_key:";
 
@@ -491,14 +502,14 @@ class ReviewController extends ControllerBase
         $invite->save();
         $this->view->setVar('invite', $invite);
 
-        //we have the invite, now find the location
+        // we have the invite, now find the location
         $locationobj = new Location();
         $location = $locationobj::findFirst($invite->location_id);
 
-        //we have the location, now find the agency
+        // we have the location, now find the agency
         $agencyobj = new Agency();
         $agency = $agencyobj::findFirst($location->agency_id);
-        $parent_agency=$agencyobj::findFirst($agency->parent_id);
+        $parent_agency = $agencyobj::findFirst($agency->parent_id);
 
         $this->view->sms_button_color = $location->sms_button_color;
         $this->view->logo_path = $location->sms_message_logo_path;
@@ -528,12 +539,72 @@ class ReviewController extends ControllerBase
             $message = 'Notification: Review invite feedback has been posted for ' . $location->name . ': http://' . $_SERVER['HTTP_HOST'] . '/reviews/';
 
             parent::sendFeedback(
-                $agency,
-                $message,
+                $agency, // business 
+                $parent_agency, // agency
                 $location->location_id,
-                'Notification: Review invite feedback',
-                $invite->sent_by_user_id
+                $invite
             );
+        }
+    }
+
+    public function sendFeedback($business, $agency, $location_id, $invite)
+    {
+        $rating = $this->ratingText(
+            $invite->review_invite_type_id,
+            $invite->rating
+        );
+
+        $domain = $this->config->application->domain;
+
+        $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $location_id);
+        $notifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
+        $agencyUser = \Vokuro\Models\Users::findFirst(
+            "agency_id = {$agency->agency_id} AND role='Super Admin'"
+        )->name;
+
+        // invite sent by this user
+        $user_info = Users::findFirst($invite->sent_by_user_id);
+
+        foreach ($notifications as $an) {
+            // check if the user wants new reviews
+            if (($an->all_reviews == 1 || ($an->individual_reviews == 1 && $an->user_id == $user_id)) 
+                && ($an->email_alert == 1 || $an->sms_alert == 1)) {
+
+                // find the user
+                $conditions = "id = :id:";
+                $parameters = array("id" => $an->user_id);
+
+                // send email/sms to this user
+                $user = Users::findFirst(array($conditions, "bind" => $parameters));
+
+                if ($an->email_alert == 1 && isset($user->email)) {
+                    // the user wants an email, so send it now
+                    $this->sendEmail(
+                        $agency->email,
+                        $agencyUser,
+                        $user->email,
+                        $rating,
+                        $invite->name,
+                        $invite->phone,
+                        $user_info->name,
+                        $domain,
+                        $invite->review_invite_id,
+                        $agency->name
+                    );
+                }
+
+                if ($an->sms_alert == 1 && isset($user->phone) && $user->phone != '') {
+                    // we have a phone, so send the SMS
+                    $this->SendSMS(
+                        $this->formatTwilioPhone($user->phone),
+                        'Notification: Review invite feedback',
+                        $agency->twilio_api_key,
+                        $agency->twilio_auth_token,
+                        $agency->twilio_from_phone
+                    );
+                }
+            }
         }
     }
 
@@ -547,8 +618,7 @@ class ReviewController extends ControllerBase
     public function closeAction()
     {
          $this->session->set("top_banner_session", 2);
-    }   
-
+    }
 
     public function trackAction()
     {
@@ -580,14 +650,12 @@ class ReviewController extends ControllerBase
 
         // Parameters whose keys are the same as placeholders
         $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
-        //echo 'kk';exit;
 
         // Perform the query
         $review_invite = new ReviewInvite();
         $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
 
-        if ($this->validateGoogleBotIP($_SERVER['REMOTE_ADDR'])) {
-        } else {
+        if (!$this->validateGoogleBotIP($_SERVER['REMOTE_ADDR'])) {
             //save when the user viewed this invite
             $invite->date_viewed = date('Y-m-d H:i:s');
             $invite->save();
