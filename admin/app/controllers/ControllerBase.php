@@ -40,6 +40,7 @@ class ControllerBase extends Controller
         }
     }
 
+    // remove
     public function clean($val)
     {
         return strip_tags($val,['<p><a><br><hr><h1><h2><h3><h4><h5><h6><b>']);
@@ -932,42 +933,6 @@ class ControllerBase extends Controller
         }
 
         return '+' . $phone;
-    }
-
-    public function sendFeedback($agency, $message, $location_id, $subject, $user_id = false)
-    {
-        $conditions = "location_id = :location_id:";
-        $parameters = array("location_id" => $location_id);
-        $notifications = LocationNotifications::find(array($conditions, "bind" => $parameters));
-
-        foreach ($notifications as $an) {
-            //check if the user wants new reviews
-            if (($an->all_reviews == 1
-                || ($an->individual_reviews == 1 && $an->user_id == $user_id)) && ($an->email_alert == 1 || $an->sms_alert == 1)) {
-                //find the user
-                $conditions = "id = :id:";
-                $parameters = array("id" => $an->user_id);
-                $user = Users::findFirst(array($conditions, "bind" => $parameters));
-
-                if ($an->email_alert == 1 && isset($user->email)) {
-                    //the user wants an email, so send it now
-                    $this->getDI()
-                         ->getMail()
-                         ->send($user->email, 'Notification: New Review', '', '', $message);
-                }
-
-                if ($an->sms_alert == 1 && isset($user->phone) && $user->phone != '') {
-                    //we have a phone, so send the SMS
-                    $this->SendSMS(
-                        $this->formatTwilioPhone($user->phone),
-                        $message,
-                        $agency->twilio_api_key,
-                        $agency->twilio_auth_token,
-                        $agency->twilio_from_phone
-                    );
-                }
-            }
-        }
     }
 
     /**
