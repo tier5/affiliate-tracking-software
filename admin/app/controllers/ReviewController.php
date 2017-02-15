@@ -237,8 +237,6 @@ class ReviewController extends ControllerBase
 
                             if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
                             }
-                        } else {
-                            $this->flash->error('Please provide a number to sent sms');
                         }
                     }
                 
