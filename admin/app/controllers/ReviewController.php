@@ -213,7 +213,7 @@ class ReviewController extends ControllerBase
                     }
 
                     $rating = $this->ratingText($invite->review_invite_type_id, $rating);
-                    
+
                     if ($is_email_alert_on == 1) {
                         $this->sendEmail(
                             $objParentAgency->email,
@@ -460,17 +460,17 @@ class ReviewController extends ControllerBase
 
     private function sendEmail($emailFrom, $emailFromName, $to, $rating, $customerName, $customerPhone, $employeeName, $domain, $reviewInviteId, $agencyName)
     {
-        $EmailFrom = $objParentAgency->email;
+        /*$EmailFrom = $objParentAgency->email;
 
-        $to = $user_info->email;
+        $to = $user_info->email;*/
         $subject = "New Feedback";
         $mail_body = "";
         $mail_body .= "<p>One of your customers just left you feedback about your business.</p>";
         $mail_body .= "<p>Feedback : " . $rating . "</p>";
-        $mail_body .= "<p>Customer Name : " . $invite->name . "</p>";
-        $mail_body .= "<p>Customer Phone Number : " . $invite->phone . "</p>";
-        $mail_body .= "<p>Employee : " . $user_info->name . "</p>";
-        $mail_body .= "<p>View Customer : <a href='http://" . $domain . "/contacts/view/" . $invite->review_invite_id . "'>Click Here</a></p>";
+        $mail_body .= "<p>Customer Name : " . $customerName . "</p>";
+        $mail_body .= "<p>Customer Phone Number : " . $customerPhone . "</p>";
+        $mail_body .= "<p>Employee : " . $employeeName . "</p>";
+        $mail_body .= "<p>View Customer : <a href='http://" . $domain . "/contacts/view/" . $reviewInviteId . "'>Click Here</a></p>";
         $mail_body .= "<p>Thank you,</p>";
         $mail_body .= $emailFromName;
         $mail_body .= '<br>' . $AgencyName;
