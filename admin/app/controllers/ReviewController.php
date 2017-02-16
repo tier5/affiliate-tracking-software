@@ -441,20 +441,22 @@ class ReviewController extends ControllerBase
 
     private function ratingText($reviewTypeId, $rating)
     {
-        if ($invite->review_invite_type_id == 3) {
-            $rating = $rating .' out of 10';
-        } else if ($invite->review_invite_type_id == 2) {
-            $rating = $rating . " star";
-        } else {
+        if ($reviewTypeId == 3) {
+            $ratingText = $rating .' out of 10';
+        } else if ($reviewTypeId == 2) {
+            $ratingText = $rating . " star";
+            
+            if ($rating > 1) $ratingText .= 's';
+         } else {
             // is it recommended type
             if ($_GET['rec'] == 'Y') {
-                $rating = "Yes";
+                $ratingText = "Yes";
             } else {
-                $rating = "No";
+                $ratingText = "No";
             }
         }
 
-        return $rating;
+        return $ratingText;
     }
 
     private function sendEmail($emailFrom, $emailFromName, $to, $rating, $customerName, $customerPhone, $employeeName, $domain, $reviewInviteId, $agencyName)
