@@ -213,14 +213,14 @@ class ReviewController extends ControllerBase
                         }
                     }
 
-                    $rating = $this->ratingText($invite->review_invite_type_id, $rating);
+                    $ratingText = $this->ratingText($invite->review_invite_type_id, $rating);
 
                     if ($is_email_alert_on == 1) {
                         $this->sendEmail(
                             $objParentAgency->email,
                             $AgencyUser,
                             $user_info->email,
-                            $rating,
+                            $ratingText,
                             $invite->name,
                             $invite->phone,
                             $user_info->name,
@@ -233,7 +233,7 @@ class ReviewController extends ControllerBase
                     if ($is_sms_alert_on == 1) {
                         if ($user_info->phone != '') {
                             $message = $invite->name . " " . $invite->phone;
-                            $message .= " has submitted " . $rating;
+                            $message .= " has submitted " . $ratingText;
                             $message .= " for employee " . $user_info->name;
 
                             if ($this->SendSMS($user_info->phone, $message, $TwilioAPI, $TwilioToken,  $TwilioFrom)) {
@@ -269,7 +269,7 @@ class ReviewController extends ControllerBase
                         }
                     }
 
-                    $rating = $this->ratingText($invite->review_invite_type_id, $rating);
+                    $ratingText = $this->ratingText($invite->review_invite_type_id, $rating);
 
                     $business_info =  \Vokuro\Models\Users::findFirst(
                         'agency_id = ' . $user_info->agency_id . ' AND role="Super Admin"'
@@ -300,7 +300,7 @@ class ReviewController extends ControllerBase
                             $objParentAgency->email,
                             $AgencyUser,
                             $user_info->email,
-                            $rating,
+                            $ratingText,
                             $invite->name,
                             $invite->phone,
                             $user_info->name,
@@ -317,7 +317,7 @@ class ReviewController extends ControllerBase
                             $objParentAgency->email,
                             $AgencyUser,
                             $business_info->email,
-                            $rating,
+                            $ratingText,
                             $invite->name,
                             $invite->phone,
                             $user_info->name,
@@ -333,7 +333,7 @@ class ReviewController extends ControllerBase
                         /*** sms to user ***/
                         if ($user_info->phone != '') {
                             $message = $invite->name . " " . $invite->phone;
-                            $message .= " has submitted " . $rating;
+                            $message .= " has submitted " . $ratingText;
                             $message .= " for employee " . $user_info->name;
 
                             $sentSMS = $this->SendSMS(
@@ -353,7 +353,7 @@ class ReviewController extends ControllerBase
                         /*** sms to business ***/
                         if ($business_agency->phone != '') {
                             $message = $invite->name . " " . $invite->phone;
-                            $message .= " has submitted " . $rating;
+                            $message .= " has submitted " . $ratingText;
                             $message .= " for employee " . $user_info->name;
 
                             $sentSMS = $this->SendSMS(
