@@ -538,7 +538,7 @@ class ReviewController extends ControllerBase
             // send the notification about the feedback
             $message = 'Notification: Review invite feedback has been posted for ' . $location->name . ': http://' . $_SERVER['HTTP_HOST'] . '/reviews/';
 
-            parent::sendFeedback(
+            $this->sendFeedback(
                 $agency, // business 
                 $parent_agency, // agency
                 $location->location_id,
