@@ -139,6 +139,7 @@ class ReviewController extends ControllerBase
 
             if (isset($_GET["r"])) $rating = $userRating = htmlspecialchars($_GET["r"]);
             
+            // api_key = google place id
             $conditions = "api_key = :api_key:";
             $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
             $review_invite = new ReviewInvite();
