@@ -43,6 +43,7 @@ class ReviewsController extends ControllerBase
     {
         $location_id = $this->session->get('auth-identity')['location_id'];
 
+
         $this->tag->setTitle('Get Mobile Reviews | Reviews');
 
         // get the location and calculate the review total and avg.
@@ -53,7 +54,13 @@ class ReviewsController extends ControllerBase
             $loc = Location::findFirst(
                 array($conditions, "bind" => $parameters)
             );
-            
+
+            // get review threshold star
+            $this->view->threshold_star = $loc->rating_threshold_star; 
+
+            // get review threshold nps
+            $this->view->threshold_nps = $loc->rating_threshold_nps;
+
             $this->view->location = $loc;
 
             //###  START: find review site config info ###
@@ -180,7 +187,7 @@ class ReviewsController extends ControllerBase
             );
 
             $this->view->review_report = $review_report;
-            
+
             // get a list of all review invites for this location
             $invitelist = ReviewInvite::getReviewInvitesByLocation(
                 $location_id
@@ -189,6 +196,8 @@ class ReviewsController extends ControllerBase
             $this->view->invitelist = $invitelist;
             $this->getSMSReport();
 
+            // yes = 5
+            // no = 1
             // lets grab the count of reviews we have in the database
             $this->view->reviews_five = Review::count(array(
                 "column" => "review_id",

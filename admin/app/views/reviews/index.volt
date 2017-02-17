@@ -447,7 +447,9 @@
                         <?php
               if($invitelist):
                 foreach($invitelist as $invite):
-                if ($invite->recommend && $invite->recommend=='Y') :
+                if (($invite->review_invite_type_id == 1 && $invite->rating === 'Yes' || $invite->rating == 5) 
+                    || ($invite->review_invite_type_id == 2 && $invite->rating >= $threshold_star)
+                    || ($invite->review_invite_type_id == 3 && $invite->rating >= $threshold_nps)) :
                         ?>
                         <tr>
                           <td><?=$invite->name?></td>
@@ -528,7 +530,9 @@
                         <?php
                 if($invitelist):
                   foreach($invitelist as $invite):
-                  if ($invite->recommend && $invite->recommend=='N') :
+                  if (($invite->review_invite_type_id == 1 && $invite->rating === 'No' || $invite->rating == 1) 
+                      || ($invite->review_invite_type_id == 2 && $invite->rating < $threshold_star)
+                      || ($invite->review_invite_type_id == 3 && $invite->rating < $threshold_nps)) :
                         ?>
                         <tr>
                           <td><?=$invite->name?></td>
