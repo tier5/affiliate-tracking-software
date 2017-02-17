@@ -75,7 +75,7 @@ class ReviewController extends ControllerBase
 
             $this->view->setVar('agency', $agency);
 
-            switch ($invite->review_invite_type_id) {
+            switch ($location->review_invite_type_id) {
                 case ReviewInvite::RATING_TYPE_YES_NO:
                     $threshold = false;
                     break;
@@ -418,12 +418,20 @@ class ReviewController extends ControllerBase
                  $review_invite = new ReviewInvite();
                  $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
  
-                 //save the rating
+                 // save the rating
+                 if ($invite->review_invite_type_id == 1) {
+                    if ($rating == 5) {
+                        $rating = 'Yes';
+                    } else {
+                        $rating = 'No';
+                    }
+                 }
+                 
                  $invite->rating = $rating;
                  $invite->recommend = 'Y';
                  $invite->save();
 
-                 //we have the invite, now find the location
+                 // we have the invite, now find the location
                  $locationobj = new Location();
                  $location = $locationobj::findFirst($invite->location_id);
  
@@ -496,6 +504,14 @@ class ReviewController extends ControllerBase
 
         if ((!$invite || $invite->rating) && !$this->request->isPost()) {
            // $this->response->redirect('/review/expired');
+        }
+
+        if ($invite->review_invite_type_id == 1) {
+            if ($rating == 5) {
+                $rating = 'Yes';
+            } else {
+                $rating = 'No';
+            }
         }
 
         $invite->rating = $rating;

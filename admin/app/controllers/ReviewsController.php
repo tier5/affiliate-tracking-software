@@ -135,7 +135,7 @@ class ReviewsController extends ControllerBase
             $negative_total = ReviewInvite::count(
                 array(
                     "column" => "review_invite_id",
-                    "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND recommend = 'N' AND sms_broadcast_id IS NULL",
+                    "conditions" => "location_id = " . $location_id . " AND recommend = 'N' AND sms_broadcast_id IS NULL",
                 )
             );
 
@@ -155,7 +155,7 @@ class ReviewsController extends ControllerBase
             $month_review = ReviewInvite::count(
                 array(
                     "column" => "review_invite_id",
-                    "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND MONTH(date_sent) = MONTH(NOW()) AND YEAR(date_sent) = YEAR(NOW())",
+                    "conditions" => "location_id = " . $location_id . " AND MONTH(date_sent) = MONTH(NOW()) AND YEAR(date_sent) = YEAR(NOW())",
                 )
             );
 
@@ -173,7 +173,7 @@ class ReviewsController extends ControllerBase
 
             $review_report = Review::find(
                 array(
-                    "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'],
+                    "conditions" => "location_id = " . $location_id,
                     //"limit" => 30,
                     "order" => "time_created DESC"
                 )
@@ -183,7 +183,7 @@ class ReviewsController extends ControllerBase
             
             // get a list of all review invites for this location
             $invitelist = ReviewInvite::getReviewInvitesByLocation(
-                $this->session->get('auth-identity')['location_id']
+                $location_id
             );
             
             $this->view->invitelist = $invitelist;
@@ -192,26 +192,26 @@ class ReviewsController extends ControllerBase
             // lets grab the count of reviews we have in the database
             $this->view->reviews_five = Review::count(array(
                 "column" => "review_id",
-                "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND rating > 4 "
+                "conditions" => "location_id = " . $location_id . " AND rating > 4 "
             ));
 
             $this->view->reviews_four = Review::count(array(
-                "column" => "review_id", "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND rating > 3 AND rating <= 4 "
+                "column" => "review_id", "conditions" => "location_id = " . $location_id . " AND rating > 3 AND rating <= 4 "
             ));
 
             $this->view->reviews_three = Review::count(array(
                 "column" => "review_id",
-                "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND rating > 2 AND rating <= 3 "
+                "conditions" => "location_id = " . $location_id . " AND rating > 2 AND rating <= 3 "
             ));
             
             $this->view->reviews_two = Review::count(array(
                 "column" => "review_id",
-                "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND rating > 1 AND rating <= 2 "
+                "conditions" => "location_id = " . $location_id . " AND rating > 1 AND rating <= 2 "
             ));
             
             $this->view->reviews_one = Review::count(array(
                 "column" => "review_id",
-                "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND rating <= 1 "
+                "conditions" => "location_id = " . $location_id . " AND rating <= 1 "
             ));
         }
     }
