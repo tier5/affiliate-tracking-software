@@ -368,7 +368,6 @@ class ReviewController extends ControllerBase
                             }
                         }
                         /*** sms to business ***/
-
                     }
 
                     /**** send mail to business and user ***/
@@ -377,20 +376,8 @@ class ReviewController extends ControllerBase
                     $this->view->sms_button_color = $location->sms_button_color;
                     $this->view->logo_path = $location->sms_message_logo_path;
                     $this->view->name = $location->name;
- 
-                    switch ($invite->review_invite_type_id) {
-                        case ReviewInvite::RATING_TYPE_YES_NO:
-                            $threshold = false;
-                            break;
-                        case ReviewInvite::RATING_TYPE_5_STAR:
-                            $threshold = $location->rating_threshold_star;
-                            break;
-                        case ReviewInvite::RATING_TYPE_NPS:
-                            $threshold = $location->rating_threshold_nps;
-                            break;
-                    }
 
-                    //find the location review sites
+                    // find the location review sites
                     $conditions = "location_id = :location_id: AND is_on = 1";
                     $parameters = array("location_id" => $invite->location_id);
 
@@ -399,46 +386,57 @@ class ReviewController extends ControllerBase
                     );
 
                     $this->view->review_site_list = $review_site_list;
-                 }
- 
-                 if ($userRating && $userRating < $threshold || ($invite->review_invite_type_id == ReviewInvite::RATING_TYPE_YES_NO && $rating == 1)) {
-                     //redirect to the no thanks page
-                     $this->response->redirect('/review/nothanks?r=' . $rating . '&a=' . htmlspecialchars($_GET["a"]));
-                     $this->view->disable();
-                     return;
-                 }
-                 
-                 // Query review_invite binding parameters with string placeholders
-                 $conditions = "api_key = :api_key:";
- 
-                 // Parameters whose keys are the same as placeholders
-                 $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
- 
-                 // Perform the query
-                 $review_invite = new ReviewInvite();
-                 $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
- 
-                 // save the rating
-                 if ($invite->review_invite_type_id == 1) {
+                }
+
+                switch ($invite->review_invite_type_id) {
+                    case ReviewInvite::RATING_TYPE_YES_NO:
+                        $threshold = false;
+                        break;
+                    case ReviewInvite::RATING_TYPE_5_STAR:
+                        $threshold = $location->rating_threshold_star;
+                        break;
+                    case ReviewInvite::RATING_TYPE_NPS:
+                        $threshold = $location->rating_threshold_nps;
+                        break;
+                }
+
+                if ($userRating && $userRating < $threshold || ($invite->review_invite_type_id == ReviewInvite::RATING_TYPE_YES_NO && $rating == 1)) {
+                    //redirect to the no thanks page
+                    $this->response->redirect('/review/nothanks?r=' . $rating . '&a=' . htmlspecialchars($_GET["a"]));
+                    $this->view->disable();
+                    return;
+                }
+
+                // Query review_invite binding parameters with string placeholders
+                $conditions = "api_key = :api_key:";
+
+                // Parameters whose keys are the same as placeholders
+                $parameters = array("api_key" => htmlspecialchars($_GET["a"]));
+
+                // Perform the query
+                $review_invite = new ReviewInvite();
+                $invite = $review_invite::findFirst(array($conditions, "bind" => $parameters));
+
+                // save the rating
+                if ($invite->review_invite_type_id == 1) {
                     if ($rating == 5) {
                         $rating = 'Yes';
                     } else {
                         $rating = 'No';
                     }
-                 }
-                 
-                 $invite->rating = $rating;
-                 $invite->recommend = 'Y';
-                 $invite->save();
+                }
 
-                 // we have the invite, now find the location
-                 $locationobj = new Location();
-                 $location = $locationobj::findFirst($invite->location_id);
- 
-                 $this->view->setVar('invite', $invite);
-                 $this->view->setVar('location', $location);
+                $invite->rating = $rating;
+                $invite->recommend = 'Y';
+                $invite->save();
+
+                // we have the invite, now find the location
+                $locationobj = new Location();
+                $location = $locationobj::findFirst($invite->location_id);
+
+                $this->view->setVar('invite', $invite);
+                $this->view->setVar('location', $location);
             }
-
         } catch (\Exception $e) {
             echo "Exception: ", $e->getMessage(), "\n";
             echo " File=", $e->getFile(), "\n";
