@@ -721,7 +721,7 @@ class SettingsController extends ControllerBase
 
         $objEmail = new \Vokuro\Services\Email();
 
-        $employeeReportSent = $objEmail->sendEmployeeReport
+        $employeeReportSent = $objEmail->sendEmployeeReport(
             $dbEmployees,
             $objLocation,
             [$objRecipient]
@@ -881,9 +881,6 @@ class SettingsController extends ControllerBase
 
     public function siteaddAction($location_id = 0, $review_site_id = 0)
     {
-       // $this->checkIntegerOrThrowException($location_id ,"not integer");
-       // $this->checkIntegerOrThrowException($review_site_id, "not integer");
-
         if ($location_id > 0 && $review_site_id > 0) {
             $lrs = new LocationReviewSite();
             $lrs->location_id = $location_id;
@@ -898,9 +895,11 @@ class SettingsController extends ControllerBase
             $site = ReviewSite::findFirst(array($conditions, "bind" => $parameters));
 
             $this->view->disable();
-            echo json_encode(array('location_review_site_id' => $lrs->location_review_site_id,
+            echo json_encode(array(
+                'location_review_site_id' => $lrs->location_review_site_id,
                 'img_path' => $site->icon_path,
-                'name' => $site->name));
+                'name' => $site->name
+            ));
         } else {
             $this->view->disable();
             echo 'false';
@@ -909,7 +908,6 @@ class SettingsController extends ControllerBase
 
     public function onAction($id = 0)
     {
-        //$this->checkIntegerOrThrowException($id,'$id was invalid');
         $conditions = "location_review_site_id = :location_review_site_id:";
         $parameters = array("location_review_site_id" => $id);
         $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
@@ -933,35 +931,46 @@ class SettingsController extends ControllerBase
     {
         $conditions = "location_review_site_id = :location_review_site_id:";
         $parameters = array("location_review_site_id" => $id);
-        $Obj = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+        $Obj = LocationReviewSite::findFirst(
+            array($conditions, "bind" => $parameters)
+        );
 
         $location_id = $Obj->location_id;
-        $edit_permissions = $this->getPermissions()->canUserEditLocationId($this->getUserObject(), $location_id);
+
+        $edit_permissions = $this->getPermissions()->canUserEditLocationId(
+            $this->getUserObject(),
+            $location_id
+        );
+
         if (!$edit_permissions) {
             throw new \Exception(
-                "You cannot edit the parent location for id of:{$location_id}, so you cannot
-        turn off or on a location review site belonging to this location"
+                "You cannot edit the parent location for id of:{$location_id}, so you cannot turn off or on a location review site belonging to this location"
             );
         }
-
-
 
         $Obj->is_on = 1;
         $Obj->save();
         $this->view->disable();
+
         echo 'true';
     }
 
-
     public function notificationAction($id = 0, $fieldname, $value)
     {
-
         $conditions = "location_id = :location_id: AND user_id = :user_id:";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id'], "user_id" => $id);
 
-        $Obj = LocationNotifications::findFirst(array($conditions, "bind" => $parameters));
+        $parameters = array(
+            "location_id" => $this->session->get('auth-identity')['location_id'],
+            "user_id" => $id
+        );
+
+        $Obj = LocationNotifications::findFirst(
+            array($conditions, "bind" => $parameters)
+        );
+        
         if (isset($Obj) && isset($Obj->user_id) && $Obj->user_id == $id) {
-            //lets edit the field and save the changes
+            // lets edit the field and save the changes
             if ($fieldname == 'ea') $Obj->email_alert = $value;
             if ($fieldname == 'sa') $Obj->sms_alert = $value;
             if ($fieldname == 'ar') $Obj->all_reviews = $value;
@@ -970,13 +979,14 @@ class SettingsController extends ControllerBase
 
             $Obj->save();
         } else {
-            //else we need to create a record
+            // else we need to create a record
             $locationNotification = new LocationNotifications();
 
             $loc_array = array(
                 'location_id' => $parameters['location_id'],
                 'user_id' => $id,
             );
+
             if ($fieldname == 'ea') { $loc_array['email_alert'] = $value; }
             if ($fieldname == 'sa') { $loc_array['sms_alert'] = $value; }
             if ($fieldname == 'ar') { $loc_array['all_reviews'] = $value; }
@@ -996,7 +1006,6 @@ class SettingsController extends ControllerBase
     {
         // Check if the user has uploaded files
         if ($this->request->hasFiles() == true) {
-            //echo '<p>hasFiles() == true!</p>';
             $baseLocation = __DIR__ . '/../../public/img/agency_logos/';
 
             // Print the real file names and sizes
@@ -1020,7 +1029,8 @@ class SettingsController extends ControllerBase
         }
     }
 
-    public function getTwilioDetails(){
+    public function getTwilioDetails()
+    {
         $twilio_api_key = "";
         $twilio_auth_token = "";
         $twilio_auth_messaging_sid = "";
@@ -1029,24 +1039,39 @@ class SettingsController extends ControllerBase
         
         $conditions = "id = :id:";
         $parameters = array("id" => $identity['id']);
-        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+        
+        $userObj = Users::findFirst(
+            array($conditions, "bind" => $parameters)
+        );
+        
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $userObj->agency_id);
-        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+        
+        $agency = Agency::findFirst(
+            array($conditions, "bind" => $parameters)
+        );
+
         if ($agency) {
             $this->view->agency = $agency;
 
-            if (isset($agency->twilio_api_key) && $agency->twilio_api_key != "" && isset($agency->twilio_auth_token) && $agency->twilio_auth_token != ""  && isset($agency->twilio_from_phone) && $agency->twilio_from_phone != "") {
-                    $conditionsUser = "agency_id = :agency_id:";
-                    $userParam = $parameters = array("agency_id" => $agency->agency_id);
-                    $userObjNew = Users::findFirst(array($conditionsUser, "bind" => $userParam));
-                    $twilio_user_id = $userObjNew->id;
-                    $twilio_api_key = $agency->twilio_api_key;
-                    $twilio_auth_token = $agency->twilio_auth_token;
-                    $twilio_from_phone = $agency->twilio_from_phone;
+            if (isset($agency->twilio_api_key)
+                && $agency->twilio_api_key != ""
+                && isset($agency->twilio_auth_token)
+                && $agency->twilio_auth_token != ""
+                && isset($agency->twilio_from_phone)
+                && $agency->twilio_from_phone != "") {
+                $conditionsUser = "agency_id = :agency_id:";
+                $userParam = $parameters = array("agency_id" => $agency->agency_id);
+                $userObjNew = Users::findFirst(array($conditionsUser, "bind" => $userParam));
+                $twilio_user_id = $userObjNew->id;
+                $twilio_api_key = $agency->twilio_api_key;
+                $twilio_auth_token = $agency->twilio_auth_token;
+                $twilio_from_phone = $agency->twilio_from_phone;
             }
 
-            if ($twilio_api_key  == "" && $twilio_auth_token == ""  && $twilio_from_phone == "") {
+            if ($twilio_api_key  == ""
+                && $twilio_auth_token == ""
+                && $twilio_from_phone == "") {
                 $parameters1 = array("agency_id" => $agency->parent_id);
                 $agency1 = Agency::findFirst(array($conditions, "bind" => $parameters1));
                 $conditionsUser = "agency_id = :agency_id:";
@@ -1058,9 +1083,10 @@ class SettingsController extends ControllerBase
                 $twilio_from_phone = $agency1->twilio_from_phone;   
             }
         }
-        $Twiio = array();
-        $Twiio['twilio_user_id'] = $twilio_user_id;
-        $Twiio['twilio_api_key'] = $twilio_api_key;
+
+        $Twilio = array();
+        $Twilio['twilio_user_id'] = $twilio_user_id;
+        $Twilio['twilio_api_key'] = $twilio_api_key;
         $Twiio['twilio_auth_token'] = $twilio_auth_token;
         $Twiio['twilio_from_phone'] = $twilio_from_phone;
         return($Twiio);
