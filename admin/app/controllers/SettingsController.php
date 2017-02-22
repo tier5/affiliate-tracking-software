@@ -29,8 +29,8 @@ use Pricing_Services_Twilio;
  * Vokuro\Controllers\UsersController
  * CRUD to manage users
  */
-class SettingsController extends ControllerBase {
-
+class SettingsController extends ControllerBase
+{
     public function initialize()
     {
         $this->tag->setTitle('Get Mobile Reviews | Settings');
@@ -153,6 +153,7 @@ class SettingsController extends ControllerBase {
         }
 
         $location_id = $this->session->get('auth-identity')['location_id'];
+
         if ($location_id) {
             // Query binding parameters with string placeholders
             $conditions = "agency_id = :agency_id:";
@@ -174,6 +175,7 @@ class SettingsController extends ControllerBase {
                 'edit' => true
             ));
         }
+
         $this->getSMSReport();
     }
 
@@ -235,7 +237,7 @@ class SettingsController extends ControllerBase {
 
     protected function storeLogo($objAgency)
     {
-        if($this->request->hasFiles()) {
+        if ($this->request->hasFiles()) {
 
             foreach ($this->request->getUploadedFiles() as $file) {
                 // This is for handling page reloads.
@@ -282,11 +284,7 @@ class SettingsController extends ControllerBase {
                 foreach ($form->getMessages() as $message) {
                     $this->flash->error($message);
                 }
-                //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
-                // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
-            } else {
-               // echo $this->request->getPost('welcome_email');
-              // echo 'k';exit;
+             } else {
                 $identity = $this->auth->getIdentity();
                 $conditions = "id = :id:";
                 $parameters = array("id" => $identity['id']);
@@ -350,7 +348,6 @@ class SettingsController extends ControllerBase {
         return true;
     }
 
-
     /**
      * Updates settings for locations
      */
@@ -358,6 +355,7 @@ class SettingsController extends ControllerBase {
     {
         $location_id = $this->getLocationId();
         $userObj = $this->getUserObject();
+
         // If there is no identity available the user is redirected to index/index.  User must be a super admin or admin to view settings page.
         if (!$userObj) {
             $this->response->redirect('/session/login?return=/settings/location/');
@@ -556,8 +554,13 @@ class SettingsController extends ControllerBase {
         $idxcx = $identity['id'];
         $db = $this->di->get('db');
         $db->begin();
-        $result = $this->db->query(" SELECT * FROM `twilio_number_to_business` WHERE `buisness_id`='".$idxcx."'");
+
+        $result = $this->db->query(
+            "SELECT * FROM `twilio_number_to_business` WHERE `buisness_id`='" . $idxcx . "'"
+        );
+
         $xcd = $result->numRows();
+
         if ($xcd != 0) {
             $this->view->twilio_details = $result->fetchAll();
         } else {
@@ -571,13 +574,18 @@ class SettingsController extends ControllerBase {
             }
             
             $numbers = array();
-            if($Twillioset['twilio_api_key'] && $Twillioset['twilio_auth_token']) {
-              $client = new Services_Twilio($Twillioset['twilio_api_key'], $Twillioset['twilio_auth_token']);
-              $uri = '/'. $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
+
+            if ($Twillioset['twilio_api_key'] && $Twillioset['twilio_auth_token']) {
+                $client = new Services_Twilio(
+                    $Twillioset['twilio_api_key'],
+                    $Twillioset['twilio_auth_token']
+                );
+                
+                $uri = '/'. $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
               
-              if($client){
-               $numbers = $client->retrieveData($uri);
-              }
+                if ($client) {
+                    $numbers = $client->retrieveData($uri);
+                }
             }
         
             $country = array();
@@ -601,12 +609,19 @@ class SettingsController extends ControllerBase {
         $this->view->disable();
 
         $Identity = $this->session->get('auth-identity');
-        //echo $Identity['id'];exit;
-        //echo $this->session->get('auth-identity')['location_id'];exit;
-        $objCurrentUser = \Vokuro\Models\Users::findFirst("id = " . $Identity['id']);
-        $objRecipient = \Vokuro\Models\Users::findFirst("id = {$EmployeeID}");
 
-        $objlocationinfo = \Vokuro\Models\UsersLocation::findFirst("user_id = {$EmployeeID}");
+        $objCurrentUser = \Vokuro\Models\Users::findFirst(
+            "id = " . $Identity['id']
+        );
+        
+        $objRecipient = \Vokuro\Models\Users::findFirst(
+            "id = {$EmployeeID}"
+        );
+
+        $objlocationinfo = \Vokuro\Models\UsersLocation::findFirst(
+            "user_id = {$EmployeeID}"
+        );
+        
         if ($objlocationinfo) {
             $objReview = \Vokuro\Models\Location::findFirst(
                 "location_id = {$objlocationinfo->location_id}"
@@ -617,7 +632,8 @@ class SettingsController extends ControllerBase {
             $objReview = \Vokuro\Models\Location::findFirst(
                 "location_id = {$this->session->get('auth-identity')['location_id']}"
             );
-            $review_invite_type_id=$objReview->review_invite_type_id;
+
+            $review_invite_type_id = $objReview->review_invite_type_id;
         }
 
        
@@ -643,8 +659,11 @@ class SettingsController extends ControllerBase {
             1
         );
 
-        $objLocation = \Vokuro\Models\Location::findFirst('location_id = ' . $Identity['location_id']);
-        $this->view->review_invite_type_id=$objReview->review_invite_type_id;
+        $objLocation = \Vokuro\Models\Location::findFirst(
+            'location_id = ' . $Identity['location_id']
+        );
+        
+        $this->view->review_invite_type_id = $objReview->review_invite_type_id;
 
         /*** new start generator ***/
 
@@ -652,7 +671,11 @@ class SettingsController extends ControllerBase {
         $YNrating_array_set_all = array();
     
         foreach ($dbEmployees as $ux) {
-            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ux->id." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` "
+                . "FROM `review_invite` "
+                . "WHERE  `sent_by_user_id` = " . $ux->id . " "
+                . "AND `review_invite_type_id` = 1 "
+                . "GROUP BY  `rating`";
 
             // Base model
             $list = new ReviewInvite();
@@ -669,11 +692,13 @@ class SettingsController extends ControllerBase {
             $YNrating_array_set_all[$ux->id] = $rs->toArray();
         }
         
-        // print_r($YNrating_array_set_all);exit;
         $this->view->YNrating_array_set_all = $YNrating_array_set_all;
 
         foreach ($dbEmployees as $ux) {
-           $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =".$ux->id." GROUP BY  `review_invite_type_id` ";
+            $sql = "SELECT COUNT(*) AS `numberx`, `review_invite_type_id`, SUM(  `rating` ) AS  `totalx` "
+                . "FROM  `review_invite` "
+                . "WHERE  `sent_by_user_id` =" . $ux->id . " "
+                . "GROUP BY  `review_invite_type_id` ";
 
             // Base model
             $list = new ReviewInvite();
@@ -690,33 +715,47 @@ class SettingsController extends ControllerBase {
             $rating_array_set_all[$ux->id] = $rs->toArray();
         }
     
-        $this->view->rating_array_set_all=$rating_array_set_all;
+        $this->view->rating_array_set_all = $rating_array_set_all;
         
         /*** new start generator ***/
 
         $objEmail = new \Vokuro\Services\Email();
-        return $objEmail->sendEmployeeReport($dbEmployees, $objLocation, [$objRecipient]) ? 1 : 0;
+
+        $employeeReportSent = $objEmail->sendEmployeeReport
+            $dbEmployees,
+            $objLocation,
+            [$objRecipient]
+        );
+
+        return $employeeReportSent ? 1 : 0;
     }
     
-
-
     public function agencyAction()
     {
         $Identity = $this->auth->getIdentity();
 
         if (!is_array($Identity)) {
-            $this->response->redirect('/session/login?return=/settings/agency/');
+            $this->response->redirect(
+                '/session/login?return=/settings/agency/'
+            );
+            
             $this->view->disable();
+            
             return;
         }
 
         $this->view->tab = $this->request->get('tab');
+
         if ($this->request->get('tab') == 'Stripe') {
             $this->view->ShowAgencyStripePopup = false;
         }
         
         $conditions = "location_id = :location_id:";
-        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+
+        $parameters = array(
+            "location_id" => $this->session->get('auth-identity')['location_id']
+        );
+        
         $location = Location::findFirst(array($conditions, "bind" => $parameters));
 
         $objUser = Users::findFirst("id = " . $Identity['id']);
@@ -727,46 +766,47 @@ class SettingsController extends ControllerBase {
             $this->flash->error("Agency not found. Contact customer support.");
         }
 
-        $SettingsForm  = new SettingsForm($objAgency, array(
-            'edit' => true
-        ));
+        $SettingsForm  = new SettingsForm(
+            $objAgency,
+            array('edit' => true)
+        );
         
-        
-        $AgencyForm = new AgencyForm($objAgency, array(
-            'edit' => true
-        ));
+        $AgencyForm = new AgencyForm(
+            $objAgency,
+            array('edit' => true)
+        );
         
         $blankemailPosted = false;
         
         // Set default message welcome_email
 
-        if (!$objAgency->welcome_email || ($this->request->isPost() && !$this->request->getPost('welcome_email'))) {
-         $blankemailPosted = true;
-          $objAgency->welcome_email = "Hey {FirstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
+        if (!$objAgency->welcome_email
+            || ($this->request->isPost() && !$this->request->getPost('welcome_email'))) {
+            $blankemailPosted = true;
+            $objAgency->welcome_email = "Hey {FirstName},<br /> <P>Congratulations on joining us at {AgencyName}, I know you'll love it when you see how easy it is to generate 5-Star reviews from recent customers.</P>
 
-                <P>If you wouldn't mind, I'd love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
+            <P>If you wouldn't mind, I'd love it if you answered one quick question: Why did you decide to join us at {AgencyName} ?</P>
 
-                <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit reply and let me know.
-               </P>
-               <p>To get started just confirm your email by {Link}</p>
-               <p></p>
-               <p>Thanks,</p>
-               <p>{AgencyUser}</p>
-               <p>{AgencyName}</p>";
+            <P>I’m asking because knowing what made you sign up is really helpful for us in making sure that we’re delivering on what our users want. Just hit reply and let me know.
+            </P>
+            <p>To get started just confirm your email by {Link}</p>
+            <p></p>
+            <p>Thanks,</p>
+            <p>{AgencyUser}</p>
+            <p>{AgencyName}</p>";
         }
         
         // Set default message for welcome_email_employee
 
         if (!$objAgency->welcome_email_employee
-            || ($this->request->isPost()
-            && !$this->request->getPost('welcome_email_employee'))) {
-           $blankemailPosted = true;
-          $objAgency->welcome_email_employee= 'Hi {EmployeeName},
+            || ($this->request->isPost() && !$this->request->getPost('welcome_email_employee'))) {
+            $blankemailPosted = true;
+            $objAgency->welcome_email_employee= 'Hi {EmployeeName},
             <p>
-                We’ve just created your profile for {BusinessName} within our software. 
+            We’ve just created your profile for {BusinessName} within our software. 
             </p>
             <p>
-                When you {ActivateNow} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
+            When you {ActivateNow} you’ll gain instant access and the ability to generate customer feedback via text messages through your own personalized dashboard. 
             </p>
             <p> {Link}</p>
             <p>Looking forward to working with you.</p>
@@ -777,17 +817,21 @@ class SettingsController extends ControllerBase {
         }
         
         // Set default message for viral_email
-        if (!$objAgency->viral_email || ($this->request->isPost() && !$this->request->getPost('viral_email'))) {
+        if (!$objAgency->viral_email 
+            || ($this->request->isPost() && !$this->request->getPost('viral_email'))) {
             $blankemailPosted = true;
             $objAgency->viral_email = "I just started using this amazing new software for my business. "
                                         . "They are giving away a trial account here: {ShareLink}";
         }
 
-        $AgencyForm = new AgencyForm($objAgency, array(
-            'edit' => true
-        ));
+        $AgencyForm = new AgencyForm(
+            $objAgency,
+            array('edit' => true)
+        );
 
-        if ($this->request->isPost() && $SettingsForm->isValid($_POST) && $AgencyForm->isValid($_POST)) {
+        if ($this->request->isPost()
+            && $SettingsForm->isValid($_POST)
+            && $AgencyForm->isValid($_POST)) {
             if (!$this->storeSettings($objAgency, 'agency')) {
                 $this->flash->error($objAgency->getMessages());
             } else {
@@ -828,7 +872,11 @@ class SettingsController extends ControllerBase {
     
     // use only for null checking trim unicode spaces        
     private function htmlTrim($content) {
-      return str_replace('+','',preg_replace('/%26|nbsp%3B|nbsp| /u','',urlencode($content)));
+        return str_replace(
+            '+',
+            '',
+            preg_replace('/%26|nbsp%3B|nbsp| /u', '', urlencode($content))
+        );
     }
 
     public function siteaddAction($location_id = 0, $review_site_id = 0)
