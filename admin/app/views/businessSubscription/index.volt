@@ -362,7 +362,7 @@
                                 <div><span id="modal-messages" class="bold"></span> Text Messages</div>
                             </div>
                             <div class="responsive-float-right subscription-panel-large-caption">
-                                <sup class="subscription-panel-default-caption">$</sup><span id="modal-price"></span><sub class="subscription-panel-default-caption">/mo</sub>
+                                <sup class="subscription-panel-default-caption">{{ currencySymbol }}</sup><span id="modal-price"></span><sub class="subscription-panel-default-caption">/mo</sub>
                             </div>
                         </div>
                     </div>

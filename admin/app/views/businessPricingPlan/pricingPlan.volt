@@ -79,8 +79,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" id="currency" value="USD">
-                            <!--<div class="col-md-3">
+                            <!--<input type="hidden" id="currency" value="USD">-->
+                            <div class="col-md-3">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label class="control-label">Currency <span class="currency-symbol"></span></label>
@@ -93,7 +93,7 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>-->
+                            </div>
                             <div class="col-md-3">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -363,9 +363,9 @@
         {% endfor %}
 
         updateCurrencySymbol('USD');
-        /*$('#currency').on('change', function() {
+        $('#currency').on('change', function() {
             updateCurrencySymbol($(this).val());
-        });*/
+        });
 
         updateCurrencySymbol($('#currency').val());
 

@@ -119,8 +119,8 @@ class BusinessSubscriptionController extends ControllerBase
         /* Set pricing plan details to empty so it doesn't display when attaching the json string to the data attribute */
         $subscriptionPlanData['pricingPlan']['pricing_details'] = '';
         $this->view->subscriptionPlanData = $subscriptionPlanData;
-        //$currency = $objSubscriptionPricingPlan->currency;
-        $currency = 'USD';
+        $currency = $objSubscriptionPricingPlan->currency;
+        //$currency = 'USD';
         $stripe = new Stripe();
         $currencySymbol = $stripe->getCurrencySymbol($currency);
 

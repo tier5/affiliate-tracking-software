@@ -380,7 +380,7 @@ class PaymentService extends BaseService
 
             $currency = $subscriptionManager->getSubscriptionCurrency($userId);
 
-            $currency = 'usd';
+            // $currency = 'usd';
             \Stripe\Plan::create([
                 'amount'    => $Amount,
                 'interval'  => $Interval,
