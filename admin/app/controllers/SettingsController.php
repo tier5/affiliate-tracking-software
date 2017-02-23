@@ -206,7 +206,7 @@ class SettingsController extends ControllerBase
         'review_goal'                   => 'int',
         'lifetime_value_customer'       => 'replace_commas_dollars',
         'SMS_message'                   => 'string',
-      /*  'twitter_message'               => 'string',*/
+        /*'twitter_message'               => 'string',*/
         'message_tries'                 => 'int',
         'rating_threshold_star'         => 'int',
         'rating_threshold_nps'          => 'int',
@@ -235,32 +235,110 @@ class SettingsController extends ControllerBase
         return "SUCCESS";
     }
 
-    protected function storeLogo($objAgency)
+
+    /**
+     * Upload file
+     *
+     * @param (object) $file file object
+     * @param (string) $dir relative path
+     * @return file path or false
+     **/
+
+    protected function storeLogo($file, $dir) //
     {
-        if ($this->request->hasFiles()) {
+        $tempName = $file->getTempName();
 
-            foreach ($this->request->getUploadedFiles() as $file) {
-                // This is for handling page reloads.
-                if($file->getTempName()) {
-                    if(isset($objAgency->logo_path) && $objAgency->logo_path) {
-                        $logoFilename = __DIR__ . DIRECTORY_SEPARATOR . "..". DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR  . $this->session->AgencySignup['LogoFilename'];
-                        if (is_file($logoFilename)) {
-                          unlink($logoFilename);
-                        }
-                        //$objAgency->logo_path = '';
-                        $objAgency->save();
-                    }
+        if ($tempName) {
 
-                    $FileName = uniqid('logo') . '.' . $file->getExtension();
-                    file_put_contents(__DIR__ .  DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR . "{$FileName}", file_get_contents($file->getTempName()));
-                    $objAgency->logo_path = $FileName;
+            $fileName = uniqid('logo') . '.' . $file->getExtension();
 
-                    $objAgency->save();
-                    $this->view->logo_path = DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "agency_logos" . DIRECTORY_SEPARATOR . "{$FileName}";
-                    break;
-                }
+            $filePath = $dir . "{$fileName}";
+
+            $uploaded = file_put_contents(
+                $filePath,
+                file_get_contents($tempName)
+            );
+
+            if ($uploaded !== false) {
+                return $fileName;
             }
         }
+
+        return false;
+    }
+
+    /**
+     * Upload and save agency logo
+     *
+     * @param (object) $agencyObj
+     * @return (bool)
+     */
+    protected function saveAgencyLogo($agencyObj)
+    {
+        $path = DIRECTORY_SEPARATOR
+            . "img" . DIRECTORY_SEPARATOR
+            . "agency_logos" . DIRECTORY_SEPARATOR;
+
+        $pathRelative = __DIR__ . DIRECTORY_SEPARATOR
+            . "..". DIRECTORY_SEPARATOR
+            . ".." . DIRECTORY_SEPARATOR
+            . "public" . $path;
+
+        // get uploaded file
+        $file = $this->getUploadedFile();
+        
+        if (!$file) {
+            return false;
+        }
+
+        // if logo exists delete it
+        if (isset($agencyObj->logo_path) && $agencyObj->logo_path) { //
+            $logoFileName = $pathRelative . $this->session->AgencySignup['LogoFilename']; //
+
+            if (is_file($logoFileName)) {
+                if(unlink($logoFileName)) {
+                    $agencyObj->logo_path = null;
+
+                    $agencyObj->save();
+                };
+            }
+        }
+
+        // store in agency_logo folder
+        $fileName = $this->storeLogo($file, $pathRelative);
+
+        if ($fileName === false) {
+            return false;
+        }
+
+        // save path to agency table
+
+        $agencyObj->logo_path = $fileName; //
+
+        $agencyObj->save(); //
+
+        $this->view->logo_path = $path . "{$fileName}"; //
+    }
+
+    /**
+     * Get uploaded file object
+     * 
+     * @return file object or false
+     */
+    protected function getUploadedFile()
+    {
+        if ($this->request->hasFiles()) {
+            $files = $this->request->getUploadedFiles();
+
+            return $files[0];
+        }
+
+        return false;
+    }
+
+    protected function storeReviewSiteLogo()
+    {
+
     }
 
     protected function storeSettings($entity, $type)
@@ -837,7 +915,7 @@ class SettingsController extends ControllerBase
             } else {
                 // Only agencies can store logos
                 if ($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) {
-                    $this->storeLogo($objAgency);
+                    $this->saveAgencyLogo($objAgency);
                 }
 
                 // Somehow the agency is getting updated at this point.  It looks like isValid is saving the object?  It shouldn't...  I have no idea what's going on, so doing this manually.
@@ -849,8 +927,8 @@ class SettingsController extends ControllerBase
 
                 $this->flash->success("The settings were updated successfully");
                 //Tag::resetInput();
-                if($blankemailPosted){
-                  return $this->response->redirect($_SERVER['HTTP_REFERER']);
+                if ($blankemailPosted) {
+                    return $this->response->redirect($_SERVER['HTTP_REFERER']);
                 }
             }
         } else {
@@ -871,7 +949,8 @@ class SettingsController extends ControllerBase
     }
     
     // use only for null checking trim unicode spaces        
-    private function htmlTrim($content) {
+    private function htmlTrim($content)
+    {
         return str_replace(
             '+',
             '',
