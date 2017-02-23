@@ -477,10 +477,10 @@
                                 $yes=0;
                                 $no=0;
                                 foreach($YNrating_array_set[$data->id] as $set){
-                                if($set['rating']==5){
+                                if($set['rating']==5 || $set['rating']=='Yes'){
                                 $yes=$set['numberx'];
                                 }
-                                if($set['rating']==1){
+                                if($set['rating']==1 || $set['rating']=='No'){
                                 $no=$set['numberx'];
                                 }
 
