@@ -50,191 +50,214 @@ class IndexController extends ControllerBase
              * the create business sequence.
              */
 
-
             $top_user_id = $this->session->get('auth-identity')['id'];
-            $result = $this->db->query(" SELECT * FROM `users` WHERE `id` =".$top_user_id);
-            $usersTopbanner = $result->fetch();
-          
-            $this->view->top_banner = $usersTopbanner['top_banner_show'];
-
-            $userManager = $this->di->get('userManager');
-
-            $isBusiness = $userManager->isBusiness($this->session);
-            $signupPage = $userManager->currentSignupPage($this->session);
-
-            if ($isBusiness && $signupPage) {
-                $this->response->redirect('/session/signup' . $signupPage);
-                return;
-            }
-
-            if (isset($_POST['locationselect'])) {
-                $this->auth->setLocation($_POST['locationselect']);
-            }
-
-            $identity = $this->session->get('auth-identity');
-            $this->view->setVar('logged_in', $logged_in);
-            $this->view->setTemplateBefore('private');
-
-            if ($tUser['is_admin']) {
-                $this->view->pick('admindashboard/index');
-            } else {
-                if (!$isBusiness) {
-                    /** agency redirect 23.11.2016**/
-
-                    $this->view->setTemplateBefore('public');
-
-
-                    $parts = explode(".", $_SERVER['SERVER_NAME']);
-
-                    if (count($parts) > 2 && $parts[0] != 'www') {
-                        // Subdomain exists.  Probably should do count($parts) == 3.
-                        $subdomain = $parts[0];
-
-                        $agency = Agency::findFirst([
-                            "custom_domain = :custom_domain:",
-                            "bind" => ["custom_domain" => $subdomain]
-                        ]);
-
-                        // Subdomain must exist
-                        if (!$agency) {
-                            $this->response->setStatusCode(404, "Not Found");
-                            echo "<h1>404 Page Not Found</h1>";
-                            $this->view->disable();
-                            return;
-                        }
-
-                        $objSuperUser = \Vokuro\Models\Users::findFirst(
-                            "agency_id = {$agency->agency_id} AND role = 'Super Admin'"
-                        );
-
-                        // GARY_TODO:  Hackfix.  Deleting should set the enabled to 0 or something like that, rather than just modifying the name.  Getting this out stat though.
-                        $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
-                            "is_viral = 1 AND user_id = {$objSuperUser->id} AND name NOT LIKE 'deleted-%'"
-                        );
-                        
-                        if (!$objSubscriptionPricingPlan) {
-                            $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
-                                "user_id = {$objSuperUser->id}"
-                            );
-                        }
-
-                        $this->view->SubscriptionCode = $objSubscriptionPricingPlan->short_code;
-
-                        $this->view->SubDomain = $subdomain;
-
-                        if (!empty($_GET['name']) && !empty($_GET['phone'])) {
-                            // Loaded from GET for preview page from agency signup process
-                            $this->view->Name = $_GET['name'];
-                            $this->view->Phone = $_GET['phone'];
-                            $this->view->PrimaryColor = '#'.$_GET['primary_color'];
-                            $this->view->SecondaryColor = '#'.$_GET['secondary_color'];
-                            $this->view->logo_path = !empty($_GET['logo_path']) ? '/img/agency_logos/'.$_GET['logo_path'] : '';
-                            $this->view->CleanUrl = true;
-                        } else {
-                            // Loaded from DB for subdomain
-                            $this->view->Name = !empty($agency->name) ? $agency->name : (!empty($_SESSION['demo_name']) ? $_SESSION['demo_name'] : 'Agency');
-                            $this->view->Phone = !empty($agency->phone) ? $agency->phone : '(888) 555-1212';
-                            $this->view->PrimaryColor = !empty($agency->main_color) ? $agency->main_color : '#2a3644';
-                            $this->view->SecondaryColor = !empty($agency->secondary_color) ? $agency->secondary_color : '#65CE4D';
-                            $this->view->logo_path = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
-                        }
-
-                        $this->view->salesPage = true;
-                        $this->view->pick('agencysignup/sales');
-                        return;
-                    } else {
-                        $this->response->redirect('/agency');
-                        return;
-                    }
-                    /** agency redirect 23.11.2016**/
-                }
-            }
-
-            $objUser = \Vokuro\Models\Users::findFirst("id = " . $identity['id']);
-            $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
-            $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
-            $subsMgr = $objSubscriptionManager->GetBusinessSubscriptionLevel($objBusiness->agency_id);
-            $subsDiscount = $objSubscriptionManager->GetBusinessSubscriptionUpgradeDiscount($objBusiness->agency_id);
-            $this->view->SubscriptionPlan = $subsMgr;
-            $this->view->DiscountAmount = $subsDiscount;
-        } else {
-            // Check for use of whitelabel domain
-            // Moved to here from AgencySignupController::salesAction (agencysignup/sales)
-            // The best way to fully test this is to use your local hosts file to treat your local reviewvelocity server as getmobilereiews.com
             
-            $parts = explode(".", $_SERVER['SERVER_NAME']);
+            $identity = $this->session->get('auth-identity');
 
-            if (count($parts) > 2 && $parts[0] != 'www') { // Subdomain exists.  Probably should do count($parts) == 3.
-                $subdomain = $parts[0];
+            $this->runIfLoggedIn($logged_in, $tUser, $top_user_id, $identity);
+        } else {
+            $this->runIfNotLoggedIn();
+        }
 
-                $agency = Agency::findFirst([
+        $this->step1($identity['location_id']);
+
+        $this->step2($identity['location_id']);
+    }
+
+    public function runIfLoggedIn($logged_in, $tUser, $top_user_id, $identity)
+    {
+        $result = $this->db->query(
+            "SELECT * FROM `users` WHERE `id` = " . $top_user_id
+        );
+
+        $usersTopbanner = $result->fetch();
+      
+        $this->view->top_banner = $usersTopbanner['top_banner_show'];
+
+        $userManager = $this->di->get('userManager');
+
+        $isBusiness = $userManager->isBusiness($this->session);
+        $signupPage = $userManager->currentSignupPage($this->session);
+
+        if ($isBusiness && $signupPage) {
+            $this->response->redirect('/session/signup' . $signupPage);
+            return;
+        }
+
+        if (isset($_POST['locationselect'])) {
+            $this->auth->setLocation($_POST['locationselect']);
+        }
+
+        $this->view->setVar('logged_in', $logged_in);
+        $this->view->setTemplateBefore('private');
+
+
+        if ($tUser['is_admin']) {
+            $this->view->pick('admindashboard/index');
+        } else {
+            if (!$isBusiness) {
+                /** agency redirect 23.11.2016**/
+
+                $this->view->setTemplateBefore('public');
+
+
+                $parts = explode(".", $_SERVER['SERVER_NAME']);
+
+                if (count($parts) > 2 && $parts[0] != 'www') {
+                    // Subdomain exists.  Probably should do count($parts) == 3.
+                    $subdomain = $parts[0];
+
+                    $agency = Agency::findFirst([
                         "custom_domain = :custom_domain:",
                         "bind" => ["custom_domain" => $subdomain]
                     ]);
 
-                // Subdomain must exist
-                if (!$agency) {
-                    $this->response->setStatusCode(404, "Not Found");
-                    echo "<h1>404 Page Not Found</h1>";
-                    $this->view->disable();
+                    // Subdomain must exist
+                    if (!$agency) {
+                        $this->response->setStatusCode(404, "Not Found");
+                        echo "<h1>404 Page Not Found</h1>";
+                        $this->view->disable();
+                        return;
+                    }
+
+                    $objSuperUser = \Vokuro\Models\Users::findFirst(
+                        "agency_id = {$agency->agency_id} AND role = 'Super Admin'"
+                    );
+
+                    // GARY_TODO:  Hackfix.  Deleting should set the enabled to 0 or something like that, rather than just modifying the name.  Getting this out stat though.
+                    $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
+                        "is_viral = 1 AND user_id = {$objSuperUser->id} AND name NOT LIKE 'deleted-%'"
+                    );
+                    
+                    if (!$objSubscriptionPricingPlan) {
+                        $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
+                            "user_id = {$objSuperUser->id}"
+                        );
+                    }
+
+                    $this->view->SubscriptionCode = $objSubscriptionPricingPlan->short_code;
+
+                    $this->view->SubDomain = $subdomain;
+
+                    if (!empty($_GET['name']) && !empty($_GET['phone'])) {
+                        // Loaded from GET for preview page from agency signup process
+                        $this->view->Name = $_GET['name'];
+                        $this->view->Phone = $_GET['phone'];
+                        $this->view->PrimaryColor = '#' . $_GET['primary_color'];
+                        $this->view->SecondaryColor = '#' . $_GET['secondary_color'];
+                        $this->view->logo_path = !empty($_GET['logo_path']) ? '/img/agency_logos/'.$_GET['logo_path'] : '';
+                        $this->view->CleanUrl = true;
+                    } else {
+                        // Loaded from DB for subdomain
+                        $this->view->Name = !empty($agency->name) ? $agency->name : (!empty($_SESSION['demo_name']) ? $_SESSION['demo_name'] : 'Agency');
+                        $this->view->Phone = !empty($agency->phone) ? $agency->phone : '(888) 555-1212';
+                        $this->view->PrimaryColor = !empty($agency->main_color) ? $agency->main_color : '#2a3644';
+                        $this->view->SecondaryColor = !empty($agency->secondary_color) ? $agency->secondary_color : '#65CE4D';
+                        $this->view->logo_path = !empty($agency->logo_path) ? '/img/agency_logos/' . $agency->logo_path : '';
+                    }
+
+                    $this->view->salesPage = true;
+                    $this->view->pick('agencysignup/sales');
+                    return;
+                } else {
+                    $this->response->redirect('/agency');
                     return;
                 }
-
-                $this->view->SubDomain = $subdomain;
-
-                if (!empty($_GET['name']) && !empty($_GET['phone'])) {
-                    // Loaded from GET for preview page from agency signup process
-                    $this->view->Name = $_GET['name'];
-                    $this->view->Phone = $_GET['phone'];
-                    $this->view->PrimaryColor = '#'.$_GET['primary_color'];
-                    $this->view->SecondaryColor = '#'.$_GET['secondary_color'];
-                    $this->view->logo_path = !empty($_GET['logo_path']) ? '/img/agency_logos/'.$_GET['logo_path'] : '';
-                    $this->view->CleanUrl = true;
-                } else {
-                    // Loaded from DB for subdomain
-                    $this->view->Name = !empty($agency->name) ? $agency->name : (!empty($_SESSION['demo_name']) ? $_SESSION['demo_name'] : 'Agency');
-                    $this->view->Phone = !empty($agency->phone) ? $agency->phone : '(888) 555-1212';
-                    $this->view->PrimaryColor = !empty($agency->main_color) ? $agency->main_color : '#2a3644';
-                    $this->view->SecondaryColor = !empty($agency->secondary_color) ? $agency->secondary_color : '#65CE4D';
-                    $this->view->logo_path = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
-                }
-
-                $objSuperUser = \Vokuro\Models\Users::findFirst(
-                    "agency_id = {$agency->agency_id} AND role = 'Super Admin'"
-                );
-                
-                // GARY_TODO:  Hackfix.  Deleting should set the enabled to 0 or something like that, rather than just modifying the name.  Getting this out stat though.
-                $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
-                    "is_viral = 1 AND user_id = {$objSuperUser->id} AND name NOT LIKE 'deleted-%'"
-                );
-                
-                if (!$objSubscriptionPricingPlan) {
-                    $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
-                        "user_id = {$objSuperUser->id}"
-                    );
-                }
-
-                $this->view->SubscriptionCode = $objSubscriptionPricingPlan->short_code;
-
-                $this->view->salesPage = true;
-
-                $this->view->pick('agencysignup/sales');
-                
-                return;
-            } else {
-                // Normal index page, not loading from subdomain
-                $this->response->redirect('/session/login');
-                $this->view->disable();
-
-                return;
+                /** agency redirect 23.11.2016**/
             }
         }
 
-        if ($identity['location_id'] > 0) {
+
+        $objUser = \Vokuro\Models\Users::findFirst("id = " . $identity['id']);
+        $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$objUser->agency_id}");
+        $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
+        $subsMgr = $objSubscriptionManager->GetBusinessSubscriptionLevel($objBusiness->agency_id);
+        $subsDiscount = $objSubscriptionManager->GetBusinessSubscriptionUpgradeDiscount($objBusiness->agency_id);
+        $this->view->SubscriptionPlan = $subsMgr;
+        $this->view->DiscountAmount = $subsDiscount;
+    }
+
+    public function runIfNotLoggedIn()
+    {
+        // Check for use of whitelabel domain
+        // Moved to here from AgencySignupController::salesAction (agencysignup/sales)
+        // The best way to fully test this is to use your local hosts file to treat your local reviewvelocity server as getmobilereiews.com
+        
+        $parts = explode(".", $_SERVER['SERVER_NAME']);
+
+        if (count($parts) > 2 && $parts[0] != 'www') { // Subdomain exists.  Probably should do count($parts) == 3.
+            $subdomain = $parts[0];
+
+            $agency = Agency::findFirst([
+                    "custom_domain = :custom_domain:",
+                    "bind" => ["custom_domain" => $subdomain]
+                ]);
+
+            // Subdomain must exist
+            if (!$agency) {
+                $this->response->setStatusCode(404, "Not Found");
+                echo "<h1>404 Page Not Found</h1>";
+                $this->view->disable();
+                return;
+            }
+
+            $this->view->SubDomain = $subdomain;
+
+            if (!empty($_GET['name']) && !empty($_GET['phone'])) {
+                // Loaded from GET for preview page from agency signup process
+                $this->view->Name = $_GET['name'];
+                $this->view->Phone = $_GET['phone'];
+                $this->view->PrimaryColor = '#'.$_GET['primary_color'];
+                $this->view->SecondaryColor = '#'.$_GET['secondary_color'];
+                $this->view->logo_path = !empty($_GET['logo_path']) ? '/img/agency_logos/'.$_GET['logo_path'] : '';
+                $this->view->CleanUrl = true;
+            } else {
+                // Loaded from DB for subdomain
+                $this->view->Name = !empty($agency->name) ? $agency->name : (!empty($_SESSION['demo_name']) ? $_SESSION['demo_name'] : 'Agency');
+                $this->view->Phone = !empty($agency->phone) ? $agency->phone : '(888) 555-1212';
+                $this->view->PrimaryColor = !empty($agency->main_color) ? $agency->main_color : '#2a3644';
+                $this->view->SecondaryColor = !empty($agency->secondary_color) ? $agency->secondary_color : '#65CE4D';
+                $this->view->logo_path = !empty($agency->logo_path) ? '/img/agency_logos/'.$agency->logo_path : '';
+            }
+
+            $objSuperUser = \Vokuro\Models\Users::findFirst(
+                "agency_id = {$agency->agency_id} AND role = 'Super Admin'"
+            );
+            
+            // GARY_TODO:  Hackfix.  Deleting should set the enabled to 0 or something like that, rather than just modifying the name.  Getting this out stat though.
+            $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
+                "is_viral = 1 AND user_id = {$objSuperUser->id} AND name NOT LIKE 'deleted-%'"
+            );
+            
+            if (!$objSubscriptionPricingPlan) {
+                $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
+                    "user_id = {$objSuperUser->id}"
+                );
+            }
+
+            $this->view->SubscriptionCode = $objSubscriptionPricingPlan->short_code;
+
+            $this->view->salesPage = true;
+
+            $this->view->pick('agencysignup/sales');
+            
+            return;
+        } else {
+            // Normal index page, not loading from subdomain
+            $this->response->redirect('/session/login');
+            $this->view->disable();
+
+            return;
+        }
+    }
+
+    public function step1($locationId)
+    {
+        if ($locationId > 0) {
             $conditions = "location_id = :location_id:";
 
             $parameters = array(
-                "location_id" => $identity['location_id']
+                "location_id" => $locationId
             );
 
             $loc = Location::findFirst(
@@ -242,7 +265,7 @@ class IndexController extends ControllerBase
             );
 
             $this->view->location = $loc;
-            $this->view->location_id = $LocationID = $identity['location_id'];
+            $this->view->location_id = $LocationID = $locationId;
             
             $objBusiness = \Vokuro\Models\Agency::findFirst(
                 "agency_id = {$loc->agency_id}"
@@ -393,19 +416,24 @@ class IndexController extends ControllerBase
             );
            
             if (!empty($review_info) && $review_info->review_invite_type_id) {
-                $review_type_id=$review_info->review_invite_type_id;//exit;
+                $review_type_id = $review_info->review_invite_type_id;
             } else {
-                $review_type_id=1;  
+                $review_type_id = 1;  
             }  
 
-            $this->view->review_invite_type_id=$review_type_id;
+            $this->view->review_invite_type_id = $review_type_id;
+
+
             $this->view->employee_conversion_report_generate = Users::getEmployeeConversionReportGenerate(
-                $review_type_id,$loc->agency_id,
+                $review_type_id,
+                $loc->agency_id,
                 $start_time,
                 $end_time,
                 $this->session->get('auth-identity')['location_id'],
                 'DESC'
             );
+
+
 
             $this->view->employee_conversion_report = Users::getEmployeeConversionReport(
                 $loc->agency_id,
@@ -514,21 +542,30 @@ class IndexController extends ControllerBase
             }
             //###  END: find review site config info ###
         }
+    }
 
-        if ($identity['location_id'] > 0) {
-            $sql = "SELECT `sent_by_user_id`  FROM `review_invite` WHERE  `location_id` =".$identity['location_id']." GROUP BY  `sent_by_user_id`";
+    public function step2($locationId)
+    {
+        if ($locationId > 0) {
+            $sql = "SELECT `sent_by_user_id` "
+                . "FROM `review_invite` "
+                . "WHERE `location_id` = " . $locationId . " "
+                . "GROUP BY  `sent_by_user_id`";
+
             $list = new ReviewInvite();
             $params = null;
             $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
             $userset = $rs->toArray();
-            $rating_array_set=array();
-            $YNrating_array_set=array();
+            $rating_array_set = array();
+            $YNrating_array_set = array();
 
             foreach ($userset as $key => $value) {
                 // GARY_TODO:  Need to ask jon why this case ever happens.
-                if(!$value['sent_by_user_id'])
+                if (!$value['sent_by_user_id']) {
                     continue;
-                $ss=$value['sent_by_user_id'];
+                }
+
+                $ss = $value['sent_by_user_id'];
 
 
                 if ($ss) {
@@ -542,8 +579,12 @@ class IndexController extends ControllerBase
                     $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
                     $YNrating_array_set[$ss] = $rs->toArray();
                     
-                    $this->view->YNrating_array_set=$YNrating_array_set;
-                    $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =" . $ss . " GROUP BY  `review_invite_type_id` ";
+                    $this->view->YNrating_array_set = $YNrating_array_set;
+
+                    $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id`, SUM(`rating`) AS `totalx` "
+                        . "FROM  `review_invite` "
+                        . "WHERE  `sent_by_user_id` = " . $ss . " "
+                        . "GROUP BY  `review_invite_type_id` ";
 
                     // Base model
                     $list = new ReviewInvite();
