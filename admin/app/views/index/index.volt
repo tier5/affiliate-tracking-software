@@ -458,7 +458,6 @@
                             <?php
                             $i = 0;
                             $class = '';
-                            /*foreach($employee_conversion_report as $data) {*/
 
                             foreach($employee_conversion_report_generate as $data) {
 
@@ -468,27 +467,14 @@
 
                           	?>
                             <tr>
-                                <td class="<?=$class?>"><?=$i?><?=($i==1?'st':($i==2?'nd':($i==3?'rd':'th')))?></td>
+                                <td class="<?=$class?>"><?=$i?><?=($i==1 ? 'st' : ($i == 2 ? 'nd':($i==3?'rd':'th')))?></td>
                                 <td class="<?=$class?>"><?=$data->name?></td>
-                                <td class="<?=$class;?>"><?php echo $total;?></td>
+                                <td class="<?=$class;?>"><?=$total?></td>
                                 <?php 
                                 if ($review_invite_type_id == 1) {
-                                    $yes = 0;
-                                    $no = 0;
-
-                                    foreach ($YNrating_array_set[$data->id] as $set) {
-                                        if ($set['rating'] == 5 || $set['rating'] == 'Yes') {
-                                            $yes = $set['numberx'];
-                                        }
-
-                                        if ($set['rating'] == 1 || $set['rating'] == 'No') {
-                                            $no = $set['numberx'];
-                                        }
-                                    }
-                                    $tot = $yes + $no;
-                                    $cal = $tot > 0 ? $yes / $tot : 0;
+                                    $customerSatisfactionRate = $YNrating_array_set[$data->id]['customer_satisfaction_rate'];
                                 ?>
-                                <td class="<?=$class?>"><?=($data->sms_sent_this_month > 0?(number_format($cal*100, 1) . '%'):'0.0%')?> -Yes</td>
+                                <td class="<?=$class?>"><?=($total > 0?(number_format($customerSatisfactionRate*100, 1) . '%'):'0.0%')?> -Yes</td>
 
                                 <?php } else if ($review_invite_type_id == 2) {
                                     //$full_star=floor($user->rates/$user->sms_received_this_month);

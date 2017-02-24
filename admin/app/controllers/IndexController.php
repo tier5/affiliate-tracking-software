@@ -59,9 +59,11 @@ class IndexController extends ControllerBase
             $this->runIfNotLoggedIn();
         }
 
-        $this->step1($identity['location_id']);
+        if ($identity['location_id'] > 0) {
+            $this->step1($identity['location_id']);
 
-        $this->step2($identity['location_id']);
+            $this->step2($identity['location_id']);
+        }
     }
 
     public function runIfLoggedIn($logged_in, $tUser, $top_user_id, $identity)
@@ -253,350 +255,372 @@ class IndexController extends ControllerBase
 
     public function step1($locationId)
     {
-        if ($locationId > 0) {
-            $conditions = "location_id = :location_id:";
+        $conditions = "location_id = :location_id:";
 
-            $parameters = array(
-                "location_id" => $locationId
-            );
+        $parameters = array(
+            "location_id" => $locationId
+        );
 
-            $loc = Location::findFirst(
-                array($conditions, "bind" => $parameters)
-            );
+        $loc = Location::findFirst(
+            array($conditions, "bind" => $parameters)
+        );
 
-            $this->view->location = $loc;
-            $this->view->location_id = $LocationID = $locationId;
-            
-            $objBusiness = \Vokuro\Models\Agency::findFirst(
-                "agency_id = {$loc->agency_id}"
-            );
+        $this->view->location = $loc;
+        $this->view->location_id = $LocationID = $locationId;
+        
+        $objBusiness = \Vokuro\Models\Agency::findFirst(
+            "agency_id = {$loc->agency_id}"
+        );
 
-            $dbYelpReviews = \Vokuro\Models\Review::find(
-                "location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP
-            );
-            
-            $dbFacebookReviews = \Vokuro\Models\Review::find(
-                "location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK
-            );
-            
-            $dbGoogleReviews = \Vokuro\Models\Review::find(
-                "location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_GOOGLE
-            );
+        $dbYelpReviews = \Vokuro\Models\Review::find(
+            "location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_YELP
+        );
+        
+        $dbFacebookReviews = \Vokuro\Models\Review::find(
+            "location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK
+        );
+        
+        $dbGoogleReviews = \Vokuro\Models\Review::find(
+            "location_id = {$LocationID} and rating_type_id = " . \Vokuro\Models\Location::TYPE_GOOGLE
+        );
 
-            $YelpSinceCreate = 0;
-            $FacebookSinceCreate = 0;
-            $GoogleSinceCreate = 0;
-            $TotalYelpRating = 0;
-            $TotalFacebookRating = 0;
-            $TotalGoogleRating = 0;
+        $YelpSinceCreate = 0;
+        $FacebookSinceCreate = 0;
+        $GoogleSinceCreate = 0;
+        $TotalYelpRating = 0;
+        $TotalFacebookRating = 0;
+        $TotalGoogleRating = 0;
 
-            $this->view->new_reviews = ReviewsMonthly::newReviewReport(
-                $this->session->get('auth-identity')['location_id']
-            );
+        $this->view->new_reviews = ReviewsMonthly::newReviewReport(
+            $this->session->get('auth-identity')['location_id']
+        );
 
-            foreach ($dbYelpReviews as $objYelpReview) {
-                if (strtotime($objBusiness->date_created) < strtotime($objYelpReview->time_created)) {
-                    $YelpSinceCreate++;
-                }
-
-                $TotalYelpRating += $objYelpReview->rating;
+        foreach ($dbYelpReviews as $objYelpReview) {
+            if (strtotime($objBusiness->date_created) < strtotime($objYelpReview->time_created)) {
+                $YelpSinceCreate++;
             }
 
-            // Yelp stats work differently since we calculate based on the #s yelp gives us, rather than we import since we can only import 1 yelp review at a time.  Leaving code in for when we solve this problem.
-            $objYelpReviewSite = \Vokuro\Models\LocationReviewSite::findFirst(
-                "location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_YELP
-            );
-            $TotalYelpRating = $objYelpReviewSite ? $objYelpReviewSite->rating * $objYelpReviewSite->review_count : 0;
-
-
-            foreach ($dbFacebookReviews as $objFacebookReview) {
-                if (strtotime($objBusiness->date_created) < strtotime($objFacebookReview->time_created)) {
-                    $FacebookSinceCreate++;
-                }
-
-                $TotalFacebookRating += $objFacebookReview->rating;
-            }
-
-            foreach ($dbGoogleReviews as $objGoogleReview) {
-                if(strtotime($objBusiness->date_created) < strtotime($objGoogleReview->time_created)) {
-                    $GoogleSinceCreate++;
-                }
-
-                $TotalGoogleRating += $objGoogleReview->rating;
-            }
-
-            $this->view->yelp_review_count = $YelpReviewCount = $objYelpReviewSite ? $objYelpReviewSite->review_count : 0;
-            $this->view->facebook_review_count = $FacebookReviewCount = count($dbFacebookReviews);
-            $this->view->google_review_count = $GoogleReviewCount = count($dbGoogleReviews);
-
-            $TotalReviews = $FacebookReviewCount + $GoogleReviewCount + $YelpReviewCount;
-
-            /*** 5/12/2016 ***/
-
-            $objFbReviewSite = \Vokuro\Models\LocationReviewSite::findFirst(
-                "location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK
-            );
-
-            $objGlReviewSite = \Vokuro\Models\LocationReviewSite::findFirst(
-                "location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE
-            );
-
-            $this->view->total_reviews = $objYelpReviewSite->review_count+$objFbReviewSite->review_count+$objGlReviewSite->review_count;
-
-            /*** 5/12/2016 ***/
-
-            $this->view->yelp_rating = $YelpReviewCount > 0 ? $TotalYelpRating / $YelpReviewCount : 0;
-            $this->view->facebook_rating = $FacebookReviewCount > 0 ? $TotalFacebookRating / $FacebookReviewCount : 0;
-            $this->view->google_rating = $GoogleReviewCount > 0 ? $TotalGoogleRating / $GoogleReviewCount : 0;
-            $this->view->average_rating = $AverageRating = $TotalReviews > 0 ? ($TotalYelpRating + $TotalFacebookRating + $TotalGoogleRating ) / $TotalReviews : 0;
-
-            // New Reviews Since Joining Get Mobile Reviews
-            $this->view->total_reviews_location = $YelpSinceCreate + $FacebookSinceCreate + $GoogleSinceCreate;
-
-            // New Reviews By Month Graph
-            //$this->view->new_reviews = ReviewsMonthly::newReviewReport($this->session->get('auth-identity')['location_id']);
-
-            $negative_total = ReviewInvite::count(
-                array(
-                    "column" => "review_invite_id",
-                    "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND recommend = 'N' AND sms_broadcast_id IS NULL ",
-                )
-            );
-
-            $this->view->negative_total = $negative_total;
-
-            $positive_total = ReviewInvite::count(
-                array(
-                    "column" => "review_invite_id",
-                    "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND recommend = 'Y' AND sms_broadcast_id IS NULL ",
-                )
-            );
-
-            $this->view->positive_total = $positive_total;
-
-            // Calculate Revenue Retained
-            // Look in settings for the "Lifetime Value of the Customer"
-            $conditions = "agency_id = :agency_id:";
-            $parameters = array("agency_id" => $loc->agency_id);
-            
-            $agency = Agency::findFirst(
-                array($conditions, "bind" => $parameters)
-            );
-
-            if ($agency) {
-                $this->view->revenue_retained = ($positive_total * $loc->lifetime_value_customer);
-                $this->view->agency = $agency;
-            }
-
-            $this->getSMSReport();
-
-            // Find the employee conversion report type
-            $conversion_report_type = 'this_month'; //default this month
-
-            if (isset($_GET['crt'])) {
-                if ($_GET['crt'] == 2)
-                    $conversion_report_type = 'last_month';
-                if ($_GET['crt'] == 3)
-                    $conversion_report_type = 'all_time';
-            }
-
-            $this->view->conversion_report_type = $conversion_report_type;
-
-            // Default this month
-            $now = new \DateTime('now');
-            $start_time = $now->format('Y') . '-' . $now->format('m') . '-01';
-            $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
-
-            // Get the employee conversion reports
- 
-            $conditions = "location_id = :location_id:";
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            $review_info = Location::findFirst(
-                array($conditions, "bind" => $parameters)
-            );
-           
-            if (!empty($review_info) && $review_info->review_invite_type_id) {
-                $review_type_id = $review_info->review_invite_type_id;
-            } else {
-                $review_type_id = 1;  
-            }  
-
-            $this->view->review_invite_type_id = $review_type_id;
-
-
-            $this->view->employee_conversion_report_generate = Users::getEmployeeConversionReportGenerate(
-                $review_type_id,
-                $loc->agency_id,
-                $start_time,
-                $end_time,
-                $this->session->get('auth-identity')['location_id'],
-                'DESC'
-            );
-
-
-
-            $this->view->employee_conversion_report = Users::getEmployeeConversionReport(
-                $loc->agency_id,
-                $start_time,
-                $end_time,
-                $this->session->get('auth-identity')['location_id'],
-                'DESC'
-            );
-
-            // We need to find the most recent reviews
-            $start_time = date("Y-m-d", strtotime("first day of previous month"));
-            $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
-
-            $review_report = Review::find(
-                array(
-                    "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'],
-                    "limit" => 3,
-                    "order" => "time_created DESC"
-                )
-            );
-
-            $this->view->review_report = $review_report;
-
-            // Last month!
-            $start_time = date("Y-m-d", strtotime("first day of previous month"));
-            $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
-            $sms_sent_last_month = ReviewInvite::count(
-                array(
-                    "column" => "review_invite_id",
-                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL AND sms_broadcast_id IS NULL ",
-                )
-            );
-
-            $this->view->sms_sent_last_month = $sms_sent_last_month;
-
-            // This month!
-            $start_time = date("Y-m-d", strtotime("first day of this month"));
-            $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
-
-            $sms_sent_this_month = ReviewInvite::count(
-                array(
-                    "column" => "review_invite_id",
-                    "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL ",
-                )
-            );
-
-            $this->view->sms_sent_this_month = $sms_sent_this_month;
-
-            $this->view->total_reviews_this_month = \Vokuro\Models\Review::count(
-                "time_created BETWEEN '{$start_time}' AND '{$end_time}' AND location_id = {$LocationID}"
-            );
-
-            $this->view->review_goal = $loc->review_goal;
-
-            $percent_needed = 10;
-
-            $this->view->percent_needed = $percent_needed;
-
-            $this->view->total_sms_needed = round($loc->review_goal / ($percent_needed / 100));
-
-            $this->getShareInfo($agency);
-
-            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            
-            $Obj = LocationReviewSite::findFirst(
-                array($conditions, "bind" => $parameters)
-            );
-            
-            //start with Yelp reviews, if configured
-            if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
-                $this->view->yelp_id = $Obj->external_id;
-            } else {
-                $this->view->yelp_id = '';
-            }
-
-            //look for a google review configuration
-
-            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            
-            $Obj = LocationReviewSite::findFirst(
-                array($conditions, "bind" => $parameters)
-            );
-            
-            //start with google reviews, if configured
-            if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
-                $this->view->google_place_id = $Obj->external_id;
-            } else {
-                $this->view->google_place_id = '';
-            }
-
-            //look for a facebook review configuration
-            $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
-            $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
-            
-            $Obj = LocationReviewSite::findFirst(
-                array($conditions, "bind" => $parameters)
-            );
-            
-            //start with Facebook reviews, if configured
-            if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
-                $this->view->facebook_page_id = $Obj->external_id;
-            } else {
-                $this->view->facebook_page_id = '';
-            }
-            //###  END: find review site config info ###
+            $TotalYelpRating += $objYelpReview->rating;
         }
+
+        // Yelp stats work differently since we calculate based on the #s yelp gives us, rather than we import since we can only import 1 yelp review at a time.  Leaving code in for when we solve this problem.
+        $objYelpReviewSite = \Vokuro\Models\LocationReviewSite::findFirst(
+            "location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_YELP
+        );
+        $TotalYelpRating = $objYelpReviewSite ? $objYelpReviewSite->rating * $objYelpReviewSite->review_count : 0;
+
+
+        foreach ($dbFacebookReviews as $objFacebookReview) {
+            if (strtotime($objBusiness->date_created) < strtotime($objFacebookReview->time_created)) {
+                $FacebookSinceCreate++;
+            }
+
+            $TotalFacebookRating += $objFacebookReview->rating;
+        }
+
+        foreach ($dbGoogleReviews as $objGoogleReview) {
+            if(strtotime($objBusiness->date_created) < strtotime($objGoogleReview->time_created)) {
+                $GoogleSinceCreate++;
+            }
+
+            $TotalGoogleRating += $objGoogleReview->rating;
+        }
+
+        $this->view->yelp_review_count = $YelpReviewCount = $objYelpReviewSite ? $objYelpReviewSite->review_count : 0;
+        $this->view->facebook_review_count = $FacebookReviewCount = count($dbFacebookReviews);
+        $this->view->google_review_count = $GoogleReviewCount = count($dbGoogleReviews);
+
+        $TotalReviews = $FacebookReviewCount + $GoogleReviewCount + $YelpReviewCount;
+
+        /*** 5/12/2016 ***/
+
+        $objFbReviewSite = \Vokuro\Models\LocationReviewSite::findFirst(
+            "location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK
+        );
+
+        $objGlReviewSite = \Vokuro\Models\LocationReviewSite::findFirst(
+            "location_id = {$LocationID} and review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE
+        );
+
+        $this->view->total_reviews = $objYelpReviewSite->review_count+$objFbReviewSite->review_count+$objGlReviewSite->review_count;
+
+        /*** 5/12/2016 ***/
+
+        $this->view->yelp_rating = $YelpReviewCount > 0 ? $TotalYelpRating / $YelpReviewCount : 0;
+        $this->view->facebook_rating = $FacebookReviewCount > 0 ? $TotalFacebookRating / $FacebookReviewCount : 0;
+        $this->view->google_rating = $GoogleReviewCount > 0 ? $TotalGoogleRating / $GoogleReviewCount : 0;
+        $this->view->average_rating = $AverageRating = $TotalReviews > 0 ? ($TotalYelpRating + $TotalFacebookRating + $TotalGoogleRating ) / $TotalReviews : 0;
+
+        // New Reviews Since Joining Get Mobile Reviews
+        $this->view->total_reviews_location = $YelpSinceCreate + $FacebookSinceCreate + $GoogleSinceCreate;
+
+        $negative_total = ReviewInvite::count(
+            array(
+                "column" => "review_invite_id",
+                "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND recommend = 'N' AND sms_broadcast_id IS NULL ",
+            )
+        );
+
+        $this->view->negative_total = $negative_total;
+
+        $positive_total = ReviewInvite::count(
+            array(
+                "column" => "review_invite_id",
+                "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'] . " AND recommend = 'Y' AND sms_broadcast_id IS NULL ",
+            )
+        );
+
+        $this->view->positive_total = $positive_total;
+
+        // Calculate Revenue Retained
+        // Look in settings for the "Lifetime Value of the Customer"
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $loc->agency_id);
+        
+        $agency = Agency::findFirst(
+            array($conditions, "bind" => $parameters)
+        );
+
+        if ($agency) {
+            $this->view->revenue_retained = ($positive_total * $loc->lifetime_value_customer);
+            $this->view->agency = $agency;
+        }
+
+        $this->getSMSReport();
+
+        // Find the employee conversion report type
+        $conversion_report_type = 'this_month'; //default this month
+
+        if (isset($_GET['crt'])) {
+            if ($_GET['crt'] == 2)
+                $conversion_report_type = 'last_month';
+            if ($_GET['crt'] == 3)
+                $conversion_report_type = 'all_time';
+        }
+
+        $this->view->conversion_report_type = $conversion_report_type;
+
+        // Default this month
+        $now = new \DateTime('now');
+        $start_time = $now->format('Y') . '-' . $now->format('m') . '-01';
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+
+        
+        // Get the employee conversion reports
+        // FEEDBACK
+
+        $conditions = "location_id = :location_id:";
+        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        $review_info = Location::findFirst(
+            array($conditions, "bind" => $parameters)
+        );
+
+        if (!empty($review_info) && $review_info->review_invite_type_id) {
+            $review_type_id = $review_info->review_invite_type_id;
+        } else {
+            $review_type_id = 1;
+        }
+
+        $this->view->review_invite_type_id = $review_type_id;
+
+        $employee_conversion_report_generate = Users::getEmployeeConversionReportGenerate(
+            $review_type_id,
+            $loc->agency_id,
+            $start_time,
+            $end_time,
+            $this->session->get('auth-identity')['location_id'],
+            'DESC'
+        );
+
+        $this->view->employee_conversion_report_generate = $employee_conversion_report_generate;
+
+        $this->view->employee_conversion_report = Users::getEmployeeConversionReport(
+            $loc->agency_id,
+            $start_time,
+            $end_time,
+            $this->session->get('auth-identity')['location_id'],
+            'DESC'
+        );
+
+        // We need to find the most recent reviews
+        $start_time = date("Y-m-d", strtotime("first day of previous month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
+
+        $review_report = Review::find(
+            array(
+                "conditions" => "location_id = " . $this->session->get('auth-identity')['location_id'],
+                "limit" => 3,
+                "order" => "time_created DESC"
+            )
+        );
+
+        $this->view->review_report = $review_report;
+
+        // Last month!
+        $start_time = date("Y-m-d", strtotime("first day of previous month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
+        $sms_sent_last_month = ReviewInvite::count(
+            array(
+                "column" => "review_invite_id",
+                "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL AND sms_broadcast_id IS NULL ",
+            )
+        );
+
+        $this->view->sms_sent_last_month = $sms_sent_last_month;
+
+        // This month!
+        $start_time = date("Y-m-d", strtotime("first day of this month"));
+        $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+
+        $sms_sent_this_month = ReviewInvite::count(
+            array(
+                "column" => "review_invite_id",
+                "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND location_id = " . $this->session->get('auth-identity')['location_id'] . " AND sms_broadcast_id IS NULL ",
+            )
+        );
+
+        $this->view->sms_sent_this_month = $sms_sent_this_month;
+
+        $this->view->total_reviews_this_month = \Vokuro\Models\Review::count(
+            "time_created BETWEEN '{$start_time}' AND '{$end_time}' AND location_id = {$LocationID}"
+        );
+
+        $this->view->review_goal = $loc->review_goal;
+
+        $percent_needed = 10;
+
+        $this->view->percent_needed = $percent_needed;
+
+        $this->view->total_sms_needed = round($loc->review_goal / ($percent_needed / 100));
+
+        $this->getShareInfo($agency);
+
+        $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_YELP;
+        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        
+        $Obj = LocationReviewSite::findFirst(
+            array($conditions, "bind" => $parameters)
+        );
+        
+        //start with Yelp reviews, if configured
+        if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
+            $this->view->yelp_id = $Obj->external_id;
+        } else {
+            $this->view->yelp_id = '';
+        }
+
+        //look for a google review configuration
+
+        $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
+        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        
+        $Obj = LocationReviewSite::findFirst(
+            array($conditions, "bind" => $parameters)
+        );
+        
+        //start with google reviews, if configured
+        if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
+            $this->view->google_place_id = $Obj->external_id;
+        } else {
+            $this->view->google_place_id = '';
+        }
+
+        //look for a facebook review configuration
+        $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_FACEBOOK;
+        $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
+        
+        $Obj = LocationReviewSite::findFirst(
+            array($conditions, "bind" => $parameters)
+        );
+        
+        //start with Facebook reviews, if configured
+        if (isset($Obj) && isset($Obj->external_id) && $Obj->external_id) {
+            $this->view->facebook_page_id = $Obj->external_id;
+        } else {
+            $this->view->facebook_page_id = '';
+        }
+        //###  END: find review site config info ###
     }
 
     public function step2($locationId)
     {
-        if ($locationId > 0) {
-            $sql = "SELECT `sent_by_user_id` "
-                . "FROM `review_invite` "
-                . "WHERE `location_id` = " . $locationId . " "
-                . "GROUP BY  `sent_by_user_id`";
+        $sql = "SELECT `sent_by_user_id` "
+            . "FROM `review_invite` "
+            . "WHERE `location_id` = " . $locationId . " "
+            . "GROUP BY  `sent_by_user_id`";
 
-            $list = new ReviewInvite();
-            $params = null;
-            $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
-            $userset = $rs->toArray();
-            $rating_array_set = array();
-            $YNrating_array_set = array();
+        $list = new ReviewInvite();
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $userset = $rs->toArray();
+        $rating_array_set = array();
+        $YNrating_array_set = array();
 
-            foreach ($userset as $key => $value) {
-                // GARY_TODO:  Need to ask jon why this case ever happens.
-                if (!$value['sent_by_user_id']) {
-                    continue;
-                }
+        foreach ($userset as $key => $value) {
+            // GARY_TODO:  Need to ask jon why this case ever happens.
+            if (!$value['sent_by_user_id']) {
+                continue;
+            }
 
-                $ss = $value['sent_by_user_id'];
+            $sentByUserId = $value['sent_by_user_id'];
 
 
-                if ($ss) {
-                    $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =".$ss." AND `review_invite_type_id` =1 GROUP BY  `rating`";
+            if ($sentByUserId) {
 
-                    // Base model
-                    $list = new ReviewInvite();
+                $YNrating_array_set[$sentByUserId]['customer_satisfaction_rate'] = $this->calculateYesNoCustomerSatisfactionRate($sentByUserId);
+                
+                $this->view->YNrating_array_set = $YNrating_array_set;
 
-                    // Execute the query
-                    $params = null;
-                    $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
-                    $YNrating_array_set[$ss] = $rs->toArray();
-                    
-                    $this->view->YNrating_array_set = $YNrating_array_set;
+                $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id`, SUM(`rating`) AS `totalx` "
+                    . "FROM  `review_invite` "
+                    . "WHERE  `sent_by_user_id` = " . $sentByUserId . " "
+                    . "GROUP BY  `review_invite_type_id`";
 
-                    $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id`, SUM(`rating`) AS `totalx` "
-                        . "FROM  `review_invite` "
-                        . "WHERE  `sent_by_user_id` = " . $ss . " "
-                        . "GROUP BY  `review_invite_type_id` ";
+                // Base model
+                $list = new ReviewInvite();
 
-                    // Base model
-                    $list = new ReviewInvite();
-
-                    // Execute the query
-                    $params = null;
-                    $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
-                    $rating_array_set[$ss] = $rs->toArray();
-                    
-                    $this->view->rating_array_set = $rating_array_set;
-                }
+                // Execute the query
+                $params = null;
+                $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+                $rating_array_set[$ss] = $rs->toArray();
+                
+                $this->view->rating_array_set = $rating_array_set;
             }
         }
+    }
+
+    public function calculateYesNoCustomerSatisfactionRate($employeeId)
+    {
+        $sql = "SELECT COUNT(*) AS  `amount_of_ratings`, `review_invite_type_id`, `rating` "
+            . "FROM `review_invite` "
+            . "WHERE  `sent_by_user_id` = " . $employeeId . " "
+            . "AND `review_invite_type_id` = 1 "
+            . "GROUP BY `rating`";
+
+        // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $feedbackGroupedByRating = $rs->toArray();
+
+        $yes = 0;
+        $no = 0;
+
+        foreach ($feedbackGroupedByRating as $set) {
+            if ($set['rating'] == 5 || $set['rating'] == 'Yes') {
+                $yes = $set['amount_of_ratings'];
+            }
+
+            if ($set['rating'] == 1 || $set['rating'] == 'No') {
+                $no = $set['amount_of_ratings'];
+            }
+        }
+
+        $totalRatings = $yes + $no;
+        $cal = $totalRatings > 0 ? $yes / $totalRatings : 0;
+
+        return $cal;
     }
 }
