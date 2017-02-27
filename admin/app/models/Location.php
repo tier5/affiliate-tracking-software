@@ -56,6 +56,13 @@
             );
         }
 
+        /*public static function current()
+        {
+            $identity = $this->session->get('auth-identity');
+
+            return $identity['location_id'];
+        }*/
+
         /*
          * Find the data for the report
          */

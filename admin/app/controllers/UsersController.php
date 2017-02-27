@@ -12,6 +12,7 @@ use Vokuro\Models\UsersLocation;
 use Vokuro\Models\PasswordChanges;
 use Vokuro\Services\Email;
 use Vokuro\Models\LocationNotifications;
+use Vokuro\Models\ReviewInvite;
 
 /**
  * Vokuro\Controllers\UsersController
@@ -40,6 +41,79 @@ class UsersController extends ControllerBase
         $identity = $this->auth->getIdentity();
         $this->usersFunctionality(3);
         $this->getSMSReport();
+
+
+        $identity = $this->session->get('auth-identity');
+
+        $locationId = $identity['location_id'];
+
+        $location = Location::findFirst($locationId);
+
+        // Default this month
+        $now = new \DateTime('now');
+        $startTime = $now->format('Y') . '-' . $now->format('m') . '-01';
+        $endTime = date("Y-m-d 23:59:59", strtotime("last day of this month"));
+
+
+        $this->view->employee_conversion_report_generate = Users::getEmployeeConversionReportGenerate(
+            $location->review_invite_type_id,
+            $location->agency_id,
+            $startTime,
+            $endTime,
+            $locationId,
+            'DESC'
+        );
+
+        $this->getEmployeeConversionReport($locationId);
+
+    }
+
+
+    public function getEmployeeConversionReport($locationId)
+    {
+        $reviewTypeId = Location::reviewType($locationId);
+
+        $rs = ReviewInvite::query()
+                ->where('location_id = ' . $locationId)
+                ->groupBy('sent_by_user_id')
+                ->execute();
+
+        /*$params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));*/
+        $userset = $rs->toArray();//->toArray();
+        $YNrating_array_set = array();
+
+        foreach ($userset as $key => $value) {
+            // GARY_TODO:  Need to ask jon why this case ever happens.
+            if (!$value['sent_by_user_id']) {
+                continue;
+            }
+
+            $sentByUserId = $value['sent_by_user_id'];
+
+
+            if ($sentByUserId) {
+                $YNrating_array_set[$sentByUserId]['feedback_average'] = ReviewInvite::customerSatisfactionAverage(
+                    $sentByUserId,
+                    $locationId,
+                    $reviewTypeId
+                );
+
+                $YNrating_array_set[$sentByUserId]['feedback_amount'] = ReviewInvite::customerSatisfactionAmount(
+                    $sentByUserId,
+                    $locationId,
+                    $reviewTypeId
+                );
+
+                $YNrating_array_set[$sentByUserId]['feedback_total'] = ReviewInvite::customerSatisfactionTotal(
+                    $sentByUserId,
+                    $locationId,
+                    $reviewTypeId
+                );
+                
+                $this->view->YNrating_array_set = $YNrating_array_set;
+            }
+        }
     }
 
 
