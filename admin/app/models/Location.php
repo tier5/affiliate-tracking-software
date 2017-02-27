@@ -56,10 +56,6 @@
             );
         }
 
-
-
-
-
         /*
          * Find the data for the report
          */
@@ -81,5 +77,21 @@
             return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
         }
 
+        public static function reviewType($locationId)
+        {
+            $conditions = "location_id = :location_id:";
+            $parameters = array("location_id" => $locationId);
+            $review_info = Location::findFirst(
+                array($conditions, "bind" => $parameters)
+            );
+
+            if (!empty($review_info) && $review_info->review_invite_type_id) {
+                $review_type_id = $review_info->review_invite_type_id;
+            } else {
+                $review_type_id = 1;
+            }
+
+            return $review_type_id;
+        }
 
     }
