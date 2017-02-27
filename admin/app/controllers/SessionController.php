@@ -885,7 +885,7 @@ class SessionController extends ControllerBase
                     "agency_id = {$agency->parent_id}"
                 );
                 if (!$objParentAgency->email_from_address && !$objParentAgency->custom_domain) {
-                    throw \Exception(
+                    throw new \Exception(
                         "Contact customer support.  Email configuration not setup correctly"
                     );
                 }
@@ -906,7 +906,7 @@ class SessionController extends ControllerBase
 
             if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                 if (!$agency->email_from_address && !$agency->custom_domain) {
-                    throw \Exception(
+                    throw new \Exception(
                         "Contact customer support.  Email configuration not setup correctly"
                     );
                 }
@@ -956,7 +956,7 @@ class SessionController extends ControllerBase
                     );
 
                     if (!$objParentAgency->email_from_address && !$objParentAgency->custom_domain) {
-                        throw \Exception(
+                        throw new \Exception(
                             "Contact customer support.  Email configuration not setup correctly"
                         );
                     }
@@ -972,7 +972,7 @@ class SessionController extends ControllerBase
 
                 if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                     if (!$agency->email_from_address && !$agency->custom_domain) {
-                        throw \Exception(
+                        throw new \Exception(
                             "Contact customer support.  Email configuration not setup correctly"
                         );
                     }
