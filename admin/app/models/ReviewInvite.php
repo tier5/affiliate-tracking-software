@@ -319,5 +319,184 @@ class ReviewInvite extends Model
         return new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
     }
 
+    public static function convertYesNoToNPS($rating)
+    {
+        if ($rating == 5 || $rating == 'Yes') {
+            return 10;
+        }
 
+        if ($rating == 1 || $rating == 'No') {
+            return 2;
+        }
+    }
+
+    public static function convertStarToNPS($rating)
+    {
+        return $rating * 2;
+    }
+
+    public static function convertNPSToYesNo($rating, $threshold = 8)
+    {
+        if ($rating >= $threshold) {
+            return 'Yes';
+        } else {
+            return 'No';
+        }
+    }
+
+    public static function convertStarToYesNo($rating, $threshold = 4)
+    {
+        if ($rating >= $threshold) {
+            return 'Yes';
+        } else {
+            return 'No';
+        }
+    }
+
+    public static function convertNPStoStar($rating)
+    {
+        return $rating / 2;
+    }
+
+    public static function convertYesNoToStar($rating)
+    {
+        if ($rating == 5 || $rating == 'Yes') {
+            return 5;
+        }
+
+        if ($rating == 1 || $rating == 'No') {
+            return 1;
+        }
+    }
+
+    public static function customerSatisfactionAmount($employeeId, $locationId, $ratingTypeId)
+    {
+        $data = self::customerSatisfactionData(
+            $employeeId,
+            $locationId,
+            $ratingTypeId
+        );
+
+        return $data['amount'];
+    }
+
+    public static function customerSatisfactionAverage($employeeId, $locationId, $ratingTypeId)
+    {
+        $data = self::customerSatisfactionData(
+            $employeeId,
+            $locationId,
+            $ratingTypeId
+        );
+
+        return $data['average'];
+    }
+
+    public static function customerSatisfactionTotal($employeeId, $locationId, $ratingTypeId)
+    {
+        $data = self::customerSatisfactionData(
+            $employeeId,
+            $locationId,
+            $ratingTypeId
+        );
+
+        return $data['total'];
+    }
+
+    private static function customerSatisfactionData($employeeId, $locationId, $ratingTypeId)
+    {
+        // get all employee customer feedback, narrow by location
+        $sql = "SELECT `review_invite_type_id`, `rating` "
+            . "FROM `review_invite` "
+            . "WHERE  `sent_by_user_id` = " . $employeeId . " "
+            . "AND `location_id` = " . $locationId;
+
+        // Base model
+        $list = new ReviewInvite();
+
+        // Execute the query
+        $params = null;
+        $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
+        $customerFeedback = $rs->toArray();
+        
+        // convert to current rating format
+        // 1 = y/n
+        // 2 = star
+        // 3 = nps
+
+        foreach ($customerFeedback as $key => $feedbackEntry) {
+            if ($ratingTypeId == null) continue;
+
+            $type = $feedbackEntry['review_invite_type_id'];
+            $rating = $feedbackEntry['rating'];
+
+            if ($ratingTypeId == 1) {
+                if ($type == 2) {
+                    $customerFeedback[$key]['rating'] = self::convertStarToYesNo($rating);
+                } else if ($type == 3) {
+                    $customerFeedback[$key]['rating'] = self::convertNPSToYesNo($rating);
+                }
+            } else if ($ratingTypeId == 2) {
+                if ($type == 1) {
+                    $customerFeedback[$key]['rating'] = self::convertYesNoToStar($rating);
+                } else if ($type == 3) {
+                    $customerFeedback[$key]['rating'] = self::convertNPStoStar($rating);
+                }
+            } else if ($ratingTypeId == 3) {
+                if ($type == 1) {
+                    $customerFeedback[$key]['rating'] = self::convertYesNoToNPS($rating);
+                } else if ($type == 2) {
+                    $customerFeedback[$key]['rating'] = self::convertStarToNPS($rating);
+                }
+            }
+        }
+        
+        // calculate average
+        $amount = count($customerFeedback);
+        $total = 0;
+
+        if ($ratingTypeId == 1) {
+            $yes = 0;
+            $no = 0;
+
+            foreach ($customerFeedback as $feedbackEntry) {
+                $rating = $feedbackEntry['rating'];
+
+                if ($rating == 5 || $rating == 'Yes') {
+                    $yes++;
+                }
+
+                if ($rating == 1 || $rating == 'No') {
+                    $no++;
+                }
+            }
+            
+            $average = $amount > 0 ? $yes / $amount : 0;
+        } else if ($ratingTypeId == 2) {
+
+            foreach ($customerFeedback as $feedbackEntry) {
+                $rating = $feedbackEntry['rating'];
+
+                $total += $rating;
+            }
+
+            $average = $total / $amount;
+        } else if ($ratingTypeId == 3) {
+            foreach ($customerFeedback as $feedbackEntry) {
+                $rating = $feedbackEntry['rating'];
+
+                $total += $rating;
+            }
+
+            $average = round($total / $amount);
+        }
+
+        $data = array(
+            'average' => $average,
+            'total' => $total,
+            'amount' => $amount,
+            'ratingTypeId' => $ratingTypeId
+        );
+
+        return $data;
+    }
 }
