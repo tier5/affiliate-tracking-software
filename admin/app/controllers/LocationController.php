@@ -270,12 +270,23 @@ class LocationController extends ControllerBase
         $objReviewsService = new \Vokuro\Services\Reviews();
 
         $this->view->RedirectToSession = $RedirectToSession;
-        
-        $this->view->tobjBusinesses = $objReviewsService->getYelpBusinessLocations(
+
+        $businesses = $objReviewsService->getYelpBusinessLocations(
             $LocationID,
             $this->request->getPost('YelpBusinessName', 'striptags'),
             $this->request->getPost('YelpPostalCode', 'striptags')
         );
+        
+        $this->view->displayBackButton = false;
+
+        if (!isset($businesses) || empty($businesses)) {
+            //$this->flash->error('No Businesses Page Were Found');
+            //$this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
+            $this->view->displayBackButton = true;
+            $this->view->backURL = "/location/edit/{$LocationID}/0/{$RedirectToSession}";
+        }
+
+        $this->view->tobjBusinesses = $businesses;
         
         $this->view->LocationID = $LocationID;
         $this->view->pick('location/getFacebookPages');
@@ -293,7 +304,18 @@ class LocationController extends ControllerBase
 
         $this->view->RedirectToSession = $RedirectToSession;
 
-        $this->view->tobjBusinesses = $objReviewsService->getGoogleMyBusinessLocations($LocationID);
+        $businesses = $objReviewsService->getGoogleMyBusinessLocations($LocationID);
+
+        $this->view->displayBackButton = false;
+
+        if (!isset($businesses) || empty($businesses)) {
+            //$this->flash->error('No Businesses Page Were Found');
+            //$this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
+            $this->view->displayBackButton = true;
+            $this->view->backURL = "/location/edit/{$LocationID}/0/{$RedirectToSession}";
+        }
+
+        $this->view->tobjBusinesses = $businesses;
 
         $this->view->LocationID = $LocationID;
         $this->view->pick('location/getFacebookPages');
@@ -319,6 +341,15 @@ class LocationController extends ControllerBase
 
         foreach ($tobjBusinesses as &$objBusiness) {
             $objBusiness->type = 'Facebook';
+        }
+
+        $this->view->displayBackButton = false;
+
+        if (!isset($tobjBusinesses) || empty($tobjBusinesses)) {
+            //$this->flash->error('No Businesses Page Were Found');
+            //$this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
+            $this->view->displayBackButton = true;
+            $this->view->backURL = "/location/edit/{$LocationID}/0/{$RedirectToSession}";
         }
 
         $this->view->tobjBusinesses = $tobjBusinesses;
