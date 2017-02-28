@@ -3,12 +3,35 @@
         margin-top: 5px !important;
         border: 1px solid black !important;
     }
+    .back-button {
+        font-size: 50px;
+        height: 60px;
+        width: 49px !important;
+        margin-bottom: 16px;
+        color: #c01209;
+        background-color: #fff;
+    }
 </style>
 
 <div id="businessList">
     {{ content() }}
+
     <div class="portlet light bordered dashboard-panel">
         <div class="table-header">
+          <?php if($displayBackButton) { ?>
+            <!--<button type="button" id="register-submit-btn" class="btnsignup uppercase" style="font-size: 20px;
+          }
+    height: 31px;
+    width: 87px;
+    margin-bottom: 16px;">
+            <i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> BACK
+            </button>-->
+
+            <a href="{{ backURL }}">
+            <button type="button" id="register-submit-btn" class="btnsignup uppercase back-button">
+            <i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>
+            </button></a>
+            <?php } ?>
             <div class="title">BUSINESS LIST</div>
             <div class="flexsearch">
                 <div class="flexsearch--wrapper">
@@ -20,6 +43,7 @@
 
         <div class="panel-default toggle panelMove panelClose panelRefresh" id="locationlist">
             <div class="customdatatable-wrapper">
+
                 <table class="customdatatable table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
                     <thead>
                     <tr>
@@ -39,6 +63,7 @@
                     <?php } ?>
                     </tbody>
                 </table>
+
             </div>
         </div>
     </div>
