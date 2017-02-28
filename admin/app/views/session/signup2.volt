@@ -5,15 +5,15 @@
 <!-- BEGIN FORM -->
 <form class="register-form" id="locationform1" action="/session/signup2/<?=(isset($subscription->subscription_id)?$subscription->subscription_id:'')?><?=(isset($_GET['code'])?'?code='.$_GET['code']:'')?>" method="post" style="display: block;">
     <div class="pnlAddLocation">
-        <h3>Add Location</h3>
-        <p class="hint">Look Up Your Location And Select The Correct Listing.</p>
+        <h3>Add Your Business</h3>
+        <p class="hint">Look Up Your Business As It Appears On Google And Select The Correct Listing</p>
         <div class="locationform backgroundPrimary">
             <div class="search_name">
-                <input class="form-control placeholder-no-fix" type="text" placeholder="Location Name" id="location_name" name="location_name" value="<?=(isset($_POST['location_name'])?$_POST[" location_name"]:'')?>"
+                <input class="form-control placeholder-no-fix" type="text" placeholder="Type In Your Business Name" id="location_name" name="location_name" value="<?=(isset($_POST['location_name'])?$_POST[" location_name"]:'')?>"
                 />
             </div>
             <div class="search_name_location">
-                <input class="form-control placeholder-no-fix" type="text" placeholder="Postal Code or City, State" id="zip_code" name="zip_code" value="<?=(isset($_POST['zip_code'])?$_POST[" zip_code"]:'')?>"
+                <input class="form-control placeholder-no-fix" type="text" placeholder="Type In Your Postal Code, City or State" id="zip_code" name="zip_code" value="<?=(isset($_POST['zip_code'])?$_POST[" zip_code"]:'')?>"
                 />
             </div>
             <div class="search_name_btn">
