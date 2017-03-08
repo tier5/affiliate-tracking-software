@@ -99,6 +99,10 @@
                 <div style="clear: both;">&nbsp;</div>
             </div>
 
+            <div class="col-md-12">
+                <h1 style="font-weight: 600; margin-left: -13px; font-size: 36px; margin-top: 0;">Connect Your Google, Facebook & Yelp Account</h1>
+                <p style="margin-top: 35px; margin-bottom: -10px;">Click on the connect button for each account and follow the instructions. If you don't have your login details you can skip this step and complete it later.</p>
+            </div>
 
             <div class="register-form" id="hiddenForm" style="display: block;">
                 <div class="pnlAddLocation short col-md-4">
