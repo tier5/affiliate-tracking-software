@@ -29,14 +29,35 @@
         background-color: #449d44;
         border-color: #398439;
     }
+
+    ol {
+        font-size: 20px;
+        padding-left: 50px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    li {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    @media screen and (max-width: 991px) {
+        .img-block {
+            display: none;
+        }
+
+        #register-submit-btn {
+            margin-top: 10px;
+        }
+    }
 </style>
 <div class="portlet light bordered">
     <div class="portlet-body form">
         {{ content() }}
 
-
-
             <!-- BEGIN FORM -->
+        
             <form id="hiddenLocationForm" method="POST">
             <input type="hidden" name="YelpBusinessName" value="{{ location.name }}">
 
@@ -48,23 +69,37 @@
             <div style="clear: both;">&nbsp;</div>
             </form>
 
-
-
             <!-- YELP BLOCK -->
 
             <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <button type="button" class="connect-btn btn-lg btn-block center-block uppercase" onclick="PickYelpBusiness()" style="font-size: 28px;">Connect My Yelp Business Page</button>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h1 style="font-size: 27px;">Connect your Yelp Account to monitor all reviews from Yelp</h1>
+                            <ol>
+                            <li>Click "CONNECT YELP PAGE" button below</li>
+                            <li>Choose your business listing</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" class="connect-btn btn-lg btn-block center-block uppercase" onclick="PickYelpBusiness()">CONNECT YELP PAGE</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <img class="img-responsive center-block" style="margin-top: 20px; margin-bottom: 20px;" src="/img/yelpreviews.png">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <button type="button" onclick="window.location.href = '/session/signup3';" id="register-submit-btn" class="btnsignup uppercase center-block" style="width: 80%">I DON'T HAVE A YELP BUSINESS PAGE</button>
+
+                <div class="col-md-6">
+                    <div class="row img-block">
+                        <div class="col-md-12">
+                            <img class="img-responsive center-block" style="margin-top: 20px; margin-bottom: 20px;" src="/img/Yelp.png">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" onclick="window.location.href = '/session/signup3';" id="register-submit-btn" class="btnsignup uppercase center-block" style="width: 80%">SKIP: I DON'T HAVE AN ACCOUNT</button>
+                        </div>
+                    </div>
                 </div>
             </div>
     </div>
