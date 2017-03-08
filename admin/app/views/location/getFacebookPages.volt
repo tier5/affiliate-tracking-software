@@ -3,6 +3,21 @@
         margin-top: 5px !important;
         border: 1px solid black !important;
     }
+
+    h4 {
+        margin-top: 10px;
+        font-size: 23px;
+    }
+
+    @media screen and (min-width: 885px) {
+        .btnsignup {
+            float: none;
+        }
+
+        h4 {
+          text-align: center;
+        }
+    }
 </style>
 
 <div id="businessList">
@@ -21,8 +36,11 @@
           ?>
         </script>
         <div class="row">
-            <div class="col-md-6">
-                <button type="button" onclick="window.location.href = window.skipURL;" id="register-submit-btn" class="btnsignup uppercase" style="margin-bottom: 20px;">SKIP</button>
+            <div class="col-md-8">
+                <h4 class="text-left">Choose The Listing That Matches Your Business</h4>
+            </div>
+            <div class="col-md-4">
+                <button type="button" onclick="window.location.href = window.skipURL;" class="btnsignup uppercase pull-right" style="margin-bottom: 20px;">SKIP: I DON'T SEE MY LISTING</button>
             </div>
         </div>
 
