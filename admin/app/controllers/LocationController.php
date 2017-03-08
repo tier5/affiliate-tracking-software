@@ -169,7 +169,11 @@ class LocationController extends ControllerBase
         $objReviewsService->DeleteYelpReviews($LocationID);
         $objReviewsService->importYelpReviews($LocationID, false);
 
-        $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}"); 
+        if ($RedirectToSession) {
+            $this->response->redirect("/session/signup3");
+        } else {
+            $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
+        }
     }
 
     public function transliterateString($txt)
@@ -211,7 +215,11 @@ class LocationController extends ControllerBase
         $objReviewsService->DeleteGoogleReviews($LocationID);
         $objReviewsService->importGoogleMyBusinessReviews($LocationID, false);
 
-        $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
+        if ($RedirectToSession) {
+            $this->response->redirect("/location/addFacebook/{$LocationID}/");
+        } else {
+            $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
+        }
     }
 
     public function pickFacebookBusinessAction($BusinessID, $LocationID, $RedirectToSession = 0)
@@ -255,7 +263,11 @@ class LocationController extends ControllerBase
             );
         }
 
-        $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
+        if ($RedirectToSession) {
+            $this->response->redirect("/location/addYelp/{$LocationID}/");
+        } else {
+            $this->response->redirect("/location/edit/{$LocationID}/0/{$RedirectToSession}");
+        }
     }
 
 
@@ -959,6 +971,416 @@ class LocationController extends ControllerBase
             }
         }
         //end making sure the user should be here
+        
+        $objGoogleReviewSite = $this->GetLocationReviewSite(
+            $location_id,
+            \Vokuro\Models\Location::TYPE_GOOGLE
+        );
+        
+        $this->view->GoogleMyBusinessConnected = $objGoogleReviewSite && $objGoogleReviewSite->json_access_token ? true : false;
+        $this->view->objGoogleReviewSite = $objGoogleReviewSite;
+
+        $objReviewService = new \Vokuro\Services\Reviews();
+        
+        $client = $objReviewService->getGoogleClient(
+            $location_id,
+            $ComingFromSignup
+        );
+        
+        $credentialsPath = CREDENTIALS_PATH;
+
+        if (isset($_GET['code'])) {
+            // Exchange authorization code for an access token.
+            $client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
+
+            $accessToken = $client->authenticate($_GET['code']);
+            $this->setAccessToken($accessToken, $location_id);
+        }
+
+        // Load previously authorized credentials from a file.
+        $authUrl = $client->createAuthUrl();
+        $this->view->authUrl = $authUrl;
+
+        if ($accessToken) {
+            $client->setAccessToken($accessToken['access_token']);
+            // Refresh the token if it's expired.
+            $access_token = $client->getAccessToken();
+            $refreshToken = $client->getRefreshToken();
+
+            return $this->response->redirect('/reviewfeeds/googlereviews');
+        }
+
+        // Find all regions for this agency
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $userObj->agency_id);
+        $this->view->regions = Region::find(array($conditions, "bind" => $parameters));
+        // Find looking for regions
+
+        $this->view->location = $loc;
+        $this->view->facebook_access_token = $this->facebook_access_token;
+
+        //look for a yelp review configuration;
+        $this->view->yelp = $this->GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_YELP);
+        //$this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->YelpConnected = isset($this->view->yelp->external_location_id) && $this->view->yelp->external_location_id && $this->view->yelp->external_location_id != '';
+
+
+        //look for a facebook review configuration
+        $this->view->facebook = $this->GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_FACEBOOK);
+        $this->view->FacebookConnected = $this->view->facebook->access_token ? true : false;
+
+        //look for a google review configuration
+        $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
+        $parameters = array("location_id" => $loc->location_id);
+        $this->view->google = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+        $this->view->form = new LocationForm($loc, array(
+            'edit' => true
+        ));
+    }
+
+    public function addYelpAction($locationId)
+    {
+        $this->view->setTemplateBefore('signup');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
+        $this->view->current_step = 2;
+
+        $this->view->ComingFromSignup = 1;
+        $this->view->include_customize_survey = 0;
+
+        $this->assets
+             ->addCss('css/main.css')
+             ->addCss('css/signup.css');
+
+        $conditions = "location_id = :location_id:";
+
+        $parameters = array(
+            "location_id" => $locationId
+        );
+
+        $loc = Location::findFirst(
+            array(
+                $conditions,
+                "bind" => $parameters
+            )
+        );
+
+        if (!$loc) {
+            $this->flash->error("Location was not found");
+
+            return $this->dispatcher->forward(array(
+                'action' => 'index'
+            ));
+        }
+
+        $this->view->location_id = $locationId;
+        $this->view->location = $loc;
+
+        //verify that the user is supposed to be here, by checking to make sure that
+        //their agency_id matches the agency_id of the location they are trying to edit
+        $agency_id_to_check = $loc->agency_id;
+
+        if ($agency_id_to_check > 0) {
+
+            // Get Agency Details from agency id
+            $conditions = "agency_id = :agency_id:";
+            $parameters = array("agency_id" => $agency_id_to_check);
+            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+            if (isset($agency->parent_id)) {
+                $conditions = "agency_id = :agency_id:";
+                $parameters = array("agency_id" => $agency->parent_id);
+                $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+                $this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
+                $this->view->parent_agency = $parent_agency->name;
+            }
+
+            //get the user id
+            $identity = $this->auth->getIdentity();
+
+            // If there is no identity available the user is redirected to index/index
+            if (!is_array($identity)) {
+                $this->response->redirect('/session/login?return=/location/');
+                $this->view->disable();
+                return;
+            }
+            // Query binding parameters with string placeholders
+            $conditions = "id = :id:";
+            $parameters = array("id" => $identity['id']);
+            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+
+            if ($agency_id_to_check != $userObj->agency_id) {
+                $userObj->suspended = 'Y';
+                $userObj->save();
+                $this->auth->remove();
+                return $this->response->redirect('index');
+            }
+        }
+
+        // end making sure the user should be here
+        
+        $objGoogleReviewSite = $this->GetLocationReviewSite(
+            $location_id,
+            \Vokuro\Models\Location::TYPE_GOOGLE
+        );
+        
+        $this->view->GoogleMyBusinessConnected = $objGoogleReviewSite && $objGoogleReviewSite->json_access_token ? true : false;
+        $this->view->objGoogleReviewSite = $objGoogleReviewSite;
+
+        $objReviewService = new \Vokuro\Services\Reviews();
+        
+        $client = $objReviewService->getGoogleClient(
+            $location_id,
+            $ComingFromSignup
+        );
+        
+        $credentialsPath = CREDENTIALS_PATH;
+
+        // Find all regions for this agency
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $userObj->agency_id);
+        $this->view->regions = Region::find(array($conditions, "bind" => $parameters));
+        // Find looking for regions
+
+        $this->view->location = $loc;
+        $this->view->facebook_access_token = $this->facebook_access_token;
+
+        //look for a yelp review configuration;
+        $this->view->yelp = $this->GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_YELP);
+        //$this->view->yelp = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+        $this->view->YelpConnected = isset($this->view->yelp->external_location_id) && $this->view->yelp->external_location_id && $this->view->yelp->external_location_id != '';
+
+
+        //look for a facebook review configuration
+        $this->view->facebook = $this->GetLocationReviewSite($location_id, \Vokuro\Models\Location::TYPE_FACEBOOK);
+        $this->view->FacebookConnected = $this->view->facebook->access_token ? true : false;
+
+        //look for a google review configuration
+        $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
+        $parameters = array("location_id" => $loc->location_id);
+        $this->view->google = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+        $this->view->form = new LocationForm($loc, array(
+            'edit' => true
+        ));
+    }
+
+    public function addGoogleAction($locationId)
+    {
+        $this->view->setTemplateBefore('signup');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Google My Business');
+        $this->view->current_step = 2;
+        $ComingFromSignup = 1;
+        $this->view->ComingFromSignup = $ComingFromSignup;
+        $this->view->include_customize_survey = 0;
+
+        $this->assets
+             ->addCss('css/main.css')
+             ->addCss('css/signup.css');
+
+        $conditions = "location_id = :location_id:";
+
+        $parameters = array(
+            "location_id" => $locationId
+        );
+
+        $loc = Location::findFirst(
+            array(
+                $conditions,
+                "bind" => $parameters
+            )
+        );
+
+        if (!$loc) {
+            $this->flash->error("Location was not found");
+
+            return $this->dispatcher->forward(array(
+                'action' => 'index'
+            ));
+        }
+
+        $this->view->location_id = $locationId;
+        $this->view->location = $loc;
+
+        //verify that the user is supposed to be here, by checking to make sure that
+        //their agency_id matches the agency_id of the location they are trying to edit
+        $agency_id_to_check = $loc->agency_id;
+
+        if ($agency_id_to_check > 0) {
+
+            // Get Agency Details from agency id
+            $conditions = "agency_id = :agency_id:";
+            $parameters = array("agency_id" => $agency_id_to_check);
+            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+            if (isset($agency->parent_id)) {
+                $conditions = "agency_id = :agency_id:";
+                $parameters = array("agency_id" => $agency->parent_id);
+                $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+                $this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
+                $this->view->parent_agency = $parent_agency->name;
+            }
+
+            //get the user id
+            $identity = $this->auth->getIdentity();
+
+            // If there is no identity available the user is redirected to index/index
+            if (!is_array($identity)) {
+                $this->response->redirect('/session/login?return=/location/');
+                $this->view->disable();
+                return;
+            }
+            // Query binding parameters with string placeholders
+            $conditions = "id = :id:";
+            $parameters = array("id" => $identity['id']);
+            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+            //var_dump($agency_id_to_check, $userObj->agency_id);
+            //die();
+            if ($agency_id_to_check != $userObj->agency_id) {
+                $userObj->suspended = 'Y';
+                $userObj->save();
+                $this->auth->remove();
+                return $this->response->redirect('index');
+            }
+        }
+
+        // end making sure the user should be here
+        
+        $objGoogleReviewSite = $this->GetLocationReviewSite(
+            $locationId,
+            \Vokuro\Models\Location::TYPE_GOOGLE
+        );
+        
+        $this->view->GoogleMyBusinessConnected = $objGoogleReviewSite && $objGoogleReviewSite->json_access_token ? true : false;
+        $this->view->objGoogleReviewSite = $objGoogleReviewSite;
+
+        $objReviewService = new \Vokuro\Services\Reviews();
+        
+        $client = $objReviewService->getGoogleClient(
+            $locationId,
+            $ComingFromSignup
+        );
+        
+        $credentialsPath = CREDENTIALS_PATH;
+
+        if (isset($_GET['code'])) {
+            // Exchange authorization code for an access token.
+            $client->setClientId('353416997303-7kan3ohck215dp0ca5mjjr63moohf66b.apps.googleusercontent.com');
+
+            $accessToken = $client->authenticate($_GET['code']);
+            $this->setAccessToken($accessToken, $location_id);
+        }
+
+        // Load previously authorized credentials from a file.
+        $authUrl = $client->createAuthUrl();
+        $this->view->authUrl = $authUrl;
+
+        if ($accessToken) {
+            $client->setAccessToken($accessToken['access_token']);
+            // Refresh the token if it's expired.
+            $access_token = $client->getAccessToken();
+            $refreshToken = $client->getRefreshToken();
+
+            return $this->response->redirect('/reviewfeeds/googlereviews');
+        }
+
+        // Find all regions for this agency
+        $conditions = "agency_id = :agency_id:";
+        $parameters = array("agency_id" => $userObj->agency_id);
+        $this->view->regions = Region::find(array($conditions, "bind" => $parameters));
+        // Find looking for regions
+
+        $this->view->location = $loc;
+
+        //look for a google review configuration
+        $conditions = "location_id = :location_id: AND review_site_id = " . \Vokuro\Models\Location::TYPE_GOOGLE;
+        $parameters = array("location_id" => $loc->location_id);
+        $this->view->google = LocationReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+        $this->view->form = new LocationForm($loc, array(
+            'edit' => true
+        ));
+    }
+
+    public function addFacebookAction($locationId)
+    {
+        $this->view->setTemplateBefore('signup');
+        $this->tag->setTitle('Get Mobile Reviews | Sign up | Step 2 | Add Location');
+        $this->view->current_step = 2;
+
+        $this->view->ComingFromSignup = 1;
+        $this->view->include_customize_survey = 0;
+
+        $this->assets
+             ->addCss('css/main.css')
+             ->addCss('css/signup.css');
+
+        $conditions = "location_id = :location_id:";
+
+        $parameters = array(
+            "location_id" => $locationId
+        );
+
+        $loc = Location::findFirst(
+            array(
+                $conditions,
+                "bind" => $parameters
+            )
+        );
+
+        if (!$loc) {
+            $this->flash->error("Location was not found");
+
+            return $this->dispatcher->forward(array(
+                'action' => 'index'
+            ));
+        }
+
+        $this->view->location_id = $locationId;
+        $this->view->location = $loc;
+        
+        //verify that the user is supposed to be here, by checking to make sure that
+        //their agency_id matches the agency_id of the location they are trying to edit
+        $agency_id_to_check = $loc->agency_id;
+
+        if ($agency_id_to_check > 0) {
+
+            // Get Agency Details from agency id
+            $conditions = "agency_id = :agency_id:";
+            $parameters = array("agency_id" => $agency_id_to_check);
+            $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
+            if (isset($agency->parent_id)) {
+                $conditions = "agency_id = :agency_id:";
+                $parameters = array("agency_id" => $agency->parent_id);
+                $parent_agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+                $this->view->logo_path = "/img/agency_logos/" . $parent_agency->logo_path;
+                $this->view->parent_agency = $parent_agency->name;
+            }
+
+            //get the user id
+            $identity = $this->auth->getIdentity();
+
+            // If there is no identity available the user is redirected to index/index
+            if (!is_array($identity)) {
+                $this->response->redirect('/session/login?return=/location/');
+                $this->view->disable();
+                return;
+            }
+            // Query binding parameters with string placeholders
+            $conditions = "id = :id:";
+            $parameters = array("id" => $identity['id']);
+            $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+
+            if ($agency_id_to_check != $userObj->agency_id) {
+                $userObj->suspended = 'Y';
+                $userObj->save();
+                $this->auth->remove();
+                return $this->response->redirect('index');
+            }
+        }
+
+        // end making sure the user should be here
         
         $objGoogleReviewSite = $this->GetLocationReviewSite(
             $location_id,
@@ -1735,10 +2157,13 @@ class LocationController extends ControllerBase
 
     public function googlemybusinessAction()
     {
-        /*$identity = $this->auth->getIdentity();
-        $LocationID = $identity['location_id'];*/
+        $identity = $this->auth->getIdentity();
+        $LocationID = $identity['location_id'];
 
-        list($LocationID, $RedirectSession) = explode('|', $_GET['state']);
+        if (isset($_GET['state']) && !empty($_GET['state'])) {
+            list($LocationID, $RedirectSession) = explode('|', $_GET['state']);
+        }
+        
         $objReviewService = new \Vokuro\Services\Reviews();
         $client = $objReviewService->getGoogleClient($LocationID, $RedirectSession);
 

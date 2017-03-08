@@ -683,7 +683,9 @@ class SessionController extends ControllerBase
                 
                 $this->auth->setLocation($loc->location_id);
 
-                return $this->response->redirect('/location/edit/' . $loc->location_id . '/0/1');
+                //return $this->response->redirect('/location/edit/' . $loc->location_id . '/0/1');
+
+                return $this->response->redirect('/location/addGoogle/' . $loc->location_id . '/');
             }
         }
 

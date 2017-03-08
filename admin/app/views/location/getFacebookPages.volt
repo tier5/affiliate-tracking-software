@@ -17,6 +17,30 @@
     {{ content() }}
 
     <div class="portlet light bordered dashboard-panel">
+        {% if RedirectToSession == 1 %}
+        <script type="text/javascript">
+          <?php 
+          if (strpos($_SERVER['REQUEST_URI'], 'Google') !== false) {
+            echo "window.skipURL = '/location/addFacebook/{$LocationID}'";
+          } else if(strpos($_SERVER['REQUEST_URI'], 'Facebook') !== false) {
+            echo "window.skipURL = '/location/addYelp/{$LocationID}'";
+          } else if(strpos($_SERVER['REQUEST_URI'], 'Yelp') !== false) {
+            echo "window.skipURL = '/session/signup3'";
+          }
+          ?>
+        </script>
+        <div class="row">
+            <div class="col-md-6">
+                <button type="button" onclick="window.location.href = window.skipURL;" id="register-submit-btn" class="btnsignup uppercase" style="margin-bottom: 20px;">SKIP</button>
+            </div>
+        </div>
+
+        {% endif %}
+        {% if tobjBusinesses is empty %}
+        <div class="table-header">
+        <h1>No Business Pages found</h1>
+        </div>
+        {% else %}
         <div class="table-header">
           <?php if($displayBackButton) { ?>
             <!--<button type="button" id="register-submit-btn" class="btnsignup uppercase" style="font-size: 20px;
@@ -66,6 +90,7 @@
 
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 
