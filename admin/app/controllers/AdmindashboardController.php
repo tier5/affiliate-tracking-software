@@ -332,6 +332,11 @@ class AdmindashboardController extends ControllerBusinessBase
             if ($age2) {
                 $age2->status = $status;
                 $age2->save();
+
+                if ($agency_type_id == 1 && $status == 0) {
+                    $age2->deactivateBusinesses();
+                }
+                
                 $this->flash->error(
                     "The " . ($agency_type_id == 1 ? 'agency' : 'business') . " status was updated."
                 );
