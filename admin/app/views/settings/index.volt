@@ -176,7 +176,7 @@
                     <?php
 
                   if (isset($this->view->review_site_list)) {
-                  foreach($this->view->review_site_list as $review_site_list) {
+                  foreach($this->view->review_site_list as $index => $review_site_list) {
                   if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
                     
                     ?>
@@ -186,16 +186,24 @@
                         if($review_site_list->review_site_id ==1){
                         ?><a
                           class="btnLink btnSecondary track-link"  id="facebooklink1" 
-                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="http://facebook.com/<?=$review_site_list->external_id; ?>" target="_blank"  data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>">
-                          View
-                        </a> <?php } else {?> 
-                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank">View</a>
+                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="<?=$review_site_list->url?>" target="_blank"  data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>" type="view">View</a>
+                        <?php } else {?> 
+                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
                         <?php } ?>
 
                         <a
                           class="btnLink btnSecondary"
                           href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>">
-                          <img src="/img/icon-pencil.png" /> Update Location</a><?php } else { ?><a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"> View</a>
+                          <img src="/img/icon-pencil.png" /> Location</a>
+
+                          <!-- Edit URL Button -->
+
+                          <a
+                          class="btnLink btnSecondary btnEditSiteURL"
+                          href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"
+                          data-id="<?=$review_site_list->location_review_site_id?>">
+                          <img src="/img/icon-pencil.png" /> URL</a>
+                          <?php } else { ?><a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"> View</a>
                       <?php } ?></span><span class="on-off-buttons"><a
                         data-id="<?=$review_site_list->location_review_site_id?>"
                         id="on<?=$review_site_list->location_review_site_id?>"
@@ -204,6 +212,7 @@
                         style="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'':'display: none;')?>">
                         <img src="/img/btn_on.gif"  class="sort-icon" />
                       </a>
+
                       <a
                         data-id="<?=$review_site_list->location_review_site_id?>"
                         id="off<?=$review_site_list->location_review_site_id?>"
@@ -766,8 +775,6 @@
           <thead>
             <tr>
             <th>Number</th>
-            <!--<th>Friendly Number</th>
-            <th>Booking Date & Time</th>-->
             <th>Action</th>
             </tr>
           </thead>
@@ -775,8 +782,6 @@
           <?php foreach ($twilio_details as $key => $mobile_number) { ?>
             <tr>
               <td><?php echo $mobile_number['friendly_name']; ?></td>
-              <!--<td><?php echo $mobile_number['phone_number']; ?></td>
-              <td><?php echo $mobile_number['created']; ?></td>-->
               <td><a  href="/twilio/releseThisnumber/<?php echo base64_encode($mobile_number['phone_number']);?>||<?php echo base64_encode($mobile_number['friendly_name']);?>||"><input id="gather_info" class="btnLink btnPrimary" value="Release This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a></td>
             </tr>
           <?php } ?>
@@ -876,6 +881,40 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
     <input type="hidden" name="lifetimevalue" id="lifetimevalue" value="" />
   </form>
 </div>
+
+<!-- Edit URL Modal -->
+
+<div class="overlay2" style="display: none;"></div>
+<div id="page-wrapper2" class="create editsiteurlform" style="display: none; border-radius: 5px !important;
+    border-top: none !important;
+    width: 70% !important;">
+  <form id="editsiteurlform" class="register-form4" action="/settings/editUrl" method="post" style="display: block;">
+    <div class="closelink2 close"></div>
+    <div class="col-md-12">
+      <div class="row"><h3 style="border-bottom: 1px solid #e7ecf0;
+    margin-top: 0;
+    padding-bottom: 9px;">Edit Review Site URL</h3></div>
+      <div class="form-group row">
+        <label for="url" class="col-md-3 control-label" style="color: #283643 !important;
+    margin-bottom: 0.5em !important;
+    margin-top: 4px !important;
+    text-align: right !important;">URL: </label>
+        <div class="col-md-9">
+          <input type="url" name="url" id="url2" value="" required="required" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <button id="editsiteurl" type="submit" class="btnLink btnSecondary" style="float: right;
+    height: 45px;
+    padding: 9px 29px;">Save</button>
+        </div>
+      </div>
+      <div style="clear: both;">&nbsp;</div>
+    </div>
+    <input type="hidden" name="reviewSiteId" id="reviewSiteId" value="" />
+  </form>
+</div>
 <?php
 }
 ?>
@@ -888,7 +927,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       var number_type_select="";
       var area_code=$('#area_code').val();
       var Contains="";
-      if(country_select!=""){
+      if (country_select != "") {
       $("#result_valx").html("<span>loading......</span>");
         
         $.ajax({
@@ -937,7 +976,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         $.ajax({
             url: "/settings/sendSampleEmail/" + EmployeeID,
             success: function(data) {
-           //alert(data);
                 if(data == "1")
                     alert("Email successfully sent!");
                 else {
@@ -969,6 +1007,54 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       e.preventDefault();
       $('#page-wrapper').hide();
       $('.overlay').hide();
+    });
+
+    $('.btnEditSiteURL').on('click', function(e) {
+      e.preventDefault();
+
+      $('#page-wrapper2').show();
+      $('.overlay2').show();
+
+      var reviewSiteId = $(e.target).attr('data-id');
+      console.log(reviewSiteId);
+      // location review site id
+      $('#reviewSiteId').val(reviewSiteId);
+
+      var currentURL = $('#'+reviewSiteId+' a[type=view]').attr('href');
+
+      $('#url2').val(currentURL);
+    });
+
+    $('.overlay2, .closelink2').on('click', function(e) {
+      e.preventDefault();
+      $('#page-wrapper2').hide();
+      $('.overlay2').hide();
+    });
+
+    $("#editsiteurlform").on('submit', function(e) {
+      e.preventDefault();
+
+      var reviewSiteId = $("#reviewSiteId").val();
+      console.log(reviewSiteId);
+      var url = $("#url2").val();
+
+      $.ajax({
+        url: $('#editsiteurlform').attr('action')+'/'+reviewSiteId,
+        method: 'POST',
+        data: 'url=' + encodeURIComponent(url),
+        cache: false,
+        success: function() {
+          console.log(url);
+          // select view link and update url attribute
+          $('#'+reviewSiteId+' a[type=view]').attr('href', url);
+
+          // close the form
+          $('#page-wrapper2').hide();
+          $('.overlay2').hide();
+        }
+      });
+
+      return false;
     });
 
     $("#createreviewsiteform").on('submit', function(ev){

@@ -235,6 +235,16 @@ class SettingsController extends ControllerBase
         return "SUCCESS";
     }
 
+    public function editUrlAction($reviewSiteId)
+    {
+        // get review site
+        $reviewSite = LocationReviewSite::findFirst($reviewSiteId);
+
+        // save url
+        $reviewSite->url = $this->request->getPost('url');
+
+        $reviewSite->save();
+    }
 
     /**
      * Upload file
