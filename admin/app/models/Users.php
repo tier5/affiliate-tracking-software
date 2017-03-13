@@ -534,7 +534,7 @@
                                                            $end_time,
                                                            $location_id,
                                                            $sort_order) {
-
+              var_dump($start_time);
 
               if($review_invite_type_id=='')
               {
@@ -550,9 +550,9 @@
                           WHERE
                               review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
                               sms_broadcast_id IS NULL AND
-                              users.id = review_invite.sent_by_user_id AND
-                              review_invite.date_sent >=".$start_time.")
-                          AS
+                              users.id = review_invite.sent_by_user_id"
+                              .(($start_time === false) ? ' ) ' : ' AND review_invite.date_sent >="' . $start_time . '") ').
+                          "AS
                               sms_sent_this_month,
 
                         (SELECT COUNT(*)
@@ -561,10 +561,10 @@
                             WHERE
                                   review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
                                   sms_broadcast_id IS NULL AND
-                                  users.id = review_invite.sent_by_user_id AND
-                                  review_invite.date_sent >=".$start_time.")
+                                  users.id = review_invite.sent_by_user_id"
+                                  .(($start_time === false) ? ' ) ' : ' AND review_invite.date_sent >="' . $start_time . '") ').
                                   
-                            AS
+                            "AS
                                   sms_received_this_month ,
 
                         (SELECT COUNT(*)
@@ -574,9 +574,9 @@
                                   review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
                                   sms_broadcast_id IS NULL AND
                                   users.id = review_invite.sent_by_user_id AND
-                                  recommend = 'Y' AND
-                                 review_invite.date_sent >=".$start_time.")
-                            AS
+                                  recommend = 'Y'"
+                                  .(($start_time === false) ? ' ) ' : ' AND review_invite.date_sent >="' . $start_time . '") ').
+                            "AS
                                   positive_feedback_this_month,
 
 
@@ -587,9 +587,9 @@
                                   review_invite.location_id = ".$location_id." AND review_invite.review_invite_type_id=".$review_invite_type_id." AND
                                   sms_broadcast_id IS NULL AND
                                   users.id = review_invite.sent_by_user_id AND
-                                  recommend = 'Y' AND
-                                  review_invite.date_sent >=".$start_time.")
-                            AS
+                                  recommend = 'Y'"
+                                  .(($start_time === false) ? ' ) ' : ' AND review_invite.date_sent >="' . $start_time . '") ').
+                            "AS
                                   rates
 
                     FROM users
@@ -601,7 +601,7 @@
                     ORDER BY positive_feedback_this_month desc
                   ;";
                  // exit;
-//echo $sql;exit;
+            echo $sql;
             // Base model  main dashboard
             $list = new Users();
 
