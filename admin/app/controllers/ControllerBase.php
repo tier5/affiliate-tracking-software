@@ -1066,6 +1066,7 @@ class ControllerBase extends Controller
                 }
             } else {
                 $users_report = null;
+
                 if ($loc) {
                     $users_report = Users::getEmployeeListReport(
                         $userObj->agency_id,
@@ -1096,7 +1097,7 @@ class ControllerBase extends Controller
                         false,
                         true
                     );
-
+var_dump($loc->review_invite_type_id);
                     $users_report_generate = Users::getEmployeeConversionReportGenerate(
                         $loc->review_invite_type_id,
                         $userObj->agency_id,

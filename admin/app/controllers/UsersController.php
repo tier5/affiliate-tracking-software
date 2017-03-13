@@ -271,7 +271,7 @@ class UsersController extends ControllerBase
             ));
 
             $user->is_employee = (isset($_POST['is_employee']) && $_POST['is_employee'] == 'Yes') || $_POST['userType'] == 'User' ? 1 : 0;
-	        $user->profilesId = ($_POST['userType'] == "User") ? 3 : 2;
+            $user->profilesId = ($_POST['userType'] == "User") ? 3 : 2;
             $user->role = $_POST['userType'];
 
             $isall = false;
