@@ -203,7 +203,15 @@
                           href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"
                           data-id="<?=$review_site_list->location_review_site_id?>">
                           <img src="/img/icon-pencil.png" /> URL</a>
-                          <?php } else { ?><a class="btnLink  btnSecondary" href="<?=$review_site_list->url?>" target="_blank"> View</a>
+                          <?php } else { ?>
+                          <a class="btnLink btnSecondary" href="<?=$review_site_list->url?>" target="_blank" type="view"> View</a>
+                          <!-- Edit URL Button -->
+
+                          <a
+                          class="btnLink btnSecondary btnEditSiteURL"
+                          href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"
+                          data-id="<?=$review_site_list->location_review_site_id?>">
+                          <img src="/img/icon-pencil.png" /> URL</a>
                       <?php } ?></span><span class="on-off-buttons"><a
                         data-id="<?=$review_site_list->location_review_site_id?>"
                         id="on<?=$review_site_list->location_review_site_id?>"
@@ -1079,7 +1087,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           var name = element.name;
 
           //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink" href="'+url+'" target="_blank"> View</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink btnSecondary" href="'+url+'" target="_blank" type="view"> View</a><a class="btnLink btnSecondary btnEditSiteURL" href="/location/edit/'+newid+'" data-id="<?=$review_site_list->location_review_site_id?>"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
 
           $("a.review_site_on").click(function() {
             return turnOn($(this).attr("data-id"));
