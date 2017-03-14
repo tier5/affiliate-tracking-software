@@ -534,7 +534,6 @@
                                                            $end_time,
                                                            $location_id,
                                                            $sort_order) {
-              var_dump($start_time);
 
               if($review_invite_type_id=='')
               {
@@ -600,8 +599,7 @@
                       (users.profilesId = 3 OR users.is_employee = 1) OR (users.role = 'Super Admin' AND users.agency_id = {$agency_id})
                     ORDER BY positive_feedback_this_month desc
                   ;";
-                 // exit;
-            echo $sql;
+
             // Base model  main dashboard
             $list = new Users();
 
