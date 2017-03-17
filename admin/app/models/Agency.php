@@ -13,6 +13,7 @@ class Agency extends BaseModel
 
     //public $id;
     public $agency_id;
+    public $deactivated_with_agency;
 
     /**
      * @return mixed
@@ -101,11 +102,18 @@ class Agency extends BaseModel
 
     public function deactivateBusinesses()
     {
-        $businesses = self::find(
-            'parent_id = '.$this->agency_id.' AND status = 1'
+        $params = array(
+            'parent_id' => $this->agency_id,
+            'status' => 1
         );
 
+        $businesses = self::query()->where('parent_id = :parent_id:')
+                                   ->andWhere('status = :status:')
+                                   ->bind($params)
+                                   ->execute();
+
         foreach ($businesses as $business) {
+            $business->deactivated_with_agency = 1;
             $business->status = 0;
             $business->save();
         }
@@ -117,7 +125,21 @@ class Agency extends BaseModel
 
     public function activateBusinesses()
     {
-        // update status = 1 where parent id = agency id
+        $params = array(
+            'parent_id' => $this->agency_id,
+            'deactivated_with_agency' => 1
+        );
+
+        $businesses = self::query()->where('parent_id = :parent_id:')
+                                   ->addWhere('deactivated_with_agency = :deactivated_with_agency:')
+                                   ->bind($params)
+                                   ->execute();
+
+        foreach ($businesses as $business) {
+            $business->deactivated_with_agency = 0;
+            $business->status = 1;
+            $business->save();
+        }
     }
 
     /**
