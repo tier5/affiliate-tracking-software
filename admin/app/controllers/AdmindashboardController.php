@@ -333,8 +333,14 @@ class AdmindashboardController extends ControllerBusinessBase
                 $age2->status = $status;
                 $age2->save();
 
-                if ($agency_type_id == 1 && $status == 0) {
-                    $age2->deactivateBusinesses();
+                if ($agency_type_id == 1) {
+                    if ($status == 0) {
+                        $age2->deactivateBusinesses();
+                        // cancel or pause subscriptions
+                    } else if ($status == 1) {
+                        $age2->activateBusinesses();
+                        // reactivate subscriptions
+                    }
                 }
                 
                 $this->flash->error(
