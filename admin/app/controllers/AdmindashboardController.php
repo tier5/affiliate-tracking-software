@@ -16,7 +16,7 @@ use Vokuro\Models\Subscription;
 use Vokuro\Models\Users;
 
 use Vokuro\Services\UserManager;
-
+use Vokuro\Services\StripeService;
 /**
  * Display the default index page.
  */
@@ -320,25 +320,40 @@ class AdmindashboardController extends ControllerBusinessBase
      */
     public function statusAction($agency_type_id, $agency_id, $status)
     {
-        $age2 = new Agency();
-
         if ($agency_id > 0) {
             $conditions = "agency_id = :agency_id:";
             $parameters = array("agency_id" => $agency_id);
-            $age2 = Agency::findFirst(
+            $agency = Agency::findFirst(
                 array($conditions, "bind" => $parameters)
             );
             
-            if ($age2) {
-                $age2->status = $status;
-                $age2->save();
+            if ($agency) {
+                $agency->status = $status;
+                $agency->save();
 
                 if ($agency_type_id == 1) {
+                    $stripe = new StripeService();
+                    $stripe->connectToStripe();
+
                     if ($status == 0) {
-                        $age2->deactivateBusinesses();
+                        // cancel agency subscription if active
+
+
+                        $subscriptionActive = $stripe->isStripeSubscriptionActive($agency->agency_id);
+
+                        if ($subscriptionActive) {
+                            // get agency subscription
+                            // add 100% off coupon
+                            $stripe->pauseSubscription($agency->agency_id);
+                        }
+
+                        
+                        $agency->deactivateBusinesses();
                         // cancel or pause subscriptions
                     } else if ($status == 1) {
-                        $age2->activateBusinesses();
+                        $stripe->unpauseSubscription($agency->agency_id);
+
+                        $agency->activateBusinesses();
                         // reactivate subscriptions
                     }
                 }
@@ -360,6 +375,7 @@ class AdmindashboardController extends ControllerBusinessBase
                 $this->response->redirect('/admindashboard/list/' . $agency_type_id);
 
         $this->view->disable();
+
         return;
     }
 

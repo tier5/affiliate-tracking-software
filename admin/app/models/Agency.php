@@ -116,6 +116,10 @@ class Agency extends BaseModel
             $business->deactivated_with_agency = 1;
             $business->status = 0;
             $business->save();
+            
+            // check if has subscription + apply 100% off coupon to plan
+            // get subscription id check stripe
+                // check if trial save remaining trial days
         }
     }
 
@@ -139,6 +143,9 @@ class Agency extends BaseModel
             $business->deactivated_with_agency = 0;
             $business->status = 1;
             $business->save();
+
+            // if subscription previously active reenroll - recreate same plan
+                // if trial set up remaining trial days
         }
     }
 
