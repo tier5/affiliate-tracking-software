@@ -1019,7 +1019,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
     // edit site url button and modal
 
-    $('.btnEditSiteURL').on('click', function(e) {
+    var onEditURLclick = function(e) {
         e.preventDefault();
 
         $('#page-wrapper2').show((function(){
@@ -1035,7 +1035,9 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         })());
 
         $('.overlay2').show();
-    });
+    };
+
+    $('.btnEditSiteURL').bind('click', onEditURLclick);
 
     $('.overlay2, .closelink2').on('click', function(e) {
       e.preventDefault();
@@ -1087,11 +1089,16 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           var id = $("#review_site_id").val();
           var url = $("#url").val();
           var newid = element.location_review_site_id;
+          console.log(newid);
           var img_path = element.img_path;
           var name = element.name;
 
           //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink btnSecondary" href="'+url+'" target="_blank" type="view"> View</a><a class="btnLink btnSecondary btnEditSiteURL" href="/location/edit/'+newid+'" data-id="<?=$review_site_list->location_review_site_id?>"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink btnSecondary" href="'+url+'" target="_blank" type="view"> View</a><a class="btnLink btnSecondary btnEditSiteURL" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>" data-id="'+newid+'"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+
+          $('.btnEditSiteURL').unbind('click');
+
+          $('.btnEditSiteURL').bind('click', onEditURLclick);
 
           $("a.review_site_on").click(function() {
             return turnOn($(this).attr("data-id"));
