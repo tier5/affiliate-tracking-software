@@ -188,7 +188,7 @@
                           class="btnLink btnSecondary track-link"  id="facebooklink1" 
                   onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="<?=$review_site_list->url?>" target="_blank"  data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>" type="view">View</a>
                         <?php } else {?> 
-                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
+                          <a href="<?=(($review_site_list->url == '' && $review_site_list->review_site_id == 3) ? 'https://google.com/':$review_site_list->url)?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
                         <?php } ?>
 
                         <a
@@ -1017,20 +1017,24 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       $('.overlay').hide();
     });
 
+    // edit site url button and modal
+
     $('.btnEditSiteURL').on('click', function(e) {
-      e.preventDefault();
+        e.preventDefault();
 
-      $('#page-wrapper2').show();
-      $('.overlay2').show();
+        $('#page-wrapper2').show((function(){
+          var reviewSiteId = $(e.target).attr('data-id');
 
-      var reviewSiteId = $(e.target).attr('data-id');
-      console.log(reviewSiteId);
-      // location review site id
-      $('#reviewSiteId').val(reviewSiteId);
+          console.log(reviewSiteId);
+          // location review site id
+          $('#reviewSiteId').val(reviewSiteId);
 
-      var currentURL = $('#'+reviewSiteId+' a[type=view]').attr('href');
+          var currentURL = $('#'+reviewSiteId+' a[type=view]').attr('href');
 
-      $('#url2').val(currentURL);
+          $('#url2').val(currentURL);
+        })());
+
+        $('.overlay2').show();
     });
 
     $('.overlay2, .closelink2').on('click', function(e) {
