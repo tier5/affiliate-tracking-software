@@ -177,20 +177,38 @@
 
                   if (isset($this->view->review_site_list)) {
                   foreach($this->view->review_site_list as $index => $review_site_list) {
-                  if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
+                    if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
                     
                     ?>
                     <li class="ui-state-default" id='<?=$review_site_list->location_review_site_id?>'>
                       <span class="site-wrapper"><img src="<?=$review_site_list->review_site->icon_path?>" class="imgicon" />
-                        <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { 
-                        if($review_site_list->review_site_id ==1){
-                        ?><a
-                          class="btnLink btnSecondary track-link"  id="facebooklink1" 
+                        <?=$review_site_list->review_site->name?>
+                        </span>
+                        <span class="review_site-buttons">
+                        <?php if ($review_site_list->review_site_id <= 3) { 
+                        if ($review_site_list->review_site_id == 1) {
+                        ?>
+                        <a class="btnLink btnSecondary track-link"  id="facebooklink1" 
                   onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="<?=$review_site_list->url?>" target="_blank"  data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>" type="view">View</a>
-                        <?php } else {?> 
-                          <a href="<?=(($review_site_list->url == '' && $review_site_list->review_site_id == 3) ? 'https://google.com/':$review_site_list->url)?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
+                        <?php } else if($review_site_list->review_site_id == 3) { 
+                                if ($review_site_list->url !== '' && $review_site_list->url !== null) {
+                                    $googleLink = $review_site_list->url;
+                                } else {
+                                    $googleLink = 'https://www.google.com/search?q='
+                                    . urlencode($location->name
+                                    . ', ' . $location->address
+                                    . ', ' . $location->locality
+                                    . ', ' . $location->state_province
+                                    . ', ' . $location->postal_code
+                                    . ', ' . $location->country)
+                                    . '&' . 'ludocid=' 
+                                    . $review_site_list->external_id . '#lrd='
+                                    . $review_site_list->lrd . ',3,5';
+                                } ?>
+                          <a href="<?=$googleLink?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
+                        <?php } else { ?>
+                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
                         <?php } ?>
-
                         <a
                           class="btnLink btnSecondary"
                           href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>">
@@ -1019,7 +1037,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
     // edit site url button and modal
 
-    $('.btnEditSiteURL').on('click', function(e) {
+    var onEditURLclick = function(e) {
         e.preventDefault();
 
         $('#page-wrapper2').show((function(){
@@ -1035,7 +1053,9 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         })());
 
         $('.overlay2').show();
-    });
+    };
+
+    $('.btnEditSiteURL').bind('click', onEditURLclick);
 
     $('.overlay2, .closelink2').on('click', function(e) {
       e.preventDefault();
@@ -1087,11 +1107,16 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           var id = $("#review_site_id").val();
           var url = $("#url").val();
           var newid = element.location_review_site_id;
+          console.log(newid);
           var img_path = element.img_path;
           var name = element.name;
 
           //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink btnSecondary" href="'+url+'" target="_blank" type="view"> View</a><a class="btnLink btnSecondary btnEditSiteURL" href="/location/edit/'+newid+'" data-id="<?=$review_site_list->location_review_site_id?>"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink btnSecondary" href="'+url+'" target="_blank" type="view"> View</a><a class="btnLink btnSecondary btnEditSiteURL" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>" data-id="'+newid+'"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+
+          $('.btnEditSiteURL').unbind('click');
+
+          $('.btnEditSiteURL').bind('click', onEditURLclick);
 
           $("a.review_site_on").click(function() {
             return turnOn($(this).attr("data-id"));
