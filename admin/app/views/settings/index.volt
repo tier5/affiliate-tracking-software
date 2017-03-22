@@ -188,7 +188,7 @@
                         <?php if ($review_site_list->review_site_id <= 3) { 
                         if ($review_site_list->review_site_id == 1) {
                         ?>
-                        <a class="btnLink btnSecondary track-link"  id="facebooklink1" 
+                        <a class="btnLink btnSecondary track-link greenbtn" id="facebooklink1" 
                   onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="<?=$review_site_list->url?>" target="_blank"  data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>" type="view">View</a>
                         <?php } else if($review_site_list->review_site_id == 3) { 
                                 if ($review_site_list->url !== '' && $review_site_list->url !== null) {
@@ -205,28 +205,28 @@
                                     . $review_site_list->external_id . '#lrd='
                                     . $review_site_list->lrd . ',3,5';
                                 } ?>
-                          <a href="<?=$googleLink?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
+                          <a href="<?=$googleLink?>" class="btnLink btnSecondary greenbtn" target="_blank" type="view">View</a>
                         <?php } else { ?>
-                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
+                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary greenbtn" target="_blank" type="view">View</a>
                         <?php } ?>
                         <a
-                          class="btnLink btnSecondary"
+                          class="btnLink btnSecondary greenbtn"
                           href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>">
                           <img src="/img/icon-pencil.png" /> Location</a>
 
                           <!-- Edit URL Button -->
 
                           <a
-                          class="btnLink btnSecondary btnEditSiteURL"
+                          class="btnLink btnSecondary btnEditSiteURL greenbtn"
                           href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"
                           data-id="<?=$review_site_list->location_review_site_id?>">
                           <img src="/img/icon-pencil.png" /> URL</a>
                           <?php } else { ?>
-                          <a class="btnLink btnSecondary" href="<?=$review_site_list->url?>" target="_blank" type="view"> View</a>
+                          <a class="btnLink btnSecondary greenbtn" href="<?=$review_site_list->url?>" target="_blank" type="view"> View</a>
                           <!-- Edit URL Button -->
 
                           <a
-                          class="btnLink btnSecondary btnEditSiteURL"
+                          class="btnLink btnSecondary btnEditSiteURL greenbtn"
                           href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"
                           data-id="<?=$review_site_list->location_review_site_id?>">
                           <img src="/img/icon-pencil.png" /> URL</a>
@@ -261,7 +261,7 @@
                 <label class="col-md-4 control-label">
                 </label>
                 <div class="col-md-8">
-                  <a class="btnLink btnSecondary" id="btnAddReviewSite" href="" target="_blank">Add Review Site</a>
+                  <a class="btnLink btnSecondary greenbtn" id="btnAddReviewSite" href="" target="_blank">Add Review Site</a>
                 </div>
               </div>
             </div>
@@ -788,7 +788,7 @@
             Invalid file type.  Only gif, png, jpg  or jpeg file extensions are allowed.
           </div>
           <div class="col-md-offset-4 col-md-8">
-            {{ submit_button("Save", "class": "btn btn-big btn-success btnLink btnSecondary") }}
+            {{ submit_button("Save", "class": "btn btn-big btn-success btnLink btnSecondary greenbtn") }}
           </div>
         </div>
 
@@ -898,7 +898,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       </div>
       <div class="row">
         <div class="field">
-          <button id="createsite" type="submit" class="btnLink btnSecondary">Save</button>
+          <button id="createsite" type="submit" class="btnLink btnSecondary greenbtn">Save</button>
         </div>
       </div>
       <div style="clear: both;">&nbsp;</div>
@@ -931,7 +931,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       </div>
       <div class="row">
         <div class="field">
-          <button id="editsiteurl" type="submit" class="btnLink btnSecondary" style="float: right;
+          <button id="editsiteurl" type="submit" class="btnLink btnSecondary greenbtn" style="float: right;
     height: 45px;
     padding: 9px 29px;">Save</button>
         </div>
@@ -1112,7 +1112,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           var name = element.name;
 
           //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink btnSecondary" href="'+url+'" target="_blank" type="view"> View</a><a class="btnLink btnSecondary btnEditSiteURL" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>" data-id="'+newid+'"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink btnSecondary greenbtn" href="'+url+'" target="_blank" type="view"> View</a><a class="btnLink btnSecondary btnEditSiteURL greenbtn" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>" data-id="'+newid+'"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
 
           $('.btnEditSiteURL').unbind('click');
 
@@ -1267,3 +1267,8 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
   });
 
 </script>
+<style>
+  .greenbtn {
+    background-color: #67CD4D !important;
+  }
+</style>
