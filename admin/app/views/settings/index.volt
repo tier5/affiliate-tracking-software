@@ -177,20 +177,38 @@
 
                   if (isset($this->view->review_site_list)) {
                   foreach($this->view->review_site_list as $index => $review_site_list) {
-                  if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
+                    if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
                     
                     ?>
                     <li class="ui-state-default" id='<?=$review_site_list->location_review_site_id?>'>
                       <span class="site-wrapper"><img src="<?=$review_site_list->review_site->icon_path?>" class="imgicon" />
-                        <?=$review_site_list->review_site->name?></span><span class="review_site-buttons"><?php if ($review_site_list->review_site_id <= 3) { 
-                        if($review_site_list->review_site_id ==1){
-                        ?><a
-                          class="btnLink btnSecondary track-link"  id="facebooklink1" 
+                        <?=$review_site_list->review_site->name?>
+                        </span>
+                        <span class="review_site-buttons">
+                        <?php if ($review_site_list->review_site_id <= 3) { 
+                        if ($review_site_list->review_site_id == 1) {
+                        ?>
+                        <a class="btnLink btnSecondary track-link"  id="facebooklink1" 
                   onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="<?=$review_site_list->url?>" target="_blank"  data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>" type="view">View</a>
-                        <?php } else {?> 
-                          <a href="<?=(($review_site_list->url == '' && $review_site_list->review_site_id == 3) ? 'https://google.com/':$review_site_list->url)?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
+                        <?php } else if($review_site_list->review_site_id == 3) { 
+                                if ($review_site_list->url !== '' && $review_site_list->url !== null) {
+                                    $googleLink = $review_site_list->url;
+                                } else {
+                                    $googleLink = 'https://www.google.com/search?q='
+                                    . urlencode($location->name
+                                    . ', ' . $location->address
+                                    . ', ' . $location->locality
+                                    . ', ' . $location->state_province
+                                    . ', ' . $location->postal_code
+                                    . ', ' . $location->country)
+                                    . '&' . 'ludocid=' 
+                                    . $review_site_list->external_id . '#lrd='
+                                    . $review_site_list->lrd . ',3,5';
+                                } ?>
+                          <a href="<?=$googleLink?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
+                        <?php } else { ?>
+                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary" target="_blank" type="view">View</a>
                         <?php } ?>
-
                         <a
                           class="btnLink btnSecondary"
                           href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>">
