@@ -188,8 +188,8 @@
                         <?php if ($review_site_list->review_site_id <= 3) { 
                         if ($review_site_list->review_site_id == 1) {
                         ?>
-                        <a class="btnLink btnSecondary track-link greenbtn" id="facebooklink1" 
-                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="<?=$review_site_list->url?>" target="_blank"  data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>" type="view">View</a>
+                        <a class="btnLink btnSecondary track-link <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" id="facebooklink1" 
+                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$review_site_list->url:'#')?>" data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>" type="view">View</a>
                         <?php } else if($review_site_list->review_site_id == 3) { 
                                 if ($review_site_list->url !== '' && $review_site_list->url !== null) {
                                     $googleLink = $review_site_list->url;
@@ -205,9 +205,9 @@
                                     . $review_site_list->external_id . '#lrd='
                                     . $review_site_list->lrd . ',3,5';
                                 } ?>
-                          <a href="<?=$googleLink?>" class="btnLink btnSecondary greenbtn" target="_blank" type="view">View</a>
+                          <a href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$googleLink:'#')?>" class="btnLink btnSecondary <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" type="view">View</a>
                         <?php } else { ?>
-                          <a href="<?=$review_site_list->url?>" class="btnLink btnSecondary greenbtn" target="_blank" type="view">View</a>
+                          <a href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$review_site_list->url:'#')?>" class="btnLink btnSecondary <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" type="view">View</a>
                         <?php } ?>
                         <a
                           class="btnLink btnSecondary greenbtn"
@@ -222,7 +222,7 @@
                           data-id="<?=$review_site_list->location_review_site_id?>">
                           <img src="/img/icon-pencil.png" /> URL</a>
                           <?php } else { ?>
-                          <a class="btnLink btnSecondary greenbtn" href="<?=$review_site_list->url?>" target="_blank" type="view"> View</a>
+                          <a class="btnLink btnSecondary <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$review_site_list->url:'#')?>" target="_blank" type="view">View</a>
                           <!-- Edit URL Button -->
 
                           <a
@@ -1112,7 +1112,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           var name = element.name;
 
           //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink btnSecondary greenbtn" href="'+url+'" target="_blank" type="view"> View</a><a class="btnLink btnSecondary btnEditSiteURL greenbtn" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>" data-id="'+newid+'"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif"  class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons"><a class="btnLink btnSecondary greenbtn" href="'+url+'" target="_blank" type="view">View</a><!-- Edit URL Button --><a class="btnLink btnSecondary btnEditSiteURL greenbtn" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>" data-id="'+newid+'"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif" class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
 
           $('.btnEditSiteURL').unbind('click');
 
@@ -1270,5 +1270,13 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 <style>
   .greenbtn {
     background-color: #67CD4D !important;
+  }
+
+  .graybtn {
+    background-color: gray;
+  }
+
+  .graybtn:hover {
+    background-color: gray;
   }
 </style>
