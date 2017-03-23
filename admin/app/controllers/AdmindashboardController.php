@@ -338,7 +338,6 @@ class AdmindashboardController extends ControllerBusinessBase
                     if ($status == 0) {
                         // cancel agency subscription if active
 
-
                         $subscriptionActive = $stripe->isStripeSubscriptionActive($agency->agency_id);
 
                         if ($subscriptionActive) {

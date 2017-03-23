@@ -348,6 +348,7 @@ class ControllerBusinessBase extends ControllerBase
                 'subscription_valid' => (isset($age->subscription_valid) ? $age->subscription_valid : 'Y'),
                 'parent_id'          => $parent_id,
                 'review_invite_type_id' => 1,
+                'deactivated_with_agency' => 0,
                 'custom_sms'=>$this->request->getPost('custom_sms'),
                 'signup_page'=>2,
             ];

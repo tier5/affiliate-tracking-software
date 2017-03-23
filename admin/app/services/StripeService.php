@@ -376,7 +376,7 @@ class StripeService extends BaseService
         return false;
     }
 
-    private function pauseSubscription($agencyId)
+    public function pauseSubscription($agencyId)
     {
         $subscriptionDB = $this->getSubscriptionFromDb($agencyId);
         $subscriptionId = $subscriptionDB['stripe_subscription_id'];
