@@ -7,6 +7,7 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
 use Vokuro\Models\Subscription;
 use \Phalcon\Mvc\Model\Validator\Regex;
 use \Phalcon\Mvc\Model\Validator\Email;
+use Vokuro\Services\StripeService;
 
 class Agency extends BaseModel
 {
@@ -112,10 +113,17 @@ class Agency extends BaseModel
                                    ->bind($params)
                                    ->execute();
 
+        $stripe = new StripeService();
+
         foreach ($businesses as $business) {
             $business->deactivated_with_agency = 1;
             $business->status = 0;
             $business->save();
+
+            $stripe->pauseSubscription($business->agency_id);
+            // check if has subscription + apply 100% off coupon to plan
+            // get subscription id check stripe
+                // check if trial save remaining trial days
         }
     }
 
@@ -135,10 +143,14 @@ class Agency extends BaseModel
                                    ->bind($params)
                                    ->execute();
 
+        $stripe = new StripeService();
+
         foreach ($businesses as $business) {
             $business->deactivated_with_agency = 0;
             $business->status = 1;
             $business->save();
+
+            $stripe->unpauseSubscription($business->agency_id);
         }
     }
 

@@ -5,6 +5,7 @@ namespace Vokuro\Services;
 use Vokuro\Auth\Auth;
 use Vokuro\Models\Agency;
 use Vokuro\Models\Users;
+use Vokuro\Models\StripeSubscriptions;
 use Stripe;
 
 /**
@@ -26,7 +27,7 @@ class StripeService extends BaseService
 	 * @return void
 	 */
 
-	private function connectToStripe() 
+	public function connectToStripe() 
 	{
 		$this->stripePublic = $this->config->stripe->publishable_key;
 		$this->stripeSecret = $this->config->stripe->secret_key;
@@ -47,12 +48,14 @@ class StripeService extends BaseService
 
         $this->stripePublic = $stripeKeys['public'];
         $this->stripeSecret = $stripeKeys['secret'];
+
+        \Stripe\Stripe::setApiKey($this->stripeSecret);
 	}
 
 	public function getStripeAccountInfo()
 	{
 		$this->setAgencyStripeKeys();
-    	$this->connectToStripe();
+
         $account = \Stripe\Account::retrieve();
 
         return $account;
@@ -62,7 +65,7 @@ class StripeService extends BaseService
     {
     	$userId = $this->auth->getIdentity()['id'];
 
-        $agencyId = Users::findFirst(
+        $agencyId = User::findFirst(
             "id = $userId"
         )->agency_id;
 
@@ -74,7 +77,6 @@ class StripeService extends BaseService
     public function getAvailableCurrencies()
     {
     	$this->setAgencyStripeKeys();
-    	$this->connectToStripe();
 
         $country = $this->getStripeAccountInfo()->country;
         $currencies = \Stripe\CountrySpec::retrieve($country)->supported_payment_currencies;
@@ -264,5 +266,149 @@ class StripeService extends BaseService
         }
 
         return '';
+    }
+
+    public function getStripeSubscription($agencyId)
+    {
+        $admin = $this->getSuperUser($agencyId);
+        $stripeSubscriptionId = '';
+        $stripeSubscription = '';
+    }
+
+    /**
+     * Get Super admin for Business/agency
+     *
+     * @param (int) $businessId
+     * @return mixed
+     */
+
+    private function getSuperUser($businessId) 
+    {
+        $superUser = Users::findFirst(array(
+            'conditions' => 'agency_id = ' . $businessId . ' AND role="Super Admin"'
+        ));
+
+        if($superUser) {
+            $superUser = $superUser->toArray();
+        }
+
+        return $superUser;
+    }
+
+    /**
+     * Get Stripe subscription data in our db
+     *
+     * @param (int) $businessId
+     * @return mixed array or false
+     */
+
+    private function getSubscriptionFromDb($businessId) 
+    {
+        $superUser = $this->getSuperUser($businessId);
+        
+        if (!$superUser) {
+            return false;
+        }
+
+        $userId = $superUser['id'];
+
+        $subscription = StripeSubscriptions::findFirst(
+            'user_id = '.$userId
+        );
+
+        if (count($subscription) === 0) {
+            return false;
+        }
+
+        return $subscription->toArray();
+    }
+
+    /**
+     * Does subscription exist in Stripe and is it active
+     *
+     * @param (string) $subscriptionId
+     * @return (bool)
+     */
+
+    private function subscriptionExistsInStripe($subscriptionId) 
+    {
+        // is status active, trialing, active, past_due, canceled, or unpaid
+        try {
+            $status = \Stripe\Subscription::retrieve($subscriptionId)->status;
+            
+            if($status === 'active') {
+                return true;
+            }
+
+            return false;
+        } catch (\Stripe\Error\InvalidRequest $e) {
+            $err = $e->getJsonBody();
+            $message = $err['error']['message'];
+
+            if (strpos($message, 'No such subscription') !== false) {
+                return false;
+            }
+
+            // attribute to Stripe error
+            return true;
+        } catch (Exception $e) {
+            // stripe error
+            return true;
+        }
+    }
+
+
+    public function isStripeSubscriptionActive($agencyId)
+    {
+        $subscriptionDB = $this->getSubscriptionFromDb($agencyId);
+        $subscriptionId = $subscriptionDB['stripe_subscription_id'];
+
+        if ($subscriptionId === false || $subscriptionId === 'N' || empty($subscriptionId)) {
+            return false;
+        }
+
+        $subscription = $this->subscriptionExistsInStripe($subscriptionId);
+
+        if ($subscription) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function pauseSubscription($agencyId)
+    {
+        $subscriptionDB = $this->getSubscriptionFromDb($agencyId);
+        $subscriptionId = $subscriptionDB['stripe_subscription_id'];
+
+        try {
+            // retrieve pause coupon
+            \Stripe\Coupon::retrieve("pause");
+        } catch(Exception $e) {
+            // create if doesn't exist
+            \Stripe\Coupon::create(array(
+                "percent_off" => 100,
+                "duration" => "forever",
+                "id" => "pause"
+            ));
+        }
+
+        // retrieve subscription
+        $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+
+        $subscription->coupon = 'pause';
+        $subscription->save();
+    }
+
+    public function unpauseSubscription($agencyId)
+    {
+        $subscriptionDB = $this->getSubscriptionFromDb($agencyId);
+        $subscriptionId = $subscriptionDB['stripe_subscription_id'];
+
+        // retrieve subscription
+        $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+
+        $subscription->coupon = null;
+        $subscription->save();
     }
 }

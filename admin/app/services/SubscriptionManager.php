@@ -963,9 +963,15 @@ class SubscriptionManager extends BaseService
     public function getSubscriptionCurrency($UserID)
     {
         $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst('user_id = ' . $UserID);
-
+        
+        if (!$objSubscriptionPlan) {
+            $condition = 'user_id = ' . $UserID;
+        } else {
+            $condition = 'id = ' . $objSubscriptionPlan->subscription_pricing_plan_id;
+        }
+        
         $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
-            'id = ' . $objSubscriptionPlan->subscription_pricing_plan_id
+            $condition
         );
 
         return $objSubscriptionPricingPlan->currency;
