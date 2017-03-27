@@ -1273,7 +1273,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
   }
 
   .graybtn {
-    background-color: gray;
+    background-color: gray !important;
   }
 
   .graybtn:hover {
