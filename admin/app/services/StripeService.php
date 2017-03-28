@@ -65,7 +65,7 @@ class StripeService extends BaseService
     {
     	$userId = $this->auth->getIdentity()['id'];
 
-        $agencyId = User::findFirst(
+        $agencyId = Users::findFirst(
             "id = $userId"
         )->agency_id;
 
