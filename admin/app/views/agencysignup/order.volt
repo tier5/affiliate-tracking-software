@@ -1,3 +1,11 @@
+<style>
+    .right-column {
+        background-color: rgb(255, 253, 201);
+        padding-left: 35px;
+        padding-bottom: 35px;
+        margin-top: 20px;
+    }
+</style>
 <form method="post" action="/agencysignup/submitorder" id="payment-form">
     <?php
         if($_GET['sbyp'] || $_POST['sbyp'])
@@ -6,7 +14,7 @@
     <input type="hidden" name="sbyp" value="{{ sbyp }}" />
     <span class="payment-errors"></span>
     <div class="row small-vertical-margins">
-        <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 col-xs-offset-1 col-md-offset-1">
+        <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2 col-xs-offset-1 col-md-offset-1 col-lg-offset-0">
             <img class="logo-order" src="/img/logo-white.gif" alt="Get Mobile Reviews" />
         </div>
         <div class="col-xs-7 col-sm-4 col-sm-offset-4 col-lg-3 col-md-offset-6">
@@ -50,7 +58,6 @@
                         	<label>Email
                         		<span class="required">*</span></label>
                         		<span style="color:red; font-size:80%; float: right,bottom;  white-space:nowrap;" id="Email_availability_result"></span>
-                      
                         </div>
                         <div class="col-xs-7 col-lg-9">
                         	<input type="text" id="OwnerEmail" maxlength="50" class="form-control" placeholder="Please enter your email" name="OwnerEmail" value="{{ OwnerEmail }}" required />
@@ -184,13 +191,24 @@
             </div>
 
             <div class="col-xs-12 deal-section text-justify">
-                White Label Agency Account with 10 active locations & unlimited FREE trials.  $297 activation fee (includes first month’s service) then just $100/mo
+                {% if TrialAmount %}
+                    White Label Agency Account With {{ NumLocations }} Active Locations & Unlimited FREE Trial Business Accounts. Get Started Today On A {{ TrialAmount }} Day FREE Trial, then just ${{ Rate }} A Month!
+                {% else %}
+                    White Label Agency Account With {{ NumLocations }} Active Locations & Unlimited FREE Trial Business Accounts.  {% if ActivationFee > 0 %}${{ ActivationFee }} Activation Fee (Includes First Month’s Service) Then{% endif %} Just ${{ Rate }} A Month!
+                {% endif %}
             </div>
 
 
             <div class="col-xs-12 total-section">
                 <div style="float: left;">Total Due Today:</div>
-                <div style="float: right;">$297</div>
+                <div style="float: right;">
+                    {% if TrialAmount %}
+                        $0
+                    {% else %}
+                    <?php $TotalDue = $ActivationFee + $Rate; ?>
+                        ${{ TotalDue }}
+                    {% endif %}
+                </div>
             </div>
             <div class="col-xs-12 col-xs-offset-1 submit-section">
                 <button class="big-green-button submit" id="BigGreenSubmit">Submit Order</button><br>
@@ -198,27 +216,16 @@
             </center></div>
         </div>
     </div>
-    <div class="col-xs-3 col-xs-offset-1 hidden-xs hidden-sm">
-        <div class="row">
-            <img class="center-block" src="/img/agencysignup/monitor_dashboard.png" alt="Dashboard" />
-        </div>
-        <div class="row right-header">
-            What You Get With Get Mobile Reviews
+    <div class="col-xs-3 col-xs-offset-1 hidden-xs hidden-sm right-column">
+        <div class="row right-main-header">
+            What You Get
         </div>
         <div class="row right-feature">
             <div class="col-xs-1">
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                White Label Reputation Management Agency Account With Your Own Company Branding and URL
-            </div>
-        </div>
-        <div class="row right-feature">
-            <div class="col-xs-1">
-                <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
-            </div>
-            <div class="col-xs-10">
-                Complete Done-For-You Reputation Management Agency In A Box Solution From Lead to Fulfillment
+                White Label Local Business Listings & Reputation Scanning Tool With Your Branding
             </div>
         </div>
         <div class="row right-feature">
@@ -226,7 +233,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Employee Gamification With Leaderboards To Keep Businesses Engage
+                Customized Landing Branded To Your Company On Your Own URL Ready For Paid Traffic
             </div>
         </div>
         <div class="row right-feature">
@@ -234,7 +241,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Unlimited Trial Accounts To Help You Maximize Lead Conversion Potential
+                Multiple Scanning Tool Embed Options For Your Website (Large Form, Slide-In Form, Slim Form, & Small Form)
             </div>
         </div>
         <div class="row right-feature">
@@ -242,7 +249,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Viral Account Engine Rewards Businesses For Giving Away Trial Accounts For You
+                Immediate Email & SMS Notifications Of New Leads
             </div>
         </div>
         <div class="row right-feature">
@@ -250,7 +257,7 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Built In Payment Processing To Efficiently Build Your Recurring Revenue
+                Review Monitoring On Top Directories & Niche Sites - Daily, Weekly, & Monthly Reporting To Customers
             </div>
         </div>
         <div class="row right-feature">
@@ -258,7 +265,15 @@
                 <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
             </div>
             <div class="col-xs-10">
-                Duplicate Account Prevention Ensures Exclusivity Of New Account Trials
+                Stripe Payment Integrations To Accept Payments
+            </div>
+        </div>
+        <div class="row right-feature">
+            <div class="col-xs-1">
+                <img src="/img/agencysignup/green_checkmark.png" alt="Check!" />
+            </div>
+            <div class="col-xs-10">
+                Agency Dashboard To Manage Prospects, Leads, & Customers
             </div>
         </div>
         <div class="row right-header">
@@ -283,8 +298,8 @@
 <div class="content">
     {{ content() }}
 </div>
-<footer>
-    <div class="copyright"> &copy; Copyright Get Mobile Reviews.  All Rights Reserved. </div>
+
+
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
@@ -312,7 +327,7 @@
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script type="text/javascript" src="/js/vendor/minicolors/jquery.minicolors.js"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
-</footer>
+
 
 <!-- BEGIN LOGIN -->
 

@@ -810,6 +810,7 @@ class SubscriptionManager extends BaseService
             'InitialFee' => $objPricingPlan->initial_fee,
             'RecurringPayment' => $objPricingPlan->number_of_businesses * $objPricingPlan->price_per_business,
             'PlanID' => $objPricingPlan->id,
+            'TrialPeriod' => $objPricingPlan->trial_period,
         ];
     }
 

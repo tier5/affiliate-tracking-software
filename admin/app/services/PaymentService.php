@@ -380,14 +380,17 @@ class PaymentService extends BaseService
 
             $currency = $subscriptionManager->getSubscriptionCurrency($userId);
 
-            // $currency = 'usd';
-            \Stripe\Plan::create([
+            $tPlanParameters = [
                 'amount'    => $Amount,
                 'interval'  => $Interval,
                 'name'      => $Name,
                 'currency'  => $currency,
                 'id'        => $PlanID
-            ]);
+            ];
+            if(isset($ccParameters['trial_period']) && $ccParameters['trial_period'])
+                $tPlanParameters['trial_period_days'] = $ccParameters['trial_period'];
+
+            \Stripe\Plan::create($tPlanParameters);
 
             if ($objStripeSubscription->stripe_subscription_id != 'N' && $objStripeSubscription->stripe_subscription_id) {
                 $StripeSubscription = \Stripe\Subscription::retrieve($objStripeSubscription->stripe_subscription_id);
