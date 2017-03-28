@@ -313,7 +313,7 @@ class StripeService extends BaseService
         $userId = $superUser['id'];
 
         $subscription = StripeSubscriptions::findFirst(
-            'user_id = '.$userId
+            'user_id = ' . $userId
         );
 
         if (count($subscription) === 0) {
@@ -394,7 +394,13 @@ class StripeService extends BaseService
         }
 
         // retrieve subscription
-        $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+        if (!empty($subscriptionId)) {
+            try {
+                $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+            } catch(Exception $e) {
+                return 0;
+            }
+        }        
 
         $subscription->coupon = 'pause';
         $subscription->save();
@@ -406,7 +412,13 @@ class StripeService extends BaseService
         $subscriptionId = $subscriptionDB['stripe_subscription_id'];
 
         // retrieve subscription
-        $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+        if (!empty($subscriptionId)) {
+            try {
+                $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+            } catch(Exception $e) {
+                return 0;
+            }
+        }
 
         $subscription->coupon = null;
         $subscription->save();
