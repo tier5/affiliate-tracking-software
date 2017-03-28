@@ -13,6 +13,12 @@
         protected $EncryptionKey = "0bf14113f8d657cbb4aad17753592fd4d278672f0cd6f8d4722bd907965786bf";
         protected $DefaultSubscription = "197 Ten for ten";
         protected $DefaultUpgradeSubscription = "197 Twenty for eight";
+        // The following fields are used for text on the order form.
+        protected $DefaultActivationFee = 297;
+        protected $DefaultNumLocations = 10;
+        protected $DefaultRate = 100;
+        protected $DefaultTrialAmount = 0;
+
         /**
          * @var array All fields from the sign up process.  Keys are the form variable names.  Values are the DB names (if they exist.
          */
@@ -396,15 +402,20 @@
 
         /**
          * Current subscriptons plan work as this.  The hash to the right represents the subscription label to the left.  The "Upgrade" button refers to the subscription immediately following the previous subscription so sbyp should never be a subscription "X Twenty for eight"
-            0 Ten for ten -         P7NhtxYfDIxoJl%2FxF20M%2Bw%3D%3D
-            0 Twenty for eight -    dnQyMo1njuKgu8ZDzyen5A%3D%3D
-            97 Ten for ten -        JIJTX0QscOKPJcnueOPehQ%3D%3D
-            97 Twenty for eight -   lIqhi1DFsZLPIu8vf7uJbA%3D%3D
-            197 Ten for ten -       17MmTfedKoKXdfRkQbRvKQ%3D%3D
-            197 Twenty for eight -  8Sv1GFdmxcpM6YnIwaD3sg%3D%3D
+            0 Ten for ten -                 P7NhtxYfDIxoJl%2FxF20M%2Bw%3D%3D
+            0 Twenty for eight -            dnQyMo1njuKgu8ZDzyen5A%3D%3D
+            97 Ten for ten -                JIJTX0QscOKPJcnueOPehQ%3D%3D
+            97 Twenty for eight -           lIqhi1DFsZLPIu8vf7uJbA%3D%3D
+            197 Ten for ten -               17MmTfedKoKXdfRkQbRvKQ%3D%3D
+            197 Twenty for eight -          8Sv1GFdmxcpM6YnIwaD3sg%3D%3D
+            0 Ten for ten 14 Trial -        7RaRezYllTOv8kMBzqreXQ%3D%3D
 
             Sample URL - http://getmobilereviews.com/agencysignup/order?sbyp=17MmTfedKoKXdfRkQbRvKQ%3D%3D
          */
+
+        public function GetHashFromID($ID) {
+            return openssl_encrypt(7, 'aes-256-cbc', hex2bin($this->EncryptionKey));
+        }
 
         /**
          * Auto populate the session with form data, set their appropriate view variables and determine current step.
@@ -412,7 +423,9 @@
         public function initialize()
         {
             $this->TLDomain = $this->view->TLDomain = $this->config->application->domain;
-
+            /**
+             * GARY_TODO:  Fix this eye sore.  I hate the way I did this.  Maybe add an upgrade plan field to the pricing plan table so this isn't an issue.
+             */
             if ($_GET['sbyp'] || $_POST['sbyp']) {
                 $sbyp = $_GET['sbyp'] ? $_GET['sbyp'] : $_POST['sbyp'];
                 // For current measures, the id should always be odd due to the way the signup process works.  Otherwise use the defaults
@@ -420,9 +433,18 @@
                 if ($id % 2 == 0) {
                     $this->CurrentSubscription = $this->DefaultSubscription;
                     $this->CurrentUpgradeSubscription = $this->DefaultUpgradeSubscription;
+                    $this->view->ActivationFee = $this->DefaultActivationFee;
+                    $this->view->NumLocations = $this->DefaultNumLocations;
+                    $this->view->Rate = $this->DefaultRate;
+                    $this->view->TrialAmount = $this->DefaultTrialAmount;
                 } else {
-                    $this->CurrentSubscription = $this->GetAgencyPricingPlanByHash($sbyp);
-                    $id++;
+                    $objSubscription = $this->GetAgencyPricingPlanByHash($sbyp);
+                    $this->view->ActivationFee = $objSubscription->initial_fee;
+                    $this->view->NumLocations = $objSubscription->number_of_businesses;
+                    $this->view->Rate = $objSubscription->price_per_business * $objSubscription->number_of_businesses;
+                    $this->view->TrialAmount = $objSubscription->trial_period;
+                    $this->CurrentSubscription = $objSubscription->name;
+                    $id = $id == 7 ? 2 : $id+1;
                     $objUpgradeSubscription = \Vokuro\Models\AgencyPricingPlan::findFirst("id = {$id}");
                     if ($objUpgradeSubscription) {
                         $this->CurrentUpgradeSubscription = $objUpgradeSubscription->name;
@@ -430,11 +452,19 @@
                         // Again going to fallback on defaults
                         $this->CurrentSubscription = $this->DefaultSubscription;
                         $this->CurrentUpgradeSubscription = $this->DefaultUpgradeSubscription;
+                        $this->view->ActivationFee = $this->DefaultActivationFee;
+                        $this->view->NumLocations = $this->DefaultNumLocations;
+                        $this->view->Rate = $this->DefaultRate;
+                        $this->view->TrialAmount = $this->DefaultTrialAmount;
                     }
                 }
             } else {
                 $this->CurrentSubscription = $this->DefaultSubscription;
                 $this->CurrentUpgradeSubscription = $this->DefaultUpgradeSubscription;
+                $this->view->ActivationFee = $this->DefaultActivationFee;
+                $this->view->NumLocations = $this->DefaultNumLocations;
+                $this->view->Rate = $this->DefaultRate;
+                $this->view->TrialAmount = $this->DefaultTrialAmount;
             }
 
             if (!$this->session->set_Signup) {
@@ -518,15 +548,6 @@
 
         protected function CreateAgency($tData)
         {
-            // echo $this->session->Signup_step;exit;
-            /*$objAgency = new Agency();
-                foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
-                    if($dbField) {
-                        echo $dbField.'<br>';
-                    }
-                }
-            echo '<pre>';print_r($this->tAgencyFieldTranslation);//exit;
-            echo '<pre>';print_r($tData);exit;*/
             try {
                 $objAgency = new Agency();
                 foreach ($this->tAgencyFieldTranslation as $FormField => $dbField) {
@@ -667,6 +688,7 @@
                     'initial_amount'            => $SkipInitial ? 0 : $tData['PricingPlan']['InitialFee'] * 100,
                     'type'                      => 'Agency',
                     'phone'                     => $tData['Phone'],
+                    'trial_period'              => $tData['PricingPlan']['TrialPeriod']
                 ];
 
                 // GARY_TODO:  Refactor:  No reason to have to query the DB here.
@@ -710,7 +732,9 @@
             $objPricingPlan = null;
             if ($id)
                 $objPricingPlan = \Vokuro\Models\AgencyPricingPlan::findFirst("id = {$id}");
-            return $objPricingPlan ? $objPricingPlan->name : $this->DefaultSubscription;
+
+            $objPricingPlan = $objPricingPlan ?: \Vokuro\Models\AgencyPricingPlan::findFirst("name = '{$this->DefaultSubscription}'");
+            return $objPricingPlan;
         }
 
 

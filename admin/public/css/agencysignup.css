@@ -78,9 +78,17 @@ body {
     margin-bottom: 70px;
 }
 
-.right-header {
+.right-main-header {
     font-family: 'Open Sans', sans-serif;
     color: #293742;
+    font-weight: 900;
+    font-size: 24px;
+    margin-top: 20px;
+}
+
+.right-header {
+    font-family: 'Open Sans', sans-serif;
+    color: rgb(122, 132, 85);
     font-weight: 600;
     font-size: 20px;
     margin-top: 20px;
