@@ -859,6 +859,9 @@
 //make sure we are at the location level settings
 if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
 ?>
+
+<!-- Add new review site modal -->
+
 <div class="overlay" style="display: none;"></div>
 <div id="page-wrapper" class="create createreviewsiteform" style="display: none;">
   <form id="createreviewsiteform" class="register-form4" action="/settings/siteadd/<?=$this->session->get('auth-identity')['location_id']?>/" method="post" style="display: block;">
@@ -887,6 +890,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
                 }
               }
           ?>
+            <option value="other">Other</option>
           </select>
         </div>
       </div>
