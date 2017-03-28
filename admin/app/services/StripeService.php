@@ -316,7 +316,7 @@ class StripeService extends BaseService
             'user_id = ' . $userId
         );
 
-        if (count($subscription) === 0) {
+        if (count($subscription) === 0 || $subscription === false) {
             return false;
         }
 
