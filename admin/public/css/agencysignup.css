@@ -3,6 +3,14 @@ body {
     border-top: 10px solid #2a3644;
 }
 
+.right-column {
+    background-color: rgb(255, 253, 201);
+    padding-left: 35px;
+    padding-bottom: 35px;
+    margin-top: 20px;
+    margin-left: 40px !important;
+}
+
 .growth-bar {
     border-radius: 0;
 }
