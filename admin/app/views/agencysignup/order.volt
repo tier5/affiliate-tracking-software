@@ -1,11 +1,3 @@
-<style>
-    .right-column {
-        background-color: rgb(255, 253, 201);
-        padding-left: 35px;
-        padding-bottom: 35px;
-        margin-top: 20px;
-    }
-</style>
 <form method="post" action="/agencysignup/submitorder" id="payment-form">
     <?php
         if($_GET['sbyp'] || $_POST['sbyp'])
@@ -143,12 +135,6 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-12">
-                <img class="center-block" src="/img/agencysignup/credit_cards.png" alt="We accept Visa MasterCard American Express Discover" />
-            </div>
-        </div>
-
         <div class="row subscription-panel-group portlet light bordered small-vertical-margins">
             <div class="col-xs-12 col-lg-9">
                 <div class="">
@@ -158,9 +144,16 @@
                         	<span class="required">*</span>
                         	<span style="color:red; font-size:80%; float: right;  white-space:nowrap;" id="Valid_credit_card_number_result"></span>	
                         </div>
-                        <div class="col-xs-12 col-lg-9">
+                        <div class="col-xs-12 col-lg-8">
                         	<input name="CreditCardNumber" id="CreditCardNumber" maxlength="16" size="16" type="text" class="form-control" required data-stripe="number" />
                         </div>
+                        <div class="hidden-xs hidden-sm col-lg-1">
+                            <img class="center-block" src="/img/agencysignup/credit_cards.png" alt="We accept Visa MasterCard American Express Discover" />
+                        </div>
+                    </div>
+                    <div class="row contact-row">
+                        <div class="col-xs-12 col-lg-3"><label>CVC</label></div>
+                        <div class="col-xs-12 col-lg-8"><input maxlength="4" size="4" type="text" class="form-control" data-stripe="cvc" /></div>
                     </div>
                     <div class="row contact-row">
                         <div class="col-xs-12 col-lg-3"><label>Exp. Date</label><span class="required">*</span></div>
@@ -171,24 +164,24 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-xs-6 col-lg-4">
+                        <div class="col-xs-6 col-lg-3">
                             <select class="form-control" data-stripe="exp_year">
                                 {% for Year in tYears %}
                                     <option value="<?=substr($Year, -2); ?>">{{ Year }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                    </div>
-                    <div class="row contact-row">
-                        <div class="col-xs-12 col-lg-3"><label>CVC</label></div>
-                        <div class="col-xs-12 col-lg-9"><input maxlength="4" size="4" type="text" class="form-control" data-stripe="cvc" /></div>
+                        <div class="col-xs-12 col-lg-1">
+                            <div class="col-xs-offset-2 col-xs-5 col-lg-offset-0">
+                                <span id="siteseal">
+                                    <script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=umKwirMP3LZxPHdMDSMSTvPxXVGgTtvG4cGYHfMfmcxcWXYeBD0QvXRH5MuQ"></script>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-3 ">
-	            <span id="siteseal"><Br><br><Br>
-	            	<script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=umKwirMP3LZxPHdMDSMSTvPxXVGgTtvG4cGYHfMfmcxcWXYeBD0QvXRH5MuQ"></script></span>
-            </div>
+
 
             <div class="col-xs-12 deal-section text-justify">
                 {% if TrialAmount %}
