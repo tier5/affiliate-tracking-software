@@ -406,6 +406,8 @@ class StripeService extends BaseService
             } catch(Exception $e) {
                 return 0;
             }
+        } else {
+            return 0;
         }        
 
         $subscription->coupon = 'pause';
