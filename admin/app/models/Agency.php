@@ -115,7 +115,7 @@ class Agency extends BaseModel
 
         $stripe = new StripeService();
 
-        $stripe->setAgencyStripeKeys();
+        $stripe->setAgencyStripeKeys($this->agency_id);
 
         foreach ($businesses as $business) {
             $business->deactivated_with_agency = 1;
@@ -147,7 +147,7 @@ class Agency extends BaseModel
 
         $stripe = new StripeService();
 
-        $stripe->setAgencyStripeKeys();
+        $stripe->setAgencyStripeKeys($this->agency_id);
 
         foreach ($businesses as $business) {
             $business->deactivated_with_agency = 0;

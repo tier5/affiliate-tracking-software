@@ -41,10 +41,16 @@ class StripeService extends BaseService
 	 * @return void
 	 */
 
-	public function setAgencyStripeKeys()
+	public function setAgencyStripeKeys($agencyId = null)
 	{
-		$stripeKeys = $this->getCurrentAgency()
-						   ->getStripeKeys();
+        if ($agencyId === null) {
+            $stripeKeys = $this->getCurrentAgency()
+                               ->getStripeKeys();
+        } else {
+            $stripeKeys = Agency::findFirst(
+                "agency_id = $agencyId"
+            )->getStripeKeys();
+        }
 
         $this->stripePublic = $stripeKeys['public'];
         $this->stripeSecret = $stripeKeys['secret'];
