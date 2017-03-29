@@ -403,7 +403,7 @@ class StripeService extends BaseService
         if (!empty($subscriptionId)) {
             try {
                 $subscription = \Stripe\Subscription::retrieve($subscriptionId);
-            } catch(Stripe_Error $e) {
+            } catch(\Stripe\Error\Base $e) {
                 return 0;
             } catch(Exception $e) {
                 return 0;
@@ -425,7 +425,7 @@ class StripeService extends BaseService
         if (!empty($subscriptionId)) {
             try {
                 $subscription = \Stripe\Subscription::retrieve($subscriptionId);
-            } catch(Stripe_Error $e) {
+            } catch(\Stripe\Error\Base $e) {
                 return 0;
             } catch(Exception $e) {
                 return 0;
