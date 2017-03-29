@@ -41,10 +41,16 @@ class StripeService extends BaseService
 	 * @return void
 	 */
 
-	public function setAgencyStripeKeys()
+	public function setAgencyStripeKeys($agencyId = null)
 	{
-		$stripeKeys = $this->getCurrentAgency()
-						   ->getStripeKeys();
+        if ($agencyId === null) {
+            $stripeKeys = $this->getCurrentAgency()
+                               ->getStripeKeys();
+        } else {
+            $stripeKeys = Agency::findFirst(
+                "agency_id = $agencyId"
+            )->getStripeKeys();
+        }
 
         $this->stripePublic = $stripeKeys['public'];
         $this->stripeSecret = $stripeKeys['secret'];
@@ -65,7 +71,7 @@ class StripeService extends BaseService
     {
     	$userId = $this->auth->getIdentity()['id'];
 
-        $agencyId = User::findFirst(
+        $agencyId = Users::findFirst(
             "id = $userId"
         )->agency_id;
 
@@ -313,10 +319,10 @@ class StripeService extends BaseService
         $userId = $superUser['id'];
 
         $subscription = StripeSubscriptions::findFirst(
-            'user_id = '.$userId
+            'user_id = ' . $userId
         );
 
-        if (count($subscription) === 0) {
+        if (count($subscription) === 0 || $subscription === false) {
             return false;
         }
 
@@ -394,7 +400,13 @@ class StripeService extends BaseService
         }
 
         // retrieve subscription
-        $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+        if (!empty($subscriptionId)) {
+            try {
+                $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+            } catch(Exception $e) {
+                return 0;
+            }
+        }        
 
         $subscription->coupon = 'pause';
         $subscription->save();
@@ -406,7 +418,13 @@ class StripeService extends BaseService
         $subscriptionId = $subscriptionDB['stripe_subscription_id'];
 
         // retrieve subscription
-        $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+        if (!empty($subscriptionId)) {
+            try {
+                $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+            } catch(Exception $e) {
+                return 0;
+            }
+        }
 
         $subscription->coupon = null;
         $subscription->save();
