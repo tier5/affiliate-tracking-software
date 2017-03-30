@@ -34,7 +34,7 @@ function isMobile() {
                   $FacebookLink = $rsl->url;
               ?>
               <div class="row text-center" id="facebooklink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="<?=$FacebookLink; ?>" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
-              } else { ?>
+              <?php } else { ?>
                 //$FacebookLink = isMobile() ? "fb://profile/{$rsl->external_id}" : "http://facebook.com/{$rsl->external_id}/reviews";
                 $FacebookLink = "fb://profile/{$rsl->external_id}";
               <div class="row text-center" id="facebooklink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="<?=$FacebookLink; ?>" onclick="facebookClickHandler('<?=$rsl->external_id?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
