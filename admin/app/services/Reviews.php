@@ -247,14 +247,14 @@ class Reviews extends BaseService
         $objBusiness->name = $objYelpBusiness->name;
         $objBusiness->type = 'Yelp';
         $objBusiness->id = $objBusiness->external_location_id = $objYelpBusiness->id;
-        $objBusiness->mapsUrl = $objYelpBusiness->url;
         
-        if (strpos('?', $objYelpBusiness->url) !== false) {
+        if (strpos($objYelpBusiness->url, '?') !== false) {
             $url = explode('?', $objYelpBusiness->url);
 
             $objYelpBusiness->url = $url[0];
         }
 
+        $objBusiness->mapsUrl = $objYelpBusiness->url;
         $objBusiness->url = $objYelpBusiness->url;
         $objBusiness->address = implode("\r\n", $objYelpBusiness->location->display_address);
         $objBusiness->postal_code = $objYelpBusiness->location->postal_code;
@@ -281,14 +281,14 @@ class Reviews extends BaseService
             $objBusiness->name = $objYelpBusiness->name;
             $objBusiness->type = 'Yelp';
             $objBusiness->id = $objBusiness->external_location_id = $objYelpBusiness->id;
-            $objBusiness->mapsUrl = $objYelpBusiness->url;
 
-            if (strpos('?', $objYelpBusiness->url) !== false) {
+            if (strpos($objYelpBusiness->url, '?') !== false) {
                 $url = explode('?', $objYelpBusiness->url);
 
-                $objYelpBusiness->mobile_url = $url[0];
+                $objYelpBusiness->url = $url[0];
             }
-
+            
+            $objBusiness->mapsUrl = $objYelpBusiness->url;
             $objBusiness->url = $objYelpBusiness->mobile_url;
             $objBusiness->address = implode("\r\n", $objYelpBusiness->location->display_address);
             $objBusiness->postal_code = $objYelpBusiness->location->postal_code;
