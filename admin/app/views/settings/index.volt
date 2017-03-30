@@ -207,7 +207,7 @@
                                 } ?>
                           <a href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$googleLink:'#')?>" class="btnLink btnSecondary <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" type="view">View</a>
                         <?php } else { ?>
-                          <a href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$review_site_list->url:'#')?>" class="btnLink btnSecondary <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" type="view">View</a>
+                          <a href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$review_site_list->url:'#')?>" class="btnLink btnSecondary <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" type="view" target="blank">View</a>
                         <?php } ?>
                         <a
                           class="btnLink btnSecondary greenbtn"
