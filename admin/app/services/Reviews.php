@@ -248,6 +248,13 @@ class Reviews extends BaseService
         $objBusiness->type = 'Yelp';
         $objBusiness->id = $objBusiness->external_location_id = $objYelpBusiness->id;
         $objBusiness->mapsUrl = $objYelpBusiness->url;
+        
+        if (strpos('?', $objYelpBusiness->url) !== false) {
+            $url = explode('?', $objYelpBusiness->url);
+
+            $objYelpBusiness->url = $url[0];
+        }
+
         $objBusiness->url = $objYelpBusiness->url;
         $objBusiness->address = implode("\r\n", $objYelpBusiness->location->display_address);
         $objBusiness->postal_code = $objYelpBusiness->location->postal_code;
@@ -275,6 +282,13 @@ class Reviews extends BaseService
             $objBusiness->type = 'Yelp';
             $objBusiness->id = $objBusiness->external_location_id = $objYelpBusiness->id;
             $objBusiness->mapsUrl = $objYelpBusiness->url;
+
+            if (strpos('?', $objYelpBusiness->url) !== false) {
+                $url = explode('?', $objYelpBusiness->url);
+
+                $objYelpBusiness->mobile_url = $url[0];
+            }
+
             $objBusiness->url = $objYelpBusiness->mobile_url;
             $objBusiness->address = implode("\r\n", $objYelpBusiness->location->display_address);
             $objBusiness->postal_code = $objYelpBusiness->location->postal_code;
