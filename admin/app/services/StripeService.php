@@ -390,6 +390,13 @@ class StripeService extends BaseService
         try {
             // retrieve pause coupon
             \Stripe\Coupon::retrieve("pause");
+        } catch(\Stripe\Error\Base $e) {
+            // create if doesn't exist
+            \Stripe\Coupon::create(array(
+                "percent_off" => 100,
+                "duration" => "forever",
+                "id" => "pause"
+            ));
         } catch(Exception $e) {
             // create if doesn't exist
             \Stripe\Coupon::create(array(
@@ -403,6 +410,10 @@ class StripeService extends BaseService
         if (!empty($subscriptionId)) {
             try {
                 $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+                $subscription->coupon = 'pause';
+                $subscription->save();
+            } catch (\Stripe\Error\InvalidRequest $e) {
+                return 0;
             } catch(\Stripe\Error\Base $e) {
                 return 0;
             } catch(Exception $e) {
@@ -410,10 +421,7 @@ class StripeService extends BaseService
             }
         } else {
             return 0;
-        }        
-
-        $subscription->coupon = 'pause';
-        $subscription->save();
+        }
     }
 
     public function unpauseSubscription($agencyId)
@@ -421,10 +429,33 @@ class StripeService extends BaseService
         $subscriptionDB = $this->getSubscriptionFromDb($agencyId);
         $subscriptionId = $subscriptionDB['stripe_subscription_id'];
 
+        try {
+            // retrieve pause coupon
+            \Stripe\Coupon::retrieve("pause");
+        } catch(\Stripe\Error\Base $e) {
+            // create if doesn't exist
+            \Stripe\Coupon::create(array(
+                "percent_off" => 100,
+                "duration" => "forever",
+                "id" => "pause"
+            ));
+        } catch(Exception $e) {
+            // create if doesn't exist
+            \Stripe\Coupon::create(array(
+                "percent_off" => 100,
+                "duration" => "forever",
+                "id" => "pause"
+            ));
+        }
+
         // retrieve subscription
         if (!empty($subscriptionId)) {
             try {
                 $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+                $subscription->coupon = null;
+                $subscription->save();
+            } catch (\Stripe\Error\InvalidRequest $e) {
+                return 0;
             } catch(\Stripe\Error\Base $e) {
                 return 0;
             } catch(Exception $e) {
@@ -432,7 +463,6 @@ class StripeService extends BaseService
             }
         }
 
-        $subscription->coupon = null;
-        $subscription->save();
+
     }
 }
