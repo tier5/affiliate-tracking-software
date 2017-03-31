@@ -720,10 +720,11 @@ $conn_account='';
                                 You have no more SMS messages to send this month.
                             {% endif %}
                         {% else %}
-                            You must have a Twilio SID and Auth Token to send SMS messages.  All SMS messages are sent using
+                            Your text messaging service isn’t currently set up. Please contact support to have your text messaging service setup for your account.
+                            <!--You must have a Twilio SID and Auth Token to send SMS messages.  All SMS messages are sent using
                             <a href="https://www.twilio.com/" target="_blank">Twilio</a>.  <a href="/settings/">Click
                             here</a> to enter your Twilio SID and Auth Key now. If you don't have an API key yet,
-                            <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a> to sign up.
+                            <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a> to sign up.-->
                         {% endif %}
                     </div>
                 </div>
