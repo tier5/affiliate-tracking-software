@@ -637,7 +637,6 @@ $conn_account='';
                     <div class="portlet-body form">
                         {%
                             if (twilio_auth_token != ''
-                            and twilio_auth_messaging_sid != ''
                             and twilio_from_phone != '')
                         %}
 
