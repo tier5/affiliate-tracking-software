@@ -43,7 +43,11 @@ class ControllerBase extends Controller
     // remove
     public function clean($val)
     {
-        return strip_tags($val,['<p><a><br><hr><h1><h2><h3><h4><h5><h6><b>']);
+        return strip_tags(
+            $val,
+            ['<p><a><br><hr><h1><h2><h3><h4><h5><h6><b>']
+        );
+        
         return $val;
     }
 
@@ -51,6 +55,7 @@ class ControllerBase extends Controller
     {
         $TLDomain = $this->config->application->domain;
         $PageURL = 'http';
+
         if ($_SERVER['SERVER_PORT'] === 443) {
             $PageURL .= 's';
         }
@@ -201,19 +206,14 @@ class ControllerBase extends Controller
                 $this->view->setVar('NumberAgency', $agency->agency_id);
             }
 
-            //$SD_Parts = explode('.', $_SERVER['HTTP_HOST']);
-            //$Subdomain = $SD_Parts[0];
-
             $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
 
             $this->view->ReachedMaxSMS = $userObj->is_admin ? false : $objSubscriptionManager->ReachedMaxSMS($agency->agency_id, $this->session->get('auth-identity')['location_id'])['ReachedLimit'];
 
             if ($agency->parent_id > 0) {
+
                 // We're a business under an agency
                 $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->parent_id}");
-                // Commenting this out until we can figure out how to get sessions to last across subdomains.
-                /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $objParentAgency->custom_domain && $Subdomain != $objParentAgency->custom_domain)
-                    return $this->RedirectDomain($objParentAgency->custom_domain);*/
 
                 $this->view->primary_color = $objParentAgency->main_color ?: "#2a3644";
                 $this->view->secondary_color = $objParentAgency->secondary_color ?: "#2eb82e";
@@ -222,29 +222,18 @@ class ControllerBase extends Controller
                 $this->view->logo_path = ($objParentAgency->logo_path != "" ) ? "/img/agency_logos/{$objParentAgency->logo_path}" : "" ;
                 $this->view->agencyName =  $objParentAgency->name;
             } else {
-                // We're an agency or a business under RV
-                /*if(!$userObj->is_admin && $this->config->application['environment'] == 'prod' && $agency->custom_domain && $Subdomain != $agency->custom_domain)
-                    return $this->RedirectDomain($agency->custom_domain);*/
-                
                 $this->view->primary_color = "#2a3644";
                 $this->view->secondary_color = "#2eb82e";
                 $this->view->objParentAgency = null;
                 $this->view->agencyName = ($agency->parent_id == -1 || ($this->user_object->is_admin == 1)) ? "Get Mobile Reviews" : $agency->name;
-                //$this->view->logo_path = $agency->parent_id == 0 ? "/img/agency_logos/{$agency->logo_path}" : '/assets/layouts/layout/img/logo.png';
+
                 if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
                     if (isset($agency->logo_path) && ($agency->logo_path != "")) {
-                        //echo $agency->logo_path;//exit;
-                       // echo strpos($agency->logo_path,'img/upload');exit;
-                        if(strpos($agency->logo_path,'img/upload') !== false)
-                        {
+                        if (strpos($agency->logo_path,'img/upload') !== false) {
                             $this->view->logo_path = "{$agency->logo_path}";
-                        }
-                        else
-                        {
+                        } else {
                             $this->view->logo_path = "/img/agency_logos/{$agency->logo_path}"; 
                         }
-                        
-                        //$this->view->logo_path = "{$agency->logo_path}";
                     } else {
                         $this->view->logo_path = '/assets/layouts/layout/img/logo.png';
                     }
@@ -264,7 +253,7 @@ class ControllerBase extends Controller
             $this->view->twilio_from_phone = $this->twilio_from_phone = $tTwilioKeys['twilio_from_phone'];
             $this->view->twilio_api_key = $this->twilio_api_key = $tTwilioKeys['twilio_api_key'];
 
-            //internal navigation parameters
+            // internal navigation parameters
             $this->configureNavigation($identity);
 
             if ($agency->parent_id > 0 || $agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
@@ -389,7 +378,7 @@ class ControllerBase extends Controller
             $this->getTotalSMSSent($agency);
         }
 
-        //find white label info based on the url
+        // find white label info based on the url
         $tHost = explode(".", $_SERVER['HTTP_HOST']);
         $sub = array_shift($tHost);
 
@@ -401,7 +390,8 @@ class ControllerBase extends Controller
             && $sub != 'reviewvelocity'
             && $sub != '104'
             && $sub != 'getmobilereviews') {
-            //find the agency object
+
+            // find the agency object
             $conditions = "custom_domain = :custom_domain:";
 
             $parameters = array(
@@ -484,8 +474,6 @@ class ControllerBase extends Controller
      * @param Dispatcher $dispatcher
      * @return boolean
      */
-
-   
     public function beforeExecuteRoute(Dispatcher $dispatcher)
     {
         $controllerName = $dispatcher->getControllerName();
@@ -543,7 +531,7 @@ class ControllerBase extends Controller
 
         $this->view->share = $agency->viral_sharing_code;
 
-        //build share links
+        // build share links
         if ($this->config->application->environment == 'dev') {
             $Domain = $_SERVER['HTTP_HOST'];
         } else {
@@ -566,14 +554,6 @@ class ControllerBase extends Controller
 
         $message_parent = '';
         $objParentAgency = '';
-        //$share_link = urlencode($share_link);
-
-        /*$this->view->setVars([
-            'share_message' => 'Click this link to sign up for a great new way to get reviews: ' . $share_link,
-            'share_link' => $share_link,
-            'share_subject' => 'Sign Up and Get Reviews!'
-        ]);*/
-
 
         /**** 24.11.2016 ****/
         $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$agency->agency_id}");
@@ -581,13 +561,14 @@ class ControllerBase extends Controller
         if ($objAgency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV) {
             $AgencyName = "Get Mobile Reviews";
             $AgencyUser = "Zach Anderson";
-            // $EmailFrom = "zacha@reviewvelocity.co";
         } else if ($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
-            $objAgencyUser = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->agency_id} AND role='Super Admin'");
+            $objAgencyUser = \Vokuro\Models\Users::findFirst(
+                "agency_id = {$objAgency->agency_id} AND role='Super Admin'"
+            );
+            
             $AgencyUser = $objAgencyUser->name;
             $AgencyName = $objAgency->name;
-            //$EmailFrom = "zacha@reviewvelocity.co";
         } else if ($objAgency->parent_id > 0) {
             $objParentAgency = \Vokuro\Models\Agency::findFirst(
                 "agency_id = {$objAgency->parent_id}"
@@ -608,8 +589,7 @@ class ControllerBase extends Controller
 
             if ($x['viral_email']) {
                 $message_parent = $x['viral_email']; 
-            }   
-            // $EmailFrom = "zacha@reviewvelocity.co";
+            }
         }
 
         if ($objParentAgency->twitter_message) {
@@ -623,7 +603,7 @@ class ControllerBase extends Controller
         $twitter_message_set = str_replace('{link}', $share_link, $twitter_message_set);        
 
         if ($objParentAgency->viral_email == '') {
-             $message_set = "I just started using this amazing new software for my business.  They are giving away a trial account here: {ShareLink}";
+             $message_set = "I just started using this amazing new software for my business. They are giving away a trial account here: {ShareLink}";
         } else {
             $message_set=$objParentAgency->viral_email;
         }
@@ -645,30 +625,29 @@ class ControllerBase extends Controller
             'share_message' => $message_set,
             'twitter_message_set'  => $twitter_message_set,
             'share_link' => $share_link,
-            'share_subject' => $agency->name.', thought this was awesome!',
+            'share_subject' => $agency->name . ', thought this was awesome!',
             'domain'    => $TLDomain
         ]);
 
         $base_sms_allowed = 100;
         $additional_allowed = 25;
-        //echo $agency->viral_sharing_code;exit;
-       // $num_signed_up = SharingCode::count("business_id = {$agency->agency_id}");
-       $num_signed_up = SharingCode::count("sharecode = '{$agency->viral_sharing_code}'");
 
-       /*$resultx=$this->db->query(" SELECT * FROM `sharing_code` WHERE `sharecode` ='".$agency->viral_sharing_code."'");
-                 $num_signed_up=$resultx->numRows();*/
+        $num_signed_up = SharingCode::count("sharecode = '{$agency->viral_sharing_code}'");
 
-        $num_discount = (int) ($num_signed_up / 3); //find how many three
+        $num_discount = (int) ($num_signed_up / 3); // find how many three
         $objSubscriptionManager = new \Vokuro\Services\SubscriptionManager();
         $identity = $this->session->get('auth-identity');
-        if($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $agency->parent_id > 0)
+
+        if ($agency->parent_id == \Vokuro\Models\Agency::BUSINESS_UNDER_RV || $agency->parent_id > 0) {
             $MaxSMS = $objSubscriptionManager->GetMaxSMS($agency->agency_id, $identity['location_id']);
-        else
+        } else {
             $MaxSMS = 0;
+        }
 
         $NonViralSMS = $MaxSMS;
         $ViralSMS = $objSubscriptionManager->GetViralSMSCount($agency->agency_id);
-       // $MaxSMS += $ViralSMS;
+
+        // $MaxSMS += $ViralSMS;
         $this->view->setVars([
             'total_sms_month' => $MaxSMS,
             'num_discount' => $num_discount,
@@ -682,8 +661,8 @@ class ControllerBase extends Controller
 
     public function getSMSReport()
     {
-        //check if the user should get the upgrade message (Only "business" agency_types who are signed up for Free accounts,
-        //get the upgrade message)
+        // check if the user should get the upgrade message (Only "business" agency_types who are signed up for Free accounts,
+        // get the upgrade message)
         $is_upgrade = false;
 
         if ($this->session->get('auth-identity')['agencytype'] == 'business') {
@@ -697,9 +676,9 @@ class ControllerBase extends Controller
                 "agency_id = " . $objUser->agency_id
             );
 
-            //we have a business, so check if free
+            // we have a business, so check if free
             if ($agency->subscription_id > 0) {
-                //we have a subscription, check if free
+                // we have a subscription, check if free
                 $conditions = "subscription_id = :subscription_id:";
 
                 $parameters = array(
@@ -724,7 +703,7 @@ class ControllerBase extends Controller
             if ($is_upgrade) {
                 $identity = $this->auth->getIdentity();
 
-                //find user
+                // find user
                 $conditions = "id = :id:";
 
                 $parameters = array(
@@ -735,7 +714,7 @@ class ControllerBase extends Controller
                     array($conditions, "bind" => $parameters)
                 );
 
-                //find the agency
+                // find the agency
                 $conditions = "agency_id = :agency_id:";
 
                 $parameters = array(
@@ -746,14 +725,14 @@ class ControllerBase extends Controller
                     array($conditions, "bind" => $parameters)
                 );
 
-                //get total sent
+                // get total sent
                 $this->getTotalSMSSent($agency);
 
-                //get share info
+                // get share info
                 $this->getShareInfo($agency);
             }
 
-            //Last month!
+            // Last month!
             $start_time = date("Y-m-d", strtotime("first day of previous month"));
             $end_time = date("Y-m-d 23:59:59", strtotime("last day of previous month"));
 
@@ -769,11 +748,11 @@ class ControllerBase extends Controller
                     )
                 );
             }
-            //echo $sms_sent_last_month;exit;
+
             $this->view->sms_sent_last_month = $sms_sent_last_month;
 
 
-            //This month!
+            // This month!
             $start_time = date("Y-m-d", strtotime("first day of this month"));
             $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
             $sms_sent_this_month = 0;
@@ -789,9 +768,10 @@ class ControllerBase extends Controller
 
             $this->view->sms_sent_this_month = $sms_sent_this_month;
 
-            //Last month!
+            // Last month!
             $this->view->num_reviews_last_month = 0;
             $this->view->num_reviews_two_months_ago = 0;
+
             if ($this->session->get('auth-identity')['location_id']) {
                 $this->view->num_reviews_last_month = ReviewsMonthly::sum(
                     array(
@@ -810,8 +790,7 @@ class ControllerBase extends Controller
 
             $this->view->total_reviews_last_month = $this->view->num_reviews_last_month - $this->view->num_reviews_two_months_ago;
 
-
-            //This month!
+            // This month!
             $this->view->num_reviews_this_month = 0;
 
             if ($this->session->get('auth-identity')['location_id']) {
@@ -822,10 +801,8 @@ class ControllerBase extends Controller
                     )
                 );
             }
-            //$this->view->total_reviews_this_month = $this->view->num_reviews_this_month - $this->view->total_reviews_last_month;
 
-
-            //find the location
+            // find the location
             $this->view->review_goal = 0;
 
             $percent_needed = 10;
@@ -842,27 +819,31 @@ class ControllerBase extends Controller
                 
                 $location = Location::findFirst(array($conditions, "bind" => $parameters));
 
-                //set the agency SMS limit
+                // set the agency SMS limit
                 $this->view->review_goal = $location->review_goal;
-                //calculate how many sms messages we need to send to meet this goal.
-                //$percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
-                //if ($percent_needed <= 0)
+
+                // calculate how many sms messages we need to send to meet this goal.
+                // $percent_needed = ($sms_sent_last_month>0?($this->view->total_reviews_last_month / $sms_sent_last_month)*100:0);
+                // if ($percent_needed <= 0)
                 $percent_needed = 10;
                 $this->view->percent_needed = $percent_needed;
                 $this->view->total_sms_needed = round($location->review_goal / ($percent_needed / 100));
             }
-        } //end checking for business vs agency
+        } // end checking for business vs agency
     }
 
     public function getTotalSMSSent($agency)
     {
-        //Total SMS Sent this month
+        // Total SMS Sent this month
         $start_time = date("Y-m-d", strtotime("first day of this month"));
         $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
-        $sql = "SELECT review_invite_id
-              FROM review_invite
-                INNER JOIN location ON location.location_id = review_invite.location_id
-              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id IS NULL";
+        $sql = "SELECT review_invite_id "
+              . "FROM review_invite "
+              . "INNER JOIN location ON location.location_id = review_invite.location_id "
+              . "WHERE location.agency_id = " . $agency->agency_id . " "
+              . "AND date_sent >= '" . $start_time . "' "
+              . "AND date_sent <= '" . $end_time . "' "
+              . "AND sms_broadcast_id IS NULL";
 
         // Base model
         $list = new ReviewInvite();
@@ -872,10 +853,13 @@ class ControllerBase extends Controller
         $rs = new Resultset(null, $list, $list->getReadConnection()->query($sql, $params));
         $this->view->sms_sent_this_month_total = $rs->count();
 
-        $sql1 = "SELECT review_invite_id
-              FROM review_invite
-                INNER JOIN location ON location.location_id = review_invite.location_id
-              WHERE location.agency_id = " . $agency->agency_id . "  AND date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND sms_broadcast_id >0";
+        $sql1 = "SELECT review_invite_id "
+                . "FROM review_invite "
+                . "INNER JOIN location ON location.location_id = review_invite.location_id "
+                . "WHERE location.agency_id = " . $agency->agency_id . " "
+                . "AND date_sent >= '" . $start_time . "' "
+                . "AND date_sent <= '" . $end_time . "' "
+                . "AND sms_broadcast_id > 0";
 
         // Base model
         $list = new ReviewInvite();
@@ -889,13 +873,16 @@ class ControllerBase extends Controller
     public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_from_phone)
     {
         if (!$AccountSid || !$AuthToken || !$twilio_from_phone) {
-            // $this->flash->error("Missing twilio configuration.");
             return false;
         }
 
         $identity = $this->auth->getIdentity();
         $idxcx = $identity['id'];
-        $result = $this->db->query(" SELECT * FROM `twilio_number_to_business` WHERE `buisness_id`='".$idxcx."'");
+        $sql = "SELECT * "
+               . "FROM `twilio_number_to_business` "
+               . "WHERE `buisness_id` = '" . $idxcx . "'";
+
+        $result = $this->db->query();
 
         $smsdetails = $result->fetch();
         $xcd = $result->numRows();
@@ -915,12 +902,9 @@ class ControllerBase extends Controller
                 "Body" => $smsBody,
             ));
         } catch (Services_Twilio_RestException $e) {
-            /*$this->flash->error(
-                'There was an error sending the SMS message to ' . $phone . '.  Please check your Twilio configuration and try again. '
-            );*/
-            
             return false;
         }
+
         return true;
     }
 
@@ -940,7 +924,7 @@ class ControllerBase extends Controller
      */
     public function getURL($subdomain)
     {
-        //if we don't have the subdomain, then we need to find it
+        // if we don't have the subdomain, then we need to find it
     }
 
     /**
@@ -953,7 +937,6 @@ class ControllerBase extends Controller
 
         $postData = array('longUrl' => $longUrl);
         $jsonData = json_encode($postData);
-        //echo '<pre>$jsonData:'.print_r($jsonData,true).'</pre>';
 
         $curlObj = curl_init();
 
@@ -984,8 +967,9 @@ class ControllerBase extends Controller
     {
         $this->view->profilesId = $profilesId;
 
-        //get the user id
+        // get the user id
         $identity = $this->auth->getIdentity();
+
         // If there is no identity available the user is redirected to index/index
         if (!is_array($identity)) {
             $this->response->redirect(
@@ -1007,10 +991,6 @@ class ControllerBase extends Controller
             $users = Users::getEmployeesByLocation($locationid);
             $usersGenerate = Users::getEmployeesByLocation($locationid);
         } else {
-            //if ($userObj->profilesId == 1 || $userObj->profilesId == 4) {
-            // Query binding parameters with string placeholders
-            //$conditions = "agency_id = :agency_id: AND profilesId = ".$profilesId;
-            //$parameters = array("agency_id" => $userObj->agency_id);
             $conditions = "location_id = :location_id:";
 
             $parameters = array(
@@ -1097,7 +1077,7 @@ class ControllerBase extends Controller
                         false,
                         true
                     );
-var_dump($loc->review_invite_type_id);
+
                     $users_report_generate = Users::getEmployeeConversionReportGenerate(
                         $loc->review_invite_type_id,
                         $userObj->agency_id,
@@ -1188,7 +1168,11 @@ var_dump($loc->review_invite_type_id);
         $YNrating_array_set = array();
 
         foreach ($users_report_generate as $ux) {
-            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =" . $ux->id . " AND `review_invite_type_id` =1 GROUP BY  `rating`";
+            $sql = "SELECT COUNT(*) AS `numberx`, `review_invite_type_id`, `rating` "
+                   . "FROM `review_invite` "
+                   . "WHERE `sent_by_user_id` = " . $ux->id . " "
+                   . "AND `review_invite_type_id` = 1 "
+                   . "GROUP BY `rating`";
 
             // Base model
             $list = new ReviewInvite();
@@ -1202,7 +1186,10 @@ var_dump($loc->review_invite_type_id);
         $this->view->YNrating_array_set = $YNrating_array_set;
         
         foreach ($users_report_generate as $ux){
-            $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =" . $ux->id . " GROUP BY  `review_invite_type_id` ";
+            $sql = "SELECT COUNT(*) AS `numberx`, `review_invite_type_id`, SUM(  `rating` ) AS  `totalx` "
+                   . "FROM `review_invite` "
+                   . "WHERE `sent_by_user_id` = " . $ux->id . " "
+                   . "GROUP BY  `review_invite_type_id`";
 
             // Base model
             $list = new ReviewInvite();
@@ -1219,7 +1206,11 @@ var_dump($loc->review_invite_type_id);
         $YNrating_array_set_all = array();
 
         foreach ($usersGenerate as $ux) {
-            $sql = "SELECT COUNT(*) AS  `numberx`,`review_invite_type_id`,`rating` FROM `review_invite` WHERE  `sent_by_user_id` =" . $ux->id . " AND `review_invite_type_id` =1 GROUP BY  `rating`";
+            $sql = "SELECT COUNT(*) AS  `numberx`, `review_invite_type_id`, `rating` "
+                   . "FROM `review_invite` "
+                   . "WHERE `sent_by_user_id` = " . $ux->id . " "
+                   . "AND `review_invite_type_id` = 1 "
+                   . "GROUP BY  `rating`";
 
             // Base model
             $list = new ReviewInvite();
@@ -1233,7 +1224,10 @@ var_dump($loc->review_invite_type_id);
         $this->view->YNrating_array_set_all = $YNrating_array_set_all;
 
         foreach ($usersGenerate as $ux) {
-            $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` FROM  `review_invite` WHERE  `sent_by_user_id` =" . $ux->id . " GROUP BY  `review_invite_type_id` ";
+            $sql = "SELECT COUNT(*) AS `numberx` ,`review_invite_type_id` , SUM(  `rating` ) AS  `totalx` "
+                   . "FROM  `review_invite` "
+                   . "WHERE  `sent_by_user_id` =" . $ux->id . " "
+                   . "GROUP BY  `review_invite_type_id` ";
 
             // Base model
             $list = new ReviewInvite();
@@ -1253,7 +1247,7 @@ var_dump($loc->review_invite_type_id);
 
         $google_reviews = $google->get_business($Obj->api_id);
 
-        //import data from the feed into the database, first update the location
+        // import data from the feed into the database, first update the location
         $Obj->rating = $google_reviews['rating'];
         $Obj->review_count = (isset($google_reviews['user_ratings_total']) ? $google_reviews['user_ratings_total'] : 0);
 
@@ -1264,10 +1258,10 @@ var_dump($loc->review_invite_type_id);
 
         $Obj->save();
 
-        //now import the reviews (if not already in the database)
-        //loop through reviews
+        // now import the reviews (if not already in the database)
+        // loop through reviews
         foreach ($google_reviews['reviews'] as $reviewDetails) {
-            //check if the review is already in the db
+            // check if the review is already in the db
             $conditions = "time_created = :time_created: AND rating_type_id = 3 AND location_id = " . $location->location_id;
             $parameters = array("time_created" => date("Y-m-d H:i:s", $reviewDetails['time']));
             
@@ -1278,7 +1272,7 @@ var_dump($loc->review_invite_type_id);
             $n = 0;
 
             if (!$googlerev) {
-                //we didn't find the review, so assign the values
+                // we didn't find the review, so assign the values
                 $r = new Review();
 
                 $r->assign(array(
@@ -1289,7 +1283,7 @@ var_dump($loc->review_invite_type_id);
                     'user_name' => $reviewDetails['author_name'],
                     'user_id' => $reviewDetails['author_url'],
                     'user_image' => (isset($reviewDetails['profile_photo_url']) ? $reviewDetails['profile_photo_url'] : ''),
-                    //'external_id' => $reviewDetails['id'],  google has no review id
+                    // 'external_id' => $reviewDetails['id'],  google has no review id
                     'location_id' => $location->location_id,
                 ));
 
@@ -1297,13 +1291,10 @@ var_dump($loc->review_invite_type_id);
                 $save = $r->save();
 
                 if ($save) {
-                    //$Mail = $this->getDI()->getMail();
-                    //$Mail->setFrom('zacha','zacha@gmail.com');
-                    //$Mail->send('sizukatier5@gmail.com','Testing review mail' , '', '', $reviewDetails['text']);
                     $n++;
                 }
 
-                //add agency to our found array
+                // add agency to our found array
                 if (isset($foundagency[$location->agency_id])) {
                     $foundagency[$location->agency_id] .= ', ';
                 } else {
@@ -1333,15 +1324,14 @@ var_dump($loc->review_invite_type_id);
 
     public function importYelp($Obj, $location, &$foundagency)
     {
-        //first initialize our scanners
+        // first initialize our scanners
         $yelp = new YelpScanning();
         $yelp->construct();
 
         $yelp_reviews = $yelp->get_business($Obj->api_id);
         $yelpreviews = json_decode($yelp_reviews);
 
-        //echo '<pre>$yelpreviews:'.print_r($yelpreviews,true).'</pre>';
-        //import data from the feed into the database, first update the location
+        // import data from the feed into the database, first update the location
         $Obj->rating = $yelpreviews->rating;
         $Obj->review_count = $yelpreviews->review_count;
 
@@ -1354,15 +1344,16 @@ var_dump($loc->review_invite_type_id);
 
         $Obj->save();
 
-        //now import the review (if not already in the database)
-        //loop through reviews
+        // now import the review (if not already in the database)
+        // loop through reviews
         foreach ($yelpreviews->reviews as $rev) {
-            //check if the review is already in the db
+            // check if the review is already in the db
             $conditions = "external_id = :external_id: AND rating_type_id = 1 AND location_id = " . $location->location_id;
             $parameters = array("external_id" => $rev->id);
             $yelprev = Review::findFirst(array($conditions, "bind" => $parameters));
+
             if (!$yelprev) {
-                //we didn't find the review, so assign the values
+                // we didn't find the review, so assign the values
                 $r = new Review();
                 $r->assign(array(
                     'rating_type_id' => 1, //1 = Yelp
@@ -1375,10 +1366,11 @@ var_dump($loc->review_invite_type_id);
                     'external_id' => $rev->id,
                     'location_id' => $location->location_id,
                 ));
-                //save now
+
+                // save now
                 $r->save();
 
-                //add agency to our found array
+                // add agency to our found array
                 if (isset($foundagency[$location->agency_id])) {
                     $foundagency[$location->agency_id] .= ', ';
                 } else {
@@ -1388,16 +1380,6 @@ var_dump($loc->review_invite_type_id);
             }
         } // go to the next yelp review
 
-        try {
-            $s = $this->di->get('ReviewService');
-            /**
-             * @var $s \Vokuro\Services\Reviews
-             */
-            //if($location && $location->location_id) $s->updateReviewCountByTypeAndLocationId(1, $location->location_id);
-
-        } catch (\Exception $e) {
-        }
-
         return $Obj;
     }
 
@@ -1406,30 +1388,28 @@ var_dump($loc->review_invite_type_id);
         $face = new FacebookScanning();
         $this->facebook_access_token = $face->getAccessToken();
 
-        //first initialize our scanners
+        // first initialize our scanners
         $yelp = new YelpScanning();
         $yelp->construct();
 
-        //$facebook_reviews = $face->getBusinessDetails($Obj->external_id, $this->facebook_access_token);
-        //echo '<pre>$facebook_reviews:'.print_r($facebook_reviews,true).'</pre>';
-        //Facebook has special permissions on public reviews, so lets try to scrape them
+        // Facebook has special permissions on public reviews, so lets try to scrape them
         $url = 'https://www.facebook.com/' . $Obj->external_id . '/reviews/';
         $results = $yelp->getHTML($url);
-        //echo '<pre>$facebook_reviews:'.$results.'</pre>';
-        //get the review info from the html
-        //<meta content="#" itemprop="ratingValue" />
+
+        // get the review info from the html
+        // <meta content="#" itemprop="ratingValue" />
         $pos = strpos($results, '" itemprop="ratingValue"');
         $rating = substr($results, 0, $pos);
         $pos2 = strrpos($rating, '"');
         $rating = substr($rating, $pos2 + 1);
-        //echo '<pre>$rating:'.$rating.'</pre>';
-        //<meta content="6" itemprop="ratingCount" />
+
+        // <meta content="6" itemprop="ratingCount" />
         $pos = strpos($results, '" itemprop="ratingCount');
         $rating_count = substr($results, 0, $pos);
         $pos2 = strrpos($rating_count, '"');
         $rating_count = substr($rating_count, $pos2 + 1);
-        //echo '<pre>$rating_count:'.$rating_count.'</pre>';
-        //import data from the feed into the database, first update the location
+
+        // import data from the feed into the database, first update the location
         $Obj->rating = $rating;
         $Obj->review_count = $rating_count;
         
@@ -1442,9 +1422,9 @@ var_dump($loc->review_invite_type_id);
 
         $Obj->save();
 
-        //if we have a facebook page token, try to import reviews
+        // if we have a facebook page token, try to import reviews
         if (isset($Obj->access_token) && $Obj->access_token != '') {
-            //use the graph api to get facebook "ratings" aka reviews
+            // use the graph api to get facebook "ratings" aka reviews
             require_once __DIR__ . "/../library/Facebook/autoload.php";
             require_once __DIR__ . "/../library/Facebook/Facebook.php";
             require_once __DIR__ . "/../library/Facebook/FacebookApp.php";
@@ -1478,33 +1458,8 @@ var_dump($loc->review_invite_type_id);
                 'app_secret' => '95e89ebac7173ba0980c36d8aa5777e4'
             ));
 
-            /*
-              $result = $this->fb->get('/'. $Obj->external_id.'/ratings?limit=10000', $Obj->access_token)->getDecodedBody();
-              $reviews = $result['data'];
-              while(!empty($result['data'])) {
-              $result = $this->fb->get('/'.$Obj->external_id.'/ratings?limit=10000&after='.$result['paging']['cursors']['after'], $this->facebook_access_token)->getDecodedBody();
-              $reviews = array_merge($reviews, $result['data']);
-              }
-              //echo '<pre>$reviews:'.print_r($reviews,true).'</pre>';
-
-              //$token = str_replace("access_token=", "", $this->facebook_access_token);
-              //echo '<pre>$this->facebook_access_token:'.print_r($this->facebook_access_token,true).'</pre>';
-              //echo '<pre>$token:'.print_r($token,true).'</pre>';
-              // Disable app secret proof
-              FacebookSession::enableAppSecretProof(false);
-              $session = new FacebookSession($Obj->access_token);
-              $request = new FacebookRequest(
-              $session,
-              'GET',
-              '/'.$Obj->external_id.'/ratings'
-              );
-              $response = $request->execute();
-              $graphObject = $response->getGraphObject();
-              echo '<pre>$graphObject:'.print_r($graphObject,true).'</pre>';
-             */
             $url = '/me/accounts';
             $pages = $this->fb->get($url, $Obj->access_token)->getDecodedBody();
-            //echo '<pre>$pages:'.print_r($pages,true).'</pre>';
 
             $page_access_token = '';
 
@@ -1512,24 +1467,22 @@ var_dump($loc->review_invite_type_id);
                 foreach ($pages['data'] as $page) {
                     if ($page['id'] == $Obj->external_id) {
                         $page_access_token = $page['access_token'];
-                        //echo '<p><strong>$page_access_token:'.$page_access_token.'</strong></p>';
                     }
                 }
             }
 
-            //if we found a page access token, try to find reviews
+            // if we found a page access token, try to find reviews
             if ($page_access_token != '') {
                 $reviews = $face->getBusinessReviews($Obj->external_id, $page_access_token);
-                //echo '<pre>$reviews:'.print_r($reviews,true).'</pre>';
 
                 if (isset($reviews) && $reviews != '') {
                     $reviews = json_decode($reviews);
                 }
 
-                //now import the reviews (if not already in the database)
-                //loop through reviews
+                // now import the reviews (if not already in the database)
+                // loop through reviews
                 foreach ($reviews->data as $reviewDetails) {
-                    //check if the review is already in the db
+                    // check if the review is already in the db
                     $conditions = "time_created = :time_created: AND rating_type_id = 2 AND location_id = " . $location->location_id;
                     $phpdate = strtotime($reviewDetails->created_time);
                     $parameters = array("time_created" => date("Y-m-d H:i:s", $phpdate));
@@ -1539,7 +1492,7 @@ var_dump($loc->review_invite_type_id);
                     );
                     
                     if (!$googlerev) {
-                        //we didn't find the review, so assign the values
+                        // we didn't find the review, so assign the values
                         $r = new Review();
 
                         $r->assign(array(
@@ -1549,23 +1502,24 @@ var_dump($loc->review_invite_type_id);
                             'time_created' => date("Y-m-d H:i:s", $phpdate),
                             'user_name' => $reviewDetails->reviewer->name,
                             'user_id' => $reviewDetails->reviewer->id,
-                            //'external_id' => $reviewDetails->id,  facebook has no review id
                             'location_id' => $location->location_id,
                         ));
-                        //save now
+
+                        // save now
                         $r->save();
 
-                        //add agency to our found array
+                        // add agency to our found array
                         if (isset($foundagency[$location->agency_id])) {
                             $foundagency[$location->agency_id] .= ', ';
                         } else {
                             $foundagency[$location->agency_id] = '';
                         }
+
                         $foundagency[$location->agency_id] .= $location->name;
                     }
                 } // go to the next facebook review
             }
-        } //end checking for an access token
+        } // end checking for an access token
 
         try {
             $s = $this->di->get('ReviewService');
@@ -1590,11 +1544,8 @@ var_dump($loc->review_invite_type_id);
      */
     public function yelpId($id)
     {
-        //$this->view->disable();
-
         $yelp = new YelpScanning();
         $url = 'http://yelp.com/biz/' . $id;
-        //echo '<p>url:'.$url.'</p>';
         $results = $yelp->getHTML($url);
 
         //get the id from the html
@@ -1603,8 +1554,6 @@ var_dump($loc->review_invite_type_id);
         $pos2 = strpos($results, '?');
         $results = substr($results, 0, $pos2);
 
-        //echo '<p>$url:'.$url.'</p>';
-        //echo 'results:'.$results;
         return $results;
     }
 
@@ -1614,40 +1563,47 @@ var_dump($loc->review_invite_type_id);
             return trim(com_create_guid(), '{}');
         }
 
-        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X',
+                       mt_rand(0, 65535),
+                       mt_rand(0, 65535),
+                       mt_rand(0, 65535),
+                       mt_rand(16384, 20479),
+                       mt_rand(32768, 49151),
+                       mt_rand(0, 65535),
+                       mt_rand(0, 65535),
+                       mt_rand(0, 65535)
+                      );
     }
 
     public function uploadAction($agencyid)
     {
         // Check if the user has uploaded files
         if ($this->request->hasFiles() == true) {
-            //echo '<p>hasFiles() == true!</p>';
             try {
                 $baseLocation = '/var/www/html/' . $this->config->webpathfolder->path . '/public/img/agency_logo/';
-
 
                 // Print the real file names and sizes
                 foreach ($this->request->getUploadedFiles() as $file) {
                     if ($file->getName() != '') {
-                        //Move the file into the application
+                        // Move the file into the application
                         $filepath = $baseLocation . uniqid('logo');
                         $file->moveTo($filepath);
 
-                        //resize
+                        // resize
                         $image = new \Phalcon\Image\Adapter\GD($filepath);
                         $image->resize(200, 30)->save($filepath);
 
-                        //echo '<p>$filepath: '.$filepath.'</p>';
                         $filepath = '/admin' . str_replace("/var/www/html/" . $this->config->webpathfolder->path . "/public", "", $filepath);
                         $this->view->logo_path = $filepath;
+
                         return $filepath;
                     }
                 }
             } catch(\Exception $e) {
-                //here we explicitly do nothing
+                // here we explicitly do nothing
             }
         } else {
-            //echo '<p>hasFiles() == true!</p>';
+            // echo '<p>hasFiles() == true!</p>';
         }
     }
 
@@ -1721,7 +1677,7 @@ var_dump($loc->review_invite_type_id);
         return $this->response;
     }
 
-    //gave it public, not sure how it is used throughout the app
+    // gave it public, not sure how it is used throughout the app
     public function encode($val)
     {
         if ($val) {
@@ -1731,7 +1687,7 @@ var_dump($loc->review_invite_type_id);
         }
     }
 
-    //also gave this public
+    // also gave this public
     public function extractFromAdress($components, $type)
     {
         if (!is_array($components)) {
@@ -1752,6 +1708,7 @@ var_dump($loc->review_invite_type_id);
     public function cssAction()
     {
         $this->response->setHeader("Content-Type", "text/css");
+
         //for ie
         $this->response->setHeader('X-Content-Type-Options','nosniff');
         $main_color = $this->request->get('primary_color');
