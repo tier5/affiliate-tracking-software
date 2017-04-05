@@ -201,6 +201,10 @@ class LocationController extends ControllerBase
         $objLocation->external_id = $objGoogleBusiness->id;
         $cid = explode("=", $objGoogleBusiness->url);
         $objLocation->cid = $cid[1];
+
+        $gScan = new GoogleScanning();
+        $objLocation->lrd = $gScan->getLRD($objLocation->cid);
+        
         $address = preg_replace(" #[0-9]+","",$objGoogleBusiness->address);
         $objLocation->name .= " " .
           					  $address . " " .  
