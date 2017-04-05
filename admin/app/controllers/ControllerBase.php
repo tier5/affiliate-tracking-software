@@ -882,7 +882,7 @@ class ControllerBase extends Controller
                . "FROM `twilio_number_to_business` "
                . "WHERE `buisness_id` = '" . $idxcx . "'";
 
-        $result = $this->db->query();
+        $result = $this->db->query($sql);
 
         $smsdetails = $result->fetch();
         $xcd = $result->numRows();
