@@ -1468,6 +1468,12 @@ class SessionController extends ControllerBase
     public function checkForAvailableSubDomainAction()
     {
     	$testThisCustomDomain =  $_POST['custom_domain'];
+        
+        if ($testThisCustomDomain === 'training') {
+            echo 1;
+            return 0;
+        }
+
     	//find the User
     	$conditions = "custom_domain = :custom_domain:";
     	$parameters = array("custom_domain" => $testThisCustomDomain);
