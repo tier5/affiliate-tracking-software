@@ -885,14 +885,13 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
                     if ($review_site_list->review_site_id == $review_site->review_site_id) $found = true;
                   }
                 }
-                if (!$found) {
+                if (!$found && $review_site->review_site_id != 0) {
                   ?>
                   <option value="<?=$review_site->review_site_id?>"><?=$review_site->name?></option>
                   <?php
                 }
               }
           ?>
-            <option value="other">Other</option>
           </select>
         </div>
       </div>
