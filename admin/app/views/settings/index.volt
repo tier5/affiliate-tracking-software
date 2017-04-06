@@ -892,7 +892,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
                 }
               }
           ?>
-            <option value="other">Other</option>
           </select>
         </div>
       </div>

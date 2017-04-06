@@ -989,6 +989,25 @@ class SettingsController extends ControllerBase
                 'img_path' => $site->icon_path,
                 'name' => $site->name
             ));
+        } else if($location_id > 0 && $review_site_id == 0) {
+            $lrs = new LocationReviewSite();
+            $lrs->location_id = $location_id;
+            $lrs->review_site_id = $review_site_id;
+            $lrs->url = $_GET['url'];
+            $lrs->date_created = date('Y-m-d H:i:s');
+            $lrs->is_on = 1;
+            $lrs->save();
+
+            $conditions = "review_site_id = :review_site_id:";
+            $parameters = array("review_site_id" => $review_site_id);
+            $site = ReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+            $this->view->disable();
+            echo json_encode(array(
+                'location_review_site_id' => $lrs->location_review_site_id,
+                'img_path' => $site->icon_path,
+                'name' => $site->name
+            ));
         } else {
             $this->view->disable();
             echo 'false';
