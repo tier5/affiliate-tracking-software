@@ -669,7 +669,7 @@ class SettingsController extends ControllerBase
                     $Twillioset['twilio_auth_token']
                 );
                 
-                $uri = '/'. $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
+                $uri = '/' . $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
               
                 if ($client) {
                     $numbers = $client->retrieveData($uri);
@@ -688,6 +688,32 @@ class SettingsController extends ControllerBase
             
             $this->view->countries = $country;
         }
+
+        $this->view->agency_type = $this->session->get('auth-identity')['agencytype'];
+
+        $percent_sent = @(($this->view->sms_sent_this_month_total + $this->view->sms_sent_this_month_total_non) / $this->view->total_sms_month) * 100;
+        
+        $this->view->percent_sent = number_format(
+            (float) $percent_sent,
+            0,
+            '.',
+            ''
+        );
+
+        $percent_needed = @($this->view->sms_sent_this_month / $this->view->total_sms_needed) * 100;
+
+        $this->view->percent_needed = number_format(
+            (float) $percent_needed,
+            0,
+            '.',
+            ''
+        );
+
+        $this->view->facebook_type_id = \Vokuro\Models\Location::TYPE_FACEBOOK;
+
+        $this->view->post = $_POST;
+
+        $this->view->location_id = $this->session->get('auth-identity')['location_id'];
 
         $this->view->pick("settings/index");
     }
