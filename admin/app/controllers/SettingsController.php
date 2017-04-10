@@ -669,7 +669,7 @@ class SettingsController extends ControllerBase
                     $Twillioset['twilio_auth_token']
                 );
                 
-                $uri = '/'. $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
+                $uri = '/' . $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
               
                 if ($client) {
                     $numbers = $client->retrieveData($uri);
@@ -688,6 +688,32 @@ class SettingsController extends ControllerBase
             
             $this->view->countries = $country;
         }
+
+        $this->view->agency_type = $this->session->get('auth-identity')['agencytype'];
+
+        $percent_sent = @(($this->view->sms_sent_this_month_total + $this->view->sms_sent_this_month_total_non) / $this->view->total_sms_month) * 100;
+        
+        $this->view->percent_sent = number_format(
+            (float) $percent_sent,
+            0,
+            '.',
+            ''
+        );
+
+        $percent_needed = @($this->view->sms_sent_this_month / $this->view->total_sms_needed) * 100;
+
+        $this->view->percent_needed = number_format(
+            (float) $percent_needed,
+            0,
+            '.',
+            ''
+        );
+
+        $this->view->facebook_type_id = \Vokuro\Models\Location::TYPE_FACEBOOK;
+
+        $this->view->post = $_POST;
+
+        $this->view->location_id = $this->session->get('auth-identity')['location_id'];
 
         $this->view->pick("settings/index");
     }
@@ -971,6 +997,25 @@ class SettingsController extends ControllerBase
     public function siteaddAction($location_id = 0, $review_site_id = 0)
     {
         if ($location_id > 0 && $review_site_id > 0) {
+            $lrs = new LocationReviewSite();
+            $lrs->location_id = $location_id;
+            $lrs->review_site_id = $review_site_id;
+            $lrs->url = $_GET['url'];
+            $lrs->date_created = date('Y-m-d H:i:s');
+            $lrs->is_on = 1;
+            $lrs->save();
+
+            $conditions = "review_site_id = :review_site_id:";
+            $parameters = array("review_site_id" => $review_site_id);
+            $site = ReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+            $this->view->disable();
+            echo json_encode(array(
+                'location_review_site_id' => $lrs->location_review_site_id,
+                'img_path' => $site->icon_path,
+                'name' => $site->name
+            ));
+        } else if($location_id > 0 && $review_site_id == 0) {
             $lrs = new LocationReviewSite();
             $lrs->location_id = $location_id;
             $lrs->review_site_id = $review_site_id;
