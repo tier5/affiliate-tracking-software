@@ -319,7 +319,7 @@
               <div class="row">
                 <label for="SMS_message" class="col-md-4 control-label">SMS Message</label>
                 <div class="col-md-8">
-                  <textarea style="width: 100%;" class="form-control" name="SMS_message"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?></textarea>
+                  <textarea style="width: 100%;" class="form-control" name="SMS_message">{{ post.SMS_message is defined ? post.SMS_message : (location.SMS_message is defined ? location.SMS_message : "Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks!") }}</textarea>
                 </div>
               </div>
               <div class="row">
@@ -358,31 +358,14 @@
               <div class="row">
                 <div class="col-md-12">
                   <i>
-                    The number of hours until another message should be sent.  (Only used when the "Message Tries" field is greater than one.)
+                    The number of hours until another message should be sent. (Only used when the "Message Tries" field is greater than one.)
                   </i>
                 </div>
               </div>
             </div>
 
           </div>
-
           <!-- END SMS Message Settings  -->
-
-          <!-- START SMS Message Settings  -->
-          <!--<div class="tab-pane fade in" id="tab_twitter_message">
-            <div class="form-group">
-              <div class="row">
-                <label for="SMS_message" class="col-md-4 control-label">Twitter Message</label>
-                <div class="col-md-8">
-                  <textarea style="width: 100%;" class="form-control" name="twitter_message"><?=(isset($_POST['twitter_message']) && $_POST['twitter_message'] != ''?$_POST["twitter_message"]:(isset($location->twitter_message) && $location->twitter_message != ''?$location->twitter_message:'I just started using this amazing new software for my business. They are giving away a trial account here: {link}'))?></textarea>
-                </div>
-              </div>
-              
-            </div>
-            
-          </div>-->
-          <!-- END SMS Message Settings  -->
-
 
           <!-- START White Label Settings  -->
           <div class="tab-pane fade" id="tab_white_label">
@@ -405,14 +388,8 @@
                 <input type="file" id="logo_path" name="logo_path">
                 <p class="help-block">(max width: 200 pixels, max height: 30 pixels) (only: gif, png, jpg  or jpeg) </p>
               </div>
-            </div><!--
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="sms_message_logo_path">SMS Message Logo</label>
-          <div class="col-md-8">
-            <input type="file" id="sms_message_logo_path" name="sms_message_logo_path">
-            <p class="help-block"> some help text here. </p>
-          </div>
-        </div>-->
+            </div>
+
             <hr>
             <h4>Color Theme</h4>
             <div class="form-group">
@@ -452,10 +429,9 @@
                     name="main_color"
                     class=""
                     data-control="hue"
-                    value="<?=(isset($_POST['main_color'])?$_POST["main_color"]:(isset($agency->main_color)?$agency->main_color:'#2B3643'))?>"
+                    value="{{ post.main_color is defined ? post.main_color : (agency.main_color is defined ? agency.main_color : '#2B3643') }}"
                     style="margin: 4px;"  /> Primary
                 </div>
-                <!--<div class="color-select"><input type="text" id="secondary_color" name="secondary_color" class="" data-control="hue" value="#364150" style="margin: 4px;"  /> Secondary</div>-->
               </div>
             </div>
             <hr>
@@ -531,17 +507,9 @@
           </div>
           <!-- END Twilio Settings  -->
 
-
-
           <!-- START Stripe Settings  -->
           <div class="tab-pane fade" id="tab_stripe">
             <div class="form-group">
-              <!--<div class="row">
-            <label for="stripe_account_id" class="col-md-4 control-label">Stripe Account ID</label>
-            <div class="col-md-8">
-              {{ form.render("stripe_account_id", ["class": 'form-control', 'placeholder': 'Stripe Account ID']) }}
-            </div>
-          </div>-->
               <div class="row">
                 <div class="col-md-12">
                   <i>
@@ -579,9 +547,6 @@
           </div>
           <!-- END Stripe Settings  -->
 
-
-
-
           <!-- START Notification Settings  -->
           <div class="tab-pane fade in" id="tab_notification">
             <div class="form-group">
@@ -591,9 +556,7 @@
             </div>
             <div class="form-group">
               <div class="col-md-12">
-                <?php
-          if ($users) {
-            ?>
+            {% if users %}
                 <div class="panel-default toggle panelMove panelClose panelRefresh" id="notifications">
                   <div class="customdatatable-wrapper" style="margin-top: 20px;">
                     <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
@@ -609,53 +572,50 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <?php
-            $found = false;
-            foreach($users as $user) {
-              $found = true;
+            {% set found = false %}
+            {% for user in users %}
+              {% set found = true %}
 
-              //now check if this record should be checked
-              $checked = false;
-              $is_email_alert_on = false;
-              $is_sms_alert_on = false;
-              $is_all_reviews_on = false;
-              $is_individual_reviews_on = false;
-              $is_employee_report_on = false;
+              {# now check if this record should be checked #}
+              {% set checked = false %}
+              {% set is_email_alert_on = false %}
+              {% set is_sms_alert_on = false %}
+              {% set is_all_reviews_on = false %}
+              {% set is_individual_reviews_on = false %}
+              {% set is_employee_report_on = false %}
 
-              foreach($agencynotifications as $agencynotification) {
-                if ($agencynotification->user_id == $user->id) {
-
-                  $is_email_alert_on = ($agencynotification->email_alert==1?true:false);
-                  $is_sms_alert_on = ($agencynotification->sms_alert==1?true:false);
-                  $is_all_reviews_on = ($agencynotification->all_reviews==1?true:false);
-                  $is_individual_reviews_on = ($agencynotification->individual_reviews==1?true:false);
-                  $is_employee_report_on = ($agencynotification->employee_leaderboards==1?true:false);
-                }
-              }
-            ?>
+              {% for agencynotification in agencynotifications %}
+                {% if agencynotification.user_id == user.id %}
+                  {% set is_email_alert_on = agencynotification.email_alert == 1 ? true : false %}
+                  {% set is_sms_alert_on = agencynotification.sms_alert == 1 ? true : false %}
+                  {% set is_all_reviews_on = agencynotification.all_reviews == 1 ? true : false %}
+                  {% set is_individual_reviews_on = agencynotification.individual_reviews == 1 ? true : false %}
+                  {% set is_employee_report_on = agencynotification.employee_leaderboards == 1 ? true : false %}
+                {% endif %}
+              {% endfor %}
 
             <tr>
-              <td ObjectID="<?=$user->id; ?>"><?=$user->name?></td>
+              <td ObjectID="{{ user.id }}">{{ user.name }}</td>
               <td>
                 <span class="on-off-buttons">
                     <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ea"
                     data-value="0"
-                    id="eaon<?=$user->id?>"
+                    id="eaon{{ user.id }}"
                     href="#"
                     class="email_alert_on"
-                    style="<?=($is_email_alert_on?'':'display: none;')?>">
+                    style="{{ is_email_alert_on ? '' : 'display: none;' }}">
                     <img src="/img/btn_on.gif" class="sort-icon" />
                   </a>
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ea"
                     data-value="1"
-                    id="eaoff<?=$user->id?>"
+                    id="eaoff{{ user.id }}"
                     href="#"
                     class="email_alert_off"
-                    style="<?=($is_email_alert_on?'display: none;':'')?>">
+                    style="{{ is_email_alert_on ? 'display: none;' : '' }}">
                     <img src="/img/btn_off.gif" class="sort-icon" />
                   </a>
 
@@ -665,23 +625,23 @@
               <td>
                 <span class="on-off-buttons">
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="sa"
                     data-value="0"
-                    id="saon<?=$user->id?>"
+                    id="saon{{ user.id }}"
                     href="#"
                     class="sms_alert_on"
-                    style="<?=($is_sms_alert_on?'':'display: none;')?>">
+                    style="{{ is_sms_alert_on ? '' : 'display: none;' }}">
                     <img src="/img/btn_on.gif" class="sort-icon" />
                   </a>
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="sa"
                     data-value="1"
-                    id="saoff<?=$user->id?>"
+                    id="saoff{{ user.id }}"
                     href="#"
                     class="sms_alert_off"
-                    style="<?=($is_sms_alert_on?'display: none;':'')?>">
+                    style="{{ is_sms_alert_on ? 'display: none;' : '' }}">
                     <img src="/img/btn_off.gif" class="sort-icon" />
                   </a>
                 </span>
@@ -689,23 +649,23 @@
               <td>
                 <span class="on-off-buttons">
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ar"
                     data-value="0"
-                    id="aron<?=$user->id?>"
+                    id="aron{{ user.id }}"
                     href="#"
                     class="all_reviews_on"
-                    style="<?=($is_all_reviews_on?'':'display: none;')?>">
-                    <img src="/img/btn_on.gif"  class="sort-icon" />
+                    style="{{ is_all_reviews_on ? '' : 'display: none;' }}">
+                    <img src="/img/btn_on.gif" class="sort-icon" />
                   </a>
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ar"
                     data-value="1"
-                    id="aroff<?=$user->id?>"
+                    id="aroff{{ user.id }}"
                     href="#"
                     class="all_reviews_off"
-                    style="<?=($is_all_reviews_on?'display: none;':'')?>">
+                    style="{{ is_all_reviews_on ? 'display: none;' : '' }}">
                     <img src="/img/btn_off.gif" class="sort-icon" />
                   </a>
                 </span>
@@ -713,22 +673,22 @@
               <td>
                 <span class="on-off-buttons">
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ir"
                     data-value="0"
-                    id="iron<?=$user->id?>"
+                    id="iron{{ user.id }}"
                     href="#"
                     class="individual_reviews_on"
-                    style="<?=($is_individual_reviews_on?'':'display: none;')?>">
+                    style="{{ is_individual_reviews_on ? '' : 'display: none;' }}">
                     <img src="/img/btn_on.gif" class="sort-icon" />
                   </a>
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ir"
                     data-value="1"
-                    id="iroff<?=$user->id?>" href="#"
+                    id="iroff{{ user.id }}" href="#"
                     class="individual_reviews_off"
-                    style="<?=($is_individual_reviews_on?'display: none;':'')?>">
+                    style="{{ is_individual_reviews_on ? 'display: none;' : '' }}">
                     <img src="/img/btn_off.gif" class="sort-icon" />
                   </a>
                 </span>
@@ -736,23 +696,23 @@
               <td>
                 <span class="on-off-buttons">
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="el"
                     data-value="0"
-                    id="elon<?=$user->id?>"
+                    id="elon{{ user.id }}"
                     href="#"
                     class="employee_report_on"
-                    style="<?=($is_employee_report_on?'':'display: none;')?>">
+                    style="{{ is_employee_report_on ? '' : 'display: none;' }}">
                     <img src="/img/btn_on.gif" class="sort-icon" />
                   </a>
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="el"
                     data-value="1"
-                    id="eloff<?=$user->id?>"
+                    id="eloff{{ user.id }}"
                     href="#"
                     class="employee_report_off"
-                    style="<?=($is_employee_report_on?'display: none;':'')?>">
+                    style="{{ is_employee_report_on ? 'display: none;' : '' }}">
                     <img src="/img/btn_off.gif" class="sort-icon" />
                   </a>
                 </span>
@@ -761,20 +721,14 @@
                 <a class="btnLink btnSecondary SendEmployeeEmail" href="#" >Send Email</a>
               </td>
             </tr>
-            <?php
-            }
-          ?>
+            {% endfor %}
                       </tbody>
                     </table>
                   </div>
                 </div>
-                <?php
-          } else {
-              ?>
+            {% else %}
                 No employees found
-                <?php
-            }
-            ?>
+            {% endif %}
               </div>
             </div>
           </div>
@@ -784,7 +738,7 @@
 
         <div class="form-group">
           <div class="error" id="fileerror" style="display: none;">
-            Invalid file type.  Only gif, png, jpg  or jpeg file extensions are allowed.
+            Invalid file type. Only gif, png, jpg or jpeg file extensions are allowed.
           </div>
           <div class="col-md-offset-4 col-md-8">
             {{ submit_button("Save", "class": "btn btn-big btn-success btnLink btnSecondary greenbtn") }}
@@ -794,7 +748,7 @@
         {{ form.render("agency_id") }}
       </form>
       <div id="twilio-contain" style="display:none;">
-      <?php if($twilio_details!=0){?>
+      {% if twilio_details != 0 %}
         <h5> <b> Custom SMS Number </b></h5>
         <table class="table table-striped table-bordered" cellspacing="0" width="100%">
           <thead>
@@ -804,28 +758,26 @@
             </tr>
           </thead>
           <tbody>
-          <?php foreach ($twilio_details as $key => $mobile_number) { ?>
+          {% for key,mobile_number in twilio_details %}
             <tr>
-              <td><?php echo $mobile_number['friendly_name']; ?></td>
-              <td><a  href="/twilio/releseThisnumber/<?php echo base64_encode($mobile_number['phone_number']);?>||<?php echo base64_encode($mobile_number['friendly_name']);?>||"><input id="gather_info" class="btnLink btnPrimary" value="Release This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a></td>
+              <td>{{ mobile_number.friendly_name }}</td>
+              <td><a  href="/twilio/releseThisnumber/{{ base64_encode(mobile_number.phone_number) }}||{{ base64_encode(mobile_number.friendly_name) }}||"><input id="gather_info" class="btnLink btnPrimary" value="Release This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a></td>
             </tr>
-          <?php } ?>
+          {% endfor %}
           </tbody>
         </table>
-        <?php } else{
-          if( $paymentPlan != 'TRIAL' && (($planSubscribe!='FR' && $subscription_id!=0) || ($planSubscribe=='FR' && $custom_sms==1) || ($subscription_id >0) ) && $planSubscribe!='TR') {
-        ?>
+        {% else %}
+          {% if paymentPlan != 'TRIAL' and ((planSubscribe != 'FR' and subscription_id != 0) or (planSubscribe == 'FR' and custom_sms == 1) or (subscription_id > 0)) and planSubscribe != 'TR' %}
+        
             <form class="form-horizontal" id="userform" role="form" method="post" autocomplete="off">
                 <div class="form-group" style="padding-top: 30px;">
                     <label for="name" class="col-md-2 control-label">Country:</label>
                     <div class="col-md-6">
               <select name="country" id="country_select" class="form-control" style="width: 100%;" >
                 <option value="">SELECT</option>
-                <?php foreach($countries as $cid=>$country){ ?>
-
-                  <option value="<?php echo $cid; ?>" <?php if($cid=="US"){?> selected <?php }?>><?php echo $country; ?></option>
-                <?php } ?>
-                
+                {% for cid,country in countries %}
+                  <option value="{{ cid }}"{% if cid == "US" %} selected{% endif %}>{{ country }}</option>
+                {% endfor %}
               </select>
                     </div>
                 </div>
@@ -840,30 +792,28 @@
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         <input id="gather_info" class="btnLink btnPrimary" value="Get Available Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button">
-                      
                     </div>
                 </div> 
                 <div class="form-group"></div>       
             </form>
             <div id="result_valx">
             </div>
-        <?php } } ?>
+          {% endif %}
+        {% endif %}
       </div>
     </div>
   </div>
   </div>
 </header>
 
-<?php
-//make sure we are at the location level settings
-if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
-?>
+{# make sure we are at the location level settings #}
+{% if agency_type is defined and agency_type == 'business' %}
 
 <!-- Add new review site modal -->
 
 <div class="overlay" style="display: none;"></div>
 <div id="page-wrapper" class="create createreviewsiteform" style="display: none;">
-  <form id="createreviewsiteform" class="register-form4" action="/settings/siteadd/<?=$this->session->get('auth-identity')['location_id']?>/" method="post" style="display: block;">
+  <form id="createreviewsiteform" class="register-form4" action="/settings/siteadd/{{ location_id }}/" method="post" style="display: block;">
     <div class="closelink close"></div>
     <div class="col-md-12">
       <div class="row"><h3>Add Review Site</h3></div>
@@ -872,23 +822,21 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         <div class="col-md-9">
           <select name="review_site_id" id="review_site_id" required="required">
             <option value="">Select Site</option>
-            <?php
-              foreach($review_sites as $review_site) {
-                $found = false;
-                if ($review_site->review_site_id < 4) {
-                  $found = true;
-                } else if (isset($review_site_lists)) {
-                  foreach($review_site_lists as $review_site_list) {
-                    if ($review_site_list->review_site_id == $review_site->review_site_id) $found = true;
-                  }
-                }
-                if (!$found) {
-                  ?>
-                  <option value="<?=$review_site->review_site_id?>"><?=$review_site->name?></option>
-                  <?php
-                }
-              }
-          ?>
+            {% for review_site in review_sites %}
+                {% set found = false %}
+                {% if review_site.review_site_id %}
+                  {% set found = true %}
+                {% elseif review_site_lists is defined %}
+                  {% for review_site_list in review_site_lists %}
+                    {% if review_site_list.review_site_id == review_site.review_site_id %}
+                      {% set found = true %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                {% if not found %}
+                  <option value="{{ review_site.review_site_id }}">{{ review_site.name }}</option>
+                {% endif %}
+            {% endfor %}
           </select>
         </div>
       </div>
@@ -943,9 +891,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
     <input type="hidden" name="reviewSiteId" id="reviewSiteId" value="" />
   </form>
 </div>
-<?php
-}
-?>
+{% endif %}
 <script>
     $( document ).ready(function() {
     
