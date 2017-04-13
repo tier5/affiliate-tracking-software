@@ -187,7 +187,7 @@
                 {% if TrialAmount %}
                     White Label Agency Account With {{ NumLocations }} Active Locations & Unlimited FREE Trial Business Accounts. Get Started Today On A {{ TrialAmount }} Day FREE Trial, then just ${{ Rate }} A Month!
                 {% else %}
-                    White Label Agency Account With {{ NumLocations }} Active Locations & Unlimited FREE Trial Business Accounts.  {% if ActivationFee > 0 %}${{ ActivationFee }} Activation Fee (Includes First Month’s Service) Then{% endif %} Just ${{ Rate }} A Month!
+                    White Label Agency Account With {{ NumLocations }} Active Locations & Unlimited FREE Trial Business Accounts.  {% if ActivationFee > 0 %}${{ ActivationFee+Rate }} Activation Fee (Includes First Month’s Service) Then{% endif %} Just ${{ Rate }} A Month!
                 {% endif %}
             </div>
 

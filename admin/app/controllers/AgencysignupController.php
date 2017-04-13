@@ -14,7 +14,7 @@
         protected $DefaultSubscription = "197 Ten for ten";
         protected $DefaultUpgradeSubscription = "197 Twenty for eight";
         // The following fields are used for text on the order form.
-        protected $DefaultActivationFee = 297;
+        protected $DefaultActivationFee = 197;
         protected $DefaultNumLocations = 10;
         protected $DefaultRate = 100;
         protected $DefaultTrialAmount = 0;
