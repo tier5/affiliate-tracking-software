@@ -1,90 +1,78 @@
 <!-- views/review/recommend.volt -->
 {{ content() }}
-<?php
-function isMobile() {
-    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
-}
-?>
+
 <div class="review recommend">
   <div class="rounded-wrapper">
     <div class="rounded" style="padding-bottom: 25px;">
-      <?php
-  if (isset($logo_path) && $logo_path != '') {
-    ?>
+  {% if logo_path is defined and logo_path != '' %}
       <div class="page-logo">
         <img src="<?=$logo_path?>" alt="logo" class="logo-default" /> </a>
       </div>
-      <?php
-  } else if (isset($name) && $name != '') {
-    ?>
+  {% elseif name is defined and name != '' %}
       <div class="page-logo">
-        <?=$name?>
+        {{ name }}
       </div>
-      <?php
-  }
-  ?>
+  {% endif %}
       <div class="question">Choose Your Favorite App And Review Us!</div>
 
-      <?php
-        if($review_site_list && count($review_site_list)) {
-          foreach($review_site_list as $rsl) {
-            if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) {
+      {% if review_site_list and review_site_list|length > 0 %}
+          {% for rsl in review_site_list %}
+            {% if rsl.review_site_id == facebook_type_id %}
 
-              if ($rsl->url !== '' && $rsl->url !== null) {
-                  $FacebookLink = $rsl->url;
-              ?>
-              <div class="row text-center" id="facebooklink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="<?=$FacebookLink; ?>" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
-              <?php } else { ?>
-                //$FacebookLink = isMobile() ? "fb://profile/{$rsl->external_id}" : "http://facebook.com/{$rsl->external_id}/reviews";
-                $FacebookLink = "fb://profile/{$rsl->external_id}";
-              <div class="row text-center" id="facebooklink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="<?=$FacebookLink; ?>" onclick="facebookClickHandler('<?=$rsl->external_id?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
-              <?php } ?>
-              <?php
-            } else if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_YELP) {
-              ?>
-              <?php if ($rsl->url !== '' && $rsl->url !== null) { ?>
-              <div class="row text-center" id="yelplink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="<?=$rsl->url?>" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
-              <?php } else if (!(strpos($rsl->external_id, '>') !== false)) { ?>
-              <div class="row text-center" id="yelplink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="http://www.yelp.com/writeareview/biz/<?=$rsl->external_id?>" onclick="yelpClickHandler('<?=$rsl->external_id?>');" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
-              <?php } ?>
-              <?php
-            } else if ($rsl->review_site_id == \Vokuro\Models\Location::TYPE_GOOGLE) {
-                if ($rsl->url !== '' && $rsl->url !== null) {
-                    $googleLink = $rsl->url;
-                } else {
-                    $googleLink = 'https://www.google.com/search?q='
-                    . urlencode($location->name
-                    . ', ' . $location->address
-                    . ', ' . $location->locality
-                    . ', ' . $location->state_province
-                    . ', ' . $location->postal_code
-                    . ', ' . $location->country)
-                    . '&' . 'ludocid=' 
-                    . $rsl->external_id . '#lrd='
-                    . $rsl->lrd . ',3,5';
-                }
-              ?>
-              <div class="row text-center" id="googlelink"><a data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" href="<?=$googleLink?>" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
-              <?php
-            } else {
-              ?>
-              <div class="row text-center"><a href="<?=$rsl->url?>" data-id="<?=$rsl->review_site_id?>" data-invite="<?=$invite->review_invite_id?>" class="btn-lg btn-review track-link"><img src="<?=$rsl->review_site->logo_path?>" alt="<?=$rsl->review_site->name?>" /></a></div>
-              <?php
-            }
-          }
-        }
-  ?>
+                {% if rsl.url is defined and rsl.url !== '' %}
+                  {% set FacebookLink = rsl.url %}
+                <div class="row text-center" id="facebooklink"><a data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" href="{{ FacebookLink }}" class="btn-lg btn-review track-link"><img src="{{ rsl.review_site.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
+                {% else %}
+                  {% set FacebookLink = "fb://profile/" ~ rsl.external_id %}
+                <div class="row text-center" id="facebooklink"><a data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" href="{{ FacebookLink }}" onclick="facebookClickHandler('{{ rsl.external_id }}');" class="btn-lg btn-review track-link"><img src="{{ rsl.review_site.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
+                {% endif %}
 
+            {% elseif rsl.review_site_id == yelp_type_id %}
+
+                {% if rsl.url !== null and rsl.url !== '' %}
+
+                <div class="row text-center" id="yelplink"><a data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" href="{{ rsl.url }}" class="btn-lg btn-review track-link"><img src="{{ rsl.review_site.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
+                
+                {% elseif !(strpos(rsl.external_id, '>') !== false) %}
+                
+                <div class="row text-center" id="yelplink"><a data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" href="http://www.yelp.com/writeareview/biz/{{ rsl.external_id }}" onclick="yelpClickHandler('{{ rsl.external_id }}');" class="btn-lg btn-review track-link"><img src="{{ rsl.review_site.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
+
+                {% endif %}
+              
+            {% elseif rsl.review_site_id == google_type_id %}
+                {% if rsl.url !== null and rsl.url !== '' %}
+                    {% set googleLink = rsl.url %}
+                {% else %}
+                    {% set googleLinkEncode = location.name
+                    ~ ', ' ~ location.address
+                    ~ ', ' ~ location.locality
+                    ~ ', ' ~ location.state_province
+                    ~ ', ' ~ location.postal_code
+                    ~ ', ' ~ location.country|url_encode %}
+                    {% set googleLink = 'https://www.google.com/search?q='
+                    ~ '&' ~ 'ludocid=' 
+                    ~ googleLinkEncode
+                    ~ rsl.external_id ~ '#lrd='
+                    ~ rsl.lrd ~ ',3,5' %}
+                {% endif %}
+              <div class="row text-center" id="googlelink"><a data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" href="{{ googleLink }}" class="btn-lg btn-review track-link"><img src="{{ rsl.review_site.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
+            {% elseif rsl.review_site_id == other_type_id %}
+              <div class="row text-center" id="googlelink"><a data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" href="{{ googleLink }}" class="btn-lg btn-review track-link"><img src="{{ rsl.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
+            {% else %}
+              <div class="row text-center"><a href="{{ rsl.url }}" data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" class="btn-lg btn-review track-link"><img src="{{ rsl.review_site.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
     </div>
     <div class="subtext text-center">App Will Automatically Launch</div>
   </div>
   <br>
 <br>
 
-<?php if($parent_agency->name):?>
+  {% if parent_agency.name %}
   <div class="footer">Powered by:
-  <a href="<?=$parent_agency->website; ?>" style="Margin:0;color: #333;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none"><?=$parent_agency->name; ?></a></div>
-  <?php endif;?>
+  <a href="{{ parent_agency.website }}" style="Margin:0;color: #333;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none">{{ parent_agency.name }}</a></div>
+  {% endif %}
 </div>
 
 <script type="text/javascript">

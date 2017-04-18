@@ -131,6 +131,11 @@ class ReviewController extends ControllerBase
 
     public function recommendAction()
     {
+        $this->view->facebook_type_id = \Vokuro\Models\Location::TYPE_FACEBOOK;
+        $this->view->yelp_type_id = \Vokuro\Models\Location::TYPE_YELP;
+        $this->view->google_type_id = \Vokuro\Models\Location::TYPE_GOOGLE;
+        $this->view->other_type_id = \Vokuro\Models\Location::TYPE_OTHER;
+
         try {
             $this->di = $this->getDI();
             $this->config = $this->di->get('config');
