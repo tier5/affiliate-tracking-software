@@ -11,6 +11,7 @@
      */
     class Location extends BaseModel
     {
+        const TYPE_OTHER = 0;
     	const TYPE_FACEBOOK = 1;
     	const TYPE_YELP = 2;
         const TYPE_GOOGLE = 3;

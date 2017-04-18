@@ -293,7 +293,7 @@ class SettingsController extends ControllerBase
             . "..". DIRECTORY_SEPARATOR
             . ".." . DIRECTORY_SEPARATOR
             . "public" . $path;
-
+        
         // get uploaded file
         $file = $this->getUploadedFile();
         
@@ -346,9 +346,55 @@ class SettingsController extends ControllerBase
         return false;
     }
 
-    protected function storeReviewSiteLogo()
+    public function saveReviewSiteLogoAction($locationReviewSiteId = 0)
     {
+        $path = DIRECTORY_SEPARATOR
+            . "img" . DIRECTORY_SEPARATOR
+            . "review_site_logos" . DIRECTORY_SEPARATOR;
 
+        $pathRelative = __DIR__ . DIRECTORY_SEPARATOR
+            . "..". DIRECTORY_SEPARATOR
+            . ".." . DIRECTORY_SEPARATOR
+            . "public" . $path;
+
+        $file = $this->getUploadedFile();
+        
+        if (!$file) {
+            return false;
+        }
+
+        $condition = 'location_review_site_id = '.$locationReviewSiteId;
+
+        $reviewSite = LocationReviewSite::findFirst($condition);
+
+        // if logo exists delete it
+        if (isset($reviewSite->logo_path) && $reviewSite->logo_path) { //
+            $logoFileName = $pathRelative . $reviewSite->logo_path; //
+
+            if (is_file($logoFileName)) {
+                if(unlink($logoFileName)) {
+                    $reviewSite->logo_path = null;
+
+                    $reviewSite->save();
+                };
+            }
+        }
+
+        // store in agency_logo folder
+        $fileName = $this->storeLogo($file, $pathRelative);
+
+        if ($fileName === false) {
+            return false;
+        }
+
+        // save path to agency table
+
+        $reviewSite->logo_path = $path . $fileName; //
+
+        $reviewSite->save(); //
+        $this->view->disable();
+
+        //$this->view->logo_path = $path . "{$fileName}"; //
     }
 
     protected function storeSettings($entity, $type)
@@ -1000,7 +1046,7 @@ class SettingsController extends ControllerBase
             $lrs = new LocationReviewSite();
             $lrs->location_id = $location_id;
             $lrs->review_site_id = $review_site_id;
-            $lrs->url = $_GET['url'];
+            $lrs->url = $_REQUEST['url'];
             $lrs->date_created = date('Y-m-d H:i:s');
             $lrs->is_on = 1;
             $lrs->save();
@@ -1019,7 +1065,12 @@ class SettingsController extends ControllerBase
             $lrs = new LocationReviewSite();
             $lrs->location_id = $location_id;
             $lrs->review_site_id = $review_site_id;
-            $lrs->url = $_GET['url'];
+            $lrs->url = $_REQUEST['url'];
+            
+            if(!empty($_REQUEST['name'])) {
+                $lrs->name = $_REQUEST['name'];
+            }
+            
             $lrs->date_created = date('Y-m-d H:i:s');
             $lrs->is_on = 1;
             $lrs->save();

@@ -1,5 +1,5 @@
 
-<header class="jumbotron subhead <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'agency')?>settingspage" id="reviews">
+<header class="jumbotron subhead {{ agency_type is defined and agency_type == 'business' ? '' : 'agency' }}settingspage" id="reviews">
   <div class="hero-unit">
     <div class="row">
       <div class="col-md-5 col-sm-5">
@@ -13,7 +13,6 @@
         {% if percent > 100 %}
          {% set percent = 100 %}
         {% endif %}
-        ?>
         <div class="col-md-7 col-sm-7">
           <div class="sms-chart-wrapper">
             <div class="title">SMS Messages Sent</div>
@@ -21,7 +20,7 @@
               <div class="bar-background"></div>
               <div class="bar-filled" style="width: {{ percent }}%;"></div>
               <div class="bar-percent" style="padding-left: {{ percent }}%;">{{ percent }}%</div>
-              <div class="bar-number" style="margin-left: {{ percent }}%;"><div class="ball">{{ sms_sent_this_month_total + sms_sent_this_month_total_non }}</div><div class="bar-text" {{ percent > 60 ? 'style="display: none;"' : ''}}>This Month</div></div>
+              <div class="bar-number" style="margin-left: {{ percent }}%;"><div class="ball">{{ sms_sent_this_month_total + sms_sent_this_month_total_non }}</div><div class="bar-text" {{ percent > 60 ? 'style="display: none;"' : '' }}>This Month</div></div>
             </div>
             <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ sms_sent_this_month_total + sms_sent_this_month_total_non }})<br/><span class="goal">Allowed</span></div>
           </div>
@@ -178,8 +177,6 @@
                   {% if review_site_list.review_site_id == facebook_type_id %}
                   {% set has_facebook = true %}
                   {% endif %}
-                    
-                    ?>
                     <li class="ui-state-default" id='{{ review_site_list.location_review_site_id }}'>
                       <span class="site-wrapper"><img src="{{ review_site_list.review_site.icon_path }}" class="imgicon" />
                         {{ review_site_list.review_site.name }}
@@ -193,13 +190,14 @@
                                 {% if review_site_list.url !== '' and review_site_list.url !== null %}
                                     {% set googleLink = review_site_list.url %}
                                 {% else %}
-                                    {% set googleLink = 'https://www.google.com/search?q='
-                                    ~ urlencode(location.name
+                                    {% set googleLinkEncode = location.name
                                     ~ ', ' ~ location.address
                                     ~ ', ' ~ location.locality
                                     ~ ', ' ~ location.state_province
                                     ~ ', ' ~ location.postal_code
-                                    ~ ', ' ~ location.country)
+                                    ~ ', ' ~ location.country | url_encode %}
+                                    {% set googleLink = 'https://www.google.com/search?q='
+                                    ~ googleLinkEncode
                                     ~ '&' ~ 'ludocid=' 
                                     ~ review_site_list.external_id ~ '#lrd='
                                     ~ review_site_list.lrd ~ ',3,5' %}
@@ -813,11 +811,12 @@
 
 <div class="overlay" style="display: none;"></div>
 <div id="page-wrapper" class="create createreviewsiteform" style="display: none;">
-  <form id="createreviewsiteform" class="register-form4" action="/settings/siteadd/{{ location_id }}/" method="post" style="display: block;">
+
     <div class="closelink close"></div>
     <div class="col-md-12">
       <div class="row"><h3>Add Review Site</h3></div>
       <div class="form-group row">
+      <form id="createreviewsiteform" class="register-form4" action="/settings/siteadd/{{ location_id }}/" method="post" style="display: block;">
         <label for="url" class="col-md-3 control-label">Review Site: </label>
         <div class="col-md-9">
           <select name="review_site_id" id="review_site_id" required="required">
@@ -833,11 +832,18 @@
                     {% endif %}
                   {% endfor %}
                 {% endif %}
-                {% if not found and review_site.review_site_id != 0 %}
+
+                {% if not found or review_site.review_site_id == 0 %}
                   <option value="{{ review_site.review_site_id }}">{{ review_site.name }}</option>
                 {% endif %}
             {% endfor %}
           </select>
+        </div>
+      </div>
+      <div class="form-group row" id="reviewSiteNameBox" style="display: none;">
+        <label for="url" class="col-md-3 control-label">Name: </label>
+        <div class="col-md-9">
+          <input type="text" name="reviewSiteName" id="reviewSiteName" value="" />
         </div>
       </div>
       <div class="form-group row">
@@ -846,16 +852,24 @@
           <input type="url" name="url" id="url" value="" required="required" />
         </div>
       </div>
+      <div style="clear: both;">&nbsp;</div>    
+      <input type="hidden" name="reviewgoal" id="reviewgoal" value="" />
+      <input type="hidden" name="lifetimevalue" id="lifetimevalue" value="" />
+      </form>
+      <div class="form-group row" id="reviewLogoUploadBox" style="display: none;">
+        <label for="url" class="col-md-3 control-label">Logo Upload: </label>
+        <div class="col-md-9">
+          <form id="reviewLogoUpload" class="dropzone" action="/settings/saveReviewSiteLogo" dictDefaultMessage="Drop files here or click to upload">
+          </form>
+        </div>
+      </div>
+
       <div class="row">
         <div class="field">
           <button id="createsite" type="submit" class="btnLink btnSecondary greenbtn">Save</button>
         </div>
       </div>
-      <div style="clear: both;">&nbsp;</div>
     </div>
-    <input type="hidden" name="reviewgoal" id="reviewgoal" value="" />
-    <input type="hidden" name="lifetimevalue" id="lifetimevalue" value="" />
-  </form>
 </div>
 
 <!-- Edit URL Modal -->
@@ -892,58 +906,73 @@
   </form>
 </div>
 {% endif %}
+<link rel="stylesheet" type="text/css" href="/css/dropzone.css">
+<script src="/js/dropzone.js"></script>
 <script>
     $( document ).ready(function() {
-    
-    $('#gather_info').click(function(){
-      $("#result_valx").html("");
-      var country_select=$('#country_select').val();
-      var number_type_select="";
-      var area_code=$('#area_code').val();
-      var Contains="";
-      if (country_select != "") {
-      $("#result_valx").html("<span>loading......</span>");
-        
-        $.ajax({
-        type: 'POST',
-        url: "/twilio/getAvailableNumber", 
-        data:{country_select : country_select,number_type_select:number_type_select,area_code:area_code,Contains:Contains},
-        success: function(result){
-          if(result){
-            $("#result_valx").html("");
-            $("#result_valx").html(result);
-          }
+      Dropzone.autoDiscover = false;
+
+      var url = '/settings/saveReviewSiteLogo';
+
+      var myDropzone = new Dropzone('#reviewLogoUpload', {
+        url: url,
+        autoProcessQueue: false,
+        maxFilesize: 500, // in MB
+        maxFiles: 1,
+        dictDefaultMessage: 'Drop files here or click to upload'
+      });
+      
+      myDropzone.on('complete', function(file) {
+        console.log('file transfer completed');
+        myDropzone.removeFile(file);
+      });
+
+      // when finished .disable,.enable
+
+      $('#gather_info').click(function() {
+        $("#result_valx").html("");
+        var country_select = $('#country_select').val();
+        var number_type_select = "";
+        var area_code = $('#area_code').val();
+        var Contains = "";
+
+        if (country_select != "") {
+          $("#result_valx").html("<span>loading......</span>");
+          
+          $.ajax({
+            type: 'POST',
+            url: "/twilio/getAvailableNumber", 
+            data: {country_select : country_select, number_type_select:number_type_select, area_code:area_code, Contains:Contains},
+            success: function(result){
+              if(result){
+                $("#result_valx").html("");
+                $("#result_valx").html(result);
+              }
+            }
+          });
+        } else {
+          alert("Please Select Country!!!");
         }
-        });
-      }else{
-      alert("Please Select Country!!!");
-      }
-    });
-    $('#purchased_number_list').click(function(){
-    
-    $("#result_valx").html("");
-    $("#result_valx").html("<span>loading......</span>");
+      });
+      $('#purchased_number_list').click(function() {
+      
+      $("#result_valx").html("");
+      $("#result_valx").html("<span>loading......</span>");
       $.ajax({
         type: 'POST',
         url: "/twilio/getPreviousNumber", 
-        data:{},
+        data: {},
         success: function(result){
-          if(result){
-          $("#result_valx").html("");
+          if(result) {
+            $("#result_valx").html("");
             $("#result_valx").html(result); 
-            
           }
         }
-        });
-    return false;
-    });
-    });
- 
-    
-    </script>
+      });
 
-<script type="text/javascript">
-  jQuery(document).ready(function($) {
+      return false;
+    });
+
     $('.SendEmployeeEmail').on('click', function(e) {
         var EmployeeID = $(this).parents('TR').children('TD:first-child').attr('ObjectID');
 
@@ -953,17 +982,17 @@
                 if(data == "1")
                     alert("Email successfully sent!");
                 else {
-                    console.log(data);
                     alert("Problem sending email.  Please contact customer support.");
                 }
             }
         });
     });
+
     $(".smstwilio").on('click', function(e) {
       
-      if($(this).attr('href')=="#tab_sms_message"){
+      if ($(this).attr('href') == "#tab_sms_message") {
         $("#twilio-contain").show();
-      }else{
+      } else {
         $("#twilio-contain").hide();
       }
       
@@ -977,14 +1006,28 @@
       $('#reviewgoal').val($('#review_goal').val());
       $('#lifetimevalue').val($('#lifetime_value_customer').val());
     });
+
     $('.overlay, .closelink').on('click', function(e) {
       e.preventDefault();
       $('#page-wrapper').hide();
       $('.overlay').hide();
     });
 
-    // edit site url button and modal
+    $('select#review_site_id').on('change', function(e) {
+      var review_site_id = $(e.currentTarget).val();
 
+      if (review_site_id === '0') {
+        console.log('down');
+        $('#reviewSiteNameBox').slideDown();
+        $('#reviewLogoUploadBox').slideDown();
+      } else {
+        console.log('up');
+        $('#reviewSiteNameBox').slideUp();
+        $('#reviewLogoUploadBox').slideUp();
+      }
+    })
+
+    // edit site url button and modal
     var onEditURLclick = function(e) {
         e.preventDefault();
 
@@ -1015,7 +1058,6 @@
       e.preventDefault();
 
       var reviewSiteId = $("#reviewSiteId").val();
-      console.log(reviewSiteId);
       var url = $("#url2").val();
 
       $.ajax({
@@ -1024,7 +1066,6 @@
         data: 'url=' + encodeURIComponent(url),
         cache: false,
         success: function() {
-          console.log(url);
           // select view link and update url attribute
           $('#'+reviewSiteId+' a[type=view]').attr('href', url);
 
@@ -1037,30 +1078,37 @@
       return false;
     });
 
-    $("#createreviewsiteform").on('submit', function(ev){
-      ev.preventDefault();
+    $("button#createsite").on('click', function(){
 
       $.ajax({
-        url: $('#createreviewsiteform').attr('action')+''+$("#review_site_id").val()+'/?url='+encodeURIComponent($("#url").val()),
+        url: $('#createreviewsiteform').attr('action')+''+$("#review_site_id").val()+'/',
+        data: 'url='+encodeURIComponent($("#url").val())+'&name='+encodeURIComponent($("#reviewSiteName").val()),
         cache: false,
-        success: function(data){
-
-          //$.each(data, function(index, element) {
+        method: 'POST',
+        success: function(data) {
+          //Dropzone.options.myDropzone = 'url';
+          
           var element = $.parseJSON(data);
-          //first, remove the value we selected
-          $("#review_site_id option[value='"+$("#review_site_id").val()+"']").each(function() {
-            $(this).remove();
-          });
+          // if other selected
+          if ($("#review_site_id").val() === '0') {
+            myDropzone.options.url = $('#reviewLogoUpload').attr('action') + '/' + element.location_review_site_id + '/';
+
+            myDropzone.processQueue();
+          } else {
+            // remove the value we selected
+            $("#review_site_id option[value='"+$("#review_site_id").val()+"']").each(function() {
+              $(this).remove();
+            });            
+          }
 
           var id = $("#review_site_id").val();
           var url = $("#url").val();
           var newid = element.location_review_site_id;
-          console.log(newid);
           var img_path = element.img_path;
           var name = element.name;
 
-          //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons" style="margin-left: 5px;"><a class="btnLink btnSecondary greenbtn" href="'+url+'" url="'+url+'" target="_blank" type="view">View</a><!-- Edit URL Button --><a class="btnLink btnSecondary btnEditSiteURL greenbtn" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>" data-id="'+newid+'" style="margin-left: 10px;"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons" style="margin-left: 5px; margin-right: 5px;"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif" class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+          // add this selection to the settings page
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons" style="margin-left: 5px;"><a class="btnLink btnSecondary greenbtn" href="'+url+'" url="'+url+'" target="_blank" type="view">View</a><!-- Edit URL Button --><a class="btnLink btnSecondary btnEditSiteURL greenbtn" href="/location/edit/{{ location_id }}" data-id="'+newid+'" style="margin-left: 10px;"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons" style="margin-left: 5px; margin-right: 5px;"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif" class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
 
           $('.btnEditSiteURL').unbind('click');
 
@@ -1073,10 +1121,9 @@
             return turnOff($(this).attr("data-id"));
           });
 
-          //finally, close the form
+          // close the form
           $('#page-wrapper').hide();
           $('.overlay').hide();
-          //});
         }
       });
 
@@ -1088,8 +1135,6 @@
     });
 
     function turnOn(id) {
-      //console.log('id:'+id);
-
       $.ajax({
         url: "/settings/on/"+id,
         cache: false,
@@ -1123,13 +1168,11 @@
     });
 
     function turnOff(id) {
-      //console.log('id:'+id);
-
       $.ajax({
         url: "/settings/off/"+id+"/",
         cache: false,
-        success: function(html){
-          //done!
+        success: function(html) {
+
         }
       });
 
@@ -1160,21 +1203,18 @@
           id = $(this).attr("data-id");
           type = $(this).attr("data-type");
           value = $(this).attr("data-value");
-          //console.log('id:'+id);
           $.ajax({
             url: "/settings/notification/"+id+"/"+type+"/"+value+"/",
             cache: false,
             success: function(html){
-              //done!
+
             }
           });
 
           if (value == 1) {
-            //console.log('#'+type+'on'+id);
             $('#'+type+'on'+id).show();
             $('#'+type+'off'+id).hide();
           } else {
-            //console.log('#'+type+'off'+id);
             $('#'+type+'on'+id).hide();
             $('#'+type+'off'+id).show();
           }
@@ -1185,15 +1225,9 @@
 
 
     $("#settingsform").on("submit", function(e) {
-
-  //  var inputs = document.getElementsByTagName('on-off-buttons');
-  //alert(inputs.serializeArray());
-
       var idsInOrder = $("#sortable").sortable("toArray");
-      //-----------------^^^^
-      console.log(idsInOrder);
+
       $('input#review_order').val(idsInOrder);
-      //return false;
 
       if($('#logo_path').val() != ''){
         var ext = $('#logo_path').val().split('.').pop().toLowerCase();
@@ -1203,27 +1237,22 @@
           return false;
         }
       }
+
       $('#fileerror').hide();
+      
       return true;
     });
 
-
     $("#creastesite").on("submit", function(e) {
-    var url = document.getElementsByIdName('url');
+      var url = document.getElementsByIdName('url');
+
 	    $.ajax({
 	        url: "/settings/addReviewSite/"+url+"/",
 	        cache: false,
 	        success: function(html){
 	        }
-	 	});
-		if (value == 1) {
-
-		} else {
-
-		}
-
+      });
     });
-
 
     $('div#image_container img').click(function(){
       // set the img-source as value of image_from_list
@@ -1234,7 +1263,6 @@
 
     $("#sortable").sortable();
     $("#sortable").disableSelection();
-    //i broke this out so it would be on its own function
   });
 
   $(function () {
