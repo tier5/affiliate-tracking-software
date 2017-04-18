@@ -190,13 +190,14 @@
                                 {% if review_site_list.url !== '' and review_site_list.url !== null %}
                                     {% set googleLink = review_site_list.url %}
                                 {% else %}
-                                    {% set googleLink = 'https://www.google.com/search?q='
-                                    ~ urlencode(location.name
+                                    {% set googleLinkEncode = location.name
                                     ~ ', ' ~ location.address
                                     ~ ', ' ~ location.locality
                                     ~ ', ' ~ location.state_province
                                     ~ ', ' ~ location.postal_code
-                                    ~ ', ' ~ location.country)
+                                    ~ ', ' ~ location.country | url_encode %}
+                                    {% set googleLink = 'https://www.google.com/search?q='
+                                    ~ googleLinkEncode
                                     ~ '&' ~ 'ludocid=' 
                                     ~ review_site_list.external_id ~ '#lrd='
                                     ~ review_site_list.lrd ~ ',3,5' %}
@@ -810,11 +811,12 @@
 
 <div class="overlay" style="display: none;"></div>
 <div id="page-wrapper" class="create createreviewsiteform" style="display: none;">
-  <form id="createreviewsiteform" class="register-form4" action="/settings/siteadd/{{ location_id }}/" method="post" style="display: block;">
+
     <div class="closelink close"></div>
     <div class="col-md-12">
       <div class="row"><h3>Add Review Site</h3></div>
       <div class="form-group row">
+      <form id="createreviewsiteform" class="register-form4" action="/settings/siteadd/{{ location_id }}/" method="post" style="display: block;">
         <label for="url" class="col-md-3 control-label">Review Site: </label>
         <div class="col-md-9">
           <select name="review_site_id" id="review_site_id" required="required">
@@ -830,11 +832,17 @@
                     {% endif %}
                   {% endfor %}
                 {% endif %}
-                {% if not found %}
+                {% if not found or review_site.review_site_id == 0 %}
                   <option value="{{ review_site.review_site_id }}">{{ review_site.name }}</option>
                 {% endif %}
             {% endfor %}
           </select>
+        </div>
+      </div>
+      <div class="form-group row" id="reviewSiteNameBox" style="display: none;">
+        <label for="url" class="col-md-3 control-label">Name: </label>
+        <div class="col-md-9">
+          <input type="text" name="reviewSiteName" id="reviewSiteName" value="" />
         </div>
       </div>
       <div class="form-group row">
@@ -843,24 +851,24 @@
           <input type="url" name="url" id="url" value="" required="required" />
         </div>
       </div>
-      <div class="form-group row">
+      <div style="clear: both;">&nbsp;</div>    
+      <input type="hidden" name="reviewgoal" id="reviewgoal" value="" />
+      <input type="hidden" name="lifetimevalue" id="lifetimevalue" value="" />
+      </form>
+      <div class="form-group row" id="reviewLogoUploadBox" style="display: none;">
         <label for="url" class="col-md-3 control-label">Logo Upload: </label>
         <div class="col-md-9">
-          <span class="btn btn-default btn-file">
-              Browse <input type="file">
-          </span>
+          <form id="reviewLogoUpload" class="dropzone" action="/settings/saveReviewSiteLogo" dictDefaultMessage="Drop files here or click to upload">
+          </form>
         </div>
       </div>
+
       <div class="row">
         <div class="field">
           <button id="createsite" type="submit" class="btnLink btnSecondary greenbtn">Save</button>
         </div>
       </div>
-      <div style="clear: both;">&nbsp;</div>
     </div>
-    <input type="hidden" name="reviewgoal" id="reviewgoal" value="" />
-    <input type="hidden" name="lifetimevalue" id="lifetimevalue" value="" />
-  </form>
 </div>
 
 <!-- Edit URL Modal -->
@@ -897,14 +905,36 @@
   </form>
 </div>
 {% endif %}
+<link rel="stylesheet" type="text/css" href="/css/dropzone.css">
+<script src="/js/dropzone.js"></script>
 <script>
     $( document ).ready(function() {
+      Dropzone.autoDiscover = false;
+
+      var url = '/settings/saveReviewSiteLogo';
+
+      var myDropzone = new Dropzone('#reviewLogoUpload', {
+        url: url,
+        autoProcessQueue: false,
+        maxFilesize: 500, // in MB
+        maxFiles: 1,
+        dictDefaultMessage: 'Drop files here or click to upload'
+      });
+      
+      myDropzone.on('complete', function(file) {
+        console.log('file transfer completed');
+        myDropzone.removeFile(file);
+      });
+
+      // when finished .disable,.enable
+
       $('#gather_info').click(function() {
         $("#result_valx").html("");
-        var country_select=$('#country_select').val();
-        var number_type_select="";
-        var area_code=$('#area_code').val();
-        var Contains="";
+        var country_select = $('#country_select').val();
+        var number_type_select = "";
+        var area_code = $('#area_code').val();
+        var Contains = "";
+
         if (country_select != "") {
           $("#result_valx").html("<span>loading......</span>");
           
@@ -941,13 +971,7 @@
 
       return false;
     });
-  });
- 
-    
-    </script>
 
-<script type="text/javascript">
-  jQuery(document).ready(function($) {
     $('.SendEmployeeEmail').on('click', function(e) {
         var EmployeeID = $(this).parents('TR').children('TD:first-child').attr('ObjectID');
 
@@ -957,17 +981,17 @@
                 if(data == "1")
                     alert("Email successfully sent!");
                 else {
-                    console.log(data);
                     alert("Problem sending email.  Please contact customer support.");
                 }
             }
         });
     });
+
     $(".smstwilio").on('click', function(e) {
       
-      if($(this).attr('href')=="#tab_sms_message"){
+      if ($(this).attr('href') == "#tab_sms_message") {
         $("#twilio-contain").show();
-      }else{
+      } else {
         $("#twilio-contain").hide();
       }
       
@@ -981,11 +1005,26 @@
       $('#reviewgoal').val($('#review_goal').val());
       $('#lifetimevalue').val($('#lifetime_value_customer').val());
     });
+
     $('.overlay, .closelink').on('click', function(e) {
       e.preventDefault();
       $('#page-wrapper').hide();
       $('.overlay').hide();
     });
+
+    $('select#review_site_id').on('change', function(e) {
+      var review_site_id = $(e.currentTarget).val();
+
+      if (review_site_id === '0') {
+        console.log('down');
+        $('#reviewSiteNameBox').slideDown();
+        $('#reviewLogoUploadBox').slideDown();
+      } else {
+        console.log('up');
+        $('#reviewSiteNameBox').slideUp();
+        $('#reviewLogoUploadBox').slideUp();
+      }
+    })
 
     // edit site url button and modal
     var onEditURLclick = function(e) {
@@ -1038,20 +1077,28 @@
       return false;
     });
 
-    $("#createreviewsiteform").on('submit', function(ev){
-      ev.preventDefault();
+    $("button#createsite").on('click', function(){
 
       $.ajax({
-        url: $('#createreviewsiteform').attr('action')+''+$("#review_site_id").val()+'/?url='+encodeURIComponent($("#url").val()),
+        url: $('#createreviewsiteform').attr('action')+''+$("#review_site_id").val()+'/',
+        data: 'url='+encodeURIComponent($("#url").val())+'&name='+encodeURIComponent($("#reviewSiteName").val()),
         cache: false,
-        success: function(data){
-
+        method: 'POST',
+        success: function(data) {
+          //Dropzone.options.myDropzone = 'url';
+          
           var element = $.parseJSON(data);
+          // if other selected
+          if ($("#review_site_id").val() === '0') {
+            myDropzone.options.url = $('#reviewLogoUpload').attr('action') + '/' + element.location_review_site_id + '/';
 
-          // remove the value we selected
-          $("#review_site_id option[value='"+$("#review_site_id").val()+"']").each(function() {
-            $(this).remove();
-          });
+            myDropzone.processQueue();
+          } else {
+            // remove the value we selected
+            $("#review_site_id option[value='"+$("#review_site_id").val()+"']").each(function() {
+              $(this).remove();
+            });            
+          }
 
           var id = $("#review_site_id").val();
           var url = $("#url").val();
