@@ -270,6 +270,8 @@ class SettingsController extends ControllerBase
             );
 
             if ($uploaded !== false) {
+                chmod($filePath . $tempName, 0777);
+                
                 return $fileName;
             }
         }
