@@ -57,7 +57,7 @@
                 {% endif %}
               <div class="row text-center" id="googlelink"><a data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" href="{{ googleLink }}" class="btn-lg btn-review track-link"><img src="{{ rsl.review_site.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
             {% elseif rsl.review_site_id == other_type_id %}
-              <div class="row text-center" id="googlelink"><a data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" href="{{ googleLink }}" class="btn-lg btn-review track-link"><img src="{{ rsl.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
+              <div class="row text-center" id="googlelink"><a data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" href="{{ rsl.url }}" class="btn-lg btn-review track-link"><img src="{{ rsl.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
             {% else %}
               <div class="row text-center"><a href="{{ rsl.url }}" data-id="{{ rsl.review_site_id }}" data-invite="{{ invite.review_invite_id }}" class="btn-lg btn-review track-link"><img src="{{ rsl.review_site.logo_path }}" alt="{{ rsl.review_site.name }}" /></a></div>
             {% endif %}
