@@ -917,7 +917,7 @@
       var myDropzone = new Dropzone('#reviewLogoUpload', {
         url: url,
         autoProcessQueue: false,
-        maxFilesize: 500, // in MB
+        maxFilesize: 8, // in MB
         maxFiles: 1,
         dictDefaultMessage: 'Drop files here or click to upload'
       });
