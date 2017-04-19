@@ -256,7 +256,7 @@ class SettingsController extends ControllerBase
 
     protected function storeLogo($file, $dir) //
     {
-        $tempName = $file->getTempName();
+        $tempName = $file->getName();
 
         if ($tempName) {
 
@@ -264,14 +264,11 @@ class SettingsController extends ControllerBase
 
             $filePath = $dir . "{$fileName}";
 
-            $uploaded = file_put_contents(
-                $filePath,
-                file_get_contents($tempName)
-            );
+            $file->moveTo($filePath);
 
             if ($uploaded !== false) {
-                chmod($filePath . $tempName, 0777);
-                
+                chmod($filePath, 0777);
+
                 return $fileName;
             }
         }
