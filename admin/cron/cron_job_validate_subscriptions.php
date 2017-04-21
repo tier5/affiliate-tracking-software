@@ -7,6 +7,7 @@ use Vokuro\Services\SubscriptionManager;
 use Vokuro\Models\Agency as Agency;
 use Vokuro\Models\StripeSubscriptions as Subscription;
 use Vokuro\Models\Users as User;
+use Vokuro\Models\BusinessSubscriptionPlan;
 use Phalcon\Db\Adapter\Pdo\Mysql as Connection;
 use Phalcon\Events\Manager;
 use Vokuro\Controllers\Stripe;
@@ -56,21 +57,31 @@ class ValidateSubscriptions extends Controller
 
 		// generate report dry run
 
-		/*$businesses = $this->getAllBusinesses();
+		// get all active businesses
+		$businesses = $this->getAllActiveBusinesses();
 
-		if($businesses) {
-			$this->checkEntities($businesses);
-		}*/
-
-		$agencies = $this->getAllAgencies();
-
-		if ($agencies) {
-			$disableThese = $this->checkEntities($agencies);
+		if ($businesses) {
+			$disableThese = $this->checkBusinesses($businesses);
 		}
 
-		// disable accounts
+		$agency = new Agency();
+		
+		foreach ($disableThese as $businessId) {
+			$agency->disable($businessId);
+		}
 
-		var_dump($disableThese);		
+		// get all active agencies
+		$agencies = $this->getAllActiveAgencies();
+
+		if ($agencies) {
+			$disableThese = $this->checkAgencies($agencies);
+		}
+
+		// deactivate agency and businesses owned by agency
+
+		foreach ($disableThese as $agencyId) {
+			$this->deactivateAgencyAndBusinesses($agencyId);
+		}
 	}
 
 	/**
@@ -80,34 +91,110 @@ class ValidateSubscriptions extends Controller
 	 * @return mixed array of agency ids or false
 	 */
 
-	private function checkEntities($entities)
+	private function checkAgencies($entities)
 	{
 		$paid = 0;
 		$cancelAccounts = [];
 		
 		foreach ($entities as $entity) {
 			$entityId = $entity['agency_id'];
-			$type = $this->getSubscriptionType($entityId);
 
-			if ($type === 'PD') {
-				$paid++;
+			$type = $this->getSubscriptionType($entityId);
+			print 'agency: '.$entityId.' is '.$type."\n";
+ 
+			// check db
+			if (!$this->subscriptionExistsInDb($entityId)) {
+				// send report
+			} else if ($subscription = $this->getSubscriptionFromDb($entityId)) {
+				$subscriptionId = $subscription['stripe_subscription_id'];
+				$customerId = $subscription['stripe_customer_id'];
+				
+				if (!empty($subscriptionId) && $subscriptionId != 'N') {
+					if (!$this->subscriptionExistsInStripe($subscriptionId)) {
+						array_push($cancelAccounts, $entityId);
+					}
+				} else if (!empty($customerId) && $customerId != 'N') {
+					// get subscription by customer id
+				}
+			}
+			
+			/*PD = if its a paid account and we have no record of a subscription, that's an error and I think its happening*/
+			// check db
+			// if no record in db send report
+			// check stripe
+			// if not active or doesn't exist disable account
+			/*PD = if its a paid account, it should have a subscription, so check with stripe to make sure the subscription is still active and paid for.*/
+		}
+
+		print $paid . ' paid entities' . "\n";
+		
+		return $cancelAccounts;
+	}
+
+	/**
+	 * Deactivate agency and businesses underneath agency
+	 * 
+	 * @param (int) $agencyId
+	 * @return void
+	 **/
+
+	private function deactivateAgencyAndBusinesses($agencyId)
+	{
+		$agency = new Agency();
+		$agency->disable($agencyId);
+		$agency->deactivateBusinesses($agencyId);
+	}
+
+	/**
+	 * Activate agency and businesses underneath agency
+	 * 
+	 * @param (int) $agencyId
+	 * @return void
+	 **/
+
+	private function activateAgencyAndBusinesses($agencyId)
+	{
+		$agency = new Agency();
+		$agency->enable($agencyId);
+		$agency->activateBusinesses($agencyId);
+	}
+
+	private function checkBusinesses($entities)
+	{
+		$paid = 0;
+		$cancelAccounts = [];
+		
+		foreach ($entities as $entity) {
+			$entityId = $entity['agency_id'];
+
+			$type = $this->getBusinessSubscriptionLevel($entityId);
+			print $entityId . ' type is ' . $type . "\n";
+
+			//if (in_array($type, array('PD', 'M', 'Y', 'TR', 'Monthly', 'Annually'))) {
+			//	$paid++;
 
 				// check db
 				if (!$this->subscriptionExistsInDb($entityId)) {
+					//print $entityId . ' subscription not found in db'."\n";
 					// send report
 				} else if ($subscription = $this->getSubscriptionFromDb($entityId)) {
+					print $entityId . 'subscription found in db';
 					$subscriptionId = $subscription['stripe_subscription_id'];
 					$customerId = $subscription['stripe_customer_id'];
 					
 					if (!empty($subscriptionId) && $subscriptionId != 'N') {
-						if(!$this->subscriptionExistsInStripe($subscriptionId)) {
+						print $entityId . 'subscription db data not empty';
+						if (!$this->subscriptionExistsInStripe($subscriptionId)) {
 							array_push($cancelAccounts, $entityId);
+						} else {
 						}
 					} else if (!empty($customerId) && $customerId != 'N') {
 						// get subscription by customer id
 					}
 				}
-			}
+			//} else {
+				//print $entityId . ' is free' ."\n";
+			//}
 
 			
 			/*PD = if its a paid account and we have no record of a subscription, that's an error and I think its happening*/
@@ -140,17 +227,17 @@ class ValidateSubscriptions extends Controller
 	}
 
 	/**
-	 * Get All businesses
+	 * Get All Active businesses
 	 *
 	 * @return mixed business array or false
 	 **/
 
-	private function getAllBusinesses() 
+	private function getAllActiveBusinesses() 
 	{
 		// parent_id > 0 or parent_id = -1
 
 		$businesses = Agency::find(array(
-			"conditions" => "parent_id > 0 OR parent_id = -1"
+			"conditions" => "status = 1 AND (parent_id > 0 OR parent_id = -1)"
 		));
 
 		$num = count($businesses);
@@ -163,17 +250,18 @@ class ValidateSubscriptions extends Controller
 	}
 
 	/**
-	 * Get All Agencies
+	 * Get All Active Agencies
 	 *
 	 * @return mixed business array or false
 	 */
 
-	private function getAllAgencies() 
+	private function getAllActiveAgencies() 
 	{
 		// parent_id == 0
 
 		$agencies = Agency::find(array(
-			"conditions" => "parent_id = 0"
+			"conditions" => "status = 1 AND parent_id = 0"
+			//"conditions" => "agency_id = 592"
 		));
 
 		$num = count($agencies);
@@ -195,7 +283,7 @@ class ValidateSubscriptions extends Controller
 	private function subscriptionExistsInDb($businessId)
 	{	
 		// find stripe subscription in database
-		$subscriptionDb = $this->getSubscriptionFromDb($superUser['id']);
+		$subscriptionDb = $this->getSubscriptionFromDb($businessId);
 
 		// no stripe subscription record found
 		if(!$subscriptionDb) {
@@ -225,6 +313,28 @@ class ValidateSubscriptions extends Controller
 		return $subscriptionManager->GetBusinessSubscriptionLevel($businessId);
 	}
 
+	private function getBusinessSubscriptionLevel($businessId)
+	{
+		// get super user
+		$user = $this->getSuperUser($businessId);
+
+		if (!$user) {
+			return false;
+		}
+		
+		// get business subscription
+		$subscription = BusinessSubscriptionPlan::findFirst(array(
+			'conditions' => 'user_id = ' . $user['id']
+		));
+
+		if (!$subscription) {
+			return false;
+		}
+
+		// return subscription type
+		return $subscription->payment_plan;
+	}
+
 	/**
 	 * Get Stripe subscription data in our db
 	 *
@@ -246,7 +356,7 @@ class ValidateSubscriptions extends Controller
 			'user_id = '.$userId
 		);
 
-		if (count($subscription) === 0) {
+		if (!$subscription) {
 			return false;
 		}
 
@@ -271,7 +381,7 @@ class ValidateSubscriptions extends Controller
 		try {
 			$status = \Stripe\Subscription::retrieve($subscriptionId)->status;
 			
-			if($status === 'active') {
+			if ($status === 'active' || $status === 'trialing') {
 				return true;
 			}
 
@@ -310,8 +420,10 @@ class ValidateSubscriptions extends Controller
             'conditions' => 'agency_id = ' . $businessId . ' AND role="Super Admin"'
         ));
 
-        if($superUser) {
+        if ($superUser) {
         	$superUser = $superUser->toArray();
+        } else {
+        	return false;
         }
 
         return $superUser;

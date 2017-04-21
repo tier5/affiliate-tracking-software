@@ -101,10 +101,14 @@ class Agency extends BaseModel
      * Deactivate all buinesses underneath agency
      */
 
-    public function deactivateBusinesses()
+    public function deactivateBusinesses($agencyId = null)
     {
+        if ($agencyId == null) {
+            $agencyId = $this->agency_id;
+        }
+
         $params = array(
-            'parent_id' => $this->agency_id,
+            'parent_id' => $agencyId,
             'status' => 1
         );
 
@@ -115,7 +119,7 @@ class Agency extends BaseModel
 
         $stripe = new StripeService();
 
-        $stripe->setAgencyStripeKeys($this->agency_id);
+        $stripe->setAgencyStripeKeys($agencyId);
 
         foreach ($businesses as $business) {
             $business->deactivated_with_agency = 1;
@@ -133,10 +137,14 @@ class Agency extends BaseModel
      * Activate all buinesses underneath agency
      */
 
-    public function activateBusinesses()
+    public function activateBusinesses($agencyId = null)
     {
+        if ($agencyId == null) {
+            $agencyId = $this->agency_id;
+        }
+
         $params = array(
-            'parent_id' => $this->agency_id,
+            'parent_id' => $agencyId,
             'deactivated_with_agency' => 1
         );
 
@@ -147,7 +155,7 @@ class Agency extends BaseModel
 
         $stripe = new StripeService();
 
-        $stripe->setAgencyStripeKeys($this->agency_id);
+        $stripe->setAgencyStripeKeys($agencyId);
 
         foreach ($businesses as $business) {
             $business->deactivated_with_agency = 0;
@@ -157,6 +165,63 @@ class Agency extends BaseModel
             $stripe->unpauseSubscription($business->agency_id);
         }
     }
+
+    public function disable($agencyId = null)
+    {
+        if ($agencyId == null) {
+            $agencyId = $this->agency_id;
+        }
+
+        $agency = self::findFirst('agency_id = ' . $agencyId);
+
+        $agency->status = 0;
+
+        $agency->save();
+
+        // if business get agency id
+        if ($agency->parent_id != 0) {
+            $agencyIdForStripeKeys = $agency->parent_id;
+        } else {
+            $agencyIdForStripeKeys = $agencyId;
+        }
+
+        $stripe = new StripeService();
+
+        $set = $stripe->setAgencyStripeKeys($agencyIdForStripeKeys);
+
+        if ($set) {
+            $stripe->pauseSubscription($agencyId);
+        }
+    }
+
+    public function enable($agencyId = null)
+    {
+        if ($agencyId == null) {
+            $agencyId = $this->agency_id;
+        }
+
+        $agency = self::findFirst('agency_id = ' . $agencyId);
+
+        $agency->status = 1;
+
+        $agency->save();
+
+        // if business get agency id
+        if ($agency->parent_id != 0) {
+            $agencyIdForStripeKeys = $agency->parent_id;
+        } else {
+            $agencyIdForStripeKeys = $agencyId;
+        }
+
+        $stripe = new StripeService();
+
+        $set = $stripe->setAgencyStripeKeys($agencyIdForStripeKeys);
+
+        if ($set) {
+           $stripe->unpauseSubscription($agencyId); 
+        }
+    }
+
 
     /**
      * Creates (or updates if exists) business.
