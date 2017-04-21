@@ -97,7 +97,6 @@ class SubscriptionManager extends BaseService
             $objBusiness->subscription_id
         );
         
-        // echo 'yyy';print_r($subscriptionPlanData);exit;
         if ($subscriptionPlanData['subscriptionPlan']['payment_plan']) {
             return $subscriptionPlanData['subscriptionPlan']['payment_plan'];
         } else {
