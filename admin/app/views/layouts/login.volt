@@ -44,47 +44,40 @@
         <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon/apple-icon-144x144.png">
         <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon/apple-icon-152x152.png">
         <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-icon-180x180.png">
-        <link rel="icon" type="image/png" sizes="192x192"  href="/img/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/img/favicon/android-icon-192x192.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
 
         <link href="/css/cardjs/card-js.min.css" rel="stylesheet" type="text/css" />
-        <?php
-        if (isset($main_color_setting) && 2 == 1 && $agency_white_label) {
-        list($r, $g, $b) = sscanf($main_color_setting, "#%02x%02x%02x");
-        //echo "$main_color_setting -> $r $g $b";
-        ?>
+        {% if main_color_setting is defined and 2 == 1 and agency_white_label %}
         <style>
-            .page-header.navbar { background-color: <?=$main_color_setting?>; }
-            body { background-color: rgba(<?=$r?>, <?=$g?>, <?=$b?>, 0.8); }
-            .page-sidebar .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a { border-top: <?=$main_color_setting?>; color: #FFFFFF; }
-            .page-sidebar .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a { background-color: <?=$main_color_setting?>; }
-            li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a { background-color: <?=$main_color_setting?> !important; }
-            .minicolors-swatch-color { background-color: <?=$main_color_setting?>; }
+            .page-header.navbar { background-color: {{ main_color_setting }}; }
+            body { background-color: rgba({{ r }}, {{ g }}, {{ b }}, 0.8); }
+            .page-sidebar .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a { border-top: {{ main_color_setting }}; color: #FFFFFF; }
+            .page-sidebar .page-sidebar-menu > li.active.open > a, .page-sidebar .page-sidebar-menu > li.active > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a { background-color: {{ main_color_setting }}; }
+            li.nav-item:hover, li.nav-item a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a { background-color: {{ main_color_setting }} !important; }
+            .minicolors-swatch-color { background-color: {{ main_color_setting }}; }
 
             li.nav-item:hover, li.nav-item a:hover,
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a,
             .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a {
-                background: <?=$main_color_setting?> none repeat scroll 0 0 !important;
+                background: {{ main_color_setting }} none repeat scroll 0 0 !important;
             }
             .page-sidebar .page-sidebar-menu > li.open > a > .arrow.open::before, .page-sidebar .page-sidebar-menu > li.open > a > .arrow::before, .page-sidebar .page-sidebar-menu > li.open > a > i, .page-sidebar .page-sidebar-menu > li > a > .arrow.open::before, .page-sidebar .page-sidebar-menu > li > a > .arrow::before, .page-sidebar .page-sidebar-menu > li > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > .arrow.open::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > .arrow::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.open > a > i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > .arrow.open::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > .arrow::before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > i { color: #FFFFFF !important; }
 
             body {
-                background-color: <?=$main_color_setting?>;
+                background-color: {{ main_color_setting }};
             }
             .login {
-                background-color: <?=$main_color_setting?> !important;
+                background-color: {{ main_color_setting }} !important;
             }
 
             .btnsignup{
-                background-color: <?=$main_color_setting ?>;
+                background-color: {{ main_color_setting }};
             }
         </style>
-        <?php
-        }
-
-        ?>
+        {% endif %}
         <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
         <script type="text/javascript" src="/js/jquery.validate.js"></script>
     </head>
@@ -94,29 +87,29 @@
         <div class="menu-toggler sidebar-toggler"></div>
         <!-- END SIDEBAR TOGGLER BUTTON -->
         <!-- BEGIN LOGIN -->
-        <?php if(!(strpos($_SERVER['REQUEST_URI'],'thankyou')>0 || strpos($_SERVER['REQUEST_URI'],'signup')>0) ||
-        strpos($_SERVER['REQUEST_URI'],'login')>0) { ?>
+        {# if not(thank you page or signup page) or is(sign up page): show logo #}
+        {% if !(isThankYouPage or isSignupPage) or isLoginPage %}
 
-            <?php if(strpos($_SERVER['REQUEST_URI'], 'invite') === false) { ?>
+            {% if not isInvitePage %}
                 <!-- BEGIN LOGO -->
                 <div class="logo">
-                   <!--  <a href="/"><img style="max-width: 625px;" src="<?=(isset($this->view->logo_path) && $this->view->logo_path != '' ? $this->view->logo_path : '/img/blank.png') ?>" alt="" /></a> -->
+
                 </div>
                 <!-- END LOGO -->
-            <?php } ?>
+            {% endif %}
 
-        <?php } ?>
+        {% endif %}
         {{ content() }}
-        <?php if((strpos($_SERVER['REQUEST_URI'],'thankyou')>0 || strpos($_SERVER['REQUEST_URI'],'signup')>0) &&
-        !(strpos($_SERVER['REQUEST_URI'],'login')>0) || strpos($_SERVER['REQUEST_URI'], 'invite') !== false) { ?>
-            {% if logo_path AND logo_path != '/img/agency_logos/' %}
+        {# if is(thank you page or sign up page) and not(login page) or is(invite page): show logo #}
+        {% if (isThankYouPage or isSignupPage) and !isLoginPage or isInvitePage %}
+            {% if logo_path and logo_path != '/img/agency_logos/' %}
             <!-- BEGIN LOGO -->
             <div class="logo">
                 <a href="/"><img style="max-width: 300px;" src="{{ logo_path }}" alt="" /></a>
             </div>
             <!-- END LOGO -->
             {% endif %}
-        <?php } ?>
+        {% endif %}
         <div class="copyright"> &copy; {{ date("Y") }} All Rights Reserved. </div>
         <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
