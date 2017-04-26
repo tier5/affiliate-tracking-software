@@ -3,7 +3,7 @@
 
     <!-- BEGIN LOGIN FORM -->
     <form class="login-form" action="/session/login?return={{ _GET['return'] is defined ? _GET['return'] : '' }}" method="post">
-        <h3>{{ isEmailConfirmPage ? 'Thank You For Confirming Your Email Sign In' : 'Sign In' }}</h3>
+        <h3>{{ isEmailConfirmPage ? 'Thank You For Confirming Your Email Sign In' : 'Sign In' }}{% if subscription_not_valid %}==={% endif %}</h3>
         <p class="hint"> &nbsp; </p>
         <div class="form-group">
             <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
@@ -30,3 +30,53 @@
 
 </div>
 <script src="/js/login.js"></script>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+
+<script>
+    var updateCard = function() {
+        var handler = StripeCheckout.configure({
+            key: '{{ _SESSION['stripe_publishable_key'] }}',
+            email: '{{ _SESSION['email'] }}',
+            allowRememberMe: false,
+            /* GARY_TODO: Replace with agency logo */
+            /*image: '/img/documentation/checkout/marketplace.png',*/
+            locale: 'auto',
+            token: function(token) {
+                // You can access the token ID with `token.id`.
+                // Get the token ID to your server-side code for use.
+                $.post('/paymentProfile/index', {
+                    tokenID: token.id,
+                    email: token.email
+                })
+                .done(function (data) {
+                    if (data.status !== true) {
+                        alert("Update card failed!!!");
+                    } else {
+                        alert("Card updated! Try logging in again.");
+                    }
+
+                    window.location.reload();
+                })
+                .fail(function () {})
+                .always(function () {});
+            }
+        });
+
+        // Open Checkout with further options:
+        handler.open({
+            name: 'Update Payment Info',
+            description: ''
+        });
+
+        // Close Checkout on page navigation:
+        $(window).on('popstate', function() {
+            handler.close();
+        });
+    };
+
+    jQuery(document).ready(function ($) {
+        {% if _SESSION['subscription_not_valid'] is defined %}
+        updateCard();
+        {% endif %}
+    });
+</script>

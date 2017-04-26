@@ -1256,6 +1256,11 @@ class SessionController extends ControllerBase
      */
     public function loginAction()
     {
+        // clear unvalid subscription var so credit card form doesn't pop up
+        if ($this->session->has("subscription_not_valid")) {
+            $this->session->remove("subscription_not_valid");
+        }
+
         $this->view->setTemplateBefore('login');
         $this->tag->setTitle('Get Mobile Reviews | Login');
         $form = new LoginForm();
@@ -1267,18 +1272,28 @@ class SessionController extends ControllerBase
             if (!$this->request->isPost()) {
                 if ($this->auth->hasRememberMe()) {
                     return $this->auth->loginWithRememberMe();
-                }
+                }                    
             } else {
+
+
                 if ($form->isValid($this->request->getPost()) == false) {
                     foreach ($form->getMessages() as $message) {
                         $this->flash->error($message);
                     }
-                } else {
+
+                } else {                    
                     $this->auth->check(array(
                         'email' => $this->request->getPost('email'),
                         'password' => $this->request->getPost('password'),
                         'remember' => $this->request->getPost('remember')
-                    ));
+                    ));                
+
+                    if ($this->session->has("subscription_not_valid")) {
+                        $this->view->subscription_not_valid = true;
+                        die('<h1> not valid </h1>');
+                    }
+
+
 
                     $return = '/';
 
@@ -1518,7 +1533,7 @@ class SessionController extends ControllerBase
                                       $this->encode(@$arrResultFindPlaceDetail['result']['geometry']['location']['lng']) . "');return false;\" href=\"javascript:void(0);\"";
                                     $strButton = "<a class=\"business-name-link btnLink btnSecondary\" id=\"business-name-link\" " . $strURL . " style=\"float: right; height: 40px; line-height: 24px;\" >Choose This Listing</a>";
                                 } else {
-                                    //the location was found, so tell the user that
+                                    // the location was found, so tell the user that
                                     $strURL = "href=\"javascript:void(0);\"";
                                     $strButton = "<div style=\"float: right; margin-top: -10px; padding: 5px; text-align: center; width: 215px;\">Already Registered Contact Support</div>";
                                 }
@@ -1533,24 +1548,23 @@ class SessionController extends ControllerBase
                     </ul>
                     </div>";
 
-                                #increment counter
+                                // increment counter
                                 $intCounter++;
                             }
                         }
 
-                        #set response
+                        // set response
                         $responseArr = array('HTML' => $strHTML);
                     } else {
-                        //echo '<pre>'.print_r($arrResultFindPlace,true).'</pre>';
-                        #set response
+                        // set response
                         $responseArr = array('errorMsg' => 'Result not found.');
                     }
                 } else {
-                    #set response
+                    // set response
                     $responseArr = array('errorMsg' => 'Result not found');
                 }
             } catch (Exception $e) {
-                #set response
+                // set response
                 $responseArr = array('errorMsg' => 'There was an error processing your request.');
             }
 

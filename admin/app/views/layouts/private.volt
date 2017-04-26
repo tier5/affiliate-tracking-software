@@ -453,8 +453,8 @@
                             </li>
 
                             {% if is_business_admin or profile == "User" %}
-                                {% if "Admin" in userLogged.role or !is_employee %}
-                                    {% if is_business_admin %} 
+                                <?php if(strpos($userLogged->role, "Admin") !== false || !$is_employee) { ?>
+                                    {% if is_business_admin %}
                                     <li class="nav-item">
                                         <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
                                             <i class="icon-envelope"></i>
@@ -463,7 +463,7 @@
                                         </a>
                                     </li>
                                     {% endif %}
-                                {% endif %}
+                                <?php } ?>
                                 <li class="nav-item">
                                     <a href="/contacts" class="nav-link nav-toggle">
                                         <i class="icon-users"></i>
@@ -481,7 +481,7 @@
                             {% endif %}
                         {% endif %}
                     {% endif %}
-                    {% if "Admin" in userLogged.role or !userLogged.is_employee %}
+                    <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
                         {% if profile == "Business Admin" and agencytype == "business" %}
                             <li class="nav-item">
                                 <a href="/location/" class="nav-link nav-toggle">
@@ -491,7 +491,7 @@
                                 </a>
                             </li>
                         {% endif %}
-                    {% endif %}
+                    <?php } ?>
 
                     {% if profile != "User" %}
                         {% if agencytype == "agency" %}
@@ -500,7 +500,7 @@
                             {% set SettingsLocation = "location" %}
                         {% endif %}
 
-                        {% if "Admin" in userLogged.role or !userLogged.is_employee %}
+                        <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
                         <li class="nav-item">
                             <a href="/settings/{{ SettingsLocation }}/" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
@@ -508,9 +508,9 @@
                                 <span class="selected"></span>
                             </a>
                         </li>
-                        {% endif %}
+                        <?php } ?>
 
-                        {% if "Admin" in userLogged->role or !userLogged.is_employee %}
+                        <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
                             {% if agencytype != "agency" %}
                             <li class="nav-item">
                                 <a href="/users/admin" class="nav-link nav-toggle">
@@ -530,7 +530,7 @@
                                     </a>
                                 </li>
                             {% endif %}
-                        {% endif %}
+                        <?php } ?>
                     {% endif %}
                 {% endif %}
             </ul>
@@ -552,7 +552,7 @@
 <!-- END CONTAINER -->
 <!-- BEGIN FOOTER -->
 <div class="page-footer">
-    <div class="page-footer-inner"> {{ date("Y") }} &copy; {% agencyName is defined ? agencyName : "Get Mobile Reviews" %}</div>
+    <div class="page-footer-inner"> {{ date("Y") }} &copy; <?=(isset($this->view->agencyName))?$this->view->agencyName: "Get Mobile Reviews";?></div>
     <div class="scroll-to-top">
         <i class="icon-arrow-up"></i>
     </div>
@@ -886,7 +886,7 @@
 
         {% set IntercomSecurityHash = objParentAgency.intercom_api_id and objParentAgency.intercom_security_hash ? objParentAgency.intercom_security_hash : '' %}
 
-    {% else if objAgency.parent_id <= 0 and loggedUser.is_admin %}
+    {% elseif objAgency.parent_id <= 0 and loggedUser.is_admin %}
 
         {% set IntercomAPIID = "c8xufrxd" %}
 

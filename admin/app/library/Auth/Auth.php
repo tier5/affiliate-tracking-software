@@ -14,7 +14,8 @@ use Vokuro\Models\Users;
  * Vokuro\Auth\Auth
  * Manages Authentication/Identity Management in Vokuro
  */
-class Auth extends Component {
+class Auth extends Component 
+{
 
     /**
      * Checks the user credentials
@@ -22,10 +23,15 @@ class Auth extends Component {
      * @param array $credentials
      * @return boolan
      */
-    public function check($credentials) {
+    public function check($credentials) 
+    {
+        if ($this->session->has("subscription_not_valid")) {
+            $this->session->remove("subscription_not_valid");
+        }
 
         // Check if the user exist
         $user = Users::findFirstByEmail($credentials['email']);
+
         if ($user == false) {
             $this->registerUserThrottling(0);
             throw new Exception('Wrong email/password combination');
@@ -52,7 +58,8 @@ class Auth extends Component {
         $this->login($user);
     }
 
-    public function login($user) {
+    public function login($user)
+    {
         $locs = $this->getLocationList($user); //set the location list in the identity
         $location_id = ($locs && isset($locs[0]) ? $locs[0]->location_id : '');
         $location_name = ($locs && isset($locs[0]) ? $locs[0]->name : '');
@@ -74,18 +81,22 @@ class Auth extends Component {
         ));
     }
 
-    public function getAgencyParentId($agency_id) {
+    public function getAgencyParentId($agency_id)
+    {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
+
         if (!$agency) {
             return 0;
         }
+        
         return $agency->parent_id;
     }
 
-    public function getAgencyType($agency_id) {
-        //find agency type
+    public function getAgencyType($agency_id)
+    {
+        // find agency type
         $agencytype = 'agency';
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency_id);
@@ -96,7 +107,8 @@ class Auth extends Component {
         return $agencytype;
     }
 
-    public function getCurrentSignupPage($agency_id) {
+    public function getCurrentSignupPage($agency_id)
+    {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
@@ -108,7 +120,8 @@ class Auth extends Component {
      *
      * @param Vokuro\Models\Users $user
      */
-    public function getLocationList($user) {
+    public function getLocationList($user)
+    {
         $conditions = "agency_id = :agency_id:";
         $parameters = array("agency_id" => $user->agency_id);
         $locs = Location::find(array($conditions, "bind" => $parameters));
@@ -124,7 +137,8 @@ class Auth extends Component {
      * This function sets a list of agency locations
      *
      */
-    public function setLocationList() {
+    public function setLocationList()
+    {
         $this->session->set('auth-identity', array(
             'id' => $this->session->get('auth-identity')['id'],
             'name' => $this->session->get('auth-identity')['name'],
@@ -145,13 +159,16 @@ class Auth extends Component {
      *
      * @param Vokuro\Models\Users $user
      */
-    public function saveSuccessLogin($user) {
+    public function saveSuccessLogin($user)
+    {
         $successLogin = new SuccessLogins();
         $successLogin->usersId = $user->id;
         $successLogin->ipAddress = $this->request->getClientAddress();
         $successLogin->userAgent = $this->request->getUserAgent();
+
         if (!$successLogin->save()) {
             $messages = $successLogin->getMessages();
+
             throw new Exception($messages[0]);
         }
     }
@@ -162,7 +179,8 @@ class Auth extends Component {
      *
      * @param int $userId
      */
-    public function registerUserThrottling($userId) {
+    public function registerUserThrottling($userId)
+    {
         $failedLogin = new FailedLogins();
         $failedLogin->usersId = $userId;
         $failedLogin->ipAddress = $this->request->getClientAddress();
@@ -197,7 +215,8 @@ class Auth extends Component {
      *
      * @param Vokuro\Models\Users $user
      */
-    public function createRememberEnviroment(Users $user) {
+    public function createRememberEnviroment(Users $user)
+    {
         $userAgent = $this->request->getUserAgent();
         $token = md5($user->email . $user->password . $userAgent);
 
@@ -218,7 +237,8 @@ class Auth extends Component {
      *
      * @return boolean
      */
-    public function hasRememberMe() {
+    public function hasRememberMe()
+    {
         return $this->cookies->has('RMU');
     }
 
@@ -227,18 +247,18 @@ class Auth extends Component {
      *
      * @return Phalcon\Http\Response
      */
-    public function loginWithRememberMe() {
+    public function loginWithRememberMe()
+    {
         $userId = $this->cookies->get('RMU')->getValue();
         $cookieToken = $this->cookies->get('RMT')->getValue();
 
         $user = Users::findFirstById($userId);
-        if ($user) {
 
+        if ($user) {
             $userAgent = $this->request->getUserAgent();
             $token = md5($user->email . $user->password . $userAgent);
 
             if ($cookieToken == $token) {
-
                 $remember = RememberTokens::findFirst(array(
                             'usersId = ?0 AND token = ?1',
                             'bind' => array(
@@ -246,6 +266,7 @@ class Auth extends Component {
                                 $token
                             )
                 ));
+
                 if ($remember) {
 
                     // Check if the cookie has not expired
@@ -291,7 +312,8 @@ class Auth extends Component {
      *
      * @return array
      */
-    public function setLocation($locationid) {
+    public function setLocation($locationid)
+    {
         $conditions = "location_id = :location_id:";
         $parameters = array("location_id" => $locationid);
         $loc = Location::findFirst(array($conditions, "bind" => $parameters));
@@ -317,13 +339,15 @@ class Auth extends Component {
      *
      * @param Vokuro\Models\Users $user
      */
-    public function checkUserFlags(Users $user) {
-        // I have no idea where the agency_id in the view is getting set so I'm just going to query the db to make this check proper.
+    public function checkUserFlags(Users $user)
+    {
         $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$user->agency_id}");
+
         $AgencyID = 0;
-        if($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY)
+
+        if ($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) {
             $AgencyID = $objAgency->agency_id;
-        else {
+        } else {
             $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objAgency->parent_id}");
             $AgencyID = $objParentAgency->agency_id;
         }
@@ -345,8 +369,37 @@ class Auth extends Component {
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
         if ($agency->subscription_valid != 'Y') {
+            $this->session->set("subscription_not_valid", true);
+
+            $user = Users::findFirst(array(
+                'conditions' => 'agency_id = ' . $agency->agency_id . ' AND role="Super Admin"'
+            ));
+
+            $email = $user->email;
+
+            // if agency get rv stripe keys
+            if ($agency->parent_id == Agency::AGENCY) {
+                $stripeKey = $this->config->stripe->publishable_key;
+            } else { 
+                // get agency stripe keys
+
+                $conditions = "agency_id = :agency_id:";
+                $parameters = array("agency_id" => $agency->parent_id);
+                
+                $parentAgency = Agency::findFirst(
+                    array($conditions, "bind" => $parameters)
+                );
+
+                $stripeKey = $parentAgency->stripe_publishable_keys;
+            }
+
+            $this->session->set("stripe_publishable_key", $stripeKey);
+
+            $this->session->set("email", $email);
+
             throw new Exception('Your account is suspended because your subscription is not active');
         }
+
         if ($agency->status != '1') {
             throw new Exception('Your account is not active');
         }
@@ -357,7 +410,8 @@ class Auth extends Component {
      *
      * @return array
      */
-    public function getIdentity() {
+    public function getIdentity()
+    {
         return $this->session->get('auth-identity');
     }
 
@@ -366,7 +420,8 @@ class Auth extends Component {
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         $identity = $this->session->get('auth-identity');
         return $identity['name'];
     }
@@ -374,10 +429,12 @@ class Auth extends Component {
     /**
      * Removes the user identity information from session
      */
-    public function remove() {
+    public function remove()
+    {
         if ($this->cookies->has('RMU')) {
             $this->cookies->get('RMU')->delete();
         }
+
         if ($this->cookies->has('RMT')) {
             $this->cookies->get('RMT')->delete();
         }
@@ -390,7 +447,8 @@ class Auth extends Component {
      *
      * @param int $id
      */
-    public function authUserById($id) {
+    public function authUserById($id)
+    {
         $user = Users::findFirstById($id);
         if ($user == false) {
             throw new Exception('The user does not exist');
@@ -398,9 +456,9 @@ class Auth extends Component {
 
         $this->checkUserFlags($user);
         $locs = null;
-        $locs = $this->getLocationList($user); //set the location list in the identity
+        $locs = $this->getLocationList($user); // set the location list in the identity
+
         if (isset($locs[0])) {
-          //print_r($locs);
           $location_id = ($locs && $locs[0]) ? $locs[0]->location_id : '';
           $location_name = ($locs && $locs[0]) ? $locs[0]->name : '';
         }
@@ -425,13 +483,17 @@ class Auth extends Component {
      *
      * @return \Vokuro\Models\Users
      */
-    public function getUser() {
+    public function getUser()
+    {
         $identity = $this->session->get('auth-identity');
-        if ($identity['id']) {
 
+        if ($identity['id']) {
             $user = Users::findFirstById($identity['id']);
+
             if ($user == false) {
-                throw new Exception('The user with id of: '.$identity['id'].' does not exist');
+                throw new Exception(
+                    'The user with id of: ' . $identity['id'] . ' does not exist'
+                );
             }
             return $user;
         }

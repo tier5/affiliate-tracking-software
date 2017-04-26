@@ -91,6 +91,7 @@ class Agency extends BaseModel
 
     public function getStripeKeys()
     {
+
         return [
             'public' => $this->stripe_publishable_keys,
             'secret' => $this->stripe_account_secret
