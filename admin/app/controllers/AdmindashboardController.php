@@ -383,7 +383,8 @@ class AdmindashboardController extends ControllerBusinessBase
      */
     public function listAction($agency_type_id = 1)
     {
-        $agency_type_id = (int)$agency_type_id;
+        $agency_type_id = (int) $agency_type_id;
+        
         if ($agency_type_id && !is_int($agency_type_id)) {
             throw new \Exception('Invalid agency type id specified');
         }
@@ -410,10 +411,13 @@ class AdmindashboardController extends ControllerBusinessBase
 
     protected function DeleteBusiness($BusinessID)
     {
+        // delete all users under business
+        \Vokuro\Models\Users::find("agency_id = {$BusinessID}")->delete();
+
         $objEmploeeunderbusiness = \Vokuro\Models\Users::findFirst(
             "agency_id = {$BusinessID} AND role='User' AND is_employee=1"
         );
-        
+
         if (empty($objEmploeeunderbusiness)) {
             $dbLocations = \Vokuro\Models\Location::find("agency_id = {$BusinessID}");
             // Delete locations, review sites and review invites
@@ -582,13 +586,16 @@ class AdmindashboardController extends ControllerBusinessBase
             );
             
             $DeleteType = $objBusiness->parent_id == \Vokuro\Models\Agency::AGENCY ? 'Agency' : 'Business';
+
             if ($DeleteType == 'Agency') {
+                //die('agency delete type');
                 $BackURL = '/admindashboard/list/1';
                 $this->response->redirect($BackURL);
                 $this->view->disable();
 
                 return;
             } else {
+                //die('business delete type');
                 // Deleting an agency works as of 12/05/2016, but we deemed it too powerful to have to the super admins currently.  It will unsubscribe every business.
                 $identity = $this->auth->getIdentity();
                 $BackURL = $identity['is_admin'] ? '/admindashboard/list/2' : '/agency';
