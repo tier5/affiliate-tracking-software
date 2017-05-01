@@ -189,6 +189,9 @@ class ControllerBase extends Controller
                 $this->view->setVars([
                     'main_color_setting' => $agency->main_color,
                     'rgb' => $rgb,
+                    'r' => $r,
+                    'g' => $g,
+                    'b' => $b,
                     'logo_path' =>  "/img/agency_logos/" . $agency->logo_path
                 ]);
 
@@ -415,6 +418,9 @@ class ControllerBase extends Controller
                     'agency_name' => $agency->name,
                     'main_color_setting' => $agency->main_color,
                     'rgb' => $rgb,
+                    'r' => $r,
+                    'g' => $g,
+                    'b' => $b,
                     'logo_path' => $agency->logo_path,
                     'main_color' => str_replace('#', '', $agency->main_color),
                     'primary_color' => str_replace('#', '', $agency->main_color),
@@ -462,9 +468,18 @@ class ControllerBase extends Controller
             $rgb = $r . ', ' . $g . ', ' . $b;
             $this->view->setVars([
                 'main_color_setting' => $this->request->getPost('main_color'),
-                'rgb' => $rgb
+                'rgb' => $rgb,
+                'r' => $r,
+                'g' => $g,
+                'b' => $b
             ]);
         }
+
+        $this->view->isThankYouPage = strpos($_SERVER['REQUEST_URI'], 'thankyou') > 0 ? true : false;
+        $this->view->isSignupPage = strpos($_SERVER['REQUEST_URI'], 'signup') > 0 ? true : false ;
+        $this->view->isLoginPage = strpos($_SERVER['REQUEST_URI'], 'login') > 0 ? true : false ;
+        $this->view->isInvitePage = strpos($_SERVER['REQUEST_URI'], 'invite') !== false ? true : false ;
+        $this->view->isEmailConfirmPage = strpos($_SERVER['REQUEST_URI'], 'admin/confirm/') > 0 ? true : false ;
     }
 
     /**

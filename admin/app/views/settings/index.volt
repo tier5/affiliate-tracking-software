@@ -1,5 +1,5 @@
 
-<header class="jumbotron subhead <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'agency')?>settingspage" id="reviews">
+<header class="jumbotron subhead {{ agency_type is defined and agency_type == 'business' ? '' : 'agency' }}settingspage" id="reviews">
   <div class="hero-unit">
     <div class="row">
       <div class="col-md-5 col-sm-5">
@@ -7,45 +7,43 @@
         <h3 class="page-title"> Settings </h3>
         <!-- END PAGE TITLE-->
       </div>
-      <?php
-      if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
-      if ($is_upgrade) {
-        $percent = ($total_sms_month > 0 ? number_format((float)(($sms_sent_this_month_total+$sms_sent_this_month_total_non) / $total_sms_month) * 100, 0, '.', ''):100);
-        if ($percent > 100) $percent = 100;
-        ?>
+      {% if agency_type is defined AND agency_type == 'business' %}
+      {% if is_upgrade %}
+        {% set percent = total_sms_month > 0 ? percent_sent : 100 %}
+        {% if percent > 100 %}
+         {% set percent = 100 %}
+        {% endif %}
         <div class="col-md-7 col-sm-7">
           <div class="sms-chart-wrapper">
             <div class="title">SMS Messages Sent</div>
             <div class="bar-wrapper">
               <div class="bar-background"></div>
-              <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-              <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-              <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month_total+$sms_sent_this_month_total_non?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
+              <div class="bar-filled" style="width: {{ percent }}%;"></div>
+              <div class="bar-percent" style="padding-left: {{ percent }}%;">{{ percent }}%</div>
+              <div class="bar-number" style="margin-left: {{ percent }}%;"><div class="ball">{{ sms_sent_this_month_total + sms_sent_this_month_total_non }}</div><div class="bar-text" {{ percent > 60 ? 'style="display: none;"' : '' }}>This Month</div></div>
             </div>
-            <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / <?=($sms_sent_this_month_total+$sms_sent_this_month_total_non)?>)<br/><span class="goal">Allowed</span></div>
+            <div class="end-title">{{ total_sms_month }} ({{ non_viral_sms }} / {{ sms_sent_this_month_total + sms_sent_this_month_total_non }})<br/><span class="goal">Allowed</span></div>
           </div>
         </div>
-        <?php
-      } else {
-        $percent = ($total_sms_needed > 0 ? number_format((float)($sms_sent_this_month / $total_sms_needed) * 100, 0, '.', ''):100);
-        if ($percent > 100) $percent = 100;
-        ?>
+      {% else %}
+        {% set percent = total_sms_needed > 0 ? percent_needed : 100 %}
+        {% if percent > 100 %}
+          {% set percent = 100 %}
+        {% endif %}
         <div class="col-md-7 col-sm-7">
           <div class="sms-chart-wrapper">
             <div class="title">SMS Messages Sent</div>
             <div class="bar-wrapper">
               <div class="bar-background"></div>
-              <div class="bar-filled" style="width: <?=$percent?>%;"></div>
-              <div class="bar-percent" style="padding-left: <?=$percent?>%;"><?=$percent?>%</div>
-              <div class="bar-number" style="margin-left: <?=$percent?>%;"><div class="ball"><?=$sms_sent_this_month?></div><div class="bar-text" <?=($percent>60?'style="display: none;"':'')?>>This Month</div></div>
+              <div class="bar-filled" style="width: {{ percent }}%;"></div>
+              <div class="bar-percent" style="padding-left: {{ percent }}%;">{{ percent }}%</div>
+              <div class="bar-number" style="margin-left: {{ percent }}%;"><div class="ball">{{ sms_sent_this_month }}</div><div class="bar-text" {{ percent > 60 ? 'style="display: none;"' : '' }}>This Month</div></div>
           </div>
-          <div class="end-title"><?=$total_sms_needed?><br /><span class="goal">Goal</span></div>
+          <div class="end-title">{{ total_sms_needed }}<br /><span class="goal">Goal</span></div>
         </div>
       </div>
-      <?php
-    }
-  } //end checking for business vs agency
-      ?>
+    {% endif %}
+  {% endif %} {# //end checking for business vs agency #}
   </div>
 
   {{ content() }}
@@ -60,10 +58,10 @@
           <li><a href="#tab_review_invite" class="smstwilio" data-toggle="tab"> Review Invite </a></li>
           <li><a href="#tab_sms_message" class="smstwilio" data-toggle="tab"> SMS Message </a></li>
           <!--<li><a href="#tab_twitter_message" data-toggle="tab"> Twitter Message </a></li>-->
-          <li><a href="#tab_white_label" class="smstwilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> White Label </a></li>
-          <li><a href="#tab_twilio" class="smstwilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> Twilio </a></li>
-          <li><a href="#tab_stripe" class="smstwilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'style="display: none;"':'')?>> Stripe </a></li>
-          <li><a href="#tab_notification" class="smstwilio" data-toggle="tab" <?=(isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business'?'':'style="display: none;"')?>> Notifications </a></li>
+          <li><a href="#tab_white_label" class="smstwilio" data-toggle="tab" {{ agency_type is defined AND agency_type == 'business' ? 'style="display: none;"' : '' }}> White Label </a></li>
+          <li><a href="#tab_twilio" class="smstwilio" data-toggle="tab" {{ agency_type is defined AND agency_type == 'business' ? 'style="display: none;"' : '' }}> Twilio </a></li>
+          <li><a href="#tab_stripe" class="smstwilio" data-toggle="tab" {{ agency_type is defined AND agency_type == 'business' ? 'style="display: none;"' : '' }}> Stripe </a></li>
+          <li><a href="#tab_notification" class="smstwilio" data-toggle="tab" {{ agency_type is defined AND agency_type == 'business' ? '' : 'style="display: none;"' }}> Notifications </a></li>
         </ul>
         <div class="tab-content">
           <!-- START General Settings  -->
@@ -136,21 +134,21 @@
                     <img
                       src="/img/feedback_request.png"
                       data-id="1"
-                      <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 1?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 1?' class="selected"':''))?> />
+                      {{ post.review_invite_type_id is defined and post.review_invite_type_id == 1 ? ' class="selected"' : (location.review_invite_type_id is defined and location.review_invite_type_id == 1 ? ' class="selected"' : '') }} />
                     <img
                       src="/img/stars.png"
                       data-id="2"
-                      <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 2?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 2?' class="selected"':''))?> />
+                      {{ post.review_invite_type_id is defined and post.review_invite_type_id == 2 ? ' class="selected"' : (location.review_invite_type_id is defined and location.review_invite_type_id == 2 ? ' class="selected"' : '') }} />
                     <img
                       src="/img/nps.png"
                       data-id="3"
-                      <?=(isset($_POST['review_invite_type_id']) && $_POST['review_invite_type_id'] == 3?' class="selected"':(isset($location->review_invite_type_id) && $location->review_invite_type_id == 3?' class="selected"':''))?> />
+                      {{ post.review_invite_type_id is defined and post.review_invite_type_id == 3 ? ' class="selected"' : (location.review_invite_type_id is defined and location.review_invite_type_id == 3 ? ' class="selected"' : '') }} />
                   </div>
                   <input
                     id="review_invite_type_id"
                     name="review_invite_type_id"
                     type="hidden"
-                    value="<?=(isset($_POST['review_invite_type_id'])?$_POST["review_invite_type_id"]:(isset($location->review_invite_type_id)?$location->review_invite_type_id:''))?>" />
+                    value="{{ post.review_invite_type_id ? post.review_invite_type_id : (location.review_invite_type_i is defined ? location.review_invite_type_id : '') }}" />
                 </div>
               </div>
               <div class="row">
@@ -160,11 +158,11 @@
               </div>
             </div>
 
-            <?php
-        //make sure we are at the location level settings
-        if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
-            $has_facebook = false;
-            ?>
+            
+        {# make sure we are at the location level settings #}
+        {% if agency_type is defined AND agency_type == 'business' %}
+            {% set has_facebook = false %}
+            
             <div class="form-group">
               <div class="row">
                 <label for="rating_threshold_star" class="col-md-4 control-label">
@@ -173,88 +171,87 @@
                 </label>
                 <div class="col-md-8">
                   <ul id="sortable">
-                    <?php
-
-                  if (isset($this->view->review_site_list)) {
-                  foreach($this->view->review_site_list as $index => $review_site_list) {
-                    if ($review_site_list->review_site_id == \Vokuro\Models\Location::TYPE_FACEBOOK) $has_facebook = true;
-                    
-                    ?>
-                    <li class="ui-state-default" id='<?=$review_site_list->location_review_site_id?>'>
-                      <span class="site-wrapper"><img src="<?=$review_site_list->review_site->icon_path?>" class="imgicon" />
-                        <?=$review_site_list->review_site->name?>
+                  {% if review_site_list is defined %}
+                  {% for index, review_site_list in review_site_list %}
+                  
+                  {% if review_site_list.review_site_id == facebook_type_id %}
+                  {% set has_facebook = true %}
+                  {% endif %}
+                    <li class="ui-state-default" id='{{ review_site_list.location_review_site_id }}'>
+                      <span class="site-wrapper"><img src="{{ review_site_list.review_site.icon_path }}" class="imgicon" />
+                        {{ review_site_list.review_site.name }}
                         </span>
                         <span class="review_site-buttons">
-                        <?php if ($review_site_list->review_site_id <= 3) { 
-                        if ($review_site_list->review_site_id == 1) {
-                        ?>
-
-                        <a class="btnLink btnSecondary track-link <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" id="facebooklink1" 
-                  onclick ="facebookClickHandler(<?=$review_site_list->external_id?>)" href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$review_site_list->url:'#')?>" data-id="<?=$review_site_list->review_site_id?>" data-invite="<?=$review_site_list->review_invite_id?>" url="<?=$review_site_list->url?>" type="view" target="_blank">View</a>
-                        <?php } else if($review_site_list->review_site_id == 3) { 
-                                if ($review_site_list->url !== '' && $review_site_list->url !== null) {
-                                    $googleLink = $review_site_list->url;
-                                } else {
-                                    $googleLink = 'https://www.google.com/search?q='
-                                    . urlencode($location->name
-                                    . ', ' . $location->address
-                                    . ', ' . $location->locality
-                                    . ', ' . $location->state_province
-                                    . ', ' . $location->postal_code
-                                    . ', ' . $location->country)
-                                    . '&' . 'ludocid=' 
-                                    . $review_site_list->external_id . '#lrd='
-                                    . $review_site_list->lrd . ',3,5';
-                                } ?>
-                          <a href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$googleLink:'#')?>" class="btnLink btnSecondary <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" url="<?=$googleLink?>" type="view" target="_blank">View</a>
-                        <?php } else { ?>
-                          <a href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$review_site_list->url:'#')?>" class="btnLink btnSecondary <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" url="<?=$review_site_list->url?>" type="view" target="_blank">View</a>
-                        <?php } ?>
+                        {% if review_site_list.review_site_id <= 3 %} 
+                          {% if review_site_list.review_site_id == 1 %}
+                        <a class="btnLink btnSecondary track-link {{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" id="facebooklink1" 
+                  onclick ="facebookClickHandler({{ review_site_list.external_id }})" href="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? review_site_list.url : '#' }}" data-id="{{ review_site_list.review_site_id }}" data-invite="{{ review_site_list.review_invite_id }}" url="{{ review_site_list.url }}" type="view" target="_blank">View</a>
+                        {% elseif review_site_list.review_site_id == 3 %}
+                                {% if review_site_list.url !== '' and review_site_list.url !== null %}
+                                    {% set googleLink = review_site_list.url %}
+                                {% else %}
+                                    {% set googleLinkEncode = location.name
+                                    ~ ', ' ~ location.address
+                                    ~ ', ' ~ location.locality
+                                    ~ ', ' ~ location.state_province
+                                    ~ ', ' ~ location.postal_code
+                                    ~ ', ' ~ location.country | url_encode %}
+                                    {% set googleLink = 'https://www.google.com/search?q='
+                                    ~ googleLinkEncode
+                                    ~ '&' ~ 'ludocid=' 
+                                    ~ review_site_list.external_id ~ '#lrd='
+                                    ~ review_site_list.lrd ~ ',3,5' %}
+                                {% endif %}
+                          <a href="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? googleLink : '#' }}" class="btnLink btnSecondary {{ review_site_list.is_on and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" url="{{ googleLink }}" type="view" target="_blank">View</a>
+                        {% else %}
+                          <a href="{{ review_site_list.is_on is define and review_site_list.is_on == 1 ? review_site_list.url : '#' }}" class="btnLink btnSecondary {{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" url="{{ review_site_list.url }}" type="view" target="_blank">View</a>
+                        
+                        {% endif %}
                         <a
                           class="btnLink btnSecondary greenbtn"
-                          href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>">
+                          href="/location/edit/{{ location_id }}">
                           <img src="/img/icon-pencil.png" /> Location</a>
 
                           <!-- Edit URL Button -->
 
                           <a
                           class="btnLink btnSecondary btnEditSiteURL greenbtn"
-                          href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"
-                          data-id="<?=$review_site_list->location_review_site_id?>">
+                          href="/location/edit/{{ location_id }}"
+                          data-id="{{ review_site_list.location_review_site_id }}">
                           <img src="/img/icon-pencil.png" /> URL</a>
-                          <?php } else { ?>
-                          <a class="btnLink btnSecondary <?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'greenbtn':'graybtn')?>" href="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?$review_site_list->url:'#')?>" target="_blank" url="<?=$review_site_list->url?>" type="view">View</a>
+                          {% else %}
+                          <a class="btnLink btnSecondary {{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" href="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? review_site_list.url : '#' }}" target="_blank" url="{{ review_site_list.url }}" type="view">View</a>
 
                           <!-- Edit URL Button -->
 
                           <a
                           class="btnLink btnSecondary btnEditSiteURL greenbtn"
-                          href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>"
-                          data-id="<?=$review_site_list->location_review_site_id?>">
+                          href="/location/edit/{{ location_id }}"
+                          data-id="{{ review_site_list.location_review_site_id }}">
                           <img src="/img/icon-pencil.png" /> URL</a>
-                      <?php } ?></span><span class="on-off-buttons"><a
-                        data-id="<?=$review_site_list->location_review_site_id?>"
-                        id="on<?=$review_site_list->location_review_site_id?>"
+                      {% endif %}</span><span class="on-off-buttons"><a
+                        data-id="{{ review_site_list.location_review_site_id }}"
+                        id="on{{ review_site_list.location_review_site_id }}"
                         href="#"
                         class="review_site_on"
-                        style="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'':'display: none;')?>">
+                        style="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? '' : 'display: none;' }}">
                         <img src="/img/btn_on.gif"  class="sort-icon" />
                       </a>
 
                       <a
-                        data-id="<?=$review_site_list->location_review_site_id?>"
-                        id="off<?=$review_site_list->location_review_site_id?>"
+                        data-id="{{ review_site_list.location_review_site_id }}"
+                        id="off{{ review_site_list.location_review_site_id }}"
                         href="#"
                         class="review_site_off"
-                        style="<?=(isset($review_site_list->is_on) && $review_site_list->is_on == 1?'display: none;':'')?>">
+                        style="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? 'display: none;' : '' }}">
                         <img src="/img/btn_off.gif"  class="sort-icon" />
                       </a></span>
                       <img src="/img/btn_sort.gif" class="sort-icon" />
                     </li>
-                    <?php
-                }
-                }
-                ?>
+                    
+                {% endfor %}
+                {% endif %}
+              
                   </ul>
                   <input class="form-control" id="review_order" name="review_order" type="hidden" value="" />
                 </div>
@@ -268,9 +265,7 @@
               </div>
             </div>
           
-            <?php
-        }
-        ?>
+            {% endif %}
 
             <div class="form-group">
               <div class="row">
@@ -322,7 +317,7 @@
               <div class="row">
                 <label for="SMS_message" class="col-md-4 control-label">SMS Message</label>
                 <div class="col-md-8">
-                  <textarea style="width: 100%;" class="form-control" name="SMS_message"><?=(isset($_POST['SMS_message'])?$_POST["SMS_message"]:(isset($location->SMS_message)?$location->SMS_message:'Hi {name}, thanks for visiting {location-name} we\'d really appreciate your feedback by clicking the following link {link}. Thanks!'))?></textarea>
+                  <textarea style="width: 100%;" class="form-control" name="SMS_message">{{ post.SMS_message is defined ? post.SMS_message : (location.SMS_message is defined ? location.SMS_message : "Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks!") }}</textarea>
                 </div>
               </div>
               <div class="row">
@@ -361,31 +356,14 @@
               <div class="row">
                 <div class="col-md-12">
                   <i>
-                    The number of hours until another message should be sent.  (Only used when the "Message Tries" field is greater than one.)
+                    The number of hours until another message should be sent. (Only used when the "Message Tries" field is greater than one.)
                   </i>
                 </div>
               </div>
             </div>
 
           </div>
-
           <!-- END SMS Message Settings  -->
-
-          <!-- START SMS Message Settings  -->
-          <!--<div class="tab-pane fade in" id="tab_twitter_message">
-            <div class="form-group">
-              <div class="row">
-                <label for="SMS_message" class="col-md-4 control-label">Twitter Message</label>
-                <div class="col-md-8">
-                  <textarea style="width: 100%;" class="form-control" name="twitter_message"><?=(isset($_POST['twitter_message']) && $_POST['twitter_message'] != ''?$_POST["twitter_message"]:(isset($location->twitter_message) && $location->twitter_message != ''?$location->twitter_message:'I just started using this amazing new software for my business. They are giving away a trial account here: {link}'))?></textarea>
-                </div>
-              </div>
-              
-            </div>
-            
-          </div>-->
-          <!-- END SMS Message Settings  -->
-
 
           <!-- START White Label Settings  -->
           <div class="tab-pane fade" id="tab_white_label">
@@ -408,14 +386,8 @@
                 <input type="file" id="logo_path" name="logo_path">
                 <p class="help-block">(max width: 200 pixels, max height: 30 pixels) (only: gif, png, jpg  or jpeg) </p>
               </div>
-            </div><!--
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="sms_message_logo_path">SMS Message Logo</label>
-          <div class="col-md-8">
-            <input type="file" id="sms_message_logo_path" name="sms_message_logo_path">
-            <p class="help-block"> some help text here. </p>
-          </div>
-        </div>-->
+            </div>
+
             <hr>
             <h4>Color Theme</h4>
             <div class="form-group">
@@ -455,10 +427,9 @@
                     name="main_color"
                     class=""
                     data-control="hue"
-                    value="<?=(isset($_POST['main_color'])?$_POST["main_color"]:(isset($agency->main_color)?$agency->main_color:'#2B3643'))?>"
+                    value="{{ post.main_color is defined ? post.main_color : (agency.main_color is defined ? agency.main_color : '#2B3643') }}"
                     style="margin: 4px;"  /> Primary
                 </div>
-                <!--<div class="color-select"><input type="text" id="secondary_color" name="secondary_color" class="" data-control="hue" value="#364150" style="margin: 4px;"  /> Secondary</div>-->
               </div>
             </div>
             <hr>
@@ -534,17 +505,9 @@
           </div>
           <!-- END Twilio Settings  -->
 
-
-
           <!-- START Stripe Settings  -->
           <div class="tab-pane fade" id="tab_stripe">
             <div class="form-group">
-              <!--<div class="row">
-            <label for="stripe_account_id" class="col-md-4 control-label">Stripe Account ID</label>
-            <div class="col-md-8">
-              {{ form.render("stripe_account_id", ["class": 'form-control', 'placeholder': 'Stripe Account ID']) }}
-            </div>
-          </div>-->
               <div class="row">
                 <div class="col-md-12">
                   <i>
@@ -582,9 +545,6 @@
           </div>
           <!-- END Stripe Settings  -->
 
-
-
-
           <!-- START Notification Settings  -->
           <div class="tab-pane fade in" id="tab_notification">
             <div class="form-group">
@@ -594,9 +554,7 @@
             </div>
             <div class="form-group">
               <div class="col-md-12">
-                <?php
-          if ($users) {
-            ?>
+            {% if users %}
                 <div class="panel-default toggle panelMove panelClose panelRefresh" id="notifications">
                   <div class="customdatatable-wrapper" style="margin-top: 20px;">
                     <table class="customdatatable table table-striped table-bordered" cellspacing="0" width="100%">
@@ -612,53 +570,50 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <?php
-            $found = false;
-            foreach($users as $user) {
-              $found = true;
+            {% set found = false %}
+            {% for user in users %}
+              {% set found = true %}
 
-              //now check if this record should be checked
-              $checked = false;
-              $is_email_alert_on = false;
-              $is_sms_alert_on = false;
-              $is_all_reviews_on = false;
-              $is_individual_reviews_on = false;
-              $is_employee_report_on = false;
+              {# now check if this record should be checked #}
+              {% set checked = false %}
+              {% set is_email_alert_on = false %}
+              {% set is_sms_alert_on = false %}
+              {% set is_all_reviews_on = false %}
+              {% set is_individual_reviews_on = false %}
+              {% set is_employee_report_on = false %}
 
-              foreach($agencynotifications as $agencynotification) {
-                if ($agencynotification->user_id == $user->id) {
-
-                  $is_email_alert_on = ($agencynotification->email_alert==1?true:false);
-                  $is_sms_alert_on = ($agencynotification->sms_alert==1?true:false);
-                  $is_all_reviews_on = ($agencynotification->all_reviews==1?true:false);
-                  $is_individual_reviews_on = ($agencynotification->individual_reviews==1?true:false);
-                  $is_employee_report_on = ($agencynotification->employee_leaderboards==1?true:false);
-                }
-              }
-            ?>
+              {% for agencynotification in agencynotifications %}
+                {% if agencynotification.user_id == user.id %}
+                  {% set is_email_alert_on = agencynotification.email_alert == 1 ? true : false %}
+                  {% set is_sms_alert_on = agencynotification.sms_alert == 1 ? true : false %}
+                  {% set is_all_reviews_on = agencynotification.all_reviews == 1 ? true : false %}
+                  {% set is_individual_reviews_on = agencynotification.individual_reviews == 1 ? true : false %}
+                  {% set is_employee_report_on = agencynotification.employee_leaderboards == 1 ? true : false %}
+                {% endif %}
+              {% endfor %}
 
             <tr>
-              <td ObjectID="<?=$user->id; ?>"><?=$user->name?></td>
+              <td ObjectID="{{ user.id }}">{{ user.name }}</td>
               <td>
                 <span class="on-off-buttons">
                     <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ea"
                     data-value="0"
-                    id="eaon<?=$user->id?>"
+                    id="eaon{{ user.id }}"
                     href="#"
                     class="email_alert_on"
-                    style="<?=($is_email_alert_on?'':'display: none;')?>">
+                    style="{{ is_email_alert_on ? '' : 'display: none;' }}">
                     <img src="/img/btn_on.gif" class="sort-icon" />
                   </a>
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ea"
                     data-value="1"
-                    id="eaoff<?=$user->id?>"
+                    id="eaoff{{ user.id }}"
                     href="#"
                     class="email_alert_off"
-                    style="<?=($is_email_alert_on?'display: none;':'')?>">
+                    style="{{ is_email_alert_on ? 'display: none;' : '' }}">
                     <img src="/img/btn_off.gif" class="sort-icon" />
                   </a>
 
@@ -668,23 +623,23 @@
               <td>
                 <span class="on-off-buttons">
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="sa"
                     data-value="0"
-                    id="saon<?=$user->id?>"
+                    id="saon{{ user.id }}"
                     href="#"
                     class="sms_alert_on"
-                    style="<?=($is_sms_alert_on?'':'display: none;')?>">
+                    style="{{ is_sms_alert_on ? '' : 'display: none;' }}">
                     <img src="/img/btn_on.gif" class="sort-icon" />
                   </a>
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="sa"
                     data-value="1"
-                    id="saoff<?=$user->id?>"
+                    id="saoff{{ user.id }}"
                     href="#"
                     class="sms_alert_off"
-                    style="<?=($is_sms_alert_on?'display: none;':'')?>">
+                    style="{{ is_sms_alert_on ? 'display: none;' : '' }}">
                     <img src="/img/btn_off.gif" class="sort-icon" />
                   </a>
                 </span>
@@ -692,23 +647,23 @@
               <td>
                 <span class="on-off-buttons">
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ar"
                     data-value="0"
-                    id="aron<?=$user->id?>"
+                    id="aron{{ user.id }}"
                     href="#"
                     class="all_reviews_on"
-                    style="<?=($is_all_reviews_on?'':'display: none;')?>">
-                    <img src="/img/btn_on.gif"  class="sort-icon" />
+                    style="{{ is_all_reviews_on ? '' : 'display: none;' }}">
+                    <img src="/img/btn_on.gif" class="sort-icon" />
                   </a>
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ar"
                     data-value="1"
-                    id="aroff<?=$user->id?>"
+                    id="aroff{{ user.id }}"
                     href="#"
                     class="all_reviews_off"
-                    style="<?=($is_all_reviews_on?'display: none;':'')?>">
+                    style="{{ is_all_reviews_on ? 'display: none;' : '' }}">
                     <img src="/img/btn_off.gif" class="sort-icon" />
                   </a>
                 </span>
@@ -716,22 +671,22 @@
               <td>
                 <span class="on-off-buttons">
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ir"
                     data-value="0"
-                    id="iron<?=$user->id?>"
+                    id="iron{{ user.id }}"
                     href="#"
                     class="individual_reviews_on"
-                    style="<?=($is_individual_reviews_on?'':'display: none;')?>">
+                    style="{{ is_individual_reviews_on ? '' : 'display: none;' }}">
                     <img src="/img/btn_on.gif" class="sort-icon" />
                   </a>
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="ir"
                     data-value="1"
-                    id="iroff<?=$user->id?>" href="#"
+                    id="iroff{{ user.id }}" href="#"
                     class="individual_reviews_off"
-                    style="<?=($is_individual_reviews_on?'display: none;':'')?>">
+                    style="{{ is_individual_reviews_on ? 'display: none;' : '' }}">
                     <img src="/img/btn_off.gif" class="sort-icon" />
                   </a>
                 </span>
@@ -739,23 +694,23 @@
               <td>
                 <span class="on-off-buttons">
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="el"
                     data-value="0"
-                    id="elon<?=$user->id?>"
+                    id="elon{{ user.id }}"
                     href="#"
                     class="employee_report_on"
-                    style="<?=($is_employee_report_on?'':'display: none;')?>">
+                    style="{{ is_employee_report_on ? '' : 'display: none;' }}">
                     <img src="/img/btn_on.gif" class="sort-icon" />
                   </a>
                   <a
-                    data-id="<?=$user->id?>"
+                    data-id="{{ user.id }}"
                     data-type="el"
                     data-value="1"
-                    id="eloff<?=$user->id?>"
+                    id="eloff{{ user.id }}"
                     href="#"
                     class="employee_report_off"
-                    style="<?=($is_employee_report_on?'display: none;':'')?>">
+                    style="{{ is_employee_report_on ? 'display: none;' : '' }}">
                     <img src="/img/btn_off.gif" class="sort-icon" />
                   </a>
                 </span>
@@ -764,20 +719,14 @@
                 <a class="btnLink btnSecondary SendEmployeeEmail" href="#" >Send Email</a>
               </td>
             </tr>
-            <?php
-            }
-          ?>
+            {% endfor %}
                       </tbody>
                     </table>
                   </div>
                 </div>
-                <?php
-          } else {
-              ?>
+            {% else %}
                 No employees found
-                <?php
-            }
-            ?>
+            {% endif %}
               </div>
             </div>
           </div>
@@ -787,7 +736,7 @@
 
         <div class="form-group">
           <div class="error" id="fileerror" style="display: none;">
-            Invalid file type.  Only gif, png, jpg  or jpeg file extensions are allowed.
+            Invalid file type. Only gif, png, jpg or jpeg file extensions are allowed.
           </div>
           <div class="col-md-offset-4 col-md-8">
             {{ submit_button("Save", "class": "btn btn-big btn-success btnLink btnSecondary greenbtn") }}
@@ -797,7 +746,7 @@
         {{ form.render("agency_id") }}
       </form>
       <div id="twilio-contain" style="display:none;">
-      <?php if($twilio_details!=0){?>
+      {% if twilio_details != 0 %}
         <h5> <b> Custom SMS Number </b></h5>
         <table class="table table-striped table-bordered" cellspacing="0" width="100%">
           <thead>
@@ -807,28 +756,26 @@
             </tr>
           </thead>
           <tbody>
-          <?php foreach ($twilio_details as $key => $mobile_number) { ?>
+          {% for key,mobile_number in twilio_details %}
             <tr>
-              <td><?php echo $mobile_number['friendly_name']; ?></td>
-              <td><a  href="/twilio/releseThisnumber/<?php echo base64_encode($mobile_number['phone_number']);?>||<?php echo base64_encode($mobile_number['friendly_name']);?>||"><input id="gather_info" class="btnLink btnPrimary" value="Release This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a></td>
+              <td>{{ mobile_number.friendly_name }}</td>
+              <td><a  href="/twilio/releseThisnumber/{{ base64_encode(mobile_number.phone_number) }}||{{ base64_encode(mobile_number.friendly_name) }}||"><input id="gather_info" class="btnLink btnPrimary" value="Release This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a></td>
             </tr>
-          <?php } ?>
+          {% endfor %}
           </tbody>
         </table>
-        <?php } else{
-          if( $paymentPlan != 'TRIAL' && (($planSubscribe!='FR' && $subscription_id!=0) || ($planSubscribe=='FR' && $custom_sms==1) || ($subscription_id >0) ) && $planSubscribe!='TR') {
-        ?>
+        {% else %}
+          {% if paymentPlan != 'TRIAL' and ((planSubscribe != 'FR' and subscription_id != 0) or (planSubscribe == 'FR' and custom_sms == 1) or (subscription_id > 0)) and planSubscribe != 'TR' %}
+        
             <form class="form-horizontal" id="userform" role="form" method="post" autocomplete="off">
                 <div class="form-group" style="padding-top: 30px;">
                     <label for="name" class="col-md-2 control-label">Country:</label>
                     <div class="col-md-6">
               <select name="country" id="country_select" class="form-control" style="width: 100%;" >
                 <option value="">SELECT</option>
-                <?php foreach($countries as $cid=>$country){ ?>
-
-                  <option value="<?php echo $cid; ?>" <?php if($cid=="US"){?> selected <?php }?>><?php echo $country; ?></option>
-                <?php } ?>
-                
+                {% for cid,country in countries %}
+                  <option value="{{ cid }}"{% if cid == "US" %} selected{% endif %}>{{ country }}</option>
+                {% endfor %}
               </select>
                     </div>
                 </div>
@@ -843,56 +790,60 @@
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         <input id="gather_info" class="btnLink btnPrimary" value="Get Available Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button">
-                      
                     </div>
                 </div> 
                 <div class="form-group"></div>       
             </form>
             <div id="result_valx">
             </div>
-        <?php } } ?>
+          {% endif %}
+        {% endif %}
       </div>
     </div>
   </div>
   </div>
 </header>
 
-<?php
-//make sure we are at the location level settings
-if (isset($this->session->get('auth-identity')['agencytype']) && $this->session->get('auth-identity')['agencytype'] == 'business') {
-?>
+{# make sure we are at the location level settings #}
+{% if agency_type is defined and agency_type == 'business' %}
 
 <!-- Add new review site modal -->
 
 <div class="overlay" style="display: none;"></div>
 <div id="page-wrapper" class="create createreviewsiteform" style="display: none;">
-  <form id="createreviewsiteform" class="register-form4" action="/settings/siteadd/<?=$this->session->get('auth-identity')['location_id']?>/" method="post" style="display: block;">
+
     <div class="closelink close"></div>
     <div class="col-md-12">
       <div class="row"><h3>Add Review Site</h3></div>
       <div class="form-group row">
+      <form id="createreviewsiteform" class="register-form4" action="/settings/siteadd/{{ location_id }}/" method="post" style="display: block;">
         <label for="url" class="col-md-3 control-label">Review Site: </label>
         <div class="col-md-9">
           <select name="review_site_id" id="review_site_id" required="required">
             <option value="">Select Site</option>
-            <?php
-              foreach($review_sites as $review_site) {
-                $found = false;
-                if ($review_site->review_site_id < 4) {
-                  $found = true;
-                } else if (isset($review_site_lists)) {
-                  foreach($review_site_lists as $review_site_list) {
-                    if ($review_site_list->review_site_id == $review_site->review_site_id) $found = true;
-                  }
-                }
-                if (!$found && $review_site->review_site_id != 0) {
-                  ?>
-                  <option value="<?=$review_site->review_site_id?>"><?=$review_site->name?></option>
-                  <?php
-                }
-              }
-          ?>
+            {% for review_site in review_sites %}
+                {% set found = false %}
+                {% if review_site.review_site_id %}
+                  {% set found = true %}
+                {% elseif review_site_lists is defined %}
+                  {% for review_site_list in review_site_lists %}
+                    {% if review_site_list.review_site_id == review_site.review_site_id %}
+                      {% set found = true %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+
+                {% if not found or review_site.review_site_id == 0 %}
+                  <option value="{{ review_site.review_site_id }}">{{ review_site.name }}</option>
+                {% endif %}
+            {% endfor %}
           </select>
+        </div>
+      </div>
+      <div class="form-group row" id="reviewSiteNameBox" style="display: none;">
+        <label for="url" class="col-md-3 control-label">Name: </label>
+        <div class="col-md-9">
+          <input type="text" name="reviewSiteName" id="reviewSiteName" value="" />
         </div>
       </div>
       <div class="form-group row">
@@ -901,16 +852,24 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           <input type="url" name="url" id="url" value="" required="required" />
         </div>
       </div>
+      <div style="clear: both;">&nbsp;</div>    
+      <input type="hidden" name="reviewgoal" id="reviewgoal" value="" />
+      <input type="hidden" name="lifetimevalue" id="lifetimevalue" value="" />
+      </form>
+      <div class="form-group row" id="reviewLogoUploadBox" style="display: none;">
+        <label for="url" class="col-md-3 control-label">Logo Upload: </label>
+        <div class="col-md-9">
+          <form id="reviewLogoUpload" class="dropzone" action="/settings/saveReviewSiteLogo" dictDefaultMessage="Drop files here or click to upload">
+          </form>
+        </div>
+      </div>
+
       <div class="row">
         <div class="field">
           <button id="createsite" type="submit" class="btnLink btnSecondary greenbtn">Save</button>
         </div>
       </div>
-      <div style="clear: both;">&nbsp;</div>
     </div>
-    <input type="hidden" name="reviewgoal" id="reviewgoal" value="" />
-    <input type="hidden" name="lifetimevalue" id="lifetimevalue" value="" />
-  </form>
 </div>
 
 <!-- Edit URL Modal -->
@@ -946,61 +905,74 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
     <input type="hidden" name="reviewSiteId" id="reviewSiteId" value="" />
   </form>
 </div>
-<?php
-}
-?>
+{% endif %}
+<link rel="stylesheet" type="text/css" href="/css/dropzone.css">
+<script src="/js/dropzone.js"></script>
 <script>
     $( document ).ready(function() {
-    
-    $('#gather_info').click(function(){
-      $("#result_valx").html("");
-      var country_select=$('#country_select').val();
-      var number_type_select="";
-      var area_code=$('#area_code').val();
-      var Contains="";
-      if (country_select != "") {
-      $("#result_valx").html("<span>loading......</span>");
-        
-        $.ajax({
-        type: 'POST',
-        url: "/twilio/getAvailableNumber", 
-        data:{country_select : country_select,number_type_select:number_type_select,area_code:area_code,Contains:Contains},
-        success: function(result){
-          if(result){
-            $("#result_valx").html("");
-            $("#result_valx").html(result);
-          }
+      Dropzone.autoDiscover = false;
+
+      var url = '/settings/saveReviewSiteLogo';
+
+      var myDropzone = new Dropzone('#reviewLogoUpload', {
+        url: url,
+        autoProcessQueue: false,
+        maxFilesize: 8, // in MB
+        maxFiles: 1,
+        dictDefaultMessage: 'Drop files here or click to upload'
+      });
+      
+      myDropzone.on('complete', function(file) {
+        console.log('file transfer completed');
+        myDropzone.removeFile(file);
+      });
+
+      // when finished .disable,.enable
+
+      $('#gather_info').click(function() {
+        $("#result_valx").html("");
+        var country_select = $('#country_select').val();
+        var number_type_select = "";
+        var area_code = $('#area_code').val();
+        var Contains = "";
+
+        if (country_select != "") {
+          $("#result_valx").html("<span>loading......</span>");
+          
+          $.ajax({
+            type: 'POST',
+            url: "/twilio/getAvailableNumber", 
+            data: {country_select : country_select, number_type_select:number_type_select, area_code:area_code, Contains:Contains},
+            success: function(result){
+              if(result){
+                $("#result_valx").html("");
+                $("#result_valx").html(result);
+              }
+            }
+          });
+        } else {
+          alert("Please Select Country!!!");
         }
-        });
-      }else{
-      alert("Please Select Country!!!");
-      }
-    });
-    $('#purchased_number_list').click(function(){
-    
-    $("#result_valx").html("");
-    $("#result_valx").html("<span>loading......</span>");
+      });
+      $('#purchased_number_list').click(function() {
+      
+      $("#result_valx").html("");
+      $("#result_valx").html("<span>loading......</span>");
       $.ajax({
         type: 'POST',
         url: "/twilio/getPreviousNumber", 
-        data:{},
+        data: {},
         success: function(result){
-          if(result){
-          $("#result_valx").html("");
+          if(result) {
+            $("#result_valx").html("");
             $("#result_valx").html(result); 
-            
           }
         }
-        });
-    return false;
-    });
-    });
- 
-    
-    </script>
+      });
 
-<script type="text/javascript">
-  jQuery(document).ready(function($) {
+      return false;
+    });
+
     $('.SendEmployeeEmail').on('click', function(e) {
         var EmployeeID = $(this).parents('TR').children('TD:first-child').attr('ObjectID');
 
@@ -1010,17 +982,17 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
                 if(data == "1")
                     alert("Email successfully sent!");
                 else {
-                    console.log(data);
                     alert("Problem sending email.  Please contact customer support.");
                 }
             }
         });
     });
+
     $(".smstwilio").on('click', function(e) {
       
-      if($(this).attr('href')=="#tab_sms_message"){
+      if ($(this).attr('href') == "#tab_sms_message") {
         $("#twilio-contain").show();
-      }else{
+      } else {
         $("#twilio-contain").hide();
       }
       
@@ -1034,14 +1006,28 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       $('#reviewgoal').val($('#review_goal').val());
       $('#lifetimevalue').val($('#lifetime_value_customer').val());
     });
+
     $('.overlay, .closelink').on('click', function(e) {
       e.preventDefault();
       $('#page-wrapper').hide();
       $('.overlay').hide();
     });
 
-    // edit site url button and modal
+    $('select#review_site_id').on('change', function(e) {
+      var review_site_id = $(e.currentTarget).val();
 
+      if (review_site_id === '0') {
+        console.log('down');
+        $('#reviewSiteNameBox').slideDown();
+        $('#reviewLogoUploadBox').slideDown();
+      } else {
+        console.log('up');
+        $('#reviewSiteNameBox').slideUp();
+        $('#reviewLogoUploadBox').slideUp();
+      }
+    })
+
+    // edit site url button and modal
     var onEditURLclick = function(e) {
         e.preventDefault();
 
@@ -1072,7 +1058,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       e.preventDefault();
 
       var reviewSiteId = $("#reviewSiteId").val();
-      console.log(reviewSiteId);
       var url = $("#url2").val();
 
       $.ajax({
@@ -1081,7 +1066,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
         data: 'url=' + encodeURIComponent(url),
         cache: false,
         success: function() {
-          console.log(url);
           // select view link and update url attribute
           $('#'+reviewSiteId+' a[type=view]').attr('href', url);
 
@@ -1094,30 +1078,37 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
       return false;
     });
 
-    $("#createreviewsiteform").on('submit', function(ev){
-      ev.preventDefault();
+    $("button#createsite").on('click', function(){
 
       $.ajax({
-        url: $('#createreviewsiteform').attr('action')+''+$("#review_site_id").val()+'/?url='+encodeURIComponent($("#url").val()),
+        url: $('#createreviewsiteform').attr('action')+''+$("#review_site_id").val()+'/',
+        data: 'url='+encodeURIComponent($("#url").val())+'&name='+encodeURIComponent($("#reviewSiteName").val()),
         cache: false,
-        success: function(data){
-
-          //$.each(data, function(index, element) {
+        method: 'POST',
+        success: function(data) {
+          //Dropzone.options.myDropzone = 'url';
+          
           var element = $.parseJSON(data);
-          //first, remove the value we selected
-          $("#review_site_id option[value='"+$("#review_site_id").val()+"']").each(function() {
-            $(this).remove();
-          });
+          // if other selected
+          if ($("#review_site_id").val() === '0') {
+            myDropzone.options.url = $('#reviewLogoUpload').attr('action') + '/' + element.location_review_site_id + '/';
+
+            myDropzone.processQueue();
+          } else {
+            // remove the value we selected
+            $("#review_site_id option[value='"+$("#review_site_id").val()+"']").each(function() {
+              $(this).remove();
+            });            
+          }
 
           var id = $("#review_site_id").val();
           var url = $("#url").val();
           var newid = element.location_review_site_id;
-          console.log(newid);
           var img_path = element.img_path;
           var name = element.name;
 
-          //next, add this selection, to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons" style="margin-left: 5px;"><a class="btnLink btnSecondary greenbtn" href="'+url+'" url="'+url+'" target="_blank" type="view">View</a><!-- Edit URL Button --><a class="btnLink btnSecondary btnEditSiteURL greenbtn" href="/location/edit/<?=$this->session->get('auth-identity')['location_id']?>" data-id="'+newid+'" style="margin-left: 10px;"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons" style="margin-left: 5px; margin-right: 5px;"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif" class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+          // add this selection to the settings page
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons" style="margin-left: 5px;"><a class="btnLink btnSecondary greenbtn" href="'+url+'" url="'+url+'" target="_blank" type="view">View</a><!-- Edit URL Button --><a class="btnLink btnSecondary btnEditSiteURL greenbtn" href="/location/edit/{{ location_id }}" data-id="'+newid+'" style="margin-left: 10px;"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons" style="margin-left: 5px; margin-right: 5px;"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif" class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
 
           $('.btnEditSiteURL').unbind('click');
 
@@ -1130,10 +1121,9 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
             return turnOff($(this).attr("data-id"));
           });
 
-          //finally, close the form
+          // close the form
           $('#page-wrapper').hide();
           $('.overlay').hide();
-          //});
         }
       });
 
@@ -1145,8 +1135,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
     });
 
     function turnOn(id) {
-      //console.log('id:'+id);
-
       $.ajax({
         url: "/settings/on/"+id,
         cache: false,
@@ -1180,13 +1168,11 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
     });
 
     function turnOff(id) {
-      //console.log('id:'+id);
-
       $.ajax({
         url: "/settings/off/"+id+"/",
         cache: false,
-        success: function(html){
-          //done!
+        success: function(html) {
+
         }
       });
 
@@ -1217,21 +1203,18 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           id = $(this).attr("data-id");
           type = $(this).attr("data-type");
           value = $(this).attr("data-value");
-          //console.log('id:'+id);
           $.ajax({
             url: "/settings/notification/"+id+"/"+type+"/"+value+"/",
             cache: false,
             success: function(html){
-              //done!
+
             }
           });
 
           if (value == 1) {
-            //console.log('#'+type+'on'+id);
             $('#'+type+'on'+id).show();
             $('#'+type+'off'+id).hide();
           } else {
-            //console.log('#'+type+'off'+id);
             $('#'+type+'on'+id).hide();
             $('#'+type+'off'+id).show();
           }
@@ -1242,15 +1225,9 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
 
     $("#settingsform").on("submit", function(e) {
-
-  //  var inputs = document.getElementsByTagName('on-off-buttons');
-  //alert(inputs.serializeArray());
-
       var idsInOrder = $("#sortable").sortable("toArray");
-      //-----------------^^^^
-      console.log(idsInOrder);
+
       $('input#review_order').val(idsInOrder);
-      //return false;
 
       if($('#logo_path').val() != ''){
         var ext = $('#logo_path').val().split('.').pop().toLowerCase();
@@ -1260,27 +1237,22 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
           return false;
         }
       }
+
       $('#fileerror').hide();
+      
       return true;
     });
 
-
     $("#creastesite").on("submit", function(e) {
-    var url = document.getElementsByIdName('url');
+      var url = document.getElementsByIdName('url');
+
 	    $.ajax({
 	        url: "/settings/addReviewSite/"+url+"/",
 	        cache: false,
 	        success: function(html){
 	        }
-	 	});
-		if (value == 1) {
-
-		} else {
-
-		}
-
+      });
     });
-
 
     $('div#image_container img').click(function(){
       // set the img-source as value of image_from_list
@@ -1291,7 +1263,6 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
 
     $("#sortable").sortable();
     $("#sortable").disableSelection();
-    //i broke this out so it would be on its own function
   });
 
   $(function () {

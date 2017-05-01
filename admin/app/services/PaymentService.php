@@ -19,6 +19,7 @@ class PaymentService extends BaseService
     public function getRegisteredCardType($userId, $provider)
     {
         $class = $this->getProviderClass($provider);
+
         switch($class) {
             case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
                 $creditCard = AuthorizeDotNetModel::query()
@@ -34,6 +35,7 @@ class PaymentService extends BaseService
             default:
                 break;
         }
+
         return $creditCard ? $creditCard->credit_card_type : false;
     }
 
@@ -76,6 +78,7 @@ class PaymentService extends BaseService
     public function hasPaymentProfile($paymentParams)
     {
         $class = $this->getProviderClass($paymentParams['provider']);
+
         switch($class) {
             case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
                 $creditCard = AuthorizeDotNetModel::query()
@@ -98,6 +101,7 @@ class PaymentService extends BaseService
                 $status = false;
                 break;
         }
+
         return $status;
     }
     
@@ -124,7 +128,7 @@ class PaymentService extends BaseService
     {
         $class = $this->getProviderClass($ccParameters['provider']);
         
-        switch($class) {
+        switch ($class) {
             case ServicesConsts::$PAYMENT_PROVIDER_AUTHORIZE_DOT_NET:
                 $status = $this->updateAuthorizeDotNetPaymentProfile($ccParameters);
                 break;
@@ -230,6 +234,7 @@ class PaymentService extends BaseService
 
             if ($Customer->id) {
                 $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
+
                 if (!$objStripeSubscription)
                     $objStripeSubscription = new \Vokuro\Models\StripeSubscriptions();
 
@@ -254,6 +259,7 @@ class PaymentService extends BaseService
             return false;
 
         $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$AgencyID}");
+
         if(!$objAgency)
             return false;
 
@@ -274,6 +280,7 @@ class PaymentService extends BaseService
             return false;
 
         $StripeSecretKey = $this->GetStripeSecretKey($AgencyID);
+
         if(!$StripeSecretKey)
             return false;
 
@@ -287,6 +294,7 @@ class PaymentService extends BaseService
         } catch (Exception $e) {
             return false;
         }
+
         return true;
     }
 
@@ -296,6 +304,7 @@ class PaymentService extends BaseService
             return false;
 
         $StripeSecretKey = $this->GetStripeSecretKey($AgencyID);
+
         if(!$StripeSecretKey)
             return false;
 
@@ -309,6 +318,7 @@ class PaymentService extends BaseService
         } catch (Exception $e) {
             return false;
         }
+
         return true;
     }
 
@@ -350,6 +360,7 @@ class PaymentService extends BaseService
         }
 
         $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
+
         if (!$objStripeSubscription->stripe_customer_id)
             return false;
 
@@ -360,6 +371,7 @@ class PaymentService extends BaseService
             \Stripe\Stripe::setApiKey($StripeSecretKey);
 
             $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
+
             if (!$objStripeSubscription)
                 return false;
 
@@ -387,6 +399,7 @@ class PaymentService extends BaseService
                 'currency'  => $currency,
                 'id'        => $PlanID
             ];
+
             if(isset($ccParameters['trial_period']) && $ccParameters['trial_period'])
                 $tPlanParameters['trial_period_days'] = $ccParameters['trial_period'];
 
@@ -435,6 +448,7 @@ class PaymentService extends BaseService
         $required = ['userEmail', 'cardNumber', 'expirationDate', 'csv'];
         $supplied = array_keys($ccParameters);
         $intersect = array_intersect($supplied, $required);
+
         if (count($intersect) !== count($required)) {
             return false;
         }
@@ -458,6 +472,7 @@ class PaymentService extends BaseService
         $authorizeDotNet = new AuthorizeDotNetPayment($this->config);
         
         $profile = $authorizeDotNet->createCustomerProfile($customerProfileParameters);
+
         if (!$profile) {
             throw new \Exception('Could not create AuthorizeDotNetPayment Customer Profile');
             return false;
@@ -466,6 +481,7 @@ class PaymentService extends BaseService
         $authorizeDotNetModel = new AuthorizeDotNetModel();
         $authorizeDotNetModel->user_id = $ccParameters['userId'];
         $authorizeDotNetModel->customer_profile_id = $profile['customerProfileId'];
+
         if(!$authorizeDotNetModel->create()) {
             return false;
         }
@@ -491,6 +507,7 @@ class PaymentService extends BaseService
         $userId = $ccParameters['userId'];
 
         $StripeSecretKey = $this->GetStripeSecretKey($objAgency->agency_id);
+
         try {
             \Stripe\Stripe::setApiKey($StripeSecretKey);
             $objStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$userId}");
@@ -508,7 +525,7 @@ class PaymentService extends BaseService
             $Errors[] = $e->getMessage();
         }
 
-        if(count($Errors)) {
+        if (count($Errors)) {
             $responseParameters['Errors'] = $Errors;
             $responseParameters['status'] = false;
         }
@@ -525,12 +542,16 @@ class PaymentService extends BaseService
             ->bind(["userId" => $ccParameters['userId']])
             ->execute()
             ->getFirst();
-        if(!$creditCard){
+
+        if (!$creditCard) {
             return false;
         }
         
         /* Get the customer payment profile */    
-        $customerProfile = $authorizeDotNet->getCustomerProfile([ 'customerProfileId' => $creditCard->customer_profile_id ]);  
+        $customerProfile = $authorizeDotNet->getCustomerProfile(
+            ['customerProfileId' => $creditCard->customer_profile_id ]
+        );
+        
         if (!$customerProfile) {
             return false;
         }
@@ -570,6 +591,7 @@ class PaymentService extends BaseService
         
         /* Get the customer payment profile */
         $authorizeDotNetPayment = new AuthorizeDotNetPayment($this->config);
+
         if (!$authorizeDotNetPayment) {
             return false;
         }
@@ -577,12 +599,13 @@ class PaymentService extends BaseService
         $parameters = [];
         $subscriptionId = $authorizeDotNetModel->subscription_id;
 
-        if($subscriptionId === 'N') {
+        if ($subscriptionId === 'N') {
             
             $parameters['customerProfileId'] = $authorizeDotNetModel->customer_profile_id;
             
             /* Get the customer payment profile */    
             $customerProfile = $authorizeDotNetPayment->getCustomerProfile($parameters);
+
             if (!$customerProfile) {
                 return false;
             }
@@ -608,7 +631,8 @@ class PaymentService extends BaseService
             }
             
             $authorizeDotNetModel->subscription_id = $subscriptionId;
-            if(!$authorizeDotNetModel->update()) {
+
+            if (!$authorizeDotNetModel->update()) {
                 return false;
             }
             
@@ -619,6 +643,7 @@ class PaymentService extends BaseService
             $parameters['intervalLength'] = $subscriptionParameters['intervalLength'] ?: $this->config->authorizeDotNet->intervalLength;
 
             $status = $authorizeDotNetPayment->updateSubscriptionForCustomer($parameters);
+            
             if(!$status) {
                 return false;
             }

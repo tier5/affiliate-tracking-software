@@ -55,6 +55,10 @@ class StripeService extends BaseService
         $this->stripePublic = $stripeKeys['public'];
         $this->stripeSecret = $stripeKeys['secret'];
 
+        if (!isset($this->stripeSecret) || empty($this->stripeSecret)) {
+            return false;
+        }
+
         \Stripe\Stripe::setApiKey($this->stripeSecret);
 	}
 

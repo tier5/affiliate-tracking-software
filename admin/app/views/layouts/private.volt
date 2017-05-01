@@ -10,11 +10,10 @@
 
 <head>
     <script src="/js/rollbar.js"></script>
- <?php
-             if (strpos($_SERVER['REQUEST_URI'],'link/createlink')>0) {?>
- <link href="/css/style_review.css" rel="stylesheet" />
+    {% if 'link/createlink' in _SERVER['REQUEST_URI'] %}
+    <link href="/css/style_review.css" rel="stylesheet" />
+    {% endif %}
 
-            <?php }?>
     <!-- Begin primary / secondary color css.  Should probably move -->
     <style type="text/css">
         .page-sidebar .page-sidebar-menu > li.active > a {
@@ -135,29 +134,27 @@
     <link rel="stylesheet" href="/dashboard/css?primary_color={{ primary_color }}&secondary_color={{ secondary_color }}">
 
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function() {
         $('.close-div').click(function(){
             $('.dropdown-box').slideToggle(300);
         });
 
-        var user_id=$('#top_id').val();
+        var user_id = $('#top_id').val();
+
         $('.close-all').click(function(){
             $('.top-banner').remove();
             $('.navbar-fixed-top').removeClass("top-banner-show");
             $('.page-container').removeClass("top-banner-show");
 
-              $.ajax({
-          url: '/review/close',
-          method: "POST",
-          async:false,
-          data: { user_id : user_id},
-          success:function(html)
-              {
-           //alert(html);  
-             
-             }
-           });
-
+            $.ajax({
+                url: '/review/close',
+                method: "POST",
+                async:false,
+                data: { user_id : user_id },
+                success: function(html) {
+                    //alert(html);  
+                }
+            });
         });
 
         $('.dismiss').click(function(){
@@ -165,22 +162,19 @@
             $('.navbar-fixed-top').removeClass("top-banner-show");
             $('.page-container').removeClass("top-banner-show");
 
-             $.ajax({
-          url: '/review/dismiss',
-          method: "POST",
-          async:false,
-          data: { user_id : user_id},
-          success:function(html)
-              {
-           //alert(html);  
-             
-             }
-           });
+            $.ajax({
+            url: '/review/dismiss',
+            method: "POST",
+            async: false,
+            data: { user_id : user_id },
+            success: function(html) {
+                //alert(html);
+            }
+        });
 
         });
 
-        $('#click_rate').click(function(){
-            //$('a .connect_btn').trigger("click");
+        $('#click_rate').click(function() {
             var href = $('.connect_btn').attr('href');
             window.location.href = href; 
         });
@@ -191,18 +185,13 @@
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white" data-ccprompt="{{ ccInfoRequired }}" data-paymentprovider="{{ paymentService }}">
 
- <a href="/location/edit/<?php echo $top_location_id?>/0/0" class="connect_btn" style="display:none;">click here to connect</a>
+ <a href="/location/edit/{{ top_location_id }}/0/0" class="connect_btn" style="display:none;">click here to connect</a>
 
 <input type="hidden" id="top_id" value="<?php echo $this->session->get('auth-identity')['id'];?>">
-<?php 
-  //echo $this->session->get('auth-identity')['id'];exit;
-  //echo $top_banner;exit;
-  //echo $top_banner_session;exit;
-if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1 && ($top_banner_session!=2)){
+{% if agencytype == 'business' and (!facebookMyBusinessConnected or !GoogleMyBusinessConnected or !YelpMyBusinessConnected) and top_banner != 1 and (top_banner_session != 2) %}
 
- if(!$facebookMyBusinessConnected &&  !$GoogleMyBusinessConnected && !$YelpMyBusinessConnected )
-{ ?>
-<div class="top-banner">you must connect your Google,Facebook,Yelp account to monitor these review sites <a   id="click_rate">click here to connect</a>
+{% if !facebookMyBusinessConnected and !GoogleMyBusinessConnected and !YelpMyBusinessConnected %}
+<div class="top-banner">you must connect your Google,Facebook,Yelp account to monitor these review sites <a id="click_rate">click here to connect</a>
   <span class="close-div">X</span>
     <div class="dropdown-box">
         <ul>
@@ -211,26 +200,26 @@ if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusin
         </ul>
     </div>
 </div>
-<?php } else { 
+{% else %} 
 
-$conn_account='';
-    if(!$GoogleMyBusinessConnected)
-    {
-    $conn_account.="Google,";
-    }
-    if(!$facebookMyBusinessConnected)
-    {
-    $conn_account.="Facebook,";
-    }
-    if(!$YelpMyBusinessConnected)
-    {
-    $conn_account.="Yelp,";
-    }
-    $conn_account=rtrim($conn_account,",");
+{% set conn_account = '' %}
 
-?>
+{% if !GoogleMyBusinessConnected %}
+    {% set conn_account = conn_account ~ "Google," %}
+{% endif %}
+    
+{% if !facebookMyBusinessConnected %}
+    {% set conn_account = conn_account ~ "Facebook," %}
+{% endif %}
+
+{% if !YelpMyBusinessConnected %}
+    {% set conn_account = conn_account ~ "Yelp," %}
+{% endif %}
+
+<?php $conn_account = rtrim(conn_account, ","); ?>
+
 <div class="top-banner">
-    you must connect your <?php echo $conn_account;?> account to monitor these review sites 
+    you must connect your {{ conn_account }} account to monitor these review sites 
     <a id="click_rate">click here to connect</a>
     <span class="close-div">X</span>
     <div class="dropdown-box">
@@ -240,8 +229,8 @@ $conn_account='';
         </ul>
     </div>
 </div>  
-
-<?php } }?>
+{% endif %}
+{% endif %}
 <!-- Top banner ends -->
 {% if BusinessDisableBecauseOfStripe AND 1 == 2 %}
     <div class="container">
@@ -254,20 +243,20 @@ $conn_account='';
 <input type="hidden" id="primary_color" value="{{ primary_color }}" />
 <input type="hidden" id="secondary_color" value="{{ secondary_color}}" />
 <!-- BEGIN HEADER -->
-<div class="page-header navbar navbar-fixed-top <?php if($agencytype=='business' && (!$facebookMyBusinessConnected ||  !$GoogleMyBusinessConnected || !$YelpMyBusinessConnected ) && $top_banner!=1 && ($top_banner_session!=2)){ ?>top-banner-show <?php } ?>">
+<div class="page-header navbar navbar-fixed-top {% if agencytype == 'business' and (!facebookMyBusinessConnected or  !GoogleMyBusinessConnected or !YelpMyBusinessConnected) and top_banner != 1 and top_banner_session != 2 %}top-banner-show {% endif %}">
     <!-- BEGIN HEADER INNER -->
     <div class="page-header-inner ">
         <!-- BEGIN LOGO -->
         <div class="page-logo" style="margin-top: 0;">
             <a href="/">
             {% if logo_path %}
-                 {% if agencytype == "agency" %}
-                <img src="<?=$this->view->logo_path;?>" alt="logo" 
+                {% if agencytype == "agency" %}
+                <img src="{{ logo_path }}" alt="logo" 
                  style="max-width: 200px;" class="logo-default"/>
 
                 {% else %}
 
-                <img src="<?=$this->view->logo_path;?>" alt="logo" 
+                <img src="{{ logo_path }}" alt="logo" 
                 style="max-width: 200px;" class="logo-default not_agency"/>
                 {% endif %}
             {% endif %}
@@ -282,7 +271,7 @@ $conn_account='';
         <!-- BEGIN TOP NAVIGATION MENU -->
         <div class="top-menu">
             <ul class="nav navbar-nav pull-right">
-                {% if not is_admin and agencytype != 'agency' AND NOT NonTrial %}
+                {% if not is_admin and agencytype != 'agency' and not NonTrial %}
 
                     {% if ReachedMaxSMS %}
                     <li class="" id="">
@@ -333,12 +322,12 @@ $conn_account='';
                         <i class="fa fa-angle-down" style="color: #484848;"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-default">
-                        <?php if($objAgency->parent_id > 0 || $objAgency->parent_id == -1) { ?>
+                        {% if objAgency.parent_id > 0 or objAgency.parent_id == -1 %}
                         <li>
-                            <a href="/users/adminedit/<?=$loggedUser->id ?>">
+                            <a href="/users/adminedit/{{ loggedUser.id }}">
                                 <i class="icon-user"></i> My Profile </a>
                         </li>
-                        <?php } ?>
+                        {% endif %}
                         <li>
                             <a href="/session/logout">
                                 <i class="icon-key"></i>
@@ -446,7 +435,7 @@ $conn_account='';
                     {% if location_id %}
                         {% if agencytype != "agency" %}
 
-                        <?php if($facebookMyBusinessConnected ||  $GoogleMyBusinessConnected || $YelpMyBusinessConnected){ ?>
+                            {% if facebookMyBusinessConnected or GoogleMyBusinessConnected or YelpMyBusinessConnected %}
                             <li class="nav-item">
                                 <a href="/reviews" class="nav-link nav-toggle">
                                     <i class="icon-diamond"></i>
@@ -454,7 +443,7 @@ $conn_account='';
                                     <span class="selected"></span>
                                 </a>
                             </li>
-                            <?php } ?>
+                            {% endif %}
                             <li class="nav-item">
                                 <a href="/analytics" class="nav-link nav-toggle">
                                     <i class="icon-bar-chart"></i>
@@ -463,17 +452,17 @@ $conn_account='';
                                 </a>
                             </li>
 
-                            {% if is_business_admin or (profile == "User") %}
-                                <?php if(strpos($userLogged->role, "Admin") !== false || !$this->view->is_employee) { ?>
-                               {% if is_business_admin %} 
-                                <li class="nav-item">
-                                    <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
-                                        <i class="icon-envelope"></i>
-                                        <span class="title">SMS Broadcast</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
-                                {% endif %}
+                            {% if is_business_admin or profile == "User" %}
+                                <?php if(strpos($userLogged->role, "Admin") !== false || !$is_employee) { ?>
+                                    {% if is_business_admin %}
+                                    <li class="nav-item">
+                                        <a href="/reviews/sms_broadcast" class="nav-link nav-toggle">
+                                            <i class="icon-envelope"></i>
+                                            <span class="title">SMS Broadcast</span>
+                                            <span class="selected"></span>
+                                        </a>
+                                    </li>
+                                    {% endif %}
                                 <?php } ?>
                                 <li class="nav-item">
                                     <a href="/contacts" class="nav-link nav-toggle">
@@ -492,28 +481,26 @@ $conn_account='';
                             {% endif %}
                         {% endif %}
                     {% endif %}
-                        <?php         
-                    if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
-                    {% if profile == "Business Admin" and agencytype == "business" %}
-                        <li class="nav-item">
-                            <a href="/location/" class="nav-link nav-toggle">
-                                <i class="icon-pointer"></i>
-                                <span class="title">Locations</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        
-                    {% endif %}
+                    <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
+                        {% if profile == "Business Admin" and agencytype == "business" %}
+                            <li class="nav-item">
+                                <a href="/location/" class="nav-link nav-toggle">
+                                    <i class="icon-pointer"></i>
+                                    <span class="title">Locations</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                        {% endif %}
                     <?php } ?>
+
                     {% if profile != "User" %}
                         {% if agencytype == "agency" %}
                             {% set SettingsLocation = "agency" %}
                         {% else %}
                             {% set SettingsLocation = "location" %}
                         {% endif %}
-                        <?php 
-                         
-                        if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
+
+                        <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
                         <li class="nav-item">
                             <a href="/settings/{{ SettingsLocation }}/" class="nav-link nav-toggle">
                                 <i class="icon-settings"></i>
@@ -524,25 +511,25 @@ $conn_account='';
                         <?php } ?>
 
                         <?php if(strpos($userLogged->role, "Admin") !== false || !$userLogged->is_employee) { ?>
-                        {% if agencytype != "agency" %}
-                        <li class="nav-item">
-                            <a href="/users/admin" class="nav-link nav-toggle">
-                                <i class="icon-user"></i>
-                                <span class="title">Users</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% if internalNavParams['hasSubscriptions'] AND SubscriptionLevel != "FR" %}
+                            {% if agencytype != "agency" %}
                             <li class="nav-item">
-                                <a href="{{ internalNavParams['subscriptionController'] }}" class="nav-link nav-toggle">
-                                    <i class="icon-wallet"></i>
-                                    <span class="title">Subscriptions</span>
+                                <a href="/users/admin" class="nav-link nav-toggle">
+                                    <i class="icon-user"></i>
+                                    <span class="title">Users</span>
                                     <span class="selected"></span>
                                 </a>
                             </li>
-                        {% endif %}
+                            {% endif %}
+
+                            {% if internalNavParams['hasSubscriptions'] AND SubscriptionLevel != "FR" %}
+                                <li class="nav-item">
+                                    <a href="{{ internalNavParams['subscriptionController'] }}" class="nav-link nav-toggle">
+                                        <i class="icon-wallet"></i>
+                                        <span class="title">Subscriptions</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                            {% endif %}
                         <?php } ?>
                     {% endif %}
                 {% endif %}
@@ -635,12 +622,7 @@ $conn_account='';
                     </div>
                     {% endif %}
                     <div class="portlet-body form">
-                        {%
-                            if (twilio_auth_token != ''
-                            and twilio_from_phone != '')
-                        %}
-
-
+                        {% if twilio_auth_token != '' and twilio_from_phone != '' %}
                             {% if num_signed_up %}
                                 <div class="row" style="margin-bottom: 10px;">
                                     <div class="col-md-12">
@@ -649,6 +631,7 @@ $conn_account='';
                                     </div>
                                 </div>
                             {% endif %}
+
                             {% if sms_sent_this_month < total_sms_month %}
                                 <form class="form-horizontal" action="/location/send_review_invite" role="form" method="post" autocomplete="off" id="smsrequestform">
                                     <div class="success" id="smsrequestformsuccess" style="display: none;">The review
@@ -666,11 +649,7 @@ $conn_account='';
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                               <!--  <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="<?=(isset($_POST['name'])?$_POST["name"]:'')?>"
-                                                /> -->
-
-                                        <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value=""
-                                                />
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Name" name="name" id="smsrequestformname" value="" />
                                             </div>
                                         </div>
                                         <div class="row">
@@ -682,11 +661,7 @@ $conn_account='';
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <!--<input class="form-control placeholder-no-fix" type="text" placeholder="Phone" name="phone" id="smsrequestformphone" value="<?=(isset($_POST['phone'])? $_POST["phone"]:'')?>"
-                                                />-->
-
-                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Mobile" name="phone" id="smsrequestformphone" value=""
-                                                />
+                                                <input class="form-control placeholder-no-fix" type="text" placeholder="Mobile" name="phone" id="smsrequestformphone" value="" />
                                             </div>
                                         </div>
                                         <div class="row">
@@ -702,7 +677,7 @@ $conn_account='';
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <textarea	style="width: 100%;" class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{location.SMS_message}}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
+                                                <textarea	style="width: 100%;" class="form-control placeholder-no-fix" name="SMS_message">{% if location.SMS_message %}{{ location.SMS_message }}{% else %}Hi {name}, thanks for visiting {location-name} we'd really appreciate your feedback by clicking the following link {link}. Thanks! {% endif %}</textarea>
                                                 <i>{location-name} will be the name of the location sending the SMS,
                                                     {name} will be replaced with the name entered when sending the
                                                     message and {link} will be the link to the review.</i>
@@ -720,10 +695,6 @@ $conn_account='';
                             {% endif %}
                         {% else %}
                             Your text messaging service isn’t currently set up. Please contact support to have your text messaging service setup for your account.
-                            <!--You must have a Twilio SID and Auth Token to send SMS messages.  All SMS messages are sent using
-                            <a href="https://www.twilio.com/" target="_blank">Twilio</a>.  <a href="/settings/">Click
-                            here</a> to enter your Twilio SID and Auth Key now. If you don't have an API key yet,
-                            <a href="https://www.twilio.com/try-twilio" target="_blank">click here</a> to sign up.-->
                         {% endif %}
                     </div>
                 </div>
@@ -754,10 +725,9 @@ $conn_account='';
                     </div>
                 </div>
             </div>
-<?php
-             if (strpos($_SERVER['REQUEST_URI'],'link/createlink')==0) {?>
+            {% if 'link/createlink' in _SERVER['REQUEST_URI'] %}
             <script src="https://checkout.stripe.com/checkout.js"></script>
-            <?php }?>
+            {% endif %}
 
             <script type="text/javascript">
                 jQuery(document).ready(function ($) {
@@ -776,17 +746,17 @@ $conn_account='';
 
                     function updateCard() {
                         $.post('/businessSubscription/updatePaymentProfile', getCCParams())
-                                .done(function (data) {
-                                    if (data.status !== true) {
-                                        alert("Update card failed!!!")
-                                    } else {
-                                        $('#updateCardModal').modal('hide');
-                                    }
-                                })
-                                .fail(function () {
-                                })
-                                .always(function () {
-                                });
+                        .done(function (data) {
+                            if (data.status !== true) {
+                                alert("Update card failed!!!");
+                            } else {
+                                $('#updateCardModal').modal('hide');
+                            }
+                        })
+                        .fail(function () {
+                        })
+                        .always(function () {
+                        });
                     }
 
                     function updateStripeCard(token) {
@@ -794,25 +764,22 @@ $conn_account='';
                             tokenID: token.id,
                             email: token.emai1
                         })
-                            .done(function (data) {
-                                /*if (data.status !== true) {
-                                    alert("Update card failed!!!")
-                                }*/
-                                window.location = "/businessSubscription";
-                            })
-                            .fail(function () {
-                            })
-                            .always(function () {
-                            });
+                        .done(function (data) {
+                            window.location = "/businessSubscription";
+                        })
+                        .fail(function () {
+                        })
+                        .always(function () {
+                        });
                     }
 
                     $('.fancybox').fancybox();
 
                     var bodyElem = document.getElementsByTagName("body")[0];
                     if (bodyElem.dataset.ccprompt === "open") {
-                        if(bodyElem.dataset.paymentprovider === "AuthorizeDotNet")
+                        if (bodyElem.dataset.paymentprovider === "AuthorizeDotNet") {
                             $('#updateCardModal').modal('show');
-                        else if(bodyElem.dataset.paymentprovider === "Stripe") {
+                        } else if (bodyElem.dataset.paymentprovider === "Stripe") {
                             var handler = StripeCheckout.configure({
                                     key: '{{ stripePublishableKey }}',
                                     email: '{{ businessEmail }}',
@@ -848,39 +815,39 @@ $conn_account='';
                     $("#smsrequestform").submit(function (e) {
                         var postData = $(this).serializeArray();
                         var formURL = $(this).attr("action");
-                        $.ajax(
-                                {
-                                    url: formURL,
-                                    type: "POST",
-                                    data: postData,
-                                    success: function (data, textStatus, jqXHR) {
 
-                                        $('#smsrequestformname').val('');
+                        $.ajax({
+                            url: formURL,
+                            type: "POST",
+                            data: postData,
+                            success: function (data, textStatus, jqXHR) {
 
-                                        $('#smsrequestformphone').val('');
-                                        $('#smsrequestformerror').html(data);
-                                        $('#smsrequestformsuccess').hide();
-                                        $('#smsrequestformerror').show();
+                                $('#smsrequestformname').val('');
 
-                                        setTimeout(function(){
-                                        $('.fancybox-close').click();
-                                             $('#smsrequestformsuccess').html('');
-                                              $('#smsrequestformerror').html('');
-                                            }, 2000);
-                                       
-                                    },
-                                    error: function (jqXHR, textStatus, errorThrown) {
-                                        //if fails
-                                        $('#smsrequestformsuccess').hide();
-                                        $('#smsrequestformerror').show();
+                                $('#smsrequestformphone').val('');
+                                $('#smsrequestformerror').html(data);
+                                $('#smsrequestformsuccess').hide();
+                                $('#smsrequestformerror').show();
 
-                                        setTimeout(function(){
-                                        $('.fancybox-close').click();
-                                        $('#smsrequestformsuccess').html('');
-                                              $('#smsrequestformerror').html('');
-                                            }, 2000);
-                                    }
-                                });
+                                setTimeout(function() {
+                                    $('.fancybox-close').click();
+                                    $('#smsrequestformsuccess').html('');
+                                    $('#smsrequestformerror').html('');
+                                }, 2000);
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                //if fails
+                                $('#smsrequestformsuccess').hide();
+                                $('#smsrequestformerror').show();
+
+                                setTimeout(function() {
+                                    $('.fancybox-close').click();
+                                    $('#smsrequestformsuccess').html('');
+                                    $('#smsrequestformerror').html('');
+                                }, 2000);
+                            }
+                        });
+
                         e.preventDefault(); //STOP default action
                     });
                 });
@@ -897,9 +864,11 @@ $conn_account='';
 {% endif %}
 <script type="text/javascript">
     $(window).resize(function(){
-        if(console) console.warn('We are hiding the chart here for now, eventually we want to re-paint it');
-        $('#piechart > div > div').hide();
+        if (console) {
+            console.warn('We are hiding the chart here for now, eventually we want to re-paint it');
+        }
 
+        $('#piechart > div > div').hide();
     });
 
     function DismissStripe() {
@@ -910,44 +879,40 @@ $conn_account='';
         });
     }
 </script>
-<?php
+{% if _SERVER['HTTP_HOST'] == "getmobilereviews.com" %}
+   {% if objAgency.parent_id > 0 %}
 
-if($_SERVER['HTTP_HOST']=="getmobilereviews.com"){
-   if($objAgency->parent_id > 0) {
+        {% set IntercomAPIID = objParentAgency.intercom_api_id and objParentAgency.intercom_security_hash ? objParentAgency.intercom_api_id : '' %}
 
-        $IntercomAPIID = $objParentAgency->intercom_api_id && $objParentAgency->intercom_security_hash ? $objParentAgency->intercom_api_id : '';
+        {% set IntercomSecurityHash = objParentAgency.intercom_api_id and objParentAgency.intercom_security_hash ? objParentAgency.intercom_security_hash : '' %}
 
-        $IntercomSecurityHash = $objParentAgency->intercom_api_id && $objParentAgency->intercom_security_hash ? $objParentAgency->intercom_security_hash : '';
+    {% elseif objAgency.parent_id <= 0 and loggedUser.is_admin %}
 
-    } elseif($objAgency->parent_id <= 0 || $loggedUser->is_admin) {
+        {% set IntercomAPIID = "c8xufrxd" %}
 
-        $IntercomAPIID = "c8xufrxd";
+        {% set IntercomSecurityHash = "g0NfX42bvMsg4jf86dI1Q1TwImVss6Mugy-hcvac" %}
 
-        $IntercomSecurityHash = "g0NfX42bvMsg4jf86dI1Q1TwImVss6Mugy-hcvac";
+    {% endif %}
 
-    }
-
-    if($IntercomAPIID && $IntercomSecurityHash) { ?>
+    {% if IntercomAPIID and IntercomSecurityHash %}
 
     <script>
 
       window.intercomSettings = {
 
-        app_id: "<?=$IntercomAPIID; ?>",
+        app_id: "{{ IntercomAPIID }}",
 
-        name: "<?php echo $loggedUser->name ?>", // Full name
+        name: "{{ loggedUser.name }}", // Full name
 
-        email: "<?php echo $loggedUser->email ?>", // Email address
+        email: "{{ loggedUser.email }}", // Email address
 
-        <?php
-
-          if ($loggedUser->create_time) { ?>
+        {% if loggedUser.create_time %}
 
           create_time: <?php echo strtotime($loggedUser->create_time) ?>, // Signup date as a Unix timestamp
 
-        <?php } ?>
+        {% endif %}
 
-        user_hash: "<?php echo hash_hmac('sha256',$loggedUser->email,$IntercomSecurityHash );?>"
+        user_hash: "<?php echo hash_hmac('sha256', $loggedUser->email, $IntercomSecurityHash ); ?>"
 
       };
 
@@ -955,12 +920,8 @@ if($_SERVER['HTTP_HOST']=="getmobilereviews.com"){
 
     <script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/c8xufrxd';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
 
-<?php }} ?>
-
-
-
-
-
+{% endif %}
+{% endif %}
 
 </body>
 </html>

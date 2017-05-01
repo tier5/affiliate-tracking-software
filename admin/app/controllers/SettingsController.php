@@ -256,7 +256,7 @@ class SettingsController extends ControllerBase
 
     protected function storeLogo($file, $dir) //
     {
-        $tempName = $file->getTempName();
+        $tempName = $file->getName();
 
         if ($tempName) {
 
@@ -264,12 +264,11 @@ class SettingsController extends ControllerBase
 
             $filePath = $dir . "{$fileName}";
 
-            $uploaded = file_put_contents(
-                $filePath,
-                file_get_contents($tempName)
-            );
+            $file->moveTo($filePath);
 
             if ($uploaded !== false) {
+                chmod($filePath, 0777);
+
                 return $fileName;
             }
         }
@@ -293,7 +292,7 @@ class SettingsController extends ControllerBase
             . "..". DIRECTORY_SEPARATOR
             . ".." . DIRECTORY_SEPARATOR
             . "public" . $path;
-
+        
         // get uploaded file
         $file = $this->getUploadedFile();
         
@@ -346,9 +345,55 @@ class SettingsController extends ControllerBase
         return false;
     }
 
-    protected function storeReviewSiteLogo()
+    public function saveReviewSiteLogoAction($locationReviewSiteId = 0)
     {
+        $path = DIRECTORY_SEPARATOR
+            . "img" . DIRECTORY_SEPARATOR
+            . "review_site_logos" . DIRECTORY_SEPARATOR;
 
+        $pathRelative = __DIR__ . DIRECTORY_SEPARATOR
+            . "..". DIRECTORY_SEPARATOR
+            . ".." . DIRECTORY_SEPARATOR
+            . "public" . $path;
+
+        $file = $this->getUploadedFile();
+        
+        if (!$file) {
+            return false;
+        }
+
+        $condition = 'location_review_site_id = '.$locationReviewSiteId;
+
+        $reviewSite = LocationReviewSite::findFirst($condition);
+
+        // if logo exists delete it
+        if (isset($reviewSite->logo_path) && $reviewSite->logo_path) { //
+            $logoFileName = $pathRelative . $reviewSite->logo_path; //
+
+            if (is_file($logoFileName)) {
+                if(unlink($logoFileName)) {
+                    $reviewSite->logo_path = null;
+
+                    $reviewSite->save();
+                };
+            }
+        }
+
+        // store in agency_logo folder
+        $fileName = $this->storeLogo($file, $pathRelative);
+
+        if ($fileName === false) {
+            return false;
+        }
+
+        // save path to agency table
+
+        $reviewSite->logo_path = $path . $fileName; //
+
+        $reviewSite->save(); //
+        $this->view->disable();
+
+        //$this->view->logo_path = $path . "{$fileName}"; //
     }
 
     protected function storeSettings($entity, $type)
@@ -669,7 +714,7 @@ class SettingsController extends ControllerBase
                     $Twillioset['twilio_auth_token']
                 );
                 
-                $uri = '/'. $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
+                $uri = '/' . $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
               
                 if ($client) {
                     $numbers = $client->retrieveData($uri);
@@ -688,6 +733,32 @@ class SettingsController extends ControllerBase
             
             $this->view->countries = $country;
         }
+
+        $this->view->agency_type = $this->session->get('auth-identity')['agencytype'];
+
+        $percent_sent = @(($this->view->sms_sent_this_month_total + $this->view->sms_sent_this_month_total_non) / $this->view->total_sms_month) * 100;
+        
+        $this->view->percent_sent = number_format(
+            (float) $percent_sent,
+            0,
+            '.',
+            ''
+        );
+
+        $percent_needed = @($this->view->sms_sent_this_month / $this->view->total_sms_needed) * 100;
+
+        $this->view->percent_needed = number_format(
+            (float) $percent_needed,
+            0,
+            '.',
+            ''
+        );
+
+        $this->view->facebook_type_id = \Vokuro\Models\Location::TYPE_FACEBOOK;
+
+        $this->view->post = $_POST;
+
+        $this->view->location_id = $this->session->get('auth-identity')['location_id'];
 
         $this->view->pick("settings/index");
     }
@@ -974,7 +1045,31 @@ class SettingsController extends ControllerBase
             $lrs = new LocationReviewSite();
             $lrs->location_id = $location_id;
             $lrs->review_site_id = $review_site_id;
-            $lrs->url = $_GET['url'];
+            $lrs->url = $_REQUEST['url'];
+            $lrs->date_created = date('Y-m-d H:i:s');
+            $lrs->is_on = 1;
+            $lrs->save();
+
+            $conditions = "review_site_id = :review_site_id:";
+            $parameters = array("review_site_id" => $review_site_id);
+            $site = ReviewSite::findFirst(array($conditions, "bind" => $parameters));
+
+            $this->view->disable();
+            echo json_encode(array(
+                'location_review_site_id' => $lrs->location_review_site_id,
+                'img_path' => $site->icon_path,
+                'name' => $site->name
+            ));
+        } else if($location_id > 0 && $review_site_id == 0) {
+            $lrs = new LocationReviewSite();
+            $lrs->location_id = $location_id;
+            $lrs->review_site_id = $review_site_id;
+            $lrs->url = $_REQUEST['url'];
+            
+            if(!empty($_REQUEST['name'])) {
+                $lrs->name = $_REQUEST['name'];
+            }
+            
             $lrs->date_created = date('Y-m-d H:i:s');
             $lrs->is_on = 1;
             $lrs->save();
