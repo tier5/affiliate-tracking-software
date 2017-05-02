@@ -13,6 +13,7 @@ use Vokuro\Models\Agency;
 use Vokuro\Models\ReviewInviteType;
 use Vokuro\Models\Users;
 use Vokuro\Models\LocationNotifications;
+use Vokuro\Services\SmsManager;
 
 class SettingsForm extends Form
 {
@@ -47,9 +48,7 @@ class SettingsForm extends Form
             'min' => '0',
             'max' => '5'
         ));
-      //  $rating_threshold_star->addValidator(new PresenceOf(array(
-      //      'message' => 'The Rating Threshold (Star Rating) is required'
-      //  )));
+
         $this->add($rating_threshold_star);
 
         $rating_threshold_nps = new Numeric('rating_threshold_nps', array(
@@ -57,9 +56,7 @@ class SettingsForm extends Form
             'min' => '0',
             'max' => '10'
         ));
-      //  $rating_threshold_nps->addValidator(new PresenceOf(array(
-      //      'message' => 'The Rating Threshold (NPS Rating) is required'
-      //  )));
+
         $this->add($rating_threshold_nps);
 
         $name = new Text('name', array(
@@ -108,38 +105,42 @@ class SettingsForm extends Form
 
         $this->add($message_frequency);
 
+        //$countryCodes = SmsManager::getCountryCodes();
+
+        $country_code = new Numeric('country_code', array(
+            'placeholder' => 'Country Code',
+        ));
+
+        $this->add($country_code);
+
         $notifications = new Text('notifications', array(
             'placeholder' => 'Notifications'
         ));
 
         $this->add($notifications);
 
-
-
         $twilio_api_key = new Text('twilio_api_key', array(
             'placeholder' => 'Twilio SID'
         ));
-        /*$twilio_api_key->addValidator(new PresenceOf(array(
-            'message' => 'The Twilio SID is required'
-        )));*/
+
         $this->add($twilio_api_key);
 
         $twilio_auth_token = new Text('twilio_auth_token', array(
             'placeholder' => 'Twilio Auth Token'
         ));
-        /*$twilio_auth_token->addValidator(new PresenceOf(array(
-            'message' => 'The Twilio Auth Token is required'
-        )));*/
+
         $this->add($twilio_auth_token);
 
         $twilio_auth_messaging_sid = new Text('twilio_auth_messaging_sid', array(
             'placeholder' => 'Twilio Messaging Service SID'
         ));
+
         $this->add($twilio_auth_messaging_sid);
 
         $twilio_from_phone = new Text('twilio_from_phone', array(
             'placeholder' => 'Twilio Phone Number'
         ));
+
         $this->add($twilio_from_phone);
 
         $stripe_account_id = new Text('stripe_account_id', array());
@@ -158,7 +159,7 @@ class SettingsForm extends Form
         $this->add($intercom_security_hash);
 
         
-         $welcome_email = new Text('welcome_email', array(
+        $welcome_email = new Text('welcome_email', array(
             'placeholder' => 'Welcome Email'
         ));
 

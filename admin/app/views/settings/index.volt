@@ -361,6 +361,21 @@
                 </div>
               </div>
             </div>
+            <div class="form-group">
+              <div class="row">
+                <label for="message_tries" class="col-md-4 control-label">Country Code</label>
+                <div class="col-md-8">
+                  {{ form.render("country_code", ["class": 'form-control', 'placeholder': 'Country Code', 'value': country_code]) }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <i>
+                    What country are your customers in?
+                  </i>
+                </div>
+              </div>
+            </div>
 
           </div>
           <!-- END SMS Message Settings  -->

@@ -15,6 +15,7 @@ class Agency extends BaseModel
     //public $id;
     public $agency_id;
     public $deactivated_with_agency;
+    public $country_code;
 
     /**
      * @return mixed

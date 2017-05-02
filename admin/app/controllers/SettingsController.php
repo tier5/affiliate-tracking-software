@@ -45,11 +45,13 @@ class SettingsController extends ControllerBase
     public function indexAction() 
     {
         $identity = $this->auth->getIdentity();
+
         if (!is_array($identity)) {
             $this->response->redirect('/session/login?return=/settings/');
             $this->view->disable();
             return;
         }
+
         // Query binding parameters with string placeholders
         $conditions = "id = :id:";
         $parameters = array("id" => $identity['id']);
@@ -65,7 +67,6 @@ class SettingsController extends ControllerBase
         }
 
         if ($this->request->isPost()) {
-
             $form = new SettingsForm($agency);
             $agencyform = new AgencyForm($agency);
             $form->bind($_POST, $agency);
@@ -81,12 +82,7 @@ class SettingsController extends ControllerBase
                 foreach ($form->getMessages() as $message) {
                     $this->flash->error($message);
                 }
-                
-                //} else if ($this->request->getPost('twilio_auth_messaging_sid')=='' && $this->request->getPost('twilio_from_phone')=='') {
-                // $this->flash->error('Either the Twilio Messaging Service SID or the Twilio Phone number is required. ');
             } else {
-                
-              //echo 'kk';exit;
                 $agency->assign(array(
                     'review_invite_type_id' => $this->request->getPost('review_invite_type_id', 'int'),
                     'review_goal' => $this->request->getPost('review_goal', 'int'),
@@ -125,10 +121,11 @@ class SettingsController extends ControllerBase
              
                    
                 ));
+
                 //$file_location = $this->uploadAction($agency->agency_id);
                 if ($file_location != '') $agency->logo_path = $file_location;
 
-                //delete all notification users for this agency
+                // delete all notification users for this agency
                 $conditions = "location_id = :location_id:";
                 $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
                 $notificationdelete = LocationNotifications::find(array($conditions, "bind" => $parameters));
@@ -171,6 +168,7 @@ class SettingsController extends ControllerBase
             $this->view->form = new SettingsForm($agency, array(
                 'edit' => true
             ));
+
             $this->view->agencyform = new AgencyForm($agency, array(
                 'edit' => true
             ));
@@ -254,7 +252,7 @@ class SettingsController extends ControllerBase
      * @return file path or false
      **/
 
-    protected function storeLogo($file, $dir) //
+    protected function storeLogo($file, $dir)
     {
         $tempName = $file->getName();
 
@@ -322,11 +320,11 @@ class SettingsController extends ControllerBase
 
         // save path to agency table
 
-        $agencyObj->logo_path = $fileName; //
+        $agencyObj->logo_path = $fileName;
 
-        $agencyObj->save(); //
+        $agencyObj->save();
 
-        $this->view->logo_path = $path . "{$fileName}"; //
+        $this->view->logo_path = $path . "{$fileName}";
     }
 
     /**
@@ -387,13 +385,10 @@ class SettingsController extends ControllerBase
         }
 
         // save path to agency table
+        $reviewSite->logo_path = $path . $fileName;
 
-        $reviewSite->logo_path = $path . $fileName; //
-
-        $reviewSite->save(); //
+        $reviewSite->save();
         $this->view->disable();
-
-        //$this->view->logo_path = $path . "{$fileName}"; //
     }
 
     protected function storeSettings($entity, $type)
@@ -430,7 +425,6 @@ class SettingsController extends ControllerBase
                 foreach ($this->$tFieldArray as $Field => $DataType) {
                     switch($DataType) {
                         case 'int':
-                            //$tEntityArray[$Field] = (is_int($this->request->getPost($Field, 'int')) ?$this->request->getPost($Field, 'int'): 0  );
                             $tEntityArray[$Field] = $this->request->getPost($Field, 'int');
                             break;
                         case 'string':
@@ -489,7 +483,8 @@ class SettingsController extends ControllerBase
         $location_id = $this->getLocationId();
         $userObj = $this->getUserObject();
 
-        // If there is no identity available the user is redirected to index/index.  User must be a super admin or admin to view settings page.
+        // If there is no identity available the user is redirected to index/index. 
+        // User must be a super admin or admin to view settings page.
         if (!$userObj) {
             $this->response->redirect('/session/login?return=/settings/location/');
             $this->view->disable();
@@ -506,12 +501,17 @@ class SettingsController extends ControllerBase
         $parameters = array("agency_id" => $userObj->agency_id);
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
+        if (isset($_POST['country_code']) && !empty($_POST['country_code'])) {
+            $agency->country_code = $_POST['country_code'];
+            $agency->save();
+        }
+
         $this->view->custom_sms = $agency->custom_sms;
+        $this->view->country_code = $agency->country_code;
 
         $subscription_plan = $subscription = \Vokuro\Models\BusinessSubscriptionPlan::findFirst(
             "user_id = " .$userObj->agency_id
         );
-
 
         $this->view->users = \Vokuro\Models\Users::find("agency_id = {$userObj->agency_id}");
         $this->view->agency = $agency;
@@ -550,7 +550,7 @@ class SettingsController extends ControllerBase
             $objSuperUser->id, $agency->subscription_id
         );
 
-        if($agency->subscription_id) {
+        if ($agency->subscription_id) {
             $objSubscriptionPricingPlan = \Vokuro\Models\SubscriptionPricingPlan::findFirst(
                 "id = {$agency->subscription_id}"
             );
@@ -589,21 +589,21 @@ class SettingsController extends ControllerBase
                
         }
 
-
         if (!$agency) {
             $this->flash->error("No settings were found");
         }
 
         if ($location_id) {
-            //find the location
+            // find the location
             $conditions = "location_id = :location_id:";
             $parameters = array("location_id" => $this->session->get('auth-identity')['location_id']);
             $location = Location::findFirst(array($conditions, "bind" => $parameters));
             $location->message_frequency = ($location->message_frequency == "" ? 0: $location->message_frequency );
         }
 
-        if (!$location)
+        if (!$location) {
             $location = new Location();
+        }
 
         // Save the sort order of the review sites
 
@@ -708,13 +708,15 @@ class SettingsController extends ControllerBase
             
             $numbers = array();
 
-            if ($Twillioset['twilio_api_key'] && $Twillioset['twilio_auth_token']) {
+            if ($Twillioset['twilio_api_key'] && $Twillioset['twilio_auth_messaging_sid'] && $Twillioset['twilio_auth_token']) {
                 $client = new Services_Twilio(
-                    $Twillioset['twilio_api_key'],
+                    $Twillioset['twilio_auth_messaging_sid'],
                     $Twillioset['twilio_auth_token']
                 );
                 
-                $uri = '/' . $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers.json';
+                $uri = '/' . $client->getVersion() . '/Accounts/' . $twilio_api_key . '/AvailablePhoneNumbers';
+
+                //$uri = '/' . $client->getVersion() . '/Accounts/' . $Twillioset['twilio_auth_messaging_sid'] . '/AvailablePhoneNumbers';
               
                 if ($client) {
                     $numbers = $client->retrieveData($uri);
@@ -730,7 +732,7 @@ class SettingsController extends ControllerBase
             }
 
             asort($country);
-            
+
             $this->view->countries = $country;
         }
 
@@ -1238,9 +1240,7 @@ class SettingsController extends ControllerBase
         if ($agency) {
             $this->view->agency = $agency;
 
-            if (isset($agency->twilio_api_key)
-                && $agency->twilio_api_key != ""
-                && isset($agency->twilio_auth_token)
+            if (isset($agency->twilio_auth_token)
                 && $agency->twilio_auth_token != ""
                 && isset($agency->twilio_from_phone)
                 && $agency->twilio_from_phone != "") {
@@ -1251,10 +1251,10 @@ class SettingsController extends ControllerBase
                 $twilio_api_key = $agency->twilio_api_key;
                 $twilio_auth_token = $agency->twilio_auth_token;
                 $twilio_from_phone = $agency->twilio_from_phone;
+                $twilio_auth_messaging_sid = $agency->twilio_auth_messaging_sid;
             }
 
-            if ($twilio_api_key  == ""
-                && $twilio_auth_token == ""
+            if ($twilio_auth_token == ""
                 && $twilio_from_phone == "") {
                 $parameters1 = array("agency_id" => $agency->parent_id);
                 $agency1 = Agency::findFirst(array($conditions, "bind" => $parameters1));
@@ -1264,15 +1264,17 @@ class SettingsController extends ControllerBase
                 $twilio_user_id = $userObjNew->id;
                 $twilio_api_key = $agency1->twilio_api_key;
                 $twilio_auth_token = $agency1->twilio_auth_token;
-                $twilio_from_phone = $agency1->twilio_from_phone;   
+                $twilio_from_phone = $agency1->twilio_from_phone;
+                $twilio_auth_messaging_sid = $agency1->twilio_auth_messaging_sid;
             }
         }
 
         $Twilio = array();
         $Twilio['twilio_user_id'] = $twilio_user_id;
         $Twilio['twilio_api_key'] = $twilio_api_key;
-        $Twiio['twilio_auth_token'] = $twilio_auth_token;
-        $Twiio['twilio_from_phone'] = $twilio_from_phone;
-        return($Twiio);
+        $Twilio['twilio_auth_token'] = $twilio_auth_token;
+        $Twilio['twilio_from_phone'] = $twilio_from_phone;
+        $Twilio['twilio_auth_messaging_sid'] = $twilio_auth_messaging_sid;
+        return $Twilio;
     }
 }
