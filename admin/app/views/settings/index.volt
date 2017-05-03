@@ -165,6 +165,13 @@
             
             <div class="form-group">
               <div class="row">
+                <label class="col-md-4 control-label">
+                </label>
+                <div class="col-md-8">
+                  <a class="btnLink btnSecondary greenbtn" id="btnAddReviewSite" style="width: 79px;" href="" target="_blank">Add New</a>
+                </div>
+              </div>
+              <div class="row">
                 <label for="rating_threshold_star" class="col-md-4 control-label">
                   Review Order
                   <i>This is the order of the site links on the SMS review page.</i>
@@ -178,7 +185,7 @@
                   {% set has_facebook = true %}
                   {% endif %}
                     <li class="ui-state-default" id='{{ review_site_list.location_review_site_id }}'>
-                      <span class="site-wrapper"><img src="{{ review_site_list.review_site.icon_path }}" class="imgicon" />
+                      <span class="site-wrapper"><img src="{{ review_site_list.review_site.icon_path }}" class="imgicon" {% if review_site_list.review_site_id == 0 %} style="width: 24px;"{% endif %}/>
                         {% if review_site_list.review_site_id == 0 %}{{ review_site_list.name }}{% else %}{{ review_site_list.review_site.name }}{% endif %}
                         </span>
                         <span class="review_site-buttons">
@@ -256,13 +263,7 @@
                   <input class="form-control" id="review_order" name="review_order" type="hidden" value="" />
                 </div>
               </div>
-              <div class="row">
-                <label class="col-md-4 control-label">
-                </label>
-                <div class="col-md-8">
-                  <a class="btnLink btnSecondary greenbtn" id="btnAddReviewSite" href="" target="_blank">Add Review Site</a>
-                </div>
-              </div>
+
             </div>
           
             {% endif %}
@@ -1197,31 +1198,28 @@
       return false;
     }
 
+    $("#notifications .on-off-buttons a").click(function() {
+      id = $(this).attr("data-id");
+      type = $(this).attr("data-type");
+      value = $(this).attr("data-value");
+      $.ajax({
+        url: "/settings/notification/"+id+"/"+type+"/"+value+"/",
+        cache: false,
+        success: function(html){
 
-        $("#notifications .on-off-buttons a").click(function() {
-          id = $(this).attr("data-id");
-          type = $(this).attr("data-type");
-          value = $(this).attr("data-value");
-          $.ajax({
-            url: "/settings/notification/"+id+"/"+type+"/"+value+"/",
-            cache: false,
-            success: function(html){
+        }
+      });
 
-            }
-          });
+      if (value == 1) {
+        $('#'+type+'on'+id).show();
+        $('#'+type+'off'+id).hide();
+      } else {
+        $('#'+type+'on'+id).hide();
+        $('#'+type+'off'+id).show();
+      }
 
-          if (value == 1) {
-            $('#'+type+'on'+id).show();
-            $('#'+type+'off'+id).hide();
-          } else {
-            $('#'+type+'on'+id).hide();
-            $('#'+type+'off'+id).show();
-          }
-
-          return false;
-        });
-
-
+      return false;
+    });
 
     $("#settingsform").on("submit", function(e) {
       var idsInOrder = $("#sortable").sortable("toArray");
