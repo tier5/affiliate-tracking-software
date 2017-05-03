@@ -887,15 +887,27 @@ class ControllerBase extends Controller
 
     public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_from_phone)
     {
+        $identity = $this->auth->getIdentity();
+
         if (!$AccountSid || !$AuthToken || !$twilio_from_phone) {
             return false;
         }
 
         $identity = $this->auth->getIdentity();
-        $idxcx = $identity['id'];
+
+        $userId = $identity['id'];
+
+        $conditions = "id = :id:";
+        $parameters = array("id" => $identity['id']);
+        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+
+        $agency = Agency::find($userObj->agency_id);
+
+        $phone = '+' . trim($agency->country_code) . $phone;
+
         $sql = "SELECT * "
                . "FROM `twilio_number_to_business` "
-               . "WHERE `buisness_id` = '" . $idxcx . "'";
+               . "WHERE `buisness_id` = '" . $userId . "'";
 
         $result = $this->db->query($sql);
 

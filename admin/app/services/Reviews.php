@@ -198,6 +198,18 @@ class Reviews extends BaseService
 
     public function SendSMS($phone, $smsBody, $AccountSid, $AuthToken, $twilio_from_phone)
     {
+        $identity = $this->auth->getIdentity();
+
+        $userId = $identity['id'];
+
+        $conditions = "id = :id:";
+        $parameters = array("id" => $identity['id']);
+        $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
+
+        $agency = Agency::find($userObj->agency_id);
+
+        $phone = '+' . trim($agency->country_code) . $phone;
+        
         if (!$AccountSid || !$AuthToken || !$twilio_from_phone) {
             // $this->flash->error("Missing twilio configuration.");
             print 'SMS Send failed: absent Twilio info' . "\n";

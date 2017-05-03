@@ -209,7 +209,7 @@ class LinkController extends ControllerBase
                         $message
                     );
 
-                    $message = $message.'  Reply stop to be removed';
+                    $message = $message . '  Reply stop to be removed';
 
                     $phone = $_POST['phone'];
                     $uid = $_POST['userID'];
@@ -276,11 +276,12 @@ class LinkController extends ControllerBase
                             }
 
                             $this->flashSession->success(
-                                "The SMS was sent successfully to: " . $phone.".This page will automatically refresh in 5 seconds." . $message
+                                "The SMS was sent successfully to: " . $phone . ".This page will automatically refresh in 5 seconds." . $message
                             );
                             
                             $this->view->disable();
-                            return $this->response->redirect('link/send_review_invite_employee/'.$uid);
+
+                            return $this->response->redirect('link/send_review_invite_employee/' . $uid);
                         }
                     }
                 } else {
@@ -291,7 +292,7 @@ class LinkController extends ControllerBase
                     $this->view->disable();
 
                     return $this->response->redirect('link/send_review_invite_employee/' . $uid);
-                }//
+                }
             }
         } else { 
             /*** get post value ***/
