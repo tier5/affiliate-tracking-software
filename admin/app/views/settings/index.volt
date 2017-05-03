@@ -179,7 +179,7 @@
                   {% endif %}
                     <li class="ui-state-default" id='{{ review_site_list.location_review_site_id }}'>
                       <span class="site-wrapper"><img src="{{ review_site_list.review_site.icon_path }}" class="imgicon" />
-                        {{ review_site_list.review_site.name }}
+                        {% if review_site_list.review_site_id == 0 %}{{ review_site_list.name }}{% else %}{{ review_site_list.review_site.name }}{% endif %}
                         </span>
                         <span class="review_site-buttons">
                         {% if review_site_list.review_site_id <= 3 %} 
@@ -1086,9 +1086,8 @@
         cache: false,
         method: 'POST',
         success: function(data) {
-          //Dropzone.options.myDropzone = 'url';
-          
           var element = $.parseJSON(data);
+
           // if other selected
           if ($("#review_site_id").val() === '0') {
             myDropzone.options.url = $('#reviewLogoUpload').attr('action') + '/' + element.location_review_site_id + '/';
