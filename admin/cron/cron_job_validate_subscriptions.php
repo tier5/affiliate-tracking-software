@@ -51,10 +51,6 @@ class ValidateSubscriptions extends Controller
 	{
 
 		$this->connectToStripe();
-
-		$testBusinessId = 77; // 77,75
-		$testUserId = 157;// 157, 155
-
 		// generate report dry run
 
 		// get all active businesses
@@ -68,6 +64,12 @@ class ValidateSubscriptions extends Controller
 		
 		foreach ($disableThese as $businessId) {
 			$agency->disable($businessId);
+
+			$business = Agency::find($businessId);
+
+			$business->subscription_valid = 'N';
+
+			$business->save();
 		}
 
 		// get all active agencies
@@ -143,6 +145,12 @@ class ValidateSubscriptions extends Controller
 		$agency = new Agency();
 		$agency->disable($agencyId);
 		$agency->deactivateBusinesses($agencyId);
+
+		$agency = Agency::find($agencyId);
+
+		$agency->subscription_valid = 'N';
+
+		$agency->save();
 	}
 
 	/**
@@ -286,14 +294,14 @@ class ValidateSubscriptions extends Controller
 		$subscriptionDb = $this->getSubscriptionFromDb($businessId);
 
 		// no stripe subscription record found
-		if(!$subscriptionDb) {
+		if (!$subscriptionDb) {
 			return false;
 		}
 
 		$subscriptionId = $subscriptionDb['stripe_subscription_id'];
 		
 		// if no stripe_subscription_id subscription does not exist in our db
-		if($subscriptionId === NULL || $subscriptionId === 'N') {
+		if ($subscriptionId === NULL || $subscriptionId === 'N') {
 			return false;
 		};
 
