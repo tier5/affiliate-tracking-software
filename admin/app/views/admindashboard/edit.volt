@@ -1,12 +1,9 @@
-<?php
+{% set AgencyOrBusiessType = agency_type_id == 1 ? "Agency" : "Business" %}
+{% set BackUrl = loggedUser.is_admin ? "/admindashboard/list/1" : '/agency' %}
 
-    $AgencyOrBusiessType = $this->view->agency_type_id == 1 ? "Agency" : "Business";
-    $BackUrl = $loggedUser->is_admin ? "/admindashboard/list/1" : '/agency';
-
-?>
 <ul class="pager">
     <li class="previous pull-left">
-        <a href="<?=$BackUrl; ?>" class="btn red btn-outline">&larr; Go Back</a>
+        <a href="{{ BackUrl }}" class="btn red btn-outline">&larr; Go Back</a>
     </li>
 </ul>
 
@@ -17,62 +14,57 @@
     <div class="portlet-title">
         <div class="caption font-red-user">
             <i class="icon-settings fa-user"></i>
-            <span class="caption-subject bold uppercase">Edit <?=$AgencyOrBusiessType; ?> </span>
+            <span class="caption-subject bold uppercase">Edit {{ AgencyOrBusiessType }} </span>
         </div>
     </div>
     <div class="portlet-body form">
         <form class="form-horizontal validated" role="form" id="agencyform" method="post" autocomplete="off">
             <div class="form-group">
-                <label for="subscription_pricing_plan_id" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Subscription Pricing Plan</label>
+                <label for="subscription_pricing_plan_id" class="col-md-4 control-label">{{ AgencyOrBusiessType }} Subscription Pricing Plan</label>
                 <div class="col-md-8">
                     {{ subscriptionPricingPlans }}
                 </div>
             </div>
             <div class="form-group">
-                <label for="name" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Name</label>
+                <label for="name" class="col-md-4 control-label">{{ AgencyOrBusiessType }} Name</label>
                 <div class="col-md-8">
                     {{ form.render("name", ["class": 'form-control', 'placeholder': 'Name', 'type': 'name','required':'']) }}
                 </div>
             </div>
             <div class="form-group">
-                <label for="email" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Email</label>
+                <label for="email" class="col-md-4 control-label">{{ AgencyOrBusiessType }} Email</label>
                 <div class="col-md-8">
                     {{ form.render("email", ["class": 'form-control', 'placeholder': 'Email', 'type': 'name','required':'']) }}
                 </div>
             </div>
             <div class="form-group">
-                <label for="phone" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Phone</label>
+                <label for="phone" class="col-md-4 control-label">{{ AgencyOrBusiessType }} Phone</label>
                 <div class="col-md-8">
-                    <!--form.render("phone", ["class": 'form-control', 'placeholder': 'Phone', 'type': 'name'])-->
-                    <input type="text" name="phone" placeholder = "Phone" class="form-control" value="<?php echo $location->phone?$location->phone:''; ?>" />
+                    <input type="text" name="phone" placeholder = "Phone" class="form-control" value="{{ location.phone ? location.phone : '' }}" />
                 </div>
             </div>
             <div class="form-group">
-                <label for="address" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Address</label>
+                <label for="address" class="col-md-4 control-label">{{ AgencyOrBusiessType }} Address</label>
                 <div class="col-md-8">
-                    <!-- form.render("address", ["class": 'form-control', 'placeholder': 'Address', 'type': 'name']) -->
-                    <input type="text" name="address" placeholder = "Address" class="form-control" value="<?php echo $location->address?$location->address:''; ?>" />
+                    <input type="text" name="address" placeholder = "Address" class="form-control" value="{{ location.address ? location.address : '' }}" />
                 </div>
             </div>
             <div class="form-group">
-                <label for="locality" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> City</label>
+                <label for="locality" class="col-md-4 control-label">{{ AgencyOrBusiessType }} City</label>
                 <div class="col-md-8">
-                    <!--form.render("locality", ["class": 'form-control', 'placeholder': 'City', 'type': 'name'])-->
-                    <input type="text" name="locality" placeholder='City' class="form-control" value="<?php echo $location->locality?$location->locality:''; ?>" />
+                    <input type="text" name="locality" placeholder='City' class="form-control" value="{{ location.locality ? location.locality : '' }}" />
                 </div>
             </div>
             <div class="form-group">
-                <label for="state_province" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> State/Province</label>
+                <label for="state_province" class="col-md-4 control-label">{{ AgencyOrBusiessType }} State/Province</label>
                 <div class="col-md-8">
-                     <!--form.render("state_province", ["class": 'form-control', 'placeholder': 'State/Province', 'type': 'name'])-->
-                     <input type="text" name="state_province" placeholder='State/Province' class="form-control" value="<?php echo $location->state_province?$location->state_province:''; ?>" />
+                     <input type="text" name="state_province" placeholder='State/Province' class="form-control" value="{{ location.state_province ? location.state_province : '' }}" />
                 </div>
             </div>
             <div class="form-group">
-                <label for="postal_code" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Postal Code</label>
+                <label for="postal_code" class="col-md-4 control-label">{{ AgencyOrBusiessType }} Postal Code</label>
                 <div class="col-md-8">
-                    <!--form.render("postal_code", ["class": 'form-control', 'placeholder': 'Postal Code', 'type': 'name'])-->
-                    <input type="text" name="postal_code" placeholder='Postal Code' class="form-control" value="<?php echo $location->postal_code?$location->postal_code  :''; ?>" />
+                    <input type="text" name="postal_code" placeholder='Postal Code' class="form-control" value="{{ location.postal_code ? location.postal_code : '' }}" />
                 </div>
             </div>
 
@@ -82,8 +74,8 @@
                 <label for="subscription_pricing_plan_id" class="col-md-4 control-label">Assign Customer Number</label>
                 <div class="col-md-8">
                    <select class="form-control" name="custom_sms">
-                    <option value="1" <?php echo ($custom_sms!='' && $custom_sms==1)?'selected':''?>>Yes</option>
-                    <option value="2" <?php echo ($custom_sms!='' && $custom_sms==2)?'selected':''?>>No</option>
+                    <option value="1" {{ (custom_sms != '' and custom_sms == 1) ? 'selected' : '' }}>Yes</option>
+                    <option value="2" {{ (custom_sms != '' and custom_sms == 2) ? 'selected' : '' }}>No</option>
                         
                     </select>
                 </div>
@@ -93,7 +85,7 @@
                 <hr/>
                 <h4>Free Subscription Plan</h4>
                 <div class="form-group">
-                    <label for="locations" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> Locations</label>
+                    <label for="locations" class="col-md-4 control-label">{{ AgencyOrBusiessType }} Locations</label>
                     <div class="col-md-8">
                         <input
                           class="form-control"
@@ -106,20 +98,19 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="sms_messages" class="col-md-4 control-label"><?=$AgencyOrBusiessType; ?> SMS Messages</label>
+                    <label for="sms_messages" class="col-md-4 control-label">{{ AgencyOrBusiessType }} SMS Messages</label>
                     <div class="col-md-8">
                         <input
                           class="form-control"
                           type="number"
                           min="0"
                           placeholder="Number of messages"
-                          value="<?=$sms_messages ?: 100; ?>"
+                          value="{{ sms_messages ? '' : 100 }}"
                           required name="sms_messages"
                           />
                     </div>
                 </div>
             </div>
-
 
             {% endif %}
 
@@ -156,7 +147,6 @@
                 $(".custom_number_show").removeClass('show');
             }
         });
-
 
         $('.validated').validate();
 

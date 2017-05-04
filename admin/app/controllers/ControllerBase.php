@@ -549,7 +549,7 @@ class ControllerBase extends Controller
             $Domain = "{$TLDomain}";
         }
 
-        if ($Domain == ''){
+        if ($Domain == '') {
             $Domain = $_SERVER['HTTP_HOST'];
         }
         

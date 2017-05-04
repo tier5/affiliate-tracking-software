@@ -76,37 +76,53 @@ class AdmindashboardController extends ControllerBusinessBase
         $this->view->churn_rate = $this->view->lost_businesses / $this->view->total_businesses;
 
 
-        //Total Active Agencies
-        $this->view->total_agencies = Agency::count(array("column" => "agency_id",
-            "conditions" => "agency_type_id = 1 AND subscription_valid = 'Y' AND status = 1 AND deleted = 0"));
-        //New Agencies This Month
-        $this->view->new_agencies = Agency::count(array("column" => "agency_id",
-            "conditions" => "agency_type_id = 1 AND date_created > '" . $start_time . "'"));
-        //Lost Agencies This Month
-        $this->view->lost_agencies = Agency::count(array("column" => "agency_id",
-            "conditions" => "agency_type_id = 1 AND date_left > '" . $start_time . "' AND (subscription_valid = 'N' AND status = 0 AND deleted = 1)"));
-        //Monthly Churn Rate
+        // Total Active Agencies
+        $this->view->total_agencies = Agency::count(
+            array(
+                "column" => "agency_id",
+                "conditions" => "agency_type_id = 1 AND subscription_valid = 'Y' AND status = 1 AND deleted = 0"
+            )
+        );
+
+        // New Agencies This Month
+        $this->view->new_agencies = Agency::count(
+            array(
+                "column" => "agency_id",
+                "conditions" => "agency_type_id = 1 AND date_created > '" . $start_time . "'"
+            )
+        );
+
+        // Lost Agencies This Month
+        $this->view->lost_agencies = Agency::count(
+            array(
+                "column" => "agency_id",
+                "conditions" => "agency_type_id = 1 AND date_left > '" . $start_time . "' AND (subscription_valid = 'N' AND status = 0 AND deleted = 1)"
+            )
+        );
+        
+        // Monthly Churn Rate
         $this->view->churn_rate_agencies = $this->view->lost_agencies / $this->view->total_agencies;
 
-
-        //Analytics
-        //Total SMS Sent (overall, last month, this month, monthly growth)
-        //Total Click Through Rate  (overall, last month, this month, monthly growth)
-        //Total Conversion Rate (overall, last month, this month, monthly growth)
-        //This is customers that left a feedback rating
-        //Total!
+        // Analytics
+        // Total SMS Sent (overall, last month, this month, monthly growth)
+        // Total Click Through Rate  (overall, last month, this month, monthly growth)
+        // Total Conversion Rate (overall, last month, this month, monthly growth)
+        // This is customers that left a feedback rating
+        // Total!
         $this->view->sms_sent_total = ReviewInvite::count(
             array(
                 "column" => "review_invite_id",
                 "conditions" => "review_invite_id = review_invite_id AND sms_broadcast_id IS NULL",
             )
         );
+
         $this->view->click_through_total = ReviewInvite::count(
             array(
                 "column" => "review_invite_id",
                 "conditions" => "date_viewed IS NOT NULL  AND sms_broadcast_id IS NULL ",
             )
         );
+
         $this->view->conversion_total = ReviewInvite::count(
             array(
                 "column" => "review_invite_id",
@@ -123,23 +139,28 @@ class AdmindashboardController extends ControllerBusinessBase
                 "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' ",
             )
         );
+
         $this->view->sms_sent_last_month = $sms_sent_last_month;
+        
         $click_through_last_month = ReviewInvite::count(
             array(
                 "column" => "review_invite_id",
                 "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND date_viewed IS NOT NULL ",
             )
         );
+        
         $this->view->click_through_last_month = $click_through_last_month;
+        
         $conversion_last_month = ReviewInvite::count(
             array(
                 "column" => "review_invite_id",
                 "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != ''))  AND sms_broadcast_id IS NULL ",
             )
         );
+        
         $this->view->conversion_last_month = $conversion_last_month;
 
-        //This month!
+        // This month!
         $start_time = date("Y-m-d", strtotime("first day of this month"));
         $end_time = date("Y-m-d 23:59:59", strtotime("last day of this month"));
         $sms_sent_this_month = ReviewInvite::count(
@@ -148,30 +169,35 @@ class AdmindashboardController extends ControllerBusinessBase
                 "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' ",
             )
         );
+
         $this->view->sms_sent_this_month = $sms_sent_this_month;
+        
         $click_through_this_month = ReviewInvite::count(
             array(
                 "column" => "review_invite_id",
                 "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND date_viewed IS NOT NULL ",
             )
         );
+
         $this->view->click_through_this_month = $click_through_this_month;
+        
         $conversion_this_month = ReviewInvite::count(
             array(
                 "column" => "review_invite_id",
                 "conditions" => "date_sent >= '" . $start_time . "' AND date_sent <= '" . $end_time . "' AND date_viewed IS NOT NULL AND (recommend IS NOT NULL OR (rating IS NOT NULL AND rating != '')) ",
             )
         );
+        
         $this->view->conversion_this_month = $conversion_this_month;
 
-
-        //Reviews
-        //Total New Reviews (overall, last month, this month, monthly growth)
+        // Reviews
+        // Total New Reviews (overall, last month, this month, monthly growth)
         $this->view->total_prev_reviews = LocationReviewSite::sum(
             array(
                 "column" => "COALESCE(original_review_count, 0)"
             )
         );
+
         $this->view->total_reviews = LocationReviewSite::sum(
             array(
                 "column" => "COALESCE(review_count, 0)"
@@ -185,43 +211,41 @@ class AdmindashboardController extends ControllerBusinessBase
                 "conditions" => "month = " . date("m", strtotime("first day of previous month")) . " AND year = '" . date("Y", strtotime("first day of previous month")) . "' ",
             )
         );
+
         $this->view->num_reviews_two_months_ago = ReviewsMonthly::sum(
             array(
                 "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
                 "conditions" => "month = " . date("m", strtotime("-2 months", time())) . " AND year = '" . date("Y", strtotime("-2 months", time())) . "' ",
             )
         );
+
         $this->view->total_reviews_last_month = $this->view->num_reviews_last_month - $this->view->num_reviews_two_months_ago;
 
-        //This month!
+        // This month!
         $this->view->num_reviews_this_month = ReviewsMonthly::sum(
             array(
                 "column" => "COALESCE(facebook_review_count, 0) + COALESCE(google_review_count, 0) + COALESCE(yelp_review_count, 0)",
                 "conditions" => "month = " . date("m", strtotime("first day of this month")) . " AND year = '" . date("Y", strtotime("first day of this month")) . "' ",
             )
         );
-        //echo '<p>num_reviews_this_month:'.$this->view->num_reviews_this_month.':total_reviews_last_month:'.$this->view->total_reviews_last_month.'</p>';
+
         $this->view->total_reviews_this_month = $this->view->num_reviews_this_month - $this->view->total_reviews_last_month;
 
-
-        //echo '<pre>total_reviews_last_month:'.$this->view->total_reviews_last_month.':$this->view->num_reviews_this_month:'.$this->view->num_reviews_this_month.':$this->view->num_reviews_last_month:'.$this->view->num_reviews_last_month.'</pre>';
-
         $this->view->total_reviews = $this->view->total_reviews - $this->view->total_prev_reviews;
-        //Total Review Conversions (this is calculated based on the total SMS sent based off the total new reviews that have come in from Google, Yelp & Facebook)
-        //$this->view->sms_sent_total
-        //$this->view->total_reviews
-
     }
 
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0)
     {
         // Businesses under Review Velocity have a parent_id of -1.
-        // agency_type_id == 1 means Agency.  I do want to get rid of this field.
-        $Ret = parent::createAction(
+        // agency_type_id == 1 means Agency. I do want to get rid of this field.
+        parent::createAction(
             $agency_type_id,
             $agency_id,
             $agency_type_id == 1 ? \Vokuro\Models\Agency::AGENCY : \Vokuro\Models\Agency::BUSINESS_UNDER_RV
         );
+
+        //return 'controllerme===';
+        $this->view->post = $_POST;
 
         return $this->view->pick("admindashboard/create");
     }
