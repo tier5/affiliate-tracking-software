@@ -40,17 +40,6 @@ class ControllerBase extends Controller
         }
     }
 
-    // remove
-    public function clean($val)
-    {
-        return strip_tags(
-            $val,
-            ['<p><a><br><hr><h1><h2><h3><h4><h5><h6><b>']
-        );
-        
-        return $val;
-    }
-
     public function RedirectDomain($Domain)
     {
         $TLDomain = $this->config->application->domain;
@@ -514,6 +503,7 @@ class ControllerBase extends Controller
 
             // Check if the user have permission to the current option
             $actionName = $dispatcher->getActionName();
+
             if (!$this->acl->isAllowed($identity['profile'], $controllerName, $actionName)) {
 
                 $this->flash->notice(
@@ -577,7 +567,8 @@ class ControllerBase extends Controller
             $AgencyName = "Get Mobile Reviews";
             $AgencyUser = "Zach Anderson";
         } else if ($objAgency->parent_id == \Vokuro\Models\Agency::AGENCY) {
-            // Thinking about this... I don't think this case ever happens.  A user is created for a business, so I don't know when it would be an agency.
+            // Thinking about this... I don't think this case ever happens.
+            // A user is created for a business, so I don't know when it would be an agency.
             $objAgencyUser = \Vokuro\Models\Users::findFirst(
                 "agency_id = {$objAgency->agency_id} AND role='Super Admin'"
             );

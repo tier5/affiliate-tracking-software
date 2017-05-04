@@ -165,6 +165,13 @@
             
             <div class="form-group">
               <div class="row">
+                <label class="col-md-4 control-label">
+                </label>
+                <div class="col-md-8">
+                  <a class="btnLink btnSecondary greenbtn" id="btnAddReviewSite" style="width: 79px;" href="" target="_blank">Add New</a>
+                </div>
+              </div>
+              <div class="row">
                 <label for="rating_threshold_star" class="col-md-4 control-label">
                   Review Order
                   <i>This is the order of the site links on the SMS review page.</i>
@@ -178,8 +185,8 @@
                   {% set has_facebook = true %}
                   {% endif %}
                     <li class="ui-state-default" id='{{ review_site_list.location_review_site_id }}'>
-                      <span class="site-wrapper"><img src="{{ review_site_list.review_site.icon_path }}" class="imgicon" />
-                        {{ review_site_list.review_site.name }}
+                      <span class="site-wrapper"><img src="{{ review_site_list.review_site.icon_path }}" class="imgicon" {% if review_site_list.review_site_id == 0 %} style="width: 24px;"{% endif %}/>
+                        {% if review_site_list.review_site_id == 0 %}{{ review_site_list.name }}{% else %}{{ review_site_list.review_site.name }}{% endif %}
                         </span>
                         <span class="review_site-buttons">
                         {% if review_site_list.review_site_id <= 3 %} 
@@ -204,7 +211,7 @@
                                 {% endif %}
                           <a href="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? googleLink : '#' }}" class="btnLink btnSecondary {{ review_site_list.is_on and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" url="{{ googleLink }}" type="view" target="_blank">View</a>
                         {% else %}
-                          <a href="{{ review_site_list.is_on is define and review_site_list.is_on == 1 ? review_site_list.url : '#' }}" class="btnLink btnSecondary {{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" url="{{ review_site_list.url }}" type="view" target="_blank">View</a>
+                          <a href="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? review_site_list.url : '#' }}" class="btnLink btnSecondary {{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" url="{{ review_site_list.url }}" type="view" target="_blank">View</a>
                         
                         {% endif %}
                         <a
@@ -256,13 +263,7 @@
                   <input class="form-control" id="review_order" name="review_order" type="hidden" value="" />
                 </div>
               </div>
-              <div class="row">
-                <label class="col-md-4 control-label">
-                </label>
-                <div class="col-md-8">
-                  <a class="btnLink btnSecondary greenbtn" id="btnAddReviewSite" href="" target="_blank">Add Review Site</a>
-                </div>
-              </div>
+
             </div>
           
             {% endif %}
@@ -838,7 +839,7 @@
             <option value="">Select Site</option>
             {% for review_site in review_sites %}
                 {% set found = false %}
-                {% if review_site.review_site_id %}
+                {% if review_site.review_site_id < 4 %}
                   {% set found = true %}
                 {% elseif review_site_lists is defined %}
                   {% for review_site_list in review_site_lists %}
@@ -1053,7 +1054,7 @@
           // location review site id
           $('#reviewSiteId').val(reviewSiteId);
 
-          var currentURL = $('#'+reviewSiteId+' a[type=view]').attr('href');
+          var currentURL = $('#'+reviewSiteId+' a[type=view]').attr('url');
 
           $('#url2').val(currentURL);
         })());
@@ -1083,6 +1084,7 @@
         success: function() {
           // select view link and update url attribute
           $('#'+reviewSiteId+' a[type=view]').attr('href', url);
+          $('#'+reviewSiteId+' a[type=view]').attr('url', url);
 
           // close the form
           $('#page-wrapper2').hide();
@@ -1101,9 +1103,8 @@
         cache: false,
         method: 'POST',
         success: function(data) {
-          //Dropzone.options.myDropzone = 'url';
-          
           var element = $.parseJSON(data);
+
           // if other selected
           if ($("#review_site_id").val() === '0') {
             myDropzone.options.url = $('#reviewLogoUpload').attr('action') + '/' + element.location_review_site_id + '/';
@@ -1213,31 +1214,28 @@
       return false;
     }
 
+    $("#notifications .on-off-buttons a").click(function() {
+      id = $(this).attr("data-id");
+      type = $(this).attr("data-type");
+      value = $(this).attr("data-value");
+      $.ajax({
+        url: "/settings/notification/"+id+"/"+type+"/"+value+"/",
+        cache: false,
+        success: function(html){
 
-        $("#notifications .on-off-buttons a").click(function() {
-          id = $(this).attr("data-id");
-          type = $(this).attr("data-type");
-          value = $(this).attr("data-value");
-          $.ajax({
-            url: "/settings/notification/"+id+"/"+type+"/"+value+"/",
-            cache: false,
-            success: function(html){
+        }
+      });
 
-            }
-          });
+      if (value == 1) {
+        $('#'+type+'on'+id).show();
+        $('#'+type+'off'+id).hide();
+      } else {
+        $('#'+type+'on'+id).hide();
+        $('#'+type+'off'+id).show();
+      }
 
-          if (value == 1) {
-            $('#'+type+'on'+id).show();
-            $('#'+type+'off'+id).hide();
-          } else {
-            $('#'+type+'on'+id).hide();
-            $('#'+type+'off'+id).show();
-          }
-
-          return false;
-        });
-
-
+      return false;
+    });
 
     $("#settingsform").on("submit", function(e) {
       var idsInOrder = $("#sortable").sortable("toArray");
