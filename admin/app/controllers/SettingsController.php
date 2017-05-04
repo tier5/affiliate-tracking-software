@@ -244,6 +244,8 @@ class SettingsController extends ControllerBase
         $reviewSite->url = $this->request->getPost('url');
 
         $reviewSite->save();
+
+        $this->view->disable();
     }
 
     /**

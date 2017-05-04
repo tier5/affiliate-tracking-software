@@ -211,7 +211,7 @@
                                 {% endif %}
                           <a href="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? googleLink : '#' }}" class="btnLink btnSecondary {{ review_site_list.is_on and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" url="{{ googleLink }}" type="view" target="_blank">View</a>
                         {% else %}
-                          <a href="{{ review_site_list.is_on is define and review_site_list.is_on == 1 ? review_site_list.url : '#' }}" class="btnLink btnSecondary {{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" url="{{ review_site_list.url }}" type="view" target="_blank">View</a>
+                          <a href="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? review_site_list.url : '#' }}" class="btnLink btnSecondary {{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" url="{{ review_site_list.url }}" type="view" target="_blank">View</a>
                         
                         {% endif %}
                         <a
@@ -824,7 +824,7 @@
             <option value="">Select Site</option>
             {% for review_site in review_sites %}
                 {% set found = false %}
-                {% if review_site.review_site_id %}
+                {% if review_site.review_site_id < 4 %}
                   {% set found = true %}
                 {% elseif review_site_lists is defined %}
                   {% for review_site_list in review_site_lists %}
@@ -1039,7 +1039,7 @@
           // location review site id
           $('#reviewSiteId').val(reviewSiteId);
 
-          var currentURL = $('#'+reviewSiteId+' a[type=view]').attr('href');
+          var currentURL = $('#'+reviewSiteId+' a[type=view]').attr('url');
 
           $('#url2').val(currentURL);
         })());
@@ -1069,6 +1069,7 @@
         success: function() {
           // select view link and update url attribute
           $('#'+reviewSiteId+' a[type=view]').attr('href', url);
+          $('#'+reviewSiteId+' a[type=view]').attr('url', url);
 
           // close the form
           $('#page-wrapper2').hide();
