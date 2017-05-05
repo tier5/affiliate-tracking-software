@@ -31,8 +31,8 @@ class InsertOtherSiteRecord extends AbstractMigration
         $singleRow = [
             'review_site_id' => 0,
             'name'  => 'Other',
-            'logo_path' => '/img/logo/btn-other.png',
-            'icon_path' => '/img/logo/icon-close.png'
+            'logo_path' => '/img/logo/icon-other.png',
+            'icon_path' => '/img/logo/icon-other.png'
         ];
 
         $table = $this->table('review_site');
