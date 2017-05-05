@@ -192,7 +192,7 @@
                         {% if review_site_list.review_site_id <= 3 %} 
                           {% if review_site_list.review_site_id == 1 %}
                         <a class="btnLink btnSecondary track-link {{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? 'greenbtn' : 'graybtn' }}" id="facebooklink1" 
-                  onclick ="facebookClickHandler({{ review_site_list.external_id }})" href="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? review_site_list.url : '#' }}" data-id="{{ review_site_list.review_site_id }}" data-invite="{{ review_site_list.review_invite_id }}" url="{{ review_site_list.url }}" type="view" target="_blank">View</a>
+                  onclick ="facebookClickHandler({{ review_site_list.external_id }})" href="{{ review_site_list.is_on is defined and review_site_list.is_on == 1 ? review_site_list.url : '#' }}" data-id="{{ review_site_list.review_site_id }}" url="{{ review_site_list.url }}" type="view" target="_blank">View</a>
                         {% elseif review_site_list.review_site_id == 3 %}
                                 {% if review_site_list.url !== '' and review_site_list.url !== null %}
                                     {% set googleLink = review_site_list.url %}
