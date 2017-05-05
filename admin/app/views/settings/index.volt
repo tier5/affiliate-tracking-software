@@ -859,7 +859,7 @@
       <div class="form-group row" id="reviewSiteNameBox" style="display: none;">
         <label for="url" class="col-md-3 control-label">Name: </label>
         <div class="col-md-9">
-          <input type="text" name="reviewSiteName" id="reviewSiteName" value="" />
+          <input type="text" name="reviewSiteName" id="reviewSiteName" value="" maxlength="11" size="11" />
         </div>
       </div>
       <div class="form-group row">
