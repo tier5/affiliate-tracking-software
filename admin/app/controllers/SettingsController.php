@@ -625,7 +625,7 @@ class SettingsController extends ControllerBase
             
         if (!$this->storeSettings($location, 'location')) {
             $this->flash->error($location->getMessages());
-        } elseif($this->request->isPost()) {
+        } else if ($this->request->isPost()) {
             $this->flash->success("The settings were updated successfully");
             Tag::resetInput();
         }
@@ -712,7 +712,7 @@ class SettingsController extends ControllerBase
 
             if ($Twillioset['twilio_api_key'] && $Twillioset['twilio_auth_messaging_sid'] && $Twillioset['twilio_auth_token']) {
                 $client = new Services_Twilio(
-                    $Twillioset['twilio_auth_messaging_sid'],
+                    $Twillioset['twilio_api_key'],
                     $Twillioset['twilio_auth_token']
                 );
                 
