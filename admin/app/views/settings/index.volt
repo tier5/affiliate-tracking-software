@@ -857,7 +857,7 @@
         </div>
       </div>
       <div class="form-group row" id="reviewSiteNameBox" style="display: none;">
-        <label for="url" class="col-md-3 control-label">Name: </label>
+        <label for="reviewSiteName" class="col-md-3 control-label">Name: </label>
         <div class="col-md-9">
           <input type="text" name="reviewSiteName" id="reviewSiteName" value="" maxlength="11" size="11" />
         </div>
@@ -1095,8 +1095,7 @@
       return false;
     });
 
-    $("button#createsite").on('click', function(){
-
+    $("button#createsite").on('click', function() {
       $.ajax({
         url: $('#createreviewsiteform').attr('action')+''+$("#review_site_id").val()+'/',
         data: 'url='+encodeURIComponent($("#url").val())+'&name='+encodeURIComponent($("#reviewSiteName").val()),
@@ -1124,7 +1123,7 @@
           var name = element.name;
 
           // add this selection to the settings page
-          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" /> '+name+'</span><span class="review_site-buttons" style="margin-left: 5px;"><a class="btnLink btnSecondary greenbtn" href="'+url+'" url="'+url+'" target="_blank" type="view">View</a><!-- Edit URL Button --><a class="btnLink btnSecondary btnEditSiteURL greenbtn" href="/location/edit/{{ location_id }}" data-id="'+newid+'" style="margin-left: 10px;"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons" style="margin-left: 5px; margin-right: 5px;"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif" class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
+          $('ul#sortable').append('<li class="ui-state-default" id="'+newid+'"><span class="site-wrapper"><img src="'+img_path+'" class="imgicon" style="width: 24px;" /> '+name+'</span><span class="review_site-buttons" style="margin-left: 5px;"><a class="btnLink btnSecondary greenbtn" href="'+url+'" url="'+url+'" target="_blank" type="view">View</a><!-- Edit URL Button --><a class="btnLink btnSecondary btnEditSiteURL greenbtn" href="/location/edit/{{ location_id }}" data-id="'+newid+'" style="margin-left: 10px;"><img src="/img/icon-pencil.png" /> URL</a></span><span class="on-off-buttons" style="margin-left: 5px; margin-right: 5px;"><a data-id="'+newid+'" id="on'+newid+'" href="#" class="review_site_on" style=""><img src="/img/btn_on.gif" class="sort-icon" /></a><a data-id="'+newid+'" id="off'+newid+'" href="#" class="review_site_off" style="display: none;"><img src="/img/btn_off.gif"  class="sort-icon" /></a></span><img src="/img/btn_sort.gif" class="sort-icon" /></li>');
 
           $('.btnEditSiteURL').unbind('click');
 
@@ -1140,6 +1139,11 @@
           // close the form
           $('#page-wrapper').hide();
           $('.overlay').hide();
+
+          // clear fields
+          $("#url").val('');
+
+          $("#reviewSiteName").val('');
         }
       });
 
