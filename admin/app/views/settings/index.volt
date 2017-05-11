@@ -842,7 +842,7 @@
         </div>
       </div>
       <div class="form-group row" id="reviewSiteNameBox" style="display: none;">
-        <label for="url" class="col-md-3 control-label">Name: </label>
+        <label for="reviewSiteName" class="col-md-3 control-label">Name: </label>
         <div class="col-md-9">
           <input type="text" name="reviewSiteName" id="reviewSiteName" value="" maxlength="11" size="11" />
         </div>
@@ -1080,8 +1080,7 @@
       return false;
     });
 
-    $("button#createsite").on('click', function(){
-
+    $("button#createsite").on('click', function() {
       $.ajax({
         url: $('#createreviewsiteform').attr('action')+''+$("#review_site_id").val()+'/',
         data: 'url='+encodeURIComponent($("#url").val())+'&name='+encodeURIComponent($("#reviewSiteName").val()),
@@ -1125,6 +1124,11 @@
           // close the form
           $('#page-wrapper').hide();
           $('.overlay').hide();
+
+          // clear fields
+          $("#url").val('');
+
+          $("#reviewSiteName").val('');
         }
       });
 
