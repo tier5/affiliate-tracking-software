@@ -189,7 +189,7 @@ class ControllerBase extends Controller
                 $agency->agency_id;
 
                 $result = $this->db->query(
-                    "SELECT * FROM `notification` WHERE `to` =".$agency->agency_id." AND `read` = 0"
+                    "SELECT * FROM `notification` WHERE `to` =" . $agency->agency_id . " AND `read` = 0"
                 );
 
                 $x = $result->numRows();

@@ -113,6 +113,8 @@ class ValidateSubscriptions extends Controller
 				
 				if (!empty($subscriptionId) && $subscriptionId != 'N') {
 					if (!$this->subscriptionExistsInStripe($subscriptionId)) {
+						print 'AgencyId ' . $entityId . ' subscription invalid' . "\n";
+
 						array_push($cancelAccounts, $entityId);
 					}
 				} else if (!empty($customerId) && $customerId != 'N') {
@@ -150,7 +152,7 @@ class ValidateSubscriptions extends Controller
 
 		$agency->subscription_valid = 'N';
 
-		$agency->save();
+		$agency[0]->save();
 	}
 
 	/**
@@ -191,8 +193,12 @@ class ValidateSubscriptions extends Controller
 					$customerId = $subscription['stripe_customer_id'];
 					
 					if (!empty($subscriptionId) && $subscriptionId != 'N') {
-						print $entityId . 'subscription db data not empty';
+
+						print $entityId . 'subscription db data not empty' . "\n";
+						
 						if (!$this->subscriptionExistsInStripe($subscriptionId)) {
+							print 'BusinessId ' . $entityId . ' subscription invalid' . "\n";
+
 							array_push($cancelAccounts, $entityId);
 						} else {
 						}
