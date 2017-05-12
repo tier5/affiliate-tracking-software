@@ -148,7 +148,7 @@
                     id="review_invite_type_id"
                     name="review_invite_type_id"
                     type="hidden"
-                    value="{{ post.review_invite_type_id ? post.review_invite_type_id : (location.review_invite_type_i is defined ? location.review_invite_type_id : '') }}" />
+                    value="{{ post.review_invite_type_id ? post.review_invite_type_id : (location.review_invite_type_id is defined ? location.review_invite_type_id : '') }}" />
                 </div>
               </div>
               <div class="row">
