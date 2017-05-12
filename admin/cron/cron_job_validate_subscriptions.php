@@ -65,7 +65,7 @@ class ValidateSubscriptions extends Controller
 		foreach ($disableThese as $businessId) {
 			$agency->disable($businessId);
 
-			$business = Agency::find($businessId);
+			$business = Agency::findFirst($businessId);
 
 			$business->subscription_valid = 'N';
 
@@ -148,11 +148,11 @@ class ValidateSubscriptions extends Controller
 		$agency->disable($agencyId);
 		$agency->deactivateBusinesses($agencyId);
 
-		$agency = Agency::find($agencyId);
+		$agency = Agency::findFirst($agencyId);
 
 		$agency->subscription_valid = 'N';
 
-		$agency[0]->save();
+		$agency->save();
 	}
 
 	/**
