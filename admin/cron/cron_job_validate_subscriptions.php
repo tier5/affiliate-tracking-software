@@ -54,35 +54,50 @@ class ValidateSubscriptions extends Controller
 		// generate report dry run
 
 		// get all active businesses
-		$businesses = $this->getAllActiveBusinesses();
-
-		if ($businesses) {
+		$businesses = $this->getAllDisabledBusinesses();
+//var_dump($businesses);
+		/*if ($businesses) {
 			$disableThese = $this->checkBusinesses($businesses);
-		}
+		}*/
 
 		$agency = new Agency();
 		
-		foreach ($disableThese as $businessId) {
-			$agency->disable($businessId);
+		/*foreach ($disableThese as $businessId) {
+			$agency->enable($businessId);
 
 			$business = Agency::findFirst($businessId);
 
-			$business->subscription_valid = 'N';
+			$business->subscription_valid = 'Y';
+
+			$business->save();
+		}*/
+
+		foreach ($businesses as $business) {
+			//var_dump($business->agency_id);
+			$agency->enable($business->agency_id);
+
+			$business->status = 1;
+
+			$business->subscription_valid = 'Y';
 
 			$business->save();
 		}
 
 		// get all active agencies
-		$agencies = $this->getAllActiveAgencies();
+		$agencies = $this->getAllDisabledAgencies();
 
-		if ($agencies) {
+		/*if ($agencies) {
 			$disableThese = $this->checkAgencies($agencies);
-		}
+		}*/
 
 		// deactivate agency and businesses owned by agency
 
-		foreach ($disableThese as $agencyId) {
+		/*foreach ($disableThese as $agencyId) {
 			$this->deactivateAgencyAndBusinesses($agencyId);
+		}*/
+
+		foreach ($agencies as $agency) {
+			$this->activateAgencyAndBusinesses($agency->agency_id);
 		}
 	}
 
@@ -150,6 +165,8 @@ class ValidateSubscriptions extends Controller
 
 		$agency = Agency::findFirst($agencyId);
 
+		$agency->status = 0;
+
 		$agency->subscription_valid = 'N';
 
 		$agency->save();
@@ -167,6 +184,14 @@ class ValidateSubscriptions extends Controller
 		$agency = new Agency();
 		$agency->enable($agencyId);
 		$agency->activateBusinesses($agencyId);
+
+		$agency = Agency::findFirst($agencyId);
+
+		$agency->status = 1;
+
+		$agency->subscription_valid = 'Y';
+
+		$agency->save();
 	}
 
 	private function checkBusinesses($entities)
@@ -264,6 +289,29 @@ class ValidateSubscriptions extends Controller
 	}
 
 	/**
+	 * Get All Active businesses
+	 *
+	 * @return mixed business array or false
+	 **/
+
+	private function getAllDisabledBusinesses() 
+	{
+		// parent_id > 0 or parent_id = -1
+
+		$businesses = Agency::find(array(
+			"conditions" => "subscription_valid = 'N' AND (parent_id > 0 OR parent_id = -1)"
+		));
+
+		$num = count($businesses);
+
+		if ($num === 0) {
+			return false;
+		}
+
+		return $businesses;
+	}
+
+	/**
 	 * Get All Active Agencies
 	 *
 	 * @return mixed business array or false
@@ -275,7 +323,6 @@ class ValidateSubscriptions extends Controller
 
 		$agencies = Agency::find(array(
 			"conditions" => "status = 1 AND parent_id = 0"
-			//"conditions" => "agency_id = 592"
 		));
 
 		$num = count($agencies);
@@ -285,6 +332,29 @@ class ValidateSubscriptions extends Controller
 		}
 
 		return $agencies->toArray();
+	}
+
+	/**
+	 * Get All Active Agencies
+	 *
+	 * @return mixed business array or false
+	 */
+
+	private function getAllDisabledAgencies() 
+	{
+		// parent_id == 0
+
+		$agencies = Agency::find(array(
+			"conditions" => "subscription_valid = 'N' AND parent_id = 0"
+		));
+
+		$num = count($agencies);
+
+		if ($num === 0) {
+			return false;
+		}
+
+		return $agencies;
 	}
 
 	/**
