@@ -652,8 +652,8 @@
                 $this->db->commit();
 
                 $objUser = \Vokuro\Models\Users::findFirst("id = " . $UserID);
+                $objUser->send_confirmation = true;
                 $objUser->SendConfirmationEmail();
-
             } catch (Exception $e) {
                 return false;
             }
@@ -938,6 +938,15 @@
                        // $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => $_POST['sign_up']]);
 
                         $this->db->commit();
+
+                        if($this->session->AgencySignup['UserID']=='') {
+                            $objUser = Users::findFirst("id = " . $identity['id']);
+                        } else {
+                            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+                        }
+                        $objAgency = Agency::findFirst($objUser->agency_id);
+                        $objAgency->upgraded_status++;
+                        $objAgency->save();
                     }
                 } catch (Exception $e) {
                     $this->db->rollback();
