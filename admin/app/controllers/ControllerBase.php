@@ -892,7 +892,7 @@ class ControllerBase extends Controller
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
 
-        $agency = Agency::find($userObj->agency_id);
+        $agency = Agency::findFirst($userObj->agency_id);
 
         $phone = '+' . trim($agency->country_code) . $phone;
 
