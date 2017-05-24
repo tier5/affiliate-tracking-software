@@ -569,6 +569,7 @@
                 }
 
                 $objUser = new Users();
+                $objUser->SendEmailOnCreate = false;
                 $objUser->agency_id = $objAgency->agency_id;
                 foreach ($this->tUserFieldTranslation as $FormField => $dbField) {
                     if ($dbField) {
@@ -606,7 +607,6 @@
 
         protected function CreateProfile($tData)
         {
-            //echo '<pre>';print_r($tData);exit;
             try {
                 if (!$this->request->isPost())
                     throw new \Exception();
@@ -650,6 +650,9 @@
                 }
 
                 $this->db->commit();
+
+                $objUser = \Vokuro\Models\Users::findFirst("id = " . $UserID);
+                $objUser->SendConfirmationEmail();
 
             } catch (Exception $e) {
                 return false;
@@ -809,7 +812,6 @@
                 $this->response->redirect('/agencysignup/order');
                 return false;
             }
-
             try {
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
 

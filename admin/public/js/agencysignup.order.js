@@ -129,6 +129,7 @@ $(document).ready(function() {
 
 			// Show the errors on the form:
 			$form.find('.payment-errors').text(response.error.message);
+			alert(response.error.message);
 			$form.find('.submit').prop('disabled', false); // Re-enable submission
 			
 		} else { // Token was created!
