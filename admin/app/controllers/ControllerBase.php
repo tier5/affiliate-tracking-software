@@ -923,6 +923,7 @@ class ControllerBase extends Controller
                 "Body" => $smsBody,
             ));
         } catch (Services_Twilio_RestException $e) {
+            echo $e->getMessage();
             return false;
         }
 
