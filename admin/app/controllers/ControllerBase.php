@@ -892,7 +892,10 @@ class ControllerBase extends Controller
         $parameters = array("id" => $identity['id']);
         $userObj = Users::findFirst(array($conditions, "bind" => $parameters));
 
-        $agency = Agency::findFirst($userObj->agency_id);
+        $conditions = "agency_id = :id:";
+        $parameters = array("id" => $userObj->agency_id);
+
+        $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
         $phone = '+' . trim($agency->country_code) . $phone;
 
@@ -971,6 +974,7 @@ class ControllerBase extends Controller
         $json = json_decode($response);
 
         curl_close($curlObj);
+
 
         return (isset($json->id) ? $json->id : $longUrl);
     }
