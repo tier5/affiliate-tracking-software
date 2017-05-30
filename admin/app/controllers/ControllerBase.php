@@ -897,7 +897,8 @@ class ControllerBase extends Controller
 
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
-        $phone = '+' . trim($agency->country_code) . $phone;
+        if(substr($phone, 0, 1) != '+')
+            $phone = '+' . trim($agency->country_code) . $phone;
 
         $sql = "SELECT * "
                . "FROM `twilio_number_to_business` "
