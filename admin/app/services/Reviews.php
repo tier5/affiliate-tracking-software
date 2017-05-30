@@ -222,7 +222,7 @@ class Reviews extends BaseService
         try {
 
                 $message = $client->account->messages->create(array(
-                    "From" => $this->formatTwilioPhone($twilio_from_phone),
+                    "From" => $this->formatTwilioPhone($twilio_from_phone, $agency->agency_id),
                     "To" => $phone,
                     "Body" => $smsBody,
                 ));
@@ -237,15 +237,32 @@ class Reviews extends BaseService
         return true;
     }
 
-    public function formatTwilioPhone($phone)
+    /**
+     * @param $phone
+     * @param null $BusinessID
+     * @return string
+     */
+    public function formatTwilioPhone($phone, $BusinessID = null)
     {
         $phone = preg_replace('/\D+/', '', $phone);
 
-        if (strlen($phone) == 10) {
-            $phone = '1' . $phone;
+        // Phone # already has country code appended
+        if(substr($phone, 0, 1) == '+')
+            return $phone;
+
+        $CountryCode = '+';
+        if($BusinessID) {
+            $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
+            if($objBusiness->country_code) {
+                $CountryCode .= $objBusiness->country_code;
+            } else {
+                $CountryCode .= '1';
+            }
+        } else {
+            $CountryCode .= '1';
         }
-        
-        return '+' . $phone;
+
+        return $CountryCode . $phone;
     }
 
     public function getYelpBusinessData($LocationID, $BusinessID)
