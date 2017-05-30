@@ -1681,7 +1681,7 @@ class SessionController extends ControllerBase
         }
 
         $sentSMS = $this->SendSMS(
-            $this->formatTwilioPhone($cell_phone),
+            $cell_phone,
             $message,
             $TwilioAPIKey,
             $TwilioAuthToken,

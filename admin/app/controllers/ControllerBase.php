@@ -897,9 +897,6 @@ class ControllerBase extends Controller
 
         $agency = Agency::findFirst(array($conditions, "bind" => $parameters));
 
-        if(substr($phone, 0, 1) != '+')
-            $phone = '+' . trim($agency->country_code) . $phone;
-
         $sql = "SELECT * "
                . "FROM `twilio_number_to_business` "
                . "WHERE `buisness_id` = '" . $userId . "'";
@@ -919,8 +916,8 @@ class ControllerBase extends Controller
 
         try {
             $message = $client->account->messages->create(array(
-                "From" => $this->formatTwilioPhone($twilio_from_phone),
-                "To" => $phone,
+                "From" => $this->formatTwilioPhone($twilio_from_phone, $agency->agency_id),
+                "To" => $this->formatTwilioPhone($phone, $agency->agency_id),
                 "Body" => $smsBody,
             ));
         } catch (Services_Twilio_RestException $e) {
@@ -931,15 +928,32 @@ class ControllerBase extends Controller
         return true;
     }
 
-    public function formatTwilioPhone($phone)
+    /**
+     * @param $phone
+     * @param null $BusinessID
+     * @return string
+     */
+    public function formatTwilioPhone($phone, $BusinessID = null)
     {
         $phone = preg_replace('/\D+/', '', $phone);
-        
-        if (strlen($phone) == 10) {
-            $phone = '1' . $phone;
+
+        // Phone # already has country code appended
+        if(substr($phone, 0, 1) == '+')
+            return $phone;
+
+        $CountryCode = '+';
+        if($BusinessID) {
+            $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
+            if($objBusiness->country_code) {
+                $CountryCode .= $objBusiness->country_code;
+            } else {
+                $CountryCode .= '1';
+            }
+        } else {
+            $CountryCode .= '1';
         }
 
-        return '+' . $phone;
+        return $CountryCode . $phone;
     }
 
     /**

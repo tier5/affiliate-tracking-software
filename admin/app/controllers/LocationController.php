@@ -1849,7 +1849,7 @@ class LocationController extends ControllerBase
                     echo $invite->getMessages();
                     return;
                 } else {
-                    if ($this->SendSMS($this->formatTwilioPhone($phone), $message, $this->twilio_api_key, $this->twilio_auth_token,  $this->twilio_from_phone)) {
+                    if ($this->SendSMS($phone, $message, $this->twilio_api_key, $this->twilio_auth_token,  $this->twilio_from_phone)) {
                         $this->flash->success("The SMS was sent successfully");
                     }
                 }
@@ -2011,7 +2011,7 @@ class LocationController extends ControllerBase
                     } else {
                         //The message is saved, so send the SMS message now
                         $sentSMS = $this->SendSMS(
-                            $this->formatTwilioPhone($phone),
+                            $phone,
                             $message,
                             $this->twilio_api_key,
                             $this->twilio_auth_token,

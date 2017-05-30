@@ -335,7 +335,7 @@ class ReviewsController extends ControllerBase
 
                 $message = $message . ' Reply stop to be removed';
 
-                if ($this->SendSMS($this->formatTwilioPhone($_POST['phone']), $message, $twilio_api_key, $twilio_auth_token, $twilio_from_phone)) {
+                if ($this->SendSMS($_POST['phone'], $message, $twilio_api_key, $twilio_auth_token, $twilio_from_phone)) {
                     $this->flash->success("The SMS was sent successfully to: " . $_POST['phone']);
                 }
 
@@ -456,7 +456,7 @@ class ReviewsController extends ControllerBase
                             $invite2->save();
 
                             // The message is saved, so send the SMS message now
-                            if ($this->SendSMS($this->formatTwilioPhone($invite->phone), $message, $twilio_api_key, $twilio_auth_token, $twilio_from_phone)) {
+                            if ($this->SendSMS($invite->phone, $message, $twilio_api_key, $twilio_auth_token, $twilio_from_phone)) {
 
                                 $this->flash->success(
                                     "The SMS was sent successfully to: " . $invite->phone
