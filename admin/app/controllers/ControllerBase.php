@@ -935,11 +935,11 @@ class ControllerBase extends Controller
      */
     public function formatTwilioPhone($phone, $BusinessID = null)
     {
-        $phone = preg_replace('/\D+/', '', $phone);
-
         // Phone # already has country code appended
         if(substr($phone, 0, 1) == '+')
             return $phone;
+        
+        $phone = preg_replace('/\D+/', '', $phone);
 
         $CountryCode = '+';
         if($BusinessID) {
