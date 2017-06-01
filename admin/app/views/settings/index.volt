@@ -772,10 +772,13 @@
             </tr>
           </thead>
           <tbody>
+          <?php
+            $test = 1;
+            ?>
           {% for key,mobile_number in twilio_details %}
             <tr>
-              <td>{{ mobile_number.friendly_name }}</td>
-              <td><a  href="/twilio/releseThisnumber/<?php echo base64_encode(mobile_number.phone_number); ?>||<?php echo base64_encode(mobile_number.friendly_name); ?>||"><input id="gather_info" class="btnLink btnPrimary" value="Release This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a></td>
+              <td>{{ mobile_number['friendly_name'] }}</td>
+              <td><a  href="/twilio/releseThisnumber/<?php echo base64_encode($mobile_number['phone_number']); ?>||<?php echo base64_encode($mobile_number['friendly_name']); ?>||"><input id="gather_info" class="btnLink btnPrimary" value="Release This Number" style="height: 42px; line-height: 14px; padding: 15px 36px; text-align: left;" type="button"></a></td>
             </tr>
           {% endfor %}
           </tbody>
