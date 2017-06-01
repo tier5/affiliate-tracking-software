@@ -916,7 +916,7 @@ class ControllerBase extends Controller
 
         try {
             $message = $client->account->messages->create(array(
-                "From" => $this->formatTwilioPhone($twilio_from_phone, $agency->agency_id),
+                "From" => $this->formatTwilioPhone($twilio_from_phone, $agency->agency_id, true),
                 "To" => $this->formatTwilioPhone($phone, $agency->agency_id),
                 "Body" => $smsBody,
             ));
@@ -931,9 +931,10 @@ class ControllerBase extends Controller
     /**
      * @param $phone
      * @param null $BusinessID
+     * @param bool $bFrom Indicating whether the number is a From or To number (to determine which country code to use)
      * @return string
      */
-    public function formatTwilioPhone($phone, $BusinessID = null)
+    public function formatTwilioPhone($phone, $BusinessID = null, $bFrom = false)
     {
         // Phone # already has country code appended
         if(substr($phone, 0, 1) == '+')
@@ -944,10 +945,15 @@ class ControllerBase extends Controller
         $CountryCode = '+';
         if($BusinessID) {
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
-            if($objBusiness->country_code) {
+            if($objBusiness->country_code && $bFrom) {
                 $CountryCode .= $objBusiness->country_code;
             } else {
-                $CountryCode .= '1';
+                if($objBusiness->parent_id > 0) {
+                    $objParentAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objBusiness->parent_id}");
+                    $CountryCode = $CountryCode . $objParentAgency->country_code ?: $CountryCode . '1';
+                } else {
+                    $CountryCode .= '1';
+                }
             }
         } else {
             $CountryCode .= '1';
