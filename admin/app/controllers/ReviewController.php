@@ -617,7 +617,7 @@ class ReviewController extends ControllerBase
                 if ($an->sms_alert == 1 && isset($user->phone) && $user->phone != '') {
                     // we have a phone, so send the SMS
                     $this->SendSMS(
-                        $this->formatTwilioPhone($user->phone),
+                        $user->phone,
                         'Notification: Review invite feedback',
                         $agency->twilio_api_key,
                         $agency->twilio_auth_token,
