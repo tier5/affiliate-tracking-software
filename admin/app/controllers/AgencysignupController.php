@@ -569,6 +569,7 @@
                 }
 
                 $objUser = new Users();
+                $objUser->SendEmailOnCreate = false;
                 $objUser->agency_id = $objAgency->agency_id;
                 foreach ($this->tUserFieldTranslation as $FormField => $dbField) {
                     if ($dbField) {
@@ -606,7 +607,6 @@
 
         protected function CreateProfile($tData)
         {
-            //echo '<pre>';print_r($tData);exit;
             try {
                 if (!$this->request->isPost())
                     throw new \Exception();
@@ -651,6 +651,9 @@
 
                 $this->db->commit();
 
+                $objUser = \Vokuro\Models\Users::findFirst("id = " . $UserID);
+                $objUser->send_confirmation = true;
+                $objUser->SendConfirmationEmail();
             } catch (Exception $e) {
                 return false;
             }
@@ -809,7 +812,6 @@
                 $this->response->redirect('/agencysignup/order');
                 return false;
             }
-
             try {
                 if ($this->request->isPost() && $this->ValidateFields('Order')) {
 
@@ -936,6 +938,15 @@
                        // $this->session->AgencySignup = array_merge($this->session->AgencySignup, ['SignUp' => $_POST['sign_up']]);
 
                         $this->db->commit();
+
+                        if($this->session->AgencySignup['UserID']=='') {
+                            $objUser = Users::findFirst("id = " . $identity['id']);
+                        } else {
+                            $objUser = Users::findFirst("id = " . $this->session->AgencySignup['UserID']);
+                        }
+                        $objAgency = Agency::findFirst($objUser->agency_id);
+                        $objAgency->upgraded_status++;
+                        $objAgency->save();
                     }
                 } catch (Exception $e) {
                     $this->db->rollback();

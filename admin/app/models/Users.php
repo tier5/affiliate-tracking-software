@@ -31,6 +31,7 @@
         public $is_employee;
         public $role;
         public $top_banner_show;
+        public $SendEmailOnCreate = true;
 
         const ROLE_SUPER_ADMIN      = 'Super Admin';
         const ROLE_ADMIN            = 'Admin';
@@ -177,11 +178,7 @@
             $this->banned = 'N';
         }
 
-
-        /**
-         * Send a confirmation e-mail to the user if the account is not active
-         */
-        public function afterSave() {
+        public function SendConfirmationEmail() {
             if($this->is_employee && $this->send_confirmation && $this->role != 'Super Admin') {
                 $emailConfirmation = new EmailConfirmations();
                 $emailConfirmation->usersId = $this->id;
@@ -207,11 +204,19 @@
         }
 
 
-        public function beforeValidationOnUpdate() {
-           return true;
+        /**
+         * Send a confirmation e-mail to the user if the account is not active
+         */
+        public function afterSave() {
+            // I had to add another flag because the way send_confirmation is handled, it gets reset somewhere.
+            if($this->SendEmailOnCreate)
+                return $this->SendConfirmationEmail();
         }
 
 
+        public function beforeValidationOnUpdate() {
+           return true;
+        }
 
         /**
          * Validate that emails are unique across users

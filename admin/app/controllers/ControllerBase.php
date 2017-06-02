@@ -227,7 +227,7 @@ class ControllerBase extends Controller
                             $this->view->logo_path = "/img/agency_logos/{$agency->logo_path}"; 
                         }
                     } else {
-                        $this->view->logo_path = '/assets/layouts/layout/img/logo.png';
+                        $this->view->logo_path = '';
                     }
                 } else {
                     // We're a business under RV
