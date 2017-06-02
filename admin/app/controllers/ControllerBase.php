@@ -945,7 +945,7 @@ class ControllerBase extends Controller
         $CountryCode = '+';
         if($BusinessID) {
             $objBusiness = \Vokuro\Models\Agency::findFirst("agency_id = {$BusinessID}");
-            if($objBusiness->country_code && $bFrom) {
+            if($objBusiness->country_code && !$bFrom) {
                 $CountryCode .= $objBusiness->country_code;
             } else {
                 if($objBusiness->parent_id > 0) {
