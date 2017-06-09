@@ -66,8 +66,8 @@
                     ~ ', ' ~ location.postal_code
                     ~ ', ' ~ location.country|url_encode %}
                     {% set googleLink = 'https://www.google.com/search?q='
-                    ~ '&' ~ 'ludocid=' 
                     ~ googleLinkEncode
+                    ~ '&' ~ 'ludocid='
                     ~ rsl.external_id ~ '#lrd='
                     ~ rsl.lrd ~ ',3,5' %}
                 {% endif %}
