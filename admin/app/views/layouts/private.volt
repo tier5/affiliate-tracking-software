@@ -216,10 +216,10 @@
     {% set conn_account = conn_account ~ "Yelp," %}
 {% endif %}
 
-<?php $conn_account = rtrim(conn_account, ","); ?>
+<?php $conn_account = rtrim($conn_account, ","); ?>
 
 <div class="top-banner">
-    you must connect your {{ conn_account }} account to monitor these review sites 
+    you must connect your {{ conn_account }} account to monitor these review sites
     <a id="click_rate">click here to connect</a>
     <span class="close-div">X</span>
     <div class="dropdown-box">
