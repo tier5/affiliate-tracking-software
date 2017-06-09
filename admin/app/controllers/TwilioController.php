@@ -519,10 +519,7 @@ class TwilioController extends ControllerBusinessBase
         $friendly_number = base64_decode($pieces[1]);
         $Twillioset = $this->getTwilioDetails();
         
-        $client = new Services_Twilio(
-            $Twillioset['twilio_api_key'],
-            $Twillioset['twilio_auth_token']
-        );
+
         
         $result = $this->db->query(
             "SELECT * FROM `twilio_number_to_business` WHERE `phone_number`='" . $number . "'"
@@ -530,11 +527,25 @@ class TwilioController extends ControllerBusinessBase
                        
         $x = $result->fetchAll();
         $nm = $x[0]['twilio_purchase_token'];
+
+        if($x[0]['parent_twilio_api_key'] && $x[0]['parent_twilio_auth_token']) {
+            $TwilioAPIKey = $x[0]['parent_twilio_api_key'];
+            $TwilioAuthToken = $x[0]['parent_twilio_auth_token'];
+        } else {
+            $TwilioAPIKey = $Twillioset['twilio_api_key'];
+            $TwilioAuthToken = $Twillioset['twilio_auth_token'];
+        }
+
+        $client = new Services_Twilio(
+            $TwilioAPIKey,
+            $TwilioAuthToken
+        );
+
         $twilioNumber = $client->account->incoming_phone_numbers->get($nm);
         
         $clientx = new Services_Twilio(
-            $Twillioset['twilio_api_key'],
-            $Twillioset['twilio_auth_token']
+            $TwilioAPIKey,
+            $TwilioAuthToken
         );
         
         $clientx->account->incoming_phone_numbers->delete($twilioNumber->sid);
@@ -555,11 +566,6 @@ class TwilioController extends ControllerBusinessBase
         $number = base64_decode($pieces[1]);
         $Twillioset = $this->getTwilioDetails();
         
-        $client = new Services_Twilio(
-            $Twillioset['twilio_api_key'],
-            $Twillioset['twilio_auth_token']
-        );
-        
         $result = $this->db->query(
             "SELECT * FROM `twilio_number_to_business` WHERE `phone_number`='" . $number . "'"
         );
@@ -567,12 +573,28 @@ class TwilioController extends ControllerBusinessBase
         $x = $result->fetchAll();
         
         echo $nm = $x[0]['twilio_purchase_token'];
+
+        if($x[0]['parent_twilio_api_key'] && $x[0]['parent_twilio_auth_token']) {
+            $TwilioAPIKey = $x[0]['parent_twilio_api_key'];
+            $TwilioAuthToken = $x[0]['parent_twilio_auth_token'];
+        } else {
+            $TwilioAPIKey = $Twillioset['twilio_api_key'];
+            $TwilioAuthToken = $Twillioset['twilio_auth_token'];
+        }
+
+        /**
+         * I am not sure why there are 2 twilio clients instantiated.
+         */
+        $client = new Services_Twilio(
+            $TwilioAPIKey,
+            $TwilioAuthToken
+        );
         
         $twilioNumber = $client->account->incoming_phone_numbers->get($nm);
         
         $clientx = new Services_Twilio(
-            $Twillioset['twilio_api_key'],
-            $Twillioset['twilio_auth_token']
+            $TwilioAPIKey,
+            $TwilioAuthToken
         );
         
         $clientx->account->incoming_phone_numbers->delete(
