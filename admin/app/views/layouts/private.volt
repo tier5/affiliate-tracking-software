@@ -617,7 +617,7 @@
                     {% if not NonTrial %}
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject" style="text-align: left; text-transform: none; font-weight: normal; font-size: 27px !important;"> Send Review Invite </span>
+                            <span class="caption-subject" style="text-align: left; text-transform: none; font-weight: normal; font-size: 27px !important;"> Send Review Invite123 </span>
                         </div>
                     </div>
                     {% endif %}
@@ -725,9 +725,8 @@
                     </div>
                 </div>
             </div>
-            {% if 'link/createlink' in _SERVER['REQUEST_URI'] %}
+
             <script src="https://checkout.stripe.com/checkout.js"></script>
-            {% endif %}
 
             <script type="text/javascript">
                 jQuery(document).ready(function ($) {
