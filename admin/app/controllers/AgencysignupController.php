@@ -617,7 +617,8 @@
 
                 $this->db->begin();
                 if (!$UserID = $this->CreateAgency($this->session->AgencySignup)) {
-                    $this->response->redirect('/agencysignup/order');
+                    $RedirectURL = isset($this->session->AgencySignup['sbyp']) ? '/agencysignup/order?sbyp=' . $this->session->AgencySignup['sbyp'] : '/agencysignup/order';
+                    $this->response->redirect($RedirectURL);
                     $this->db->rollback();
                     return false;
                 }
@@ -809,7 +810,8 @@
                 $this->flashSession->error(
                     'Credit card declined.  If you feel this is an error, please contact our customer support.'
                 );
-                $this->response->redirect('/agencysignup/order');
+                $RedirectURL = isset($this->session->AgencySignup['sbyp']) ? '/agencysignup/order?sbyp=' . $this->session->AgencySignup['sbyp'] : '/agencysignup/order';
+                $this->response->redirect($RedirectURL);
                 return false;
             }
             try {
@@ -819,7 +821,8 @@
                         $this->flashSession->error(
                             'Invalid credit card information'
                         );
-                        return $this->response->redirect('/agencysignup/order');
+                        $RedirectURL = isset($this->session->AgencySignup['sbyp']) ? '/agencysignup/order?sbyp=' . $this->session->AgencySignup['sbyp'] : '/agencysignup/order';
+                        return $this->response->redirect($RedirectURL);
                     }
                     
                     $this->session->AgencySignup = array_merge(
@@ -829,7 +832,8 @@
 
                 }
             } catch (Exception $e) {
-                $this->response->redirect('/agencysignup/order');
+                $RedirectURL = isset($this->session->AgencySignup['sbyp']) ? '/agencysignup/order?sbyp=' . $this->session->AgencySignup['sbyp'] : '/agencysignup/order';
+                $this->response->redirect($RedirectURL);
                 return false;
             }
 
@@ -850,14 +854,16 @@
                         $this->flashSession->error(
                             'Could not create subscription.  Contact customer support.'
                         );
-                        $this->response->redirect('/agencysignup/order');
+                        $RedirectURL = isset($this->session->AgencySignup['sbyp']) ? '/agencysignup/order?sbyp=' . $this->session->AgencySignup['sbyp'] : '/agencysignup/order';
+                        $this->response->redirect($RedirectURL);
                     }
 
                     $this->db->commit();
                 }
             } catch (Exception $e) {
                 $this->db->rollback();
-                $this->response->redirect('/agencysignup/order');
+                $RedirectURL = isset($this->session->AgencySignup['sbyp']) ? '/agencysignup/order?sbyp=' . $this->session->AgencySignup['sbyp'] : '/agencysignup/order';
+                $this->response->redirect($RedirectURL);
                 return false;
             }
 
