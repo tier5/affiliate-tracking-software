@@ -282,7 +282,8 @@ class SubscriptionManager extends BaseService
             $objSubscriptionPlan = \Vokuro\Models\BusinessSubscriptionPlan::findFirst(
                 "user_id = {$objSuperAdmin->id}"
             );
-            $MaxAllowed = $objSubscriptionPlan->locations;
+
+            $MaxAllowed = $objSubscriptionPlan->locations ?: 1;
         }
 
         return ['FreePlan' => $FreePlan, 'ReachedLimit' => $CurrentCount >= $MaxAllowed];

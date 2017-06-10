@@ -610,6 +610,7 @@
             </div>
         </div>
     </div>
+    <script src="https://checkout.stripe.com/checkout.js"></script>
         {% if location_id %}
             <div id="sendreviewinvite" style="width:400px; display: none; color: #7A7A7A;">
                 <!-- BEGIN SAMPLE FORM PORTLET-->
@@ -725,8 +726,6 @@
                     </div>
                 </div>
             </div>
-
-            <script src="https://checkout.stripe.com/checkout.js"></script>
 
             <script type="text/javascript">
                 jQuery(document).ready(function ($) {
