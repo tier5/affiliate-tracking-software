@@ -677,9 +677,11 @@ class SettingsController extends ControllerBase
             )
         );
 
+        $location->email = $agency->email;
         $this->view->agencyform = new AgencyForm($location, array(
             'edit' => true
         ));
+
 
         $this->getSMSReport();
         

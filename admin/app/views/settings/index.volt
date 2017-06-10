@@ -77,7 +77,7 @@
             <div class="form-group">
               <label for="email" class="col-md-4 control-label">Email</label>
               <div class="col-md-8">
-                {{ agencyform.render("email", ["class": 'form-control', 'placeholder': 'Email', 'type': 'name']) }}
+                {{ agencyform.render("email", ['readonly': 'true', "class": 'form-control', 'placeholder': 'Email', 'type': 'name']) }}
               </div>
             </div>
             <div class="form-group">
