@@ -279,13 +279,7 @@
             </div>
 
             <?php  } ?>
-            
-            <?php
-            if(!$GoogleMyBusinessConnected && !$facebookMyBusinessConnected && !$YelpMyBusinessConnected) {
-              $review_goal = $total_reviews_this_month = $revenue_retained = $total_reviews_location = $negative_total = 0;
-            }
-              
-            ?>
+                
             <div class="col-md-4 col-sm-4">
                 <div class="portlet light bordered dashboard-panel Monthly-Goal-New-Reviews">
                     <div class="portlet-title">
@@ -310,7 +304,7 @@
                         </div>
                         <div class="bottom-part">
                             <span class="text-wrapper text-center" style="width: 100%">
-                                You Must Send <span class="feedback_requests"><?=$total_sms_needed?></span> Feedback Requests To Reach Your Goal Of <span class="feedback_requests"><?=$review_goal ?: 0; ?></span> New Reviews
+                               You Must Send <span class="feedback_requests"><?=$total_sms_needed?></span> Feedback Requests To Reach Your Goal Of <span class="feedback_requests"><?=$review_goal ?: 0; ?></span> New Reviews
                             </span>
                         </div>
                     </div>
