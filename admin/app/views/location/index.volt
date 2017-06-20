@@ -102,7 +102,7 @@ if ($locs) {
                   <a class="flexsearch--submit"><img src="/img/icon-maglass-search.gif" /></a>
                 </div>
               </div>
-              <div class="search-btn"><a class="btnLink btnSecondary" href="/location/create" style="width: 128px !important;">Create Location</a></div>
+              <div class="search-btn"><a class="btnLink btnPrimary" href="/location/create" style="width: 128px !important;">Create Location</a></div>
             </div>
 
             <!-- Start .panel -->
@@ -138,8 +138,8 @@ foreach($locs as $location) {
                     <td>0</td>
                     <td>0</td>
                     <?php }?>
-                    <td><a href="/location/edit/<?=$location->location_id?>" class="btnLink btnSecondary"><img src="/img/icon-pencil.png" /></a></td>
-                    <td><a href="/location/delete/<?=$location->location_id?>" onclick="return confirm('Are you sure you want to delete this location?');" class="btnLink btnSecondary"><img src="/img/icon-delete.png" /></a></td>
+                    <td><a href="/location/edit/<?=$location->location_id?>" class="btnLink btnPrimary"><img src="/img/icon-pencil.png" /></a></td>
+                    <td><a href="/location/delete/<?=$location->location_id?>" onclick="return confirm('Are you sure you want to delete this location?');" class="btnLink btnPrimary"><img src="/img/icon-delete.png" /></a></td>
                   </tr>
                   <?php
     //if ($rowclass == '') { $rowclass = 'darker'; } else { $rowclass = ''; }
