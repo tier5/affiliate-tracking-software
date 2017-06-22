@@ -962,7 +962,7 @@
                         Invalid file type. Only gif, png, jpg or jpeg file extensions are allowed.
                     </div>
                     <div class="col-md-offset-4 col-md-8">
-                        {{ submit_button("Save", "class": "btn btn-big btn-success btnLink") }}
+                        {{ submit_button("Save", "class": "btn btn-big btn-success btnLink btnSecondary") }}
                     </div>
                 </div>
                 {{ form.render("agency_id") }}
@@ -1018,7 +1018,7 @@ if (isset($this->session->get('auth-identity')['agencytype']) && $this->session-
             </div>
             <div class="row">
                 <div class="field">
-                    <button id="createsite" type="submit" class="btnLink">Save</button>
+                    <button id="createsite" type="submit" class="btnLink btnSecondary">Save</button>
                 </div>
             </div>
             <div style="clear: both;">&nbsp;</div>

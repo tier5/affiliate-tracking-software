@@ -220,6 +220,8 @@ class ControllerBase extends Controller
                 $this->view->agencyName = ($agency->parent_id == -1 || ($this->user_object->is_admin == 1)) ? "Get Mobile Reviews" : $agency->name;
 
                 if ($agency->parent_id == \Vokuro\Models\Agency::AGENCY) {
+                    $this->view->primary_color = $agency->main_color ?: "#2a3644";
+                    $this->view->secondary_color = $agency->secondary_color ?: "#2eb82e";
                     if (isset($agency->logo_path) && ($agency->logo_path != "")) {
                         if (strpos($agency->logo_path,'img/upload') !== false) {
                             $this->view->logo_path = "{$agency->logo_path}";

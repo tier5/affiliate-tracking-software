@@ -755,7 +755,7 @@
             Invalid file type. Only gif, png, jpg or jpeg file extensions are allowed.
           </div>
           <div class="col-md-offset-4 col-md-8">
-            {{ submit_button("Save", "class": "btn btn-big btn-success btnLink btnSecondary greenbtn") }}
+            {{ submit_button("Save", "class": "btn btn-big btn-success btnLink btnSecondary") }}
           </div>
         </div>
 

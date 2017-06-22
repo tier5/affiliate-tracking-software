@@ -26,12 +26,10 @@
         .sms-chart-wrapper .bar-number .ball, .table-bottom, #reviews .pagination > li > a, .pagination > li > span, .growth-bar, .btnPrimary, .referral-link, .backgroundPrimary {
             background-color: {{ primary_color }} !important;
         }
-        #reviews .pagination .active > a, .pagination .active > a:hover {
+        #reviews .pagination .active > a, .pagination .active > a:hover, .feedback_requests {
             color: {{ secondary_color }} !important;
         }
-        .feedback_requests {
-            color: {{ secondary_color }} !important;
-        }
+
         .nav-tabs .active > a {
             border-top: 4px solid {{ primary_color }} !important;
         }
