@@ -31,6 +31,7 @@ class AdmindashboardController extends ControllerBusinessBase
         if ($logged_in && (isset($this->session->get('auth-identity')['is_admin']))) {
             $this->view->setVar('logged_in', $logged_in);
             $this->view->setTemplateBefore('private');
+            $this->view->StripeWaitingApproval = \Vokuro\Models\AgencyStripeValidation::count("action != 0 AND process_status = 0");
         } else {
             $this->response->redirect('/session/login');
             $this->view->disable();
@@ -38,7 +39,6 @@ class AdmindashboardController extends ControllerBusinessBase
         }
         parent::initialize();
     }
-
 
     /**
      * Default action. Set the public layout (layouts/private.volt)
@@ -233,6 +233,65 @@ class AdmindashboardController extends ControllerBusinessBase
 
         $this->view->total_reviews = $this->view->total_reviews - $this->view->total_prev_reviews;
     }
+
+    public function agencystripeAction() {
+        $tValidationInfo = [];
+        $dbAgencyValidation = \Vokuro\Models\AgencyStripeValidation::find();
+        foreach($dbAgencyValidation as $objValidation) {
+            $objAgency = \Vokuro\Models\Agency::findFirst("agency_id = {$objValidation->agency_id}");
+            if(!$objAgency)
+                continue;
+
+            $SystemCustomerID = '';
+            $SystemSubscriptionID = '';
+            $objSuperAdmin = \Vokuro\Models\Users::findFirst("agency_id = {$objAgency->id} AND role='Super Admin'");
+            if($objSuperAdmin) {
+                $objSystemStripeSubscription = \Vokuro\Models\StripeSubscriptions::findFirst("user_id = {$objSuperAdmin->id}");
+                $SystemCustomerID = $objSystemStripeSubscription->stripe_customer_id ?: 'N/A';
+                $SystemSubscriptionID = $objSystemStripeSubscription->stripe_subscription_id ?: 'N/A';
+            } else {
+                $SystemCustomerID = 'N/A';
+                $SystemSubscriptionID = 'N/A';
+            }
+
+            $Row = [
+                'ValidationID' => $objValidation->id,
+                'AgencyID' => $objAgency->id,
+                'AgencyName' => $objAgency->name,
+                'StripeCustomerID' => $objValidation->stripe_customer_id,
+                'StripeSubscriptionID' => $objValidation->stripe_subscription_id,
+                'AgencyCustomerID' => $SystemCustomerID,
+                'AgencySubscriptionID' => $SystemSubscriptionID,
+                'AgencyStatus' => $objAgency->status ? 'Enabled' : 'Disabled',
+                'StripeStatus' => $objValidation->stripe_status,
+                'Action' => $objValidation->action,
+                'ProcessingStatus' => $objValidation->process_status ? 'Processed' : 'Not Processed',
+            ];
+
+            $tValidationInfo[] = $Row;
+        }
+
+        $this->view->tValidationInfo = $tValidationInfo;
+        $this->view->LastProcessed = date("Y-m-d H:i:s", strtotime('now'));
+    }
+
+    public function processstripeAction() {
+        $Post = $this->request->getPost();
+        $tApprovedIDs = [];
+        foreach ($Post as $Key => $Val) {
+            if (strpos($Key, 'approve_') !== false && $Val == 'on') {
+                $tPieces = explode('_', $Key);
+                $tApprovedIDs[] = array_pop($tPieces);
+            }
+        }
+        if (count($tApprovedIDs)) {
+            foreach($tApprovedIDs as $ApprovedID) {
+                $objValidationService = new \Vokuro\Services\StripeValidationService();
+                $objValidationService->ProcessServices($ApprovedID);
+            }
+        }
+    }
+
 
     public function createAction($agency_type_id, $agency_id = 0, $parent_id = 0)
     {

@@ -396,6 +396,13 @@
                             <span class="selected"></span>
                         </a>
                     </li>
+                    <li class="nav-item start">
+                        <a href="/admindashboard/agencystripe" class="nav-link nav-toggle">
+                            <i class="icon-calculator"></i>
+                            <span class="title">Stripe Validation ({{ StripeWaitingApproval }})</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
                 {% else %}     
                     {% if agencytype == "agency" %}
                         <li class="nav-item start">
