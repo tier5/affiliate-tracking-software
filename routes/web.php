@@ -19,7 +19,8 @@ Route::get('/', function () {
 
 
 
-//Route::get('agency/', 'AgencyController@index');
+Route::get('agency', 'AgencyController@index')->name('getAgency');
+Route::post('addagency', 'AgencyController@addAgency')->name('addAgency');
 //Route::get('agency/all', 'AgencyController@all');
 //Route::get('agency/show/{id}', 'AgencyController@show');
 

@@ -54,6 +54,31 @@
       <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
+      <div class="collapse navbar-collapse" id="app-navbar-collapse">
+          <!-- Left Side Of Navbar -->
+          <ul class="nav navbar-nav">
+              &nbsp;
+          </ul>
+          <ul style="margin-right: 8px;" class="nav navbar-nav navbar-right">
+              <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        {{ Auth::user()->name }} <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                          <a href="{{ route('logout') }}"
+                                onclick="event.preventDefault();
+                                         document.getElementById('logout-form').submit();">
+                                Logout
+                          </a>
+                          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                {{ csrf_field() }}
+                          </form>
+                      </li>
+                  </ul>
+              </li>
+          </ul>
+      </div>    
     </nav>
   </header>
 
@@ -75,32 +100,113 @@
             <span>Links</span>
           </a>
         </li>
+        <li{{{ (stripos(url()->current(), 'links') !== false ? ' class="active"' : '') }}}>
+          <a href="{{ route('getAgency') }}">
+            <i class="fa fa-link"></i>
+            <span>Add Agency</span>
+          </a>
+        </li>
       </ul>
     </section>
     <!-- /.sidebar -->
   </aside>
-
+ <div class="clear"> </div> 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
 
-    <!-- Main content -->
-    <section class="content">
-      @section('leadstats')
+ 
 
-      @show
+@section('content')
+<div class="container" >
+    <div class="row" style="margin-top: 30px;">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">Add Agency</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ route('addAgency') }}">
+                        {{ csrf_field() }}
 
-      @section('leadstable')
+                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
+                            <label for="name" class="col-md-4 control-label">Name</label>
 
-      @show
+                            <div class="col-md-6">
+                                <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus>
 
-    </section>
-    <!-- /.content -->
+                                @if ($errors->has('name'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                            <label for="email" class="col-md-4 control-label">E-Mail</label>
+
+                            <div class="col-md-6">
+                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+
+                                @if ($errors->has('email'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('email') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
+                            <label for="name" class="col-md-4 control-label">Phone</label>
+
+                            <div class="col-md-6">
+                                <input id="name" type="text" class="form-control" name="phone" value="{{ old('phone') }}" required autofocus>
+
+                                @if ($errors->has('phone'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('phone') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                            <label for="password" class="col-md-4 control-label">Description</label>
+
+                            <div class="col-md-6">
+                                <textarea id="description" class="form-control" name="description" required></textarea>
+
+                                @if ($errors->has('description'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('description') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- <div class="form-group">
+                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
+
+                            <div class="col-md-6">
+                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                            </div>
+                        </div> -->
+
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Add Agency
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
   </div>
-  <!-- /.content-wrapper -->
-  <footer class="main-footer">
-    <strong>Copyright &copy; {{ date('Y') }} RV Affiliate.</strong> All rights
-    reserved.
-  </footer>
+  
 
 <!-- jQuery 2.2.3 -->
 <script src="/admin/plugins/jQuery/jquery-2.2.3.min.js"></script>
