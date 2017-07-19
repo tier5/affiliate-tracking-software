@@ -15,10 +15,11 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users_laravel', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('agency_id')->nullable();
+            //$table->integer('agency_id')->nullable();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('url');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

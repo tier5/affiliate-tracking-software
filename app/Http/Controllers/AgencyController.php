@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 //use Illuminate\Http\Request;
-
+use App\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use \App\Agency;
@@ -24,41 +24,50 @@ class AgencyController extends Controller
 
         
         $data = Input::all();
+        $regex = '/^(http?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
         //print_r($data);
-       // dd($data);
+        //dd($data);
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
-            'phone' => 'required|min:10',
+            'phone' => 'required|numeric|digits_between:10,10',
             'email' => 'required|email|min:8',
+            'url' => 'regex:' . $regex,
             
         ],
         [
             'name.required' => 'Agency name is required',
-            'phone.min' => 'Phone number should be 10 digit',
             'phone.required' => 'Phone is required',
-            'email.email' => 'Correct email format required'
+            'phone.numeric' => 'Phone number should be numeric',
+            'phone.digits_between' => 'Phone number should be min and max 10 digit',
+            'email.email' => 'Correct email format required',
+            'url.regex' => 'Url format is incorrect',
         ]);
 
         if ($validator->fails()) {
             $errors = $validator->errors();
             //dd($errors);
             //echo 999; die;    
-            return redirect()->route('getAgency')
+            return redirect()->route('getAdmin')
                 ->withErrors($validator)
                 ->withInput();
         }
         else{
 
-            $agency = new Agency;
-            $agency->agency_name = $data['name'];
-            $agency->agency_description = $data['description'];
-            $agency->agency_phone = $data['phone'];
-            $agency->agency_email = $data['email'];
-            
-            $agency->save();
-            return redirect()->route('getAgency')->with('message', 'Agency record inserted successfully'); 
+            $user = new User;
+            $user->name = $data['name'];
+            $user->role = 'Agency';
+            $user->phone = $data['phone'];
+            $user->email = $data['email'];
+            $user->password = bcrypt($data['password']);
+            $user->url = $data['url'];
+            $user->save();
+
+            //$agency = new Agency;
+            //echo 66666;  die;
+
+            return redirect()->route('getAdmin')->with('message', 'Agency record inserted successfully'); 
             //return view('layouts/affiliate');
         }
 
@@ -86,12 +95,23 @@ class AgencyController extends Controller
 
     public function show($id)
     {
-    	echo $id;
+    	//echo $id;
+        //die;
     	// get agency by id
 
-    	$agency = \App\Agency::find(1);
-
-    	var_dump($agency);
+    	$user = \App\User::find($id);
+        //echo $user->email; die;
+        
+    	//var_dump($user);
+        $result =[
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone ];
+        //echo '<pre>';            
+        //print_r($result);            
+        //die;
+        return view('layouts/dashboard',compact('result'));
+        //return view('admin/package',compact('items'));
     }
 
     public function disable($id)

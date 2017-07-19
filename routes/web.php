@@ -19,10 +19,23 @@ Route::get('/', function () {
 
 
 
-Route::get('agency', 'AgencyController@index')->name('getAgency');
+Route::get('agency', 'AgencyController@index')->name('getAdmin');
+//Route::get('profile', 'AgencyController@index')->name('getProfile');
 Route::post('addagency', 'AgencyController@addAgency')->name('addAgency');
 //Route::get('agency/all', 'AgencyController@all');
-//Route::get('agency/show/{id}', 'AgencyController@show');
+//Route::get('agency/show/{id}', 'AgencyController@show')->name('addAgency');
+
+Route::get('agency/show/{id}',[
+    'uses' => 'AgencyController@show',
+    'as' => 'getAgency'
+]);
+
+Route::post('addaffiliate',[
+    'uses' => 'AffiliateController@addAffiliate',
+    'as' => 'addAffiliate'
+]);
+
+
 
 Route::get('dashboard/', 'DashboardController@index');
 
@@ -259,7 +272,8 @@ Route::group(['prefix' => 'api'], function() {
 
 Auth::routes();
 
-Route::get('affiliate/', 'AffiliateController@index');
+Route::get('affiliate', 'AffiliateController@index')->name('affiliate');
+//Route::get('agency', 'AgencyController@index')->name('getAdmin');
 
 Route::get('affiliate/links', 'AffiliateController@links');
 

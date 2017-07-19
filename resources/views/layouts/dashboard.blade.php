@@ -104,7 +104,14 @@
         <li{{{ (stripos(url()->current(), 'links') !== false ? ' class="active"' : '') }}}>
           <a href="{{ route('getAdmin') }}">
             <i class="fa fa-link"></i>
-            <span>Add Agency</span>
+            <span>Add Affiliate</span>
+          </a>
+        </li>
+         @else
+        <li{{{ (stripos(url()->current(), 'links') !== false ? ' class="active"' : '') }}}>
+          <a href="{{ route('getAgency',[Auth::user()->id]) }}">
+            <i class="fa fa-link"></i>
+            <span>Agency Profile</span>
           </a>
         </li>
         @endif
@@ -116,9 +123,9 @@
   <!-- Content Wrapper. Contains page content -->
  <div class="content-wrapper">
 
- 
+ <?php if(isset($result)){echo $result['name'].'<br>'.$result['email'];}?>
 
-@section('content')
+ @section('content')
 <div class="container" >
     <div class="row" style="margin-top: 30px;">
         <div class="col-md-8 col-md-offset-2">
@@ -126,9 +133,9 @@
               <div class="alert alert-success alert-dismissable">{{ session()->get('message') }}</div>
           @endif
             <div class="panel panel-default">
-                <div class="panel-heading">Add Agency</div>
+                <div class="panel-heading">Add Affiliate</div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ route('addAgency') }}">
+                    <form class="form-horizontal" role="form" method="POST" action="{{ route('addAffiliate') }}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
@@ -226,7 +233,7 @@
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    Add Agency
+                                    Add Affiliate
                                 </button>
                             </div>
                         </div>
@@ -236,7 +243,6 @@
         </div>
     </div>
 </div>
-
 
   </div>
   

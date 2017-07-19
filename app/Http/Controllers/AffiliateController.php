@@ -11,6 +11,9 @@ use \App\Agency;
 use \App\Jobs\AffiliatePlanSync;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Input;
+
 class AffiliateController extends Controller
 {
 	public function __construct()
@@ -20,73 +23,8 @@ class AffiliateController extends Controller
 
     public function index()
     {
-
-        $userId =  Auth::id();
-        // get plans
-            // get links for user
-        $links = AffiliateLink::where('user_id', $userId)->get();
-
-            // get plan names from plan table
-
-        $totalClicks = 0;
-        $totalEnrollments = 0;
-        $totalSales = 0;
-
-        foreach ($links as $key => $link) {
-            if ($link->plan_id == -1) {
-                continue;
-            }
-
-            $links[$key]->name = BusinessPlan::find($link->plan_id)->first()->name;
-
-            $totalClicks += $links[$key]->clicks = Lead::where('link_id', $link->id)
-                                            ->where('stage', 'click')
-                                            ->count();
-            $totalEnrollments += $links[$key]->enrollments = Lead::where('link_id', $link->id)
-                                                 ->where('stage', 'enrollment')
-                                                 ->count();
-
-            $totalSales += $links[$key]->sales = Lead::where('link_id', $link->id)
-                                           ->where('stage', 'sale')
-                                           ->count();
-
-            $links[$key]->clicks += $links[$key]->enrollments + $links[$key]->sales;
-
-            $links[$key]->enrollments += $links[$key]->sales;
-        }
-
-        // add leads from later stages
-        $totalClicks += $totalEnrollments + $totalSales;
-        $totalEnrollments += $totalSales;
-
-        $planStats = $links;
-
-    	$leads = Lead::where('user_id', Auth::id())
-                          ->orderBy('created_at', 'desc')
-                          ->take(10)
-                          ->get();
-
-
-        foreach ($leads as $key => $lead) {
-            if ($lead->plan_id == -1) {
-                $leads[$key]->name = 'Landing Page';
-            } else {
-                $leads[$key]->name = BusinessPlan::find($lead->plan_id)->first()->name;
-            }
-        }
-
-        $landingPageStats = $this->getLandingPageStats();
-
-        $vars = [
-            'leads' => $leads,
-            'plans' => $planStats,
-            'totalClicks' => $totalClicks + $landingPageStats['clicks'],
-            'totalEnrollments' => $totalEnrollments + $landingPageStats['enrollments'],
-            'totalSales' => $totalSales + $landingPageStats['sales'],
-            'landingPageStats' => $landingPageStats
-        ];
-
-    	return view('affiliate/dashboard', $vars);
+        
+        return view('layouts/dashboard');
     }
 
     public function links()
@@ -128,6 +66,63 @@ class AffiliateController extends Controller
             'baseUrl' => 'http://' . config('app.rv_url') . '/subscription/link/',
             'landingPageURL' => 'http://' . $subdomain . config('app.rv_url')
         ]);
+    }
+
+    
+
+    public function addAffiliate(Request $request)
+    {
+        
+
+        $data = Input::all();
+        $regex = '/^(http?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
+        //print_r($data);
+        //dd($data);
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+            'phone' => 'required|numeric|digits_between:10,10',
+            'email' => 'required|email|min:8',
+            'url' => 'regex:' . $regex,
+            
+        ],
+        [
+            'name.required' => 'Affilator name is required',
+            'phone.required' => 'Phone is required',
+            'phone.numeric' => 'Phone number should be numeric',
+            'phone.digits_between' => 'Phone number should be min and max 10 digit',
+            'email.email' => 'Correct email format required',
+            'url.regex' => 'Url format is incorrect',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            //dd($errors);
+            //echo 999; die;    
+            return redirect()->route('getAdmin')
+                ->withErrors($validator)
+                ->withInput();
+        }
+        else{
+
+            $user = new User;
+            $user->name = $data['name'];
+            $user->role = 'Affiliate';
+            $user->phone = $data['phone'];
+            $user->email = $data['email'];
+            $user->password = bcrypt($data['password']);
+            $user->url = $data['url'];
+            $user->save();
+
+            //$agency = new Agency;
+            //echo 66666;  die;
+
+            return redirect()->route('affiliate')->with('message', 'Affiliate record inserted successfully'); 
+            //return view('layouts/affiliate');
+        }
+
+
     }
 
     public function planSync()
