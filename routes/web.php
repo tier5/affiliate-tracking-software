@@ -25,16 +25,19 @@ Route::post('addagency', 'AgencyController@addAgency')->name('addAgency');
 //Route::get('agency/all', 'AgencyController@all');
 //Route::get('agency/show/{id}', 'AgencyController@show')->name('addAgency');
 
-Route::get('agency/show/{id}',[
-    'uses' => 'AgencyController@show',
-    'as' => 'getAgency'
+Route::get('addAffiliate/{id}',[
+    'uses' => 'AffiliateController@showAffiliate',
+    'as' => 'showAffiliate'
 ]);
 
 Route::post('addaffiliate',[
     'uses' => 'AffiliateController@addAffiliate',
     'as' => 'addAffiliate'
 ]);
-
+Route::get('allAffiliate',[
+    'uses' => 'AffiliateController@allAffiliate',
+    'as' => 'allAffiliate'
+]);
 
 
 Route::get('dashboard/', 'DashboardController@index');

@@ -23,8 +23,20 @@ class AffiliateController extends Controller
 
     public function index()
     {
-        
+        //$affiliate_id = Str::random(8);
         return view('layouts/dashboard');
+    }
+
+    public function showAffiliate($id)
+    {
+        $user = \App\User::find($id);
+        
+        $result =[
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'url' => $user->url ];
+        
+        return view('layouts/dashboard',compact('result'));
     }
 
     public function links()
@@ -73,18 +85,15 @@ class AffiliateController extends Controller
     public function addAffiliate(Request $request)
     {
         
-
         $data = Input::all();
         $regex = '/^(http?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
-        //print_r($data);
-        //dd($data);
-
+        
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
             'phone' => 'required|numeric|digits_between:10,10',
             'email' => 'required|email|min:8',
-            'url' => 'regex:' . $regex,
+            //'url' => 'regex:' . $regex,
             
         ],
         [
@@ -93,14 +102,14 @@ class AffiliateController extends Controller
             'phone.numeric' => 'Phone number should be numeric',
             'phone.digits_between' => 'Phone number should be min and max 10 digit',
             'email.email' => 'Correct email format required',
-            'url.regex' => 'Url format is incorrect',
+            //'url.regex' => 'Url format is incorrect',
         ]);
 
         if ($validator->fails()) {
             $errors = $validator->errors();
             //dd($errors);
             //echo 999; die;    
-            return redirect()->route('getAdmin')
+            return redirect()->route('affiliate')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -117,14 +126,45 @@ class AffiliateController extends Controller
 
             //$agency = new Agency;
             //echo 66666;  die;
+            $userId = Auth::id();
+            $user = \App\User::find($userId);
+        //echo $user->email; die;
+        
+        //var_dump($user);
+            $result =[
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'url' => $user->url ];
+           //dd($result);        
+                 
+            //return redirect()->route('affiliate')->with('message', 'Affiliate record inserted successfully')->with($result);
 
-            return redirect()->route('affiliate')->with('message', 'Affiliate record inserted successfully'); 
+            return view('layouts/dashboard',compact('result'))->with('message', 'Affiliate created successfully with url  '.$data['url'].'');
+            //return redirect()->route('affiliate',['message'=> 'Affiliate record inserted successfully','result'=> $result]);        
             //return view('layouts/affiliate');
         }
-
-
     }
 
+    
+    public function allAffiliate()
+    {
+        $user = \App\User::all()->where('role','Affiliate');
+        //dd($user);
+        
+        $data[]= array();
+
+        foreach($user as $affiliates){
+
+            $data['id'][]= $affiliates->id;
+            $data['name'][]= $affiliates->name;
+            $data['phone'][]= $affiliates->phone;
+            $data['url'][]= $affiliates->url;
+            $data['joined'][]= $affiliates->created_at;
+        }
+
+        //dd($data);
+        return view('allAffiliate',compact('data'));
+    }
     public function planSync()
     {
         dispatch(new AffiliatePlanSync());
