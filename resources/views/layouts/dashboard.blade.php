@@ -209,8 +209,12 @@
 
                             <div class="col-md-6">
                                 <?php if(!empty($result) || session()->has('message')){ 
-                                   $url = $result['url'].'?id='.uniqid(); ?>
+                                   //$url = $result['url'].'?id='.uniqid(); 
+                                   $key = uniqid(); 
+                                   $url = url('/').'?id='.$key;
+                                                                        ?>
                                 <input id="url" type="hidden" name="url" value="{{ $url }}" >
+                                <input id="key" type="hidden" name="key" value="{{ $key }}" >
                                 <?php } ?>
                             </div>
                         </div>

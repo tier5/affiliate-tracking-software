@@ -43,6 +43,16 @@ Route::put('api/lead/{lead}', function(\App\Lead $lead) {
 	return $lead;
 });
 
+Route::post('affiliate/links', 'AffiliateController@links');
+
+Route::any('/problems', function(){
+	return "Problems might occur but never give up do it by yourself";
+})->name('fuckyuproblem');
+
+Route::post('affiliate',[
+    'uses' => 'AffiliateController@links',
+    'as' => '/affiliate'
+]);
 // generate affiliate links
 
 
