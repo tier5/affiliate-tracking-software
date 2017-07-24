@@ -278,7 +278,7 @@ Auth::routes();
 Route::get('affiliate', 'AffiliateController@index')->name('affiliate');
 //Route::get('agency', 'AgencyController@index')->name('getAdmin');
 
-Route::get('affiliate/links', 'AffiliateController@links');
+//Route::get('affiliate/links', 'AffiliateController@links');
 
 Route::get('planSync', 'AffiliateController@planSync');
 

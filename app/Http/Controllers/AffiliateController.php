@@ -8,6 +8,8 @@ use \App\BusinessPlan;
 use \App\Lead;
 use \App\User;
 use \App\Agency;
+use \App\Affiliate;
+use \App\Visitor;
 use \App\Jobs\AffiliatePlanSync;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,10 +18,10 @@ use Illuminate\Support\Facades\Input;
 
 class AffiliateController extends Controller
 {
-	public function __construct()
+	/*public function __construct()
 	{
 		$this->middleware('auth');
-	}
+	}*/
 
     public function index()
     {
@@ -41,6 +43,24 @@ class AffiliateController extends Controller
 
     public function links()
     {
+        //echo 9999; die;
+        //echo $_POST['affilatedID'];
+        $affiliateid = $_POST['affilatedID'];
+        $affiliateip = $_POST['affilatedIP'];
+        $affilatedbrowser = $_POST['affilatedbrowser'];
+        
+        //$user = \App\Affiliate::find($userId);
+        $affiliateID = Affiliate::where('affiliate_key', $affiliateid)->first();
+        echo $affiliateID ->affiliate_id;
+        $visitorrecord = new Visitor;
+        $visitorrecord ->affiliate_id = $affiliateID ->affiliate_id;
+        $visitorrecord ->visit_count = 1;
+        $visitorrecord ->affiliate_ip = $affiliateip;
+        $visitorrecord ->affiliated_browser = $affilatedbrowser;
+        $visitorrecord->save();
+
+        die;
+
         $userId = Auth::id();
 
         // get landing page url
@@ -86,7 +106,7 @@ class AffiliateController extends Controller
     {
         
         $data = Input::all();
-        $regex = '/^(http?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
+        //$regex = '/^(http?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
         
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -115,6 +135,8 @@ class AffiliateController extends Controller
         }
         else{
 
+            //dd($data);
+
             $user = new User;
             $user->name = $data['name'];
             $user->role = 'Affiliate';
@@ -124,13 +146,23 @@ class AffiliateController extends Controller
             $user->url = $data['url'];
             $user->save();
 
+            $last_affilated_id = $user->id;
+
+            $affiliate = new Affiliate;
+            //$user = \App\Affiliate::find($userId);
+            $affiliate->affiliate_id = $last_affilated_id;
+            $affiliate->affiliate_key = $data['key'];
+            $affiliate->affiliate_url = $data['url'];
+            $affiliate->affiliate_phone = $data['phone'];
+            $affiliate->affiliate_description = $data['description'];
+            $affiliate->save();
             //$agency = new Agency;
             //echo 66666;  die;
             $userId = Auth::id();
             $user = \App\User::find($userId);
-        //echo $user->email; die;
+            //echo $user->email; die;
         
-        //var_dump($user);
+            //var_dump($user);
             $result =[
                     'name' => $user->name,
                     'email' => $user->email,
