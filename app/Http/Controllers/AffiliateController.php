@@ -18,27 +18,22 @@ use Illuminate\Support\Facades\Input;
 
 class AffiliateController extends Controller
 {
-	/*public function __construct()
-	{
-		$this->middleware('auth');
-	}*/
-
     public function index()
     {
-        //$affiliate_id = Str::random(8);
-        return view('layouts/dashboard');
+        return view('agency.dashboard');
     }
 
-    public function showAffiliate($id)
+    public function showAffiliate()
     {
-        $user = \App\User::find($id);
-        
+        $user = Auth::user();
+
         $result =[
                     'name' => $user->name,
                     'email' => $user->email,
-                    'url' => $user->url ];
+                    'url' => $user->url
+        ];
         
-        return view('layouts/dashboard',compact('result'));
+        return view('agency.dashboard',compact('result'));
     }
 
     public function links()
@@ -112,7 +107,7 @@ class AffiliateController extends Controller
             'name' => 'required',
             'description' => 'required',
             'phone' => 'required|numeric|digits_between:10,10',
-            'email' => 'required|email|min:8',
+            'email' => 'required|email|min:8|unique:users_laravel',
             //'url' => 'regex:' . $regex,
             
         ],
@@ -127,75 +122,49 @@ class AffiliateController extends Controller
 
         if ($validator->fails()) {
             $errors = $validator->errors();
-            //dd($errors);
-            //echo 999; die;    
-            return redirect()->route('affiliate')
+            return redirect()->route('get.add.affiliate')
                 ->withErrors($validator)
                 ->withInput();
-        }
-        else{
-
-            //dd($data);
-
-            $user = new User;
+        } else{
+            $user = new User();
             $user->name = $data['name'];
             $user->role = 'Affiliate';
-            $user->phone = $data['phone'];
             $user->email = $data['email'];
             $user->password = bcrypt($data['password']);
-            //$user->url = $data['url'];
             $user->save();
 
-            $last_affilated_id = $user->id;
-
             $affiliate = new Affiliate;
-            //$user = \App\Affiliate::find($userId);
-            $affiliate->affiliate_id = $last_affilated_id;
+            $affiliate->userid = $user->id;
             $affiliate->affiliate_key = $data['key'];
             $affiliate->affiliate_url = $data['url'];
             $affiliate->affiliate_phone = $data['phone'];
             $affiliate->affiliate_description = $data['description'];
             $affiliate->save();
-            //$agency = new Agency;
-            //echo 66666;  die;
-            $userId = Auth::id();
-            $user = \App\User::find($userId);
-            //echo $user->email; die;
-        
-            //var_dump($user);
-            $result =[
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'url' => $user->url ];
-           //dd($result);        
-                 
-            //return redirect()->route('affiliate')->with('message', 'Affiliate record inserted successfully')->with($result);
 
-            return view('layouts/dashboard',compact('result'))->with('message', 'Affiliate created successfully with url  '.$data['url'].'');
-            //return redirect()->route('affiliate',['message'=> 'Affiliate record inserted successfully','result'=> $result]);        
-            //return view('layouts/affiliate');
+            $userAuth = Auth::user();
+            $result =[
+                    'name' => $userAuth->name,
+                    'email' => $userAuth->email,
+                    'url' => $userAuth->url ];
+            return view('agency.addAffiliate',compact('result'))->with('message', 'Affiliate created successfully with url  '.$data['url']);
+
         }
     }
 
     
     public function allAffiliate()
     {
-        $user = \App\User::all()->where('role','Affiliate');
-        //dd($user);
-        
+        $user = \App\User::where('role','Affiliate')->with('affiliate')->get();
         $data[]= array();
-
-        foreach($user as $affiliates){
-
-            $data['id'][]= $affiliates->id;
-            $data['name'][]= $affiliates->name;
-            $data['phone'][]= $affiliates->phone;
-            $data['url'][]= $affiliates->url;
-            $data['joined'][]= $affiliates->created_at;
+        foreach($user as $key=>$affiliates){
+            $data[$key]['id']= $affiliates->id;
+            $data[$key]['name']= $affiliates->name;
+            $data[$key]['phone']= $affiliates->affiliate->affiliate_phone;
+            $data[$key]['url']= $affiliates->affiliate->affiliate_url;
+            $data[$key]['joined']= $affiliates->created_at;
         }
 
-        //dd($data);
-        return view('allAffiliate',compact('data'));
+        return view('agency.allAffiliate',compact('data'));
     }
     public function planSync()
     {

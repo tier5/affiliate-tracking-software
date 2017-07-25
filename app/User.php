@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'agency_id', 'name', 'email', 'password',
+        'agency_id', 'name', 'email', 'password','role'
     ];
 
     /**
@@ -32,4 +32,9 @@ class User extends Authenticatable
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function affiliate()
+    {
+        return $this->hasOne('App\Affiliate','userid');
+    }
 }

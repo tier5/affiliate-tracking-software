@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 //use Illuminate\Http\Request;
+use App\AgentUrl;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use \App\Agency;
@@ -15,18 +17,20 @@ class AgencyController extends Controller
     //
     public function index()
     {
-    	//echo 'I am index method';
-        return view('layouts/affiliate');
-       
-    }
+        $user = Auth::user();
 
+        $result =[
+            'name' => $user->name,
+            'email' => $user->email,
+            'url' => $user->url
+        ];
+        return view('agency.addAffiliate',compact('result'));
+    }
     public function addAgency(Request $request){
 
         
         $data = Input::all();
         $regex = '/^(http?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
-        //print_r($data);
-        //dd($data);
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -47,14 +51,11 @@ class AgencyController extends Controller
 
         if ($validator->fails()) {
             $errors = $validator->errors();
-            //dd($errors);
-            //echo 999; die;    
-            return redirect()->route('getAdmin')
+            return redirect()->route('get.add.affiliate')
                 ->withErrors($validator)
                 ->withInput();
         }
         else{
-
             $user = new User;
             $user->name = $data['name'];
             $user->role = 'Agency';
@@ -64,11 +65,7 @@ class AgencyController extends Controller
             $user->url = $data['url'];
             $user->save();
 
-            //$agency = new Agency;
-            //echo 66666;  die;
-
-            return redirect()->route('getAdmin')->with('message', 'Agency record inserted successfully'); 
-            //return view('layouts/affiliate');
+            return redirect()->route('get.add.affiliate')->with('message', 'Agency record inserted successfully');
         }
 
 
@@ -93,25 +90,14 @@ class AgencyController extends Controller
     	}
     }
 
-    public function show($id)
+    public function show()
     {
-    	//echo $id;
-        //die;
-    	// get agency by id
-
-    	$user = \App\User::find($id);
-        //echo $user->email; die;
-        
-    	//var_dump($user);
+    	$user = Auth::user();
         $result =[
                     'name' => $user->name,
                     'email' => $user->email,
                     'phone' => $user->phone ];
-        //echo '<pre>';            
-        //print_r($result);            
-        //die;
         return view('layouts/dashboard',compact('result'));
-        //return view('admin/package',compact('items'));
     }
 
     public function disable($id)
@@ -119,5 +105,39 @@ class AgencyController extends Controller
     	// turn off agency and businesses
 
     	// pause agency and business subscriptions
+    }
+    public function getSettings()
+    {
+        $url = AgentUrl::where('user_id',Auth::user()->id)->get();
+        return view('agency.settings',['url'=>$url]);
+    }
+    public function registerUrl(Request $request)
+    {
+        $parse = parse_url($request->url);
+        $rootUrl = $parse['host'];
+        $key = $this->generateRandomString(32);
+        $url = AgentUrl::where('url',$rootUrl)->first();
+        if($url == null){
+            $agentUrl = new AgentUrl();
+            $agentUrl->url = $rootUrl;
+            $agentUrl->key = $key;
+            $agentUrl->user_id = Auth::user()->id;
+            $agentUrl->save();
+            return redirect()->back()->with('message','URL Added successfully');
+        } else {
+            return redirect()->back()->with('message','This URL is already exist ');
+        }
+
+
+    }
+
+    function generateRandomString($length) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }

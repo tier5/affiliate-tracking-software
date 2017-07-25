@@ -19,26 +19,11 @@ Route::get('/', function () {
 
 
 
-Route::get('agency', 'AgencyController@index')->name('getAdmin');
+//Route::get('agency', 'AgencyController@index')->name('getAdmin');
 //Route::get('profile', 'AgencyController@index')->name('getProfile');
 Route::post('addagency', 'AgencyController@addAgency')->name('addAgency');
 //Route::get('agency/all', 'AgencyController@all');
 //Route::get('agency/show/{id}', 'AgencyController@show')->name('addAgency');
-
-Route::get('addAffiliate/{id}',[
-    'uses' => 'AffiliateController@showAffiliate',
-    'as' => 'showAffiliate'
-]);
-
-Route::post('addaffiliate',[
-    'uses' => 'AffiliateController@addAffiliate',
-    'as' => 'addAffiliate'
-]);
-Route::get('allAffiliate',[
-    'uses' => 'AffiliateController@allAffiliate',
-    'as' => 'allAffiliate'
-]);
-
 
 Route::get('dashboard/', 'DashboardController@index');
 
@@ -275,7 +260,38 @@ Route::group(['prefix' => 'api'], function() {
 
 Auth::routes();
 
-Route::get('affiliate', 'AffiliateController@index')->name('affiliate');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('dashboard/agency',[
+        'uses' => 'AffiliateController@index',
+        'as' => 'agency.dashboard'
+    ]);
+    Route::get('show/affiliate',[
+        'uses' => 'AffiliateController@showAffiliate',
+        'as' => 'showAffiliate'
+    ]);
+    Route::get('add/affiliate',[
+        'uses' => 'AgencyController@index',
+        'as' => 'get.add.affiliate'
+    ]);
+    Route::get('allAffiliate',[
+        'uses' => 'AffiliateController@allAffiliate',
+        'as' => 'allAffiliate'
+    ]);
+    Route::post('addaffiliate',[
+        'uses' => 'AffiliateController@addAffiliate',
+        'as' => 'addAffiliate'
+    ]);
+    Route::get('settings',[
+        'uses' => 'AgencyController@getSettings',
+        'as' => 'settings'
+    ]);
+    Route::post('register/url',[
+        'uses' => 'AgencyController@registerUrl',
+        'as' => 'register.url'
+    ]);
+});
+
+
 //Route::get('agency', 'AgencyController@index')->name('getAdmin');
 
 //Route::get('affiliate/links', 'AffiliateController@links');

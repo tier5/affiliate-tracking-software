@@ -25,7 +25,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/affiliate';
+    protected $redirectTo = '/dashboard/agency';
 
     /**
      * Create a new controller instance.
