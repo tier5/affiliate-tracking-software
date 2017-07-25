@@ -15,7 +15,7 @@ class CreateAffiliatesTable extends Migration
     {
         Schema::create('affiliates', function (Blueprint $table) {
             $table->increments('id');
-            $table->integers('userid');
+            $table->integer('userid');
             $table->string('affiliate_key');
             $table->string('affiliate_url'); 
             $table->bigInteger('affiliate_phone');

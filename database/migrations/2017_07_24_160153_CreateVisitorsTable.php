@@ -15,10 +15,10 @@ class CreateVisitorsTable extends Migration
     {
         Schema::create('visitors', function (Blueprint $table) {
             $table->increments('id');
-            $table->integers('affiliate_id');
+            $table->integer('affiliate_id');
             $table->string('affiliated_browser');
             $table->string('affiliate_ip'); 
-            $table->integers('visit_count');
+            $table->integer('visit_count');
             $table->text('affiliate_description');  
         });
     }

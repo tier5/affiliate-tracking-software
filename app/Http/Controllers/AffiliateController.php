@@ -143,7 +143,7 @@ class AffiliateController extends Controller
             $user->phone = $data['phone'];
             $user->email = $data['email'];
             $user->password = bcrypt($data['password']);
-            $user->url = $data['url'];
+            //$user->url = $data['url'];
             $user->save();
 
             $last_affilated_id = $user->id;
