@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 //use Illuminate\Http\Request;
 use App\AgentUrl;
 use App\User;
+use App\Affiliate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
@@ -129,6 +130,18 @@ class AgencyController extends Controller
         }
 
 
+    }
+
+    public function showAffiliate($affiliateId){
+        $affiliate=Affiliate::findOrFail($affiliateId);
+        return view('agency.affiliates.affiliate',compact('affiliate'));
+    }
+
+    public function affiliateDashboard($affiliateKey){
+        $affiliate=Affiliate::where('affiliate_key',$affiliateKey)->first();
+        if(!is_null($affiliate)){
+            return view('agency.affiliates.dashboard',compact('affiliate'));
+        }
     }
 
     function generateRandomString($length) {

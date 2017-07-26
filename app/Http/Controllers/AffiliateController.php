@@ -156,17 +156,8 @@ class AffiliateController extends Controller
     
     public function allAffiliate()
     {
-        $user = \App\User::where('role','Affiliate')->with('affiliate')->get();
-        $data[]= array();
-        foreach($user as $key=>$affiliates){
-            $data[$key]['id']= $affiliates->id;
-            $data[$key]['name']= $affiliates->name;
-            $data[$key]['phone']= $affiliates->affiliate->affiliate_phone;
-            $data[$key]['url']= $affiliates->affiliate->affiliate_url;
-            $data[$key]['joined']= $affiliates->created_at;
-        }
-
-        return view('agency.allAffiliate',compact('data'));
+        $affiliates = Affiliate::paginate(25);
+        return view('agency.allAffiliate',compact('affiliates'));
     }
     public function planSync()
     {

@@ -289,6 +289,14 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'AgencyController@registerUrl',
         'as' => 'register.url'
     ]);
+    Route::get('affiliates/{affiliateId}',[
+        'uses' => 'AgencyController@showAffiliate',
+        'as' => 'agency.affiliateDetail'
+    ]);
+    Route::get('affiliate/{affiliateKey}',[
+        'uses' => 'AgencyController@affiliateDashboard',
+        'as' => 'agency.affiliateDashboard'
+    ]);
 });
 
 
