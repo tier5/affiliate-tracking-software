@@ -57,3 +57,8 @@ Route::post('affiliate',[
 
 
 // get affiliate report
+
+Route::post('/affiliate/report',[
+    'uses' => 'AffiliateController@getReport',
+    'as' => 'affiliate.report'
+]);

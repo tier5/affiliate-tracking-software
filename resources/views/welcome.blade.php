@@ -63,8 +63,18 @@
                 margin-bottom: 30px;
             }
         </style>
+        <script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"></script>
+        <script type="application/javascript">
+            Affiliate.key = 'EYuY20MBoYab9EguSk6dpGySCHjQg0kU';
+            Affiliate.domain = 'http://localhost/reviewvelocity/public'
+            Affiliate._init();
+        </script>
+
+
+
+
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-        <script type="application/javascript" src="https://api.ipify.org?format=json"></script>
+       {{-- <script type="application/javascript" src="https://api.ipify.org?format=json"></script>
         <script>
         function getQueryStrings() { 
                   var assoc  = {};
@@ -175,7 +185,7 @@
             }
         });*/
 
-        </script>
+        </script>--}}
        
     </head>
     <body>

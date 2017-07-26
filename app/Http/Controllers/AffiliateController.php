@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\AgentUrl;
+use App\AgentUrlDetails;
 use Illuminate\Http\Request;
 use \App\AffiliateLink;
 use \App\BusinessPlan;
@@ -213,5 +215,48 @@ class AffiliateController extends Controller
 
 
         return $stats;
+    }
+    public function getReport(Request $request)
+    {
+        if(isset($request->key) || $request->key != 0){
+            $affiliate = Affiliate::where('affiliate_key',$request->key)->first();
+            $url = AgentUrl::where('key',$request->urlKey)->first();
+            if($affiliate != null && $url != null){
+                if(isset($request->dataId) && $request->dataId != 0){
+                    $details = AgentUrlDetails::find($request->dataId);
+                    $count = $details->count+1;
+                    $details->count = $count;
+                    $details->update();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Affiliate Url Logged',
+                    ],200);
+                } else {
+                    $details = new AgentUrlDetails();
+                    $details->url_id = $url->id;
+                    $details->affiliate_id = $affiliate->id;
+                    $details->type = 1;
+                    $details->ip = $request->ip;
+                    $details->count = 1;
+                    $details->browser = $request->browser;
+                    $details->save();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Affiliate Url Logged',
+                        'data' => $details->id,
+                    ],200);
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Agent Not Found'
+                ],404);
+            }
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Key Not Found'
+            ],400);
+        }
     }
 }
