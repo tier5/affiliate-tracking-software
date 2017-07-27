@@ -14,9 +14,8 @@ class CreateAgentUrlDetailsTable extends Migration
     public function up()
     {
         Schema::create('agent_url_details', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('url_id')->unsigned()->index();
-            $table->integer('affiliate_id')->unsigned()->index();
+            $table->bigIncrements('id');
+            $table->bigInteger('affiliate_id')->unsigned()->index();
             $table->tinyInteger('type')->default(1)->comment('1 => visit, 2 => sale, 3 => lead');
             $table->tinyInteger('status')->default(0);
             $table->string('ip');
@@ -27,9 +26,6 @@ class CreateAgentUrlDetailsTable extends Migration
             $table->string('price')->nullable();
             $table->timestamps();
 
-            $table->foreign('url_id')
-                ->references('id')->on('agent_urls')
-                ->onDelete('cascade');
             $table->foreign('affiliate_id')
                 ->references('id')->on('affiliates')
                 ->onDelete('cascade');

@@ -15,8 +15,8 @@ use Illuminate\Http\Request;
 
 class AgencyController extends Controller
 {
-    //
-    public function index()
+
+    public function addAffiliate()
     {
         $user = Auth::user();
 
@@ -144,7 +144,7 @@ class AgencyController extends Controller
         }
     }
 
-    function generateRandomString($length) {
+    public static function generateRandomString($length) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';

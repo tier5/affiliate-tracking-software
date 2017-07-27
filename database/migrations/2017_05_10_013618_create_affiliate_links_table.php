@@ -14,7 +14,7 @@ class CreateAffiliateLinksTable extends Migration
     public function up()
     {
         Schema::create('affiliate_links', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->integer('user_id');
             $table->integer('plan_id');
             $table->string('code')->unique();

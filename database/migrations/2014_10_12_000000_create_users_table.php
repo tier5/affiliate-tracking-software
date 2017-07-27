@@ -13,16 +13,15 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users_laravel', function (Blueprint $table) {
-            $table->increments('id');
-            //$table->integer('agency_id')->nullable();
+        Schema::create('users', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('url')->nullable();
+            $table->tinyInteger('status')->default(1)->comment('1 => Active , 2 => Inactive');
+            $table->string('role')->defalult('admin');
             $table->rememberToken();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -33,6 +32,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_laravel');
+        Schema::dropIfExists('users');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddRoleToUserTable extends Migration
+class AddApproveStatusToAffiliate extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddRoleToUserTable extends Migration
      */
     public function up()
     {
-        Schema::table('users_laravel', function(Blueprint $table){
-            $table->string('role')->nullable()->after('password');
+        Schema::table('affiliates', function (Blueprint $table) {
+            $table->tinyInteger('approve_status')->default(1)->comment('1 => approved , 2 => Pending, 3 => cancel');
         });
     }
 
@@ -25,8 +25,8 @@ class AddRoleToUserTable extends Migration
      */
     public function down()
     {
-        Schema::table('users_laravel', function(Blueprint $table){
-            $table->dropColumn('role');
+        Schema::table('affiliates', function (Blueprint $table) {
+            $table->dropColumn('approve_status');
         });
     }
 }

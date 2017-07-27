@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAgentUrlsTable extends Migration
+class CreateCampaignsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class CreateAgentUrlsTable extends Migration
      */
     public function up()
     {
-        Schema::create('agent_urls', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('campaigns', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('key')->unique();
+            $table->string('name')->unique();
             $table->string('url');
-            $table->text('key');
-            $table->integer('user_id')->unsigned()->index();
+            $table->bigInteger('user_id')->unsigned()->index();
+            $table->tinyInteger('approval')->comment('1 => Auto , 2 => Manual');
             $table->timestamps();
 
             $table->foreign('user_id')
-                ->references('id')->on('users_laravel')
+                ->references('id')->on('users')
                 ->onDelete('cascade');
         });
     }
@@ -33,6 +35,6 @@ class CreateAgentUrlsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('agent_urls');
+        Schema::dropIfExists('campaigns');
     }
 }

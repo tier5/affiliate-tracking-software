@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AgentUrl;
 use App\AgentUrlDetails;
+use App\Campaign;
 use Illuminate\Http\Request;
 use \App\AffiliateLink;
 use \App\BusinessPlan;
@@ -20,9 +21,120 @@ use Illuminate\Support\Facades\Input;
 
 class AffiliateController extends Controller
 {
-    public function index()
-    {
-        return view('agency.dashboard');
+    public function affiliateRegistration(Request $request){
+        $validator=Validator::make($request->all(),[
+            'registration_username' => 'required',
+            'registration_email' => 'required|email|unique:users,email',
+            'registration_password' => 'required|min:6',
+            'registration_confirm_password' => 'required|same:registration_password',
+        ],[
+            'registration_username.required' => 'Username is required',
+            'registration_email.required' => 'Email Address is required',
+            'registration_email.unique' => 'You are already a registered user with this Email Address.',
+            'registration_password.required' => 'Registration Password is required',
+            'registration_password.min' => 'Registration Password must have a minimum of 6 characters',
+            'registration_confirm_password.required' => 'Confirmation Password is required',
+            'registration_confirm_password.same' => 'Registration Password and Confirmation Password does not match',
+        ]);
+
+        if($validator->fails()){
+            $errors=$validator->errors();
+            $errors->add('registration_errors', 'This is a registration error indicator');
+            return redirect()->route('affiliate.registerForm',['affiliateKey' => $request->affiliateKey])->withErrors($errors)->withInput();
+        }else{
+
+            $user=new User();
+            $user->name=$request->registration_username;
+            $user->email=$request->registration_email;
+            $user->password=bcrypt($request->registration_password);
+            $user->status='1';
+            $user->role='affiliate';
+            if($user->save()){
+                $campaignObj=Campaign::where('key',$request->affiliateKey)->first();
+                $affiliate=new Affiliate();
+                $affiliate->campaign_id=$campaignObj->id;
+                $affiliate->user_id=$user->id;
+                $affiliate->key=$this->generateRandomString(16);
+                switch($campaignObj->approval){
+                    case '1':
+                            $affiliate->approve_status = 1;
+                            if($affiliate->save()) {
+                                if (Auth::attempt(['email' => $user->email, 'password' => $user->password, 'status' => '1','role' => 'affiliate'])) {
+                                    return redirect()->route('dashboard');
+                                } else {
+                                    return redirect()->route('affiliate.registerForm', ['affiliateKey', $request->affiliateKey])->with('flash', ['message' => 'Unable To Register User!', 'level' => 'danger']);
+                                }
+                            }else{
+                                return redirect()->route('affiliate.registerForm',['affiliateKey',$request->affiliateKey])->with('error','Unable To Register User!');
+                            }
+                            break;
+                    case '2':
+                            $affiliate->approve_status = 2;
+                            if($affiliate->save()) {
+                                return redirect()->route('affiliate.thankYou');
+                            }else{
+                                return redirect()->route('affiliate.registerForm',['affiliateKey',$request->affiliateKey])->with('error','Unable To Register User!');
+
+                            }
+                            break;
+                }
+            }else{
+                return redirect()->route('affiliate.registerForm',['affiliateKey',$request->affiliateKey])->with('error','Unable To Register User!');
+            }
+        }
+    }
+
+    public function affiliateLogin(Request $request){
+        $validator=Validator::make($request->all(),[
+            'login_email' => 'required',
+            'login_password' => 'required|min:6',
+        ],[
+            'login_email.required' => 'Email Address is required',
+            'login_password.required' => 'Login Password is required',
+            'login_password.min' => 'Login Password must have a minimum of 6 characters',
+        ]);
+
+        if($validator->fails()){
+            $errors=$validator->errors();
+            $errors->add('login_errors', 'This is a log in error indicator');
+            return redirect()->route('affiliate.registerForm',['affiliateKey' => $request->affiliateKey])->withErrors($errors)->withInput();
+        }else{
+            $campaignObj=Campaign::where('key',$request->affiliateKey)->first();
+            $affiliatesRelated=$campaignObj->affiliate->pluck('user_id');
+            if(isset($request->remember)){
+                if(Auth::attempt(['email' => $request->login_email,'password' => $request->login_password,'status' => '1','role' => 'affiliate'],true)){
+                   if(in_array(Auth::user()->id,$affiliatesRelated->toArray())){
+                       return redirect()->route('dashboard');
+                   }else{
+                       $affiliate=new Affiliate();
+                       $affiliate->campaign_id=$campaignObj->id;
+                       $affiliate->user_id=Auth::user()->id;
+                       $affiliate->key=$this->generateRandomString(16);
+                       $affiliate->approve_status=$campaignObj->approval;
+                       $affiliate->save();
+                       return redirect()->route('dashboard');
+                   }
+                }else{
+                    return redirect()->route('affiliate.registerForm',['affiliateKey' => $request->affiliateKey])->with('error','Invalid User Credentials.Check Email And Password.');
+                }
+            }else{
+                if(Auth::attempt(['email' => $request->login_email,'password' => $request->login_password,'status' => '1','role' => 'affiliate'])){
+                    if(in_array(Auth::user()->id,$affiliatesRelated->toArray())){
+                        return redirect()->route('dashboard');
+                    }else{
+                        $affiliate=new Affiliate();
+                        $affiliate->campaign_id=$campaignObj->id;
+                        $affiliate->user_id=Auth::user()->id;
+                        $affiliate->key=$this->generateRandomString(16);
+                        $affiliate->approve_status=$campaignObj->approval;
+                        $affiliate->save();
+                        return redirect()->route('dashboard');
+                    }
+                }else{
+                    return redirect()->route('affiliate.registerForm',['affiliateKey' => $request->affiliateKey])->with('error','Invalid User Credentials.Check Email And Password.');
+                }
+            }
+        }
     }
 
     public function showAffiliate()
@@ -114,7 +226,7 @@ class AffiliateController extends Controller
             
         ],
         [
-            'name.required' => 'Affilator name is required',
+            'name.required' => 'Affiliate name is required',
             'phone.required' => 'Phone is required',
             'phone.numeric' => 'Phone number should be numeric',
             'phone.digits_between' => 'Phone number should be min and max 10 digit',
@@ -250,5 +362,19 @@ class AffiliateController extends Controller
                 'message' => 'Key Not Found'
             ],400);
         }
+    }
+
+    public function thankYou(){
+        return view('thankyouRegistration');
+    }
+
+    function generateRandomString($length) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }

@@ -5,30 +5,44 @@
     <section class="sidebar">
         <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
+            @if(auth()->user()->role == 'affiliate')
             <li>
-            <a href="{{ route('agency.dashboard') }}">
+            <a href="{{ route('dashboard') }}">
                 <i class="fa fa-pie-chart"></i> <span>Dashboard</span>
             </a>
             </li>
+            @endif
             @if(auth()->user()->role == 'admin')
                 <li>
-                    <a href="{{ route('get.add.affiliate') }}">
-                        <i class="fa fa-link"></i>
-                        <span>Add Affiliate </span>
+                    <a href="{{ route('dashboard') }}">
+                        <i class="fa fa-pie-chart"></i> <span>Dashboard</span>
                     </a>
                 </li>
+
+                {{-- <li>
+                     <a href="{{ route('get.add.affiliate') }}">
+                         <i class="fa fa-link"></i>
+                         <span>Add Affiliate </span>
+                     </a>
+                 </li>
+                 <li>
+                     <a href="{{ route('allAffiliate') }}">
+                         <i class="fa fa-user"></i>
+                         <span>Show Affiliate</span>
+                     </a>
+                 </li>--}}
                 <li>
-                    <a href="{{ route('allAffiliate') }}">
-                        <i class="fa fa-user"></i>
-                        <span>Show Affiliate</span>
+                    <a href="{{ route('get.campaign') }}">
+                        <i class="fa fa-star"></i>
+                        <span>Campaign</span>
                     </a>
                 </li>
-                <li>
+                {{--<li>
                     <a href="{{ route('settings') }}">
                         <i class="fa fa-cog"></i>
                         <span>Settings</span>
                     </a>
-                </li>
+                </li>--}}
             @endif
 
         </ul>
