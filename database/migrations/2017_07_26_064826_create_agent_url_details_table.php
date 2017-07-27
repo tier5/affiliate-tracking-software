@@ -22,6 +22,7 @@ class CreateAgentUrlDetailsTable extends Migration
             $table->string('ip');
             $table->bigInteger('count')->default(0);
             $table->string('browser')->nullable();
+            $table->string('os')->nullable();
             $table->string('orderId')->nullable();
             $table->string('price')->nullable();
             $table->timestamps();

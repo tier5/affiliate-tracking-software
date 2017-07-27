@@ -239,6 +239,7 @@ class AffiliateController extends Controller
                     $details->ip = $request->ip;
                     $details->count = 1;
                     $details->browser = $request->browser;
+                    $details->os = $request->os;
                     $details->save();
                     return response()->json([
                         'success' => true,
