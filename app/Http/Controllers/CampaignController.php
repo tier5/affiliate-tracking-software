@@ -157,4 +157,20 @@ class CampaignController extends Controller
             ],500);
         }
     }
+    public function deleteAffiliate(Request $request)
+    {
+        try{
+            $affiliate = Affiliate::find($request->id);
+            $affiliate->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Campaign Deleted Successfully'
+            ],200);
+        } catch(\Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage()
+            ],500);
+        }
+    }
 }
