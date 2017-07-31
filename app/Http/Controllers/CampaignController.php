@@ -13,7 +13,7 @@ class CampaignController extends Controller
 {
     public function getCampaign()
     {
-        $campaign = Campaign::where('user_id',Auth()->user()->id)->get();
+        $campaign = Campaign::where('user_id',Auth()->user()->id)->paginate(25);
         return view('campaign.campaign',['campaigns' => $campaign]);
     }
     public function createCampaign(Request $request)
@@ -38,9 +38,10 @@ class CampaignController extends Controller
             ],200);
         } catch (\Exception $exception){
             return response()->json([
+                'status' => $exception->getCode(),
                 'success' => false,
                 'message' => $exception->getMessage()
-            ],500);
+            ],200);
         }
     }
     public function deleteCampaign(Request $request)

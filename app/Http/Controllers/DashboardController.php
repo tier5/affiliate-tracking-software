@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use App\Jobs\ValidateSubscriptions;
 use \App\SubscriptionInvalidation;
+use Auth;
 
 class DashboardController extends Controller
 {
@@ -39,5 +40,11 @@ class DashboardController extends Controller
     public function approve()
     {
 
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/');
     }
 }

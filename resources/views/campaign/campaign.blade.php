@@ -123,9 +123,10 @@
                                         <tr>
                                             <td colspan="4">No Campaign Available</td>
                                         </tr>
-                                    @endif
                                     </tbody>
                                 </table>
+                                {{$campaigns->render()}}
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -161,7 +162,7 @@
                                 <label class="control-label col-sm-2" for="approve">Auto Approve:</label>
                                 <div class="col-sm-10">
                                     <label class="switch">
-                                        <input name="approve" id="approve" type="checkbox">
+                                        <input name="approve" id="approve" value="off" type="checkbox">
                                         <span class="slider"></span>
                                     </label>
                                 </div>
@@ -379,10 +380,38 @@
                             window.location.reload();
                         });
                     } else {
-                        $('#error_text').text(data.message);
-                        $('#error').show();
+                        switch(data.status) {
+                            case '23000':
+                                $('#error_text').text('Campaign Name Cannot Be Same!');
+                                $('#error').show();
+                                break;
+                            case '400':
+                                $('#error_text').text('Bad Request');
+                                $('#error').show();
+                                break;
+                            case '401':
+                                $('#error_text').text('Unauthorized');
+                                $('#error').show();
+                                break;
+                            case '403':
+                                $('#error_text').text('Forbidden');
+                                $('#error').show();
+                                break;
+                            case '404':
+                                $('#error_text').text('Not Found');
+                                $('#error').show();
+                                break;
+                            case '500':
+                                $('#error_text').text('Internal Server Error');
+                                $('#error').show();
+                                break;
+                            default:
+                                $('#error_text').text(data.message);
+                                $('#error').show();
+                                break;
+                        }
                     }
-                }
+                },
             });
         });
         $('#approve').on('change',function () {

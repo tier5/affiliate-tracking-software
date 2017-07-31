@@ -12,10 +12,9 @@
 */
 use Illuminate\Http\Request;
 
-Route::get('/', function () {
 
-	return view('welcome');
-});
+Route::get('/', 'Auth\LoginController@showLoginForm');
+
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
@@ -113,4 +112,8 @@ Route::get('thank-you',[
     'as' => 'affiliate.thankYou'
 ]);
 
+Route::get('logout',[
+    'uses' => 'DashboardController@logout',
+    'as' => 'logout'
+]);
 
