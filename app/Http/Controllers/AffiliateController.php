@@ -313,9 +313,9 @@ class AffiliateController extends Controller
     public function getReport(Request $request)
     {
         if(isset($request->key) || $request->key != 0){
-            $affiliate = Affiliate::where('affiliate_key',$request->key)->first();
-            $url = AgentUrl::where('key',$request->urlKey)->first();
-            if($affiliate != null && $url != null){
+            $campaign = Campaign::where('key',$request->urlKey)->first();
+            $affiliate = Affiliate::where('key',$request->key)->first();
+            if($campaign != null && $affiliate != null){
                 if(isset($request->dataId) && $request->dataId != 0){
                     $details = AgentUrlDetails::find($request->dataId);
                     $count = $details->count+1;
@@ -327,7 +327,7 @@ class AffiliateController extends Controller
                     ],200);
                 } else {
                     $details = new AgentUrlDetails();
-                    $details->url_id = $url->id;
+                    //$details->url_id = $campaign->id;
                     $details->affiliate_id = $affiliate->id;
                     $details->type = 1;
                     $details->ip = $request->ip;
@@ -373,6 +373,24 @@ class AffiliateController extends Controller
             return view('campaign.affiliate_details',['affiliate' => $affiliate]);
         } catch (\Exception $e){
             return redirect()->back()->with('error',$e->getMessage());
+        }
+    }
+    public function getLead(Request $request)
+    {
+        try{
+            $lead = AgentUrlDetails::find($request->dataId);
+            $lead->email = $request->email;
+            $lead->type = 3;
+            $lead->update();
+            return response()->json([
+                'success' => true,
+                'message' => 'Affiliate lead Logged',
+            ],200);
+        } catch (\Exception $exception){
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage()
+            ],500);
         }
     }
 }
