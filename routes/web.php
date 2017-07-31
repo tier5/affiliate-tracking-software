@@ -89,7 +89,14 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'CampaignController@approveAffiliate',
         'as' => 'approve.affiliate'
     ]);
-
+    Route::post('affiliate/delete',[
+        'uses' => 'CampaignController@deleteAffiliate',
+        'as' => 'delete.affiliate'
+    ]);
+    Route::get('affiliate/details/{id}',[
+        'uses' => 'AffiliateController@detailsAffiliate',
+        'as' => 'details.affiliate'
+    ]);
 });
 
 Route::get('affiliate/request/{affiliateKey}',[

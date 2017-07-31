@@ -148,8 +148,8 @@
                                                                     </td>
                                                                     <td>{{ date("F j, Y, g:i a",strtotime($affiliate->created_at)) }}</td>
                                                                     <th>
-                                                                        <a href="#" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-list-alt"></span></a>
-                                                                        <button class="btn btn-danger btn-xs deleteCampaign"><span class="glyphicon glyphicon-trash"></span></button>
+                                                                        <a href="{{ route('details.affiliate',[$affiliate->id]) }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-list-alt"></span></a>
+                                                                        <button class="btn btn-danger btn-xs deleteAffiliate" data-id="{{ $affiliate->id }}"><span class="glyphicon glyphicon-trash"></span></button>
                                                                     </th>
                                                                 </tr>
                                                             @endforeach
@@ -317,6 +317,46 @@
         });
         $('.hide-error').on('click',function () {
             $('#error').hide();
-        })
+        });
+        $('.deleteAffiliate').on('click',function () {
+            var id = $(this).data('id');
+            swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(function () {
+                $.ajax({
+                    url: "{{ route('delete.affiliate') }}",
+                    type: "POST",
+                    data: {
+                        id: id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            swal({
+                                title: "Success!",
+                                text: data.message,
+                                type: "success"
+                            }).then(function () {
+                                window.location.reload();
+                            }, function (dismiss) {
+                                window.location.reload();
+                            });
+                        } else {
+                            swal({
+                                title: "Error!",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+            });
+        });
     </script>
 @endsection

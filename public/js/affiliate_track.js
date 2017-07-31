@@ -5,6 +5,10 @@ var Affiliate = Affiliate || (function(){
         var _callback_url = 'http://localhost/reviewvelocity/public';
 
         var COOKIE_NAME = 'ats_affiliate';
+
+        var LEAD_COOKIE_NAME = 'ats_lead';
+
+        var COOKIE_LOG_ID = 'ats_log_id';
         _initJQuery();
 
         function _initJQuery() {
@@ -12,7 +16,7 @@ var Affiliate = Affiliate || (function(){
             if (window.jQuery === undefined || window.jQuery.fn.jquery !== '1.10.1') {
                 var script_tag = document.createElement('script');
                 script_tag.setAttribute("type", "text/javascript");
-                script_tag.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js");
+                script_tag.setAttribute("src", "http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js");
                 if (script_tag.readyState) {
                     script_tag.onreadystatechange = function () { // For old versions of IE
                         if (this.readyState == 'complete' || this.readyState == 'loaded') {
@@ -111,16 +115,16 @@ var Affiliate = Affiliate || (function(){
             now.setTime(time);
             /*var d = new Date();
             d.setTime(d.getTime() + timeout);*/
-            var cookieObj = name + "=" + encode(val) + ",expires=" + now.toUTCString() + ",path=/,id="+id;
-            if(Affiliate && Affiliate.domain) {
-                cookieObj += ",domain=." + Affiliate.domain;
-            }
+            var cookieObj = name + "=" + encode(val) + ";expires=" + now.toUTCString()+';path=/';
+            /*if(Affiliate && Affiliate.domain && name == COOKIE_NAME) {
+                cookieObj += ";domain=." + Affiliate.domain;
+            }*/
             document.cookie = cookieObj;
         }
 
         function getCookie(name) {
             console.log("Getting Cookie " + name);
-            var i, x, y, c = document.cookie.split(",");
+            var i, x, y, c = document.cookie.split(";");
             for (i = 0; i < c.length; i++) {
                 x = c[i].substr(0, c[i].indexOf("="));
                 y = c[i].substr(c[i].indexOf("=") + 1);
@@ -131,27 +135,45 @@ var Affiliate = Affiliate || (function(){
             }
             return '';
         }
-
-        function getCookieId() {
-            var i, x, y, c = document.cookie.split(",");
-            for (i = 0; i < c.length; i++) {
-                x = c[i].substr(0, c[i].indexOf("="));
-                y = c[i].substr(c[i].indexOf("=") + 1);
-                x = x.replace(/^\s+|\s+$/g, "");
-                if (x == 'id') {
-                    return decode(y);
-                }
-            }
-            return '';
-        }
-
+        var _proxy = null;
         function deleteCookie(name) {
-            name = processCookieName(name);
-            log("Deleting Cookie " + name);
+            console.log("Deleting Cookie " + name);
             if (_proxy && _proxy.deleteCookie) {
                 _proxy.deleteCookie(name);
             } else {
                 document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/';
+            }
+        }
+
+        function isEmail(email) {
+            return /\S+@\S+\.\S+/.test(email);
+        }
+
+        function leadLog(id,lead){
+            if(isEmail(lead)){
+                var lead_cookie = getCookie(LEAD_COOKIE_NAME);
+                if(lead_cookie == ''){
+                    setCookie(LEAD_COOKIE_NAME,lead,86400,null);
+                    dataPost = 'dataId='+id+'&email='+lead;
+                    Ajax.request(_callback_url + "/api/affiliate/lead","POST",dataPost,function (dataNew) {
+                        console.log(dataNew.message);
+                    },function () {
+                        console.log('Api Failed');
+                    });
+                } else {
+                    if(lead != lead_cookie){
+                        deleteCookie(LEAD_COOKIE_NAME);
+                        setCookie(LEAD_COOKIE_NAME,lead,86400,null);
+                        dataPost = 'dataId='+id+'&email='+lead;
+                        Ajax.request(_callback_url + "/api/affiliate/lead","POST",dataPost,function (dataNew) {
+                            console.log(dataNew.message);
+                        },function () {
+                            console.log('Api Failed');
+                        });
+                    } else {
+                        console.log('same Api');
+                    }
+                }
             }
         }
 
@@ -235,20 +257,29 @@ var Affiliate = Affiliate || (function(){
                         dataPost = 'ip='+data.ip+'&key='+affid+'&browser='+browser+'&urlKey='+Affiliate.key+'&os='+OSName;
                         Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
                             setCookie(COOKIE_NAME,affid,86400,dataNew.data);
+                            setCookie(COOKIE_LOG_ID,dataNew.data,86400);
                             console.log(dataNew.message);
+                            $('input[type=text],input[type=email]').on('change',function () {
+                                var lead = $(this).val();
+                                leadLog(dataNew.data,lead);
+                            });
                         },function () {
                             console.log('Api Failed');
-                        })
+                        });
                     },function(){
                         console.log('ip not found');
                     });
                 } else {
+                    var logId = getCookie(COOKIE_LOG_ID);
                     var dataPost = '';
                     Ajax.request("https://api.ipify.org/?format=json","GET",null,function(data){
-                        var logId = getCookieId();
                         dataPost = 'ip='+data.ip+'&key='+affid+'&browser='+browser+'&urlKey='+Affiliate.key+'&dataId='+logId;
                         Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
                             console.log(dataNew.message);
+                            $('input[type=text],input[type=email]').on('change',function () {
+                                var lead = $(this).val();
+                                leadLog(logId,lead);
+                            });
                         },function () {
                             console.log('Api Failed');
                         })

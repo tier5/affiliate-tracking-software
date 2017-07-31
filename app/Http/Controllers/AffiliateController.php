@@ -83,7 +83,6 @@ class AffiliateController extends Controller
             }
         }
     }
-
     public function affiliateLogin(Request $request){
         $validator=Validator::make($request->all(),[
             'login_email' => 'required',
@@ -136,7 +135,6 @@ class AffiliateController extends Controller
             }
         }
     }
-
     public function showAffiliate()
     {
         $user = Auth::user();
@@ -149,7 +147,6 @@ class AffiliateController extends Controller
         
         return view('agency.dashboard',compact('result'));
     }
-
     public function links()
     {
         //echo 9999; die;
@@ -208,9 +205,6 @@ class AffiliateController extends Controller
             'landingPageURL' => 'http://' . $subdomain . config('app.rv_url')
         ]);
     }
-
-    
-
     public function addAffiliate(Request $request)
     {
         
@@ -264,8 +258,6 @@ class AffiliateController extends Controller
 
         }
     }
-
-    
     public function allAffiliate()
     {
         $affiliates = Affiliate::paginate(25);
@@ -275,7 +267,6 @@ class AffiliateController extends Controller
     {
         dispatch(new AffiliatePlanSync());
     }
-
     private function getLandingPageStats()
     {
         $links = AffiliateLink::where('user_id', Auth::id())
@@ -322,9 +313,9 @@ class AffiliateController extends Controller
     public function getReport(Request $request)
     {
         if(isset($request->key) || $request->key != 0){
-            $affiliate = Affiliate::where('affiliate_key',$request->key)->first();
-            $url = AgentUrl::where('key',$request->urlKey)->first();
-            if($affiliate != null && $url != null){
+            $campaign = Campaign::where('key',$request->urlKey)->first();
+            $affiliate = Affiliate::where('key',$request->key)->first();
+            if($campaign != null && $affiliate != null){
                 if(isset($request->dataId) && $request->dataId != 0){
                     $details = AgentUrlDetails::find($request->dataId);
                     $count = $details->count+1;
@@ -336,7 +327,7 @@ class AffiliateController extends Controller
                     ],200);
                 } else {
                     $details = new AgentUrlDetails();
-                    $details->url_id = $url->id;
+                    //$details->url_id = $campaign->id;
                     $details->affiliate_id = $affiliate->id;
                     $details->type = 1;
                     $details->ip = $request->ip;
@@ -363,11 +354,9 @@ class AffiliateController extends Controller
             ],400);
         }
     }
-
     public function thankYou(){
         return view('thankyouRegistration');
     }
-
     function generateRandomString($length) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
@@ -376,5 +365,32 @@ class AffiliateController extends Controller
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
         return $randomString;
+    }
+    public function detailsAffiliate($id)
+    {
+        try{
+            $affiliate = Affiliate::where('id',$id)->with('user','campaign')->first();
+            return view('campaign.affiliate_details',['affiliate' => $affiliate]);
+        } catch (\Exception $e){
+            return redirect()->back()->with('error',$e->getMessage());
+        }
+    }
+    public function getLead(Request $request)
+    {
+        try{
+            $lead = AgentUrlDetails::find($request->dataId);
+            $lead->email = $request->email;
+            $lead->type = 3;
+            $lead->update();
+            return response()->json([
+                'success' => true,
+                'message' => 'Affiliate lead Logged',
+            ],200);
+        } catch (\Exception $exception){
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage()
+            ],500);
+        }
     }
 }
