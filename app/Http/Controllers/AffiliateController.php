@@ -370,7 +370,9 @@ class AffiliateController extends Controller
     {
         try{
             $affiliate = Affiliate::where('id',$id)->with('user','campaign')->first();
-            return view('campaign.affiliate_details',['affiliate' => $affiliate]);
+            $allTraffic=$affiliate->agentURL;
+            $leadsOnly=$allTraffic->where('type','3');
+            return view('campaign.affiliate_details',['affiliate' => $affiliate,'allTraffic' => $allTraffic,'leadsOnly' => $leadsOnly]);
         } catch (\Exception $e){
             return redirect()->back()->with('error',$e->getMessage());
         }

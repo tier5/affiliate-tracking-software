@@ -14,4 +14,8 @@ class Affiliate extends Model
     {
         return $this->belongsTo('App\Campaign','campaign_id');
     }
+
+    public function agentURL(){
+        return $this->hasMany(AgentUrlDetails::class);
+    }
 }
