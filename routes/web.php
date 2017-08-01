@@ -97,6 +97,10 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'AffiliateController@detailsAffiliate',
         'as' => 'details.affiliate'
     ]);
+    Route::get('campaign/products/{id}',[
+        'uses' => 'CampaignController@campaignProduct',
+        'as' => 'campaign.products'
+    ]);
 });
 
 Route::get('affiliate/request/{affiliateKey}',[

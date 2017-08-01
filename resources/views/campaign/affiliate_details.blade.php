@@ -35,10 +35,10 @@
                                 <hr/>
                                 <div class="row">
                                     <div class="col-md-3">
-                                        Affiliate Link :
+                                        Affiliate Referring Link :
                                     </div>
                                     <div class="col-md-6">
-                                        <span id="url">{{ $affiliate->campaign->url }}</span>
+                                        <span id="url">http://{{ $affiliate->campaign->url }}?id={{ $affiliate->key }}</span>
                                     </div>
                                     <div class="col-md-3">
                                         <a id="copy" class="pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i>Copy Link</a>
@@ -188,15 +188,15 @@
 @section('script')
 <script>
     function copyToClipboard(element) {
-//        var $temp = $("<input>");
-//        $("body").append($temp);
-//        $temp.val($(element).text()).select();
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($(element).text()).select();
         document.execCommand("copy");
-       // $temp.remove();
+        $temp.remove();
     };
 
     $('#copy').on('click',function(){
-        var url=$('#url').text();
+        var url=$('#url');
         copyToClipboard(url);
         toastr.info('Copied To Clipboard');
     });

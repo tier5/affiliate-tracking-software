@@ -174,4 +174,12 @@ class CampaignController extends Controller
             ],500);
         }
     }
+    public function campaignProduct($id)
+    {
+        try{
+            return view('campaign.product',['campaign_id' => $id]);
+        } catch (\Exception $exception) {
+            return redirect()->back()->with('error',$exception->getMessage());
+        }
+    }
 }

@@ -98,7 +98,7 @@
                                 <div class="col-md-12 col-sm-12">
                                     <ul class="nav nav-tabs">
                                         <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-                                        <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+                                        <li><a data-toggle="tab" href="#menu1">Script</a></li>
                                         <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
                                     </ul>
                                     <div class="tab-content">
@@ -160,8 +160,18 @@
                                             </div>
                                         </div>
                                         <div id="menu1" class="tab-pane fade">
-
-                                            <p>Some content in menu 1.</p>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="pull-right">
+                                                        <a title="copy to clip-board" id="urlCopy" class="btn btn-success btn-md"><span class="glyphicon glyphicon-copy"></span> </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <strong id="copyScript"><p>&lt;script src="http://138.197.125.34/js/affiliate_track.js" type="application/javascript"&gt;&lt;/script&gt;</p>
+                                            <p>&lt;script type="application/javascript"&gt;</p>
+                                                   <p> &nbsp;&nbsp;&nbsp;Affiliate.key = '{{ $campaigns->key }}';</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._init();</p>
+                                           <p> &lt;/script&gt;</p></strong>
                                         </div>
                                         <div id="menu2" class="tab-pane fade">
 
@@ -221,6 +231,19 @@
 
 @section('script')
     <script>
+        function copyToClipboard(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($(element).text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        };
+
+        $('#urlCopy').on('click',function(){
+            var url=$('#copyScript');
+            copyToClipboard(url);
+            toastr.info('Copied To Clipboard');
+        });
         $('#approve').on('change',function () {
             var id = $(this).data('id');
             $.ajax({

@@ -2,7 +2,7 @@ var Affiliate = Affiliate || (function(){
 
         var $;
 
-        var _callback_url = 'http://affiliate.reviewvelocity.local';
+        var _callback_url = 'http://138.197.125.34';
 
         var COOKIE_NAME = 'ats_affiliate';
 

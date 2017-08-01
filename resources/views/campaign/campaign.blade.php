@@ -96,6 +96,7 @@
                                             <th>Campaign Url</th>
                                             <th>Registration URL</th>
                                             <th>Approve</th>
+                                            <th>Add Product</th>
                                             <th>Details</th>
                                             <th>Action</th>
                                         </tr>
@@ -109,6 +110,9 @@
                                                 <td><a class="copy" style="cursor: pointer"><i class="fa fa-copy fa-fw"></i></a> | <span class="url">{{ route('affiliate.registerForm',[$campaign->key])}}</span></td>
                                                 <td>{{ $campaign->approval == 1 ? 'Auto' : 'Manual' }}</td>
                                                 <td>
+                                                    <a href="{{ route('campaign.products',[$campaign->id]) }}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                                                </td>
+                                                <td>
                                                     <a href="{{ route('details.campaign',[$campaign->key]) }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-list-alt"></span></a>
                                                 </td>
                                                 <td>
@@ -119,14 +123,16 @@
                                                 </td>
                                             </tr>
                                         @endforeach
+                                        <tr>
+                                            <td colspan="5">{{$campaigns->render()}}</td>
+                                        </tr>
                                     @else
                                         <tr>
-                                            <td colspan="4">No Campaign Available</td>
+                                            <td colspan="5">No Campaign Available</td>
                                         </tr>
+                                    @endif
                                     </tbody>
                                 </table>
-                                {{$campaigns->render()}}
-                                @endif
                             </div>
                         </div>
                     </div>
@@ -147,20 +153,20 @@
                    <div class="row">
                         <form id="addCampaignForm" method="POST" class="form-horizontal col-md-12">
                             <div class="form-group">
-                                <label class="control-label col-sm-2" for="campaign_name">Campaign Name:</label>
-                                <div class="col-sm-10">
+                                <label class="control-label col-md-2" for="campaign_name">Campaign Name:</label>
+                                <div class="col-md-10">
                                     <input type="text" class="form-control hide-error" id="campaign_name" name="campaign_name" placeholder="Enter Campaign Name">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-2" for="campaign_url">URL:</label>
-                                <div class="col-sm-10">
+                                <label class="control-label col-md-2" for="campaign_url">URL:</label>
+                                <div class="col-md-10">
                                     <input type="text" class="form-control hide-error" id="campaign_url" name="campaign_url" placeholder="Enter Campaign URl">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-2" for="approve">Auto Approve:</label>
-                                <div class="col-sm-10">
+                                <label class="control-label col-md-2" for="approve">Auto Approve:</label>
+                                <div class="col-md-10">
                                     <label class="switch">
                                         <input name="approve" id="approve" value="off" type="checkbox">
                                         <span class="slider"></span>
@@ -168,13 +174,13 @@
                                 </div>
                             </div>
                             <div class="form-group" id="error" style="display: none; color: red;">
-                                <label class="control-label col-sm-2" for="error">Error:</label>
-                                <div class="col-sm-10">
+                                <label class="control-label col-md-2" for="error">Error:</label>
+                                <div class="col-md-10">
                                     <h4 id="error_text"></h4>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
+                                <div class="col-md-offset-2 col-md-10">
                                     <button type="button" id="create-campaign" class="btn btn-success form-control">Create Campaign</button>
                                 </div>
                             </div>
@@ -187,6 +193,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     <div class="modal fade" id="editCampaignModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -208,22 +215,22 @@
                 <div class="modal-body">
                     <form id="editCampaignForm" method="POST" class="form-horizontal col-md-12">
                         <div class="form-group">
-                            <label class="control-label col-sm-2" for="edit_campaign_name">Campaign Name:</label>
-                            <div class="col-sm-10">
+                            <label class="control-label col-md-2" for="edit_campaign_name">Campaign Name:</label>
+                            <div class="col-md-10">
                                 <input type="text" class="form-control hide-error" id="edit_campaign_name" name="edit_campaign_name" placeholder="Edit Campaign Name">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-2" for="edit_approve">Auto Approve:</label>
-                            <div class="col-sm-10">
+                            <label class="control-label col-md-2" for="edit_approve">Auto Approve:</label>
+                            <div class="col-md-10">
                                 <input type="radio" value="2" name="edit_approve" id="edit_approve_off"> No </label>
                                 <input type="radio" value="1" name="edit_approve" id="edit_approve_on"> YES</label>
                             </div>
                         </div>
                         <input id="edit_id" type="hidden">
                         <div class="form-group" id="edit_error" style="display: none; color: red;">
-                            <label class="control-label col-sm-2" for="edit_error">Error:</label>
-                            <div class="col-sm-10">
+                            <label class="control-label col-md-2" for="edit_error">Error:</label>
+                            <div class="col-md-10">
                                 <h4 id="edit_error_text"></h4>
                             </div>
                         </div>
