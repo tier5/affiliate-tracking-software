@@ -272,8 +272,9 @@ var Affiliate = Affiliate || (function(){
                 } else {
                     var logId = getCookie(COOKIE_LOG_ID);
                     var dataPost = '';
+                    var affiliate_id = myCookie;
                     Ajax.request("https://api.ipify.org/?format=json","GET",null,function(data){
-                        dataPost = 'ip='+data.ip+'&key='+affid+'&browser='+browser+'&urlKey='+Affiliate.key+'&dataId='+logId;
+                        dataPost = 'ip='+data.ip+'&key='+affiliate_id+'&browser='+browser+'&urlKey='+Affiliate.key+'&dataId='+logId;
                         Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
                             console.log(dataNew.message);
                             $('input[type=text],input[type=email]').on('change',function () {
