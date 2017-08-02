@@ -110,8 +110,8 @@
                                                                         @elseif((isset($eachTraffic->type) && !is_null($eachTraffic->type) && $eachTraffic->type == 3))
                                                                             <td>{{'Leads'}}</td>
                                                                         @endif
-                                                                        <td>{{ (isset($eachTraffic->created_at) && !is_null($eachTraffic->created_at)) ?  $eachTraffic->created_at->toFormattedDateString().' at '.$eachTraffic->created_at->toTimeString() : '' }}</td>
-                                                                        <td>{{ (isset($eachTraffic->updated_at) && !is_null($eachTraffic->updated_at)) ?  $eachTraffic->created_at->toDateTimeString().' ( '.$eachTraffic->updated_at->diffForHumans().' )' : '' }}</td>
+                                                                        <td>{{ (isset($eachTraffic->created_at) && !is_null($eachTraffic->created_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachTraffic->created_at)) : '' }}</td>
+                                                                        <td>{{ (isset($eachTraffic->updated_at) && !is_null($eachTraffic->updated_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachTraffic->updated_at)) : '' }}</td>
                                                                     </tr>
                                                                 @empty
                                                                     <tr>
@@ -159,8 +159,8 @@
                                                                         @elseif((isset($eachLeads->type) && !is_null($eachLeads->type) && $eachLeads->type == 3))
                                                                             <td>{{'Leads'}}</td>
                                                                         @endif
-                                                                        <td>{{ (isset($eachLeads->created_at) && !is_null($eachLeads->created_at)) ?  $eachLeads->created_at->toFormattedDateString().' at '.$eachTraffic->created_at->toTimeString() : '' }}</td>
-                                                                        <td>{{ (isset($eachLeads->updated_at) && !is_null($eachLeads->updated_at)) ?  $eachLeads->updated_at->toDateTimeString().' ( '.$eachLeads->updated_at->diffForHumans().' )' : '' }}</td>
+                                                                        <td>{{ (isset($eachLeads->created_at) && !is_null($eachLeads->created_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachLeads->created_at)) : '' }}</td>
+                                                                        <td>{{ (isset($eachLeads->updated_at) && !is_null($eachLeads->updated_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachLeads->updated_at)) : '' }}</td>
                                                                     </tr>
                                                                 @empty
                                                                     <tr>
@@ -200,6 +200,15 @@
         copyToClipboard(url);
         toastr.info('Copied To Clipboard');
     });
+</script>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-103810207-1', 'auto');
+    ga('send', 'pageview');
 
 </script>
 @endsection

@@ -78,43 +78,29 @@
                             <div class="form-group">
                                 <label class="control-label col-md-2" for="product_name">Product Name:</label>
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control hide-error" id="product_name" name="product_name" placeholder="Edit Product Name">
+                                    <input type="text" class="form-control hide-error" id="product_name" name="product_name" placeholder="Add Product Name">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-2" for="product_details">Product Details:</label>
-                                <div class="col-md-10">
-                                    <textarea rows="5" cols="17" name="product_details" class="form-control product_details" id="product_details"></textarea>
+                                <label class="control-label col-md-2" for="product_pricing">Commission Settings :</label>
+                                <div class="col-md-3">
+                                    <label class="control-label">Commission:</label>
+                                    <input type="text" name="price" id="product_pricing" class="form-control" placeholder="Add Commission">
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2" for="product_pricing">Payment Settings :</label>
-                                <div class="col-md-5">
-                                    <label class="control-label">Price:</label>
-                                    <input type="text" name="price" id="product_pricing" class="form-control">
+                                <div class="col-md-3">
+                                    <label class="control-label">Method:</label>
+                                    <select name="method" id="method" class="form-control">
+                                        <option value="">----Select----</option>
+                                        <option value="1">Percentage ( % )</option>
+                                        <option value="2">Dollar ( $ )</option>
+                                    </select>
                                 </div>
-                                <div class="col-md-5">
-                                    <label class="control-label">Payment Frequency:</label>
+                                <div class="col-md-4">
+                                    <label class="control-label">Frequency:</label>
                                     <select name="price_frequency" class="form-control" id="price_frequency">
-                                        <option value="one_time">One-Time</option>
-                                        <option value="recurring">Recurring</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group"  id="recurring_options" style="display: none;">
-                                <label class="control-label col-md-2">&nbsp;</label>
-                                <div class="col-md-5">
-                                    <label class="control-label">Recurring period:</label>
-                                    <select name="recurringPeriod" class="form-control" id="recurringPeriod">
-                                        <option value="day">Day(s)</option>
-                                        <option value="month">Month(s)</option>
-                                        <option value="year">Year(s)</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-5">
-                                    <label class="control-label">Recurring Frequency:</label>
-                                    <select name="recurring_frequency" class="form-control" id="recurring_frequency">
-                                        <option value="">------Select------</option>
+                                        <option value="">-------Select-------</option>
+                                        <option value="1">One-Time</option>
+                                        <option value="2">Recurring</option>
                                     </select>
                                 </div>
                             </div>

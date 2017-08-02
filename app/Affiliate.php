@@ -16,6 +16,6 @@ class Affiliate extends Model
     }
 
     public function agentURL(){
-        return $this->hasMany(AgentUrlDetails::class);
+        return $this->hasMany(AgentUrlDetails::class)->orderBy('updated_at','DESC');
     }
 }
