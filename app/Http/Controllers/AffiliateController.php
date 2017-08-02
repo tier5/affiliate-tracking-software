@@ -16,8 +16,10 @@ use \App\Visitor;
 use \App\Jobs\AffiliatePlanSync;
 use Illuminate\Support\Facades\Auth;
 
+use Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
+use Mockery\Exception;
 
 class AffiliateController extends Controller
 {
@@ -40,46 +42,50 @@ class AffiliateController extends Controller
         if($validator->fails()){
             $errors=$validator->errors();
             $errors->add('registration_errors', 'This is a registration error indicator');
-            return redirect()->route('affiliate.registerForm',['affiliateKey' => $request->affiliateKey])->withErrors($errors)->withInput();
-        }else{
-
-            $user=new User();
-            $user->name=$request->registration_username;
-            $user->email=$request->registration_email;
-            $user->password=bcrypt($request->registration_password);
-            $user->status='1';
-            $user->role='affiliate';
-            if($user->save()){
-                $campaignObj=Campaign::where('key',$request->affiliateKey)->first();
-                $affiliate=new Affiliate();
-                $affiliate->campaign_id=$campaignObj->id;
-                $affiliate->user_id=$user->id;
-                $affiliate->key=$this->generateRandomString(16);
-                switch($campaignObj->approval){
-                    case '1':
+            return redirect()->route('affiliate.registerForm',[$request->affiliateKey])->withErrors($errors)->withInput();
+        }else {
+            try {
+                $user = new User();
+                $user->name = $request->registration_username;
+                $user->email = $request->registration_email;
+                $user->password = bcrypt($request->registration_password);
+                $user->status = '1';
+                $user->role = 'affiliate';
+                if ($user->save()) {
+                    $campaignObj = Campaign::where('key', $request->affiliateKey)->first();
+                    $affiliate = new Affiliate();
+                    $affiliate->campaign_id = $campaignObj->id;
+                    $affiliate->user_id = $user->id;
+                    $affiliate->key = $this->generateRandomString(16);
+                    switch ($campaignObj->approval) {
+                        case '1':
                             $affiliate->approve_status = 1;
-                            if($affiliate->save()) {
-                                if (Auth::attempt(['email' => $user->email, 'password' => $user->password, 'status' => '1','role' => 'affiliate'])) {
+                            if ($affiliate->save()) {
+                                if (Auth::attempt(['email' => $user->email, 'password' => $user->password, 'status' => '1', 'role' => 'affiliate'])) {
                                     return redirect()->route('dashboard');
                                 } else {
-                                    return redirect()->route('affiliate.registerForm', ['affiliateKey', $request->affiliateKey])->with('flash', ['message' => 'Unable To Register User!', 'level' => 'danger']);
+                                    return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->with('flash', ['message' => 'Unable To Register User!', 'level' => 'danger']);
                                 }
-                            }else{
-                                return redirect()->route('affiliate.registerForm',['affiliateKey',$request->affiliateKey])->with('error','Unable To Register User!');
+                            } else {
+                                return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->with('error', 'Unable To Register User!');
                             }
                             break;
-                    case '2':
+                        case '2':
                             $affiliate->approve_status = 2;
-                            if($affiliate->save()) {
+                            if ($affiliate->save()) {
                                 return redirect()->route('affiliate.thankYou');
-                            }else{
-                                return redirect()->route('affiliate.registerForm',['affiliateKey',$request->affiliateKey])->with('error','Unable To Register User!');
+                            } else {
+                                return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->with('error', 'Unable To Register User!');
 
                             }
                             break;
+                    }
+                } else {
+                    return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->with('error', 'Unable To Register User!');
                 }
-            }else{
-                return redirect()->route('affiliate.registerForm',['affiliateKey',$request->affiliateKey])->with('error','Unable To Register User!');
+            } catch (\Exception $exception)
+            {
+                return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->withErrors('error', $exception->getMessage());
             }
         }
     }
@@ -96,42 +102,46 @@ class AffiliateController extends Controller
         if($validator->fails()){
             $errors=$validator->errors();
             $errors->add('login_errors', 'This is a log in error indicator');
-            return redirect()->route('affiliate.registerForm',['affiliateKey' => $request->affiliateKey])->withErrors($errors)->withInput();
+            return redirect()->route('affiliate.registerForm',[$request->affiliateKey])->withErrors($errors)->withInput();
         }else{
-            $campaignObj=Campaign::where('key',$request->affiliateKey)->first();
-            $affiliatesRelated=$campaignObj->affiliate->pluck('user_id');
-            if(isset($request->remember)){
-                if(Auth::attempt(['email' => $request->login_email,'password' => $request->login_password,'status' => '1','role' => 'affiliate'],true)){
-                   if(in_array(Auth::user()->id,$affiliatesRelated->toArray())){
-                       return redirect()->route('dashboard');
-                   }else{
-                       $affiliate=new Affiliate();
-                       $affiliate->campaign_id=$campaignObj->id;
-                       $affiliate->user_id=Auth::user()->id;
-                       $affiliate->key=$this->generateRandomString(16);
-                       $affiliate->approve_status=$campaignObj->approval;
-                       $affiliate->save();
-                       return redirect()->route('dashboard');
-                   }
-                }else{
-                    return redirect()->route('affiliate.registerForm',['affiliateKey' => $request->affiliateKey])->with('error','Invalid User Credentials.Check Email And Password.');
-                }
-            }else{
-                if(Auth::attempt(['email' => $request->login_email,'password' => $request->login_password,'status' => '1','role' => 'affiliate'])){
-                    if(in_array(Auth::user()->id,$affiliatesRelated->toArray())){
-                        return redirect()->route('dashboard');
-                    }else{
-                        $affiliate=new Affiliate();
-                        $affiliate->campaign_id=$campaignObj->id;
-                        $affiliate->user_id=Auth::user()->id;
-                        $affiliate->key=$this->generateRandomString(16);
-                        $affiliate->approve_status=$campaignObj->approval;
-                        $affiliate->save();
-                        return redirect()->route('dashboard');
+            try {
+                $campaignObj = Campaign::where('key', $request->affiliateKey)->first();
+                $affiliatesRelated = $campaignObj->affiliate->pluck('user_id');
+                if (isset($request->remember)) {
+                    if (Auth::attempt(['email' => $request->login_email, 'password' => $request->login_password, 'status' => '1', 'role' => 'affiliate'], true)) {
+                        if (in_array(Auth::user()->id, $affiliatesRelated->toArray())) {
+                            return redirect()->route('dashboard');
+                        } else {
+                            $affiliate = new Affiliate();
+                            $affiliate->campaign_id = $campaignObj->id;
+                            $affiliate->user_id = Auth::user()->id;
+                            $affiliate->key = $this->generateRandomString(16);
+                            $affiliate->approve_status = $campaignObj->approval;
+                            $affiliate->save();
+                            return redirect()->route('dashboard');
+                        }
+                    } else {
+                        return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->with('error', 'Invalid User Credentials.Check Email And Password.');
                     }
-                }else{
-                    return redirect()->route('affiliate.registerForm',['affiliateKey' => $request->affiliateKey])->with('error','Invalid User Credentials.Check Email And Password.');
+                } else {
+                    if (Auth::attempt(['email' => $request->login_email, 'password' => $request->login_password, 'status' => '1', 'role' => 'affiliate'])) {
+                        if (in_array(Auth::user()->id, $affiliatesRelated->toArray())) {
+                            return redirect()->route('dashboard');
+                        } else {
+                            $affiliate = new Affiliate();
+                            $affiliate->campaign_id = $campaignObj->id;
+                            $affiliate->user_id = Auth::user()->id;
+                            $affiliate->key = $this->generateRandomString(16);
+                            $affiliate->approve_status = $campaignObj->approval;
+                            $affiliate->save();
+                            return redirect()->route('dashboard');
+                        }
+                    } else {
+                        return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->with('error', 'Invalid User Credentials.Check Email And Password.');
+                    }
                 }
+            }catch(\Exception $exception){
+                return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->withErrors('error', $exception->getMessage());
             }
         }
     }
@@ -393,6 +403,21 @@ class AffiliateController extends Controller
                 'success' => false,
                 'message' => $exception->getMessage()
             ],500);
+        }
+    }
+    public function sendEmail(Affiliate $affiliate)
+    {
+        try{
+            $affiliateUser = $affiliate->user;
+            $campaign= $affiliate->campaign;
+            $user=Auth::user();
+            Mail::send('email.approve', ['affiliateUser' => $affiliateUser,'campaign' => $campaign, 'user' => $user,'affiliate' => $affiliate], function ($m) use ($affiliateUser) {
+                $m->from(env('MAIL_USERNAME'), 'Approval Mail');
+                $m->to($affiliateUser->email, $affiliateUser->name)->subject('Approval Mail: Review Velocity');
+            });
+            return redirect()->route('details.affiliate',[$affiliate->id])->with('success','Mail Sent Successfully!');
+        }catch (\Exception $exception) {
+            return redirect()->route('details.affiliate',[$affiliate->id])->with('error',$exception->getMessage());
         }
     }
 }

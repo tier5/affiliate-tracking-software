@@ -101,6 +101,14 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'CampaignController@campaignProduct',
         'as' => 'campaign.products'
     ]);
+    Route::get('sendEmail/{affiliate}',[
+        'uses' => 'AffiliateController@sendEmail',
+        'as' => 'affiliate.sendEmail'
+    ]);
+    Route::post('product/create',[
+        'uses' => 'ProductController@createProduct',
+        'as' => 'create.product'
+    ]);
 });
 
 Route::get('affiliate/request/{affiliateKey}',[

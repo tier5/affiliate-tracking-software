@@ -23,6 +23,9 @@
                                 @if(\Session::has('error'))
                                     <h4 style="color: red;">{{ \Session::get('error') }}</h4>
                                 @endif
+                                @if(\Session::has('success'))
+                                        <h4 style="color: green;">{{ \Session::get('success') }}</h4>
+                                    @endif
                             </div>
                         </div>
                         <div class="panel-body">
@@ -41,7 +44,7 @@
                                         <span id="url">http://{{ $affiliate->campaign->url }}?id={{ $affiliate->key }}</span>
                                     </div>
                                     <div class="col-md-3">
-                                        <a id="copy" class="pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i>Copy Link</a>
+                                        <a class="btn btn-primary btn-sm" id="copy" class="pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> | Copy Link</a>
                                     </div>
                                 </div>
                                 <div style="padding-bottom: 5px;"></div>
@@ -53,7 +56,7 @@
                                         {{ route('affiliate.registerForm',[$affiliate->campaign->key])}}
                                     </div>
                                     <div class="col-md-3">
-                                        <a href="#" class="pull-right">Send Email</a>
+                                        <a class="btn btn-primary btn-sm" href="{{route('affiliate.sendEmail',['affiliate' => $affiliate->id])}}" class="pull-right"><i class="fa fa-envelope fa-fw"></i> | Send Email</a>
                                     </div>
                                 </div>
                                 <div style="padding-bottom: 5px;"></div>
@@ -201,14 +204,14 @@
         toastr.info('Copied To Clipboard');
     });
 </script>
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+{{--<script>--}}
+    {{--(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){--}}
+            {{--(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),--}}
+        {{--m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)--}}
+    {{--})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');--}}
 
-    ga('create', 'UA-103810207-1', 'auto');
-    ga('send', 'pageview');
+    {{--ga('create', 'UA-103810207-1', 'auto');--}}
+    {{--ga('send', 'pageview');--}}
 
-</script>
+{{--</script>--}}
 @endsection

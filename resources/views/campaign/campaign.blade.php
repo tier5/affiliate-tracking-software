@@ -382,8 +382,10 @@
                             text: data.message,
                             type: "success"
                         }).then( function(){
+                            $('#addCampaignForm')[0].reset();
                             window.location.reload();
                         },function (dismiss) {
+                            $('#addCampaignForm')[0].reset();
                             window.location.reload();
                         });
                     } else {

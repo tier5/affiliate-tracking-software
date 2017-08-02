@@ -177,7 +177,9 @@ class CampaignController extends Controller
     public function campaignProduct($id)
     {
         try{
-            return view('campaign.product',['campaign_id' => $id]);
+            $campaign= Campaign::find($id);
+            $products=$campaign->products;
+            return view('campaign.product',['campaign_id' => $id,'products' => $products]);
         } catch (\Exception $exception) {
             return redirect()->back()->with('error',$exception->getMessage());
         }

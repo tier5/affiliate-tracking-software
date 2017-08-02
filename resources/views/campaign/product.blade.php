@@ -20,7 +20,7 @@
                                     <h4>Campaign Products</h4>
                                 </div>
                                 <div class=" col-md-2 pull-right">
-                                    <button class="btn btn-success"  data-toggle="modal" data-target="#addProduct">
+                                    <button class="btn btn-success" id="triggerAddProductModal">
                                         Add Product
                                     </button>
                                 </div>
@@ -37,13 +37,16 @@
                                     <thead>
                                         <tr>
                                             <td>Product Name</td>
-                                            <td>Payment Details</td>
+                                            <td>Commission</td>
+                                            <td>Method</td>
+                                            <td>Frequency</td>
+                                            <td>Plan</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>name</td>
-                                            <td>Details</td>
+                                            <td>{!! isset($product->name) ? $product->name : '' !!}</td>
+                                            <td>{!! isset($product->commission) ? $product->commission : '' !!}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -104,11 +107,18 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group plan" style="display:none">
+                                <label class="control-label col-md-3" for="plan">Plan :</label>
+                                    <input type="radio" name="plan" id="planDaily" class="pricingPlan" value="1">Daily
+                                    <input type="radio" name="plan" id="planMonthly" class="pricingPlan" value="2">Monthly
+                                    <input type="radio" name="plan" id="planQuarterly" class="pricingPlan" value="3">Quarterly
+                                    <input type="radio" name="plan" id="planYearly" class="pricingPlan" value="4">Yearly
+                            </div>
                             <input name="campaign_id" id="campaign_id" type="hidden" value="{{ $campaign_id }}">
-                            <div class="form-group" id="edit_error" style="display: none; color: red;">
+                            <div class="form-group" id="error" style="display: none; color: red;">
                                 <label class="control-label col-md-2" for="edit_error">Error:</label>
                                 <div class="col-md-10">
-                                    <h4 id="edit_error_text"></h4>
+                                    <h4 id="error_text"></h4>
                                 </div>
                             </div>
                         </form>
@@ -116,7 +126,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="addProduct">Add Product</button>
+                    <button type="button" class="btn btn-primary" id="add-Product">Add Product</button>
                 </div>
             </div>
         </div>
@@ -124,5 +134,134 @@
 @endsection
 
 @section('script')
+<script>
 
+    $('#triggerAddProductModal').click(function(){
+        $('#product_name').val('');
+        $('#product_pricing').val('');
+        $('#method').val('');
+        $('#price_frequency').val('');
+        $('.pricingPlan').val('');
+        $('.plan').hide();
+        $('#addProduct').modal('show');
+    });
+
+    $('#price_frequency').change(function(){
+        var priceFrequency=$('#price_frequency').val();
+        if(priceFrequency == 2) {
+            $('.plan').show();
+        }else{
+            $('.plan').hide();
+        }
+    });
+
+    $('#add-Product').click(function(){
+
+        var name = $('#product_name').val();
+        if(name == ''){
+            $('#error_text').text('Please Enter A Product Name');
+            $('#error').show();
+            return false;
+        }
+        var pricing = $('#product_pricing').val();
+        if(pricing == ''){
+            $('#error_text').text('Please Enter The Required Commission');
+            $('#error').show();
+            return false;
+        }
+        if(!$.isNumeric(pricing)){
+            $('#error_text').text('Please Enter A Valid Commission');
+            $('#error').show();
+            return false;
+        }
+        var pricingMethod = $('#method').val();
+        if(pricingMethod == ''){
+            $('#error_text').text('Please Enter The Required Pricing Method');
+            $('#error').show();
+            return false;
+        }
+        var pricingFrequency = $('#price_frequency').val();
+        if(pricingFrequency == ''){
+            $('#error_text').text('Please Enter The Required Pricing Frequency');
+            $('#error').show();
+            return false;
+        }
+        if(pricingFrequency == 2){
+            var pricingPlan = $('.pricingPlan').val();
+            if(pricingPlan == '') {
+                $('#error_text').text('Please Enter The Required Pricing Plan');
+                $('#error').show();
+                return false;
+            }
+        }else{
+            var pricingPlan=null;
+        }
+        var campaign_id = $('#campaign_id').val();
+        $.ajax({
+            url: "{{ route('create.product') }}",
+            type: "POST",
+            data: {
+                campaign_id: campaign_id,
+                name: name,
+                pricing: pricing,
+                pricingMethod: pricingMethod,
+                pricingFrequency: pricingFrequency,
+                pricingPlan: pricingPlan,
+                _token: "{{ csrf_token() }}"
+            },
+            success: function (data) {
+                if (data.success) {
+                    $('#add-Product').modal('hide');
+                    swal({
+                        title: "Success!",
+                        text: data.message,
+                        type: "success"
+                    }).then( function(){
+                        $('#addProductForm')[0].reset();
+                        window.location.reload();
+                    },function (dismiss) {
+                        $('#addProductForm')[0].reset();
+                        window.location.reload();
+                    });
+                } else {
+                    switch(data.status) {
+                        case '23000':
+                            $('#error_text').text('Duplicate Data Entry.');
+                            $('#error').show();
+                            break;
+                        case '400':
+                            $('#error_text').text('Bad Request');
+                            $('#error').show();
+                            break;
+                        case '401':
+                            $('#error_text').text('Unauthorized');
+                            $('#error').show();
+                            break;
+                        case '403':
+                            $('#error_text').text('Forbidden');
+                            $('#error').show();
+                            break;
+                        case '404':
+                            $('#error_text').text('Not Found');
+                            $('#error').show();
+                            break;
+                        case '500':
+                            $('#error_text').text('Internal Server Error');
+                            $('#error').show();
+                            break;
+                        default:
+                            $('#error_text').text(data.message);
+                            $('#error').show();
+                            break;
+                    }
+                }
+            },
+        });
+    });
+
+    $('.hide-error').on('keyup',function () {
+        $('#error').hide();
+        $('#error_text').hide();
+    });
+</script>
 @endsection
