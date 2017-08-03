@@ -40,11 +40,11 @@
                                     <div class="col-md-3">
                                         Affiliate Referring Link :
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <span id="url">http://{{ $affiliate->campaign->url }}?id={{ $affiliate->key }}</span>
                                     </div>
-                                    <div class="col-md-3">
-                                        <a class="btn btn-primary btn-sm" id="copy" class="pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> | Copy Link</a>
+                                    <div class="col-md-1">
+                                        <a class="btn btn-primary btn-sm pull-right" id="copy" class="pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> | Copy Link</a>
                                     </div>
                                 </div>
                                 <div style="padding-bottom: 5px;"></div>
@@ -52,11 +52,11 @@
                                     <div class="col-md-3">
                                         Affiliate Registration Link :
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         {{ route('affiliate.registerForm',[$affiliate->campaign->key])}}
                                     </div>
-                                    <div class="col-md-3">
-                                        <a class="btn btn-primary btn-sm" href="{{route('affiliate.sendEmail',['affiliate' => $affiliate->id])}}" class="pull-right"><i class="fa fa-envelope fa-fw"></i> | Send Email</a>
+                                    <div class="col-md-1">
+                                        <a class="btn btn-primary btn-sm pull-right" href="{{route('affiliate.sendEmail',['affiliate' => $affiliate->id])}}" class="pull-right"><i class="fa fa-envelope fa-fw"></i> | Send Email</a>
                                     </div>
                                 </div>
                                 <div style="padding-bottom: 5px;"></div>

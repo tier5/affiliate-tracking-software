@@ -84,8 +84,7 @@
 <script src="{{ url('/') }}/admin/plugins/fastclick/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="{{ url('/') }}/admin/dist/js/app.min.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="{{ url('/') }}/admin/dist/js/pages/dashboard.js"></script>
+<script src="{{ url('/') }}/admin/plugins/chartjs/Chart.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{ url('/') }}/admin/dist/js/demo.js"></script>
 <!-- Toast Message -->

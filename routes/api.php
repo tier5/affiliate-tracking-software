@@ -66,3 +66,7 @@ Route::post('/affiliate/lead',[
     'uses' => 'AffiliateController@getLead',
     'as' => 'affiliate.lead'
 ]);
+Route::post('data/sales',[
+    'uses' => 'DashboardController@salesData',
+    'as' => 'data.sales'
+]);
