@@ -14,12 +14,6 @@
 
     <!-- JQuery 1.10.2 -->
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"></script>
-    <script type="application/javascript">
-        Affiliate.key = 'VWDufry4iQzzfMS2MnsssQSbevZVdTWv';
-        Affiliate.domain = 'http://affiliate.reviewvelocity.local'
-        Affiliate._init();
-    </script>
 </head>
  <body>
  @if(Auth::check())

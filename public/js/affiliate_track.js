@@ -3,12 +3,18 @@ var Affiliate = Affiliate || (function(){
         var $;
 
         var _callback_url = 'http://138.197.125.34';
+        //var _callback_url = 'http://localhost/reviewvelocity/public';
 
         var COOKIE_NAME = 'ats_affiliate';
 
         var LEAD_COOKIE_NAME = 'ats_lead';
 
         var COOKIE_LOG_ID = 'ats_log_id';
+
+        var COOKIE_PRODUCT_URL = 'ats_product_url';
+
+        var COOKIE_PRODUCT = 'ats_product';
+
         _initJQuery();
 
         function _initJQuery() {
@@ -111,7 +117,7 @@ var Affiliate = Affiliate || (function(){
             console.log("Setting cookie  " + name + " to value " + val);
             var now = new Date();
             var time = now.getTime();
-            time += 3600 * timeout;
+            time += timeout;
             now.setTime(time);
             /*var d = new Date();
             d.setTime(d.getTime() + timeout);*/
@@ -179,7 +185,7 @@ var Affiliate = Affiliate || (function(){
 
         return {
             _init : function(){
-                console.log('script is initiated...');
+                console.log('_init is initiated...');
 
                 var qs = getQueryStrings();
                 var affid = qs.id;
@@ -287,6 +293,64 @@ var Affiliate = Affiliate || (function(){
                     },function(){
                         console.log('ip not found');
                     });
+                }
+            },
+
+            _watch : function () {
+                console.log('_watch is initiated...');
+                var windowsLocation = window.location.href;
+                var url_cookie = getCookie(COOKIE_PRODUCT_URL);
+                if(url_cookie){
+                    if(url_cookie != windowsLocation) {
+                        var dataPostProduct = 'url=' + url_cookie + '&campaign=' + Affiliate.key;
+                        Ajax.request(_callback_url + "/api/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
+                            if(getCookie(COOKIE_PRODUCT)){
+                                deleteCookie(COOKIE_PRODUCT);
+                            }
+                            setCookie(COOKIE_PRODUCT, dataNewProduct.data, 86400);
+                        }, function () {
+                            console.log('Api Failed');
+                        });
+                    } else {
+                        console.log('Yes');
+                    }
+                }
+                window.onload = function() {
+                    var allitems = [];
+                    allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('a'));
+                    allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('button'));
+                    allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=submit]'));
+                    allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=button]'));
+                    for(var i = 0; i < allitems.length; i++) {
+                        var anchor = allitems[i];
+                        anchor.onclick = function() {
+                            var dataPost = 'url='+windowsLocation+'&campaign='+Affiliate.key;
+                            Ajax.request(_callback_url + "/api/check/landing_page/url","POST",dataPost,function (dataNew) {
+                                if(url_cookie) {
+                                    deleteCookie(COOKIE_PRODUCT_URL);
+                                }
+                                setCookie(COOKIE_PRODUCT_URL,windowsLocation,86400);
+                            },function () {
+                                console.log('Api Failed');
+                            });
+                        }
+                    }
+                }
+            },
+
+            _checkout : function () {
+                var product = getCookie(COOKIE_PRODUCT);
+                var log = getCookie(COOKIE_LOG_ID);
+                if(product != '' && log != ''){
+                    var dataPost = 'product_id='+product+'log_id='+log;
+                    Ajax.request(_callback_url + "/api/check/thank_you","POST",dataPost,function (dataNew) {
+                        deleteCookie(COOKIE_PRODUCT);
+                        deleteCookie(COOKIE_PRODUCT_URL);
+                    },function () {
+                        console.log('Api Failed');
+                    });
+                } else {
+                    console.log('No Product Found')
                 }
             }
         };

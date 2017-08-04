@@ -70,3 +70,11 @@ Route::post('data/sales',[
     'uses' => 'DashboardController@salesData',
     'as' => 'data.sales'
 ]);
+Route::post('check/landing_page/url',[
+    'uses' => 'ProductController@checkLandingPageUrl',
+    'as' => 'check.landing.url'
+]);
+Route::post('check/thank_you',[
+    'uses' => 'ProductController@checkThankYouPage',
+    'as' => 'check.thank.you'
+]);

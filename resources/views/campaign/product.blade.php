@@ -85,6 +85,18 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="control-label col-md-2" for="product_url">Product Landing Page Url:</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="product_url" name="product_url" placeholder="Add Product Url">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="product_price">Product Price ($):</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="product_price" name="product_price" placeholder="Add Product Price">
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="control-label col-md-2" for="product_pricing">Commission Settings :</label>
                                 <div class="col-md-3">
                                     <label class="control-label">Commission:</label>
@@ -163,6 +175,18 @@
             $('#error').show();
             return false;
         }
+        var product_price = $('#product_price').val();
+        if(product_price == ''){
+            $('#error_text').text('Please Enter Product Price');
+            $('#error').show();
+            return false;
+        }
+        var product_url = $('#product_url').val();
+        if(product_url == ''){
+            $('#error_text').text('Please Enter Product URL');
+            $('#error').show();
+            return false;
+        }
         var pricing = $('#product_pricing').val();
         if(pricing == ''){
             $('#error_text').text('Please Enter The Required Commission');
@@ -203,6 +227,8 @@
             data: {
                 campaign_id: campaign_id,
                 name: name,
+                product_price: product_price,
+                product_url: product_url,
                 pricing: pricing,
                 pricingMethod: pricingMethod,
                 pricingFrequency: pricingFrequency,
