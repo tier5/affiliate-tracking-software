@@ -134,7 +134,7 @@
                     <!-- MAP & BOX PANE -->
                     <div class="box box-success">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Visitors Report</h3>
+                            <h3 class="box-title">Visitors IP Report</h3>
 
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -208,7 +208,7 @@
                     <!-- /.row -->
 
                     <!-- TABLE: LATEST ORDERS -->
-                    <div class="box box-info">
+                    {{--<div class="box box-info">
                         <div class="box-header with-border">
                             <h3 class="box-title">Latest Orders</h3>
 
@@ -298,7 +298,7 @@
                             <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
                         </div>
                         <!-- /.box-footer -->
-                    </div>
+                    </div>--}}
                     <!-- /.box -->
                 </div>
                 <!-- /.col -->
@@ -454,8 +454,8 @@
                                 },
                                 {
                                     label: "Leads",
-                                    fillColor: "rgba(60,141,188,0.9)",
-                                    strokeColor: "rgba(60,141,188,0.8)",
+                                    fillColor: "rgba(60,141,188,0.4)",
+                                    strokeColor: "rgba(60,141,188,1)",
                                     pointColor: "#3b8bba",
                                     pointStrokeColor: "rgba(60,141,188,1)",
                                     pointHighlightFill: "#fff",
@@ -465,7 +465,7 @@
                                 {
                                     label: "Visitors",
                                     fillColor: "rgba(90, 231, 218, 0.3)",
-                                    strokeColor: "rgba(90, 231, 218, 0.3)",
+                                    strokeColor: "rgba(90, 231, 218, 1)",
                                     pointColor: "rgba(50,111,138,0.8)",
                                     pointStrokeColor: "rgba(10,101,198,10)",
                                     pointHighlightFill: "#fff",
