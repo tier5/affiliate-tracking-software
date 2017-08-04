@@ -464,12 +464,12 @@
                                 },
                                 {
                                     label: "Visitors",
-                                    fillColor: "rgba(100,151,148,0.9)",
-                                    strokeColor: "rgba(50,111,138,0.8)",
+                                    fillColor: "rgba(90, 231, 218, 0.3)",
+                                    strokeColor: "rgba(90, 231, 218, 0.3)",
                                     pointColor: "rgba(50,111,138,0.8)",
                                     pointStrokeColor: "rgba(10,101,198,10)",
                                     pointHighlightFill: "#fff",
-                                    pointHighlightStroke: "rgba(10,101,198,10)",
+                                    pointHighlightStroke: "rgba(50,111,138,0.8)",
                                     data: data.visitors
                                 }
                             ]
