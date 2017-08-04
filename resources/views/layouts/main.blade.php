@@ -31,7 +31,8 @@
     <link rel="stylesheet" href="{{ url('/') }}/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     <!-- Toast -->
     <link rel="stylesheet" href="{{ url('/') }}/css/toast.css">
-
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ url('/') }}/admin//plugins/datatables/dataTables.bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.6/sweetalert2.min.css" />
     @yield('style')
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -89,7 +90,8 @@
 <script src="{{ url('/') }}/admin/dist/js/demo.js"></script>
 <!-- Toast Message -->
 <script src="{{ url('/') }}/js/toast.js"></script>
-
+<script src="{{ url('/') }}/admin/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="{{ url('/') }}/admin/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.6/sweetalert2.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {

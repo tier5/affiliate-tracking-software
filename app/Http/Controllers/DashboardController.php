@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Affiliate;
 use App\AgentUrlDetails;
 use App\Campaign;
+use App\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +33,11 @@ class DashboardController extends Controller
             ->where('browser','LIKE','%Safari%')->count();
         $firefox = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
             ->where('browser','LIKE','%Firefox%')->count();
-
+        $latestAffiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))
+            ->with('user','campaign')
+            ->orderBy('created_at','DESC')->get();
+        $products = Product::whereIn('campaign_id',$campaigns->pluck('id'))
+            ->orderBy('created_at','DESC')->take(5)->get();
         return view('dashboard',[
             'campaigns' => $campaigns,
             'affiliates' => $affiliates,
@@ -43,7 +48,9 @@ class DashboardController extends Controller
             'opera' => $opera,
             'ie' => $ie,
             'safari' => $safari,
-            'firefox' => $firefox
+            'firefox' => $firefox,
+            'latestAffiliates' => $latestAffiliates,
+            'products' => $products
         ]);
 	}
 	public function salesData(Request $request)

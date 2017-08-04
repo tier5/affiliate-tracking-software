@@ -120,39 +120,6 @@
                             </div>
                             <!-- /.row -->
                         </div>
-                        <!-- ./box-body -->
-                        <div class="box-footer">
-                            <div class="row">
-                                <div class="col-sm-4 col-xs-6">
-                                    <div class="description-block border-right">
-                                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
-                                        <h5 class="description-header">$35,210.43</h5>
-                                        <span class="description-text">TOTAL SALES</span>
-                                    </div>
-                                    <!-- /.description-block -->
-                                </div>
-                                <!-- /.col -->
-                                <div class="col-sm-4 col-xs-6">
-                                    <div class="description-block border-right">
-                                        <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
-                                        <h5 class="description-header">$10,390.90</h5>
-                                        <span class="description-text">TOTAL COMMISSION</span>
-                                    </div>
-                                    <!-- /.description-block -->
-                                </div>
-                                <!-- /.col -->
-                                <div class="col-sm-4 col-xs-6">
-                                    <div class="description-block border-right">
-                                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
-                                        <h5 class="description-header">$24,813.53</h5>
-                                        <span class="description-text">TOTAL PROFIT</span>
-                                    </div>
-                                    <!-- /.description-block -->
-                                </div>
-                            </div>
-                            <!-- /.row -->
-                        </div>
-                        <!-- /.box-footer -->
                     </div>
                     <!-- /.box -->
                 </div>
@@ -195,10 +162,9 @@
                             <!-- USERS LIST -->
                             <div class="box box-danger">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">Latest Members</h3>
+                                    <h3 class="box-title">Latest Affiliates</h3>
 
                                     <div class="box-tools pull-right">
-                                        <span class="label label-danger">8 New Members</span>
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                                         </button>
                                         <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
@@ -207,55 +173,33 @@
                                 </div>
                                 <!-- /.box-header -->
                                 <div class="box-body no-padding">
-                                    <ul class="users-list clearfix">
-                                        <li>
-                                            <img src="{{ url('/') }}/admin/dist/img/user1-128x128.jpg" alt="User Image">
-                                            <a class="users-list-name" href="#">Alexander Pierce</a>
-                                            <span class="users-list-date">Today</span>
-                                        </li>
-                                        <li>
-                                            <img src="{{ url('/') }}/admin/dist/img/user8-128x128.jpg" alt="User Image">
-                                            <a class="users-list-name" href="#">Norman</a>
-                                            <span class="users-list-date">Yesterday</span>
-                                        </li>
-                                        <li>
-                                            <img src="{{ url('/') }}/admin/dist/img/user7-128x128.jpg" alt="User Image">
-                                            <a class="users-list-name" href="#">Jane</a>
-                                            <span class="users-list-date">12 Jan</span>
-                                        </li>
-                                        <li>
-                                            <img src="{{ url('/') }}/admin/dist/img/user6-128x128.jpg" alt="User Image">
-                                            <a class="users-list-name" href="#">John</a>
-                                            <span class="users-list-date">12 Jan</span>
-                                        </li>
-                                        <li>
-                                            <img src="{{ url('/') }}/admin/dist/img/user2-160x160.jpg" alt="User Image">
-                                            <a class="users-list-name" href="#">Alexander</a>
-                                            <span class="users-list-date">13 Jan</span>
-                                        </li>
-                                        <li>
-                                            <img src="{{ url('/') }}/admin/dist/img/user5-128x128.jpg" alt="User Image">
-                                            <a class="users-list-name" href="#">Sarah</a>
-                                            <span class="users-list-date">14 Jan</span>
-                                        </li>
-                                        <li>
-                                            <img src="{{ url('/') }}/admin/dist/img/user4-128x128.jpg" alt="User Image">
-                                            <a class="users-list-name" href="#">Nora</a>
-                                            <span class="users-list-date">15 Jan</span>
-                                        </li>
-                                        <li>
-                                            <img src="{{ url('/') }}/admin/dist/img/user3-128x128.jpg" alt="User Image">
-                                            <a class="users-list-name" href="#">Nadia</a>
-                                            <span class="users-list-date">15 Jan</span>
-                                        </li>
-                                    </ul>
+                                    <table id="user" class="table table-bordered table-hover">
+                                        <thead>
+                                            <td>Name</td>
+                                            <td>Email</td>
+                                            <td>Campaign</td>
+                                            <td>Joining date</td>
+                                        </thead>
+                                        <tbody>
+                                            @if(count($latestAffiliates) > 0)
+                                                @foreach($latestAffiliates as $affiliateUser)
+                                                    <tr>
+                                                        <td>{{ $affiliateUser->user->name }}</td>
+                                                        <td>{{ $affiliateUser->user->email }}</td>
+                                                        <td>{{ $affiliateUser->campaign->name }}</td>
+                                                        <td>{{ date('d-m-Y',strtotime($affiliateUser->created_at)) }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="4">No affiliate available</td>
+                                                </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
                                     <!-- /.users-list -->
                                 </div>
                                 <!-- /.box-body -->
-                                <div class="box-footer text-center">
-                                    <a href="javascript:void(0)" class="uppercase">View All Users</a>
-                                </div>
-                                <!-- /.box-footer -->
                             </div>
                             <!--/.box -->
                         </div>
@@ -360,57 +304,6 @@
                 <!-- /.col -->
 
                 <div class="col-md-4">
-                    <!-- Info Boxes Style 2 -->
-                    <div class="info-box bg-yellow">
-                        <span class="info-box-icon"><i class="ion ion-ios-pricetag-outline"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Campaigns</span>
-                            <span class="info-box-number">5,200</span>
-
-                            <div class="progress">
-                                <div class="progress-bar" style="width: 50%"></div>
-                            </div>
-                            <span class="progress-description">
-                50% Increase in 30 Days
-              </span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                    <div class="info-box bg-green">
-                        <span class="info-box-icon"><i class="ion ion-ios-heart-outline"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Products</span>
-                            <span class="info-box-number">92,050</span>
-
-                            <div class="progress">
-                                <div class="progress-bar" style="width: 20%"></div>
-                            </div>
-                            <span class="progress-description">
-                20% Increase in 30 Days
-              </span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                    <div class="info-box bg-red">
-                        <span class="info-box-icon"><i class="ion ion-ios-cloud-download-outline"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Affiliates</span>
-                            <span class="info-box-number">114,381</span>
-
-                            <div class="progress">
-                                <div class="progress-bar" style="width: 70%"></div>
-                            </div>
-                            <span class="progress-description">
-                70% Increase in 30 Days
-              </span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
                     <div class="box box-default">
                         <div class="box-header with-border">
                             <h3 class="box-title">Browser Usage</h3>
@@ -462,63 +355,42 @@
                         <!-- /.box-header -->
                         <div class="box-body">
                             <ul class="products-list product-list-in-box">
-                                <li class="item">
-                                    <div class="product-img">
-                                        <img src="{{ url('/') }}/admin/dist/img/default-50x50.gif" alt="Product Image">
-                                    </div>
-                                    <div class="product-info">
-                                        <a href="javascript:void(0)" class="product-title">Samsung TV
-                                            <span class="label label-warning pull-right">$1800</span></a>
-                                        <span class="product-description">
-                      Samsung 32" 1080p 60Hz LED Smart HDTV.
-                    </span>
-                                    </div>
-                                </li>
-                                <!-- /.item -->
-                                <li class="item">
-                                    <div class="product-img">
-                                        <img src="{{ url('/') }}/admin/dist/img/default-50x50.gif" alt="Product Image">
-                                    </div>
-                                    <div class="product-info">
-                                        <a href="javascript:void(0)" class="product-title">Bicycle
-                                            <span class="label label-info pull-right">$700</span></a>
-                                        <span class="product-description">
-                      26" Mongoose Dolomite Men's 7-speed, Navy Blue.
-                    </span>
-                                    </div>
-                                </li>
-                                <!-- /.item -->
-                                <li class="item">
-                                    <div class="product-img">
-                                        <img src="{{ url('/') }}/admin/dist/img/default-50x50.gif" alt="Product Image">
-                                    </div>
-                                    <div class="product-info">
-                                        <a href="javascript:void(0)" class="product-title">Xbox One <span class="label label-danger pull-right">$350</span></a>
-                                        <span class="product-description">
-                      Xbox One Console Bundle with Halo Master Chief Collection.
-                    </span>
-                                    </div>
-                                </li>
-                                <!-- /.item -->
-                                <li class="item">
-                                    <div class="product-img">
-                                        <img src="{{ url('/') }}/admin/dist/img/default-50x50.gif" alt="Product Image">
-                                    </div>
-                                    <div class="product-info">
-                                        <a href="javascript:void(0)" class="product-title">PlayStation 4
-                                            <span class="label label-success pull-right">$399</span></a>
-                                        <span class="product-description">
-                      PlayStation 4 500GB Console (PS4)
-                    </span>
-                                    </div>
-                                </li>
-                                <!-- /.item -->
+                                @if(count($products) > 0)
+                                    @foreach($products as $product)
+                                        <li class="item">
+                                            <div class="product-img">
+                                                <img src="{{ url('/') }}/admin/dist/img/default-50x50.gif" alt="Product Image">
+                                            </div>
+                                            <div class="product-info">
+                                                <a href="javascript:void(0)" class="product-title">{{ $product->name }}
+                                                    <span class="label label-warning pull-right">{{ ($product->method == 2?'$':'')}}{{  $product->commission }}{{ ($product->method == 1?'%':'')}}</span></a>
+                                                <span class="product-description">{{ ($product->frequency == 1?'  One-time  ':'  Recurring  ')}}
+                                                @if($product->plan == 1)
+                                                    ------  Daily
+                                                @elseif($product->plan == 2)
+                                                    ------  Monthly
+                                                @elseif($product->plan == 3)
+                                                    ------  Quaterly
+                                                @elseif($product->plan == 4)
+                                                    ------  Yearly
+                                                @endif
+                                                </span>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                @else
+                                    <li class="item">
+                                        <div class="product-img">
+                                            <img src="{{ url('/') }}/admin/dist/img/default-50x50.gif" alt="Product Image">
+                                        </div>
+                                        <div class="product-info">
+                                            <span class="product-description">Product not available.</span>
+                                        </div>
+                                    </li>
+                                @endif
                             </ul>
                         </div>
                         <!-- /.box-body -->
-                        <div class="box-footer text-center">
-                            <a href="javascript:void(0)" class="uppercase">View All Products</a>
-                        </div>
                         <!-- /.box-footer -->
                     </div>
                     <!-- /.box -->
@@ -535,7 +407,17 @@
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyC2mKnuJAEplo1wkuweW0MSnaAs-zSyD_Y"></script>
     <script type="text/javascript" src="http://lab.abhinayrathore.com/ipmapper/ipmapper.js"></script>
     <script type="text/javascript">
-    $(function(){
+        $(function () {
+            $('#user').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+        $(function(){
         'use strict';
         try{
             //Ip plot Google Map
@@ -712,5 +594,5 @@
             console.log(e)
         }
     });
-</script>
+    </script>
 @endsection 
