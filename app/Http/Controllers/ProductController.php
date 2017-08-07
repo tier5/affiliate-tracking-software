@@ -7,111 +7,315 @@ use App\Campaign;
 use App\OrderProduct;
 use App\Product;
 use Illuminate\Http\Request;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use \Exception;
+use \Log;
 
 class ProductController extends Controller
 {
-    public function createProduct(Request $request){
+    public function chooseProduct(Request $request)
+    {
         try{
-            $url = parse_url($request->product_url);
-            $campaign = Campaign::find($request->campaign_id);
-            if($url['host'] == $campaign->url ) {
+            $campaign = Campaign::findOrFail($request->campaign_id);
+            $campaign->product_preference=$request->choice;
+            $campaign->update();
+            
+            $response = [
+                'success' => true,
+                'message' => 'Your Product Preference Has Been Added Successfully!',
+            ];
+            $responseCode = 201;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $response = [
+                'status' => false,
+                'error' => "No campaign has been found.",
+                'error_info' => preg_replace('/(\\[App\\\\)|(\\])/', '', $modelNotFoundException->getMessage())
+            ];
+            $responseCode = 404;
+        } catch(Exception $exception){
+            Log::info($exception->getMessage());
+
+            $response = [
+                'success' => false,
+                'status' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+            ];
+            $responseCode = 500;
+        }
+
+        return response()->json($response, $responseCode);
+    }
+
+    public function createProduct(Request $request)
+    {
+        try {
+            $url = parse_url($request->url);
+            $campaign = Campaign::findOrFail($request->campaign_id);
+
+            if ($url['host'] == $campaign->url) {
                 $product = new Product();
                 $product->campaign_id = $request->campaign_id;
                 $product->name = $request->name;
-                $product->url = $request->product_url;
+                $product->url = $request->url;
                 $product->product_price = $request->product_price;
-                $product->commission = $request->pricing;
-                $product->method = $request->pricingMethod;
-                $product->frequency = $request->pricingFrequency;
-                $product->plan = $request->pricingPlan;
+                $product->commission = $request->commission;
+                $product->method = $request->commissionMethod;
+                $product->frequency = $request->commissionFrequency;
+                $product->plan = $request->commissionPlan;
                 $product->save();
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Product Created Successfully'
-                ], 200);
+
+                $response = [
+                    'status' => true,
+                    'message' => 'Product has been created successfully.',
+                    'product' => $product
+                ];
+                $responseCode = 201;
             } else {
-                return response()->json([
-                    'status' => 400,
-                    'success' => false,
-                    'message' => 'Campaign Url And Landing Page URL is not same'
-                ],200);
+                $response = [
+                    'status' => false,
+                    'error' => 'Campaign URL & prduct page URL should be same.'
+                ];
+                $responseCode = 400;
             }
-        } catch (\Exception $exception){
-            return response()->json([
-                'status' => $exception->getCode(),
-                'success' => false,
-                'message' => $exception->getMessage()
-            ],200);
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $response = [
+                'status' => false,
+                'error' => "No campaign has been found.",
+                'error_info' => preg_replace('/(\\[App\\\\)|(\\])/', '', $modelNotFoundException->getMessage())
+            ];
+            $responseCode = 404;
+        } catch (QueryException $queryException) {
+            if (preg_match('/(products_url_unique)/', $queryException->getMessage())) {
+                $response = [
+                    'status' => false,
+                    'error' => "URL should be unique.",
+                    'error_info' => $queryException->getMessage()
+                ];
+                $responseCode = 409;
+            } else {
+                $response = [
+                    'status' => false,
+                    'error' => "Internal server error.",
+                    'error_info' => $queryException->getMessage()
+                ];
+                $responseCode = 500;
+            }
+        } catch (Exception $exception){
+            Log::info($exception->getMessage());
+
+            $response = [
+                'status' => false,
+                'error' => 'Internal server error.',
+                'error_info' => $exception->getMessage()
+            ];
+            $responseCode = 500;
         }
+
+        return response()->json($response, $responseCode);
     }
+
     public function checkLandingPageUrl(Request $request)
     {
-        try{
-            $campaign = Campaign::where('key',$request->campaign)->first();
-            if($campaign != null){
-                $product = Product::where('url',$request->url)->first();
-                if($product != null){
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Landing page found',
-                        'data' => $product->id
-                    ],200);
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Product Not Found'
-                    ],404);
-                }
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Campaign not found'
-                ],404);
-            }
-        } catch (\Exception $exception){
-            return response()->json([
-                'success' => false,
+        try {
+            $campaign = Campaign::where('key', $request->campaign)->firstOrFail();
+            $product = Product::where('url', $request->url)
+                    ->where('campaign_id', $campaign->id)
+                    ->firstOrFail();
+
+            $response = [
+                'status' => true,
+                'message' => 'Landing page found',
+                'data' => $product->id
+            ];
+            $responseCode = 200;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $response = [
+                'status' => false,
+                'error' => preg_match('/(Campaign)/', $modelNotFoundException->getMessage())
+                    ? "No campaign has been found." : "No product has been found.",
+                'error_info' => preg_replace('/(\\[App\\\\)|(\\])/', '', $modelNotFoundException->getMessage())
+            ];
+            $responseCode = 404;
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+
+            $response = [
+                'status' => false,
                 'message' => $exception->getMessage()
-            ],500);
+            ];
+            $responseCode = 500;
         }
+
+        return response()->json($response, $responseCode);
     }
+
+    public function deleteProduct(Request $request)
+    {
+        try {
+            $product = Product::findOrFail($request->input('id'));
+            $product->delete();
+
+            $response = [];
+            $responseCode = 204;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $response = [
+                'status' => false,
+                'error' => "No matching product has been found to delete.",
+                'error_info' => preg_replace('/(\\[App\\\\)|(\\])/', '', $modelNotFoundException->getMessage())
+            ];
+            $responseCode = 404;
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+
+            $response = [
+                'status' => false,
+                'error' => "Internal server error.",
+                'error_info' => $exception->getMessage()
+            ];
+            $responseCode = 500;
+        }
+
+        return response()->json($response, $responseCode);
+    }
+
+    public function getProduct(Request $request)
+    {
+        try {
+            $product = Product::findOrFail($request->input('id'));
+
+            $response = [
+                'status' => true,
+                'message' => "Product found successfully.",
+                'product' => $product
+            ];
+            $responseCode = 200;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $response = [
+                'status' => false,
+                'error' => "No matching product has been found to fetch.",
+                'error_info' => preg_replace('/(\\[App\\\\)|(\\])/', '', $modelNotFoundException->getMessage())
+            ];
+            $responseCode = 404;
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+
+            $response = [
+                'status' => false,
+                'error' => "Internal server error.",
+                'error_info' => $exception->getMessage()
+            ];
+            $responseCode = 500;
+        }
+
+        return response()->json($response, $responseCode);
+    }
+
     public function checkThankYouPage(Request $request)
     {
         try{
-            $product = Product::find($request->product_id);
-            if($product != null){
-                $log = AgentUrlDetails::find($request->log_id);
-                if($log != null){
-                    $log->type = 2;
-                    $log->update();
+            $product = Product::findOrFail($request->product_id);
 
-                    $order = new OrderProduct();
-                    $order->log_id = $log->id;
-                    $order->product_id = $product->id;
-                    $order->save();
+            $log = AgentUrlDetails::findOrFail($request->log_id);
+            $log->type = 2;
+            $log->update();
 
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Checkout Successfully'
-                    ],200);
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Log Not Found'
-                    ],404);
-                }
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Product Not Found'
-                ],404);
-            }
-        } catch (\Exception $exception){
-            return response()->json([
-                'success' => false,
-                'message' => $exception->getMessage()
-            ],500);
+            $order = new OrderProduct();
+            $order->log_id = $log->id;
+            $order->product_id = $product->id;
+            $order->save();
+
+            $response = [
+                'status' => true,
+                'message' => 'Checkout Successfully'
+            ];
+            $responseCode = 200;
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $response = [
+                'status' => false,
+                'error' => preg_match('/(Product)/', $modelNotFoundException->getMessage())
+                    ? "No product has been found." : "No log has been found.",
+                'error_info' => preg_replace('/(\\[App\\\\)|(\\])/', '', $modelNotFoundException->getMessage())
+            ];
+            $responseCode = 404;
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+
+            $response = [
+                'status' => false,
+                'error' => "Internal server error.",
+                'error_info' => $exception->getMessage()
+            ];
+            $responseCode = 500;
         }
+
+        return response()->json($response, $responseCode);
+    }
+
+    public function editProduct(Request $request)
+    {
+        try {
+            $url = parse_url($request->url);
+            $campaign = Campaign::findOrFail($request->campaign_id);
+
+            if ($url['host'] == $campaign->url) {
+                $product = Product::findOrFail($request->input('id'));
+                $product->name = $request->name;
+                $product->url = $request->url;
+                $product->product_price = $request->product_price;
+                $product->commission = $request->commission;
+                $product->method = $request->commissionMethod;
+                $product->frequency = $request->commissionFrequency;
+                $product->plan = $request->commissionPlan;
+                $product->update();
+
+                $response = [
+                    'status' => true,
+                    'message' => "Product has been updated successfully.",
+                    'product' => $product
+                ];
+                $responseCode = 201;
+            } else {
+                $response = [
+                    'status' => false,
+                    'error' => 'Campaign URL & prduct page URL should be same.'
+                ];
+                $responseCode = 400;
+            }
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $response = [
+                'status' => false,
+                'error' => "No product has been found.",
+                'error_info' => preg_replace('/(\\[App\\\\)|(\\])/', '', $modelNotFoundException->getMessage())
+            ];
+            $responseCode = 404;
+        } catch (QueryException $queryException) {
+            if (preg_match('/(products_url_unique)/', $queryException->getMessage())) {
+                $response = [
+                    'status' => false,
+                    'error' => "URL should be unique.",
+                    'error_info' => $queryException->getMessage()
+                ];
+                $responseCode = 409;
+            } else {
+                $response = [
+                    'status' => false,
+                    'error' => "Internal server error.",
+                    'error_info' => $queryException->getMessage()
+                ];
+                $responseCode = 500;
+            }
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+
+            $response = [
+                'status' => false,
+                'error' => "Internal server error.",
+                'error_info' => $exception->getMessage()
+            ];
+            $responseCode = 500;
+        }
+
+        return response()->json($response, $responseCode);
     }
 }

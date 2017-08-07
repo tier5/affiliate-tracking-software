@@ -109,6 +109,22 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'ProductController@createProduct',
         'as' => 'create.product'
     ]);
+    Route::post('product/choice',[
+        'uses' => 'ProductController@chooseProduct',
+        'as' => 'choice.product'
+    ]);
+    Route::delete('product/delete', [
+        'uses' => 'ProductController@deleteProduct',
+        'as' => 'delete.product'
+    ]);
+    Route::get('product/get', [
+        'uses' => 'ProductController@getProduct',
+        'as' => 'get.product'
+    ]);
+    Route::put('product/edit', [
+        'uses' => 'ProductController@editProduct',
+        'as' => 'edit.product'
+    ]);
 });
 
 Route::get('affiliate/request/{affiliateKey}',[
