@@ -45,7 +45,9 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
     @include('layouts.topNav')
-    @include('layouts.sideNav')
+    @if (Auth::user()->role != "affiliate")
+        @include('layouts.sideNav')
+    @endif
     <div class="clear"> </div>
     <!-- Content Wrapper. Contains page content -->
     @yield('content')

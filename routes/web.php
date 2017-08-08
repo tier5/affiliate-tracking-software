@@ -126,7 +126,6 @@ Route::group(['middleware' => ['auth']], function () {
         'as' => 'edit.product'
     ]);
 });
-
 Route::get('affiliate/request/{affiliateKey}',[
     'uses' => 'CampaignController@affiliateRegistrationForm',
     'as' => 'affiliate.registerForm'

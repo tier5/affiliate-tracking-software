@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Affiliate;
 use App\AgentUrlDetails;
 use App\Campaign;
+use App\OrderProduct;
 use App\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,45 +19,100 @@ class DashboardController extends Controller
 {
 	public function index()
 	{
-	    $campaigns = Campaign::where('user_id',Auth::user()->id)->with('affiliate');
-        $affiliates=Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
-        $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'));
-        $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',3);
-        $sales = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',2);
-        $chrome = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
-            ->where('browser','LIKE','%Chrome%')->count();
-        $opera = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
-            ->where('browser','LIKE','%Opera%')->count();
-        $ie = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
-            ->where('browser','LIKE','%MSIE%')->count();
-        $safari = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
-            ->where('browser','LIKE','%Safari%')->count();
-        $firefox = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
-            ->where('browser','LIKE','%Firefox%')->count();
-        $latestAffiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))
-            ->with('user','campaign')
-            ->orderBy('created_at','DESC')->get();
-        $products = Product::whereIn('campaign_id',$campaigns->pluck('id'))
-            ->orderBy('created_at','DESC')->take(5)->get();
-        return view('dashboard',[
-            'campaigns' => $campaigns,
-            'affiliates' => $affiliates,
-            'visitors' => $visitors,
-            'leads' => $leads,
-            'sales' => $sales,
-            'chrome' => $chrome,
-            'opera' => $opera,
-            'ie' => $ie,
-            'safari' => $safari,
-            'firefox' => $firefox,
-            'latestAffiliates' => $latestAffiliates,
-            'products' => $products
-        ]);
+        if (Auth::user()->role == 'admin') {
+            $campaigns = Campaign::where('user_id',Auth::user()->id)->with('affiliate');
+            $affiliates=Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
+            $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'));
+            $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',3);
+            $sales = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',2);
+            $chrome = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
+                ->where('browser','LIKE','%Chrome%')->count();
+            $opera = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
+                ->where('browser','LIKE','%Opera%')->count();
+            $ie = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
+                ->where('browser','LIKE','%MSIE%')->count();
+            $safari = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
+                ->where('browser','LIKE','%Safari%')->count();
+            $firefox = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
+                ->where('browser','LIKE','%Firefox%')->count();
+            $latestAffiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))
+                ->with('user','campaign')
+                ->orderBy('created_at','DESC')->get();
+            $products = Product::whereIn('campaign_id',$campaigns->pluck('id'))
+                ->orderBy('created_at','DESC')->take(5)->get();
+
+            return view('dashboard',[
+                'campaigns' => $campaigns,
+                'affiliates' => $affiliates,
+                'visitors' => $visitors,
+                'leads' => $leads,
+                'sales' => $sales,
+                'chrome' => $chrome,
+                'opera' => $opera,
+                'ie' => $ie,
+                'safari' => $safari,
+                'firefox' => $firefox,
+                'latestAffiliates' => $latestAffiliates,
+                'products' => $products
+            ]);
+        } else if (Auth::user()->role == 'affiliate') {
+            $affiliate = Affiliate::where('user_id', Auth::user()->id)->first();
+            $campaigns = Campaign::find($affiliate->campaign_id)->with('affiliate');
+            $affiliates=Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
+            $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'));
+            $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))->where('type',3);
+            $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))->where('type',2);
+            $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
+
+            /*
+             * Analytics for sold products
+             */
+            $orderedProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'));
+            $products = Product::whereIn('id', $orderedProducts->pluck('product_id'));
+            $totalSalePrice = $products->sum('product_price');
+            $grossCommission = 0;
+            $soldProducts = [];
+            foreach ($products->get() as $key => $product) {
+                $totalUnitSold = OrderProduct::whereIn('product_id', [$product->id])->groupBy('product_id')->count();
+                if ($product->method == 1) {
+                    $myCommision = $product->product_price * ($product->commission / 100);
+                    $grossCommission += $myCommision;
+                } else {
+                    $myCommision = $product->commission;
+                    $grossCommission += $myCommision;
+                }
+                $soldProducts[$key]['name'] = $product->name;
+                $soldProducts[$key]['unit_sold'] = $totalUnitSold;
+                $soldProducts[$key]['total_sale_price'] = $product->product_price * $totalUnitSold;
+                $soldProducts[$key]['my_commission'] = $myCommision;
+            }
+
+            return view('affiliate.dashboard',[
+                'campaigns' => $campaigns->count(),
+                'visitors' => $visitors->count(),
+                'leads' => $leads->count(),
+                'sales' => $sales->count(),
+                'total_sale_price' => $totalSalePrice,
+                'gross_commission' => $grossCommission,
+                'available_products' => $availableProducts,
+                'sold_products' => $soldProducts
+            ]);
+        } else {
+            Auth::logout();
+            return redirect('/');
+        }
 	}
 	public function salesData(Request $request)
     {
         try{
-            $campaigns = Campaign::where('user_id',$request->id)->with('affiliate');
+            $campaigns = null;
+            if ($request->user_type == 'affiliate') {
+                $affiliate = Affiliate::where('user_id', $request->id)->first();
+                $campaigns = Campaign::find($affiliate->campaign_id)->with('affiliate');
+            } else {
+                $campaigns = Campaign::where('user_id', $request->id)->with('affiliate');
+            }
+            //dd($campaigns->get()->toArray());
             $affiliates=Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
             $startDate = Carbon::now()->subMonth(6)->month;
             $endDate = Carbon::now()->month;
