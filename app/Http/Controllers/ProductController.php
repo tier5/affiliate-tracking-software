@@ -18,7 +18,7 @@ class ProductController extends Controller
     {
         try{
             $campaign = Campaign::findOrFail($request->campaign_id);
-            $campaign->product_preference=$request->choice;
+            $campaign->product_type=$request->choice;
             $campaign->update();
             
             $response = [
