@@ -173,6 +173,13 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="product_type">Product Type:</label>
+                                <div class="col-md-10">
+                                    <input name="product_type" id="product_type_single" value="1" type="radio" /> Single Product
+                                    <input name="product_type" id="product_type_funnel" value="2" type="radio" /> Funnel
+                                </div>
+                            </div>
                             <div class="form-group" id="error" style="display: none; color: red;">
                                 <label class="control-label col-md-2" for="error">Error:</label>
                                 <div class="col-md-10">
@@ -360,6 +367,18 @@
                 $('#error').show();
                 return false;
             }
+            var product_type = '';
+            if ($('#product_type_single').is(':checked')){
+                product_type = $('#product_type_single').val();
+            } else if ($('#product_type_funnel').is(':checked')){
+                product_type = $('#product_type_funnel').val();
+            }
+
+            if(product_type == ''){
+                $('#error_text').text('Please Enter Your Preference');
+                $('#error').show();
+                return false;
+            }
             var approve = $('#approve').val();
             var user_id = "{{ \Auth::user()->id }}";
             var key = randomString(32);
@@ -372,6 +391,7 @@
                     approve: approve,
                     key: key,
                     user_id: user_id,
+                    product_type: product_type,
                     _token: "{{ csrf_token() }}"
                 },
                 success: function (data) {

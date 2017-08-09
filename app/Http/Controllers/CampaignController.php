@@ -31,6 +31,7 @@ class CampaignController extends Controller
             $campaign->user_id = $request->user_id;
             $campaign->approval = $approval;
             $campaign->key = $request->key;
+            $campaign->product_type=$request->product_type;
             $campaign->save();
             return response()->json([
                 'success' => true,
