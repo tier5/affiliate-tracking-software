@@ -18,11 +18,11 @@ class ProductController extends Controller
     {
         try{
             $campaign = Campaign::findOrFail($request->campaign_id);
-            $campaign->product_type=$request->choice;
+            $campaign->product_type=$request->product_type;
             $campaign->update();
             
             $response = [
-                'success' => true,
+                'status' => true,
                 'message' => 'Your Product Preference Has Been Added Successfully!',
             ];
             $responseCode = 201;
@@ -37,9 +37,9 @@ class ProductController extends Controller
             Log::info($exception->getMessage());
 
             $response = [
-                'success' => false,
-                'status' => $exception->getCode(),
-                'message' => $exception->getMessage(),
+                'status' => false,
+                'error' => "Internal server error.",
+                'error_info' => $exception->getMessage(),
             ];
             $responseCode = 500;
         }
