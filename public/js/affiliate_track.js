@@ -2,8 +2,8 @@ var Affiliate = Affiliate || (function(){
 
         var $;
 
-        var _callback_url = 'http://138.197.125.34';
-        //var _callback_url = 'http://localhost/reviewvelocity/public';
+       // var _callback_url = 'http://138.197.125.34';
+        var _callback_url = 'http://localhost/reviewvelocity/public';
 
         var COOKIE_NAME = 'ats_affiliate';
 
@@ -308,8 +308,8 @@ var Affiliate = Affiliate || (function(){
                                 deleteCookie(COOKIE_PRODUCT);
                             }
                             setCookie(COOKIE_PRODUCT, dataNewProduct.data, 86400);
-                        }, function () {
-                            console.log('Api Failed');
+                        }, function (data) {
+                            console.log('Api Failed  '+data);
                         });
                     } else {
                         console.log('Yes');
@@ -324,15 +324,17 @@ var Affiliate = Affiliate || (function(){
                     for(var i = 0; i < allitems.length; i++) {
                         var anchor = allitems[i];
                         anchor.onclick = function() {
-                            var dataPost = 'url='+windowsLocation+'&campaign='+Affiliate.key;
-                            Ajax.request(_callback_url + "/api/check/landing_page/url","POST",dataPost,function (dataNew) {
-                                if(url_cookie) {
-                                    deleteCookie(COOKIE_PRODUCT_URL);
-                                }
-                                setCookie(COOKIE_PRODUCT_URL,windowsLocation,86400);
-                            },function () {
-                                console.log('Api Failed');
-                            });
+                            setTimeout(function(){
+                                var dataPost = 'url=' + windowsLocation + '&campaign=' + Affiliate.key;
+                                Ajax.request(_callback_url + "/api/check/landing_page/url", "POST", dataPost, function (dataNew) {
+                                    if (url_cookie) {
+                                        deleteCookie(COOKIE_PRODUCT_URL);
+                                    }
+                                    setCookie(COOKIE_PRODUCT_URL, windowsLocation, 86400);
+                                }, function (data) {
+                                    console.log('Api Failed  ' + data);
+                                });
+                            }, 2000);
                         }
                     }
                 }
@@ -342,12 +344,12 @@ var Affiliate = Affiliate || (function(){
                 var product = getCookie(COOKIE_PRODUCT);
                 var log = getCookie(COOKIE_LOG_ID);
                 if(product != '' && log != ''){
-                    var dataPost = 'product_id='+product+'log_id='+log;
+                    var dataPost = 'product_id='+product+'&log_id='+log;
                     Ajax.request(_callback_url + "/api/check/thank_you","POST",dataPost,function (dataNew) {
                         deleteCookie(COOKIE_PRODUCT);
                         deleteCookie(COOKIE_PRODUCT_URL);
-                    },function () {
-                        console.log('Api Failed');
+                    },function (data) {
+                        console.log('Api Failed   '+data);
                     });
                 } else {
                     console.log('No Product Found')
