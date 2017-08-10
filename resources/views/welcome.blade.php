@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Inter Web Leads</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -63,130 +63,10 @@
                 margin-bottom: 30px;
             }
         </style>
-        <script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"></script>
-        <script type="application/javascript">
-            Affiliate.key = 'EYuY20MBoYab9EguSk6dpGySCHjQg0kU';
-            Affiliate.domain = 'http://localhost/reviewvelocity/public'
-            Affiliate._init();
-        </script>
-
 
 
 
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-       {{-- <script type="application/javascript" src="https://api.ipify.org?format=json"></script>
-        <script>
-        function getQueryStrings() { 
-                  var assoc  = {};
-                  var decode = function (s) { return decodeURIComponent(s.replace(/\+/g, " ")); };
-                  var queryString = location.search.substring(1); 
-                  var keyValues = queryString.split('&'); 
-
-                  for(var i in keyValues) { 
-                    var key = keyValues[i].split('=');
-                    if (key.length > 1) {
-                      assoc[decode(key[0])] = decode(key[1]);
-                    }
-                  } 
-          return assoc; 
-        }
-
-        function getCookie(name) {
-            var dc = document.cookie;
-            var prefix = name + "=";
-            var begin = dc.indexOf("; " + prefix);
-            if (begin == -1) {
-                begin = dc.indexOf(prefix);
-                if (begin != 0) return null;
-            }
-            else
-            {
-                begin += 2;
-                var end = document.cookie.indexOf(";", begin);
-                if (end == -1) {
-                end = dc.length;
-                }
-            }
-            // because unescape has been deprecated, replaced with decodeURI
-            //return unescape(dc.substring(begin + prefix.length, end));
-            return decodeURI(dc.substring(begin + prefix.length, end));
-        } 
-
-        
-        /*function getIP(json) {
-            document.getElementById("text").value = JSON.stringify(json, null, 2);
-        
-            for (key in json) {
-                //document.write("<br>" + key + " : ", json[key]);
-               
-                    alert(json[key]);
-            }
-        }*/
-        var qs = getQueryStrings();
-            var affid = qs.id;
-            alert(qs.id);
-        
-        var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-        var isFirefox = typeof InstallTrigger !== 'undefined';
-        var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
-        var isIE = /*@cc_on!@*/false || !!document.documentMode;
-        var isChrome = !!window.chrome && !!window.chrome.webstore;
-        var browser;
-
-            if(isFirefox)
-                browser = 'Firefox';
-            else if(isSafari)
-                browser = 'Safari';
-            else if(isChrome)
-                browser = 'Chrome';
-            else if(isIE)
-                browser = 'IE';
-            //alert(browser);
-        var checkCookie = 'affiliatedID'+affid;
-        alert(checkCookie);
-        var myCookie = getCookie(checkCookie);
-        alert(myCookie);
-        if (myCookie == null) {
-
-            
-
-            var now = new Date();
-            var time = now.getTime();
-            time += 3600 * 1000 * 24;
-            now.setTime(time);
-
-
-
-            document.cookie = "affiliatedID"+affid+"="+affid+"; expires="+now.toGMTString()+";path=/"; 
-
-            $.getJSON("https://api.ipify.org/?format=json", function(e) {
-               alert(e.ip);
-               alert(666);
-               $.post("{{ route('/affiliate') }}", {affilatedID: affid,affilatedIP: e.ip,affilatedbrowser:browser}, function(result){
-                //$("span").html(result);
-                 });
-            });
-            
-            
-        }
-        else {
-            alert('exist');
-        }
-
-        //alert(curdateplusone);
-        
-
-        /*$.ajax({
-            url: "{{route('/affiliate')}}",
-            type : "POST",
-            data: {affilatedID: affid},
-            success:function(data){
-                console.log(data);
-            }
-        });*/
-
-        </script>--}}
-       
     </head>
     <body>
         <div class="flex-center position-ref full-height">
@@ -203,15 +83,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                    Inter Web Leads
                 </div>
             </div>
         </div>
