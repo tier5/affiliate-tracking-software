@@ -190,10 +190,6 @@
                                                         <td>{{ date('d-m-Y',strtotime($affiliateUser->created_at)) }}</td>
                                                     </tr>
                                                 @endforeach
-                                            @else
-                                                <tr>
-                                                    <td colspan="4">No affiliate available</td>
-                                                </tr>
                                             @endif
                                         </tbody>
                                     </table>
