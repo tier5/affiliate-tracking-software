@@ -52,12 +52,13 @@ class ProductController extends Controller
         try {
             $url = parse_url($request->url);
             $campaign = Campaign::findOrFail($request->campaign_id);
-
             if ($url['host'] == $campaign->url) {
                 $product = new Product();
                 $product->campaign_id = $request->campaign_id;
                 $product->name = $request->name;
                 $product->url = $request->url;
+                $product->upgrade_url = $request->upgrade_url;
+                $product->downgrade_url = $request->downgrade_url;
                 $product->product_price = $request->product_price;
                 $product->commission = $request->commission;
                 $product->method = $request->commissionMethod;
@@ -74,7 +75,7 @@ class ProductController extends Controller
             } else {
                 $response = [
                     'status' => false,
-                    'error' => 'Campaign URL & prduct page URL should be same.'
+                    'error' => 'Campaign URL & product page URL should be same.'
                 ];
                 $responseCode = 400;
             }
@@ -281,6 +282,8 @@ class ProductController extends Controller
                 $product = Product::findOrFail($request->input('id'));
                 $product->name = $request->name;
                 $product->url = $request->url;
+                $product->upgrade_url = $request->upgrade_url;
+                $product->downgrade_url = $request->downgrade_url;
                 $product->product_price = $request->product_price;
                 $product->commission = $request->commission;
                 $product->method = $request->commissionMethod;
