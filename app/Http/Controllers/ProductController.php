@@ -58,7 +58,7 @@ class ProductController extends Controller
                 $product->name = $request->name;
                 $product->url = $request->url;
                 $product->upgrade_url = $request->upgrade_url;
-                $product->downgrade_url = $request->downgrade_url;
+//                $product->downgrade_url = $request->downgrade_url;
                 $product->product_price = $request->product_price;
                 $product->commission = $request->commission;
                 $product->method = $request->commissionMethod;

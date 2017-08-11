@@ -147,12 +147,12 @@
                                     <input type="text" class="form-control hide-error" id="upgrade_url" name="upgrade_url" placeholder="Add Upgrade URL">
                                 </div>
                             </div>
-                            <div class="form-group">
+<!--                            <div class="form-group">
                                 <label class="control-label col-md-2" for="downgrade_url">Downgrade URL:</label>
                                 <div class="col-md-10">
                                     <input type="text" class="form-control hide-error" id="downgrade_url" name="downgrade_url" placeholder="Add Downgrade URL">
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="form-group">
                                 <label class="control-label col-md-2" for="product_price">Product Price:</label>
                                 <div class="col-md-10">
@@ -317,7 +317,7 @@
             $('#method').val('');
             $('#price_frequency').val('');
             $('#upgrade_url').val('');
-            $('#downgrade_url').val('');
+//            $('#downgrade_url').val('');
             $('.commissionPlan').val('');
             $('.plan').hide();
             $('#error').hide();
@@ -383,21 +383,21 @@
             } else {
                 $('#error').hide();
             }
-            var downgrade_url = $('#downgrade_url').val();
-            if(downgrade_url == ''){
-                $('#error_text').text('Please Enter A Downgrade URL');
-                $('#error').show();
-                return false;
-            } else {
-                $('#error').hide();
-            }
-            if (!(/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(downgrade_url))){
-                $('#error_text').text('Please Enter A Valid Downgrade URL');
-                $('#error').show();
-                return false;
-            } else {
-                $('#error').hide();
-            }
+//            var downgrade_url = $('#downgrade_url').val();
+//            if(downgrade_url == ''){
+//                $('#error_text').text('Please Enter A Downgrade URL');
+//                $('#error').show();
+//                return false;
+//            } else {
+//                $('#error').hide();
+//            }
+//            if (!(/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(downgrade_url))){
+//                $('#error_text').text('Please Enter A Valid Downgrade URL');
+//                $('#error').show();
+//                return false;
+//            } else {
+//                $('#error').hide();
+//            }
             var price = $('#product_price').val();
             if(price == ''){
                 $('#error_text').text('Please Enter Enter The Required Product Price');
@@ -501,7 +501,7 @@
                     name: name,
                     url: url,
                     upgrade_url: upgrade_url,
-                    downgrade_url: downgrade_url,
+//                    downgrade_url: downgrade_url,
                     product_price: price,
                     commission: commission,
                     commissionMethod: commissionMethod,
