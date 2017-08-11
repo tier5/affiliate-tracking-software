@@ -59,7 +59,7 @@ class DashboardController extends Controller
             $affiliate = Affiliate::where('user_id', Auth::user()->id)->first();
             $campaigns = Campaign::find($affiliate->campaign_id)->with('affiliate');
             $affiliates=Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
-            $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'));
+            $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))->where('type',1);
             $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))->where('type',3);
             $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))->where('type',2);
             $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
@@ -69,7 +69,8 @@ class DashboardController extends Controller
              */
             $orderedProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'));
             $products = Product::whereIn('id', $orderedProducts->pluck('product_id'));
-            $totalSalePrice = $products->sum('product_price');
+            $totalSales = 0;
+            $totalSalePrice = 0;
             $grossCommission = 0;
             $soldProducts = [];
             foreach ($products->get() as $key => $product) {
@@ -85,13 +86,15 @@ class DashboardController extends Controller
                 $soldProducts[$key]['unit_sold'] = $totalUnitSold;
                 $soldProducts[$key]['total_sale_price'] = $product->product_price * $totalUnitSold;
                 $soldProducts[$key]['my_commission'] = $myCommision;
+                $totalSalePrice += $soldProducts[$key]['total_sale_price'];
+                $totalSales += $totalUnitSold;
             }
 
             return view('affiliate.dashboard',[
                 'campaigns' => $campaigns->count(),
                 'visitors' => $visitors->count(),
                 'leads' => $leads->count(),
-                'sales' => $sales->count(),
+                'sales' => $totalSales,
                 'total_sale_price' => $totalSalePrice,
                 'gross_commission' => $grossCommission,
                 'available_products' => $availableProducts,
@@ -163,6 +166,32 @@ class DashboardController extends Controller
                 }
                 $month[] = date("F", mktime(0, 0, 0, $dateParam, 1));
             }
+
+            // $totalSales = 0;
+            // $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))->where('type',2);
+            // $orderedProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))
+            //         ->get()->groupBy(function($date) {
+            //             return Carbon::parse($date->created_at)->format('m'); // grouping by months
+            //         });
+            // for ($i = $startDate; $i <= $endDate; $i++) {
+            //     if(strlen($i) == 1){
+            //         $dateParam = '0'.$i;
+            //     } else {
+            //         $dateParam = $i;
+            //     }
+            //     if(isset($orderedProducts[$dateParam])){
+            //         $products = Product::whereIn('id', $orderedProducts[$dateParam]->pluck('product_id'));
+            //         foreach ($products->get() as $key => $product) {
+            //             $totalUnitSold = OrderProduct::whereIn('product_id', $products->pluck('id'))->groupBy('product_id')->count();
+            //             $totalSales += $totalUnitSold;
+            //         }
+            //         $salesCount[] = $totalSales;
+            //     } else {
+            //         $salesCount[] = 0;
+            //     }
+            // }
+            // dd($salesCount);
+
             return response()->json([
                 'success' => true,
                 'months' => $month,
@@ -172,7 +201,7 @@ class DashboardController extends Controller
             ],200);
         } catch (\Exception $e){
             return response()->json([
-                'success' => true,
+                'success' => false,
                 'message' => $e->getMessage()
             ],500);
         }

@@ -71,7 +71,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Total Sale Price</span>
-                            <span class="info-box-number">{{ "$" . number_format($total_sale_price, 2, '.', 1) }}</span>
+                            <span class="info-box-number">{{ "$" . number_format($total_sale_price, 2, '.', ',') }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -84,7 +84,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Gross Commission</span>
-                            <span class="info-box-number">{{ "$" . number_format($gross_commission, 2, '.', 1) }}</span>
+                            <span class="info-box-number">{{ "$" . number_format($gross_commission, 2, '.', ',') }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -162,7 +162,7 @@
                                 </div>
                                 <!-- /.box-header -->
                                 <div class="box-body no-padding">
-                                    <table id="user" class="table table-bordered table-hover">
+                                    <table id="available-product" class="table table-bordered table-hover datatable">
                                         <thead>
                                             <td>Product Name</td>
                                             <td>Product URL</td>
@@ -176,8 +176,8 @@
                                                 <tr>
                                                     <td>{{ $product->name }}</td>
                                                     <td>{{ $product->url }}</td>
-                                                    <td>{{ "$" . number_format($product->product_price, 2, '.', 1) }}</td>
-                                                    <td>{{ $product->method == 1 ? $product->commission  . "%" : "$" . number_format($product->commission, 2, '.', 1) }}</td>
+                                                    <td>{{ "$" . number_format($product->product_price, 2, '.', ',') }}</td>
+                                                    <td>{{ $product->method == 1 ? $product->commission  . "%" : "$" . number_format($product->commission, 2, '.', ',') }}</td>
                                                     <td>{{ $product->frequency == 1 ? "One-Time" : "Reccurring" }}</td>
                                                     <td>
                                                     @php
@@ -234,7 +234,7 @@
                             <!-- USERS LIST -->
                             <div class="box box-danger">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">Commissions on available products</h3>
+                                    <h3 class="box-title">Commissions on sold products</h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -245,7 +245,7 @@
                                 </div>
                                 <!-- /.box-header -->
                                 <div class="box-body no-padding">
-                                    <table id="user" class="table table-bordered table-hover">
+                                    <table id="sold-product" class="table table-bordered table-hover datatable">
                                         <thead>
                                             <td>Product Name</td>
                                             <td>Unit Sold</td>
@@ -257,12 +257,12 @@
                                                 <tr>
                                                     <td>{{ $product['name'] }}</td>
                                                     <td>{{ $product['unit_sold'] }}</td>
-                                                    <td>{{ "$" . number_format($product['total_sale_price'], 2, '.', 1) }}</td>
-                                                    <td>{{ "$" . number_format($product['my_commission'], 2, '.', 1) }}</td>
+                                                    <td>{{ "$" . number_format($product['total_sale_price'], 2, '.', ',') }}</td>
+                                                    <td>{{ "$" . number_format($product['my_commission'], 2, '.', ',') }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="4">No products have been added yet.</td>
+                                                    <td colspan="4">No products have been sold yet.</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -289,109 +289,119 @@
     <script type="text/javascript" src="http://lab.abhinayrathore.com/ipmapper/ipmapper.js"></script>
     <script type="text/javascript">
         $(function(){
-        'use strict';
-        try{
-            // Month Chart
-            var id = '{{ \Auth::user()->id }}';
-            $.ajax({
-                url: "{{ route('data.sales') }}",
-                type: "POST",
-                data: {
-                    id: id,
-                    user_type: 'affiliate',
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function (data) {
-                    if (data.success) {
-                        // Get context with jQuery - using jQuery's .get() method.
-                        var salesChartCanvas = $("#salesChart").get(0).getContext("2d");
-                        // This will get the first returned node in the jQuery collection.
-                        var salesChart = new Chart(salesChartCanvas);
-                        var salesChartData = {
-                            labels: data.months,
-                            datasets: [
-                                {
-                                    label: "Sales",
-                                    fillColor: "rgb(210, 214, 222)",
-                                    strokeColor: "rgb(210, 214, 222)",
-                                    pointColor: "rgb(210, 214, 222)",
-                                    pointStrokeColor: "#c1c7d1",
-                                    pointHighlightFill: "#fff",
-                                    pointHighlightStroke: "rgb(220,220,220)",
-                                    data: data.sales
-                                },
-                                {
-                                    label: "Leads",
-                                    fillColor: "rgba(60,141,188,0.4)",
-                                    strokeColor: "rgba(60,141,188,1)",
-                                    pointColor: "#3b8bba",
-                                    pointStrokeColor: "rgba(60,141,188,1)",
-                                    pointHighlightFill: "#fff",
-                                    pointHighlightStroke: "rgba(60,141,188,1)",
-                                    data: data.leads
-                                },
-                                {
-                                    label: "Visitors",
-                                    fillColor: "rgba(90, 231, 218, 0.3)",
-                                    strokeColor: "rgba(90, 231, 218, 1)",
-                                    pointColor: "rgba(50,111,138,0.8)",
-                                    pointStrokeColor: "rgba(10,101,198,10)",
-                                    pointHighlightFill: "#fff",
-                                    pointHighlightStroke: "rgba(50,111,138,0.8)",
-                                    data: data.visitors
-                                }
-                            ]
-                        };
-                        var salesChartOptions = {
-                            //Boolean - If we should show the scale at all
-                            showScale: true,
-                            //Boolean - Whether grid lines are shown across the chart
-                            scaleShowGridLines: false,
-                            //String - Colour of the grid lines
-                            scaleGridLineColor: "rgba(0,0,0,.05)",
-                            //Number - Width of the grid lines
-                            scaleGridLineWidth: 1,
-                            //Boolean - Whether to show horizontal lines (except X axis)
-                            scaleShowHorizontalLines: true,
-                            //Boolean - Whether to show vertical lines (except Y axis)
-                            scaleShowVerticalLines: true,
-                            //Boolean - Whether the line is curved between points
-                            bezierCurve: true,
-                            //Number - Tension of the bezier curve between points
-                            bezierCurveTension: 0.3,
-                            //Boolean - Whether to show a dot for each point
-                            pointDot: false,
-                            //Number - Radius of each point dot in pixels
-                            pointDotRadius: 4,
-                            //Number - Pixel width of point dot stroke
-                            pointDotStrokeWidth: 1,
-                            //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-                            pointHitDetectionRadius: 20,
-                            //Boolean - Whether to show a stroke for datasets
-                            datasetStroke: true,
-                            //Number - Pixel width of dataset stroke
-                            datasetStrokeWidth: 2,
-                            //Boolean - Whether to fill the dataset with a color
-                            datasetFill: true,
-                            //String - A legend template
-                            //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-                            maintainAspectRatio: true,
-                            //Boolean - whether to make the chart responsive to window resizing
-                            responsive: true
-                        };
-                        salesChart.Line(salesChartData, salesChartOptions);
-                    } else {
-                        swal({
-                            title: "Error!",
-                            text: data.message,
-                            type: "error"
-                        });
+            'use strict';
+            try{
+                // Month Chart
+                var id = '{{ \Auth::user()->id }}';
+                $.ajax({
+                    url: "{{ route('data.sales') }}",
+                    type: "POST",
+                    data: {
+                        id: id,
+                        user_type: 'affiliate',
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            // Get context with jQuery - using jQuery's .get() method.
+                            var salesChartCanvas = $("#salesChart").get(0).getContext("2d");
+                            // This will get the first returned node in the jQuery collection.
+                            var salesChart = new Chart(salesChartCanvas);
+                            var salesChartData = {
+                                labels: data.months,
+                                datasets: [
+                                    {
+                                        label: "Sales",
+                                        fillColor: "rgb(210, 214, 222)",
+                                        strokeColor: "rgb(210, 214, 222)",
+                                        pointColor: "rgb(210, 214, 222)",
+                                        pointStrokeColor: "#c1c7d1",
+                                        pointHighlightFill: "#fff",
+                                        pointHighlightStroke: "rgb(220,220,220)",
+                                        data: data.sales
+                                    },
+                                    {
+                                        label: "Leads",
+                                        fillColor: "rgba(60,141,188,0.4)",
+                                        strokeColor: "rgba(60,141,188,1)",
+                                        pointColor: "#3b8bba",
+                                        pointStrokeColor: "rgba(60,141,188,1)",
+                                        pointHighlightFill: "#fff",
+                                        pointHighlightStroke: "rgba(60,141,188,1)",
+                                        data: data.leads
+                                    },
+                                    {
+                                        label: "Visitors",
+                                        fillColor: "rgba(90, 231, 218, 0.3)",
+                                        strokeColor: "rgba(90, 231, 218, 1)",
+                                        pointColor: "rgba(50,111,138,0.8)",
+                                        pointStrokeColor: "rgba(10,101,198,10)",
+                                        pointHighlightFill: "#fff",
+                                        pointHighlightStroke: "rgba(50,111,138,0.8)",
+                                        data: data.visitors
+                                    }
+                                ]
+                            };
+                            var salesChartOptions = {
+                                //Boolean - If we should show the scale at all
+                                showScale: true,
+                                //Boolean - Whether grid lines are shown across the chart
+                                scaleShowGridLines: false,
+                                //String - Colour of the grid lines
+                                scaleGridLineColor: "rgba(0,0,0,.05)",
+                                //Number - Width of the grid lines
+                                scaleGridLineWidth: 1,
+                                //Boolean - Whether to show horizontal lines (except X axis)
+                                scaleShowHorizontalLines: true,
+                                //Boolean - Whether to show vertical lines (except Y axis)
+                                scaleShowVerticalLines: true,
+                                //Boolean - Whether the line is curved between points
+                                bezierCurve: true,
+                                //Number - Tension of the bezier curve between points
+                                bezierCurveTension: 0.3,
+                                //Boolean - Whether to show a dot for each point
+                                pointDot: false,
+                                //Number - Radius of each point dot in pixels
+                                pointDotRadius: 4,
+                                //Number - Pixel width of point dot stroke
+                                pointDotStrokeWidth: 1,
+                                //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+                                pointHitDetectionRadius: 20,
+                                //Boolean - Whether to show a stroke for datasets
+                                datasetStroke: true,
+                                //Number - Pixel width of dataset stroke
+                                datasetStrokeWidth: 2,
+                                //Boolean - Whether to fill the dataset with a color
+                                datasetFill: true,
+                                //String - A legend template
+                                //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+                                maintainAspectRatio: true,
+                                //Boolean - whether to make the chart responsive to window resizing
+                                responsive: true
+                            };
+                            salesChart.Line(salesChartData, salesChartOptions);
+                        } else {
+                            swal({
+                                title: "Error!",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
                     }
-                }
+                });
+            } catch(e){
+                console.log(e)
+            }
+        });
+        $(document).ready(function() {
+            $('.datatable`').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
             });
-        } catch(e){
-            console.log(e)
-        }
-    });
+        });
     </script>
-@endsection 
+@endsection

@@ -179,8 +179,10 @@
                                                 <p>&lt;script type="application/javascript"&gt;</p>
                                                     <p> &nbsp;&nbsp;&nbsp;Affiliate.key = '{{ $campaigns->key }}';</p>
                                                     <p> &nbsp;&nbsp;&nbsp;Affiliate._init();</p>
-                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._watch()</p>
-                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._checkout();</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._watch();</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;setTimeout(function() {</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affiliate._checkout();</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;}, 500);</p>
                                                 <p> &lt;/script&gt;</p></strong>
                                         </div>
                                     </div>
