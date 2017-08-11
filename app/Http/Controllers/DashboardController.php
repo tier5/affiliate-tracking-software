@@ -91,6 +91,7 @@ class DashboardController extends Controller
             }
 
             return view('affiliate.dashboard',[
+                'affiliate' => $affiliate,
                 'campaigns' => $campaigns->count(),
                 'visitors' => $visitors->count(),
                 'leads' => $leads->count(),

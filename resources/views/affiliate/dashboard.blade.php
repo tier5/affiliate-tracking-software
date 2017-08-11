@@ -65,7 +65,7 @@
                     </div>
                     <!-- /.info-box -->
                 </div>
-                <div class="col-md-2 col-sm-4 col-xs-12">
+                {{-- <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-green"><i class="ion ion-cash"></i></span>
 
@@ -76,7 +76,7 @@
                         <!-- /.info-box-content -->
                     </div>
                     <!-- /.info-box -->
-                </div>
+                </div> --}}
                 <!-- /.col -->
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="info-box">
@@ -95,7 +95,7 @@
             <!-- /.row -->
 
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">Monthly Recap Report</h3>
@@ -136,6 +136,34 @@
                         </div>
                     </div>
                     <!-- /.box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-4">
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Your Referral Link</h3>
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body no-padding">
+                            <div class="clearfix">&nbsp;</div>
+                            <div class="col-md-10 col-md-offset-1">
+                                <span id="url">{{ $affiliate->campaign->campaign_url }}?affiliate_id={{ $affiliate->key }}</span>
+                            </div>
+                            <div class="col-md-1">
+                                <a class="btn btn-primary btn-sm pull-right" id="copy" class="pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> Copy Link</a>
+                            </div>
+                            <br />
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
                 </div>
                 <!-- /.col -->
             </div>
@@ -401,6 +429,20 @@
                 "ordering": true,
                 "info": true,
                 "autoWidth": false
+            });
+
+            function copyToClipboard(element) {
+                var $temp = $("<input>");
+                $("body").append($temp);
+                $temp.val($(element).text()).select();
+                document.execCommand("copy");
+                $temp.remove();
+            };
+
+            $('#copy').on('click',function(){
+                var url=$('#url');
+                copyToClipboard(url);
+                toastr.info('Copied To Clipboard');
             });
         });
     </script>
