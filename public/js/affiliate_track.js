@@ -70,8 +70,8 @@ var Affiliate = Affiliate || (function(){
                         var response = JSON.parse(self.responseText);
                         success(response);
                     }else if (self.readyState === 4) { // something went wrong but complete
-                        var response = JSON.parse(self.responseText);
-                        failure(response);
+                        console.log(self.responseText);
+                        failure();
                     }
                 };
                 this.xhr.open(method,url,true);
@@ -164,8 +164,8 @@ var Affiliate = Affiliate || (function(){
                     dataPost = 'dataId='+id+'&email='+lead;
                     Ajax.request(_callback_url + "/api/affiliate/lead","POST",dataPost,function (dataNew) {
                         console.log(dataNew.message);
-                    },function (data) {
-                        console.log('Api Failed =>    '+data.message);
+                    },function () {
+                        //
                     });
                 } else {
                     if(lead != lead_cookie){
@@ -174,8 +174,8 @@ var Affiliate = Affiliate || (function(){
                         dataPost = 'dataId='+id+'&email='+lead;
                         Ajax.request(_callback_url + "/api/affiliate/lead","POST",dataPost,function (dataNew) {
                             console.log(dataNew.message);
-                        },function (data) {
-                            console.log('Api Failed =>    '+data.message);
+                        },function () {
+                            //
                         });
                     } else {
                         console.log('same Api');
@@ -211,11 +211,11 @@ var Affiliate = Affiliate || (function(){
 
                 var qs = getQueryStrings();
                 var affid = qs.affiliate_id;
+
                 if(qs.affiliate_id != undefined){
                     var url = removeParam('affiliate_id',window.location.href);
-                    window.location.href = url;
+                    window.history.pushState(null, null, url);
                 }
-
 
                 var nVer = navigator.appVersion;
                 var nAgt = navigator.userAgent;
@@ -296,8 +296,8 @@ var Affiliate = Affiliate || (function(){
                                 var lead = $(this).val();
                                 leadLog(dataNew.data,lead);
                             });
-                        },function (data) {
-                            console.log('Api Failed =>    '+data.message);
+                        },function () {
+                            //
                         });
                     },function(){
                         console.log('ip not found');
@@ -314,9 +314,9 @@ var Affiliate = Affiliate || (function(){
                                 var lead = $(this).val();
                                 leadLog(logId,lead);
                             });
-                        },function (data) {
-                            console.log('Api Failed =>     '+data.message);
-                        })
+                        },function () {
+                            //
+                        });
                     },function(){
                         console.log('ip not found');
                     });
@@ -335,8 +335,8 @@ var Affiliate = Affiliate || (function(){
                                 deleteCookie(COOKIE_PRODUCT);
                             }
                             setCookie(COOKIE_PRODUCT, dataNewProduct.data, 86400);
-                        }, function (data) {
-                            console.log('Api Failed =>   '+data.message);
+                        }, function () {
+                            //
                         });
                     } else {
                         console.log('Yes');
@@ -358,8 +358,8 @@ var Affiliate = Affiliate || (function(){
                                         deleteCookie(COOKIE_PRODUCT_URL);
                                     }
                                     setCookie(COOKIE_PRODUCT_URL, windowsLocation, 86400);
-                                }, function (data) {
-                                    console.log('Api Failed =>   ' + data.message);
+                                }, function () {
+                                    //
                                 });
                             }, 1000);
                         }
@@ -379,8 +379,8 @@ var Affiliate = Affiliate || (function(){
                         Ajax.request(_callback_url + "/api/check/thank_you","POST",dataPost,function (dataNew) {
                             deleteCookie(COOKIE_PRODUCT);
                             deleteCookie(COOKIE_PRODUCT_URL);
-                        },function (data) {
-                            console.log('Api Failed =>    '+ data.message);
+                        },function () {
+                            //
                         });
                         /*var dataPostProduct = 'url=' + url_cookie + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation;
                         Ajax.request(_callback_url + "/api/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
