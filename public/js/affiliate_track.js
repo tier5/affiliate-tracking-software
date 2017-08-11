@@ -349,12 +349,9 @@ var Affiliate = Affiliate || (function(){
                 var windowsLocation = window.location.href;
                 if(url_cookie){
                     if(url_cookie != windowsLocation) {
-                        var dataPostProduct = 'url=' + url_cookie + '&campaign=' + Affiliate.key + '&currentUrl=0';
+                        var dataPostProduct = 'url=' + url_cookie + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation;
                         Ajax.request(_callback_url + "/api/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
-                            if(product == ''){
-                                product = dataNewProduct.data;
-                            }
-                            var dataPost = 'product_id='+product+'&log_id='+log;
+                            var dataPost = 'product_id='+dataNewProduct.data+'&log_id='+log;
                             Ajax.request(_callback_url + "/api/check/thank_you","POST",dataPost,function (dataNew) {
                                 deleteCookie(COOKIE_PRODUCT);
                                 deleteCookie(COOKIE_PRODUCT_URL);
@@ -362,7 +359,15 @@ var Affiliate = Affiliate || (function(){
                                 console.log('Api Failed =>    '+ data.message);
                             });
                         }, function (data) {
-                            console.log('Api Failed =>   '+data.message);
+                            if(product){
+                                var dataPost = 'product_id='+product+'&log_id='+log;
+                                Ajax.request(_callback_url + "/api/check/thank_you","POST",dataPost,function (dataNew) {
+                                    deleteCookie(COOKIE_PRODUCT);
+                                    deleteCookie(COOKIE_PRODUCT_URL);
+                                },function (data) {
+                                    console.log('Api Failed =>    '+ data.message);
+                                });
+                            }
                         });
                     } else {
                         console.log('Current url is a product url');
@@ -373,5 +378,3 @@ var Affiliate = Affiliate || (function(){
             }
         };
     })();
-
-

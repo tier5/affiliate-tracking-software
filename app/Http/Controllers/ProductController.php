@@ -124,22 +124,19 @@ class ProductController extends Controller
                     ->where('campaign_id', $campaign->id)
                     ->firstOrFail();
             if($request->currentUrl != 0){
-                $currentProduct = Product::where('url', $request->currentUrl)
-                    ->where('campaign_id', $campaign->id)
-                    ->firstOrFail();
-                if($currentProduct->product_price < $product->product_price){
-                    $response = [
-                        'status' => false,
-                        'message' => 'Click on checkout Page',
-                    ];
-                    $responseCode = 406 ;
-                } else {
+                if($product->upgrade_url == $request->currentUrl){
                     $response = [
                         'status' => true,
                         'message' => 'Landing page found',
                         'data' => $product->id
                     ];
                     $responseCode = 200;
+                } else {
+                    $response = [
+                        'status' => false,
+                        'message' => 'Click on checkout Page',
+                    ];
+                    $responseCode = 406 ;
                 }
             } else {
                 $response = [
