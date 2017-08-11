@@ -13,3 +13,8 @@ Bugfixes V1.0 Stable Released
     Default Page Set To Login.
 Sales V1.0
     Make Sales Tracking Script
+Product V1.0 Stable Released
+	Addded downgrade and upgrade url to product section
+
+Config V1.0 Stable Released
+	Added .htaccess_local 
