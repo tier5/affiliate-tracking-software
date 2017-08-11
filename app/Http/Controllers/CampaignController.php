@@ -28,6 +28,7 @@ class CampaignController extends Controller
             $campaign = new Campaign();
             $campaign->name = $request->name;
             $campaign->url = $url['host'];
+            $campaign->campaign_url = $request->url;
             $campaign->user_id = $request->user_id;
             $campaign->approval = $approval;
             $campaign->key = $request->key;

@@ -98,8 +98,8 @@
                                 <div class="col-md-12 col-sm-12">
                                     <ul class="nav nav-tabs">
                                         <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-                                        <li><a data-toggle="tab" href="#menu1">Script</a></li>
-                                        <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
+                                        <li><a data-toggle="tab" href="#menu1">Product Script</a></li>
+                                        <li><a data-toggle="tab" href="#menu2">Checkout Script</a></li>
                                     </ul>
                                     <div class="tab-content">
                                         <div id="home" class="tab-pane fade in active">
@@ -167,15 +167,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <strong id="copyScript"><p>&lt;script src="http://138.197.125.34/js/affiliate_track.js" type="application/javascript"&gt;&lt;/script&gt;</p>
+                                            <strong id="copyScript"><p>&lt;script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"&gt;&lt;/script&gt;</p>
                                             <p>&lt;script type="application/javascript"&gt;</p>
                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate.key = '{{ $campaigns->key }}';</p>
                                                     <p> &nbsp;&nbsp;&nbsp;Affiliate._init();</p>
+                                                    <p>    Affiliate._watch();</p>
                                            <p> &lt;/script&gt;</p></strong>
                                         </div>
                                         <div id="menu2" class="tab-pane fade">
-
-                                            <p>Some content in menu 2.</p>
+                                            <strong><p>&lt;script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"&gt;&lt;/script&gt;</p>
+                                                <p>&lt;script type="application/javascript"&gt;</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate.key = '{{ $campaigns->key }}';</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._init();</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._watch()</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._checkout();</p>
+                                                <p> &lt;/script&gt;</p></strong>
                                         </div>
                                     </div>
                                 </div>

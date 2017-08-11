@@ -2,8 +2,8 @@ var Affiliate = Affiliate || (function(){
 
         var $;
 
-        var _callback_url = 'https://www.interwebleads.com';
-       // var _callback_url = 'http://localhost/reviewvelocity/public';
+       // var _callback_url = 'https://www.interwebleads.com';
+        var _callback_url = 'http://localhost/reviewvelocity/public';
 
         var COOKIE_NAME = 'ats_affiliate';
 
@@ -26,7 +26,7 @@ var Affiliate = Affiliate || (function(){
                 if (script_tag.readyState) {
                     script_tag.onreadystatechange = function () { // For old versions of IE
                         if (this.readyState == 'complete' || this.readyState == 'loaded') {
-                            scriptLoadHandler();
+                             scriptLoadHandler();
                         }
                     };
                 } else {
@@ -183,13 +183,39 @@ var Affiliate = Affiliate || (function(){
                 }
             }
         }
+        function removeParam(key, sourceURL) {
+            var rtn = sourceURL.split("?")[0],
+                param,
+                params_arr = [],
+                queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+            if (queryString !== "") {
+                params_arr = queryString.split("&");
+                for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+                    param = params_arr[i].split("=")[0];
+                    if (param === key) {
+                        params_arr.splice(i, 1);
+                    }
+                }
+                if(params_arr.length > 0 ){
+                    rtn = rtn + "?" + params_arr.join("&");
+                } else {
+                    rtn = rtn;
+                }
+            }
+            return rtn;
+        }
 
         return {
             _init : function(){
                 console.log('_init is initiated...');
 
                 var qs = getQueryStrings();
-                var affid = qs.id;
+                var affid = qs.affiliate_id;
+                if(qs.affiliate_id != undefined){
+                    var url = removeParam('affiliate_id',window.location.href);
+                    window.location.href = url;
+                }
+
 
                 var nVer = navigator.appVersion;
                 var nAgt = navigator.userAgent;
@@ -347,10 +373,18 @@ var Affiliate = Affiliate || (function(){
                 var product = getCookie(COOKIE_PRODUCT);
                 var log = getCookie(COOKIE_LOG_ID);
                 var windowsLocation = window.location.href;
-                if(url_cookie){
+                if(url_cookie && product && log){
                     if(url_cookie != windowsLocation) {
-                        var dataPostProduct = 'url=' + url_cookie + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation;
+                        var dataPost = 'product_id='+product+'&log_id='+log;
+                        Ajax.request(_callback_url + "/api/check/thank_you","POST",dataPost,function (dataNew) {
+                            deleteCookie(COOKIE_PRODUCT);
+                            deleteCookie(COOKIE_PRODUCT_URL);
+                        },function (data) {
+                            console.log('Api Failed =>    '+ data.message);
+                        });
+                        /*var dataPostProduct = 'url=' + url_cookie + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation;
                         Ajax.request(_callback_url + "/api/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
+
                             var dataPost = 'product_id='+dataNewProduct.data+'&log_id='+log;
                             Ajax.request(_callback_url + "/api/check/thank_you","POST",dataPost,function (dataNew) {
                                 deleteCookie(COOKIE_PRODUCT);
@@ -368,7 +402,7 @@ var Affiliate = Affiliate || (function(){
                                     console.log('Api Failed =>    '+ data.message);
                                 });
                             }
-                        });
+                        });*/
                     } else {
                         console.log('Current url is a product url');
                     }

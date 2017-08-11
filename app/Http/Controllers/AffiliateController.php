@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AgentUrl;
 use App\AgentUrlDetails;
 use App\Campaign;
+use App\Product;
 use Illuminate\Http\Request;
 use \App\AffiliateLink;
 use \App\BusinessPlan;
