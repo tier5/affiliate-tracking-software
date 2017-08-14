@@ -400,8 +400,8 @@
 
 @section('script')
     <script src="{{ url('/') }}/admin/dist/js/pages/dashboard2.js"></script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyC2mKnuJAEplo1wkuweW0MSnaAs-zSyD_Y"></script>
-    <script type="text/javascript" src="http://lab.abhinayrathore.com/ipmapper/ipmapper.js"></script>
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyC2mKnuJAEplo1wkuweW0MSnaAs-zSyD_Y"></script>
+    <script type="text/javascript" src="https://lab.abhinayrathore.com/ipmapper/ipmapper.js"></script>
     <script type="text/javascript">
         $(function () {
             $('#user').DataTable({
