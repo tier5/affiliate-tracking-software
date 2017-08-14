@@ -8,7 +8,7 @@ var IPMapper = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     latlngbound: null,
     infowindow: null,
-    baseUrl: "http://freegeoip.net/json/",
+    baseUrl: "https://freegeoip.net/json/",
     initializeMap: function(mapId){
         IPMapper.latlngbound = new google.maps.LatLngBounds();
         var latlng = new google.maps.LatLng(0, 0);
