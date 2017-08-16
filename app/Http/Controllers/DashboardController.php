@@ -59,9 +59,9 @@ class DashboardController extends Controller
             $affiliate = Affiliate::where('user_id', Auth::user()->id)->first();
             $campaigns = Campaign::find($affiliate->campaign_id)->with('affiliate');
             $affiliates=Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
-            $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))->where('type',1);
-            $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))->where('type',3);
-            $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))->where('type',2);
+            $visitors = AgentUrlDetails::where('affiliate_id', $affiliate->id)->where('type',1);
+            $leads = AgentUrlDetails::where('affiliate_id', $affiliate->id)->where('type',3);
+            $sales = AgentUrlDetails::where('affiliate_id', $affiliate->id)->where('type',2);
             $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
 
             /*
@@ -112,7 +112,7 @@ class DashboardController extends Controller
             $campaigns = null;
             if ($request->user_type == 'affiliate') {
                 $affiliate = Affiliate::where('user_id', $request->id)->first();
-                $campaigns = Campaign::find($affiliate->campaign_id)->with('affiliate');
+                $campaigns = Campaign::find($affiliate->id)->with('affiliate');
             } else {
                 $campaigns = Campaign::where('user_id', $request->id)->with('affiliate');
             }
