@@ -2,9 +2,9 @@
     <!-- Logo -->
     <a href="{{ url('/') }}" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini">RV</span>
+        <img class="logo-mini" src="{{ asset('images/Logo_short.png') }}" height="50" width="50">
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg">RV Affiliate</span>
+        <img class="logo-lg" src="{{ asset('images/Logo.png') }}" height="50" width="130">
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
