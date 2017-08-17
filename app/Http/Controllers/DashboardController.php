@@ -56,12 +56,11 @@ class DashboardController extends Controller
                 'products' => $products
             ]);
         } else if (Auth::user()->role == 'affiliate') {
-            $affiliate = Affiliate::where('user_id', Auth::user()->id)->first();
-            $campaigns = Campaign::find($affiliate->campaign_id)->with('affiliate');
-            $affiliates=Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
-            $visitors = AgentUrlDetails::where('affiliate_id', $affiliate->id)->where('type',1);
-            $leads = AgentUrlDetails::where('affiliate_id', $affiliate->id)->where('type',3);
-            $sales = AgentUrlDetails::where('affiliate_id', $affiliate->id)->where('type',2);
+            $affiliate = Affiliate::where('user_id', Auth::user()->id)->where('approve_status',1)->get();
+            $campaigns = Campaign::whereIn('id',$affiliate->pluck('campaign_id'));
+            $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type',1);
+            $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type',3);
+            $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type',2);
             $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
 
             /*
@@ -89,7 +88,6 @@ class DashboardController extends Controller
                 $totalSalePrice += $soldProducts[$key]['total_sale_price'];
                 $totalSales += $totalUnitSold;
             }
-
             return view('affiliate.dashboard',[
                 'affiliate' => $affiliate,
                 'campaigns' => $campaigns->count(),
@@ -111,13 +109,12 @@ class DashboardController extends Controller
         try{
             $campaigns = null;
             if ($request->user_type == 'affiliate') {
-                $affiliate = Affiliate::where('user_id', $request->id)->first();
-                $campaigns = Campaign::find($affiliate->id)->with('affiliate');
+				$affiliates = Affiliate::where('user_id', $request->id)->where('approve_status',1)->get();
+	            $campaigns = Campaign::whereIn('id',$affiliates->pluck('campaign_id'));
             } else {
                 $campaigns = Campaign::where('user_id', $request->id)->with('affiliate');
+				$affiliates=Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
             }
-            //dd($campaigns->get()->toArray());
-            $affiliates=Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
             $startDate = Carbon::now()->subMonth(6)->month;
             $endDate = Carbon::now()->month;
             $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))

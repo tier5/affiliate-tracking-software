@@ -153,14 +153,16 @@
                         <!-- /.box-header -->
                         <div class="box-body no-padding">
                             <div class="clearfix">&nbsp;</div>
-                            <div class="col-md-10 col-md-offset-1">
-                                <span id="url">{{ $affiliate->campaign->campaign_url }}?affiliate_id={{ $affiliate->key }}</span>
-                            </div>
-                            <div class="col-md-1">
-                                <a class="btn btn-primary btn-sm pull-right" id="copy" class="pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> Copy Link</a>
-                            </div>
-                            <br />
-                            <div class="clearfix">&nbsp;</div>
+                            @foreach ($affiliate as $key => $value)
+                                <div class="col-md-10 col-md-offset-1">
+                                    <span class="url">{{ $value->campaign->campaign_url }}?affiliate_id={{ $value->key }}</span>
+                                </div>
+                                <div class="col-md-1">
+                                    <a class="btn btn-primary btn-sm pull-right copy pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> Copy Link</a>
+                                </div>
+                                <br />
+                                <div class="clearfix">&nbsp;</div>
+                            @endforeach
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -431,8 +433,8 @@
                 $temp.remove();
             };
 
-            $('#copy').on('click',function(){
-                var url=$('#url');
+            $('.copy').on('click',function(){
+                var url=$(this).parent().prev().children('.url');
                 copyToClipboard(url);
                 toastr.info('Copied To Clipboard');
             });

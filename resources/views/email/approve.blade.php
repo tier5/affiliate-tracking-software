@@ -45,8 +45,7 @@
    </SPAN>{{ $user->name }}</TD></TR>
     <TR>
         <TD></TD>
-        <TD><SPAN style="FONT-FAMILY: Arial Narrow">Please
-   don't remove or edit the information below this line.
+        <TD><SPAN style="FONT-FAMILY: Arial Narrow">-----------------------------------------
    </SPAN></TD></TR>
     <TR>
         <TD></TD>
@@ -56,7 +55,7 @@
     <TR>
         <TD></TD>
         <TD><SPAN style="FONT-FAMILY: Arial Narrow">
-   Secrete key: {{ $affiliate->key }}</SPAN></TD>
+   Affiliate id: {{ $affiliate->key }}</SPAN></TD>
     </TR>
     <TR></TR>
     <TR></TR>
