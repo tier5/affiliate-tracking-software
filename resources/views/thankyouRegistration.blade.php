@@ -19,7 +19,7 @@
 <div class="container" style="margin-top:5%;">
     <div class="row">
         <div class="jumbotron" style="box-shadow: 2px 2px 4px #000000;">
-            <h2 class="text-center">Thank you for signing up for <span style="color:#F89406;">Review</span><span style="color:#26A65B;">Velocity</span></h2>
+            <h2 class="text-center">Thank you for signing up for <span style="color:#F89406;">Inter Web Leads</span></h2>
             <h5 class="text-center">Check Email For Further Details.</h5>
             <center><div class="btn-group" style="margin-top:50px;">
                 </div></center>
