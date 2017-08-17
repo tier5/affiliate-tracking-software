@@ -56,7 +56,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Sales</span>
-                            <span class="info-box-number">{{ $sales->count() }}</span>
+                            <span class="info-box-number">{{ $totalSales }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -591,4 +591,4 @@
         }
     });
     </script>
-@endsection 
+@endsection
