@@ -157,7 +157,7 @@ class DashboardController extends Controller
                     $visitorsCount[] = 0;
                 }
                 if(isset($sales[$dateParam])){
-                    $salesCount[] = count($sales[$dateParam]);
+					$salesCount[] = OrderProduct::whereIn('log_id',$sales[$dateParam]->pluck('id'))->count();
                 } else {
                     $salesCount[] = 0;
                 }

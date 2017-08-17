@@ -26,7 +26,13 @@
                                         </a>
                                     </div>
                                 @else
-                                    @if (count($products) == 0)
+                                    @if ($campaign->product_type == '1' && count($products) == 0)
+                                        <div class=" col-md-2 pull-right">
+                                            <a class="btn btn-success btn-sm" id="triggerAddProductModal">
+                                                <i class="fa fa-plus fa-fw"></i>Add Product
+                                            </a>
+                                        </div>
+                                    @else
                                         <div class=" col-md-2 pull-right">
                                             <a class="btn btn-success btn-sm" id="triggerAddProductModal">
                                                 <i class="fa fa-plus fa-fw"></i>Add Product
