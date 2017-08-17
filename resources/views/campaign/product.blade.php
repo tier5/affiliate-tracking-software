@@ -32,7 +32,7 @@
                                                 <i class="fa fa-plus fa-fw"></i>Add Product
                                             </a>
                                         </div>
-                                    @else
+                                    @elseif ($campaign->product_type == '2')
                                         <div class=" col-md-2 pull-right">
                                             <a class="btn btn-success btn-sm" id="triggerAddProductModal">
                                                 <i class="fa fa-plus fa-fw"></i>Add Product
