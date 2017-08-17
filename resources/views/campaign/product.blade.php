@@ -26,11 +26,13 @@
                                         </a>
                                     </div>
                                 @else
-                                    <div class=" col-md-2 pull-right">
-                                        <a class="btn btn-success btn-sm" id="triggerAddProductModal">
-                                            <i class="fa fa-plus fa-fw"></i>Add Product
-                                        </a>
-                                    </div>
+                                    @if (count($products) == 0)
+                                        <div class=" col-md-2 pull-right">
+                                            <a class="btn btn-success btn-sm" id="triggerAddProductModal">
+                                                <i class="fa fa-plus fa-fw"></i>Add Product
+                                            </a>
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
                             <div class="row">
@@ -462,7 +464,7 @@
                 }
             }
             var campaign_id = $('#campaign_id').val();
-            
+
             var API_URL;
             var API_METHOD;
             var product_id;
