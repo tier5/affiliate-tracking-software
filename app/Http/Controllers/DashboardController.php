@@ -22,7 +22,7 @@ class DashboardController extends Controller
         if (Auth::user()->role == 'admin') {
             $campaigns = Campaign::where('user_id',Auth::user()->id)->with('affiliate');
             $affiliates=Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
-            $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'));
+            $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',1);
             $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',3);
             $sales = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',2);
             $chrome = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
@@ -210,7 +210,7 @@ class DashboardController extends Controller
 
     public function agencies()
     {
-    	
+
     }
 
     public function businesses()

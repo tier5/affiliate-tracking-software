@@ -200,7 +200,7 @@
                                             <td>Method</td>
                                         </thead>
                                         <tbody>
-                                            @forelse($available_products as $product)
+                                            @foreach($available_products as $product)
                                                 <tr>
                                                     <td>{{ $product->name }}</td>
                                                     <td>{{ $product->url }}</td>
@@ -237,11 +237,7 @@
                                                         }
                                                     @endphp
                                                 </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="4">No products have been added yet.</td>
-                                                </tr>
-                                            @endforelse
+                                            @endforeach
                                         </tbody>
                                     </table>
                                     <!-- /.users-list -->
@@ -281,18 +277,14 @@
                                             <td>My Commission</td>
                                         </thead>
                                         <tbody>
-                                            @forelse($sold_products as $product)
+                                            @foreach($sold_products as $product)
                                                 <tr>
                                                     <td>{{ $product['name'] }}</td>
                                                     <td>{{ $product['unit_sold'] }}</td>
                                                     <td>{{ "$" . number_format($product['total_sale_price'], 2, '.', ',') }}</td>
                                                     <td>{{ "$" . number_format($product['my_commission'], 2, '.', ',') }}</td>
                                                 </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="4">No products have been sold yet.</td>
-                                                </tr>
-                                            @endforelse
+                                            @endforeach
                                         </tbody>
                                     </table>
                                     <!-- /.users-list -->
@@ -422,7 +414,7 @@
             }
         });
         $(document).ready(function() {
-            $('.datatable`').DataTable({
+            $('.datatable').DataTable({
                 "paging": true,
                 "lengthChange": false,
                 "searching": false,
