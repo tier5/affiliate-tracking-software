@@ -84,11 +84,11 @@ class DashboardController extends Controller
                      $grossCommission += $myCommision;
                  }
 				 $soldProducts[$key]['name'] = $product->name;
-                 $soldProducts[$key]['unit_sold'] = $totalUnitSold;
-                 $soldProducts[$key]['total_sale_price'] = $product->product_price * $totalUnitSold;
+                 $soldProducts[$key]['unit_sold'] = 1;
+                 $soldProducts[$key]['total_sale_price'] = $product->product_price * 1;
                  $soldProducts[$key]['my_commission'] = $myCommision;
                  $totalSalePrice += $soldProducts[$key]['total_sale_price'];
-                 $totalSales += $totalUnitSold;
+                 $totalSales += 1;
 			 }
 
 
