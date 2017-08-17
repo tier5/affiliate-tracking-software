@@ -64,7 +64,7 @@ class DashboardController extends Controller
             $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type',3);
             $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type',2);
             $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
-			$totalSales = OrderProduct::whereIn('log_id',$sales->pluck('id'))->count();
+			$totalSaless = OrderProduct::whereIn('log_id',$sales->pluck('id'))->count();
 
             /*
              * Analytics for sold products
@@ -97,7 +97,7 @@ class DashboardController extends Controller
                 'visitors' => $visitors->count(),
                 'leads' => $leads->count(),
                 'sales' => $totalSales,
-				'totalSales' => $totalSales,
+				'totalSales' => $totalSaless,
                 'total_sale_price' => $totalSalePrice,
                 'gross_commission' => $grossCommission,
                 'available_products' => $availableProducts,
