@@ -216,7 +216,11 @@ var Affiliate = Affiliate || (function(){
 
                 if(qs.affiliate_id != undefined){
                     var url = removeParam('affiliate_id',window.location.href);
-                    window.history.pushState(null, null, url);
+                    //if (window.history.pushState) {
+                      window.history.pushState(null, null, url);
+                    /*} else {
+                      document.location.href = url;
+                  }*/
                 }
 
                 var nVer = navigator.appVersion;
