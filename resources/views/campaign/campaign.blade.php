@@ -262,9 +262,9 @@
             $('#edit_campaign_name').val(name);
             $('#edit_id').val(id);
             if(approve == 1){
-                $('#edit_approve_on').attr('checked', 'checked');
+                $("#edit_approve_on").prop("checked", true);
             } else {
-                $('#edit_approve_off').attr('checked', 'checked');
+                $("#edit_approve_off").prop("checked", true);
             }
             $('#editCampaignModal').modal('show');
         });
