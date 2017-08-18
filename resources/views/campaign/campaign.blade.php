@@ -411,7 +411,7 @@
                     } else {
                         switch(data.status) {
                             case '23000':
-                                $('#error_text').text('Campaign Name Cannot Be Same!');
+                                $('#error_text').text('Campaign name is in use! Please use some different name !!!');
                                 $('#error').show();
                                 break;
                             case '400':
