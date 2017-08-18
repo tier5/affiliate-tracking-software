@@ -31,7 +31,7 @@ class DashboardController extends Controller
             $opera = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
                 ->where('browser','LIKE','%Opera%')->count();
             $ie = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
-                ->where('browser','LIKE','%MSIE%')->count();
+                ->where('browser','LIKE','%Microsoft Internet Explorer%')->count();
             $safari = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
                 ->where('browser','LIKE','%Safari%')->count();
             $firefox = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
