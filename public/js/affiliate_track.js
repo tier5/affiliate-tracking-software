@@ -2,8 +2,8 @@ var Affiliate = Affiliate || (function(){
 
         var $;
 
-        var _callback_url = 'https://www.interwebleads.com';
-        // var _callback_url = 'http://localhost/reviewvelocity/public';
+        //var _callback_url = 'https://www.interwebleads.com';
+         var _callback_url = 'http://localhost/reviewvelocity/public';
 
         var COOKIE_NAME = 'ats_affiliate';
 
@@ -15,7 +15,7 @@ var Affiliate = Affiliate || (function(){
 
         var COOKIE_PRODUCT = 'ats_product';
 
-        _initJQuery();
+        //_initJQuery();
 
         function _initJQuery() {
             /* Load $ if not present */
@@ -153,10 +153,12 @@ var Affiliate = Affiliate || (function(){
         }
 
         function isEmail(email) {
+            console.log('checking email');
             return /\S+@\S+\.\S+/.test(email);
         }
 
         function leadLog(id,lead){
+            console.log(id);
             if(isEmail(lead)){
                 var lead_cookie = getCookie(LEAD_COOKIE_NAME);
                 if(lead_cookie == ''){
@@ -292,10 +294,20 @@ var Affiliate = Affiliate || (function(){
                             setCookie(COOKIE_NAME,affid,86400,dataNew.data);
                             setCookie(COOKIE_LOG_ID,dataNew.data,86400);
                             console.log(dataNew.message);
-                            $('input[type=text],input[type=email]').on('change',function () {
-                                var lead = $(this).val();
-                                leadLog(dataNew.data,lead);
-                            });
+                            var allInputs = [];
+                            allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=text]'));
+                            allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=email]'));
+                            for(var i = 0; i < allInputs.length; i++) {
+                                var input = allInputs[i];
+                                input.addEventListener('change', function() {
+                                    var lead = this.value;
+                                    leadLog(dataNew.data,lead);
+                                });
+                            }
+                            // $('input[type=text],input[type=email]').on('change',function () {
+                            //     var lead = $(this).val();
+                            //     leadLog(dataNew.data,lead);
+                            // });
                         },function () {
                             //
                         });
@@ -310,10 +322,20 @@ var Affiliate = Affiliate || (function(){
                         dataPost = 'ip='+data.ip+'&key='+affiliate_id+'&browser='+browser+'&urlKey='+Affiliate.key+'&dataId='+logId;
                         Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
                             console.log(dataNew.message);
-                            $('input[type=text],input[type=email]').on('change',function () {
-                                var lead = $(this).val();
-                                leadLog(logId,lead);
-                            });
+                            var allInputs = [];
+                            allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=text]'));
+                            allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=email]'));
+                            for(var i = 0; i < allInputs.length; i++) {
+                                var input = allInputs[i];
+                                input.addEventListener('change', function() {
+                                    var lead = this.value;
+                                    leadLog(logId,lead);
+                                });
+                            }
+                            // $('input[type=text],input[type=email]').on('change',function () {
+                            //     var lead = $(this).val();
+                            //     leadLog(logId,lead);
+                            // });
                         },function () {
                             //
                         });
