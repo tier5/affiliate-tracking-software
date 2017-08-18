@@ -38,6 +38,15 @@
                                 <hr/>
                                 <div class="row">
                                     <div class="col-md-3">
+                                        Affiliate Email :
+                                    </div>
+                                    <div class="col-md-9">
+                                        {{ $affiliate->user->email }}
+                                    </div>
+                                </div>
+                                <div style="padding-bottom: 5px;"></div>
+                                <div class="row">
+                                    <div class="col-md-3">
                                         Affiliate Referring Link :
                                     </div>
                                     <div class="col-md-8">
@@ -48,7 +57,7 @@
                                     </div>
                                 </div>
                                 <div style="padding-bottom: 5px;"></div>
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-md-3">
                                         Affiliate Registration Link :
                                     </div>
@@ -58,16 +67,7 @@
                                     <div class="col-md-1">
                                         <a class="btn btn-primary btn-sm pull-right" href="{{route('affiliate.sendEmail',['affiliate' => $affiliate->id])}}" class="pull-right"><i class="fa fa-envelope fa-fw"></i> | Send Email</a>
                                     </div>
-                                </div>
-                                <div style="padding-bottom: 5px;"></div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        Affiliate Email :
-                                    </div>
-                                    <div class="col-md-9">
-                                        {{ $affiliate->user->email }}
-                                    </div>
-                                </div>
+                                </div> --}}
                             </section>
                             <div style="padding-bottom: 25px;"></div>
                             <div class="panel-body">
