@@ -392,8 +392,11 @@ class AffiliateController extends Controller
     {
         try{
             $lead = AgentUrlDetails::find($request->dataId);
+            if($lead->type != 2){
+                $lead->type = 3;
+            }
             $lead->email = $request->email;
-            $lead->type = 3;
+            //$lead->type = 3;
             $lead->update();
             return response()->json([
                 'success' => true,
