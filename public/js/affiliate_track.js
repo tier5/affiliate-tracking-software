@@ -215,6 +215,11 @@ var Affiliate = Affiliate || (function(){
                 var affid = qs.affiliate_id;
 
                 if(qs.affiliate_id != undefined){
+                    deleteCookie(COOKIE_NAME);
+                    deleteCookie(LEAD_COOKIE_NAME);
+                    deleteCookie(COOKIE_LOG_ID);
+                    deleteCookie(COOKIE_PRODUCT_URL);
+                    deleteCookie(COOKIE_PRODUCT);
                     var url = removeParam('affiliate_id',window.location.href);
                     window.history.pushState(null, null, url);
                 }
