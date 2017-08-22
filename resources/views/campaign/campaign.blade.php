@@ -93,7 +93,7 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Campaign Url</th>
+                                            <th>Sales Page Url</th>
                                             <th>Registration URL</th>
                                             <th>Approve</th>
                                             <th>Add Product</th>
@@ -106,7 +106,7 @@
                                         @foreach($campaigns as $campaign)
                                             <tr>
                                                 <td>{{ $campaign->name }}</td>
-                                                <td>{{ $campaign->url }}</td>
+                                                <td>{{ $campaign->sales_url }}</td>
                                                 <td><a class="copy" style="cursor: pointer"><i class="fa fa-copy fa-fw"></i></a> | <span class="url">{{ route('affiliate.registerForm',[$campaign->key])}}</span></td>
                                                 <td>{{ $campaign->approval == 1 ? 'Auto' : 'Manual' }}</td>
                                                 <td>
@@ -117,7 +117,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="row">
-                                                        <button class="btn btn-primary btn-xs editCampaignButton" data-name="{{ $campaign->name }}" data-approve="{{ $campaign->approval }}" data-id="{{ $campaign->id }}" ><span class="glyphicon glyphicon-pencil"></span></button>
+                                                        <button class="btn btn-primary btn-xs editCampaignButton" data-campaign_url="{{ $campaign->campaign_url }}" data-sales_url="{{ $campaign->sales_url }}" data-name="{{ $campaign->name }}" data-approve="{{ $campaign->approval }}" data-id="{{ $campaign->id }}" ><span class="glyphicon glyphicon-pencil"></span></button>
                                                         <button class="btn btn-danger btn-xs deleteCampaign" data-id="{{ $campaign->id }}" data-title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
                                                     </div>
                                                 </td>
@@ -159,7 +159,13 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-2" for="campaign_url">URL:</label>
+                                <label class="control-label col-md-2" for="sales_url">Sales Page URL:</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="sales_url" name="sales_url" placeholder="Enter Sales URl">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="campaign_url">Order Page URL:</label>
                                 <div class="col-md-10">
                                     <input type="text" class="form-control hide-error" id="campaign_url" name="campaign_url" placeholder="Enter Campaign URl">
                                 </div>
@@ -228,6 +234,18 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label col-md-2" for="edit_sales_url">Sales Page URL:</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control hide-error" id="edit_sales_url" name="edit_sales_url" placeholder="Enter Sales URl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2" for="edit_campaign_url">Order Page URL:</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control hide-error" id="edit_campaign_url" name="edit_campaign_url" placeholder="Enter Campaign URl">
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label col-md-2" for="edit_approve">Auto Approve:</label>
                             <div class="col-md-10">
                                 <input type="radio" value="2" name="edit_approve" id="edit_approve_off"> No </label>
@@ -258,8 +276,12 @@
             var id = $(this).data('id');
             var name = $(this).data('name');
             var approve = $(this).data('approve');
+            var campaign_url = $(this).data('campaign_url');
+            var sales_url = $(this).data('sales_url');
             $('#campaignNameShow').text(name);
             $('#edit_campaign_name').val(name);
+            $('#edit_campaign_url').val(campaign_url);
+            $('#edit_sales_url').val(sales_url);
             $('#edit_id').val(id);
             if(approve == 1){
                 $("#edit_approve_on").prop("checked", true);
@@ -276,6 +298,23 @@
                 $('#edit_error').show();
                 return false;
             }
+            var url = $('#edit_campaign_url').val();
+            if(url == ''){
+                $('#edit_error_text').text('Please Enter A Campaign URL');
+                $('#edit_error').show();
+                return false;
+            }
+            if(!(/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(url))){
+                $('#edit_error_text').text('Please Enter A Valid Campaign URL');
+                $('#edit_error').show();
+                return false;
+            }
+            var salesUrl = $('#edit_sales_url').val();
+            if(salesUrl == ''){
+                $('#edit_error_text').text('Please Enter A Sales URL');
+                $('#edit_error').show();
+                return false;
+            }
             var status = $("input[name='edit_approve']:checked").val();
             $.ajax({
                 url: "{{ route('edit.campaign') }}",
@@ -283,6 +322,8 @@
                 data: {
                     id: id,
                     name: name,
+                    sales_url : salesUrl,
+                    campaign_url : url,
                     status: status,
                     _token: "{{ csrf_token() }}"
                 },
@@ -363,7 +404,18 @@
                 return false;
             }
             if(!(/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(url))){
-                $('#error_text').text('Please Enter A Valid URL');
+                $('#error_text').text('Please Enter A Valid Campaign URL');
+                $('#error').show();
+                return false;
+            }
+            var salesUrl = $('#sales_url').val();
+            if(salesUrl == ''){
+                $('#error_text').text('Please Enter A Sales URL');
+                $('#error').show();
+                return false;
+            }
+            if(!(/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(salesUrl))){
+                $('#error_text').text('Please Enter A Valid Sales URL');
                 $('#error').show();
                 return false;
             }
@@ -388,6 +440,7 @@
                 data: {
                     name: name,
                     url: url,
+                    sales_url : salesUrl,
                     approve: approve,
                     key: key,
                     user_id: user_id,

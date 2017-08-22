@@ -50,7 +50,7 @@
                                         Affiliate Referring Link :
                                     </div>
                                     <div class="col-md-8">
-                                        <span id="url">{{ $affiliate->campaign->campaign_url }}?affiliate_id={{ $affiliate->key }}</span>
+                                        <span id="url">{{ $affiliate->campaign->sales_url }}?affiliate_id={{ $affiliate->key }}</span>
                                     </div>
                                     <div class="col-md-1">
                                         <a class="btn btn-primary btn-sm pull-right" id="copy" class="pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> | Copy Link</a>

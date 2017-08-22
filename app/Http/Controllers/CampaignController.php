@@ -29,6 +29,7 @@ class CampaignController extends Controller
             $campaign->name = $request->name;
             $campaign->url = $url['host'];
             $campaign->campaign_url = $request->url;
+            $campaign->sales_url = $request->sales_url;
             $campaign->user_id = $request->user_id;
             $campaign->approval = $approval;
             $campaign->key = $request->key;
@@ -67,6 +68,8 @@ class CampaignController extends Controller
         try{
             $campaign = Campaign::find($request->id);
             $campaign->name = $request->name;
+            $campaign->sales_url = $request->sales_url;
+            $campaign->campaign_url = $request->campaign_url;
             $campaign->approval = $request->status;
             $campaign->update();
             return response()->json([
