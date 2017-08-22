@@ -93,6 +93,7 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
+                                            <th>Order Page Url</th>
                                             <th>Sales Page Url</th>
                                             <th>Registration URL</th>
                                             <th>Approve</th>
@@ -106,6 +107,7 @@
                                         @foreach($campaigns as $campaign)
                                             <tr>
                                                 <td>{{ $campaign->name }}</td>
+                                                <td>{{ $campaign->campaign_url }}</td>
                                                 <td>{{ $campaign->sales_url }}</td>
                                                 <td><a class="copy" style="cursor: pointer"><i class="fa fa-copy fa-fw"></i></a> | <span class="url">{{ route('affiliate.registerForm',[$campaign->key])}}</span></td>
                                                 <td>{{ $campaign->approval == 1 ? 'Auto' : 'Manual' }}</td>

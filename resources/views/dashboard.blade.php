@@ -19,6 +19,44 @@
         </section>
         <!-- Main content -->
         <section class="content">
+             <!-- Info boxes -->
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <form class="form info-box" method="get" id="form-filter">
+                        <div class="info-box-content row">
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                <label class="col-md-4 col-sm-4 col-xs-4 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">Filter by Campaign </label>
+                                <div class="col-md-8">  
+                                    <select class="form-control filter" name="campaign_id">
+                                        <option value="0"> Select Campaign </option>
+                                        @forelse($campaignsDropdown as $campaign)
+                                            <option value="{{ $campaign->id }}" {{ request()->has('campaign_id') ? (request()->input('campaign_id') == $campaign->id ? 'selected' : null) : null }}>{{ $campaign->name }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select> 
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                <label class="col-md-4 col-sm-4 col-xs-4 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">Filter by Affiliate </label>
+                                <div class="col-md-8"> 
+                                    <select class="form-control filter" name="affiliate_id">
+                                        <option value="0"> Select Affiliate </option>
+                                        @forelse($affiliatesDropdown as $affiliate)
+                                            <option value="{{ $affiliate->id }}" {{ request()->has('affiliate_id') ? (request()->input('affiliate_id') == $affiliate->id ? 'selected' : null) : null }}>{{ $affiliate->user->name }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select> 
+                                </div>                           
+                            </div>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </form>
+                    <!-- /.info-box -->
+                </div>
+                <!-- fix for small devices only -->
+                <div class="clearfix visible-sm-block"></div> 
+            </div>
+            <!-- /.row -->
             <!-- Info boxes -->
             <div class="row">
                 <div class="col-md-3 col-sm-6 col-xs-12">
@@ -427,6 +465,8 @@
                 type: "POST",
                 data: {
                     id: id,
+                    campaign_id: "{{ request()->input('campaign_id') }}",
+                    affiliate_id: "{{ request()->input('affiliate_id') }}",
                     _token: "{{ csrf_token() }}"
                 },
                 success: function (data) {
@@ -589,6 +629,10 @@
         } catch(e){
             console.log(e)
         }
+    });
+
+    $('.filter').change(function(){
+        $('#form-filter').submit();
     });
     </script>
 @endsection

@@ -97,7 +97,7 @@
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <ul class="nav nav-tabs">
-                                            <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+                                            <li class="active"><a data-toggle="tab" href="#home">Affiliates</a></li>
                                         <li><a data-toggle="tab" href="#sales">Sales Script</a></li>
                                         <li><a data-toggle="tab" href="#menu1">Product & Update Script</a></li>
                                         <li><a data-toggle="tab" href="#menu2">Checkout Script</a></li>
@@ -108,7 +108,7 @@
                                                 <div class="panel-heading">
                                                     <div class="row">
                                                         <div class=" col-md-10 pull-left">
-                                                            <h4>Affiliates</h4>
+                                                            <h4>All affiliates registered to this campaign</h4>
                                                         </div>
                                                         <div class="col-md-2 pull-right">
                                                             <button class="btn btn-success" data-toggle="modal" data-target="#addAffiliateModal">Add Affiliate</button>

@@ -195,7 +195,7 @@
                                     <table id="available-product" class="table table-bordered table-hover datatable">
                                         <thead>
                                             <td>Product Name</td>
-                                            <td>Product URL</td>
+                                            <!-- <td>Product URL</td> -->
                                             <td>Price</td>
                                             <td>Commission</td>
                                             <td>Frequency</td>
@@ -205,7 +205,7 @@
                                             @foreach($available_products as $product)
                                                 <tr>
                                                     <td>{{ $product->name }}</td>
-                                                    <td>{{ $product->url }}</td>
+                                                   {{-- <td>{{ $product->url }}</td> --}}
                                                     <td>{{ "$" . number_format($product->product_price, 2, '.', ',') }}</td>
                                                     <td>{{ $product->method == 1 ? $product->commission  . "%" : "$" . number_format($product->commission, 2, '.', ',') }}</td>
                                                     <td>{{ $product->frequency == 1 ? "One-Time" : "Reccurring" }}</td>

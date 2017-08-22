@@ -82,10 +82,10 @@
                                 <div class="row">
                                     <div class="col-md-12 col-sm-12">
                                         <ul class="nav nav-tabs">
-                                            <li class="active"><a data-toggle="tab" href="#allTraffic">All Traffic</a></li>
-                                            <li><a data-toggle="tab" href="#leadsOnly">Leads Only</a></li>
-                                            <li><a data-toggle="tab" href="#salesOnly">Sales Only</a></li>
-                                            <li><a data-toggle="tab" href="#commisonsOnly">Commisions Only</a></li>
+                                            <li class="active"><a data-toggle="tab" href="#allTraffic">Incoming Traffics</a></li>
+                                            <li><a data-toggle="tab" href="#leadsOnly">Leads</a></li>
+                                            <li><a data-toggle="tab" href="#salesOnly">Sales</a></li>
+                                            <li><a data-toggle="tab" href="#commisonsOnly">Commisions</a></li>
                                         </ul>
                                         <div class="tab-content">
                                             <div id="allTraffic" class="tab-pane fade in active">
@@ -93,7 +93,7 @@
                                                     <div class="panel-heading">
                                                         <div class="row">
                                                             <div class=" col-md-10 pull-left">
-                                                                <h4>All Traffic</h4>
+                                                                <h4>All incoming traffics</h4>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -142,7 +142,7 @@
                                                     <div class="panel-heading">
                                                         <div class="row">
                                                             <div class=" col-md-10 pull-left">
-                                                                <h4>Leads Only</h4>
+                                                                <h4>Leads only traffics</h4>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -191,7 +191,7 @@
                                                     <div class="panel-heading">
                                                         <div class="row">
                                                             <div class=" col-md-10 pull-left">
-                                                                <h4>Sales Only</h4>
+                                                                <h4>Sales only traffics</h4>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -240,7 +240,7 @@
                                                     <div class="panel-heading">
                                                         <div class="row">
                                                             <div class=" col-md-10 pull-left">
-                                                                <h4>Commisions Only</h4>
+                                                                <h4>Commisions only traffics</h4>
                                                             </div>
                                                         </div>
                                                     </div>
