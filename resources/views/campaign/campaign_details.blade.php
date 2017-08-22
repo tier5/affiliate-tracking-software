@@ -97,8 +97,9 @@
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <ul class="nav nav-tabs">
-                                        <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-                                        <li><a data-toggle="tab" href="#menu1">Product Script</a></li>
+                                            <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+                                        <li><a data-toggle="tab" href="#sales">Sales Script</a></li>
+                                        <li><a data-toggle="tab" href="#menu1">Product & Update Script</a></li>
                                         <li><a data-toggle="tab" href="#menu2">Checkout Script</a></li>
                                     </ul>
                                     <div class="tab-content">
@@ -159,6 +160,20 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div id="sales" class="tab-pane fade">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="pull-right">
+                                                        <a title="copy to clip-board" id="salesCopy" class="btn btn-success btn-md"><span class="glyphicon glyphicon-copy"></span> </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <strong id="copySales"><p>&lt;script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"&gt;&lt;/script&gt;</p>
+                                                <p>&lt;script type="application/javascript"&gt;</p>
+                                                <p> &nbsp;&nbsp;&nbsp;Affiliate.key = '{{ $campaigns->key }}';</p>
+                                                <p> &nbsp;&nbsp;&nbsp;Affiliate._sales();</p>
+                                                <p> &lt;/script&gt;</p></strong>
+                                        </div>
                                         <div id="menu1" class="tab-pane fade">
                                             <div class="row">
                                                 <div class="col-md-12">
@@ -171,11 +186,18 @@
                                             <p>&lt;script type="application/javascript"&gt;</p>
                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate.key = '{{ $campaigns->key }}';</p>
                                                     <p> &nbsp;&nbsp;&nbsp;Affiliate._init();</p>
-                                                    <p>    Affiliate._watch();</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._watch();</p>
                                            <p> &lt;/script&gt;</p></strong>
                                         </div>
                                         <div id="menu2" class="tab-pane fade">
-                                            <strong><p>&lt;script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"&gt;&lt;/script&gt;</p>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="pull-right">
+                                                        <a title="copy to clip-board" id="thankCopy" class="btn btn-success btn-md"><span class="glyphicon glyphicon-copy"></span> </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <strong id="copyThank"><p>&lt;script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"&gt;&lt;/script&gt;</p>
                                                 <p>&lt;script type="application/javascript"&gt;</p>
                                                     <p> &nbsp;&nbsp;&nbsp;Affiliate.key = '{{ $campaigns->key }}';</p>
                                                     <p> &nbsp;&nbsp;&nbsp;Affiliate._init();</p>
@@ -252,6 +274,17 @@
             copyToClipboard(url);
             toastr.info('Copied To Clipboard');
         });
+        $('#salesCopy').on('click',function(){
+            var url=$('#copySales');
+            copyToClipboard(url);
+            toastr.info('Copied To Clipboard');
+        });
+        $('#thankCopy').on('click',function(){
+            var url=$('#copyThank');
+            copyToClipboard(url);
+            toastr.info('Copied To Clipboard');
+        });
+
         $('#approve').on('change',function () {
             var id = $(this).data('id');
             $.ajax({

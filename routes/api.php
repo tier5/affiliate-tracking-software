@@ -78,3 +78,7 @@ Route::post('check/thank_you',[
     'uses' => 'ProductController@checkThankYouPage',
     'as' => 'check.thank.you'
 ]);
+Route::post('check/order_url',[
+    'uses' => 'ProductController@checkOrderUrl',
+    'as' => 'check.order.page'
+]);

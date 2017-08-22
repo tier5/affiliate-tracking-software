@@ -436,6 +436,34 @@ var Affiliate = Affiliate || (function(){
                 } else {
                     console.log('No Product Found')
                 }
+            },
+
+            _sales : function () {
+                console.log('Sales Script initiated');
+                var qs = getQueryStrings();
+                var campaign_url = '';
+                if(qs.affiliate_id != undefined){
+                    var dataPost = 'campaign_id='+Affiliate.key;
+                    Ajax.request(_callback_url + "/api/check/order_url","POST",dataPost,function (dataNew) {
+                        campaign_url = dataNew.data;
+                    },function () {
+                        //
+                    });
+                    window.onload = function() {
+                        setTimeout(function(){
+                            var allitems = [];
+                            allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('a'));
+                            for(var i = 0; i < allitems.length; i++) {
+                                var anchor = allitems[i];
+                                var oldAnchor = anchor.getAttribute("href");
+                                if(oldAnchor === campaign_url){
+                                    var newAnchor = oldAnchor + '?affiliate_id='+qs.affiliate_id;
+                                    anchor.setAttribute('href',newAnchor);
+                                }
+                            }
+                        },1000);
+                    }
+                }
             }
         };
     })();

@@ -337,4 +337,33 @@ class ProductController extends Controller
 
         return response()->json($response, $responseCode);
     }
+    public function checkOrderUrl(Request $request)
+    {
+        try{
+            $campaign_url = Campaign::where('key',$request->campaign_id)
+                ->firstOrFail();
+
+            $response = [
+                'status' => true,
+                'message' => "Campaign Found",
+                'data' => $campaign_url->campaign_url
+            ];
+            $responseCode = 200;
+        }  catch (ModelNotFoundException $modelNotFoundException) {
+            $response = [
+                'status' => false,
+                'error' => "No Campaign has been found.",
+                'error_info' => preg_replace('/(\\[App\\\\)|(\\])/', '', $modelNotFoundException->getMessage())
+            ];
+            $responseCode = 404;
+        }  catch (\Exception $exception){
+            $response = [
+                'status' => false,
+                'error' => "Internal server error.",
+                'error_info' => $exception->getMessage()
+            ];
+            $responseCode = 500;
+        }
+        return response()->json($response, $responseCode);
+    }
 }
