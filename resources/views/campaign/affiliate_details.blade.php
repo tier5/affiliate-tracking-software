@@ -68,6 +68,14 @@
                                         <a class="btn btn-primary btn-sm pull-right" href="{{route('affiliate.sendEmail',['affiliate' => $affiliate->id])}}" class="pull-right"><i class="fa fa-envelope fa-fw"></i> | Send Email</a>
                                     </div>
                                 </div> --}}
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        Affiliate's Commision:
+                                    </div>
+                                    <div class="col-md-8">
+                                        <strong>{{ "$" . number_format($grossCommission, 2, '.', ',') }}</strong>
+                                    </div>
+                                </div>
                             </section>
                             <div style="padding-bottom: 25px;"></div>
                             <div class="panel-body">
@@ -76,6 +84,8 @@
                                         <ul class="nav nav-tabs">
                                             <li class="active"><a data-toggle="tab" href="#allTraffic">All Traffic</a></li>
                                             <li><a data-toggle="tab" href="#leadsOnly">Leads Only</a></li>
+                                            <li><a data-toggle="tab" href="#salesOnly">Sales Only</a></li>
+                                            <li><a data-toggle="tab" href="#commisonsOnly">Commisions Only</a></li>
                                         </ul>
                                         <div class="tab-content">
                                             <div id="allTraffic" class="tab-pane fade in active">
@@ -89,7 +99,7 @@
                                                     </div>
                                                     <div class="panel-body">
                                                         <div class="table-responsive">
-                                                            <table class="table table-bordered">
+                                                            <table class="table table-bordered datatable">
                                                                 <thead>
                                                                 <tr>
                                                                     <th>WHO</th>
@@ -118,7 +128,7 @@
                                                                     </tr>
                                                                 @empty
                                                                     <tr>
-                                                                        <td colspan="6"> There Are No Activities</td>
+                                                                        <td colspan="6">There Are No Activities</td>
                                                                     </tr>
                                                                 @endforelse
                                                                 </tbody>
@@ -132,13 +142,13 @@
                                                     <div class="panel-heading">
                                                         <div class="row">
                                                             <div class=" col-md-10 pull-left">
-                                                                <h4>All Traffic</h4>
+                                                                <h4>Leads Only</h4>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="panel-body">
                                                         <div class="table-responsive">
-                                                            <table class="table table-bordered">
+                                                            <table class="table table-bordered datatable">
                                                                 <thead>
                                                                 <tr>
                                                                     <th>WHO</th>
@@ -167,7 +177,95 @@
                                                                     </tr>
                                                                 @empty
                                                                     <tr>
-                                                                        <td colspan="6"> There Are No Activities</td>
+                                                                        <td colspan="6">There Are No Activities</td>
+                                                                    </tr>
+                                                                @endforelse
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="salesOnly" class="tab-pane fade">
+                                                <div class="panel panel-default panel-info">
+                                                    <div class="panel-heading">
+                                                        <div class="row">
+                                                            <div class=" col-md-10 pull-left">
+                                                                <h4>Sales Only</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered datatable">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>WHO</th>
+                                                                    <th>BROWSER</th>
+                                                                    <th>PLATFORM</th>
+                                                                    <th>TYPE</th>
+                                                                    <th>FIRST SEEN</th>
+                                                                    <th>LAST VISIT</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                @forelse($salesOnly as $eachSales)
+                                                                    <tr>
+                                                                        <td>{{ (isset($eachSales->email) && !is_null($eachSales->email)) ? $eachSales->email : ((isset($eachSales->ip) && !is_null($eachSales->ip)) ?  $eachSales->ip : '')  }}</td>
+                                                                        <td>{{ (isset($eachSales->browser) && !is_null($eachSales->browser)) ? $eachSales->browser : ''  }}</td>
+                                                                        <td>{{ (isset($eachSales->os) && !is_null($eachSales->os)) ? $eachSales->os : ''  }}</td>
+                                                                        @if(isset($eachSales->type) && !is_null($eachSales->type) && $eachSales->type == 1)
+                                                                            <td>{{ 'Visitor' }}</td>
+                                                                        @elseif(isset($eachSales->type) && !is_null($eachSales->type) && $eachSales->type == 2)
+                                                                            <td>{{ 'Sales' }}</td>
+                                                                        @elseif((isset($eachSales->type) && !is_null($eachSales->type) && $eachSales->type == 3))
+                                                                            <td>{{'Leads'}}</td>
+                                                                        @endif
+                                                                        <td>{{ (isset($eachSales->created_at) && !is_null($eachSales->created_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachSales->created_at)) : '' }}</td>
+                                                                        <td>{{ (isset($eachSales->updated_at) && !is_null($eachSales->updated_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachSales->updated_at)) : '' }}</td>
+                                                                    </tr>
+                                                                @empty
+                                                                    <tr>
+                                                                        <td colspan="6">There Are No Activities</td>
+                                                                    </tr>
+                                                                @endforelse
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="commisonsOnly" class="tab-pane fade">
+                                                <div class="panel panel-default panel-info">
+                                                    <div class="panel-heading">
+                                                        <div class="row">
+                                                            <div class=" col-md-10 pull-left">
+                                                                <h4>Commisions Only</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered datatable">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>PRODUCT NAME</th>
+                                                                    <th>UNIT SOLD</th>
+                                                                    <th>SALE PRICE</th>
+                                                                    <th>COMMISSION</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                @forelse($commisonsOnly as $eachSales)
+                                                                    <tr>
+                                                                        <td>{{ $eachSales['name'] }}</td>
+                                                                        <td>{{ $eachSales['unit_sold'] }}</td>
+                                                                        <td>{{ "$" . number_format($eachSales['sale_price'], 2, '.', ',') }}</td>
+                                                                        <td>{{ "$" . number_format($eachSales['commission'], 2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                @empty
+                                                                    <tr>
+                                                                        <td colspan="4">There Are No Activities</td>
                                                                     </tr>
                                                                 @endforelse
                                                                 </tbody>
@@ -190,18 +288,30 @@
 
 @section('script')
 <script>
-    function copyToClipboard(element) {
-        var $temp = $("<input>");
-        $("body").append($temp);
-        $temp.val($(element).text()).select();
-        document.execCommand("copy");
-        $temp.remove();
-    };
+    $(document).ready(function() {
+        $.fn.dataTable.ext.errMode = 'none';
+        $('.datatable').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false
+        });
 
-    $('#copy').on('click',function(){
-        var url=$('#url');
-        copyToClipboard(url);
-        toastr.info('Copied To Clipboard');
+        function copyToClipboard(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($(element).text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        };
+
+        $('#copy').on('click',function(){
+            var url=$('#url');
+            copyToClipboard(url);
+            toastr.info('Copied To Clipboard');
+        });
     });
 </script>
 {{--<script>--}}

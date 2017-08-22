@@ -91,32 +91,6 @@ class DashboardController extends Controller
                  $totalSales += 1;
 			 }
 
-
-
-
-
-            // $orderedProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'));
-            // $products = Product::whereIn('id', $orderedProducts->pluck('product_id'));
-            // $totalSales = 0;
-            // $totalSalePrice = 0;
-            // $grossCommission = 0;
-            // $soldProducts = [];
-            // foreach ($products->get() as $key => $product) {
-            //     $totalUnitSold = OrderProduct::whereIn('product_id', [$product->id])->groupBy('product_id')->count();
-            //     if ($product->method == 1) {
-            //         $myCommision = $product->product_price * ($product->commission / 100);
-            //         $grossCommission += $myCommision;
-            //     } else {
-            //         $myCommision = $product->commission;
-            //         $grossCommission += $myCommision;
-            //     }
-            //     $soldProducts[$key]['name'] = $product->name;
-            //     $soldProducts[$key]['unit_sold'] = $totalUnitSold;
-            //     $soldProducts[$key]['total_sale_price'] = $product->product_price * $totalUnitSold;
-            //     $soldProducts[$key]['my_commission'] = $myCommision;
-            //     $totalSalePrice += $soldProducts[$key]['total_sale_price'];
-            //     $totalSales += $totalUnitSold;
-            // }
             return view('affiliate.dashboard',[
                 'affiliate' => $affiliate,
                 'campaigns' => $campaigns->count(),

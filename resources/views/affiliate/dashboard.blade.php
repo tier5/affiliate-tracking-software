@@ -416,6 +416,7 @@
             }
         });
         $(document).ready(function() {
+            $.fn.dataTable.ext.errMode = 'none';
             $('.datatable').DataTable({
                 "paging": true,
                 "lengthChange": false,

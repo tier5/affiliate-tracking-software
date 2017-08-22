@@ -5,22 +5,22 @@ namespace App\Http\Controllers;
 use App\AgentUrl;
 use App\AgentUrlDetails;
 use App\Campaign;
+use App\OrderProduct;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
+use Mail;
+use Mockery\Exception;
+use \App\Affiliate;
 use \App\AffiliateLink;
+use \App\Agency;
 use \App\BusinessPlan;
+use \App\Jobs\AffiliatePlanSync;
 use \App\Lead;
 use \App\User;
-use \App\Agency;
-use \App\Affiliate;
 use \App\Visitor;
-use \App\Jobs\AffiliatePlanSync;
-use Illuminate\Support\Facades\Auth;
-
-use Mail;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Input;
-use Mockery\Exception;
 
 class AffiliateController extends Controller
 {
@@ -383,7 +383,33 @@ class AffiliateController extends Controller
             $affiliate = Affiliate::where('id',$id)->with('user','campaign')->first();
             $allTraffic=$affiliate->agentURL;
             $leadsOnly=$allTraffic->where('type','3');
-            return view('campaign.affiliate_details',['affiliate' => $affiliate,'allTraffic' => $allTraffic,'leadsOnly' => $leadsOnly]);
+            $salesOnly=$allTraffic->where('type','2');
+            $orderProducts = OrderProduct::whereIn('log_id', $salesOnly->pluck('id'))->get();
+            $commisonsOnly = [];
+            $grossCommission = 0;
+            foreach ($orderProducts as $key => $order) {
+                $product = Product::find($order->product_id);
+                if ($product->method == 1) {
+                    $myCommision = $product->product_price * ($product->commission / 100);
+                    $grossCommission += $myCommision;
+                } else {
+                    $myCommision = $product->commission;
+                    $grossCommission += $myCommision;
+                }
+                $commisonsOnly[$key]['name'] = $product->name;
+                $commisonsOnly[$key]['unit_sold'] = 1;
+                $commisonsOnly[$key]['sale_price'] = $product->product_price * 1;
+                $commisonsOnly[$key]['commission'] = $myCommision;
+            }
+
+            return view('campaign.affiliate_details',[
+                'affiliate' => $affiliate,
+                'allTraffic' => $allTraffic,
+                'leadsOnly' => $leadsOnly,
+                'salesOnly' => $salesOnly,
+                'commisonsOnly' => $commisonsOnly,
+                'grossCommission' => $grossCommission
+            ]);
         } catch (\Exception $e){
             return redirect()->back()->with('error',$e->getMessage());
         }
