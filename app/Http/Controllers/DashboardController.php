@@ -87,9 +87,9 @@ class DashboardController extends Controller
                     $campaignsDropdown = Campaign::where('user_id', Auth::user()->id)->get();
                     $affiliatesDropdown = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))->get();
                 } else if ($request->input('campaign_id') > 0 && $request->input('affiliate_id') > 0) {
+                    $campaigns = Campaign::where('id', $request->input('campaign_id'))
+                        ->where('user_id', Auth::user()->id);
                     if ($campaigns->count() > 0) {
-                        $campaigns = Campaign::where('id', $request->input('campaign_id'))
-                            ->where('user_id', Auth::user()->id);
                         $affiliates = Affiliate::where('id', $request->input('affiliate_id'))
                             ->where('campaign_id', $request->input('campaign_id'));
                         $affiliate = $affiliates->first();

@@ -155,7 +155,7 @@
                             <div class="clearfix">&nbsp;</div>
                             @foreach ($affiliate as $key => $value)
                                 <div class="col-md-10 col-md-offset-1">
-                                    <span class="url">{{ $value->campaign->campaign_url }}?affiliate_id={{ $value->key }}</span>
+                                    <span class="url">{{ $value->campaign->sales_url }}?affiliate_id={{ $value->key }}</span>
                                 </div>
                                 <div class="col-md-1">
                                     <a class="btn btn-primary btn-sm pull-right copy pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> Copy Link</a>
