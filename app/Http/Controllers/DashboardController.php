@@ -155,9 +155,9 @@ class DashboardController extends Controller
     }
 
     private function getAnalytics($affiliates) {
-        $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',1);
-        $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',3);
-        $sales = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',2);
+        $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'));
+        $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type', 2)->orWhere('type', 3);
+        $sales = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type', 2);
         $totalSales = OrderProduct::whereIn('log_id',$sales->pluck('id'))->count();
         $chrome = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
             ->where('browser','LIKE','%Chrome%')->count();
@@ -186,9 +186,9 @@ class DashboardController extends Controller
     private function affiliateDashboard($request) {
         $affiliate = Affiliate::where('user_id', Auth::user()->id)->where('approve_status',1)->get();
         $campaigns = Campaign::whereIn('id',$affiliate->pluck('campaign_id'));
-        $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type',1);
-        $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type',3);
-        $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type',2);
+        $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'));
+        $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2)->orWhere('type', 3);
+        $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2);
         $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
         $totalSaless = OrderProduct::whereIn('log_id',$sales->pluck('id'))->count();
 
@@ -222,7 +222,7 @@ class DashboardController extends Controller
             'campaigns' => $campaigns->count(),
             'visitors' => $visitors->count(),
             'leads' => $leads->count(),
-            'sales' => $totalSales,
+            'sales' => $sales->count(),
             'totalSales' => $totalSaless,
             'total_sale_price' => $totalSalePrice,
             'gross_commission' => $grossCommission,
@@ -268,7 +268,6 @@ class DashboardController extends Controller
             $endDate = Carbon::now()->month;
             $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
                 ->where('created_at', '>=', Carbon::now()->subMonth(6))
-                ->where('type',1)
                 ->get()
                 ->groupBy(function($date) {
                     //return Carbon::parse($date->created_at)->format('Y'); // grouping by years
@@ -276,7 +275,7 @@ class DashboardController extends Controller
                 });
             $sales = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
                 ->where('created_at', '>=', Carbon::now()->subMonth(6))
-                ->where('type',2)
+                ->where('type', 2)
                 ->get()
                 ->groupBy(function($date) {
                     //return Carbon::parse($date->created_at)->format('Y'); // grouping by years
@@ -284,7 +283,8 @@ class DashboardController extends Controller
                 });
             $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
                 ->where('created_at', '>=', Carbon::now()->subMonth(6))
-                ->where('type',3)
+                ->where('type', 2)
+                ->orWhere('type', 3)
                 ->get()
                 ->groupBy(function($date) {
                     //return Carbon::parse($date->created_at)->format('Y'); // grouping by years
@@ -302,7 +302,8 @@ class DashboardController extends Controller
                     $visitorsCount[] = 0;
                 }
                 if(isset($sales[$dateParam])){
-					$salesCount[] = OrderProduct::whereIn('log_id',$sales[$dateParam]->pluck('id'))->count();
+                    $salesCount[] = count($sales[$dateParam]);
+					//$salesCount[] = OrderProduct::whereIn('log_id',$sales[$dateParam]->pluck('id'))->count();
                 } else {
                     $salesCount[] = 0;
                 }

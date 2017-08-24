@@ -46,7 +46,7 @@
                                         @empty
                                         @endforelse
                                     </select> 
-                                </div>                           
+                                </div>                         
                             </div>
                         </div>
                         <!-- /.info-box-content -->
@@ -93,8 +93,8 @@
                         <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">Sales</span>
-                            <span class="info-box-number">{{ $totalSales }}</span>
+                            <span class="info-box-text">Customers</span>
+                            <span class="info-box-number">{{ $sales->count() }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -479,7 +479,7 @@
                             labels: data.months,
                             datasets: [
                                 {
-                                    label: "Sales",
+                                    label: "Customers",
                                     fillColor: "rgb(210, 214, 222)",
                                     strokeColor: "rgb(210, 214, 222)",
                                     pointColor: "rgb(210, 214, 222)",

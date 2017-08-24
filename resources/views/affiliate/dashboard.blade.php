@@ -58,8 +58,8 @@
                         <span class="info-box-icon bg-yellow"><i class="ion ion-ios-cart"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">Sales</span>
-                            <span class="info-box-number">{{ $totalSales }}</span>
+                            <span class="info-box-text">Customers</span>
+                            <span class="info-box-number">{{ $sales }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -333,7 +333,7 @@
                                 labels: data.months,
                                 datasets: [
                                     {
-                                        label: "Sales",
+                                        label: "Customers",
                                         fillColor: "rgb(210, 214, 222)",
                                         strokeColor: "rgb(210, 214, 222)",
                                         pointColor: "rgb(210, 214, 222)",
