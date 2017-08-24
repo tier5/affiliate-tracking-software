@@ -64,8 +64,8 @@
                         <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">Campign</span>
-                            <span class="info-box-number">{{ $campaigns->count() }}</span>
+                            <span class="info-box-text">Campaign</span>
+                            <span class="info-box-number">{{ count($campaigns) }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
