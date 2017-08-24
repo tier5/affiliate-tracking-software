@@ -156,7 +156,7 @@ class DashboardController extends Controller
 
     private function getAnalytics($affiliates) {
         $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'));
-        $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type', 2)->orWhere('type', 3);
+        $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->whereIn('type', [2, 3]);
         $sales = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type', 2);
         $totalSales = OrderProduct::whereIn('log_id',$sales->pluck('id'))->count();
         $chrome = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
@@ -187,7 +187,7 @@ class DashboardController extends Controller
         $affiliate = Affiliate::where('user_id', Auth::user()->id)->where('approve_status',1)->get();
         $campaigns = Campaign::whereIn('id',$affiliate->pluck('campaign_id'));
         $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'));
-        $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2)->orWhere('type', 3);
+        $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->whereIn('type', [2, 3]);
         $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2);
         $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
         $totalSaless = OrderProduct::whereIn('log_id',$sales->pluck('id'))->count();
@@ -233,10 +233,10 @@ class DashboardController extends Controller
 
 	public function salesData(Request $request)
     {
-        try{
+        try {
             $campaigns = null;
             if ($request->user_type == 'affiliate') {
-				$affiliates = Affiliate::where('user_id', $request->id)->where('approve_status',1)->get();
+				$affiliates = Affiliate::where('user_id', $request->id)->where('approve_status', 1)->get();
 	            $campaigns = Campaign::whereIn('id',$affiliates->pluck('campaign_id'));
             } else {
                 if ($request->has('campaign_id') || $request->has('affliate_id')) {
@@ -283,8 +283,7 @@ class DashboardController extends Controller
                 });
             $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
                 ->where('created_at', '>=', Carbon::now()->subMonth(6))
-                ->where('type', 2)
-                ->orWhere('type', 3)
+                ->where('type', [2, 3])
                 ->get()
                 ->groupBy(function($date) {
                     //return Carbon::parse($date->created_at)->format('Y'); // grouping by years

@@ -77,7 +77,7 @@
                         <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">Visitor</span>
+                            <span class="info-box-text">Visitors</span>
                             <span class="info-box-number">{{ $visitors->count() }}</span>
                         </div>
                         <!-- /.info-box-content -->
@@ -107,7 +107,7 @@
                         <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">Lead</span>
+                            <span class="info-box-text">Leads</span>
                             <span class="info-box-number">{{ $leads->count() }}</span>
                         </div>
                         <!-- /.info-box-content -->
