@@ -453,25 +453,24 @@ var Affiliate = Affiliate || (function(){
                     deleteCookie(COOKIE_PRODUCT_URL);
                     deleteCookie(COOKIE_PRODUCT);
                 }, function () {
-                    //
-                });
-                if(previousUrl != '' && aff_log != null){
-                    if(previousUrl != windowsLocation) {
-                        var dataPostProduct = 'previous_url=' + previousUrl + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation + '&log_id=' + aff_log + '&order_id=' + order_id;
-                        Ajax.request(_callback_url + "/api/v2/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
-                            deleteCookie(COOKIE_PRODUCT_URL);
-                            if(order_id > 0){
-                                deleteCookie(COOKIE_PRODUCT);
-                            }
-                            setCookie(COOKIE_PRODUCT,dataNewProduct.data,30);
-                            console.log(dataNewProduct.message);
-                        }, function () {
-                            //
-                        });
-                    } else {
-                        console.log('Yes');
+                    if(previousUrl != '' && aff_log != null){
+                        if(previousUrl != windowsLocation) {
+                            var dataPostProduct = 'previous_url=' + previousUrl + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation + '&log_id=' + aff_log + '&order_id=' + order_id;
+                            Ajax.request(_callback_url + "/api/v2/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
+                                deleteCookie(COOKIE_PRODUCT_URL);
+                                if(order_id > 0){
+                                    deleteCookie(COOKIE_PRODUCT);
+                                }
+                                setCookie(COOKIE_PRODUCT,dataNewProduct.data,30);
+                                console.log(dataNewProduct.message);
+                            }, function () {
+                                //
+                            });
+                        } else {
+                            console.log('Yes');
+                        }
                     }
-                }
+                });
                 window.onload = function() {
                     var allitems = [];
                     allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('a'));
