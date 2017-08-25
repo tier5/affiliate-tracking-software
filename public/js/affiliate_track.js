@@ -258,22 +258,12 @@ var Affiliate = Affiliate || (function(){
      * track Sales Page for log and link of order page
      * @param affiliate_id
      */
-    function salesPageTrack(affiliate_id) {
+    function salesPageTrack(affiliate_id,log_id) {
         var campaign_url = '';
-        var log_id = '';
         var browser = detectBrowser();
-        Ajax.request("https://api.ipify.org/?format=json","GET",null,function(data){
-            var dataPost = 'ip='+data.ip+'&key='+affiliate_id+'&browser='+browser[0]+'&urlKey='+Affiliate.key+'&os='+browser[1];
+        if(log_id > 0){
+            var dataPost = 'key='+affiliate_id+'&urlKey='+Affiliate.key+'&dataId='+log_id;
             Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
-                var cookie_affiliate = getCookie(COOKIE_NAME);
-                var cookie_log_id = getCookie(COOKIE_LOG_ID);
-                if(cookie_affiliate == ''){
-                    setCookie(COOKIE_NAME,affiliate_id,30);
-                }
-                if(cookie_log_id == ''){
-                    setCookie(COOKIE_LOG_ID,dataNew.data,30);
-                }
-                log_id = dataNew.data;
                 console.log(dataNew.message);
                 var dataPostOrder = 'campaign_id='+Affiliate.key;
                 Ajax.request(_callback_url + "/api/check/order_url","POST",dataPostOrder,function (dataNew) {
@@ -284,9 +274,33 @@ var Affiliate = Affiliate || (function(){
             },function () {
                 //
             });
-        },function(){
-            console.log('ip not found');
-        });
+        } else {
+            Ajax.request("https://api.ipify.org/?format=json","GET",null,function(data){
+                var dataPost = 'ip='+data.ip+'&key='+affiliate_id+'&browser='+browser[0]+'&urlKey='+Affiliate.key+'&os='+browser[1];
+                Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
+                    var cookie_affiliate = getCookie(COOKIE_NAME);
+                    var cookie_log_id = getCookie(COOKIE_LOG_ID);
+                    if(cookie_affiliate == ''){
+                        setCookie(COOKIE_NAME,affiliate_id,30);
+                    }
+                    if(cookie_log_id == ''){
+                        setCookie(COOKIE_LOG_ID,dataNew.data,30);
+                    }
+                    log_id = dataNew.data;
+                    console.log(dataNew.message);
+                    var dataPostOrder = 'campaign_id='+Affiliate.key;
+                    Ajax.request(_callback_url + "/api/check/order_url","POST",dataPostOrder,function (dataNew) {
+                        campaign_url = dataNew.data;
+                    },function () {
+                        //
+                    });
+                },function () {
+                    //
+                });
+            },function(){
+                console.log('ip not found');
+            });
+        }
         window.onload = function() {
             setTimeout(function(){
                 var allitems = [];
@@ -299,7 +313,7 @@ var Affiliate = Affiliate || (function(){
                         anchor.setAttribute('href',newAnchor);
                     }
                 }
-            }, 2000);
+            }, 1000);
         };
     }
 
@@ -359,10 +373,12 @@ var Affiliate = Affiliate || (function(){
             var qs = getQueryStrings();
             var affiliate_id = qs.affiliate_id;
             var cookie_affiliate = getCookie(COOKIE_NAME);
+            console.log(cookie_affiliate);
             if(cookie_affiliate != ''){
-                salesPageTrack(cookie_affiliate)
+                var log_id = getCookie(COOKIE_LOG_ID);
+                salesPageTrack(cookie_affiliate,log_id)
             } else if(cookie_affiliate == '' && affiliate_id != undefined){
-                salesPageTrack(affiliate_id);
+                salesPageTrack(affiliate_id,0);
             } else {
                 console.log('Normal visit');
             }
