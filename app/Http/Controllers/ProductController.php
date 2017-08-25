@@ -366,4 +366,94 @@ class ProductController extends Controller
         }
         return response()->json($response, $responseCode);
     }
+    public function checkLandingPageUrlV2(Request $request)
+    {
+        try {
+            $campaign = Campaign::where('key', $request->campaign)->firstOrFail();
+            $product = Product::where('url', $request->previous_url)
+                ->where('campaign_id', $campaign->id)
+                ->firstOrFail();
+            if($product->upgrade_url == $request->currentUrl){
+
+                $log = AgentUrlDetails::findOrFail($request->log_id);
+                $log->type = 2;
+                $log->update();
+
+                $order = new OrderProduct();
+                $order->log_id = $log->id;
+                $order->product_id = $product->id;
+                $order->save();
+
+                $response = [
+                    'status' => true,
+                    'message' => 'Product Sold'
+                ];
+                $responseCode = 200;
+            } else {
+                $response = [
+                    'status' => false,
+                    'message' => 'Click on no thanks',
+                ];
+                $responseCode = 406 ;
+            }
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $response = [
+                'status' => false,
+                'error' => preg_match('/(Campaign)/', $modelNotFoundException->getMessage())
+                    ? "No campaign has been found." : "No product has been found.",
+                'error_info' => preg_replace('/(\\[App\\\\)|(\\])/', '', $modelNotFoundException->getMessage())
+            ];
+            $responseCode = 404;
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+
+            $response = [
+                'status' => false,
+                'message' => $exception->getMessage()
+            ];
+            $responseCode = 500;
+        }
+
+        return response()->json($response, $responseCode);
+    }
+    public function checkProduct(Request $request)
+    {
+        try {
+            $campaign = Campaign::where('key', $request->campaign)->firstOrFail();
+            $product = Product::where('url', $request->previous_url)
+                ->where('campaign_id', $campaign->id)
+                ->firstOrFail();
+            if($product){
+                $response = [
+                    'status' => true,
+                    'message' => 'Landing page found'
+                ];
+                $responseCode = 200;
+            } else {
+                $response = [
+                    'status' => false,
+                    'message' => 'Click on checkout Page',
+                ];
+                $responseCode = 406 ;
+            }
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $response = [
+                'status' => false,
+                'error' => preg_match('/(Campaign)/', $modelNotFoundException->getMessage())
+                    ? "No campaign has been found." : "No product has been found.",
+                'error_info' => preg_replace('/(\\[App\\\\)|(\\])/', '', $modelNotFoundException->getMessage())
+            ];
+            $responseCode = 404;
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+
+            $response = [
+                'status' => false,
+                'message' => $exception->getMessage()
+            ];
+            $responseCode = 500;
+        }
+
+        return response()->json($response, $responseCode);
+    }
 }

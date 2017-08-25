@@ -168,10 +168,10 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <strong id="copySales"><p>&lt;script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"&gt;&lt;/script&gt;</p>
+                                            <strong id="copySales"><p>&lt;script src="{{ url('/') }}/js/affiliate_track_v1.js" type="application/javascript"&gt;&lt;/script&gt;</p>
                                                 <p>&lt;script type="application/javascript"&gt;</p>
                                                 <p> &nbsp;&nbsp;&nbsp;Affiliate.key = '{{ $campaigns->key }}';</p>
-                                                <p> &nbsp;&nbsp;&nbsp;Affiliate._sales();</p>
+                                                <p> &nbsp;&nbsp;&nbsp;Affiliate.sales();</p>
                                                 <p> &lt;/script&gt;</p></strong>
                                         </div>
                                         <div id="menu1" class="tab-pane fade">
@@ -182,11 +182,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <strong id="copyScript"><p>&lt;script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"&gt;&lt;/script&gt;</p>
+                                            <strong id="copyScript"><p>&lt;script src="{{ url('/') }}/js/affiliate_track_v1.js" type="application/javascript"&gt;&lt;/script&gt;</p>
                                             <p>&lt;script type="application/javascript"&gt;</p>
                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate.key = '{{ $campaigns->key }}';</p>
-                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._init();</p>
-                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._watch();</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate.init();</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate.lead();</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate.watch();</p>
                                            <p> &lt;/script&gt;</p></strong>
                                         </div>
                                         <div id="menu2" class="tab-pane fade">
@@ -197,14 +198,11 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <strong id="copyThank"><p>&lt;script src="{{ url('/') }}/js/affiliate_track.js" type="application/javascript"&gt;&lt;/script&gt;</p>
+                                            <strong id="copyThank"><p>&lt;script src="{{ url('/') }}/js/affiliate_track_v1.js" type="application/javascript"&gt;&lt;/script&gt;</p>
                                                 <p>&lt;script type="application/javascript"&gt;</p>
                                                     <p> &nbsp;&nbsp;&nbsp;Affiliate.key = '{{ $campaigns->key }}';</p>
-                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._init();</p>
-                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate._watch();</p>
-                                                    <p> &nbsp;&nbsp;&nbsp;setTimeout(function() {</p>
-                                                    <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affiliate._checkout();</p>
-                                                    <p> &nbsp;&nbsp;&nbsp;}, 500);</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate.init();</p>
+                                                    <p> &nbsp;&nbsp;&nbsp;Affiliate.watch();</p>
                                                 <p> &lt;/script&gt;</p></strong>
                                         </div>
                                     </div>

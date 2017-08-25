@@ -82,3 +82,15 @@ Route::post('check/order_url',[
     'uses' => 'ProductController@checkOrderUrl',
     'as' => 'check.order.page'
 ]);
+Route::post('data/log',[
+    'uses' => 'ProductController@dataLog',
+    'as' => 'data.log'
+]);
+Route::post('v2/check/landing_page/url',[
+    'uses' => 'ProductController@checkLandingPageUrlV2',
+    'as' => 'check.landing.url.v2'
+]);
+Route::post('check/product',[
+    'uses' => 'ProductController@checkProduct',
+    'as' => 'check.product'
+]);

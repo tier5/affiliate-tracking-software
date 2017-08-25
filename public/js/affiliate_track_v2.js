@@ -1,9 +1,11 @@
-var Affiliate = Affiliate || (function(){
+var AffiliateV2 = AffiliateV2 || (function(){
 
     //var _callback_url = 'https://www.interwebleads.com';
      var _callback_url = 'http://localhost/reviewvelocity/public';
 
     var COOKIE_NAME = 'ats_affiliate';
+
+    var COOKIE_REFERENCE = 'ats_reference';
 
     var LEAD_COOKIE_NAME = 'ats_lead';
 
@@ -255,38 +257,18 @@ var Affiliate = Affiliate || (function(){
     }
 
     /**
-     * track Sales Page for log and link of order page
-     * @param affiliate_id
+     * Check Sales Page Url
+     * if sales page url then change a tag with affiliate url
      */
-    function salesPageTrack(affiliate_id) {
+    function checkSalesPage(affiliate_id) {
         var campaign_url = '';
-        var log_id = '';
-        var browser = detectBrowser();
-        Ajax.request("https://api.ipify.org/?format=json","GET",null,function(data){
-            var dataPost = 'ip='+data.ip+'&key='+affiliate_id+'&browser='+browser[0]+'&urlKey='+Affiliate.key+'&os='+browser[1];
-            Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
-                var cookie_affiliate = getCookie(COOKIE_NAME);
-                var cookie_log_id = getCookie(COOKIE_LOG_ID);
-                if(cookie_affiliate == ''){
-                    setCookie(COOKIE_NAME,affiliate_id,30);
-                }
-                if(cookie_log_id == ''){
-                    setCookie(COOKIE_LOG_ID,dataNew.data,30);
-                }
-                log_id = dataNew.data;
-                console.log(dataNew.message);
-                var dataPostOrder = 'campaign_id='+Affiliate.key;
-                Ajax.request(_callback_url + "/api/check/order_url","POST",dataPostOrder,function (dataNew) {
-                    campaign_url = dataNew.data;
-                },function () {
-                    //
-                });
-            },function () {
-                //
-            });
-        },function(){
-            console.log('ip not found');
+        var dataPost = 'campaign_id='+AffiliateV2.key;
+        Ajax.request(_callback_url + "/api/check/order_url","POST",dataPost,function (dataNew) {
+            campaign_url = dataNew.data;
+        },function () {
+            //
         });
+        var count = 0;
         window.onload = function() {
             setTimeout(function(){
                 var allitems = [];
@@ -295,57 +277,15 @@ var Affiliate = Affiliate || (function(){
                     var anchor = allitems[i];
                     var oldAnchor = anchor.getAttribute("href");
                     if(oldAnchor === campaign_url){
-                        var newAnchor = oldAnchor + '?affiliate_id='+affiliate_id+'&affiliate_log='+log_id;
+                        var newAnchor = oldAnchor + '?affiliate_id='+affiliate_id;
                         anchor.setAttribute('href',newAnchor);
+                        if(count == 0){
+                            setCookie(COOKIE_REFERENCE,affiliate_id,30);
+                        }
+                        count++;
                     }
                 }
-            }, 2000);
-        };
-    }
-
-    /**
-     * Track a Order Page or Upgrade page
-     * @param affiliate_id
-     * @param log_id
-     */
-    function orderPageTrack(affiliate_id,log_id) {
-        if(affiliate_id != '' && log_id > 0){
-            var dataPost = 'key='+affiliate_id+'&urlKey='+Affiliate.key+'&dataId='+log_id;
-            Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
-                var cookie_affiliate = getCookie(COOKIE_NAME);
-                var cookie_log_id = getCookie(COOKIE_LOG_ID);
-                if(cookie_affiliate == ''){
-                    setCookie(COOKIE_NAME,affiliate_id,30);
-                }
-                if(cookie_log_id == ''){
-                    setCookie(COOKIE_LOG_ID,log_id,30);
-                }
-                console.log(dataNew.message);
-            },function () {
-                //
-            });
-        } else if (affiliate_id != '' && log_id == 0){
-            var browser = detectBrowser();
-            Ajax.request("https://api.ipify.org/?format=json","GET",null,function(data){
-                var dataPost = 'ip='+data.ip+'&key='+affiliate_id+'&browser='+browser[0]+'&urlKey='+Affiliate.key+'&os='+browser[1];
-                Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
-                    var cookie_affiliate = getCookie(COOKIE_NAME);
-                    var cookie_log_id = getCookie(COOKIE_LOG_ID);
-                    if(cookie_affiliate == ''){
-                        setCookie(COOKIE_NAME,affiliate_id,30);
-                    }
-                    if(cookie_log_id == ''){
-                        setCookie(COOKIE_LOG_ID,dataNew.data,30);
-                    }
-                    console.log(dataNew.message);
-                },function () {
-                    //
-                });
-            },function(){
-                console.log('ip not found');
-            });
-        } else {
-            console.log('affiliate not found');
+            },1000);
         }
     }
 
@@ -353,94 +293,102 @@ var Affiliate = Affiliate || (function(){
      * main return function
      */
     return {
-        //For track a sales page
-        sales : function () {
-            console.log('Initialize sales script.')
+        /**
+         * Initialize the Script
+         * save the primary cookies
+         * @private
+         */
+        _init : function () {
+            console.log('_init is initiated............');
             var qs = getQueryStrings();
             var affiliate_id = qs.affiliate_id;
-            var cookie_affiliate = getCookie(COOKIE_NAME);
-            if(cookie_affiliate != ''){
-                salesPageTrack(cookie_affiliate)
-            } else if(cookie_affiliate == '' && affiliate_id != undefined){
-                salesPageTrack(affiliate_id);
-            } else {
-                console.log('Normal visit');
+            var browser = detectBrowser();
+            var myCookie = getCookie(COOKIE_NAME);
+            var logCookie = getCookie(COOKIE_LOG_ID);
+            if(affiliate_id != undefined){
+                setTimeout(function(){
+                    var url = removeParam('affiliate_id',window.location.href);
+                    window.history.pushState(null, null, url);
+                }, 500);
             }
+            if(myCookie == '' && logCookie == '' && affiliate_id != undefined){
+                Ajax.request("https://api.ipify.org/?format=json","GET",null,function(data){
+                    var dataPost = 'ip='+data.ip+'&key='+affiliate_id+'&browser='+browser[0]+'&urlKey='+AffiliateV2.key+'&os='+browser[1];
+                    Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
+                        setCookie(COOKIE_NAME,affiliate_id,30);
+                        setCookie(COOKIE_LOG_ID,dataNew.data,30);
+                        console.log(dataNew.message);
+                    },function () {
+                        // failed
+                    });
+                },function(){
+                    console.log('ip not found');
+                });
+            } else if(myCookie != '' && logCookie != '') {
+                Ajax.request("https://api.ipify.org/?format=json","GET",null,function(data){
+                    var dataPost = 'ip='+data.ip+'&key='+myCookie+'&browser='+browser[0]+'&urlKey='+AffiliateV2.key+'&dataId='+logCookie;
+                    Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
+                        console.log(dataNew.message);
+                    },function () {
+                        //
+                    });
+                },function(){
+                    console.log('ip not found');
+                });
+            } else {
+                console.log('Please initiate the url with a affiliate id');
+            }
+            console.log('_init is finished........');
+        },
 
-        },
-        //For Track a any page
-        init : function () {
-            console.log('Initialize init script');
-            var aff_id = getCookie(COOKIE_NAME);
-            var aff_log = getCookie(COOKIE_LOG_ID);
-            var qs = getQueryStrings();
-            var aff_id_qs = qs.affiliate_id;
-            var aff_log_qs = qs.affiliate_log;
-            if(aff_id_qs != undefined){
-                var url = removeParam('affiliate_id',window.location.href);
-                var newUrl = removeParam('affiliate_log',url);
-                window.history.pushState(null, null, newUrl);
-            }
-            if(aff_id != '' && aff_log != ''){
-                orderPageTrack(aff_id,aff_log);
-            } else if(aff_id == '' && aff_log == '' && aff_id_qs != undefined && aff_log_qs != undefined) {
-                orderPageTrack(aff_id_qs,aff_log_qs);
-            } else if(aff_id == '' && aff_log == '' && aff_id_qs != undefined && aff_log_qs == undefined) {
-                orderPageTrack(aff_id_qs,0);
-            } else {
-                console.log('Normal visit');
-            }
-        },
-        //For Track a lead
-        lead : function () {
-            console.log('Initialize lead script');
-            window.onload = function() {
+        /**
+         * Affiliate Lead Log
+         * if any one put any email in any input field then that email saved as a lead
+         * @private
+         */
+        _lead : function () {
+            console.log('_lead is initiated ..............');
+            window.onload = function () {
                 var allInputs = [];
                 allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=text]'));
                 allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=email]'));
                 for (var i = 0; i < allInputs.length; i++) {
                     var input = allInputs[i];
                     input.addEventListener('change', function () {
-                        var lead = this.value;
-                        if (isEmail(lead)) {
-                            var lead_cookie = getCookie(LEAD_COOKIE_NAME);
-                            if (lead != lead_cookie) {
-                                var log_id = getCookie(COOKIE_LOG_ID);
-                                deleteCookie(LEAD_COOKIE_NAME);
-                                setCookie(LEAD_COOKIE_NAME, lead, 30);
-                                dataPost = 'dataId=' + log_id + '&email=' + lead;
-                                Ajax.request(_callback_url + "/api/affiliate/lead", "POST", dataPost, function (dataNew) {
-                                    console.log(dataNew.message);
-                                }, function () {
-                                    //
-                                });
-                            } else {
-                                console.log('same lead');
+                        var affiliate_log_id = getCookie(COOKIE_LOG_ID);
+                        if (affiliate_log_id != '') {
+                            var lead = this.value;
+                            if (isEmail(lead)) {
+                                var lead_cookie = getCookie(LEAD_COOKIE_NAME);
+                                if (lead_cookie != lead) {
+                                    if (lead_cookie != '') {
+                                        deleteCookie(LEAD_COOKIE_NAME);
+                                    }
+                                    setCookie(LEAD_COOKIE_NAME, lead, 30);
+                                    var dataPost = 'dataId=' + affiliate_log_id + '&email=' + lead;
+                                    Ajax.request(_callback_url + "/api/affiliate/lead", "POST", dataPost, function (dataNew) {
+                                        console.log(dataNew.message);
+                                    }, function () {
+                                        //
+                                    });
+                                } else {
+                                    console.log('Same Lead')
+                                }
                             }
                         }
                     });
                 }
+                console.log('_init is finished........');
             }
         },
-        //For Track any sales
-        watch : function () {
-            console.log('Initialize watch script');
-            var windowsLocation = window.location.href;
-            var previousUrl = getCookie(COOKIE_PRODUCT_URL);
-            var aff_log = getCookie(COOKIE_LOG_ID);
-            if(previousUrl != '' && aff_log != null){
-                if(previousUrl != windowsLocation) {
-                    var dataPostProduct = 'previous_url=' + previousUrl + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation + '&log_id=' + aff_log;
-                    Ajax.request(_callback_url + "/api/v2/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
-                        deleteCookie(previousUrl);
-                        console.log(dataNewProduct.message);
-                    }, function () {
-                        //
-                    });
-                } else {
-                    console.log('Yes');
-                }
-            }
+
+        /**
+         * check all click event and if that is a product page then
+         * check for sales
+         * @private
+         */
+        _watch : function () {
+            console.log('_watch is initiated............');
             window.onload = function() {
                 var allitems = [];
                 allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('a'));
@@ -451,12 +399,12 @@ var Affiliate = Affiliate || (function(){
                     var anchor = allitems[i];
                     anchor.onclick = function() {
                         setTimeout(function(){
-                            var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
-                            Ajax.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
-                                if (previousUrl) {
+                            var dataPost = 'url=' + windowsLocation + '&campaign=' + AffiliateV2.key + '&currentUrl=0';
+                            Ajax.request(_callback_url + "/api/check/landing_page/url", "POST", dataPost, function (dataNew) {
+                                if (url_cookie) {
                                     deleteCookie(COOKIE_PRODUCT_URL);
                                 }
-                                setCookie(COOKIE_PRODUCT_URL, windowsLocation, 30);
+                                setCookie(COOKIE_PRODUCT_URL, windowsLocation, 86400);
                             }, function () {
                                 //
                             });
@@ -464,7 +412,24 @@ var Affiliate = Affiliate || (function(){
                     }
                 }
             }
-        }
+        },
 
+        /**
+         * Check any a tag containing my order url or not
+         * if order url is there then add my affiliate_id with it
+         * @private
+         */
+        _sales : function () {
+            console.log('_sales Script initiated.....');
+            var qs = getQueryStrings();
+            var reference = getCookie(COOKIE_REFERENCE);
+            if(qs.affiliate_id != undefined && reference == ''){
+                checkSalesPage(qs.affiliate_id);
+            } else if(reference != ''){
+                checkSalesPage(reference);
+            } else {
+                console.log('Not a affiliate visit');
+            }
+        }
     };
 })();
