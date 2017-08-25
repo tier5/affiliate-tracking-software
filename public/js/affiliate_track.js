@@ -471,30 +471,30 @@ var Affiliate = Affiliate || (function(){
                         }
                     }
                 });
-                window.onload = function() {
-                    var allitems = [];
-                    allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('a'));
-                    allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('button'));
-                    allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=submit]'));
-                    allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=button]'));
-                    for(var i = 0; i < allitems.length; i++) {
-                        var anchor = allitems[i];
-                        anchor.onclick = function() {
-                            setTimeout(function(){
-                                var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
-                                Ajax.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
-                                    if (previousUrl) {
-                                        deleteCookie(COOKIE_PRODUCT_URL);
-                                    }
-                                    setCookie(COOKIE_PRODUCT_URL, windowsLocation, 30);
-                                }, function () {
-                                    //
-                                });
-                            }, 1000);
-                        }
+            }, 1000);
+            window.onload = function() {
+                var allitems = [];
+                allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('a'));
+                allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('button'));
+                allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=submit]'));
+                allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=button]'));
+                for(var i = 0; i < allitems.length; i++) {
+                    var anchor = allitems[i];
+                    anchor.onclick = function() {
+                        setTimeout(function(){
+                            var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
+                            Ajax.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
+                                if (previousUrl) {
+                                    deleteCookie(COOKIE_PRODUCT_URL);
+                                }
+                                setCookie(COOKIE_PRODUCT_URL, windowsLocation, 30);
+                            }, function () {
+                                //
+                            });
+                        }, 2000);
                     }
                 }
-            }, 1000);
+            }
         }
 
     };
