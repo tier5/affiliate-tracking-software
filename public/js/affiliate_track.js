@@ -439,9 +439,9 @@ var Affiliate = Affiliate || (function(){
         },
         //For Track any sales
         watch : function () {
+            var windowsLocation = window.location.href;
             setTimeout(function(){
                 console.log('Initialize watch script');
-                var windowsLocation = window.location.href;
                 var previousUrl = getCookie(COOKIE_PRODUCT_URL);
                 var aff_log = getCookie(COOKIE_LOG_ID);
                 var order_id = getCookie(COOKIE_PRODUCT);
