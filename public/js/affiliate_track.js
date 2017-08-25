@@ -1,7 +1,7 @@
 var Affiliate = Affiliate || (function(){
 
-    //var _callback_url = 'https://www.interwebleads.com';
-     var _callback_url = 'http://localhost/reviewvelocity/public';
+    var _callback_url = 'https://www.interwebleads.com';
+    // var _callback_url = 'http://localhost/reviewvelocity/public';
 
     var COOKIE_NAME = 'ats_affiliate';
 
@@ -428,11 +428,19 @@ var Affiliate = Affiliate || (function(){
             var windowsLocation = window.location.href;
             var previousUrl = getCookie(COOKIE_PRODUCT_URL);
             var aff_log = getCookie(COOKIE_LOG_ID);
+            var order_id = getCookie(COOKIE_PRODUCT);
+            if(order_id == ''){
+                order_id = 0;
+            }
             if(previousUrl != '' && aff_log != null){
                 if(previousUrl != windowsLocation) {
-                    var dataPostProduct = 'previous_url=' + previousUrl + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation + '&log_id=' + aff_log;
+                    var dataPostProduct = 'previous_url=' + previousUrl + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation + '&log_id=' + aff_log + '&order_id=' + order_id;
                     Ajax.request(_callback_url + "/api/v2/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
                         deleteCookie(previousUrl);
+                        if(order_id > 0){
+                            deleteCookie(COOKIE_PRODUCT);
+                        }
+                        setCookie(COOKIE_PRODUCT,dataNewProduct.data,30);
                         console.log(dataNewProduct.message);
                     }, function () {
                         //

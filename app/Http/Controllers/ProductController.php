@@ -379,14 +379,21 @@ class ProductController extends Controller
                 $log->type = 2;
                 $log->update();
 
-                $order = new OrderProduct();
-                $order->log_id = $log->id;
-                $order->product_id = $product->id;
-                $order->save();
+                if(isset($request->order_id) && $request->order_id > 0){
+                    $order = OrderProduct::find($request->order_id);
+                    $order->product_id = $product->id;
+                    $order->update();
+                } else {
+                    $order = new OrderProduct();
+                    $order->log_id = $log->id;
+                    $order->product_id = $product->id;
+                    $order->save();
+                }
 
                 $response = [
                     'status' => true,
-                    'message' => 'Product Sold'
+                    'message' => 'Product Sold',
+                    'data' => $order->id
                 ];
                 $responseCode = 200;
             } else {
