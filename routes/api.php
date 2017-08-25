@@ -94,3 +94,7 @@ Route::post('check/product',[
     'uses' => 'ProductController@checkProduct',
     'as' => 'check.product'
 ]);
+Route::post('v2/check/order/url',[
+    'uses' => 'ProductController@checkOrderUrlV2',
+    'as' => 'check.product'
+]);

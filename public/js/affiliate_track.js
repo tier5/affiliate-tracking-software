@@ -424,54 +424,63 @@ var Affiliate = Affiliate || (function(){
         },
         //For Track any sales
         watch : function () {
-            console.log('Initialize watch script');
-            var windowsLocation = window.location.href;
-            var previousUrl = getCookie(COOKIE_PRODUCT_URL);
-            var aff_log = getCookie(COOKIE_LOG_ID);
-            var order_id = getCookie(COOKIE_PRODUCT);
-            if(order_id == ''){
-                order_id = 0;
-            }
-            if(previousUrl != '' && aff_log != null){
-                if(previousUrl != windowsLocation) {
-                    var dataPostProduct = 'previous_url=' + previousUrl + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation + '&log_id=' + aff_log + '&order_id=' + order_id;
-                    Ajax.request(_callback_url + "/api/v2/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
-                        deleteCookie(previousUrl);
-                        if(order_id > 0){
-                            deleteCookie(COOKIE_PRODUCT);
-                        }
-                        setCookie(COOKIE_PRODUCT,dataNewProduct.data,30);
-                        console.log(dataNewProduct.message);
-                    }, function () {
-                        //
-                    });
-                } else {
-                    console.log('Yes');
+            setTimeout(function(){
+                console.log('Initialize watch script');
+                var windowsLocation = window.location.href;
+                var previousUrl = getCookie(COOKIE_PRODUCT_URL);
+                var aff_log = getCookie(COOKIE_LOG_ID);
+                var order_id = getCookie(COOKIE_PRODUCT);
+                if(order_id == ''){
+                    order_id = 0;
                 }
-            }
-            window.onload = function() {
-                var allitems = [];
-                allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('a'));
-                allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('button'));
-                allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=submit]'));
-                allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=button]'));
-                for(var i = 0; i < allitems.length; i++) {
-                    var anchor = allitems[i];
-                    anchor.onclick = function() {
-                        setTimeout(function(){
-                            var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
-                            Ajax.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
-                                if (previousUrl) {
-                                    deleteCookie(COOKIE_PRODUCT_URL);
-                                }
-                                setCookie(COOKIE_PRODUCT_URL, windowsLocation, 30);
-                            }, function () {
-                                //
-                            });
-                        }, 1000);
+                var dataPostOrder = 'current_url='+windowsLocation+'&campaign='+ Affiliate.key;
+                Ajax.request(_callback_url + "/api/v2/check/order/url", "POST", dataPostOrder, function (dataNewProduct) {
+                    deleteCookie(COOKIE_PRODUCT_URL);
+                    deleteCookie(COOKIE_PRODUCT)
+                }, function () {
+                    //
+                });
+                if(previousUrl != '' && aff_log != null){
+                    if(previousUrl != windowsLocation) {
+                        var dataPostProduct = 'previous_url=' + previousUrl + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation + '&log_id=' + aff_log + '&order_id=' + order_id;
+                        Ajax.request(_callback_url + "/api/v2/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
+                            deleteCookie(COOKIE_PRODUCT_URL);
+                            if(order_id > 0){
+                                deleteCookie(COOKIE_PRODUCT);
+                            }
+                            setCookie(COOKIE_PRODUCT,dataNewProduct.data,30);
+                            console.log(dataNewProduct.message);
+                        }, function () {
+                            //
+                        });
+                    } else {
+                        console.log('Yes');
                     }
                 }
-            }
+                window.onload = function() {
+                    var allitems = [];
+                    allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('a'));
+                    allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('button'));
+                    allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=submit]'));
+                    allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=button]'));
+                    for(var i = 0; i < allitems.length; i++) {
+                        var anchor = allitems[i];
+                        anchor.onclick = function() {
+                            setTimeout(function(){
+                                var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
+                                Ajax.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
+                                    if (previousUrl) {
+                                        deleteCookie(COOKIE_PRODUCT_URL);
+                                    }
+                                    setCookie(COOKIE_PRODUCT_URL, windowsLocation, 30);
+                                }, function () {
+                                    //
+                                });
+                            }, 1000);
+                        }
+                    }
+                }
+            }, 1000);
         }
 
     };
