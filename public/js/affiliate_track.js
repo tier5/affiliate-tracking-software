@@ -373,7 +373,6 @@ var Affiliate = Affiliate || (function(){
             var qs = getQueryStrings();
             var affiliate_id = qs.affiliate_id;
             var cookie_affiliate = getCookie(COOKIE_NAME);
-            console.log(cookie_affiliate);
             if(cookie_affiliate != ''){
                 var log_id = getCookie(COOKIE_LOG_ID);
                 salesPageTrack(cookie_affiliate,log_id)
@@ -452,7 +451,7 @@ var Affiliate = Affiliate || (function(){
                 var dataPostOrder = 'current_url='+windowsLocation+'&campaign='+ Affiliate.key;
                 Ajax.request(_callback_url + "/api/v2/check/order/url", "POST", dataPostOrder, function (dataNewProduct) {
                     deleteCookie(COOKIE_PRODUCT_URL);
-                    deleteCookie(COOKIE_PRODUCT)
+                    deleteCookie(COOKIE_PRODUCT);
                 }, function () {
                     //
                 });
