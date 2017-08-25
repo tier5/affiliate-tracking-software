@@ -410,39 +410,41 @@ var Affiliate = Affiliate || (function(){
         lead : function () {
             console.log('Initialize lead script');
             window.onload = function() {
-                var allInputs = [];
-                allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=text]'));
-                allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=email]'));
-                for (var i = 0; i < allInputs.length; i++) {
-                    var input = allInputs[i];
-                    input.addEventListener('change', function () {
-                        var lead = this.value;
-                        if (isEmail(lead)) {
-                            var lead_cookie = getCookie(LEAD_COOKIE_NAME);
-                            if (lead != lead_cookie) {
-                                var log_id = getCookie(COOKIE_LOG_ID);
-                                deleteCookie(LEAD_COOKIE_NAME);
-                                setCookie(LEAD_COOKIE_NAME, lead, 30);
-                                dataPost = 'dataId=' + log_id + '&email=' + lead;
-                                Ajax.request(_callback_url + "/api/affiliate/lead", "POST", dataPost, function (dataNew) {
-                                    console.log(dataNew.message);
-                                }, function () {
-                                    //
-                                });
-                            } else {
-                                console.log('same lead');
+                setTimeout(function(){
+                    var allInputs = [];
+                    allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=text]'));
+                    allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=email]'));
+                    for (var i = 0; i < allInputs.length; i++) {
+                        var input = allInputs[i];
+                        input.addEventListener('change', function () {
+                            var lead = this.value;
+                            if (isEmail(lead)) {
+                                var lead_cookie = getCookie(LEAD_COOKIE_NAME);
+                                if (lead != lead_cookie) {
+                                    var log_id = getCookie(COOKIE_LOG_ID);
+                                    deleteCookie(LEAD_COOKIE_NAME);
+                                    setCookie(LEAD_COOKIE_NAME, lead, 30);
+                                    dataPost = 'dataId=' + log_id + '&email=' + lead;
+                                    Ajax.request(_callback_url + "/api/affiliate/lead", "POST", dataPost, function (dataNew) {
+                                        console.log(dataNew.message);
+                                    }, function () {
+                                        //
+                                    });
+                                } else {
+                                    console.log('same lead');
+                                }
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                }, 1000);
             }
         },
         //For Track any sales
         watch : function () {
             var windowsLocation = window.location.href;
+            var previousUrl = getCookie(COOKIE_PRODUCT_URL);
             setTimeout(function(){
                 console.log('Initialize watch script');
-                var previousUrl = getCookie(COOKIE_PRODUCT_URL);
                 var aff_log = getCookie(COOKIE_LOG_ID);
                 var order_id = getCookie(COOKIE_PRODUCT);
                 if(order_id == ''){
