@@ -99,7 +99,6 @@ class DashboardController extends Controller
                 }
                 $campaignsDropdown = Campaign::where('user_id', Auth::user()->id)->get();
             }
-
             return view('dashboard',[
                 'campaigns' => $campaigns,
                 'affiliates' => $affiliates,
@@ -283,7 +282,7 @@ class DashboardController extends Controller
                 });
             $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
                 ->where('created_at', '>=', Carbon::now()->subMonth(6))
-                ->where('type', [2, 3])
+                ->whereIn('type', [2, 3])
                 ->get()
                 ->groupBy(function($date) {
                     //return Carbon::parse($date->created_at)->format('Y'); // grouping by years
