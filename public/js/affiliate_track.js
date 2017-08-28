@@ -421,7 +421,7 @@ var Affiliate = Affiliate || (function(){
      */
     return {
         //For track a sales page
-        sales : function () {
+        _sales : function () {
             console.log('Initialize sales script.');
             var qs = getQueryStrings();
             var affiliate_id = qs.affiliate_id;
