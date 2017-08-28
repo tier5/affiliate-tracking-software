@@ -1,7 +1,7 @@
 var Affiliate = Affiliate || (function(){
 
-    //var _callback_url = 'https://www.interwebleads.com';
-     var _callback_url = 'http://localhost/reviewvelocity/public';
+    var _callback_url = 'https://www.interwebleads.com';
+    // var _callback_url = 'http://localhost/reviewvelocity/public';
 
     var COOKIE_NAME = 'ats_affiliate';
 
@@ -538,7 +538,6 @@ var Affiliate = Affiliate || (function(){
                 for(var i = 0; i < allitems.length; i++) {
                     var anchor = allitems[i];
                     anchor.onclick = function() {
-                        console.log('here');
                         setTimeout(function(){
                             var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
                             Ajax.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
