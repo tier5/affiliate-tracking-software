@@ -72,6 +72,10 @@
                     <!-- /.info-box -->
                 </div>
                 <!-- /.col -->
+
+                <!-- fix for small devices only -->
+                <div class="clearfix visible-sm-block"></div>
+
                 <div class="col-md-3 col-sm-6 col-xs-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
@@ -85,21 +89,6 @@
                     <!-- /.info-box -->
                 </div>
                 <!-- /.col -->
-                <!-- fix for small devices only -->
-                <div class="clearfix visible-sm-block"></div>
-
-                <div class="col-md-3 col-sm-6 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Customers</span>
-                            <span class="info-box-number">{{ $sales->count() }}</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
 
                 <!-- /.col -->
                 <div class="col-md-3 col-sm-6 col-xs-12">
@@ -115,6 +104,22 @@
                     <!-- /.info-box -->
                 </div>
                 <!-- /.col -->
+
+                <!-- fix for small devices only -->
+                <div class="clearfix visible-sm-block"></div>
+
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Customers</span>
+                            <span class="info-box-number">{{ $sales->count() }}</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
             </div>
             <!-- /.row -->
 
