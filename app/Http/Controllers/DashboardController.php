@@ -31,7 +31,7 @@ class DashboardController extends Controller
 	}
 
     private function adminDashboard($request) {
-        if ($request->has('campaign_id') || $request->has('affliate_id')) {
+        if ($request->has('campaign_id') || $request->has('affiliate_id')) {
             $campaigns = collect([]);
             $affiliates = collect([]);
             $data = [
@@ -66,25 +66,27 @@ class DashboardController extends Controller
                     $affiliatesDropdown = Affiliate::where('campaign_id', $campaigns->first()->id)->get();
                 }
             } else if ($request->input('campaign_id') <= 0 && $request->input('affiliate_id') > 0) {
-                $affiliates = Affiliate::where('id', $request->input('affiliate_id'))->with('campaign');
+                $affiliates = Affiliate::where('user_id', $request->input('affiliate_id'))->with('campaign');
                 if ($affiliates->first()) {
-                    $campaigns = $affiliates->first()->campaign;
+                    $campaigns = Affiliate::where('user_id',$request->input('affiliate_id'));
                 }
                 $data = $this->getAnalytics($affiliates);
-                $latestAffiliates = $affiliates->get();
+                 $latestAffiliates = Affiliate::whereIn('id', $campaigns->pluck('id'))
+                     ->with('user','campaign')
+                     ->orderBy('created_at','DESC')->get();
                 if (count($campaigns)){
-                    $products = Product::where('campaign_id', $campaigns->id)
+                    $products = Product::whereIn('campaign_id', $campaigns->pluck('id'))
                         ->orderBy('created_at','DESC')->take(5)->get();
                 }
-
-                $campaignsDropdown = Campaign::where('user_id', Auth::user()->id)->get();
+                $campaignsDropdown = Campaign::whereIn('id',$campaigns->pluck('campaign_id'))->get();
                 $affiliatesDropdown = Affiliate::whereIn('campaign_id', Campaign::where('user_id', Auth::user()->id)
-                        ->pluck('id'))->get();
+                        ->pluck('id')) ->select('user_id')->orderBy('user_id','DESC')
+                    ->groupBy('user_id')->get();
             } else if ($request->input('campaign_id') > 0 && $request->input('affiliate_id') > 0) {
                 $campaigns = Campaign::where('id', $request->input('campaign_id'))
                     ->where('user_id', Auth::user()->id);
                 if ($campaigns->count()) {
-                    $affiliates = Affiliate::where('id', $request->input('affiliate_id'))
+                    $affiliates = Affiliate::where('user_id', $request->input('affiliate_id'))
                         ->where('campaign_id', $request->input('campaign_id'));
                     $affiliate = $affiliates->first();
                     if ($affiliate) {
@@ -132,8 +134,10 @@ class DashboardController extends Controller
             ->orderBy('created_at','DESC')->take(5)->get();
 
         $campaignsDropdown = Campaign::where('user_id', Auth::user()->id)->get();
-        $affiliatesDropdown = $affiliates->get();
-
+        $affiliatesList = $affiliates;
+        $affiliatesDropdown = Affiliate::whereIn('campaign_id',$campaigns->pluck('id'))
+            ->select('user_id')->orderBy('user_id','DESC')
+            ->groupBy('user_id')->get();
         return view('dashboard',[
             'campaigns' => $campaigns,
             'affiliates' => $affiliates,
@@ -168,7 +172,6 @@ class DashboardController extends Controller
             ->where('browser','LIKE','%Safari%')->count();
         $firefox = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
             ->where('browser','LIKE','%Firefox%')->count();
-
         return [
             'visitors' => $visitors,
             'leads' => $leads,
@@ -238,7 +241,7 @@ class DashboardController extends Controller
 				$affiliates = Affiliate::where('user_id', $request->id)->where('approve_status', 1)->get();
 	            $campaigns = Campaign::whereIn('id',$affiliates->pluck('campaign_id'));
             } else {
-                if ($request->has('campaign_id') || $request->has('affliate_id')) {
+                if ($request->has('campaign_id') || $request->has('affiliate_id')) {
                     if ($request->input('campaign_id') > 0 && $request->input('affiliate_id') <= 0) {
                         $campaigns = Campaign::where('id', $request->input('campaign_id'))
                             ->where('user_id', $request->id)
@@ -246,12 +249,12 @@ class DashboardController extends Controller
                         $affiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
                     } else if ($request->input('campaign_id') <= 0 && $request->input('affiliate_id') > 0) {
                         $campaigns = Campaign::where('user_id', $request->id)->with('affiliate');
-                        $affiliates = Affiliate::where('id', $request->input('affiliate_id'));
+                        $affiliates = Affiliate::where('user_id', $request->input('affiliate_id'));
                     } else if ($request->input('campaign_id') > 0 && $request->input('affiliate_id') > 0) {
                         $campaigns = Campaign::where('id', $request->input('campaign_id'))
                             ->where('user_id', $request->id)
                             ->with('affiliate');
-                        $affiliates = Affiliate::where('id', $request->input('affiliate_id'));
+                        $affiliates = Affiliate::where('user_id', $request->input('affiliate_id'));
                     } else {
                         $campaigns = Campaign::where('user_id', $request->id)
                             ->with('affiliate');
