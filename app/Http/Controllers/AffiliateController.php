@@ -382,7 +382,7 @@ class AffiliateController extends Controller
         try{
             $affiliate = Affiliate::where('id',$id)->with('user','campaign')->first();
             $allTraffic=$affiliate->agentURL;
-            $leadsOnly=$allTraffic->where('email','<>','');
+            $leadsOnly=$allTraffic->where('type','3');
             $salesOnly=$allTraffic->where('type','2');
             $orderProducts = OrderProduct::whereIn('log_id', $salesOnly->pluck('id'))->get();
             $commisonsOnly = [];
