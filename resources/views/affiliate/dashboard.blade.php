@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-red"><i class="ion ion-ios-gear"></i></span>
+                        <span class="info-box-icon bg-aqua"><i class="ion ion-ios-star"></i></span>
 
                         <div class="info-box-content">
                             <span class="info-box-text">Campaigns</span>
@@ -26,7 +26,7 @@
                 <!-- /.col -->
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-blue"><i class="ios ion-ios-world"></i></span>
+                        <span class="info-box-icon bg-red"><i class="ion ion-eye"></i></span>
 
                         <div class="info-box-content">
                             <span class="info-box-text">Visitors</span>
@@ -39,7 +39,7 @@
                 <!-- /.col -->
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-gray"><i class="ion ion-ios-people"></i></span>
+                        <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
 
                         <div class="info-box-content">
                             <span class="info-box-text">Leads</span>
@@ -55,7 +55,7 @@
                 <!-- /.col -->
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-yellow"><i class="ion ion-ios-cart"></i></span>
+                        <span class="info-box-icon bg-purple"><i class="ion ion-android-contact"></i></span>
 
                         <div class="info-box-content">
                             <span class="info-box-text">Customers</span>
@@ -65,18 +65,18 @@
                     </div>
                     <!-- /.info-box -->
                 </div>
-                {{-- <div class="col-md-2 col-sm-4 col-xs-12">
+                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-green"><i class="ion ion-cash"></i></span>
+                        <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">Total Sale Price</span>
-                            <span class="info-box-number">{{ "$" . number_format($total_sale_price, 2, '.', ',') }}</span>
+                            <span class="info-box-text">Sales</span>
+                            <span class="info-box-number">{{ $totalSales }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
                     <!-- /.info-box -->
-                </div> --}}
+                </div>
                 <!-- /.col -->
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="info-box">
