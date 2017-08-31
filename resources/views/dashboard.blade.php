@@ -519,14 +519,14 @@
                                 labels: data.months,
                                 datasets: [
                                     {
-                                        label: "Customers",
-                                        fillColor: "rgb(210, 214, 222)",
-                                        strokeColor: "rgb(210, 214, 222)",
-                                        pointColor: "rgb(210, 214, 222)",
-                                        pointStrokeColor: "#c1c7d1",
+                                        label: "Visitors",
+                                        fillColor: "rgba(90, 231, 218, 0.3)",
+                                        strokeColor: "rgba(90, 231, 218, 1)",
+                                        pointColor: "rgba(50,111,138,0.8)",
+                                        pointStrokeColor: "rgba(10,101,198,10)",
                                         pointHighlightFill: "#fff",
-                                        pointHighlightStroke: "rgb(220,220,220)",
-                                        data: data.sales
+                                        pointHighlightStroke: "rgba(50,111,138,0.8)",
+                                        data: data.visitors
                                     },
                                     {
                                         label: "Leads",
@@ -539,14 +539,24 @@
                                         data: data.leads
                                     },
                                     {
-                                        label: "Visitors",
-                                        fillColor: "rgba(90, 231, 218, 0.3)",
-                                        strokeColor: "rgba(90, 231, 218, 1)",
+                                        label: "Customers",
+                                        fillColor: "rgb(210, 214, 222)",
+                                        strokeColor: "rgb(210, 214, 222)",
+                                        pointColor: "rgb(210, 214, 222)",
+                                        pointStrokeColor: "#c1c7d1",
+                                        pointHighlightFill: "#fff",
+                                        pointHighlightStroke: "rgb(220,220,220)",
+                                        data: data.sales
+                                    },
+                                    {
+                                        label: "Sales",
+                                        fillColor: "rgba(30, 831, 518, 0.3)",
+                                        strokeColor: "rgba(30, 831, 518, 1)",
                                         pointColor: "rgba(50,111,138,0.8)",
                                         pointStrokeColor: "rgba(10,101,198,10)",
                                         pointHighlightFill: "#fff",
                                         pointHighlightStroke: "rgba(50,111,138,0.8)",
-                                        data: data.visitors
+                                        data: data.totalSales
                                     }
                                 ]
                             };

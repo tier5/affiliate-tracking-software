@@ -304,9 +304,10 @@ class DashboardController extends Controller
                 }
                 if(isset($sales[$dateParam])){
                     $salesCount[] = count($sales[$dateParam]);
-					//$salesCount[] = OrderProduct::whereIn('log_id',$sales[$dateParam]->pluck('id'))->count();
+					$totalSalesCount[] = OrderProduct::whereIn('log_id',$sales[$dateParam]->pluck('id'))->count();
                 } else {
                     $salesCount[] = 0;
+                    $totalSalesCount[] = 0;
                 }
                 if(isset($leads[$dateParam])){
                     $leadsCount[] = count($leads[$dateParam]);
@@ -315,7 +316,6 @@ class DashboardController extends Controller
                 }
                 $month[] = date("F", mktime(0, 0, 0, $dateParam, 1));
             }
-
             // $totalSales = 0;
             // $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))->where('type',2);
             // $orderedProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))
@@ -346,7 +346,8 @@ class DashboardController extends Controller
                 'months' => $month,
                 'visitors' => $visitorsCount,
                 'leads' => $leadsCount,
-                'sales' => $salesCount
+                'sales' => $salesCount,
+                'totalSales' => $totalSalesCount
             ],200);
         } catch (\Exception $e){
             return response()->json([
