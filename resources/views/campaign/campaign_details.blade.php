@@ -117,7 +117,7 @@
                                                 </div>
                                                 <div class="panel-body">
                                                     <div class="table-responsive">
-                                                        <table class="table table-bordered">
+                                                        <table class="table table-bordered datatable">
                                                             <thead>
                                                             <tr>
                                                                 <th>Name</th>
@@ -259,6 +259,17 @@
 
 @section('script')
     <script>
+        $(document).ready(function() {
+            $.fn.dataTable.ext.errMode = 'none';
+            $('.datatable').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": false,
+                "info": true,
+                "autoWidth": false
+            });
+        });
         function copyToClipboard(element) {
             var $temp = $("<input>");
             $("body").append($temp);
