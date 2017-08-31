@@ -383,34 +383,36 @@ var Affiliate = Affiliate || (function(){
             });
         } else if (affiliate_id != '' && log_id == 0){
             var browser = detectBrowser();
-            Ajax.request("https://api.ipify.org/?format=json","GET",null,function(data){
-                var dataPost = 'ip='+data.ip+'&key='+affiliate_id+'&browser='+browser[0]+'&urlKey='+Affiliate.key+'&os='+browser[1];
-                Ajax.request(_callback_url + "/api/affiliate/report","POST",dataPost,function (dataNew) {
-                    var cookie_affiliate = getCookie(COOKIE_NAME);
-                    var cookie_log_id = getCookie(COOKIE_LOG_ID);
-                    if(cookie_affiliate == ''){
-                        setCookie(COOKIE_NAME,affiliate_id,30);
-                    }
-                    if(cookie_log_id == ''){
-                        setCookie(COOKIE_LOG_ID,dataNew.data,30);
-                    }
-                    console.log(dataNew.message);
-                    var allInputs = [];
-                    allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=text]'));
-                    allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=email]'));
-                    for(var i = 0; i < allInputs.length; i++) {
-                        var input = allInputs[i];
-                        input.addEventListener('change', function() {
-                            var lead = this.value;
-                            leadLog(dataNew.data,lead);
-                        });
-                    }
-                },function () {
-                    //
+            setTimeout(function() {
+                Ajax.request("https://api.ipify.org/?format=json", "GET", null, function (data) {
+                    var dataPost = 'ip=' + data.ip + '&key=' + affiliate_id + '&browser=' + browser[0] + '&urlKey=' + Affiliate.key + '&os=' + browser[1];
+                    Ajax.request(_callback_url + "/api/affiliate/report", "POST", dataPost, function (dataNew) {
+                        var cookie_affiliate = getCookie(COOKIE_NAME);
+                        var cookie_log_id = getCookie(COOKIE_LOG_ID);
+                        if (cookie_affiliate == '') {
+                            setCookie(COOKIE_NAME, affiliate_id, 30);
+                        }
+                        if (cookie_log_id == '') {
+                            setCookie(COOKIE_LOG_ID, dataNew.data, 30);
+                        }
+                        console.log(dataNew.message);
+                        var allInputs = [];
+                        allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=text]'));
+                        allInputs = Array.prototype.concat.apply(allInputs, document.querySelectorAll('input[type=email]'));
+                        for (var i = 0; i < allInputs.length; i++) {
+                            var input = allInputs[i];
+                            input.addEventListener('change', function () {
+                                var lead = this.value;
+                                leadLog(dataNew.data, lead);
+                            });
+                        }
+                    }, function () {
+                        //
+                    });
+                }, function () {
+                    console.log('ip not found');
                 });
-            },function(){
-                console.log('ip not found');
-            });
+            },1000);
         } else {
             console.log('affiliate not found');
         }
@@ -439,6 +441,7 @@ var Affiliate = Affiliate || (function(){
         //For Track a any page
         init : function () {
             console.log('Initialize init script');
+
             var aff_id = getCookie(COOKIE_NAME);
             var aff_log = getCookie(COOKIE_LOG_ID);
             var qs = getQueryStrings();
