@@ -44,6 +44,34 @@ var Affiliate = Affiliate || (function(){
         };
 
         /**
+         * Call any Api
+         * @type {{xhr: null, request: request}}
+         */
+        var Ajax1 = {
+            xhr : null,
+            request : function (url,method, data,success,failure){
+                if (!this.xhr){
+                    this.xhr = window.ActiveX ? new ActiveXObject("Microsoft.XMLHTTP"): new XMLHttpRequest();
+                }
+                var self = this.xhr;
+
+                self.onreadystatechange = function () {
+                    if (self.readyState === 4 && self.status === 200){
+                        // the request is complete, parse data and call callback
+                        var response = JSON.parse(self.responseText);
+                        success(response);
+                    }else if (self.readyState === 4) { // something went wrong but complete
+                        console.log(self.responseText);
+                        failure();
+                    }
+                };
+                this.xhr.open(method,url,true);
+                this.xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                this.xhr.send(data);
+            },
+        };
+
+        /**
          * Get all Query String
          * @returns {{ query string }}
          */
@@ -504,14 +532,14 @@ var Affiliate = Affiliate || (function(){
                         order_id = 0;
                     }
                     var dataPostOrder = 'current_url='+windowsLocation+'&campaign='+ Affiliate.key;
-                    Ajax.request(_callback_url + "/api/v2/check/order/url", "POST", dataPostOrder, function (dataNewProduct) {
+                    Ajax1.request(_callback_url + "/api/v2/check/order/url", "POST", dataPostOrder, function (dataNewProduct) {
                         deleteCookie(COOKIE_PRODUCT_URL);
                         deleteCookie(COOKIE_PRODUCT);
                     }, function () {
                         if(previousUrl != '' && aff_log != null){
                             if(previousUrl != windowsLocation) {
                                 var dataPostProduct = 'previous_url=' + previousUrl + '&campaign=' + Affiliate.key + '&currentUrl=' + windowsLocation + '&log_id=' + aff_log + '&order_id=' + order_id;
-                                Ajax.request(_callback_url + "/api/v2/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
+                                Ajax1.request(_callback_url + "/api/v2/check/landing_page/url", "POST", dataPostProduct, function (dataNewProduct) {
                                     deleteCookie(COOKIE_PRODUCT_URL);
                                     if(order_id > 0){
                                         deleteCookie(COOKIE_PRODUCT);
@@ -540,7 +568,7 @@ var Affiliate = Affiliate || (function(){
                         anchor.onclick = function() {
                             setTimeout(function(){
                                 var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
-                                Ajax.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
+                                Ajax1.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
                                     if (previousUrl) {
                                         deleteCookie(COOKIE_PRODUCT_URL);
                                     }
