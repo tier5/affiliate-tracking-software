@@ -208,26 +208,6 @@ var Affiliate = Affiliate || (function(){
         }
 
         /**
-         * Trigger any event
-         * @param el => event
-         * @param type => trigger type
-         */
-
-        function triggerEvent(el, type){
-            if ('createEvent' in document) {
-                // modern browsers, IE9+
-                var e = document.createEvent('HTMLEvents');
-                e.initEvent(type, false, true);
-                el.dispatchEvent(e);
-            } else {
-                // IE 8
-                var e = document.createEventObject();
-                e.eventType = type;
-                el.fireEvent('on'+e.eventType, e);
-            }
-        }
-
-        /**
          * Detect Browser and OS
          * @returns {browser,os}
          */
@@ -579,29 +559,24 @@ var Affiliate = Affiliate || (function(){
                     var windowsLocation = window.location.href;
                     var previousUrl = getCookie(COOKIE_PRODUCT_URL);
                     var allitems = [];
-                    var clickFlag = false;
                     allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('a'));
                     allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('button'));
                     allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=submit]'));
                     allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=button]'));
                     for(var i = 0; i < allitems.length; i++) {
                         var anchor = allitems[i];
-                        anchor.onclick = function(event) {
-                            if(!clickFlag){
-                                event.preventDefault();
+                        anchor.onclick = function() {
+                            setTimeout(function(){
                                 var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
                                 Ajax1.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
                                     if (previousUrl) {
                                         deleteCookie(COOKIE_PRODUCT_URL);
                                     }
                                     setCookie(COOKIE_PRODUCT_URL, windowsLocation, 30);
-                                    clickFlag = true;
-                                    triggerEvent(anchor,'click');
                                 }, function () {
-                                    clickFlag = true;
-                                    triggerEvent(anchor,'click');
+                                    //
                                 });
-                            }
+                            }, 2500);
                         }
                     }
                 }

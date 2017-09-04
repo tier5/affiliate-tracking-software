@@ -108,6 +108,10 @@ class DashboardController extends Controller
                 'leads' => $data['leads'],
                 'sales' => $data['sales'],
                 'totalSales' => $data['totalSales'],
+                'totalSalesPrice' => $data['totalSalesPrice'],
+                'grossCommission' => $data['grossCommission'],
+                'refundCommission' => $data['refundCommission'],
+                'refundCount' => $data['refundCount'],
                 'chrome' => $data['chrome'],
                 'opera' => $data['opera'],
                 'ie' => $data['ie'],
@@ -145,6 +149,10 @@ class DashboardController extends Controller
             'leads' => $data['leads'],
             'sales' => $data['sales'],
             'totalSales' => $data['totalSales'],
+            'totalSalesPrice' => $data['totalSalesPrice'],
+            'grossCommission' => $data['grossCommission'],
+            'refundCommission' => $data['refundCommission'],
+            'refundCount' => $data['refundCount'],
             'chrome' => $data['chrome'],
             'opera' => $data['opera'],
             'ie' => $data['ie'],
@@ -158,10 +166,43 @@ class DashboardController extends Controller
     }
 
     private function getAnalytics($affiliates) {
+	    //calculate visitor
         $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'));
         $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',  3);
         $sales = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type', 2);
-        $totalSales = OrderProduct::whereIn('log_id',$sales->pluck('id'))->count();
+
+        //Calculate total sales amount
+        $totalSalePrice = 0;
+        $grossCommission = 0;
+        $refundCount = 0;
+        $refundCommission = 0;
+        $soldProducts = [];
+        $salesData = OrderProduct::whereIn('log_id',$sales->pluck('id'))->get();
+        foreach ($salesData as $key => $order){
+            $product = Product::find($order->product_id);
+            if ($product->method == 1) {
+                $myCommission = $product->product_price * ($product->commission / 100);
+                $grossCommission += $myCommission;
+                if($order->status == 2){
+                    $refundCount = $refundCount+1;
+                    $refundCommission = $refundCommission + $myCommission;
+                }
+            } else {
+                $myCommission = $product->commission;
+                $grossCommission += $myCommission;
+                if($order->status == 2){
+                    $refundCount = $refundCount+1;
+                    $refundCommission = $refundCommission + $myCommission;
+                }
+            }
+            $soldProducts[$key]['name'] = $product->name;
+            $soldProducts[$key]['unit_sold'] = 1;
+            $soldProducts[$key]['total_sale_price'] = $product->product_price * 1;
+            $soldProducts[$key]['my_commission'] = $myCommission;
+            $totalSalePrice += $soldProducts[$key]['total_sale_price'];
+        }
+        $totalSales = count($salesData);
+        //Calculate Browsers
         $chrome = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
             ->where('browser','LIKE','%Chrome%')->count();
         $opera = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
@@ -177,6 +218,10 @@ class DashboardController extends Controller
             'leads' => $leads,
             'sales' => $sales,
             'totalSales' => $totalSales,
+            'grossCommission' => $grossCommission,
+            'refundCommission' => $refundCommission,
+            'refundCount' => $refundCount,
+            'totalSalesPrice' => $totalSalePrice,
             'chrome' => $chrome,
             'opera' => $opera,
             'ie' => $ie,
@@ -197,24 +242,36 @@ class DashboardController extends Controller
         /*
          * Analytics for sold products
          */
-         $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->get();
+         $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->get();
          $totalSales = 0;
          $totalSalePrice = 0;
          $grossCommission = 0;
+        $refundCount = 0;
+        $refundCommission = 0;
          $soldProducts = [];
          foreach ($orderProducts as $key => $order) {
              $product = Product::find($order->product_id);
              if ($product->method == 1) {
                  $myCommision = $product->product_price * ($product->commission / 100);
                  $grossCommission += $myCommision;
+                 if($order->status == 2){
+                     $refundCount = $refundCount+1;
+                     $refundCommission = $refundCommission + $myCommision;
+                 }
              } else {
                  $myCommision = $product->commission;
                  $grossCommission += $myCommision;
+                 if($order->status == 2){
+                     $refundCount = $refundCount+1;
+                     $refundCommission = $refundCommission + $myCommision;
+                 }
              }
              $soldProducts[$key]['name'] = $product->name;
              $soldProducts[$key]['unit_sold'] = 1;
              $soldProducts[$key]['total_sale_price'] = $product->product_price * 1;
              $soldProducts[$key]['my_commission'] = $myCommision;
+             $soldProducts[$key]['status'] = $order->status;
+             $soldProducts[$key]['email'] = $order->log->email;
              $totalSalePrice += $soldProducts[$key]['total_sale_price'];
              $totalSales += 1;
         }
@@ -228,6 +285,8 @@ class DashboardController extends Controller
             'totalSales' => $totalSaless,
             'total_sale_price' => $totalSalePrice,
             'gross_commission' => $grossCommission,
+            'refundCommission' => $refundCommission,
+            'refundCount' => $refundCount,
             'available_products' => $availableProducts,
             'sold_products' => $soldProducts
         ]);

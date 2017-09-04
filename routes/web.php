@@ -125,6 +125,18 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'ProductController@editProduct',
         'as' => 'edit.product'
     ]);
+    Route::get('all/affiliate', [
+        'uses' => 'AffiliateController@allAffiliateShow',
+        'as' => 'all.affiliate'
+    ]);
+    Route::get('all/sales', [
+        'uses' => 'AffiliateController@allSalesShow',
+        'as' => 'all.sales'
+    ]);
+    Route::post('refund/sales', [
+        'uses' => 'AffiliateController@salesRefund',
+        'as' => 'sale.refund'
+    ]);
 });
 Route::get('affiliate/request/{affiliateKey}',[
     'uses' => 'CampaignController@affiliateRegistrationForm',

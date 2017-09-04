@@ -450,4 +450,109 @@ class AffiliateController extends Controller
             return redirect()->route('details.affiliate',[$affiliate->id])->with('error',$exception->getMessage());
         }
     }
+    public function allAffiliateShow()
+    {
+        try {
+            if(Input::get('campaign') > 0){
+                $campaigns = Campaign::where('id',Input::get('campaign'));
+            } else {
+                $campaigns = Campaign::where('user_id',Auth::user()->id);
+            }
+            $campaignsForFilter = Campaign::where('user_id',Auth::user()->id)->get();
+            $affiliates = Affiliate::whereIn('campaign_id',$campaigns->pluck('id'))
+                ->where('approve_status',1)
+                ->with(['user','campaign'])
+                ->orderBy('campaign_id','ASC')->get();
+            return view('admin.affiliate',[
+                'affiliates' => $affiliates,
+                'campaigns' => $campaignsForFilter,
+            ]);
+        } catch (\Exception $exception){
+            return redirect()->back()->with('error',$exception->getMessage());
+        }
+    }
+    public function allSalesShow()
+    {
+        try {
+            $campaignFilter = Input::get('campaign');
+            $affiliateFilter = Input::get('affiliate');
+            if($campaignFilter > 0 && $affiliateFilter > 0){
+                $campaigns = Campaign::where('id',$campaignFilter);
+                $affiliates = Affiliate::where('campaign_id',$campaignFilter)
+                    ->where('approve_status',1)
+                    ->where('user_id',$affiliateFilter)
+                    ->orderBy('campaign_id','ASC');
+            } elseif ($campaignFilter > 0 && $affiliateFilter <= 0){
+                $campaigns = Campaign::where('id',$campaignFilter);
+                $affiliates = Affiliate::whereIn('campaign_id',$campaigns->pluck('id'))
+                    ->where('approve_status',1)
+                    ->orderBy('campaign_id','ASC');
+            } elseif ($campaignFilter <=0 && $affiliateFilter > 0){
+                $affiliates = Affiliate::where('user_id',$affiliateFilter)
+                    ->where('approve_status',1)
+                    ->orderBy('campaign_id','ASC');
+                $campaigns = Campaign::whereIn('id',$affiliates->pluck('campaign_id'));
+            } else {
+                $campaigns = Campaign::where('user_id',Auth::user()->id);
+                $affiliates = Affiliate::whereIn('campaign_id',$campaigns->pluck('id'))
+                    ->where('approve_status',1)
+                    ->orderBy('campaign_id','ASC');
+            }
+            $logs = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
+                ->where('type',2);
+            $orderProducts = OrderProduct::whereIn('log_id',$logs->pluck('id'))
+                ->orderBy('created_at','DESC')
+                ->with('product')->get();
+            $commisonsOnly = [];
+            $grossCommission = 0;
+            $refundCommission = 0;
+            $refundCount = 0;
+            foreach ($orderProducts as $key => $order) {
+                $user_log = AgentUrlDetails::find($order->log_id);
+                if ($order->product->method == 1) {
+                    $myCommision = $order->product->product_price * ($order->product->commission / 100);
+                    $grossCommission += $myCommision;
+                } else {
+                    $myCommision = $order->product->commission;
+                    $grossCommission += $myCommision;
+                }
+                $commisonsOnly[$key]['name'] = $order->product->name;
+                $commisonsOnly[$key]['unit_sold'] = 1;
+                $commisonsOnly[$key]['sale_price'] = $order->product->product_price * 1;
+                $commisonsOnly[$key]['commission'] = $myCommision;
+                $commisonsOnly[$key]['email'] = $user_log->email;
+                $commisonsOnly[$key]['id'] = $order->id;
+                $commisonsOnly[$key]['status'] = $order->status;
+            }
+            $campaignsDropdown = Campaign::where('user_id', Auth::user()->id)->get();
+            $affiliatesDropdown = Affiliate::whereIn('campaign_id',$campaigns->pluck('id'))
+                ->select('user_id')->orderBy('user_id','DESC')
+                ->groupBy('user_id')->get();
+            return view('admin.sales',[
+                'sales' => $commisonsOnly,
+                'affiliateDropDown' => $affiliatesDropdown,
+                'campaignDropDown' => $campaignsDropdown
+            ]);
+        } catch (\Exception $exception){
+            dd($exception);
+            return redirect()->back()->with('error',$exception->getMessage());
+        }
+    }
+    public function salesRefund(Request $request)
+    {
+        try{
+            $sale = OrderProduct::find($request->id);
+            $sale->status = 2;
+            $sale->update();
+            return response()->json([
+                'success' => true,
+                'message' => 'Refund Successful'
+            ],200);
+        } catch (\Exception $exception){
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage()
+            ],200);
+        }
+    }
 }

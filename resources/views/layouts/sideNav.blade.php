@@ -37,6 +37,18 @@
                         <span>Campaign</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('all.affiliate') }}">
+                        <i class="fa fa-user"></i>
+                        <span>Affiliate</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('all.sales') }}">
+                        <i class="fa fa-shopping-cart"></i>
+                        <span>Sales</span>
+                    </a>
+                </li>
                 {{--<li>
                     <a href="{{ route('settings') }}">
                         <i class="fa fa-cog"></i>

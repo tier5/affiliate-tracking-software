@@ -11,89 +11,60 @@
         <section class="content">
             <!-- Info boxes -->
             <div class="row">
-                <div class="col-md-2 col-sm-4 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-aqua"><i class="ion ion-ios-star"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Campaigns</span>
-                            <span class="info-box-number">{{ $campaigns }}</span>
+                <div class="col-md-12 col-sm-12">
+                    <div class="box1">
+                        <div class="row one-row">
+                            <div class="col-md-3 col-sm-3">
+                                <div class="blue-txt">
+                                    @if($visitors > 0)
+                                        ${!! round($gross_commission /  $visitors,2) !!}
+                                    @else
+                                        {{ $visitors }}
+                                    @endif
+                                </div>
+                                <div class="normal-txt">EPC</div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="blue-txt">{{ $visitors }}</div>
+                                <div class="normal-txt">Unique Clicks</div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="blue-txt">{{ $totalSales }}</div>
+                                <div class="normal-txt">Sales</div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="blue-txt">
+                                    @if($visitors > 0 & $totalSales >0)
+                                        {!! round($totalSales / $visitors*100,2) !!}%
+                                    @else
+                                        0
+                                    @endif
+                                </div>
+                                <div class="normal-txt">Conversion Rate</div>
+                            </div>
                         </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
-                <div class="col-md-2 col-sm-4 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-red"><i class="ion ion-eye"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Visitors</span>
-                            <span class="info-box-number">{{ $visitors }}</span>
+                        <div class="row one-row">
+                            <div class="col-md-3 col-sm-3">
+                                <div class="blue-txt">{{ "$" . number_format($gross_commission, 2, '.', ',') }}</div>
+                                <div class="normal-txt">Gross Commission</div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="blue-txt">${{ round($gross_commission-$refundCommission,2) }}</div>
+                                <div class="normal-txt">Net Commission</div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="blue-txt">{{ $refundCount }}</div>
+                                <div class="normal-txt">Refunds</div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="blue-txt">${{ round($refundCommission,2) }}</div>
+                                <div class="normal-txt">Refunds Amount</div>
+                            </div>
                         </div>
-                        <!-- /.info-box-content -->
                     </div>
-                    <!-- /.info-box -->
                 </div>
-                <!-- /.col -->
-                <div class="col-md-2 col-sm-4 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Leads</span>
-                            <span class="info-box-number">{{ $leads }}</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
-                <!-- fix for small devices only -->
-                <div class="clearfix visible-sm-block"></div>
-                <!-- /.col -->
-                <div class="col-md-2 col-sm-4 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-purple"><i class="ion ion-android-contact"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Customers</span>
-                            <span class="info-box-number">{{ $sales }}</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
-                 <div class="col-md-2 col-sm-4 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Sales</span>
-                            <span class="info-box-number">{{ $totalSales }}</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
-                <div class="col-md-2 col-sm-4 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-aqua"><i class="ion ion-social-usd"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Gross Commission</span>
-                            <span class="info-box-number">{{ "$" . number_format($gross_commission, 2, '.', ',') }}</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
             </div>
             <!-- /.row -->
-
             <div class="row">
                 <div class="col-md-8">
                     <div class="box">
@@ -271,24 +242,26 @@
                                 </div>
                                 <!-- /.box-header -->
                                 <div class="box-body no-padding">
-                                    <table id="sold-product" class="table table-bordered table-hover datatable">
-                                        <thead>
+                                    <div class="table table-responsive">
+                                        <table id="sold-product" class="table table-bordered table-hover datatable">
+                                            <thead>
+                                            <td>Email</td>
                                             <td>Product Name</td>
-                                            <td>Unit Sold</td>
-                                            <td>Sale Price</td>
                                             <td>My Commission</td>
-                                        </thead>
-                                        <tbody>
+                                            <td>Status</td>
+                                            </thead>
+                                            <tbody>
                                             @foreach($sold_products as $product)
                                                 <tr>
+                                                    <td>{{ $product['email'] }}</td>
                                                     <td>{{ $product['name'] }}</td>
-                                                    <td>{{ $product['unit_sold'] }}</td>
-                                                    <td>{{ "$" . number_format($product['total_sale_price'], 2, '.', ',') }}</td>
                                                     <td>{{ "$" . number_format($product['my_commission'], 2, '.', ',') }}</td>
+                                                    <td>{{ ($product['status'] == 2)?'Refunded':'sale' }}</td>
                                                 </tr>
                                             @endforeach
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     <!-- /.users-list -->
                                 </div>
                                 <!-- /.box-body -->

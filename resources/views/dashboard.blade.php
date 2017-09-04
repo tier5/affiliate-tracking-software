@@ -59,83 +59,87 @@
                 <div class="clearfix visible-sm-block"></div>
             </div>
             <!-- /.row -->
+
             <!-- Info boxes -->
             <div class="row">
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-aqua"><i class="ion ion-ios-star"></i></span>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="box1">
+                        <div class="row one-row">
+                            <div class="col-md-3 ">
+                                <div class="spec">
+                                    <div class="blue-txt">
+                                        @if($visitors->count() > 0)
+                                            ${!! round($grossCommission / $visitors->count(),2) !!}
+                                        @else
+                                            {{ $grossCommission }}
+                                        @endif
+                                    </div>
+                                    <div class="normal-txt">EPC</div>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="row two-row">
+                                    <div class="col-md-3 col-sm-3">
 
-                        <div class="info-box-content">
-                            <span class="info-box-text">Campaign</span>
-                            <span class="info-box-number">{{ $campaigns->count() }}</span>
+                                        <div class="blue-txt">{{ $visitors->count() }}</div>
+                                        <div class="normal-txt">Unique Clicks</div>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3">
+
+                                        <div class="blue-txt">{{ $leads->count() }}</div>
+                                        <div class="normal-txt">Leads</div>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3">
+
+                                        <div class="blue-txt">{{ $totalSales }}</div>
+                                        <div class="normal-txt">Sales</div>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3">
+
+                                        <div class="blue-txt">
+                                            @if($totalSales > 0 && $visitors->count() > 0)
+                                                {!! round($totalSales /  $visitors->count() * 100,2) !!}%
+                                            @else
+                                                0
+                                            @endif
+                                        </div>
+                                        <div class="normal-txt">Conversion Rate</div>
+
+                                    </div>
+                                </div>
+                                <div class="row two-row">
+                                    <div class="col-md-3 col-sm-3">
+
+                                        <div class="blue-txt">
+                                            ${{ $grossCommission }}
+                                        </div>
+                                        <div class="normal-txt">Gross Commission</div>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3">
+
+                                        <div class="blue-txt">${{ round($grossCommission - $refundCommission,2) }}</div>
+                                        <div class="normal-txt">Net Commission</div>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3">
+
+                                        <div class="blue-txt">{{ $refundCount }}</div>
+                                        <div class="normal-txt">Refunds</div>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3">
+                                        <div class="blue-txt">${{ round($refundCommission,2) }}</div>
+                                        <div class="normal-txt">Refund Amount</div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <!-- /.info-box-content -->
                     </div>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
-
-                <!-- fix for small devices only -->
-                <div class="clearfix visible-sm-block"></div>
-
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-red"><i class="ion ion-eye"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Visitors</span>
-                            <span class="info-box-number">{{ $visitors->count() }}</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
-
-                <!-- /.col -->
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Leads</span>
-                            <span class="info-box-number">{{ $leads->count() }}</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
-                <!-- /.col -->
-
-                <!-- fix for small devices only -->
-                <div class="clearfix visible-sm-block"></div>
-
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-purple"><i class="ion ion-android-contact"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Customers</span>
-                            <span class="info-box-number">{{ $sales->count() }}</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
-                </div>
-                <!-- fix for small devices only -->
-                <div class="clearfix visible-sm-block"></div>
-
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">Sales</span>
-                            <span class="info-box-number">{{ $totalSales }}</span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
                 </div>
             </div>
             <!-- /.row -->

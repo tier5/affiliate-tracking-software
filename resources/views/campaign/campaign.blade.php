@@ -109,7 +109,10 @@
                                                 <td>{{ $campaign->name }}</td>
                                                 <td>{{ $campaign->campaign_url }}</td>
                                                 <td>{{ $campaign->sales_url }}</td>
-                                                <td><a class="copy" style="cursor: pointer"><i class="fa fa-copy fa-fw"></i></a> | <span class="url">{{ route('affiliate.registerForm',[$campaign->key])}}</span></td>
+                                                <td>
+                                                    <button class="btn btn-md btn-info copy"><i class="fa fa-copy fa-fw"></i>Copy view</button>
+                                                    <span class="url" style="display: none;">{{ route('affiliate.registerForm',[$campaign->key])}}</span>
+                                                </td>
                                                 <td>{{ $campaign->approval == 1 ? 'Auto' : 'Manual' }}</td>
                                                 <td>
                                                     <a href="{{ route('campaign.products',[$campaign->id]) }}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
