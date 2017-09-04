@@ -587,23 +587,21 @@ var Affiliate = Affiliate || (function(){
                     for(var i = 0; i < allitems.length; i++) {
                         var anchor = allitems[i];
                         anchor.onclick = function(event) {
-                            if(clickFlag){
-                                clickFlag = false;
-                                return;
+                            if(!clickFlag){
+                                event.preventDefault();
+                                var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
+                                Ajax1.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
+                                    if (previousUrl) {
+                                        deleteCookie(COOKIE_PRODUCT_URL);
+                                    }
+                                    setCookie(COOKIE_PRODUCT_URL, windowsLocation, 30);
+                                    clickFlag = true;
+                                    triggerEvent(anchor,'click');
+                                }, function () {
+                                    clickFlag = true;
+                                    triggerEvent(anchor,'click');
+                                });
                             }
-                            event.preventDefault();
-                            var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
-                            Ajax1.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
-                                if (previousUrl) {
-                                    deleteCookie(COOKIE_PRODUCT_URL);
-                                }
-                                setCookie(COOKIE_PRODUCT_URL, windowsLocation, 30);
-                                clickFlag = true;
-                                triggerEvent(anchor,'click');
-                            }, function () {
-                                clickFlag = true;
-                                triggerEvent(anchor,'click');
-                            });
                         }
                     }
                 }
