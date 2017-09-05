@@ -25,6 +25,13 @@
                         {{ Auth::user()->name }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" role="menu">
+                        @if(Session::has('orig_user'))
+                            <li>
+                                <a href="{{ route('admin.logout') }}">
+                                    Return to admin dashboard
+                                </a>
+                            </li>
+                        @endif
                         <li>
                             <a href="{{ route('logout') }}">
                                 Logout

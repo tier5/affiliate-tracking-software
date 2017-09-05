@@ -45,7 +45,7 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Email</th>
-                                            <th>Campaign</th>
+                                            <th colspan="2">Campaign</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -54,6 +54,7 @@
                                                 <td>{{ $affiliate->user->name }}</td>
                                                 <td>{{ $affiliate->user->email }}</td>
                                                 <td>{{ $affiliate->campaign->name }}</td>
+                                                <td><a href="{{route('admin.affiliate.login',['affiliate' => $affiliate->id])}}" class="btn btn-default"><i class="fa fa-sign-in"></i> Login</a></td>
                                             </tr>
                                         @endforeach
                                     </tbody>

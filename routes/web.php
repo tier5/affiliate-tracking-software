@@ -137,6 +137,10 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'AffiliateController@salesRefund',
         'as' => 'sale.refund'
     ]);
+    Route::get('admin/affiliate/login/{affiliate}',[
+       'uses' => 'AffiliateController@adminAffiliateLogin',
+       'as' => 'admin.affiliate.login'
+    ]);
 });
 Route::get('affiliate/request/{affiliateKey}',[
     'uses' => 'CampaignController@affiliateRegistrationForm',
@@ -161,5 +165,10 @@ Route::get('thank-you',[
 Route::get('logout',[
     'uses' => 'DashboardController@logout',
     'as' => 'logout'
+]);
+
+Route::get('admin/logout',[
+    'uses' => 'DashboardController@adminlogout',
+    'as' => 'admin.logout'
 ]);
 

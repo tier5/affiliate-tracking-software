@@ -104,12 +104,16 @@
     <script>
         $(function () {
             $('.table-list').DataTable({
+                "dom": 'Bfrtip',
                 "paging": true,
                 "lengthChange": false,
                 "searching": true,
                 "ordering": false,
                 "info": true,
-                "autoWidth": false
+                "autoWidth": false,
+                "buttons": [
+                    'excel'
+                ]
             });
             $('.filterAffiliate').on('change',function () {
                 var affiliate = $(this).val();

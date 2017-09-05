@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 use Mail;
 use Mockery\Exception;
 use \App\Affiliate;
@@ -554,5 +555,11 @@ class AffiliateController extends Controller
                 'message' => $exception->getMessage()
             ],200);
         }
+    }
+    public function adminAffiliateLogin(Affiliate $affiliate){
+        $affiliateUser= $affiliate->user;
+        Session::put( 'orig_user', Auth::id() );
+        Auth::loginUsingId( $affiliateUser->id );
+        return redirect()->route('dashboard');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Affiliate;
+use App\User;
 use App\AgentUrlDetails;
 use App\Campaign;
 use App\OrderProduct;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\View;
 use App\Jobs\ValidateSubscriptions;
 use \App\SubscriptionInvalidation;
 use Auth;
+//use Phalcon\Session;
+use Illuminate\Support\Facades\Session;
 
 class DashboardController extends Controller
 {
@@ -447,5 +450,16 @@ class DashboardController extends Controller
     {
         Auth::logout();
         return redirect('/');
+    }
+
+    public function adminlogout(){
+	    if(Session::has('orig_user')){
+	        Auth::logout();
+            $id = Session::pull( 'orig_user' );
+            Session::forget('orig_user');
+            $orig_user = User::find( $id );
+            Auth::login( $orig_user );
+            return redirect()->route('dashboard');
+        }
     }
 }
