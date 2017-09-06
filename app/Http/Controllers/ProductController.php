@@ -387,6 +387,7 @@ class ProductController extends Controller
                     $order = new OrderProduct();
                     $order->log_id = $log->id;
                     $order->product_id = $product->id;
+                    $order->email = $log->email;
                     $order->save();
                 }
 

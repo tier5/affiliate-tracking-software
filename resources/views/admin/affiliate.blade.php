@@ -45,16 +45,20 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Email</th>
-                                            <th colspan="2">Campaign</th>
+                                            <th>Campaign</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($affiliates as $affiliate)
-                                            <tr class="click" data-aff_id="{{ $affiliate->id }}">
+                                            <tr>
                                                 <td>{{ $affiliate->user->name }}</td>
                                                 <td>{{ $affiliate->user->email }}</td>
                                                 <td>{{ $affiliate->campaign->name }}</td>
-                                                <td><a href="{{route('admin.affiliate.login',['affiliate' => $affiliate->id])}}" class="btn btn-default"><i class="fa fa-sign-in"></i> Login</a></td>
+                                                <td>
+                                                    <a href="{{route('admin.affiliate.login',['affiliate' => $affiliate->id])}}" class="btn btn-success btn-xs" title="Login"><i class="fa fa-sign-in"></i></a>
+                                                    <a href="#" class="btn btn-info btn-xs click" data-aff_id="{{ $affiliate->user_id }}" title="Details"><i class="fa fa-bar-chart"></i></a>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -81,7 +85,7 @@
         });
         $('.click').on('click',function () {
             var affiliate = $(this).data('aff_id');
-            window.location.href = "{{ route('details.affiliate',['']) }}"+"/"+affiliate;
+            window.location.href = "{{ route('all.details.affiliate',['']) }}"+"/"+affiliate;
         });
         $('.filter').on('change',function () {
             var campaign = $(this).val();

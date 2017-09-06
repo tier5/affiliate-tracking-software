@@ -233,66 +233,88 @@ class DashboardController extends Controller
         ];
     }
 
+    /**
+     * View Affiliate Dashboard
+     * @param $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     private function affiliateDashboard($request) {
-        $affiliate = Affiliate::where('user_id', Auth::user()->id)->where('approve_status',1)->get();
-        $campaigns = Campaign::whereIn('id',$affiliate->pluck('campaign_id'));
-        $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'));
-        $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 3);
-        $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2);
-        $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
-        $totalSaless = OrderProduct::whereIn('log_id',$sales->pluck('id'))->count();
+        try {
+            $filterCampaign = Input::get('campaign');
+            if($filterCampaign > 0){
+                $affiliate = Affiliate::where('user_id', Auth::user()->id)
+                    ->where('approve_status', 1)
+                    ->where('campaign_id',$filterCampaign)->get();
+                $campaigns = Campaign::where('id', $filterCampaign);
+            } else {
+                $affiliate = Affiliate::where('user_id', Auth::user()->id)->where('approve_status', 1)->get();
+                $campaigns = Campaign::whereIn('id', $affiliate->pluck('campaign_id'));
+            }
+            $affiliateDropDown = Affiliate::where('user_id', Auth::user()->id)
+                ->where('approve_status', 1);
+            $campaignDropDown = Campaign::whereIn('id', $affiliateDropDown->pluck('campaign_id'))->get();
+            $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'));
+            $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 3);
+            $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2);
+            $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
+            $totalSaless = OrderProduct::whereIn('log_id', $sales->pluck('id'))->count();
 
-        /*
-         * Analytics for sold products
-         */
-         $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->get();
-         $totalSales = 0;
-         $totalSalePrice = 0;
-         $grossCommission = 0;
-        $refundCount = 0;
-        $refundCommission = 0;
-         $soldProducts = [];
-         foreach ($orderProducts as $key => $order) {
-             $product = Product::find($order->product_id);
-             if ($product->method == 1) {
-                 $myCommision = $product->product_price * ($product->commission / 100);
-                 $grossCommission += $myCommision;
-                 if($order->status == 2){
-                     $refundCount = $refundCount+1;
-                     $refundCommission = $refundCommission + $myCommision;
-                 }
-             } else {
-                 $myCommision = $product->commission;
-                 $grossCommission += $myCommision;
-                 if($order->status == 2){
-                     $refundCount = $refundCount+1;
-                     $refundCommission = $refundCommission + $myCommision;
-                 }
-             }
-             $soldProducts[$key]['name'] = $product->name;
-             $soldProducts[$key]['unit_sold'] = 1;
-             $soldProducts[$key]['total_sale_price'] = $product->product_price * 1;
-             $soldProducts[$key]['my_commission'] = $myCommision;
-             $soldProducts[$key]['status'] = $order->status;
-             $soldProducts[$key]['email'] = $order->log->email;
-             $totalSalePrice += $soldProducts[$key]['total_sale_price'];
-             $totalSales += 1;
+            /*
+             * Analytics for sold products
+             */
+            $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->get();
+            $totalSales = 0;
+            $totalSalePrice = 0;
+            $grossCommission = 0;
+            $refundCount = 0;
+            $refundCommission = 0;
+            $soldProducts = [];
+            foreach ($orderProducts as $key => $order) {
+                $product = Product::find($order->product_id);
+                if ($product->method == 1) {
+                    $myCommision = $product->product_price * ($product->commission / 100);
+                    $grossCommission += $myCommision;
+                    if ($order->status == 2) {
+                        $refundCount = $refundCount + 1;
+                        $refundCommission = $refundCommission + $myCommision;
+                    }
+                } else {
+                    $myCommision = $product->commission;
+                    $grossCommission += $myCommision;
+                    if ($order->status == 2) {
+                        $refundCount = $refundCount + 1;
+                        $refundCommission = $refundCommission + $myCommision;
+                    }
+                }
+                $soldProducts[$key]['name'] = $product->name;
+                $soldProducts[$key]['unit_sold'] = 1;
+                $soldProducts[$key]['total_sale_price'] = $product->product_price * 1;
+                $soldProducts[$key]['my_commission'] = $myCommision;
+                $soldProducts[$key]['status'] = $order->status;
+                $soldProducts[$key]['email'] = $order->log->email;
+                $soldProducts[$key]['salesEmail'] =$order->email;
+                $totalSalePrice += $soldProducts[$key]['total_sale_price'];
+                $totalSales += 1;
+            }
+
+            return view('affiliate.dashboard', [
+                'affiliate' => $affiliate,
+                'campaigns' => $campaigns->count(),
+                'visitors' => $visitors->count(),
+                'leads' => $leads->count(),
+                'sales' => $sales->count(),
+                'totalSales' => $totalSaless,
+                'total_sale_price' => $totalSalePrice,
+                'gross_commission' => $grossCommission,
+                'refundCommission' => $refundCommission,
+                'refundCount' => $refundCount,
+                'available_products' => $availableProducts,
+                'sold_products' => $soldProducts,
+                'campaignDropDown' => $campaignDropDown
+            ]);
+        } catch (\Exception $exception){
+            return redirect()->back()->with('error',$exception->getMessage());
         }
-
-        return view('affiliate.dashboard',[
-            'affiliate' => $affiliate,
-            'campaigns' => $campaigns->count(),
-            'visitors' => $visitors->count(),
-            'leads' => $leads->count(),
-            'sales' => $sales->count(),
-            'totalSales' => $totalSaless,
-            'total_sale_price' => $totalSalePrice,
-            'gross_commission' => $grossCommission,
-            'refundCommission' => $refundCommission,
-            'refundCount' => $refundCount,
-            'available_products' => $availableProducts,
-            'sold_products' => $soldProducts
-        ]);
     }
 
 	public function salesData(Request $request)
@@ -300,8 +322,15 @@ class DashboardController extends Controller
         try {
             $campaigns = null;
             if ($request->user_type == 'affiliate') {
-				$affiliates = Affiliate::where('user_id', $request->id)->where('approve_status', 1)->get();
-	            $campaigns = Campaign::whereIn('id',$affiliates->pluck('campaign_id'));
+               if($request->campaign > 0){
+                   $affiliates = Affiliate::where('user_id', $request->id)
+                       ->where('approve_status', 1)
+                       ->where('campaign_id',$request->campaign)->get();
+                   $campaigns = Campaign::where('id',$request->campaign);
+               } else {
+                   $affiliates = Affiliate::where('user_id', $request->id)->where('approve_status', 1)->get();
+                   $campaigns = Campaign::whereIn('id',$affiliates->pluck('campaign_id'));
+               }
             } else {
                 if ($request->has('campaign_id') || $request->has('affiliate_id')) {
                     if ($request->input('campaign_id') > 0 && $request->input('affiliate_id') <= 0) {

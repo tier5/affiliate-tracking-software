@@ -6,10 +6,40 @@
 
 @section('content')
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper" style="min-height: 480px; margin-left: 0px;">
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Dashboard
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+        </section>
         <!-- Main content -->
         <section class="content">
             <!-- Info boxes -->
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="info-box" style="min-height: 47px !important;">
+                        <div class="info-box-content">
+                            <div class="col-md-2">
+                                Filter by Campaign
+                            </div>
+                            <div class="col-md-6">
+                                <select name="campaign" class="form-control filter">
+                                    <option value="0">Select Campaign</option>
+                                    @forelse($campaignDropDown as $campaign)
+                                        <option value="{{ $campaign->id }}" {{ request()->has('campaign') ? (request()->input('campaign') == $campaign->id ? 'selected' : null) : null }}>{{ $campaign->name }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12 col-sm-12">
                     <div class="box1">
@@ -247,14 +277,16 @@
                                             <thead>
                                             <td>Email</td>
                                             <td>Product Name</td>
+                                            <td>Price</td>
                                             <td>My Commission</td>
                                             <td>Status</td>
                                             </thead>
                                             <tbody>
                                             @foreach($sold_products as $product)
                                                 <tr>
-                                                    <td>{{ $product['email'] }}</td>
+                                                    <td>{{ ($product['salesEmail'] != '')?$product['salesEmail']:$product['email'] }}<  /td>
                                                     <td>{{ $product['name'] }}</td>
+                                                    <td>${{ $product['total_sale_price'] }}</td>
                                                     <td>{{ "$" . number_format($product['my_commission'], 2, '.', ',') }}</td>
                                                     <td>{{ ($product['status'] == 2)?'Refunded':'sale' }}</td>
                                                 </tr>
@@ -294,6 +326,7 @@
                     data: {
                         id: id,
                         user_type: 'affiliate',
+                        campaign: '{!! (isset($_GET['campaign']))?$_GET['campaign']:'0' !!}',
                         _token: "{{ csrf_token() }}"
                     },
                     success: function (data) {
@@ -421,6 +454,10 @@
                 var url=$(this).parent().prev().children('.url');
                 copyToClipboard(url);
                 toastr.info('Copied To Clipboard');
+            });
+            $('.filter').on('change',function () {
+                var campaign = $(this).val();
+                setGetParameter('campaign',campaign);
             });
         });
     </script>

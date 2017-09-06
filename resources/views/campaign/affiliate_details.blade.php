@@ -25,7 +25,7 @@
                                 @endif
                                 @if(\Session::has('success'))
                                         <h4 style="color: green;">{{ \Session::get('success') }}</h4>
-                                    @endif
+                                @endif
                             </div>
                         </div>
                         <div class="panel-body">
@@ -70,7 +70,7 @@
                                 </div> --}}
                                 <div class="row">
                                     <div class="col-md-3">
-                                        Affiliate's Commision:
+                                        Affiliate's Commission:
                                     </div>
                                     <div class="col-md-8">
                                         <strong>{{ "$" . number_format($grossCommission, 2, '.', ',') }}</strong>
@@ -85,7 +85,7 @@
                                             <li class="active"><a data-toggle="tab" href="#allTraffic">Incoming Traffics</a></li>
                                             <li><a data-toggle="tab" href="#leadsOnly">Leads</a></li>
                                             <li><a data-toggle="tab" href="#salesOnly">Sales</a></li>
-                                            <li><a data-toggle="tab" href="#commisonsOnly">Commisions</a></li>
+                                            <li><a data-toggle="tab" href="#commisonsOnly">Commissions</a></li>
                                         </ul>
                                         <div class="tab-content">
                                             <div id="allTraffic" class="tab-pane fade in active">

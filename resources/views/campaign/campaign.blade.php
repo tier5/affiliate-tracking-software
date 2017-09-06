@@ -107,8 +107,14 @@
                                         @foreach($campaigns as $campaign)
                                             <tr>
                                                 <td>{{ $campaign->name }}</td>
-                                                <td>{{ $campaign->campaign_url }}</td>
-                                                <td>{{ $campaign->sales_url }}</td>
+                                                <td>
+                                                    <button class="btn btn-md btn-primary copy"><i class="fa fa-copy fa-fw"></i>Copy view</button>
+                                                    <span class="url" style="display: none;">{{ $campaign->campaign_url }}</span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-md btn-success copy"><i class="fa fa-copy fa-fw"></i>Copy view</button>
+                                                    <span class="url" style="display: none;"> {{ $campaign->sales_url }}</span>
+                                                </td>
                                                 <td>
                                                     <button class="btn btn-md btn-info copy"><i class="fa fa-copy fa-fw"></i>Copy view</button>
                                                     <span class="url" style="display: none;">{{ route('affiliate.registerForm',[$campaign->key])}}</span>

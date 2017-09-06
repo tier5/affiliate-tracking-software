@@ -141,6 +141,18 @@ Route::group(['middleware' => ['auth']], function () {
        'uses' => 'AffiliateController@adminAffiliateLogin',
        'as' => 'admin.affiliate.login'
     ]);
+    Route::get('affiliate/data/sales',[
+        'uses' => 'AffiliateController@affiliateSales',
+        'as' => 'affiliate.sales'
+    ]);
+    Route::get('admin/affiliate/details/{affiliate_id}',[
+        'uses' => 'AffiliateController@affiliateAllDetails',
+        'as' => 'all.details.affiliate'
+    ]);
+    Route::post('admin/pay/commission',[
+        'uses' => 'AffiliateController@payCommission',
+        'as' => 'pay.commission'
+    ]);
 });
 Route::get('affiliate/request/{affiliateKey}',[
     'uses' => 'CampaignController@affiliateRegistrationForm',

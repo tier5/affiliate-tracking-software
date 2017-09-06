@@ -149,7 +149,7 @@
                                                                     </td>
                                                                     <td>{{ date("F j, Y, g:i a",strtotime($affiliate->created_at)) }}</td>
                                                                     <th>
-                                                                        <a href="{{ route('details.affiliate',[$affiliate->id]) }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-list-alt"></span></a>
+                                                                        <a href="{{ route('details.affiliate',[$affiliate->user_id]) }}?campaign={{ $campaigns->id }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-list-alt"></span></a>
                                                                         <button class="btn btn-danger btn-xs deleteAffiliate" data-id="{{ $affiliate->id }}"><span class="glyphicon glyphicon-trash"></span></button>
                                                                     </th>
                                                                 </tr>

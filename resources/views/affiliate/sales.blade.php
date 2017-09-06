@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('title')
-    All sales
+    Affiliate sales
 @endsection
 
 @section('style')
@@ -41,17 +41,6 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <label class="col-md-2 col-sm-2 col-xs-2">
-                                    Filter by Affiliate
-                                </label>
-                                <div class="col-md-4">
-                                    <select class="form-control filterAffiliate" name="affiliate_id">
-                                        <option value="0"> Select Affiliate</option>
-                                        @foreach($affiliateDropDown as $affiliate)
-                                            <option value="{{ $affiliate->user->id }}" {{ (isset($_GET['affiliate']) && $_GET['affiliate'] > 0 && $_GET['affiliate'] == $affiliate->user->id )?'selected':'' }}>{{ $affiliate->user->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
                             </div>
                         </div>
                         <div class="panel-body">
@@ -64,7 +53,6 @@
                                         <th>Price</th>
                                         <th>Commission</th>
                                         <th>Status</th>
-                                        <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -72,15 +60,10 @@
                                             <tr>
                                                 <td>{{ ($sale['saleEmail'] != '')?$sale['saleEmail']:$sale['email'] }}</td>
                                                 <td>{{ $sale['name'] }}</td>
-                                                <td>{{ $sale['sale_price'] }}</td>
-                                                <td>{{ $sale['commission'] }}</td>
+                                                <td>${{ $sale['total_sale_price'] }}</td>
+                                                <td>${{ $sale['my_commission'] }}</td>
                                                 <td>
                                                     {{ ($sale['status']==2)?'Refunded':'sales' }}
-                                                </td>
-                                                <td>
-                                                    @if($sale['status'] != 2)
-                                                        <button type="button" class="btn btn-xs btn-warning refund" data-sales_id="{{ $sale['id'] }}">Refund</button>
-                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -115,54 +98,10 @@
                     'excel'
                 ]
             });
-            $('.filterAffiliate').on('change',function () {
-                var affiliate = $(this).val();
-                setGetParameter('affiliate',affiliate);
-            });
             $('.filterCampaign').on('change',function () {
                 var campaign = $(this).val();
                 setGetParameter('campaign',campaign);
             });
-            $('.refund').on('click',function () {
-                var order_id =  $(this).data('sales_id');
-                swal({
-                    title: 'Are you sure?',
-                    text: "You want to refund this!",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, Refund it!'
-                }).then(function () {
-                    $.ajax({
-                        url: "{{ route('sale.refund') }}",
-                        type: "POST",
-                        data: {
-                            id: order_id,
-                            _token: "{{ csrf_token() }}"
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                swal({
-                                    title: "Success!",
-                                    text: data.message,
-                                    type: "success"
-                                }).then( function(){
-                                    window.location.reload();
-                                },function (dismiss) {
-                                    window.location.reload();
-                                });
-                            } else {
-                                swal({
-                                    title: "Error!",
-                                    text: data.message,
-                                    type: "error"
-                                });
-                            }
-                        }
-                    });
-                })
-            })
         });
     </script>
 @endsection
