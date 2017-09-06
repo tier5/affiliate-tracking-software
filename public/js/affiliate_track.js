@@ -579,14 +579,15 @@ var Affiliate = Affiliate || (function(){
                     var windowsLocation = window.location.href;
                     var previousUrl = getCookie(COOKIE_PRODUCT_URL);
                     var allitems = [];
+                    var anchor_allitems = [];
                     flag = false;
-                    allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('a'));
                     allitems = Array.prototype.concat.apply(allitems, document.getElementsByTagName('button'));
                     allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=submit]'));
                     allitems = Array.prototype.concat.apply(allitems, document.querySelectorAll('input[type=button]'));
                     for(var i = 0; i < allitems.length; i++) {
                         var anchor = allitems[i];
                         anchor.onclick = function(event) {
+                            anchor_el = true;
                             if(flag === true){
                                 flag = false;
                                 return;
@@ -605,10 +606,30 @@ var Affiliate = Affiliate || (function(){
                                 flag = true;
                                 fireEvent(anchor, 'click');
                             });
-                            
-//                            setTimeout(function(){
-//                                
-//                            }, 1500);
+                        }
+                    }
+                    anchor_allitems = Array.prototype.concat.apply(anchor_allitems, document.getElementsByTagName('a'));
+                    for(var i = 0; i < anchor_allitems.length; i++) {
+                        var anchor_el = anchor_allitems[i];
+                        anchor_el.onclick = function(event) {
+                            if(flag === true){
+                                flag = false;
+                                return;
+                            }
+                            event.preventDefault();
+                            var dataPost = 'previous_url=' + windowsLocation + '&campaign=' + Affiliate.key;
+                            Ajax1.request(_callback_url + "/api/check/product", "POST", dataPost, function (dataNew) {
+                                if (previousUrl) {
+                                    deleteCookie(COOKIE_PRODUCT_URL);
+                                }
+                                setCookie(COOKIE_PRODUCT_URL, windowsLocation, 30);
+                                flag = true;
+                                fireEvent(anchor_el, 'click');
+                            }, function () {
+                                // if ajax request fail
+                                flag = true;
+                                fireEvent(anchor_el, 'click');
+                            });
                         }
                         break;
                     }
