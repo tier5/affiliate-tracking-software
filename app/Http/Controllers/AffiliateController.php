@@ -784,15 +784,117 @@ class AffiliateController extends Controller
     public function viewDetailsLink($user_type,$user_id,$link_type)
     {
         try{
-            if($user_type == 'affiliate'){
-                return redirect()->back();
+            if($user_type == 'affiliate'){ 
+                switch($link_type){
+                    case "visitor":
+                            $allTraffic=$this->getURLFromAffiliates($user_id);
+                            break;
+                    case "sale":
+                            $allTraffic=$this->getURLFromAffiliates($user_id,'2');
+                            break;
+                    case "refund":
+                            $allTraffic=$this->getURLFromAffiliates($user_id,'4');
+                            break;
+                }
+                return view('admin.admin_details',[
+                    'linkName' => $link_type,
+                    'allTraffic' => $allTraffic
+                ]);
             } elseif ($user_type == 'admin') {
-                return redirect()->back();
+
+                  switch($link_type){
+                    case "visitor": 
+                                $allTraffic=$this->getURLFromCampaign($user_id);
+                                break;
+                    case "leads":
+                                $allTraffic=$this->getURLFromCampaign($user_id,'3');
+                                break;
+                    case "sales":
+                                $allTraffic=$this->getURLFromCampaign($user_id,'2');
+                                break;
+                    case "refund":
+                                $allTraffic=$this->getURLFromCampaign($user_id,'4');
+                                break;
+                }
+                return view('admin.admin_details',[
+                    'linkName' => $link_type,
+                    'allTraffic' => $allTraffic
+                ]);
             } else {
                 return redirect()->back()->with('error','please select a valid user type');
             }
         } catch (\Exception $exception){
             return redirect()->back()->with('error',$exception->getMessage());
         }
+    }
+
+    public function getURLFromCampaign($user_id,$type=null){
+        $array=[];
+            $campaigns=Campaign::where('user_id',$user_id)->get();
+                foreach($campaigns as $campaign){
+                    $affiliates=$campaign->affiliate;
+                        foreach ($affiliates as $affiliate) {
+                            if(is_null($type)){
+                                $agentURLs=$affiliate->agentURL;
+                                foreach ($agentURLs as $agentURL) {
+                                    array_push($array,$agentURL);
+                                }
+                            }else{
+
+                                switch($type){
+                                    case '2':
+                                    case '3':
+                                           $agentURLs=$affiliate->agentURL->where('type',$type);
+                                            foreach ($agentURLs as $agentURL) {
+                                                array_push($array,$agentURL);
+                                            }
+                                            break; 
+                                    case '4':
+                                            $agentURLs=$affiliate->agentURL;
+                                            foreach ($agentURLs as $agentURL) {
+                                                $refunds = OrderProduct::where('log_id',$agentURL->id)->where('status','2')->get();
+                                                foreach($refunds as $refund){
+                                                    array_push($array,$refund->log);
+                                                }
+                                            }
+                                            break;
+                                }
+                            }
+                        }
+                }
+        return $array;
+    }
+
+    public function getURLFromAffiliates($user_id,$type=null){
+        $array=[];
+            $affiliates=Affiliate::where('user_id',$user_id)->get();        
+                foreach ($affiliates as $affiliate) {
+                    if(is_null($type)){
+                        $agentURLs=$affiliate->agentURL;
+                        foreach ($agentURLs as $agentURL) {
+                            array_push($array,$agentURL);
+                        }
+                    }else{
+                        switch($type){
+                            case '2':
+                                   $agentURLs=$affiliate->agentURL->where('type',$type);
+                                    foreach ($agentURLs as $agentURL) {
+                                        array_push($array,$agentURL);
+                                    }
+                                    break; 
+
+                            case '4':
+                                    $agentURLs=$affiliate->agentURL;
+                                    foreach ($agentURLs as $agentURL) {
+                                        $refunds = OrderProduct::where('log_id',$agentURL->id)->where('status','2')->get();
+                                        foreach($refunds as $refund){
+                                            array_push($array,$refund->log);
+                                        }
+                                    }
+                                    break;
+                        }
+                    }
+                }              
+        return $array;
     }
 }
