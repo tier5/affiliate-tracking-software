@@ -57,7 +57,7 @@
                                                 <td>{{ $affiliate->campaign->name }}</td>
                                                 <td>
                                                     <a href="{{route('admin.affiliate.login',['affiliate' => $affiliate->id])}}" class="btn btn-success btn-xs" title="Login"><i class="fa fa-sign-in"></i></a>
-                                                    <a href="javascript:void(0)" class="btn btn-info btn-xs click" data-aff_id="{{ $affiliate->user_id }}" title="Details"><i class="fa fa-bar-chart"></i></a>
+                                                    <button class="btn btn-info btn-xs click" data-aff_id="{{ $affiliate->user_id }}" title="Details"><i class="fa fa-bar-chart"></i></button>
                                                 </td>
                                             </tr>
                                         @endforeach
