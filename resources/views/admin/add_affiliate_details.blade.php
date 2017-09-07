@@ -117,9 +117,11 @@
                                                <div class="col-md-3">
                                                    <h2>Commission Due: ${{ round($netCommission - $paidCommission,2) }}</h2>
                                                </div>
+                                               @if(count($affiliate) > 0)
                                                <div class="col-md-3" style="padding-top: 16px;">
-                                                   <button class="btn btn-success" id="pay_commission" data-affiliate="{{ $affiliate[0]->user_id }}" data-campaign="{{ $affiliate[0]->campaign_id }}" data-commission="{{ $gross_commission - $refundCommission - $paidCommission }}" data-toggle="modal">Pay Commission</button>
+                                                   <button class="btn btn-success" id="pay_commission" data-affiliate="{{ $affiliate[0]->user_id }}" data-campaign="{{ $affiliate[0]->campaign_id }}" data-commission="{{ $netCommission - $paidCommission }}" data-toggle="modal">Pay Commission</button>
                                                </div>
+                                               @endif
                                            </div>
                                        </div>
                                         <!-- /.users-list -->
@@ -217,8 +219,6 @@
 
 @section('script')
     <script src="{{ url('/') }}/admin/dist/js/pages/dashboard2.js"></script>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyC2mKnuJAEplo1wkuweW0MSnaAs-zSyD_Y"></script>
-        <script type="text/javascript" src="http://lab.abhinayrathore.com/ipmapper/ipmapper.js"></script>
         <script type="text/javascript">
         $(document).ready(function() {
             $.fn.dataTable.ext.errMode = 'none';
