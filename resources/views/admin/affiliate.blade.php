@@ -74,23 +74,21 @@
 
 @section('script')
 <script>
-    $(function () {
-        $('.table-list').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": false,
-            "info": true,
-            "autoWidth": false
-        });
-        $('.showAffiliateDetails').on('click',function () {
-            var affiliate = $(this).data('aff_id');
-            window.location.href = "{{ route('all.details.affiliate',['']) }}"+"/"+affiliate;
-        });
-        $('.filter').on('change',function () {
-            var campaign = $(this).val();
-            setGetParameter('campaign',campaign);
-        });
+    $('.table-list').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": true,
+        "ordering": false,
+        "info": true,
+        "autoWidth": false
+    });
+    $('.showAffiliateDetails').on('click',function () {
+        var affiliate = $(this).data('aff_id');
+        window.location.href = "{{ route('all.details.affiliate',['']) }}"+"/"+affiliate;
+    });
+    $('.filter').on('change',function () {
+        var campaign = $(this).val();
+        setGetParameter('campaign',campaign);
     });
 </script>
 @endsection
