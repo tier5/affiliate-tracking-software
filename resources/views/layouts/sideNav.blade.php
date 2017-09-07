@@ -6,7 +6,7 @@
         <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
             @if(Auth::user()->role == 'admin')
-                <li>
+                <li class="active">
                     <a href="{{ route('dashboard') }}">
                         <i class="fa fa-pie-chart"></i> <span>Dashboard</span>
                     </a>
@@ -30,7 +30,7 @@
                     </a>
                 </li>
             @elseif(Auth::user()->role == 'affiliate')
-                <li>
+                <li class="active">
                     <a href="{{ route('dashboard') }}">
                         <i class="fa fa-pie-chart"></i> <span>Dashboard</span>
                     </a>

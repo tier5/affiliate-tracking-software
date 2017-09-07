@@ -153,6 +153,10 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'AffiliateController@payCommission',
         'as' => 'pay.commission'
     ]);
+    Route::get('view/details/{user_type}/{user_id}/{link_type}',[
+        'uses' => 'AffiliateController@viewDetailsLink',
+        'as' => 'view.link'
+    ]);
 });
 Route::get('affiliate/request/{affiliateKey}',[
     'uses' => 'CampaignController@affiliateRegistrationForm',

@@ -8,6 +8,7 @@ use App\Campaign;
 use App\OrderProduct;
 use App\paidCommission;
 use App\Product;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
@@ -774,6 +775,20 @@ class AffiliateController extends Controller
                 'success' => false,
                 'message' => $e->getMessage()
             ],200);
+        }
+    }
+    public function viewDetailsLink($user_type,$user_id,$link_type)
+    {
+        try{
+            if($user_type == 'affiliate'){
+                return redirect()->back();
+            } elseif ($user_type == 'admin') {
+                return redirect()->back();
+            } else {
+                return redirect()->back()->with('error','please select a valid user type');
+            }
+        } catch (\Exception $exception){
+            return redirect()->back()->with('error',$exception->getMessage());
         }
     }
 }

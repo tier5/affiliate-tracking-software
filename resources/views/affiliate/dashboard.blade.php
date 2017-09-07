@@ -55,11 +55,15 @@
                                 <div class="normal-txt">EPC</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">{{ $visitors }}</div>
+                                <div class="blue-txt">
+                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'visitor']) }}">{{ $visitors }}</a>
+                                </div>
                                 <div class="normal-txt">Unique Clicks</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">{{ $totalSales }}</div>
+                                <div class="blue-txt">
+                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'sale']) }}"> {{ $totalSales }}</a>
+                                </div>
                                 <div class="normal-txt">Sales</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
@@ -83,7 +87,9 @@
                                 <div class="normal-txt">Net Commission</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">{{ $refundCount }}</div>
+                                <div class="blue-txt">
+                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'refund']) }}"> {{ $refundCount }}</a>
+                                </div>
                                 <div class="normal-txt">Refunds</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
@@ -284,7 +290,7 @@
                                             <tbody>
                                             @foreach($sold_products as $product)
                                                 <tr>
-                                                    <td>{{ ($product['salesEmail'] != '')?$product['salesEmail']:$product['email'] }}<  /td>
+                                                    <td>{{ ($product['salesEmail'] != '')?$product['salesEmail']:$product['email'] }}</td>
                                                     <td>{{ $product['name'] }}</td>
                                                     <td>${{ $product['total_sale_price'] }}</td>
                                                     <td>{{ "$" . number_format($product['my_commission'], 2, '.', ',') }}</td>

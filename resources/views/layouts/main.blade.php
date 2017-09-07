@@ -102,12 +102,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.6/sweetalert2.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        var url = window.location;
+       /* var url = window.location;
         $('ul.nav a[href="'+ url +'"]').parent().addClass('active');
-       /* $('ul.nav a').filter(function() {
+        $('ul.nav a').filter(function() {
             return this.href == url;
         }).parent().addClass('active');*/
     });
+    $(function(){
+        var url = window.location.pathname;
+        var activePage = url.substring(url.lastIndexOf('/')+1);
+        $('.sidebar-menu li a').each(function(){
+            var currentPage = this.href.substring(this.href.lastIndexOf('/')+1);
+
+            if (activePage == currentPage) {
+                $(this).parent().addClass('active');
+            } else {
+                $(this).parent().removeClass('active');
+            }
+        });
+    })
 </script>
 @yield('script')
 <script>

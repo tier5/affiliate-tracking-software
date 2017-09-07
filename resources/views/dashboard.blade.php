@@ -81,19 +81,25 @@
                                 <div class="row two-row">
                                     <div class="col-md-3 col-sm-3">
 
-                                        <div class="blue-txt">{{ $visitors->count() }}</div>
+                                        <div class="blue-txt">
+                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'visitor']) }}"> {{ $visitors->count() }}</a>
+                                        </div>
                                         <div class="normal-txt">Unique Clicks</div>
 
                                     </div>
                                     <div class="col-md-3 col-sm-3">
 
-                                        <div class="blue-txt">{{ $leads->count() }}</div>
+                                        <div class="blue-txt">
+                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'leads']) }}">{{ $leads->count() }}</a>
+                                        </div>
                                         <div class="normal-txt">Leads</div>
 
                                     </div>
                                     <div class="col-md-3 col-sm-3">
 
-                                        <div class="blue-txt">{{ $totalSales }}</div>
+                                        <div class="blue-txt">
+                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'sales']) }}">{{ $totalSales }}</a>
+                                        </div>
                                         <div class="normal-txt">Sales</div>
 
                                     </div>
@@ -127,7 +133,9 @@
                                     </div>
                                     <div class="col-md-3 col-sm-3">
 
-                                        <div class="blue-txt">{{ $refundCount }}</div>
+                                        <div class="blue-txt">
+                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'refund']) }}">{{ $refundCount }}</a>
+                                        </div>
                                         <div class="normal-txt">Refunds</div>
 
                                     </div>

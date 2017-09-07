@@ -6,6 +6,36 @@
 
 @section('style')
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.1/css/buttons.dataTables.min.css">
+    <style>
+        a.dt-button.redColor {
+            background-color: #4CAF50 !important; /* Green */
+            border: none;
+            color: white !important;
+            padding: 7px 40px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            margin: 4px 2px;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+        a.dt-button.redColor {
+            background-color: black !important;
+            color: black !important;
+            border: 2px solid black;
+        }
+
+        a.dt-button.redColor:hover {
+            background-color: black !important;
+            color: blue !important;
+        }
+        div.dt-buttons{
+            position:relative;
+            float:left;
+        }
+    </style>
 @endsection
 
 
@@ -72,8 +102,8 @@
                                             <tr>
                                                 <td>{{ ($sale['saleEmail'] != '')?$sale['saleEmail']:$sale['email'] }}</td>
                                                 <td>{{ $sale['name'] }}</td>
-                                                <td>{{ $sale['sale_price'] }}</td>
-                                                <td>{{ $sale['commission'] }}</td>
+                                                <td>${{ $sale['sale_price'] }}</td>
+                                                <td>${{ $sale['commission'] }}</td>
                                                 <td>
                                                     {{ ($sale['status']==2)?'Refunded':'sales' }}
                                                 </td>
@@ -112,7 +142,11 @@
                 "info": true,
                 "autoWidth": false,
                 "buttons": [
-                    'excel'
+                    {
+                        extend: 'excel',
+                        text: 'Export' ,
+                        className: 'redColor'
+                    }
                 ]
             });
             $('.filterAffiliate').on('change',function () {
