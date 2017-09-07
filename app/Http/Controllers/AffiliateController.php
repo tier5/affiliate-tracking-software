@@ -630,17 +630,20 @@ class AffiliateController extends Controller
     public function affiliateAllDetails($affiliate_id)
     {
         try{
+            $affiliateUser = User::find($affiliate_id);
             $allCampaign = Campaign::where('user_id',Auth::user()->id);
             $filterCampaign = Input::get('campaign');
             if($filterCampaign > 0){
                 $affiliate = Affiliate::where('user_id', $affiliate_id)
                     ->where('approve_status', 1)
-                    ->where('campaign_id',$filterCampaign)->get();
+                    ->where('campaign_id',$filterCampaign)
+                    ->with('campaign')->get();
                 $campaigns = Campaign::where('id', $filterCampaign);
             } else {
                 $affiliate = Affiliate::where('user_id', $affiliate_id)
                     ->whereIn('campaign_id',$allCampaign->pluck('id'))
-                    ->where('approve_status', 1)->get();
+                    ->where('approve_status', 1)
+                    ->with('campaign')->get();
                 $campaigns = Campaign::whereIn('id', $affiliate->pluck('campaign_id'));
             }
             $affiliateDropDown = Affiliate::where('user_id', $affiliate_id)
@@ -735,7 +738,8 @@ class AffiliateController extends Controller
                 'sold_products' => $soldProducts,
                 'campaignDropDown' => $campaignDropDown,
                 'paidCommission' => $paidCommission,
-                'netCommission' => $netCommission
+                'netCommission' => $netCommission,
+                'affiliateUser' => $affiliateUser
             ]);
         } catch (\Exception $exception){
 

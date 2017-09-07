@@ -13,7 +13,7 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class=" col-md-10 pull-left">
-                                    <h4>All affiliate</h4>
+                                    <h4>Details of: {{ $affiliateUser->name }} (<small>{{  $affiliateUser->email }}</small>)</h4>
                                 </div>
                             </div>
                             <div class="row">
@@ -124,6 +124,38 @@
                                                @endif
                                            </div>
                                        </div>
+                                        <!-- /.users-list -->
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <!--/.box -->
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- USERS LIST -->
+                                <div class="box box-warning">
+                                    <div class="box-header with-border">
+                                        <h2 class="box-title">Affiliate Link</h2>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div class="box-body no-padding">
+                                        <div class="row">
+                                            @foreach($affiliate as $value)
+                                                <div class="col-md-12">
+                                                    <div class="col-md-2">
+                                                        {{ $value->campaign->name }}
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <span class="url"> {{ ($value->campaign->sales_url != '')?$value->campaign->sales_url:$value->campaign->campaign_url }}?affiliate_id={{ $value->key }}</span>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button type="button" class="copy">Copy</button>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                         <!-- /.users-list -->
                                     </div>
                                     <!-- /.box-body -->
