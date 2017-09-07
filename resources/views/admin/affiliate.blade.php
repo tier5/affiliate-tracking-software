@@ -57,7 +57,7 @@
                                                 <td>{{ $affiliate->campaign->name }}</td>
                                                 <td>
                                                     <a href="{{route('admin.affiliate.login',['affiliate' => $affiliate->id])}}" class="btn btn-success btn-xs" title="Login"><i class="fa fa-sign-in"></i></a>
-                                                    <button class="btn btn-info btn-xs click" data-aff_id="{{ $affiliate->user_id }}" title="Details"><i class="fa fa-bar-chart"></i></button>
+                                                    <button class="btn btn-info btn-xs showAffiliateDetails" data-aff_id="{{ $affiliate->user_id }}" title="Details"><i class="fa fa-bar-chart"></i></button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -83,7 +83,7 @@
             "info": true,
             "autoWidth": false
         });
-        $('.click').on('click',function () {
+        $('.showAffiliateDetails').on('click',function () {
             var affiliate = $(this).data('aff_id');
             window.location.href = "{{ route('all.details.affiliate',['']) }}"+"/"+affiliate;
         });
