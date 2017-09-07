@@ -680,7 +680,10 @@ class AffiliateController extends Controller
             /*
              * Analytics for sold products
              */
-            $paidCommission = $paid->paid_commission;
+            $paidCommission = 0;
+            if($paid){
+                $paidCommission = $paid->paid_commission;
+            }
             $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->get();
             $totalSales = 0;
             $totalSalePrice = 0;
@@ -734,6 +737,7 @@ class AffiliateController extends Controller
                 'netCommission' => $netCommission
             ]);
         } catch (\Exception $exception){
+
             return redirect()->back()->with('error',$exception->getMessage());
         }
     }
