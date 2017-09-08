@@ -97,18 +97,18 @@
                                                 </div>
                                             </div>
                                             <div class="row one-row">
-                                                <div class="col-md-4 col-sm-4">
+                                                <div class="col-md-3 col-sm-3">
                                                     <div class="blue-txt">{{ "$" . number_format($paidCommission, 2, '.', ',') }}</div>
                                                     <div class="normal-txt">Commission Paid</div>
                                                 </div>
-                                                <div class="col-md-4 col-sm-4">
+                                                <div class="col-md-3 col-sm-3">
                                                     <div class="blue-txt">
                                                         ${{ round($netCommission - $paidCommission,2) }}</div>
                                                     <div class="normal-txt">Commission Due</div>
                                                 </div>
                                                 @if(count($affiliate) > 0)
                                                     @if(isset($_GET['campaign']) && $_GET['campaign'] > 0)
-                                                        <div class="col-md-4 col-sm-4" style="padding-top: 16px;">
+                                                        <div class="col-md-3 col-sm-3" style="padding-top: 16px;">
                                                             <button class="btn btn-info" id="pay_commission"
                                                                     data-affiliate="{{ $affiliate[0]->user_id }}"
                                                                     data-campaign="{{ $_GET['campaign'] }}"
@@ -186,7 +186,9 @@
                                                         <span class="url"> {{ ($value->campaign->sales_url != '')?$value->campaign->sales_url:$value->campaign->campaign_url }}
                                                             ?affiliate_id={{ $value->key }}</span>
                                                     </div>
-
+                                                    <div class="col-md-2">
+                                                        <button type="button" class="btn btn-warning btn-sm copy">Copy</button>
+                                                    </div>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -375,6 +377,7 @@
                                                                 <table class="table table-bordered datatable">
                                                                     <thead>
                                                                     <tr>
+                                                                        <th>CAMPAIGN</th>
                                                                         <th>EMAIL</th>
                                                                         <th>PRODUCT NAME</th>
                                                                         <th>SALE PRICE</th>
@@ -387,6 +390,7 @@
                                                                     <tbody>
                                                                     @forelse($commisonsOnly as $eachSales)
                                                                         <tr>
+                                                                            <td>{{ $eachSales['campaign'] }}</td>
                                                                             <td>{{ $eachSales['saleEmail'] != ''?$eachSales['saleEmail']:$eachSales['email'] }}</td>
                                                                             <td>{{ $eachSales['name'] }}</td>
                                                                             <td>{{ "$" . number_format($eachSales['total_sale_price'], 2, '.', ',') }}</td>

@@ -57,13 +57,13 @@
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">
-                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'visitor',$queryString]) }}">{{ $visitors }}</a>
+                                    {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'visitor',$queryString]) }}">--}}{{ $visitors }}{{--</a>--}}
                                 </div>
                                 <div class="normal-txt">Unique Clicks</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">
-                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'sale',$queryString]) }}"> {{ $totalSales }}</a>
+                                    {{--<a href="{{  route('view.link',['affiliate',Auth::user()->id,'sale',$queryString]) }}"> --}}{{ $totalSales }}{{--</a>--}}
                                 </div>
                                 <div class="normal-txt">Sales</div>
                             </div>
@@ -89,7 +89,7 @@
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">
-                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'refund',$queryString]) }}"> {{ $refundCount }}</a>
+                                    {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'refund',$queryString]) }}">--}} {{ $refundCount }}{{--</a>--}}
                                 </div>
                                 <div class="normal-txt">Refunds</div>
                             </div>
@@ -99,11 +99,11 @@
                             </div>
                         </div>
                         <div class="row one-row">
-                            <div class="col-md-6 col-sm-6">
+                            <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">{{ "$" . number_format($paidCommission, 2, '.', ',') }}</div>
                                 <div class="normal-txt">Commission Paid</div>
                             </div>
-                            <div class="col-md-6 col-sm-6">
+                            <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">
                                     ${{ round($netCommission - $paidCommission,2) }}</div>
                                 <div class="normal-txt">Commission Due</div>

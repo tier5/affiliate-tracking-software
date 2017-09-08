@@ -39,6 +39,29 @@
                             </div>
                         </div>
                         <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box box-success">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Payment Information</h3>
+                                        </div>
+                                        <!-- /.box-header -->
+                                        <div class="box-body no-padding">
+                                            <div class="col-md-4">
+                                                <h2>Total: ${{ $netCommission }}</h2>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h2>Paid: ${{ $totalPaid }}</h2>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h2>Due:
+                                                    ${{ round($netCommission - $totalPaid,2) }}</h2>
+                                            </div>
+                                        </div>
+                                        <!-- /.box-body -->
+                                    </div>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-list">
                                     <thead>

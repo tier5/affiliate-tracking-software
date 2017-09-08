@@ -91,6 +91,8 @@
                                 <table class="table table-striped table-bordered table-list">
                                     <thead>
                                     <tr>
+                                        <th>Campaign</th>
+                                        <th>Affiliate</th>
                                         <th>Email</th>
                                         <th>Product Name</th>
                                         <th>Price</th>
@@ -103,6 +105,8 @@
                                     <tbody>
                                         @foreach($sales as $sale)
                                             <tr>
+                                                <td>{{ $sale['campaign'] }}</td>
+                                                <td>{{ $sale['affiliate'] }}</td>
                                                 <td>{{ ($sale['saleEmail'] != '')?$sale['saleEmail']:$sale['email'] }}</td>
                                                 <td>{{ $sale['name'] }}</td>
                                                 <td>${{ $sale['sale_price'] }}</td>

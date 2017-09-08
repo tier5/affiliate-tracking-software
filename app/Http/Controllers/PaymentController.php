@@ -8,6 +8,7 @@ use App\Campaign;
 use App\OrderProduct;
 use App\paidCommission;
 use App\PaymentHistory;
+use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,12 +24,19 @@ class PaymentController extends Controller
             if($filterCampaign > 0){
                 $comissions = paidCommission::where('campaign_id',$filterCampaign)
                     ->where('affiliate_id',Auth::user()->id)->get();
+                $affiliates = Affiliate::where('user_id', Auth::user()->id)
+                    ->where('approve_status', 1)
+                    ->where('campaign_id',$filterCampaign)->get();
             } else {
                 $comissions = paidCommission::where('affiliate_id',Auth::user()->id)->get();
+                $affiliates = Affiliate::where('user_id', Auth::user()->id)
+                    ->where('approve_status', 1)->get();
             }
             $affiliateDropDown = Affiliate::where('user_id', Auth::user()->id)
                 ->where('approve_status', 1);
             $campaignDropDown = Campaign::whereIn('id', $affiliateDropDown->pluck('campaign_id'))->get();
+            $totalCommission = 0;
+            $netCommission = 0;
             foreach ($comissions as $comission){
                 $histories = PaymentHistory::where('commission_id',$comission->id)->get();
                 $primeryCommission = [];
@@ -39,10 +47,37 @@ class PaymentController extends Controller
                     $primeryCommission['admin'] = $comission->campaign->user->name;
                 }
                 array_push($finalCommission,$primeryCommission);
+                $totalCommission = $totalCommission + $comission->paid_commission;
             }
+            $logs = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))
+                ->where('type', 2);
+            $orderProducts = OrderProduct::whereIn('log_id', $logs->pluck('id'))
+                ->orderBy('created_at', 'DESC')
+                ->with('product')->get();
+            $grossCommission = 0;
+            $refundCommission = 0;
+            $refundCount = 0;
+            foreach ($orderProducts as $key => $order) {
+                if ($order->product->method == 1) {
+                    $myCommision = $order->product->product_price * ($order->product->commission / 100);
+                    $grossCommission += $myCommision;
+                    if ($order->status == 2) {
+                        $refundCommission = $refundCommission + $myCommision;
+                    }
+                } else {
+                    $myCommision = $order->product->commission;
+                    $grossCommission += $myCommision;
+                    if ($order->status == 2) {
+                        $refundCommission = $refundCommission + $myCommision;
+                    }
+                }
+            }
+            $netCommission = $grossCommission - $refundCommission;
             return view('affiliate.payout',[
                 'commissions' => $finalCommission,
-                'campaignDropDown' => $campaignDropDown
+                'campaignDropDown' => $campaignDropDown,
+                'totalPaid' => $totalCommission,
+                'netCommission' => $netCommission
             ]);
         } catch (\Exception $exception){
             return redirect()->back()->with('error',$exception->getMessage());
@@ -63,33 +98,78 @@ class PaymentController extends Controller
                     ->where('campaign_id',$filterCampaign)
                     ->where('affiliate_id',$filterAffiliate)
                     ->orderBy('created_at','DESC')->get();
+                $affiliates = Affiliate::where('campaign_id', $filterCampaign)
+                    ->where('approve_status', 1)
+                    ->where('user_id', $filterAffiliate)
+                    ->orderBy('campaign_id', 'ASC');
             } elseif ($filterCampaign > 0 && $filterAffiliate <= 0){
+                $campaigns = Campaign::where('id', $filterCampaign);
                 $commissions = paidCommission::where('user_id',Auth::user()->id)
                     ->where('campaign_id',$filterCampaign)
                     ->orderBy('created_at','DESC')->get();
+                $affiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))
+                    ->where('approve_status', 1)
+                    ->orderBy('campaign_id', 'ASC');
             } elseif ($filterCampaign <= 0 && $filterAffiliate > 0){
                 $commissions = paidCommission::where('user_id',Auth::user()->id)
                     ->where('affiliate_id',$filterAffiliate)
                     ->orderBy('created_at','DESC')->get();
+                $affiliates = Affiliate::where('user_id', $filterAffiliate)
+                    ->where('approve_status', 1)
+                    ->orderBy('campaign_id', 'ASC');
             } else {
                 $commissions = paidCommission::where('user_id',Auth::user()->id)
                     ->orderBy('created_at','DESC')->get();
+                $campaigns = Campaign::where('user_id', Auth::user()->id);
+                $affiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))
+                    ->where('approve_status', 1)
+                    ->orderBy('campaign_id', 'ASC');
             }
+            $totalCommission = 0;
+            $netCommission = 0;
             foreach ($commissions as $comission){
                 $histories = PaymentHistory::where('commission_id',$comission->id)->get();
+                $affiliate = User::find($comission->affiliate_id);
                 $primeryCommission = [];
                 foreach ($histories as $history){
                     $primeryCommission['campaign_name'] = $comission->campaign->name;
-                    $primeryCommission['affiliate_name'] = $comission->affiliate->user->name;
+                    $primeryCommission['affiliate_name'] = $affiliate->name;
                     $primeryCommission['date'] = $history->created_at;
                     $primeryCommission['amount'] = $history->amount;
                 }
                 array_push($finalCommission,$primeryCommission);
+                $totalCommission = $totalCommission + $comission->paid_commission;
             }
+            $logs = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))
+                ->where('type', 2);
+            $orderProducts = OrderProduct::whereIn('log_id', $logs->pluck('id'))
+                ->orderBy('created_at', 'DESC')
+                ->with('product')->get();
+            $grossCommission = 0;
+            $refundCommission = 0;
+            $refundCount = 0;
+            foreach ($orderProducts as $key => $order) {
+                if ($order->product->method == 1) {
+                    $myCommision = $order->product->product_price * ($order->product->commission / 100);
+                    $grossCommission += $myCommision;
+                    if ($order->status == 2) {
+                        $refundCommission = $refundCommission + $myCommision;
+                    }
+                } else {
+                    $myCommision = $order->product->commission;
+                    $grossCommission += $myCommision;
+                    if ($order->status == 2) {
+                        $refundCommission = $refundCommission + $myCommision;
+                    }
+                }
+            }
+            $netCommission = $grossCommission - $refundCommission;
             return view('admin.payout',[
                 'commissions' => $finalCommission,
                 'campaignDropDown' => $campaignDropDown,
-                'affiliateDropDown' => $affiliateDropDown
+                'affiliateDropDown' => $affiliateDropDown,
+                'totalPaid' => $totalCommission,
+                'netCommission' => $netCommission
             ]);
         } catch (\Exception $exception){
             return redirect()->back()->with('error',$exception->getMessage());

@@ -83,7 +83,7 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'visitor',$queryString]) }}"> {{ $visitors->count() }}</a>
+                                            {{--<a href="{{ route('view.link',['admin',Auth::user()->id,'visitor',$queryString]) }}">--}} {{ $visitors->count() }}{{--</a>--}}
                                         </div>
                                         <div class="normal-txt">Unique Clicks</div>
 
@@ -91,7 +91,7 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'leads',$queryString]) }}">{{ $leads->count() }}</a>
+                                            {{--<a href="{{ route('view.link',['admin',Auth::user()->id,'leads',$queryString]) }}">--}}{{ $leads->count() }}{{--</a>--}}
                                         </div>
                                         <div class="normal-txt">Leads</div>
 
@@ -99,7 +99,7 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'sales',$queryString]) }}">{{ $totalSales }}</a>
+                                            {{--<a href="{{ route('view.link',['admin',Auth::user()->id,'sales',$queryString]) }}">--}}{{ $totalSales }}{{--</a>--}}
                                         </div>
                                         <div class="normal-txt">Sales</div>
 
@@ -135,7 +135,7 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'refund',$queryString]) }}">{{ $refundCount }}</a>
+                                            {{--<a href="{{ route('view.link',['admin',Auth::user()->id,'refund',$queryString]) }}">--}}{{ $refundCount }}{{--</a>--}}
                                         </div>
                                         <div class="normal-txt">Refunds</div>
 
