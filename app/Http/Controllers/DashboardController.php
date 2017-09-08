@@ -69,6 +69,13 @@ class DashboardController extends Controller
                         ->orderBy('created_at','DESC')->take(5)->get();
                     $affiliatesDropdown = Affiliate::where('campaign_id', $campaigns->first()->id)->get();
                 }
+                 $commissions = paidCommission::where('user_id',Auth::user()->id)->get();
+                 $totalCommission = 0;
+                 foreach ($commissions as $commission){
+                     $totalCommission = $totalCommission + $commission->paid_commission;
+                 }
+                 $commissions = paidCommission::where('user_id',Auth::user()->id)
+                     ->where('campaign_id',$request->input('campaign_id'))->get();
             } else if ($request->input('campaign_id') <= 0 && $request->input('affiliate_id') > 0) {
                 $affiliates = Affiliate::where('user_id', $request->input('affiliate_id'))->with('campaign');
                 if ($affiliates->first()) {
@@ -86,6 +93,8 @@ class DashboardController extends Controller
                 $affiliatesDropdown = Affiliate::whereIn('campaign_id', Campaign::where('user_id', Auth::user()->id)
                         ->pluck('id')) ->select('user_id')->orderBy('user_id','DESC')
                     ->groupBy('user_id')->get();
+                 $commissions = paidCommission::where('user_id',Auth::user()->id)
+                     ->where('affiliate_id',$request->input('affiliate_id'))->get();
             } else if ($request->input('campaign_id') > 0 && $request->input('affiliate_id') > 0) {
                 $campaigns = Campaign::where('id', $request->input('campaign_id'))
                     ->where('user_id', Auth::user()->id);
@@ -104,6 +113,14 @@ class DashboardController extends Controller
                     $affiliatesDropdown = Affiliate::where('campaign_id', $campaigns->first()->id)->get();
                 }
                 $campaignsDropdown = Campaign::where('user_id', Auth::user()->id)->get();
+                $commissions = paidCommission::where('user_id',Auth::user()->id)
+                     ->where('affiliate_id',$request->input('affiliate_id'))
+                     ->where('campaign_id',$request->input('campaign_id'))
+                     ->get();
+            }
+            $totalCommission = 0;
+            foreach ($commissions as $commission){
+                $totalCommission = $totalCommission + $commission->paid_commission;
             }
             return view('dashboard',[
                 'campaigns' => $campaigns,
@@ -124,7 +141,9 @@ class DashboardController extends Controller
                 'latestAffiliates' => $latestAffiliates,
                 'products' => $products,
                 'affiliatesDropdown' => $affiliatesDropdown,
-                'campaignsDropdown' => $campaignsDropdown
+                'campaignsDropdown' => $campaignsDropdown,
+                'netCommission' => $data['netCommission'],
+                'totalPaid' => $totalCommission
             ]);
         } else {
             return $this->adminDashboardNoFilter();
@@ -146,6 +165,11 @@ class DashboardController extends Controller
         $affiliatesDropdown = Affiliate::whereIn('campaign_id',$campaigns->pluck('id'))
             ->select('user_id')->orderBy('user_id','DESC')
             ->groupBy('user_id')->get();
+        $commissions = paidCommission::where('user_id',Auth::user()->id)->get();
+        $totalCommission = 0;
+        foreach ($commissions as $commission){
+            $totalCommission = $totalCommission + $commission->paid_commission;
+        }
         return view('dashboard',[
             'campaigns' => $campaigns,
             'affiliates' => $affiliates,
@@ -165,7 +189,9 @@ class DashboardController extends Controller
             'latestAffiliates' => $latestAffiliates,
             'products' => $products,
             'affiliatesDropdown' => $affiliatesDropdown,
-            'campaignsDropdown' => $campaignsDropdown
+            'campaignsDropdown' => $campaignsDropdown,
+            'netCommission' => $data['netCommission'],
+            'totalPaid' => $totalCommission
         ]);
     }
 
@@ -205,6 +231,7 @@ class DashboardController extends Controller
             $soldProducts[$key]['my_commission'] = $myCommission;
             $totalSalePrice += $soldProducts[$key]['total_sale_price'];
         }
+        $netCommission = $grossCommission - $refundCommission;
         $totalSales = count($salesData);
         //Calculate Browsers
         $chrome = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
@@ -231,6 +258,7 @@ class DashboardController extends Controller
             'ie' => $ie,
             'safari' => $safari,
             'firefox' => $firefox,
+            'netCommission' => $netCommission
         ];
     }
 

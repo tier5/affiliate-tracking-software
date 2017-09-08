@@ -29,6 +29,12 @@
                         <span>Sales</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.payout') }}">
+                        <i class="fa fa-money"></i>
+                        <span>Payout</span>
+                    </a>
+                </li>
             @elseif(Auth::user()->role == 'affiliate')
                 <li class="active">
                     <a href="{{ route('dashboard') }}">
@@ -38,6 +44,12 @@
                 <li>
                     <a href="{{ route('affiliate.sales') }}">
                         <i class="fa fa-shopping-cart"></i> <span>Sales</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('affiliate.payout') }}">
+                        <i class="fa fa-money"></i>
+                        <span>Payout</span>
                     </a>
                 </li>
             @endif

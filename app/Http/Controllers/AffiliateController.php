@@ -7,6 +7,7 @@ use App\AgentUrlDetails;
 use App\Campaign;
 use App\OrderProduct;
 use App\paidCommission;
+use App\PaymentHistory;
 use App\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -775,6 +776,11 @@ class AffiliateController extends Controller
                 $paidCommission->paid_commission = $previousCommission;
                 $paidCommission->update();
             }
+
+            $history = new PaymentHistory();
+            $history->commission_id = $paidCommission->id;
+            $history->amount = $request->commission;
+            $history->save();
 
             return response()->json([
                 'success' => true,

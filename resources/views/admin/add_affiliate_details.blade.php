@@ -96,12 +96,35 @@
                                                     <div class="normal-txt">Refunds Amount</div>
                                                 </div>
                                             </div>
+                                            <div class="row one-row">
+                                                <div class="col-md-4 col-sm-4">
+                                                    <div class="blue-txt">{{ "$" . number_format($paidCommission, 2, '.', ',') }}</div>
+                                                    <div class="normal-txt">Commission Paid</div>
+                                                </div>
+                                                <div class="col-md-4 col-sm-4">
+                                                    <div class="blue-txt">
+                                                        ${{ round($netCommission - $paidCommission,2) }}</div>
+                                                    <div class="normal-txt">Commission Due</div>
+                                                </div>
+                                                @if(count($affiliate) > 0)
+                                                    @if(isset($_GET['campaign']) && $_GET['campaign'] > 0)
+                                                        <div class="col-md-4 col-sm-4" style="padding-top: 16px;">
+                                                            <button class="btn btn-info" id="pay_commission"
+                                                                    data-affiliate="{{ $affiliate[0]->user_id }}"
+                                                                    data-campaign="{{ $_GET['campaign'] }}"
+                                                                    data-commission="{{ $netCommission - $paidCommission }}"
+                                                                    data-toggle="modal">Pay Commission
+                                                            </button>
+                                                        </div>
+                                                    @endif
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        {{--<div class="row">
                             <div class="col-md-12">
                                 <!-- USERS LIST -->
                                 <div class="box box-success">
@@ -143,7 +166,7 @@
                                 <!--/.box -->
                             </div>
                             <!-- /.col -->
-                        </div>
+                        </div>--}}
                         <div class="row">
                             <div class="col-md-12">
                                 <!-- USERS LIST -->
@@ -163,9 +186,7 @@
                                                         <span class="url"> {{ ($value->campaign->sales_url != '')?$value->campaign->sales_url:$value->campaign->campaign_url }}
                                                             ?affiliate_id={{ $value->key }}</span>
                                                     </div>
-                                                    <div class="col-md-2">
-                                                        <button type="button" class="btn btn-warning btn-sm copy">Copy</button>
-                                                    </div>
+
                                                 </div>
                                             @endforeach
                                         </div>
@@ -498,13 +519,13 @@
                     return false;
                 }
                 if (acctualCommission <= 0) {
-                    $('#error').text('Please Enter some commission amount');
+                    $('#error').text('Please enter some commission amount');
                     $('#errorData').show();
                     return false;
                 }
                 var reg = /^-?\d*\.?\d*$/;
                 if (!reg.test(acctualCommission)) {
-                    $('#error').text('Please Enter some commission amount');
+                    $('#error').text('Please enter some commission amount');
                     $('#errorData').show();
                     return false;
                 }

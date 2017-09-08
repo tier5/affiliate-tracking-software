@@ -97,6 +97,17 @@
                                 <div class="normal-txt">Refunds Amount</div>
                             </div>
                         </div>
+                        <div class="row one-row">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="blue-txt">{{ "$" . number_format($paidCommission, 2, '.', ',') }}</div>
+                                <div class="normal-txt">Commission Paid</div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="blue-txt">
+                                    ${{ round($netCommission - $paidCommission,2) }}</div>
+                                <div class="normal-txt">Commission Due</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -177,7 +188,7 @@
                 <!-- /.col -->
             </div>
             <!-- /.row -->
-            <div class="row">
+            {{--<div class="row">
                 <div class="col-md-12">
                     <div class="box box-success">
                         <div class="box-header with-border">
@@ -206,7 +217,7 @@
                         <!-- /.box-body -->
                     </div>
                 </div>
-            </div>
+            </div>--}}
             <!-- Main row -->
             <div class="row">
                 <!-- Left col -->

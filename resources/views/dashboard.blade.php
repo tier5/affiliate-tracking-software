@@ -145,6 +145,22 @@
 
                                     </div>
                                 </div>
+                                <div class="row two-row">
+                                    <div class="col-md-3 col-sm-3">
+
+                                        <div class="blue-txt">
+                                            ${{ $totalPaid }}
+                                        </div>
+                                        <div class="normal-txt">Commission Paid</div>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3">
+
+                                        <div class="blue-txt">${{ round($netCommission - $totalPaid,2) }}</div>
+                                        <div class="normal-txt">Commission Due</div>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
