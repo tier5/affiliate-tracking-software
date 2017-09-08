@@ -81,7 +81,7 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class=" col-md-4 pull-left">
-                                    <h4>Campaigns Details</h4>
+                                    <h4>Campaign Scripts</h4>
                                 </div>
                             </div>
                             <div id="loader" style="line-height: 100px; text-align: center; display: none;">
@@ -97,13 +97,13 @@
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <ul class="nav nav-tabs">
-                                            <li class="active"><a data-toggle="tab" href="#home">Affiliates</a></li>
-                                        <li><a data-toggle="tab" href="#sales">Sales Script</a></li>
+                                            {{--<li class="active"><a data-toggle="tab" href="#home">Affiliates</a></li>--}}
+                                        <li class="active"><a data-toggle="tab" href="#sales">Sales Script</a></li>
                                         <li><a data-toggle="tab" href="#menu1">Product & Update Script</a></li>
                                         <li><a data-toggle="tab" href="#menu2">Checkout Script</a></li>
                                     </ul>
                                     <div class="tab-content">
-                                        <div id="home" class="tab-pane fade in active">
+                                        {{--<div id="home" class="tab-pane fade in active">
                                             <div class="panel panel-default panel-info">
                                                 <div class="panel-heading">
                                                     <div class="row">
@@ -159,8 +159,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div id="sales" class="tab-pane fade">
+                                        </div>--}}
+                                        <div id="sales" class="tab-pane fade in active">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="pull-right">

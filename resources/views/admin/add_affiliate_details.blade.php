@@ -13,7 +13,7 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class=" col-md-10 pull-left">
-                                    <h4>Details of: {{ $affiliateUser->name }} (
+                                    <h4>Affiliate Name: {{ $affiliateUser->name }} (
                                         <small>{{  $affiliateUser->email }}</small>
                                         )
                                     </h4>
@@ -164,7 +164,7 @@
                                                             ?affiliate_id={{ $value->key }}</span>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <button type="button" class="copy">Copy</button>
+                                                        <button type="button" class="btn btn-warning btn-sm copy">Copy</button>
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -182,33 +182,213 @@
                                 <!-- USERS LIST -->
                                 <div class="box box-info">
                                     <div class="box-header with-border">
-                                        <h2 class="box-title">Commissions on sold products</h2>
+                                        <h2 class="box-title">Activities</h2>
                                     </div>
                                     <!-- /.box-header -->
                                     <div class="box-body no-padding">
-                                        <div class="table table-responsive">
-                                            <table id="sold-product" class="table table-bordered table-hover datatable">
-                                                <thead>
-                                                <td>Email</td>
-                                                <td>Product Name</td>
-                                                <td>Price</td>
-                                                <td>My Commission</td>
-                                                <td>Status</td>
-                                                </thead>
-                                                <tbody>
-                                                @foreach($sold_products as $product)
-                                                    <tr>
-                                                        <td>{{ $product['saleEmail']?$product['saleEmail']:$product['email'] }}</td>
-                                                        <td>{{ $product['name'] }}</td>
-                                                        <td>${{ $product['total_sale_price'] }}</td>
-                                                        <td>{{ "$" . number_format($product['my_commission'], 2, '.', ',') }}</td>
-                                                        <td>{{ ($product['status'] == 2)?'Refunded':'sale' }}</td>
-                                                    </tr>
-                                                @endforeach
-                                                </tbody>
-                                            </table>
+                                        <div class="col-md-12 col-sm-12">
+                                            <ul class="nav nav-tabs">
+                                                <li class="active"><a data-toggle="tab" href="#allTraffic">Incoming Traffics</a></li>
+                                                <li><a data-toggle="tab" href="#leadsOnly">Leads</a></li>
+                                                <li><a data-toggle="tab" href="#commisonsOnly">Sales</a></li>
+                                            </ul>
+                                            <div class="tab-content">
+                                                <div id="allTraffic" class="tab-pane fade in active">
+                                                    <div class="panel panel-default panel-info">
+                                                        <div class="panel-heading">
+                                                            <div class="row">
+                                                                <div class=" col-md-10 pull-left">
+                                                                    <h4>All incoming traffics</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered datatable">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>WHO</th>
+                                                                        <th>BROWSER</th>
+                                                                        <th>PLATFORM</th>
+                                                                        <th>TYPE</th>
+                                                                        <th>FIRST SEEN</th>
+                                                                        <th>LAST VISIT</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    @forelse($allTraffic as $eachTraffic)
+                                                                        <tr>
+                                                                            <td>{{ (isset($eachTraffic->email) && !is_null($eachTraffic->email)) ? $eachTraffic->email : (isset($eachTraffic->ip) && !is_null($eachTraffic->ip) ?  $eachTraffic->ip : '')  }}</td>
+                                                                            <td>{{ (isset($eachTraffic->browser) && !is_null($eachTraffic->browser)) ? $eachTraffic->browser : ''  }}</td>
+                                                                            <td>{{ (isset($eachTraffic->os) && !is_null($eachTraffic->os)) ? $eachTraffic->os : ''  }}</td>
+                                                                            @if(isset($eachTraffic->type) && !is_null($eachTraffic->type) && $eachTraffic->type == 1)
+                                                                                <td>{{ 'Visitor' }}</td>
+                                                                            @elseif(isset($eachTraffic->type) && !is_null($eachTraffic->type) && $eachTraffic->type == 2)
+                                                                                <td>{{ 'Sales' }}</td>
+                                                                            @elseif((isset($eachTraffic->type) && !is_null($eachTraffic->type) && $eachTraffic->type == 3))
+                                                                                <td>{{'Leads'}}</td>
+                                                                            @endif
+                                                                            <td>{{ (isset($eachTraffic->created_at) && !is_null($eachTraffic->created_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachTraffic->created_at)) : '' }}</td>
+                                                                            <td>{{ (isset($eachTraffic->updated_at) && !is_null($eachTraffic->updated_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachTraffic->updated_at)) : '' }}</td>
+                                                                        </tr>
+                                                                    @empty
+                                                                        <tr>
+                                                                            <td colspan="6">There Are No Activities</td>
+                                                                        </tr>
+                                                                    @endforelse
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="leadsOnly" class="tab-pane fade">
+                                                    <div class="panel panel-default panel-info">
+                                                        <div class="panel-heading">
+                                                            <div class="row">
+                                                                <div class=" col-md-10 pull-left">
+                                                                    <h4>Leads only traffics</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered datatable">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>WHO</th>
+                                                                        <th>BROWSER</th>
+                                                                        <th>PLATFORM</th>
+                                                                        <th>TYPE</th>
+                                                                        <th>FIRST SEEN</th>
+                                                                        <th>LAST VISIT</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    @forelse($leadsOnly as $eachLeads)
+                                                                        <tr>
+                                                                            <td>{{ (isset($eachLeads->email) && !is_null($eachLeads->email)) ? $eachLeads->email : ((isset($eachLeads->ip) && !is_null($eachLeads->ip)) ?  $eachLeads->ip : '')  }}</td>
+                                                                            <td>{{ (isset($eachLeads->browser) && !is_null($eachLeads->browser)) ? $eachLeads->browser : ''  }}</td>
+                                                                            <td>{{ (isset($eachLeads->os) && !is_null($eachLeads->os)) ? $eachLeads->os : ''  }}</td>
+                                                                            @if(isset($eachLeads->type) && !is_null($eachLeads->type) && $eachLeads->type == 1)
+                                                                                <td>{{ 'Visitor' }}</td>
+                                                                            @elseif(isset($eachLeads->type) && !is_null($eachLeads->type) && $eachLeads->type == 2)
+                                                                                <td>{{ 'Sales' }}</td>
+                                                                            @elseif((isset($eachLeads->type) && !is_null($eachLeads->type) && $eachLeads->type == 3))
+                                                                                <td>{{'Leads'}}</td>
+                                                                            @endif
+                                                                            <td>{{ (isset($eachLeads->created_at) && !is_null($eachLeads->created_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachLeads->created_at)) : '' }}</td>
+                                                                            <td>{{ (isset($eachLeads->updated_at) && !is_null($eachLeads->updated_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachLeads->updated_at)) : '' }}</td>
+                                                                        </tr>
+                                                                    @empty
+                                                                        <tr>
+                                                                            <td colspan="6">There Are No Activities</td>
+                                                                        </tr>
+                                                                    @endforelse
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{--<div id="salesOnly" class="tab-pane fade">
+                                                    <div class="panel panel-default panel-info">
+                                                        <div class="panel-heading">
+                                                            <div class="row">
+                                                                <div class=" col-md-10 pull-left">
+                                                                    <h4>Sales only traffics</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered datatable">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>WHO</th>
+                                                                        <th>BROWSER</th>
+                                                                        <th>PLATFORM</th>
+                                                                        <th>TYPE</th>
+                                                                        <th>FIRST SEEN</th>
+                                                                        <th>LAST VISIT</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    @forelse($salesOnly as $eachSales)
+                                                                        <tr>
+                                                                            <td>{{ (isset($eachSales->email) && !is_null($eachSales->email)) ? $eachSales->email : ((isset($eachSales->ip) && !is_null($eachSales->ip)) ?  $eachSales->ip : '')  }}</td>
+                                                                            <td>{{ (isset($eachSales->browser) && !is_null($eachSales->browser)) ? $eachSales->browser : ''  }}</td>
+                                                                            <td>{{ (isset($eachSales->os) && !is_null($eachSales->os)) ? $eachSales->os : ''  }}</td>
+                                                                            @if(isset($eachSales->type) && !is_null($eachSales->type) && $eachSales->type == 1)
+                                                                                <td>{{ 'Visitor' }}</td>
+                                                                            @elseif(isset($eachSales->type) && !is_null($eachSales->type) && $eachSales->type == 2)
+                                                                                <td>{{ 'Sales' }}</td>
+                                                                            @elseif((isset($eachSales->type) && !is_null($eachSales->type) && $eachSales->type == 3))
+                                                                                <td>{{'Leads'}}</td>
+                                                                            @endif
+                                                                            <td>{{ (isset($eachSales->created_at) && !is_null($eachSales->created_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachSales->created_at)) : '' }}</td>
+                                                                            <td>{{ (isset($eachSales->updated_at) && !is_null($eachSales->updated_at)) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachSales->updated_at)) : '' }}</td>
+                                                                        </tr>
+                                                                    @empty
+                                                                        <tr>
+                                                                            <td colspan="6">There Are No Activities</td>
+                                                                        </tr>
+                                                                    @endforelse
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>--}}
+                                                <div id="commisonsOnly" class="tab-pane fade">
+                                                    <div class="panel panel-default panel-info">
+                                                        <div class="panel-heading">
+                                                            <div class="row">
+                                                                <div class=" col-md-10 pull-left">
+                                                                    <h4>Commissions only traffics</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered datatable">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>EMAIL</th>
+                                                                        <th>PRODUCT NAME</th>
+                                                                        <th>SALE PRICE</th>
+                                                                        <th>COMMISSION</th>
+                                                                        <th>STATUS</th>
+                                                                        <th>DATE</th>
+                                                                        <th>Action</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    @forelse($commisonsOnly as $eachSales)
+                                                                        <tr>
+                                                                            <td>{{ $eachSales['saleEmail'] != ''?$eachSales['saleEmail']:$eachSales['email'] }}</td>
+                                                                            <td>{{ $eachSales['name'] }}</td>
+                                                                            <td>{{ "$" . number_format($eachSales['total_sale_price'], 2, '.', ',') }}</td>
+                                                                            <td>{{ "$" . number_format($eachSales['my_commission'], 2, '.', ',') }}</td>
+                                                                            <td>{{ $eachSales['status'] == 1?'sale':'refund' }}</td>
+                                                                            <td>{{ (isset($eachSales['date'])) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachSales['date'])) : '' }}</td>
+                                                                            <td>
+                                                                                <button type="button" class="btn btn-warning btn-xs refund" {{ $eachSales['status'] == 2?'disabled':'' }} data-sales_id="{{ $eachSales['id'] }}">Refund</button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @empty
+                                                                        <tr>
+                                                                            <td colspan="4">There Are No Activities</td>
+                                                                        </tr>
+                                                                    @endforelse
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <!-- /.users-list -->
                                     </div>
                                     <!-- /.box-body -->
                                 </div>
@@ -371,6 +551,46 @@
             $('#money').on('keyup', function () {
                 $('#errorData').hide();
             });
+            $('.refund').on('click',function () {
+                var order_id =  $(this).data('sales_id');
+                swal({
+                    title: 'Are you sure?',
+                    text: "You want to refund this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, Refund it!'
+                }).then(function () {
+                    $.ajax({
+                        url: "{{ route('sale.refund') }}",
+                        type: "POST",
+                        data: {
+                            id: order_id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                swal({
+                                    title: "Success!",
+                                    text: data.message,
+                                    type: "success"
+                                }).then( function(){
+                                    window.location.reload();
+                                },function (dismiss) {
+                                    window.location.reload();
+                                });
+                            } else {
+                                swal({
+                                    title: "Error!",
+                                    text: data.message,
+                                    type: "error"
+                                });
+                            }
+                        }
+                    });
+                })
+            })
         });
     </script>
 @endsection

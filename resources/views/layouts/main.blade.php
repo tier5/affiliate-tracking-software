@@ -57,8 +57,12 @@
     <div class="clear"> </div>
     <!-- Content Wrapper. Contains page content -->
     @yield('content')
-</div>
+    <footer class="main-footer">
+        <strong>Copyright &copy; {{ date('Y') }} <a href="//interwebleads.com">Inter Web Leads</a>.</strong> All rights
+        reserved.
+    </footer>
 
+</div>
 
 <!-- jQuery 2.2.3 -->
 <script src="{{ url('/') }}/admin/plugins/jQuery/jquery-2.2.3.min.js"></script>

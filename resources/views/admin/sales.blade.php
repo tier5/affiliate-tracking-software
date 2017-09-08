@@ -108,9 +108,7 @@
                                                     {{ ($sale['status']==2)?'Refunded':'sales' }}
                                                 </td>
                                                 <td>
-                                                    @if($sale['status'] != 2)
-                                                        <button type="button" class="btn btn-xs btn-warning refund" data-sales_id="{{ $sale['id'] }}">Refund</button>
-                                                    @endif
+                                                    <button type="button" class="btn btn-xs btn-warning refund" {{ $sale['status'] == 2?'disabled':'' }} data-sales_id="{{ $sale['id'] }}">Refund</button>
                                                 </td>
                                             </tr>
                                         @endforeach

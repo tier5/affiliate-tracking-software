@@ -119,12 +119,13 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
+                                            <th>Approve</th>
                                             <th>Order Page Url</th>
                                             <th>Sales Page Url</th>
                                             <th>Registration URL</th>
-                                            <th>Approve</th>
                                             <th>Add Product</th>
                                             <th>Details</th>
+                                            <th>Scripts</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -133,6 +134,7 @@
                                         @foreach($campaigns as $campaign)
                                             <tr>
                                                 <td>{{ $campaign->name }}</td>
+                                                <td>{{ $campaign->approval == 1 ? 'Auto' : 'Manual' }}</td>
                                                 <td>
                                                     <button class="btn btn-sm btn-success copy"><i class="fa fa-copy fa-fw"></i>Copy</button>
                                                     <span class="url" style="display: none;">{{ $campaign->campaign_url }}</span>
@@ -148,12 +150,14 @@
                                                     <span class="url" style="display: none;">{{ route('affiliate.registerForm',[$campaign->key])}}</span>
                                                     <button class="btn btn-sm btn-warning" data-toggle="popover" data-container="body" data-placement="top" data-content="{{ route('affiliate.registerForm',[$campaign->key])}}"><i class="fa fa-info-circle fa-fw"></i>View</button>
                                                 </td>
-                                                <td>{{ $campaign->approval == 1 ? 'Auto' : 'Manual' }}</td>
                                                 <td>
                                                     <a href="{{ route('campaign.products',[$campaign->id]) }}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('details.campaign',[$campaign->key]) }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-list-alt"></span></a>
+                                                    <a href="{{ route('all.affiliate') }}?campaign={{ $campaign->id }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-list-alt" title="details"></span></a>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('details.campaign',[$campaign->key]) }}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-tags" title="Scripts"></span></a>
                                                 </td>
                                                 <td>
                                                     <div class="row">

@@ -676,9 +676,9 @@ class AffiliateController extends Controller
                 ->whereIn('campaign_id', $allCampaign->pluck('id'))
                 ->where('approve_status', 1);
             $campaignDropDown = Campaign::whereIn('id', $affiliateDropDown->pluck('campaign_id'))->get();
-            $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'));
-            $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 3);
-            $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2);
+            $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->orderBy('created_at','DESC');
+            $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 3)->orderBy('created_at','DESC');
+            $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2)->orderBy('created_at','DESC');
             $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
             $totalSaless = OrderProduct::whereIn('log_id', $sales->pluck('id'))->count();
             /*
@@ -690,7 +690,7 @@ class AffiliateController extends Controller
                     $paidCommission = $pay->paid_commission;
                 }
             }
-            $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->get();
+            $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->orderBy('created_at','DESC')->get();
             $totalSales = 0;
             $totalSalePrice = 0;
             $grossCommission = 0;
@@ -722,11 +722,12 @@ class AffiliateController extends Controller
                 $soldProducts[$key]['status'] = $order->status;
                 $soldProducts[$key]['email'] = $order->log->email;
                 $soldProducts[$key]['saleEmail'] = $order->email;
+                $soldProducts[$key]['date'] = $order->created_at;
+                $soldProducts[$key]['id'] = $order->id;
                 $totalSalePrice += $soldProducts[$key]['total_sale_price'];
                 $totalSales += 1;
             }
             $netCommission = $grossCommission - $refundCommission;
-
             return view('admin.add_affiliate_details', [
                 'affiliate' => $affiliate,
                 'campaigns' => $campaigns->count(),
@@ -743,7 +744,11 @@ class AffiliateController extends Controller
                 'campaignDropDown' => $campaignDropDown,
                 'paidCommission' => $paidCommission,
                 'netCommission' => $netCommission,
-                'affiliateUser' => $affiliateUser
+                'affiliateUser' => $affiliateUser,
+                'allTraffic' => $visitors->get(),
+                'leadsOnly' => $leads->get(),
+                'salesOnly' => $sales->get(),
+                'commisonsOnly' => $soldProducts,
             ]);
         } catch (\Exception $exception) {
 
