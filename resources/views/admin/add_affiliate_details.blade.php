@@ -59,11 +59,11 @@
                                                     <div class="normal-txt">EPC</div>
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
-                                                    <div class="blue-txt">{{ $visitors }}</div>
+                                                    <div class="blue-txt"> {{ $visitors }}</div>
                                                     <div class="normal-txt">Unique Clicks</div>
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
-                                                    <div class="blue-txt">{{ $totalSales }}</div>
+                                                    <div class="blue-txt"> {{ $totalSales }}</div>
                                                     <div class="normal-txt">Sales</div>
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
@@ -518,13 +518,15 @@
                     $('#errorData').show();
                     return false;
                 }
-                if (acctualCommission <= 0) {
+
+                if(acctualCommission <= 0){
                     $('#error').text('Please enter some commission amount');
                     $('#errorData').show();
                     return false;
                 }
                 var reg = /^-?\d*\.?\d*$/;
-                if (!reg.test(acctualCommission)) {
+
+                if(!reg.test(acctualCommission)){
                     $('#error').text('Please enter some commission amount');
                     $('#errorData').show();
                     return false;

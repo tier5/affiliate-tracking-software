@@ -133,6 +133,10 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'AffiliateController@allSalesShow',
         'as' => 'all.sales'
     ]);
+    Route::get('export/admin/sales',[
+        'uses' => 'AffiliateController@exportSalesAdmin',
+        'as' => 'sales.export'
+    ]);
     Route::post('refund/sales', [
         'uses' => 'AffiliateController@salesRefund',
         'as' => 'sale.refund'
@@ -144,6 +148,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('affiliate/data/sales',[
         'uses' => 'AffiliateController@affiliateSales',
         'as' => 'affiliate.sales'
+    ]);
+    Route::get('export/affiliate/sales',[
+        'uses' => 'AffiliateController@exportSalesAffiliate',
+        'as' => 'sales.affiliate.export'
     ]);
     Route::get('admin/affiliate/details/{affiliate_id}',[
         'uses' => 'AffiliateController@affiliateAllDetails',

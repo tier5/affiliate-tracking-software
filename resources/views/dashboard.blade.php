@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+   @php($queryString= Request::getQueryString() ? Request::getQueryString() : 'campaign_id=0&affiliate_id=0'  )
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -82,7 +83,7 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'visitor']) }}"> {{ $visitors->count() }}</a>
+                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'visitor',$queryString]) }}"> {{ $visitors->count() }}</a>
                                         </div>
                                         <div class="normal-txt">Unique Clicks</div>
 
@@ -90,7 +91,7 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'leads']) }}">{{ $leads->count() }}</a>
+                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'leads',$queryString]) }}">{{ $leads->count() }}</a>
                                         </div>
                                         <div class="normal-txt">Leads</div>
 
@@ -98,7 +99,7 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'sales']) }}">{{ $totalSales }}</a>
+                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'sales',$queryString]) }}">{{ $totalSales }}</a>
                                         </div>
                                         <div class="normal-txt">Sales</div>
 
@@ -134,7 +135,7 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'refund']) }}">{{ $refundCount }}</a>
+                                            <a href="{{ route('view.link',['admin',Auth::user()->id,'refund',$queryString]) }}">{{ $refundCount }}</a>
                                         </div>
                                         <div class="normal-txt">Refunds</div>
 

@@ -86,6 +86,8 @@
                         </div>
                         <div class="panel-body">
                             <div class="table-responsive">
+                            @php($queryString= Request::getQueryString() ? Request::getQueryString() : '?campaign=0&affiliate=0'  )
+                             <a href="{{route('sales.export',$queryString)}}" class="btn btn-primary">Export</a>
                                 <table class="table table-striped table-bordered table-list">
                                     <thead>
                                     <tr>
@@ -93,8 +95,9 @@
                                         <th>Product Name</th>
                                         <th>Price</th>
                                         <th>Commission</th>
+                                        <th>Date</th>
                                         <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Action</th>    
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -104,6 +107,7 @@
                                                 <td>{{ $sale['name'] }}</td>
                                                 <td>${{ $sale['sale_price'] }}</td>
                                                 <td>${{ $sale['commission'] }}</td>
+                                                <td>{{$sale['created_at']}}</td>
                                                 <td>
                                                     {{ ($sale['status']==2)?'Refunded':'sales' }}
                                                 </td>
@@ -132,20 +136,12 @@
     <script>
         $(function () {
             $('.table-list').DataTable({
-                "dom": 'Bfrtip',
                 "paging": true,
                 "lengthChange": false,
                 "searching": true,
                 "ordering": false,
                 "info": true,
-                "autoWidth": false,
-                "buttons": [
-                    {
-                        extend: 'excel',
-                        text: 'Export' ,
-                        className: 'redColor'
-                    }
-                ]
+                "autoWidth": false
             });
             $('.filterAffiliate').on('change',function () {
                 var affiliate = $(this).val();

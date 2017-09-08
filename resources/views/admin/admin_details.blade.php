@@ -12,16 +12,17 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <form class="form info-box" method="get" id="form-filter">
                         <div class="info-box-content row">
+                        @if(isset($userType) && $userType == 'admin')
                             <div class="col-md-6 col-sm-6 col-xs-6">
                                 <label class="col-md-4 col-sm-4 col-xs-4 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">Filter
                                     by Campaign </label>
                                 <div class="col-md-8">
-                                    <select class="form-control filter" name="campaign_id">
+                                    <select class="form-control filterCampaign" name="campaign_id">
                                         <option value="0"> Select Campaign</option>
-                                        {{-- @forelse($campaignsDropdown as $campaign)
+                                        @forelse($campaignsDropdown as $campaign)
                                             <option value="{{ $campaign->id }}" {{ request()->has('campaign_id') ? (request()->input('campaign_id') == $campaign->id ? 'selected' : null) : null }}>{{ $campaign->name }}</option>
                                         @empty
-                                        @endforelse --}}
+                                        @endforelse
                                     </select>
                                 </div>
                             </div>
@@ -29,15 +30,30 @@
                                 <label class="col-md-4 col-sm-4 col-xs-4 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">Filter
                                     by Affiliate </label>
                                 <div class="col-md-8">
-                                    <select class="form-control filter" name="affiliate_id">
+                                    <select class="form-control filterAffiliate" name="affiliate_id">
                                         <option value="0"> Select Affiliate</option>
-                                      {{--  @forelse($affiliatesDropdown as $affiliate)
+                                        @forelse($affiliatesDropdown as $affiliate)
                                             <option value="{{ $affiliate->user_id }}" {{ request()->has('affiliate_id') ? (request()->input('affiliate_id') == $affiliate->user_id ? 'selected' : null) : null }}>{{ $affiliate->user->name }}</option>
                                         @empty
-                                        @endforelse --}}
+                                        @endforelse 
                                     </select>
                                 </div>
                             </div>
+                            @elseif(isset($userType) && $userType == 'affiliate')
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                <label class="col-md-4 col-sm-4 col-xs-4 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">Filter
+                                    by Campaign </label>
+                                <div class="col-md-8">
+                                    <select class="form-control filterCampaignAffiliate" name="campaign_id">
+                                        <option value="0"> Select Campaign</option>
+                                        @forelse($campaignsDropdown as $campaign)
+                                            <option value="{{ $campaign->id }}" {{ request()->has('campaign') ? (request()->input('campaign') == $campaign->id ? 'selected' : null) : null }}>{{ $campaign->name }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                         <!-- /.info-box-content -->
                     </form>
@@ -54,7 +70,6 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class=" col-md-4 pull-left">
-                                    <h4>Affiliate Details</h4>
                                 </div>
                             </div>
                             <div id="loader" style="line-height: 100px; text-align: center; display: none;">
@@ -74,17 +89,6 @@
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-md-12 col-sm-12">
-                                        <ul class="nav nav-tabs">
-                                            @if($linkName == 'visitor')
-                                            <li class="active"><a data-toggle="tab">Visitors</a></li>
-                                            @elseif($linkName == 'leads')
-                                            <li class="active"><a data-toggle="tab">Leads</a></li>
-                                            @elseif($linkName == 'sales')
-                                            <li class="active"><a data-toggle="tab">Sales</a></li>
-                                            @else
-                                            <li class="active"><a data-toggle="tab">Refunds</a></li>
-                                            @endif
-                                        </ul>
                                         <div class="tab-content">
                                             <div id="allTraffic" class="tab-pane fade in active">
                                                 <div class="panel panel-default panel-info">
@@ -114,7 +118,9 @@
                                                                         <td>{{ (isset($eachTraffic->email) && !is_null($eachTraffic->email)) ? $eachTraffic->email : (isset($eachTraffic->ip) && !is_null($eachTraffic->ip) ?  $eachTraffic->ip : '')  }}</td>
                                                                         <td>{{ (isset($eachTraffic->browser) && !is_null($eachTraffic->browser)) ? $eachTraffic->browser : ''  }}</td>
                                                                         <td>{{ (isset($eachTraffic->os) && !is_null($eachTraffic->os)) ? $eachTraffic->os : ''  }}</td>
-                                                                        @if(isset($eachTraffic->type) && !is_null($eachTraffic->type) && $eachTraffic->type == 1)
+                                                                        @if(isset($linkName) && $linkName == 'refund')
+                                                                            <td>{{'Refunded'}}</td>
+                                                                        @elseif(isset($eachTraffic->type) && !is_null($eachTraffic->type) && $eachTraffic->type == 1)
                                                                             <td>{{ 'Visitor' }}</td>
                                                                         @elseif(isset($eachTraffic->type) && !is_null($eachTraffic->type) && $eachTraffic->type == 2)
                                                                             <td>{{ 'Sales' }}</td>
@@ -173,6 +179,19 @@
             copyToClipboard(url);
             toastr.info('Copied To Clipboard');
         });
+
+        $('.filterAffiliate').on('change',function () {
+            var affiliate = $(this).val();
+            setGetParameter('affiliate_id',affiliate);
+        });
+        $('.filterCampaign').on('change',function () {
+            var campaign = $(this).val();
+            setGetParameter('campaign_id',campaign);
+        });
+        $('.filterCampaignAffiliate').on('change',function () {
+            var campaign = $(this).val();
+            setGetParameter('campaign',campaign);
+        });   
     });
 </script>
 {{--<script>--}}

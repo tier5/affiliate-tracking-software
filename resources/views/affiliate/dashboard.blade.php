@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+    @php($queryString= Request::getQueryString() ? Request::getQueryString() : 'campaign=0'  )
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -56,13 +57,13 @@
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">
-                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'visitor']) }}">{{ $visitors }}</a>
+                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'visitor',$queryString]) }}">{{ $visitors }}</a>
                                 </div>
                                 <div class="normal-txt">Unique Clicks</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">
-                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'sale']) }}"> {{ $totalSales }}</a>
+                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'sale',$queryString]) }}"> {{ $totalSales }}</a>
                                 </div>
                                 <div class="normal-txt">Sales</div>
                             </div>
@@ -88,7 +89,7 @@
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">
-                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'refund']) }}"> {{ $refundCount }}</a>
+                                    <a href="{{ route('view.link',['affiliate',Auth::user()->id,'refund',$queryString]) }}"> {{ $refundCount }}</a>
                                 </div>
                                 <div class="normal-txt">Refunds</div>
                             </div>
