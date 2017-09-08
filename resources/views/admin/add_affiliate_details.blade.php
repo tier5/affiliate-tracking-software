@@ -13,7 +13,10 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class=" col-md-10 pull-left">
-                                    <h4>Details of: {{ $affiliateUser->name }} (<small>{{  $affiliateUser->email }}</small>)</h4>
+                                    <h4>Details of: {{ $affiliateUser->name }} (
+                                        <small>{{  $affiliateUser->email }}</small>
+                                        )
+                                    </h4>
                                 </div>
                             </div>
                             <div class="row">
@@ -80,7 +83,8 @@
                                                     <div class="normal-txt">Gross Commission</div>
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
-                                                    <div class="blue-txt">${{ round($gross_commission-$refundCommission,2) }}</div>
+                                                    <div class="blue-txt">
+                                                        ${{ round($gross_commission-$refundCommission,2) }}</div>
                                                     <div class="normal-txt">Net Commission</div>
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
@@ -106,24 +110,32 @@
                                     </div>
                                     <!-- /.box-header -->
                                     <div class="box-body no-padding">
-                                       <div class="row">
-                                           <div class="col-md-12">
-                                               <div class="col-md-3">
-                                                   <h2>Total Commission: ${{ $netCommission }}</h2>
-                                               </div>
-                                               <div class="col-md-3">
-                                                   <h2>Commission Paid: ${{ $paidCommission }}</h2>
-                                               </div>
-                                               <div class="col-md-3">
-                                                   <h2>Commission Due: ${{ round($netCommission - $paidCommission,2) }}</h2>
-                                               </div>
-                                               @if(count($affiliate) > 0)
-                                               <div class="col-md-3" style="padding-top: 16px;">
-                                                   <button class="btn btn-success" id="pay_commission" data-affiliate="{{ $affiliate[0]->user_id }}" data-campaign="{{ $affiliate[0]->campaign_id }}" data-commission="{{ $netCommission - $paidCommission }}" data-toggle="modal">Pay Commission</button>
-                                               </div>
-                                               @endif
-                                           </div>
-                                       </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="col-md-3">
+                                                    <h2>Total Commission: ${{ $netCommission }}</h2>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h2>Commission Paid: ${{ $paidCommission }}</h2>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <h2>Commission Due:
+                                                        ${{ round($netCommission - $paidCommission,2) }}</h2>
+                                                </div>
+                                                @if(count($affiliate) > 0)
+                                                    @if(isset($_GET['campaign']) && $_GET['campaign'] > 0)
+                                                        <div class="col-md-3" style="padding-top: 16px;">
+                                                            <button class="btn btn-success" id="pay_commission"
+                                                                    data-affiliate="{{ $affiliate[0]->user_id }}"
+                                                                    data-campaign="{{ $_GET['campaign'] }}"
+                                                                    data-commission="{{ $netCommission - $paidCommission }}"
+                                                                    data-toggle="modal">Pay Commission
+                                                            </button>
+                                                        </div>
+                                                    @endif
+                                                @endif
+                                            </div>
+                                        </div>
                                         <!-- /.users-list -->
                                     </div>
                                     <!-- /.box-body -->
@@ -148,7 +160,8 @@
                                                         {{ $value->campaign->name }}
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <span class="url"> {{ ($value->campaign->sales_url != '')?$value->campaign->sales_url:$value->campaign->campaign_url }}?affiliate_id={{ $value->key }}</span>
+                                                        <span class="url"> {{ ($value->campaign->sales_url != '')?$value->campaign->sales_url:$value->campaign->campaign_url }}
+                                                            ?affiliate_id={{ $value->key }}</span>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <button type="button" class="copy">Copy</button>
@@ -233,7 +246,9 @@
                                 <div class="form-group" id='errorData' style="display: none; color: red;">
                                     <label for="error" class="control-label col-md-4">Error: </label>
                                     <div class="col-md-8">
-                                        <h4><div id="error"></div></h4>
+                                        <h4>
+                                            <div id="error"></div>
+                                        </h4>
                                     </div>
                                 </div>
                                 <button type="button" id="final_pay" class="btn btn-success form-control">Pay</button>
@@ -251,8 +266,9 @@
 
 @section('script')
     <script src="{{ url('/') }}/admin/dist/js/pages/dashboard2.js"></script>
-        <script type="text/javascript">
-        $(document).ready(function() {
+        
+    <script type="text/javascript">
+        $(document).ready(function () {
             $.fn.dataTable.ext.errMode = 'none';
             $('.datatable').DataTable({
                 "paging": true,
@@ -271,16 +287,16 @@
                 $temp.remove();
             };
 
-            $('.copy').on('click',function(){
-                var url=$(this).parent().prev().children('.url');
+            $('.copy').on('click', function () {
+                var url = $(this).parent().prev().children('.url');
                 copyToClipboard(url);
                 toastr.info('Copied To Clipboard');
             });
-            $('.filter').on('change',function () {
+            $('.filter').on('change', function () {
                 var campaign = $(this).val();
-                setGetParameter('campaign',campaign);
+                setGetParameter('campaign', campaign);
             });
-            $('#pay_commission').on('click',function () {
+            $('#pay_commission').on('click', function () {
                 var affiliate = $(this).data('affiliate');
                 var campaign = $(this).data('campaign');
                 var commission = $(this).data('commission');
@@ -291,23 +307,23 @@
                 $('#errorData').hide();
                 $('#myModal').modal('show');
             });
-            $('#final_pay').on('click',function () {
+            $('#final_pay').on('click', function () {
                 var campaign = $('#campaign_pay').val();
                 var affiliate = $('#affiliate_pay').val();
                 var commission = parseFloat($('#commission_pay').val());
                 var acctualCommission = parseFloat($('#money').val());
-                if(acctualCommission > commission){
-                    $('#error').text('Commission should not be exceeding  $'+ commission);
+                if (acctualCommission > commission) {
+                    $('#error').text('Commission should not be exceeding  $' + commission);
                     $('#errorData').show();
                     return false;
                 }
-                if(acctualCommission <= 0){
+                if (acctualCommission <= 0) {
                     $('#error').text('Please Enter some commission amount');
                     $('#errorData').show();
                     return false;
                 }
                 var reg = /^-?\d*\.?\d*$/;
-                if(!reg.test(acctualCommission)){
+                if (!reg.test(acctualCommission)) {
                     $('#error').text('Please Enter some commission amount');
                     $('#errorData').show();
                     return false;
@@ -336,9 +352,9 @@
                                     title: "Success!",
                                     text: data.message,
                                     type: "success"
-                                }).then( function(){
+                                }).then(function () {
                                     window.location.reload();
-                                },function (dismiss) {
+                                }, function (dismiss) {
                                     window.location.reload();
                                 });
                             } else {
@@ -352,7 +368,7 @@
                     });
                 })
             });
-            $('#money').on('keyup',function () {
+            $('#money').on('keyup', function () {
                 $('#errorData').hide();
             });
         });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Affiliate;
+use App\paidCommission;
 use App\User;
 use App\AgentUrlDetails;
 use App\Campaign;
@@ -246,9 +247,13 @@ class DashboardController extends Controller
                     ->where('approve_status', 1)
                     ->where('campaign_id',$filterCampaign)->get();
                 $campaigns = Campaign::where('id', $filterCampaign);
+                $paidCommissionData = paidCommission::where('affiliate_id',Auth::user()->id)
+                    ->where('campaign_id',$filterCampaign)->get();
             } else {
                 $affiliate = Affiliate::where('user_id', Auth::user()->id)->where('approve_status', 1)->get();
                 $campaigns = Campaign::whereIn('id', $affiliate->pluck('campaign_id'));
+                $paidCommissionData = paidCommission::where('affiliate_id',Auth::user()->id)
+                    ->whereIn('campaign_id',$campaigns->pluck('id'))->get();
             }
             $affiliateDropDown = Affiliate::where('user_id', Auth::user()->id)
                 ->where('approve_status', 1);
@@ -258,7 +263,12 @@ class DashboardController extends Controller
             $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2);
             $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
             $totalSaless = OrderProduct::whereIn('log_id', $sales->pluck('id'))->count();
-
+            $paidCommission = 0;
+            if(count($paidCommissionData) > 0){
+                foreach ($paidCommissionData as $data){
+                    $paidCommission = $paidCommission + $data->paid_commission;
+                }
+            }
             /*
              * Analytics for sold products
              */
@@ -296,6 +306,7 @@ class DashboardController extends Controller
                 $totalSalePrice += $soldProducts[$key]['total_sale_price'];
                 $totalSales += 1;
             }
+            $netCommission = $grossCommission - $refundCommission;
 
             return view('affiliate.dashboard', [
                 'affiliate' => $affiliate,
@@ -310,7 +321,9 @@ class DashboardController extends Controller
                 'refundCount' => $refundCount,
                 'available_products' => $availableProducts,
                 'sold_products' => $soldProducts,
-                'campaignDropDown' => $campaignDropDown
+                'campaignDropDown' => $campaignDropDown,
+                'paidCommission' => $paidCommission,
+                'netCommission' => $netCommission
             ]);
         } catch (\Exception $exception){
             return redirect()->back()->with('error',$exception->getMessage());

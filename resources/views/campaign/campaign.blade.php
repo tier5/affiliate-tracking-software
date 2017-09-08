@@ -61,6 +61,32 @@
         .slider.round:before {
             border-radius: 50%;
         }
+        .popover{
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1010;
+            display: none;
+            max-width: 600px;
+            padding: 1px;
+            text-align: left;
+            white-space: normal;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            -webkit-border-radius: 6px;
+            -moz-border-radius: 6px;
+            border-radius: 6px;
+            -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            -webkit-background-clip: padding-box;
+            -moz-background-clip: padding;
+            background-clip: padding-box;
+        }
+        .popover-content {
+            padding: 9px 5px !important;
+        }
     </style>
 @endsection
 
@@ -108,16 +134,19 @@
                                             <tr>
                                                 <td>{{ $campaign->name }}</td>
                                                 <td>
-                                                    <button class="btn btn-md btn-primary copy"><i class="fa fa-copy fa-fw"></i>Copy view</button>
+                                                    <button class="btn btn-sm btn-success copy"><i class="fa fa-copy fa-fw"></i>Copy</button>
                                                     <span class="url" style="display: none;">{{ $campaign->campaign_url }}</span>
+                                                    <button class="btn btn-sm btn-warning" data-toggle="popover" data-container="body" data-placement="top" data-content="{{ $campaign->campaign_url }}"><i class="fa fa-info-circle fa-fw"></i>View</button>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-md btn-success copy"><i class="fa fa-copy fa-fw"></i>Copy view</button>
+                                                    <button class="btn btn-sm btn-success copy"><i class="fa fa-copy fa-fw"></i>Copy</button>
                                                     <span class="url" style="display: none;"> {{ $campaign->sales_url }}</span>
+                                                    <button class="btn btn-sm btn-warning" data-toggle="popover" data-container="body" data-placement="top" data-content="{{ $campaign->sales_url }}"><i class="fa fa-info-circle fa-fw"></i>View</button>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-md btn-info copy"><i class="fa fa-copy fa-fw"></i>Copy view</button>
+                                                    <button class="btn btn-sm btn-success copy"><i class="fa fa-copy fa-fw"></i>Copy</button>
                                                     <span class="url" style="display: none;">{{ route('affiliate.registerForm',[$campaign->key])}}</span>
+                                                    <button class="btn btn-sm btn-warning" data-toggle="popover" data-container="body" data-placement="top" data-content="{{ route('affiliate.registerForm',[$campaign->key])}}"><i class="fa fa-info-circle fa-fw"></i>View</button>
                                                 </td>
                                                 <td>{{ $campaign->approval == 1 ? 'Auto' : 'Manual' }}</td>
                                                 <td>

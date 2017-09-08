@@ -33,9 +33,10 @@
     <!-- Toast -->
     <link rel="stylesheet" href="{{ url('/') }}/css/toast.css">
     <!-- DataTables -->
-    <link rel="stylesheet" href="{{ url('/') }}/admin//plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="{{ url('/') }}/admin/plugins/datatables/dataTables.bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.6/sweetalert2.min.css" />
     <link href="{{ url('/') }}/css/style.css" rel="stylesheet">
+    <link href="{{ url('/') }}/js/tether.min.js" rel="stylesheet">
     @yield('style')
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -102,11 +103,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.6/sweetalert2.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-       /* var url = window.location;
-        $('ul.nav a[href="'+ url +'"]').parent().addClass('active');
-        $('ul.nav a').filter(function() {
-            return this.href == url;
-        }).parent().addClass('active');*/
+        $('[data-toggle="popover"]').popover();
+        $('[data-toggle="popover"]').on('click', function (e) {
+            $('[data-toggle="popover"]').not(this).popover('hide');
+        });
     });
     $(function(){
         var url = window.location.pathname;

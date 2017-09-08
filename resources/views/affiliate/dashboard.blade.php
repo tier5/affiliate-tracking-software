@@ -177,7 +177,36 @@
                 <!-- /.col -->
             </div>
             <!-- /.row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Payment Information</h3>
 
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body no-padding">
+                            <div class="col-md-4">
+                                <h2>Total: ${{ $netCommission }}</h2>
+                            </div>
+                            <div class="col-md-4">
+                                <h2>Paid: ${{ $paidCommission }}</h2>
+                            </div>
+                            <div class="col-md-4">
+                                <h2>Due:
+                                    ${{ round($netCommission - $paidCommission,2) }}</h2>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+            </div>
             <!-- Main row -->
             <div class="row">
                 <!-- Left col -->
