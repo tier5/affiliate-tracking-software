@@ -465,7 +465,6 @@ class AffiliateController extends Controller
             }
             $campaignsForFilter = Campaign::where('user_id',Auth::user()->id)->orderBy('created_at','DESC')->get();
             $affiliates = Affiliate::whereIn('campaign_id',$campaigns->pluck('id'))
-                ->where('approve_status',1)
                 ->with(['user','campaign'])
                 ->orderBy('created_at','DESC')->get();
             return view('admin.affiliate',[
@@ -1085,11 +1084,13 @@ class AffiliateController extends Controller
                 $affiliate = Affiliate::where('user_id', Auth::user()->id)
                     ->where('approve_status', 1)->get();
             }
-            $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2);
+            $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))
+                ->where('type', 2)->orderBy('created_at','DESC');
             /*
              * Analytics for sold products
              */
-            $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->get();
+            $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))
+                ->with('log')->orderBy('created_at','DESC')->get();
             $totalSales = 0;
             $totalSalePrice = 0;
             $grossCommission = 0;
