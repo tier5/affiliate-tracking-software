@@ -85,12 +85,14 @@
                                     </thead>
                                     <tbody>
                                     @foreach($commissions as $commission)
-                                        <tr>
-                                            <td>{{ $commission['campaign_name'] }}</td>
-                                            <td>{{ $commission['affiliate_name'] }}</td>
-                                            <td>{{ date('l jS \of F Y,  h:i:s A',strtotime($commission['date'])) }}</td>
-                                            <td>${{ $commission['amount'] }}</td>
-                                        </tr>
+                                        @if(count($commission) > 0)
+                                            <tr>
+                                                <td>{{ $commission['campaign_name'] }}</td>
+                                                <td>{{ $commission['affiliate_name'] }}</td>
+                                                <td>{{ date('l jS \of F Y,  h:i:s A',strtotime($commission['date'])) }}</td>
+                                                <td>${{ $commission['amount'] }}</td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                     </tbody>
                                 </table>
