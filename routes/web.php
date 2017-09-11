@@ -173,6 +173,10 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'PaymentController@adminPayout',
         'as' => 'admin.payout'
     ]);
+    Route::post('edit/affiliate',[
+        'uses' => 'AffiliateController@editAffiliate',
+        'as' => 'edit.affiliate'
+    ]);
 });
 Route::get('affiliate/request/{affiliateKey}',[
     'uses' => 'CampaignController@affiliateRegistrationForm',

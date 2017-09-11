@@ -160,7 +160,7 @@ class AffiliateController extends Controller
                     'email' => $user->email,
                     'url' => $user->url
         ];
-        
+
         return view('agency.dashboard',compact('result'));
     }
     public function links()
@@ -170,7 +170,7 @@ class AffiliateController extends Controller
         $affiliateid = $_POST['affilatedID'];
         $affiliateip = $_POST['affilatedIP'];
         $affilatedbrowser = $_POST['affilatedbrowser'];
-        
+
         //$user = \App\Affiliate::find($userId);
         $affiliateID = Affiliate::where('affiliate_key', $affiliateid)->first();
         echo $affiliateID ->affiliate_id;
@@ -188,7 +188,7 @@ class AffiliateController extends Controller
         // get landing page url
         $user = User::find($userId);
         $agency = Agency::find($user->agency_id);
-        
+
         if ($agency->custom_domain == '') {
             $subdomain = '';
         } else {
@@ -205,14 +205,14 @@ class AffiliateController extends Controller
             }
 
             $plan = \App\BusinessPlan::find($link->plan_id);
-            
+
             if ($plan && $plan->deleted_at == '0000-00-00 00:00:00') {
                 $links[$key]->plan_name = $plan->name;
                 $links[$key]->active = $plan->enabled;
                 $links[$key]->deleted = false;
             } else {
                 $links[$key]->deleted = true;
-            }   
+            }
         }
 
         return view('affiliate/links', [
@@ -223,17 +223,17 @@ class AffiliateController extends Controller
     }
     public function addAffiliate(Request $request)
     {
-        
+
         $data = Input::all();
         //$regex = '/^(http?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
-        
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
             'phone' => 'required|numeric|digits_between:10,10',
             'email' => 'required|email|min:8|unique:users_laravel',
             //'url' => 'regex:' . $regex,
-            
+
         ],
         [
             'name.required' => 'Affiliate name is required',
@@ -797,7 +797,7 @@ class AffiliateController extends Controller
     public function viewDetailsLink($user_type,$user_id,$link_type)
     {
         try{
-            if($user_type == 'affiliate'){ 
+            if($user_type == 'affiliate'){
                 $filterCampaign = Input::get('campaign');
                 if($filterCampaign > 0){
                     $affiliate = Affiliate::where('user_id', Auth::user()->id)
@@ -829,7 +829,7 @@ class AffiliateController extends Controller
                     'campaignsDropdown' => $campaignsDropdown
                 ]);
             } elseif ($user_type == 'admin') {
-                 
+
                 if (Input::get('campaign_id') == 0 && Input::get('affiliate_id') == 0) {
                     $campaigns = Campaign::where('user_id', Auth::user()->id)->with('affiliate');
                     $affiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
@@ -838,7 +838,7 @@ class AffiliateController extends Controller
                             ->select('user_id')->orderBy('user_id','DESC')
                             ->groupBy('user_id')->get();
                       switch($link_type){
-                        case "visitor": 
+                        case "visitor":
                                     $allTraffic=$this->getAgentURLAdminDefault($user_id);
                                     break;
                         case "leads":
@@ -861,7 +861,7 @@ class AffiliateController extends Controller
                         $affiliatesDropdown = Affiliate::where('campaign_id', $campaigns->first()->id)->get();
                     }
                     switch($link_type){
-                        case "visitor": 
+                        case "visitor":
                                     $allTraffic=$this->getAgentURLFromAffiliates($affiliates->get());
                                     break;
                         case "leads":
@@ -885,7 +885,7 @@ class AffiliateController extends Controller
                             ->pluck('id')) ->select('user_id')->orderBy('user_id','DESC')
                         ->groupBy('user_id')->get();
                     switch($link_type){
-                        case "visitor": 
+                        case "visitor":
                                     $allTraffic=$this->getAgentURLFromAffiliates($affiliates->get());
                                     break;
                         case "leads":
@@ -909,7 +909,7 @@ class AffiliateController extends Controller
                     }
                     $campaignsDropdown = Campaign::where('user_id', Auth::user()->id)->get();
                     switch($link_type){
-                        case "visitor": 
+                        case "visitor":
                                     $allTraffic=$this->getAgentURLFromAffiliates($affiliates->get());
                                     break;
                         case "leads":
@@ -958,7 +958,7 @@ class AffiliateController extends Controller
                                             foreach ($agentURLs as $agentURL) {
                                                 array_push($array,$agentURL);
                                             }
-                                            break; 
+                                            break;
                                     case '4':
                                             $agentURLs=$affiliate->agentURL;
                                             foreach ($agentURLs as $agentURL) {
@@ -991,7 +991,7 @@ class AffiliateController extends Controller
                                     foreach ($agentURLs as $agentURL) {
                                         array_push($array,$agentURL);
                                     }
-                                    break; 
+                                    break;
 
                             case '4':
                                     $agentURLs=$affiliate->agentURL;
@@ -1004,7 +1004,7 @@ class AffiliateController extends Controller
                                     break;
                         }
                     }
-                }              
+                }
         return $array;
     }
 
@@ -1070,7 +1070,7 @@ class AffiliateController extends Controller
                 });
             })->download('xls');
         }catch(\Exception $exception){
-            return $exception->getMessage(); 
+            return $exception->getMessage();
         }
     }
 
@@ -1130,7 +1130,40 @@ class AffiliateController extends Controller
                 });
             })->download('xls');
         }catch(\Exception $exception){
-            return $exception->getMessage(); 
+            return $exception->getMessage();
+        }
+    }
+
+    public function editAffiliate(Request $request)
+    {
+        try {
+            $checkEmail = User::where('email',$request->email)
+                ->where('id','!=',$request->id)->first();
+            if($checkEmail == ''){
+                $user = User::find($request->id);
+                $user->email = $request->email;
+                $user->name = $request->name;
+                $user->update();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Affiliate Updated'
+                ],200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email already Exists'
+                ],200);
+            }
+        } catch (\Exception $exception){
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage()
+            ],200);
+        } catch(ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ],200);
         }
     }
 }

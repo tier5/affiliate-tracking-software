@@ -153,4 +153,6 @@ class AgencyController extends Controller
         }
         return $randomString;
     }
+
+
 }

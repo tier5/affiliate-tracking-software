@@ -23,14 +23,14 @@ class PaymentController extends Controller
             $filterCampaign = Input::get('campaign');
             if($filterCampaign > 0){
                 $comissions = paidCommission::where('campaign_id',$filterCampaign)
-                    ->where('affiliate_id',Auth::user()->id)->get();
+                    ->where('affiliate_id',Auth::user()->id)->orderBy('created_at','DESC')->get();
                 $affiliates = Affiliate::where('user_id', Auth::user()->id)
                     ->where('approve_status', 1)
-                    ->where('campaign_id',$filterCampaign)->get();
+                    ->where('campaign_id',$filterCampaign)->orderBy('created_at','DESC')->get();
             } else {
-                $comissions = paidCommission::where('affiliate_id',Auth::user()->id)->get();
+                $comissions = paidCommission::where('affiliate_id',Auth::user()->id)->orderBy('created_at','DESC')->get();
                 $affiliates = Affiliate::where('user_id', Auth::user()->id)
-                    ->where('approve_status', 1)->get();
+                    ->where('approve_status', 1)->orderBy('created_at','DESC')->get();
             }
             $affiliateDropDown = Affiliate::where('user_id', Auth::user()->id)
                 ->where('approve_status', 1);
@@ -38,7 +38,7 @@ class PaymentController extends Controller
             $totalCommission = 0;
             $netCommission = 0;
             foreach ($comissions as $comission){
-                $histories = PaymentHistory::where('commission_id',$comission->id)->get();
+                $histories = PaymentHistory::where('commission_id',$comission->id)->orderBy('created_at','DESC')->get();
                 $primeryCommission = [];
                 foreach ($histories as $history){
                     $primeryCommission['campaign_name'] = $comission->campaign->name;
@@ -128,7 +128,7 @@ class PaymentController extends Controller
             $totalCommission = 0;
             $netCommission = 0;
             foreach ($commissions as $comission){
-                $histories = PaymentHistory::where('commission_id',$comission->id)->get();
+                $histories = PaymentHistory::where('commission_id',$comission->id)->orderBy('created_at','DESC')->get();
                 $affiliate = User::find($comission->affiliate_id);
                 $primeryCommission = [];
                 foreach ($histories as $history){
