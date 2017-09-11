@@ -459,15 +459,15 @@ class AffiliateController extends Controller
     {
         try {
             if(Input::get('campaign') > 0){
-                $campaigns = Campaign::where('id',Input::get('campaign'));
+                $campaigns = Campaign::where('id',Input::get('campaign'))->orderBy('created_at','DESC');
             } else {
-                $campaigns = Campaign::where('user_id',Auth::user()->id);
+                $campaigns = Campaign::where('user_id',Auth::user()->id)->orderBy('created_at','DESC');
             }
-            $campaignsForFilter = Campaign::where('user_id',Auth::user()->id)->get();
+            $campaignsForFilter = Campaign::where('user_id',Auth::user()->id)->orderBy('created_at','DESC')->get();
             $affiliates = Affiliate::whereIn('campaign_id',$campaigns->pluck('id'))
                 ->where('approve_status',1)
                 ->with(['user','campaign'])
-                ->orderBy('campaign_id','ASC')->get();
+                ->orderBy('created_at','DESC')->get();
             return view('admin.affiliate',[
                 'affiliates' => $affiliates,
                 'campaigns' => $campaignsForFilter,

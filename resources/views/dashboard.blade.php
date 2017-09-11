@@ -567,7 +567,7 @@
                                         pointHighlightStroke: "rgba(60,141,188,1)",
                                         data: data.leads
                                     },
-                                    {
+                                    /*{
                                         label: "Customers",
                                         fillColor: "rgb(210, 214, 222)",
                                         strokeColor: "rgb(210, 214, 222)",
@@ -576,7 +576,7 @@
                                         pointHighlightFill: "#fff",
                                         pointHighlightStroke: "rgb(220,220,220)",
                                         data: data.sales
-                                    },
+                                    },*/
                                     {
                                         label: "Sales",
                                         fillColor: "rgba(30, 831, 518, 0.3)",

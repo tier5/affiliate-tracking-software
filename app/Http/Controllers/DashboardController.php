@@ -106,7 +106,7 @@ class DashboardController extends Controller
                         $data = $this->getAnalytics($affiliates);
                     }
 
-                    $latestAffiliates = $affiliates->get();
+                    $latestAffiliates = $affiliates->orderBy('created_at','DESC')->get();
                     $products = Product::where('campaign_id', $campaigns->pluck('id'))
                             ->orderBy('created_at','DESC')->take(5)->get();
 
@@ -129,10 +129,10 @@ class DashboardController extends Controller
                 'leads' => $data['leads'],
                 'sales' => $data['sales'],
                 'totalSales' => $data['totalSales'],
-                'totalSalesPrice' => $data['totalSalesPrice'],
-                'grossCommission' => $data['grossCommission'],
-                'refundCommission' => $data['refundCommission'],
-                'refundCount' => $data['refundCount'],
+                'totalSalesPrice' => isset($data['totalSalesPrice'])?$data['totalSalesPrice']:'0' ,
+                'grossCommission' => isset($data['grossCommission'])?$data['grossCommission']:'0',
+                'refundCommission' => isset($data['refundCommission'])?$data['refundCommission']:'0',
+                'refundCount' => isset($data['refundCount'])?$data['refundCount']:'0',
                 'chrome' => $data['chrome'],
                 'opera' => $data['opera'],
                 'ie' => $data['ie'],
@@ -142,7 +142,7 @@ class DashboardController extends Controller
                 'products' => $products,
                 'affiliatesDropdown' => $affiliatesDropdown,
                 'campaignsDropdown' => $campaignsDropdown,
-                'netCommission' => $data['netCommission'],
+                'netCommission' => isset($data['netCommission'])?$data['netCommission']:'0',
                 'totalPaid' => $totalCommission
             ]);
         } else {
