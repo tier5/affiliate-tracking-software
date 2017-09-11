@@ -557,7 +557,7 @@ class AffiliateController extends Controller
             $sale->update();
             return response()->json([
                 'success' => true,
-                'message' => 'Refund Successful'
+                'message' => 'Refunded Successfully'
             ],200);
         } catch (\Exception $exception){
             return response()->json([
@@ -780,7 +780,7 @@ class AffiliateController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Commission paid successful'
+                'message' => 'Commission paid successfully'
             ],200);
         } catch (\Exception $exception){
             return response()->json([

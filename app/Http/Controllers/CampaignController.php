@@ -183,7 +183,7 @@ class CampaignController extends Controller
     {
         try{
             $campaign= Campaign::find($id);
-            $products=$campaign->products;
+            $products=$campaign->products()->orderBy('created_at', 'DESC')->get();
             return view('campaign.product',['campaign' => $campaign,'campaign_id' => $id,'products' => $products]);
         } catch (\Exception $exception) {
             return redirect()->back()->with('error',$exception->getMessage());

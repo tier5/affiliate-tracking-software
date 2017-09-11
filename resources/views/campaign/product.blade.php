@@ -562,21 +562,31 @@
 
         $('.deleteProduct').click(function() {
             var id = $(this).data('id');
-            $.ajax({
-                url: "{{ route('delete.product') }}",
-                type: "DELETE",
-                data: { id: $(this).data('id'), _token: "{{ csrf_token() }}" },
-                statusCode: {
-                    204: function(response) {
-                        window.location.reload();
-                    },
-                    404: function(response) {
-                        console.log(response.error);
-                    },
-                    500: function(response) {
-                        console.log(response.error);
+            swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(function () {
+                $.ajax({
+                    url: "{{ route('delete.product') }}",
+                    type: "DELETE",
+                    data: { id: id, _token: "{{ csrf_token() }}" },
+                    statusCode: {
+                        204: function(response) {
+                            window.location.reload();
+                        },
+                        404: function(response) {
+                            console.log(response.error);
+                        },
+                        500: function(response) {
+                            console.log(response.error);
+                        }
                     }
-                }
+                });
             });
         });
 

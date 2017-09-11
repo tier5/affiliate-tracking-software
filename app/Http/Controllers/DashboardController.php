@@ -289,7 +289,8 @@ class DashboardController extends Controller
             $visitors = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'));
             $leads = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 3);
             $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2);
-            $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
+            $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->orderBy('created_at', 'DESC')->get();
+//            dd($availableProducts);
             $totalSaless = OrderProduct::whereIn('log_id', $sales->pluck('id'))->count();
             $paidCommission = 0;
             if(count($paidCommissionData) > 0){
@@ -300,7 +301,7 @@ class DashboardController extends Controller
             /*
              * Analytics for sold products
              */
-            $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->get();
+            $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->orderBy('created_at', 'DESC')->get();
             $totalSales = 0;
             $totalSalePrice = 0;
             $grossCommission = 0;
