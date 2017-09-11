@@ -92,7 +92,6 @@ class PaymentController extends Controller
             $filterCampaign = Input::get('campaign');
             $filterAffiliate = Input::get('affiliate');
             $campaignDropDown = Campaign::where('user_id',Auth::user()->id)->get();
-            $affiliateDropDown = Affiliate::whereIn('campaign_id',$campaignDropDown->pluck('id'))->get();
             if($filterCampaign > 0 && $filterAffiliate > 0){
                 $commissions = paidCommission::where('user_id',Auth::user()->id)
                     ->where('campaign_id',$filterCampaign)
@@ -102,6 +101,7 @@ class PaymentController extends Controller
                     ->where('approve_status', 1)
                     ->where('user_id', $filterAffiliate)
                     ->orderBy('campaign_id', 'ASC');
+                $affiliateDropDown = Affiliate::whereIn('campaign_id',$campaignDropDown->pluck('id'))->get();
             } elseif ($filterCampaign > 0 && $filterAffiliate <= 0){
                 $campaigns = Campaign::where('id', $filterCampaign);
                 $commissions = paidCommission::where('user_id',Auth::user()->id)
@@ -110,6 +110,7 @@ class PaymentController extends Controller
                 $affiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))
                     ->where('approve_status', 1)
                     ->orderBy('campaign_id', 'ASC');
+                $affiliateDropDown = Affiliate::whereIn('campaign_id',$campaigns->pluck('id'))->get();
             } elseif ($filterCampaign <= 0 && $filterAffiliate > 0){
                 $commissions = paidCommission::where('user_id',Auth::user()->id)
                     ->where('affiliate_id',$filterAffiliate)
@@ -117,6 +118,7 @@ class PaymentController extends Controller
                 $affiliates = Affiliate::where('user_id', $filterAffiliate)
                     ->where('approve_status', 1)
                     ->orderBy('campaign_id', 'ASC');
+                $affiliateDropDown = Affiliate::whereIn('campaign_id',$campaignDropDown->pluck('id'))->get();
             } else {
                 $commissions = paidCommission::where('user_id',Auth::user()->id)
                     ->orderBy('created_at','DESC')->get();
@@ -124,6 +126,7 @@ class PaymentController extends Controller
                 $affiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))
                     ->where('approve_status', 1)
                     ->orderBy('campaign_id', 'ASC');
+                $affiliateDropDown = Affiliate::whereIn('campaign_id',$campaignDropDown->pluck('id'))->get();
             }
             $totalCommission = 0;
             $netCommission = 0;
