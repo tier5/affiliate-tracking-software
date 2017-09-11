@@ -45,8 +45,8 @@ class PaymentController extends Controller
                     $primeryCommission['date'] = $history->created_at;
                     $primeryCommission['amount'] = $history->amount;
                     $primeryCommission['admin'] = $comission->campaign->user->name;
+                    array_push($finalCommission,$primeryCommission);
                 }
-                array_push($finalCommission,$primeryCommission);
                 $totalCommission = $totalCommission + $comission->paid_commission;
             }
             $logs = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))
@@ -136,8 +136,8 @@ class PaymentController extends Controller
                     $primeryCommission['affiliate_name'] = $affiliate->name;
                     $primeryCommission['date'] = $history->created_at;
                     $primeryCommission['amount'] = $history->amount;
+                    array_push($finalCommission,$primeryCommission);
                 }
-                array_push($finalCommission,$primeryCommission);
                 $totalCommission = $totalCommission + $comission->paid_commission;
             }
             $logs = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))
