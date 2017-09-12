@@ -183,8 +183,7 @@
                                                         {{ $value->campaign->name }}
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <span class="url"> {{ ($value->campaign->sales_url != '')?$value->campaign->sales_url:$value->campaign->campaign_url }}
-                                                            ?affiliate_id={{ $value->key }}</span>
+                                                        <span class="url"> {{ ($value->campaign->sales_url != '')?$value->campaign->sales_url:$value->campaign->campaign_url }}?affiliate_id={{ $value->key }}</span>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <button type="button" class="btn btn-warning btn-sm copy">Copy</button>

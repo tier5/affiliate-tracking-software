@@ -44,12 +44,12 @@
                 </tr>
                 <tr>
                     <td align="center">
-                        Product Price : {{ $price }}
+                        Product Price : ${{ $price }}
                     </td>
                 </tr>
                 <tr>
                     <td align="center">
-                        Product commission : {{ $commission }}
+                        Product commission : ${{ $commission }}
                     </td>
                 </tr>
             </table>

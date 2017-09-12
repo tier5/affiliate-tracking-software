@@ -388,7 +388,13 @@ class ProductController extends Controller
                 $user_name = $user->name;
                 $user_email = $user->email;
                 $product_price = $product->product_price;
-                $product_commission = $product->commission;
+
+                if ($product->method == 1) {
+                    $product_commission = $product->product_price * ($product->commission / 100);
+                } else {
+                    $product_commission = $product->commission;
+                }
+
                 if(isset($request->order_id) && $request->order_id > 0){
                     $order = OrderProduct::find($request->order_id);
                     $oldProductObj = Product::find($order->product_id);

@@ -71,7 +71,7 @@ class AffiliateController extends Controller
                         case '1':
                             $affiliate->approve_status = 1;
                             if ($affiliate->save()) {
-                                $mailNotification = (new SendRegistrationSms($user->name,$user->email,$user->password,$affiliate->key,$url,$campaignObj->name));
+                                $mailNotification = (new SendRegistrationSms($user->name,$user->email,$request->registration_password,$affiliate->key,$url,$campaignObj->name));
                                 $this->dispatch($mailNotification);
                                 if (Auth::loginUsingId($user->id)) {
                                     return redirect()->route('dashboard');
@@ -85,7 +85,7 @@ class AffiliateController extends Controller
                         case '2':
                             $affiliate->approve_status = 2;
                             if ($affiliate->save()) {
-                                $mailNotification = (new SendRegistrationSms($user->name,$user->email,$user->password,$affiliate->key,$url,$campaignObj->name));
+                                $mailNotification = (new SendRegistrationSms($user->name,$user->email,$request->registration_password,$affiliate->key,$url,$campaignObj->name));
                                 $this->dispatch($mailNotification);
                                 return redirect()->route('affiliate.thankYou');
                             } else {
