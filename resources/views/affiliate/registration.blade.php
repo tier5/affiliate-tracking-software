@@ -16,6 +16,13 @@
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 </head>
  <body>
+ <div class="container" style="margin-top:5%;">
+     <div class="row">
+         @if(\Session::has('error'))
+             <h4 style="color: red;">{{ \Session::get('error') }}</h4>
+         @endif
+     </div>
+ </div>
  @if(Auth::check())
      <div class="container" style="margin-top:5%;">
          <div class="row">
@@ -29,9 +36,6 @@
  @else
     <div class="container">
         <div class="row">
-            @if (Session::has('error'))
-                <div class="alert alert-danger alert-dismissable">{{Session::get('error')}}</div>
-            @endif
             <div class="col-md-6">
                 <div class="lft-panel">
                  <h1 class="center-block">{{ $campaign->user->name }} ( <small style="color: blue;">{{ $campaign->user->email }}</small> )</h1>
@@ -48,6 +52,7 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-lg-12">
+{{--
                                 <form id="login-form" action="{{route('affiliate.login')}}" method="post" role="form" style="display: block;">
                                     {{csrf_field()}}
                                     <h2>Existing Affiliate</h2>
@@ -80,9 +85,10 @@
                                     @endif
                                     </div>
                                 </form>
-                                <form id="register-form" action="{{route('affiliate.registration')}}" method="post" style="display: none;">
+--}}
+                                <form id="register-form" action="{{route('affiliate.registration')}}" method="post" {{--style="display: none;"--}}>
                                     {{csrf_field()}}
-                                    <h2>New Affiliate</h2>
+                                    <h2>Register Now</h2>
                                     <div class="form-group">
                                         <input type="text" name="registration_username" id="username" tabindex="1" class="form-control" placeholder="Username" value="{{old('registration_username')}}">
                                     </div>
@@ -118,7 +124,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-heading">
+                   {{-- <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-6 tabs">
                                 <a href="javascript:void(0)" class="active" id="login-form-link"><div class="login">LOGIN</div></a>
@@ -127,7 +133,7 @@
                                 <a href="javascript:void(0)" id="register-form-link"><div class="register">REGISTER</div></a>
                             </div>
                         </div>
-                    </div>
+                    </div>--}}
                 </div>
             </div>
         </div>

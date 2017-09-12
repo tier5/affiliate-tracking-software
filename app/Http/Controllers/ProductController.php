@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\AgentUrlDetails;
 use App\Campaign;
+use App\Jobs\sendPurchaseEmail;
+use App\Jobs\sendPurchaseUpdateEmail;
 use App\OrderProduct;
 use App\Product;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -379,16 +382,30 @@ class ProductController extends Controller
                 $log->type = 2;
                 $log->update();
 
+                $user = User::find($log->affiliate_id);
+                $user_name = $user->name;
+                $user_email = $user->email;
+                $product_price = $product->product_price;
+                $product_commission = $product->commission;
                 if(isset($request->order_id) && $request->order_id > 0){
                     $order = OrderProduct::find($request->order_id);
+                    $oldProductObj = Product::find($order->product_id);
                     $order->product_id = $product->id;
                     $order->update();
+
+                    $oldProduct = $oldProductObj->name;
+
+                    $job = (new sendPurchaseUpdateEmail($oldProduct,$user_name,$user_email,$product->name,$product_price,$product_commission,$campaign->name));
+                    $this->dispatch($job);
                 } else {
                     $order = new OrderProduct();
                     $order->log_id = $log->id;
                     $order->product_id = $product->id;
                     $order->email = $log->email;
                     $order->save();
+
+                    $job = (new sendPurchaseEmail($user_name,$user_email,$product->name,$product_price,$product_commission,$campaign->name));
+                    $this->dispatch($job);
                 }
 
                 $response = [

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Affiliate;
 use App\Campaign;
+use App\Jobs\SendRegistrationSms;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -115,12 +116,17 @@ class CampaignController extends Controller
 
             $campaign = Campaign::where('key',$request->key)->first();
 
+            $url = $campaign->sales_url != ''?$campaign->sales_url:$campaign->campaign_url;
+
             $affiliate = new Affiliate();
             $affiliate->campaign_id = $campaign->id;
             $affiliate->user_id = $user->id;
             $affiliate->key = AgencyController::generateRandomString(16);
             $affiliate->approve_status = 1;
             $affiliate->save();
+
+            $mailNotification = (new SendRegistrationSms($user->name,$user->email,$request->password,$affiliate->key,$url,$campaign->name));
+            $this->dispatch($mailNotification);
 
             return response()->json([
                 'success' => true,

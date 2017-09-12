@@ -2,7 +2,7 @@ var Affiliate = Affiliate || (function(){
 
         var _callback_url = 'https://www.interwebleads.com';
 //        var _callback_url = 'http://affiliate.reviewvelocity.local';
-        // var _callback_url = 'http://localhost/reviewvelocity/public';
+//         var _callback_url = 'http://localhost/reviewvelocity/public';
 
         var COOKIE_NAME = 'ats_affiliate';
 

@@ -48,9 +48,9 @@
                             <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">
                                     @if($visitors > 0)
-                                        ${!! round($gross_commission /  $visitors,2) !!}
+                                        ${!! number_format(($gross_commission / $visitors),2,'.','') !!}
                                     @else
-                                        {{ $visitors }}
+                                        ${{ $visitors }}
                                     @endif
                                 </div>
                                 <div class="normal-txt">EPC</div>
@@ -80,11 +80,11 @@
                         </div>
                         <div class="row one-row">
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">{{ "$" . number_format($gross_commission, 2, '.', ',') }}</div>
+                                <div class="blue-txt">{{ "$" . ceil($gross_commission) }}</div>
                                 <div class="normal-txt">Gross Commission</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">${{ round($gross_commission-$refundCommission,2) }}</div>
+                                <div class="blue-txt">${{ ceil($gross_commission-$refundCommission) }}</div>
                                 <div class="normal-txt">Net Commission</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
@@ -94,18 +94,18 @@
                                 <div class="normal-txt">Refunds</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">${{ round($refundCommission,2) }}</div>
+                                <div class="blue-txt">${{ ceil($refundCommission) }}</div>
                                 <div class="normal-txt">Refunds Amount</div>
                             </div>
                         </div>
                         <div class="row one-row">
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">{{ "$" . number_format($paidCommission, 2, '.', ',') }}</div>
+                                <div class="blue-txt">{{ "$" . ceil($paidCommission) }}</div>
                                 <div class="normal-txt">Commission Paid</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">
-                                    ${{ round($netCommission - $paidCommission,2) }}</div>
+                                    ${{ ceil($netCommission - $paidCommission) }}</div>
                                 <div class="normal-txt">Commission Due</div>
                             </div>
                         </div>

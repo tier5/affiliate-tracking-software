@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AgentUrl;
 use App\AgentUrlDetails;
 use App\Campaign;
+use App\Jobs\SendRegistrationSms;
 use App\OrderProduct;
 use App\paidCommission;
 use App\PaymentHistory;
@@ -59,6 +60,9 @@ class AffiliateController extends Controller
                 $user->role = 'affiliate';
                 if ($user->save()) {
                     $campaignObj = Campaign::where('key', $request->affiliateKey)->first();
+
+                    $url = $campaignObj->sales_url != ''?$campaignObj->sales_url:$campaignObj->campaign_url;
+
                     $affiliate = new Affiliate();
                     $affiliate->campaign_id = $campaignObj->id;
                     $affiliate->user_id = $user->id;
@@ -67,10 +71,12 @@ class AffiliateController extends Controller
                         case '1':
                             $affiliate->approve_status = 1;
                             if ($affiliate->save()) {
-                                if (Auth::attempt(['email' => $user->email, 'password' => $user->password, 'status' => '1', 'role' => 'affiliate'])) {
+                                $mailNotification = (new SendRegistrationSms($user->name,$user->email,$user->password,$affiliate->key,$url,$campaignObj->name));
+                                $this->dispatch($mailNotification);
+                                if (Auth::loginUsingId($user->id)) {
                                     return redirect()->route('dashboard');
                                 } else {
-                                    return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->with('flash', ['message' => 'Unable To Register User!', 'level' => 'danger']);
+                                    return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->with('error', 'Unable To Login!');
                                 }
                             } else {
                                 return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->with('error', 'Unable To Register User!');
@@ -79,6 +85,8 @@ class AffiliateController extends Controller
                         case '2':
                             $affiliate->approve_status = 2;
                             if ($affiliate->save()) {
+                                $mailNotification = (new SendRegistrationSms($user->name,$user->email,$user->password,$affiliate->key,$url,$campaignObj->name));
+                                $this->dispatch($mailNotification);
                                 return redirect()->route('affiliate.thankYou');
                             } else {
                                 return redirect()->route('affiliate.registerForm', [$request->affiliateKey])->with('error', 'Unable To Register User!');
