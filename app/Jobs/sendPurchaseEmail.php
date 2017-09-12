@@ -53,7 +53,7 @@ class sendPurchaseEmail implements ShouldQueue
                 'commission' => $this->product_commission,
             ], function ($m) use ($email) {
                 $m->from(env('MAIL_USERNAME'), 'interwebleads.com');
-                $m->to($email,'InterWebLeads')->subject('Congratulations!! You have one sale');
+                $m->to($email,'InterWebLeads')->subject('Congratulations!! You have made one sale');
             });
         } catch (\Exception $exception){
             Log::info($exception->getMessage());
