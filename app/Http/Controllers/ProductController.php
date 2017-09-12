@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Affiliate;
 use App\AgentUrlDetails;
 use App\Campaign;
 use App\Jobs\sendPurchaseEmail;
@@ -382,7 +383,8 @@ class ProductController extends Controller
                 $log->type = 2;
                 $log->update();
 
-                $user = User::find($log->affiliate_id);
+                $affiliate = Affiliate::find($log->affiliate_id);
+                $user = User::find($affiliate->user_id);
                 $user_name = $user->name;
                 $user_email = $user->email;
                 $product_price = $product->product_price;
