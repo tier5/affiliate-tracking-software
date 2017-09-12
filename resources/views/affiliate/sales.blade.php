@@ -99,7 +99,7 @@
                                                 <td>{{$sale['created_at']}}</td>
                                                 <td>${{ $sale['my_commission'] }}</td>
                                                 <td>
-                                                    {{ ($sale['status']==2)?'Refunded':'sales' }}
+                                                    {{ ($sale['status']==2)?'Refunded':'Sales' }}
                                                 </td>
                                             </tr>
                                         @endforeach

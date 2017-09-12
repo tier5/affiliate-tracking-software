@@ -1069,7 +1069,7 @@ class AffiliateController extends Controller
                 $commisonsOnly[$key]['Price'] = '$'.$order->product->product_price * 1;
                 $commisonsOnly[$key]['Commission'] = '$'.$myCommision;
                 $commisonsOnly[$key]['Date'] = date("F j, Y, g:i a",strtotime($order->created_at));
-                $commisonsOnly[$key]['Status'] = ($order->status == 2) ? 'refunded':'sales';
+                $commisonsOnly[$key]['Status'] = ($order->status == 2) ? 'Refunded':'Sales';
             }
             Excel::create('Sales_'.date('m_d_Y'), function($excel) use($commisonsOnly){
                     $excel->sheet('Sales sheet', function($sheet) use($commisonsOnly){
@@ -1131,7 +1131,7 @@ class AffiliateController extends Controller
                 $soldProducts[$key]['Price'] = '$'.$product->product_price;
                 $soldProducts[$key]['Commission'] = '$'.$myCommision;
                 $soldProducts[$key]['Date'] = date("F j, Y, g:i a",strtotime($order->created_at));
-                $soldProducts[$key]['Status'] = ($order->status == 2) ? 'refunded':'sales';
+                $soldProducts[$key]['Status'] = ($order->status == 2) ? 'Refunded':'Sales';
             }
             Excel::create('Sales_'.date('m_d_Y'), function($excel) use($soldProducts){
                     $excel->sheet('Sales sheet', function($sheet) use($soldProducts){

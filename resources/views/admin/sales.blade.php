@@ -113,7 +113,7 @@
                                                 <td>${{ $sale['commission'] }}</td>
                                                 <td>{{$sale['created_at']}}</td>
                                                 <td>
-                                                    {{ ($sale['status']==2)?'Refunded':'sales' }}
+                                                    {{ ($sale['status']==2)?'Refunded':'Sales' }}
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-xs btn-warning refund" {{ $sale['status'] == 2?'disabled':'' }} data-sales_id="{{ $sale['id'] }}">Refund</button>
