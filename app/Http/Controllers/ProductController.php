@@ -10,6 +10,7 @@ use App\Jobs\sendPurchaseUpdateEmail;
 use App\OrderProduct;
 use App\Product;
 use App\User;
+use Cartalyst\Stripe\Stripe;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -525,5 +526,32 @@ class ProductController extends Controller
         }
 
         return response()->json($response, $responseCode);
+    }
+    public function fetchStripePlans(Request $request)
+    {
+        try{
+            $campaign = Campaign::findOrFail($request->campaign);
+            if($campaign->test_sk != '' && $campaign->test_pk != '' && $campaign->live_sk != '' && $campaign->live_pk != ''){
+                if($campaign->stripe_mode == 1){
+                    $key = $campaign->test_sk;
+                } else {
+                    $key = $campaign->live_sk;
+                }
+                $stripe = Stripe::make($key);
+                $plans = $stripe->plans()->all();
+                if(count($plans['data']) > 0){
+                    $html = view('admin.stripeProduct',['campaign' => $campaign,'products' => $plans['data']]);
+                } else {
+                    $html = '<h3>No Product Found </h3>';
+                }
+            } else {
+                $html = '<h2>Please integrate stripe to this campaign</h2>';
+            }
+        } catch (\Exception $exception){
+            $html = '<h3>'.$exception->getMessage().'</h3>';
+        } catch (ModelNotFoundException $modelNotFoundException) {
+            $html = '<h3>'.$modelNotFoundException->getMessage().'</h3>';
+        }
+        return $html;
     }
 }

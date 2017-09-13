@@ -177,6 +177,14 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'AffiliateController@editAffiliate',
         'as' => 'edit.affiliate'
     ]);
+    ROute::post('change/stripe/mode',[
+        'uses' => 'CampaignController@changeStripeMode',
+        'as' => 'change.stripe.mode'
+    ]);
+    Route::post('fetch/stripe/plans',[
+        'uses' => 'ProductController@fetchStripePlans',
+        'as' => 'fetch.stripe.plans'
+    ]);
 });
 Route::get('affiliate/request/{affiliateKey}',[
     'uses' => 'CampaignController@affiliateRegistrationForm',

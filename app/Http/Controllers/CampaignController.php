@@ -35,6 +35,11 @@ class CampaignController extends Controller
             $campaign->approval = $approval;
             $campaign->key = $request->key;
             $campaign->product_type=$request->product_type;
+            $campaign->test_pk = $request->test_pk;
+            $campaign->test_sk = $request->test_sk;
+            $campaign->live_pk = $request->live_pk;
+            $campaign->live_sk = $request->live_sk;
+            $campaign->stripe_mode = 1;
             $campaign->save();
             return response()->json([
                 'success' => true,
@@ -72,6 +77,10 @@ class CampaignController extends Controller
             $campaign->sales_url = $request->sales_url;
             $campaign->campaign_url = $request->campaign_url;
             $campaign->approval = $request->status;
+            $campaign->test_sk = $request->test_sk;
+            $campaign->test_pk = $request->test_pk;
+            $campaign->live_sk = $request->live_sk;
+            $campaign->live_pk = $request->live_pk;
             $campaign->update();
             return response()->json([
                 'success' => true,
@@ -193,6 +202,29 @@ class CampaignController extends Controller
             return view('campaign.product',['campaign' => $campaign,'campaign_id' => $id,'products' => $products]);
         } catch (\Exception $exception) {
             return redirect()->back()->with('error',$exception->getMessage());
+        }
+    }
+    public function changeStripeMode(Request $request)
+    {
+        try{
+            $campaign = Campaign::find($request->campaign);
+            if($campaign->stripe_mode == 1){
+                $campaign->stripe_mode = 2;
+                $message = 'Campaign is in Live mode now';
+            } else {
+                $campaign->stripe_mode = 1;
+                $message = 'Campaign is in Test mode now';
+            }
+            $campaign->update();
+            return response()->json([
+                'success' => true,
+                'message' => $message
+            ],200);
+        } catch(\Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage()
+            ],200);
         }
     }
 }

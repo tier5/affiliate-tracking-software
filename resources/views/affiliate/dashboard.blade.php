@@ -54,6 +54,7 @@
                     <div class="box1">
                         <div class="row one-row">
                             <div class="col-md-3 col-sm-3">
+                            <div class="border-area">
                                 <div class="blue-txt">
                                     @if($visitors > 0)
                                         ${!! number_format(($gross_commission / $visitors),2,'.','') !!}
@@ -62,20 +63,26 @@
                                     @endif
                                 </div>
                                 <div class="normal-txt">EPC</div>
+                            </div>    
                             </div>
                             <div class="col-md-3 col-sm-3">
+                                <div class="border-area">
                                 <div class="blue-txt">
                                     {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'visitor',$queryString]) }}">--}}{{ $visitors }}{{--</a>--}}
                                 </div>
                                 <div class="normal-txt">Unique Clicks</div>
+                                </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
+                                <div class="border-area">
                                 <div class="blue-txt">
                                     {{--<a href="{{  route('view.link',['affiliate',Auth::user()->id,'sale',$queryString]) }}"> --}}{{ $totalSales }}{{--</a>--}}
                                 </div>
                                 <div class="normal-txt">Sales</div>
+                                </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
+                                <div class="border-area">
                                 <div class="blue-txt">
                                     @if($visitors > 0 & $totalSales >0)
                                         {!! round($totalSales / $visitors*100,2) !!}%
@@ -84,26 +91,35 @@
                                     @endif
                                 </div>
                                 <div class="normal-txt">Conversion Rate</div>
+                                </div>
                             </div>
                         </div>
                         <div class="row one-row">
                             <div class="col-md-3 col-sm-3">
+                                <div class="border-area">
                                 <div class="blue-txt">{{ "$" . round($gross_commission) }}</div>
                                 <div class="normal-txt">Gross Commission</div>
+                                </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
+                                <div class="border-area">
                                 <div class="blue-txt">${{ round($gross_commission-$refundCommission) }}</div>
                                 <div class="normal-txt">Net Commission</div>
+                                </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
+                                <div class="border-area">
                                 <div class="blue-txt">
                                     {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'refund',$queryString]) }}">--}} {{ $refundCount }}{{--</a>--}}
                                 </div>
                                 <div class="normal-txt">Refunds</div>
+                                </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
+                                <div class="border-area">
                                 <div class="blue-txt">${{ round($refundCommission) }}</div>
                                 <div class="normal-txt">Refunds Amount</div>
+                                </div>
                             </div>
                         </div>
                        {{-- <div class="row one-row">
@@ -167,14 +183,17 @@
                             </div>
                         </div>
                         <!-- /.box-header -->
-                        <div class="box-body no-padding">
+                        <div class="box-body ">
                             <div class="clearfix">&nbsp;</div>
                             @foreach ($affiliate as $key => $value)
-                                <div class="col-md-10 col-md-offset-1">
+                                <div class="row">
+                                <div class="col-md-12 col-xs-12">
                                     <span class="url">{{ $value->campaign->sales_url }}?affiliate_id={{ $value->key }}</span>
                                 </div>
-                                <div class="col-md-1">
-                                    <a class="btn btn-primary btn-sm pull-right copy pull-right" style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> Copy Link</a>
+                                <div class="clearfix">&nbsp;</div>
+                                <div class="col-md-12 col-xs-12">
+                                    <a class="btn btn-primary btn-sm  copy " style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> Copy Link</a>
+                                </div>
                                 </div>
                                 <br />
                                 <div class="clearfix">&nbsp;</div>

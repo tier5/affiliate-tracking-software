@@ -5,6 +5,7 @@
 @endsection
 
 @section('style')
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <style>
         .switch {
             position: relative;
@@ -126,6 +127,7 @@
                                             <th>Add Product</th>
                                             <th>Details</th>
                                             <th>Scripts</th>
+                                            <th>Stripe mode</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -160,8 +162,22 @@
                                                     <a href="{{ route('details.campaign',[$campaign->key]) }}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-tags" title="Scripts"></span></a>
                                                 </td>
                                                 <td>
+                                                    <input type="checkbox" onchange="stripeModeChange({{ $campaign->id }})" {{ $campaign->stripe_mode == 1?'':'checked' }} data-toggle="toggle" data-on="Live" data-off="Test" data-onstyle="success" data-offstyle="danger">
+                                                </td>
+                                                <td>
                                                     <div class="row">
-                                                        <button class="btn btn-primary btn-xs editCampaignButton" data-campaign_url="{{ $campaign->campaign_url }}" data-sales_url="{{ $campaign->sales_url }}" data-name="{{ $campaign->name }}" data-approve="{{ $campaign->approval }}" data-id="{{ $campaign->id }}" ><span class="glyphicon glyphicon-pencil"></span></button>
+                                                        <button class="btn btn-primary btn-xs editCampaignButton"
+                                                                data-campaign_url="{{ $campaign->campaign_url }}"
+                                                                data-sales_url="{{ $campaign->sales_url }}"
+                                                                data-name="{{ $campaign->name }}"
+                                                                data-approve="{{ $campaign->approval }}"
+                                                                data-id="{{ $campaign->id }}"
+                                                                data-test_pk="{{ $campaign->test_pk }}"
+                                                                data-test_sk="{{ $campaign->test_sk }}"
+                                                                data-live_pk="{{ $campaign->live_pk }}"
+                                                                data-live_sk="{{ $campaign->live_sk }}">
+                                                            <span class="glyphicon glyphicon-pencil"></span>
+                                                        </button>
                                                         <button class="btn btn-danger btn-xs deleteCampaign" data-id="{{ $campaign->id }}" data-title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
                                                     </div>
                                                 </td>
@@ -230,6 +246,30 @@
                                     <input name="product_type" id="product_type_funnel" value="2" type="radio" /> Funnel
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="pk_test">Test publishable key:</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="pk_test" name="pk_test" placeholder="Enter test Publishable key">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="sk_test">Test Secret key:</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="sk_test" name="sk_test" placeholder="Enter Test Secret key">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="pk_live">Live publishable key:</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="pk_live" name="pk_live" placeholder="Enter Live Publishable key">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="sk_live">Live Secret key:</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="sk_live" name="sk_live" placeholder="Enter Live Secret key">
+                                </div>
+                            </div>
                             <div class="form-group" id="error" style="display: none; color: red;">
                                 <label class="control-label col-md-2" for="error">Error:</label>
                                 <div class="col-md-10">
@@ -253,7 +293,7 @@
 
     <!-- Modal -->
     <div class="modal fade" id="editCampaignModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="col-md-12">
@@ -296,6 +336,30 @@
                                 <input type="radio" value="1" name="edit_approve" id="edit_approve_on"> YES</label>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2" for="pk_test_edit">Test publishable key:</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control hide-error" id="pk_test_edit" name="pk_test_edit" placeholder="Enter test Publishable key">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2" for="sk_test_edit">Test Secret key:</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control hide-error" id="sk_test_edit" name="sk_test_edit" placeholder="Enter Test Secret key">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2" for="pk_live_edit">Live publishable key:</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control hide-error" id="pk_live_edit" name="pk_live_edit" placeholder="Enter Live Publishable key">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2" for="sk_live_edit">Live Secret key:</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control hide-error" id="sk_live_edit" name="sk_live_edit" placeholder="Enter Live Secret key">
+                            </div>
+                        </div>
                         <input id="edit_id" type="hidden">
                         <div class="form-group" id="edit_error" style="display: none; color: red;">
                             <label class="control-label col-md-2" for="edit_error">Error:</label>
@@ -315,13 +379,47 @@
 @endsection
 
 @section('script')
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script>
+        function stripeModeChange(campaign) {
+            $.ajax({
+                url: "{{ route('change.stripe.mode') }}",
+                type: "POST",
+                data: {
+                    campaign: campaign,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (data) {
+                    if (data.success) {
+                        swal({
+                            title: "Success!",
+                            text: data.message,
+                            type: "success"
+                        }).then( function(){
+                            window.location.reload();
+                        },function (dismiss) {
+                            window.location.reload();
+                        });
+                    } else {
+                        swal({
+                            title: "Error!",
+                            text: data.message,
+                            type: "error"
+                        });
+                    }
+                }
+            });
+        }
         $('.editCampaignButton').on('click',function () {
             var id = $(this).data('id');
             var name = $(this).data('name');
             var approve = $(this).data('approve');
             var campaign_url = $(this).data('campaign_url');
             var sales_url = $(this).data('sales_url');
+            var test_pk = $(this).data('test_pk');
+            var test_sk = $(this).data('test_sk');
+            var live_pk = $(this).data('live_pk');
+            var live_sk = $(this).data('live_sk');
             $('#campaignNameShow').text(name);
             $('#edit_campaign_name').val(name);
             $('#edit_campaign_url').val(campaign_url);
@@ -332,6 +430,10 @@
             } else {
                 $("#edit_approve_off").prop("checked", true);
             }
+            $('#pk_test_edit').val(test_pk);
+            $('#sk_test_edit').val(test_sk);
+            $('#pk_live_edit').val(live_pk);
+            $('#sk_live_edit').val(live_sk);
             $('#editCampaignModal').modal('show');
         });
         $('#edit_campaign').on('click',function () {
@@ -359,6 +461,30 @@
                 $('#edit_error').show();
                 return false;
             }
+            var test_pk = $('#pk_live_edit').val();
+            if(test_pk == ''){
+                $('#error_text').text('Please Enter test publishable key');
+                $('#error').show();
+                return false;
+            }
+            var test_sk = $('#sk_test_edit').val();
+            if(test_sk == ''){
+                $('#error_text').text('Please Enter test secret key');
+                $('#error').show();
+                return false;
+            }
+            var live_pk = $('#pk_live_edit').val();
+            if(live_pk == ''){
+                $('#error_text').text('Please Enter live publishable key');
+                $('#error').show();
+                return false;
+            }
+            var live_sk = $('#sk_live_edit').val();
+            if(live_sk == ''){
+                $('#error_text').text('Please Enter live secret key');
+                $('#error').show();
+                return false;
+            }
             var status = $("input[name='edit_approve']:checked").val();
             $.ajax({
                 url: "{{ route('edit.campaign') }}",
@@ -369,6 +495,10 @@
                     sales_url : salesUrl,
                     campaign_url : url,
                     status: status,
+                    test_pk: test_pk,
+                    test_sk: test_sk,
+                    live_pk: live_pk,
+                    live_sk: live_sk,
                     _token: "{{ csrf_token() }}"
                 },
                 success: function (data) {
@@ -475,6 +605,30 @@
                 $('#error').show();
                 return false;
             }
+            var test_pk = $('#pk_live').val();
+            if(test_pk == ''){
+                $('#error_text').text('Please Enter test publishable key');
+                $('#error').show();
+                return false;
+            }
+            var test_sk = $('#sk_test').val();
+            if(test_sk == ''){
+                $('#error_text').text('Please Enter test secret key');
+                $('#error').show();
+                return false;
+            }
+            var live_pk = $('#pk_live').val();
+            if(live_pk == ''){
+                $('#error_text').text('Please Enter live publishable key');
+                $('#error').show();
+                return false;
+            }
+            var live_sk = $('#sk_live').val();
+            if(live_sk == ''){
+                $('#error_text').text('Please Enter live secret key');
+                $('#error').show();
+                return false;
+            }
             var approve = $('#approve').val();
             var user_id = "{{ \Auth::user()->id }}";
             var key = randomString(32);
@@ -489,7 +643,11 @@
                     key: key,
                     user_id: user_id,
                     product_type: product_type,
-                    _token: "{{ csrf_token() }}"
+                    _token: "{{ csrf_token() }}",
+                    test_pk: test_pk,
+                    test_sk: test_sk,
+                    live_pk: live_pk,
+                    live_sk: live_sk
                 },
                 success: function (data) {
                     if (data.success) {

@@ -136,84 +136,123 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <form id="addProductForm" method="POST" class="form-horizontal col-md-12">
-                            <div class="form-group">
-                                <label class="control-label col-md-2" for="product_name">Product Name:</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control hide-error" id="product_name" name="product_name" placeholder="Add Product Name">
+                            <div class="col-md-12 col-sm-12">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a data-toggle="tab" href="#normalPlan">Normal Plan</a></li>
+                                    <li><a data-toggle="tab" id="stripPlanFetch" href="#stripePlan">Stripe Plan</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="normalPlan" class="tab-pane fade in active">
+                                        <div class="panel panel-default panel-info">
+                                            <div class="panel-heading">
+                                                <div class="row">
+                                                    <div class=" col-md-10 pull-left">
+                                                        <h4>Add Normal Plan</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body">
+                                                <form id="addProductForm" method="POST" class="form-horizontal col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2" for="product_name">Product Name:</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control hide-error" id="product_name" name="product_name" placeholder="Add Product Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2" for="product_url">Product URL:</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control hide-error" id="product_url" name="product_url" placeholder="Add Product URL">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2" for="upgrade_url">Upgrade URL:</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control hide-error" id="upgrade_url" name="upgrade_url" placeholder="Add Upgrade URL">
+                                                        </div>
+                                                    </div>
+                                                    <!--                            <div class="form-group">
+                                                                                    <label class="control-label col-md-2" for="downgrade_url">Downgrade URL:</label>
+                                                                                    <div class="col-md-10">
+                                                                                        <input type="text" class="form-control hide-error" id="downgrade_url" name="downgrade_url" placeholder="Add Downgrade URL">
+                                                                                    </div>
+                                                                                </div>-->
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2" for="product_price">Product Price:</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control hide-error" id="product_price" name="product_price" placeholder="Add Product Price">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2" for="product_commission">Commission Settings :</label>
+                                                        <div class="col-md-3">
+                                                            <label class="control-label">Commission:</label>
+                                                            <input type="text" name="price" id="product_commission" class="form-control hide-error" placeholder="Add Commission">
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label class="control-label">Method:</label>
+                                                            <select name="method" id="method" class="form-control hide-error">
+                                                                <option value="">----Select----</option>
+                                                                <option value="1">Percentage ( % )</option>
+                                                                <option value="2">Dollar ( $ )</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label class="control-label">Frequency:</label>
+                                                            <select name="price_frequency" class="form-control hide-error" id="price_frequency">
+                                                                <option value="">-------Select-------</option>
+                                                                <option value="1">One-Time</option>
+                                                                <option value="2">Recurring</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group plan" style="display:none">
+                                                        <label class="control-label col-md-3" for="plan">Plan :</label>
+                                                        <input type="radio" name="plan" id="planDaily" class="commissionPlan" value="1">Daily
+                                                        <input type="radio" name="plan" id="planMonthly" class="commissionPlan" value="2">Monthly
+                                                        <input type="radio" name="plan" id="planQuarterly" class="commissionPlan" value="3">Quarterly
+                                                        <input type="radio" name="plan" id="planYearly" class="commissionPlan" value="4">Yearly
+                                                    </div>
+                                                    <input name="campaign_id" id="campaign_id" type="hidden" value="{{ $campaign_id }}">
+                                                    <input name="product_id" id="product_id" type="hidden" value="">
+                                                    <div class="form-group" id="error" style="display: none; color: red;">
+                                                        <label class="control-label col-md-2" for="edit_error">Error:</label>
+                                                        <div class="col-md-10">
+                                                            <h4 id="error_text"></h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="row pull-right">
+                                                            <button type="button" class="btn btn-primary" id="add-Product" data-type="save"><i class="fa fa-floppy-o"></i> Save Product</button>
+                                                            @if(isset($campaign) && $campaign->product_type == 2)
+                                                                <button type="button" class="btn btn-primary" id="add-Funnel" data-type="save_continue"><i class="fa fa-arrow-right"></i> Save &amp; Continue</button>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="stripePlan" class="tab-pane fade">
+                                        <div class="panel panel-default panel-info">
+                                            <div class="panel-heading">
+                                                <div class="row">
+                                                    <div class=" col-md-10 pull-left">
+                                                        <h4>Add Stripe Plan</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div id="form_here"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2" for="product_url">Product URL:</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control hide-error" id="product_url" name="product_url" placeholder="Add Product URL">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2" for="upgrade_url">Upgrade URL:</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control hide-error" id="upgrade_url" name="upgrade_url" placeholder="Add Upgrade URL">
-                                </div>
-                            </div>
-<!--                            <div class="form-group">
-                                <label class="control-label col-md-2" for="downgrade_url">Downgrade URL:</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control hide-error" id="downgrade_url" name="downgrade_url" placeholder="Add Downgrade URL">
-                                </div>
-                            </div>-->
-                            <div class="form-group">
-                                <label class="control-label col-md-2" for="product_price">Product Price:</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control hide-error" id="product_price" name="product_price" placeholder="Add Product Price">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2" for="product_commission">Commission Settings :</label>
-                                <div class="col-md-3">
-                                    <label class="control-label">Commission:</label>
-                                    <input type="text" name="price" id="product_commission" class="form-control hide-error" placeholder="Add Commission">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="control-label">Method:</label>
-                                    <select name="method" id="method" class="form-control hide-error">
-                                        <option value="">----Select----</option>
-                                        <option value="1">Percentage ( % )</option>
-                                        <option value="2">Dollar ( $ )</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="control-label">Frequency:</label>
-                                    <select name="price_frequency" class="form-control hide-error" id="price_frequency">
-                                        <option value="">-------Select-------</option>
-                                        <option value="1">One-Time</option>
-                                        <option value="2">Recurring</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group plan" style="display:none">
-                                <label class="control-label col-md-3" for="plan">Plan :</label>
-                                <input type="radio" name="plan" id="planDaily" class="commissionPlan" value="1">Daily
-                                <input type="radio" name="plan" id="planMonthly" class="commissionPlan" value="2">Monthly
-                                <input type="radio" name="plan" id="planQuarterly" class="commissionPlan" value="3">Quarterly
-                                <input type="radio" name="plan" id="planYearly" class="commissionPlan" value="4">Yearly
-                            </div>
-                            <input name="campaign_id" id="campaign_id" type="hidden" value="{{ $campaign_id }}">
-                            <input name="product_id" id="product_id" type="hidden" value="">
-                            <div class="form-group" id="error" style="display: none; color: red;">
-                                <label class="control-label col-md-2" for="edit_error">Error:</label>
-                                <div class="col-md-10">
-                                    <h4 id="error_text"></h4>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="add-Product" data-type="save"><i class="fa fa-floppy-o"></i> Save Product</button>
-                    @if(isset($campaign) && $campaign->product_type == 2)
-                        <button type="button" class="btn btn-primary" id="add-Funnel" data-type="save_continue"><i class="fa fa-arrow-right"></i> Save &amp; Continue</button>
-                    @endif
                 </div>
             </div>
         </div>
@@ -651,6 +690,20 @@
         $('.hide-error').on('change',function () {
             $('#error').hide();
             $('#error_text').text('');
+        });
+        $('#stripPlanFetch').on('click',function () {
+            $.ajax({
+                url: "{{ route('fetch.stripe.plans') }}",
+                type: "POST",
+                data: {
+                    campaign: '{{ $campaign->id }}',
+                    _token: "{{ csrf_token() }}"
+                },
+                beforeSend: function(){ jQuery("#form_here").replaceWith('<div id="form_here"><img src="{{ url('/').'/images/giphy.gif' }}" class="center-block" height="100px" width="100px"></div>'); },
+                success: function (data) {
+                    $('#form_here').html(data);
+                }
+            });
         });
     </script>
 @endsection
