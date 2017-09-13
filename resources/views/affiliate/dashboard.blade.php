@@ -4,6 +4,14 @@
     Dashboard
 @endsection
 
+@section('style')
+    <style>
+        .box-body1 {
+            padding: 59px !important;
+        }
+    </style>
+@endsection
+
 @section('content')
     @php($queryString= Request::getQueryString() ? Request::getQueryString() : 'campaign=0'  )
     <!-- Content Wrapper. Contains page content -->
@@ -50,7 +58,7 @@
                                     @if($visitors > 0)
                                         ${!! number_format(($gross_commission / $visitors),2,'.','') !!}
                                     @else
-                                        ${{ $visitors }}
+                                        ${{ number_format($visitors,2,'.','') }}
                                     @endif
                                 </div>
                                 <div class="normal-txt">EPC</div>
@@ -72,7 +80,7 @@
                                     @if($visitors > 0 & $totalSales >0)
                                         {!! round($totalSales / $visitors*100,2) !!}%
                                     @else
-                                        0
+                                        0%
                                     @endif
                                 </div>
                                 <div class="normal-txt">Conversion Rate</div>
@@ -80,11 +88,11 @@
                         </div>
                         <div class="row one-row">
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">{{ "$" . ceil($gross_commission) }}</div>
+                                <div class="blue-txt">{{ "$" . round($gross_commission) }}</div>
                                 <div class="normal-txt">Gross Commission</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">${{ ceil($gross_commission-$refundCommission) }}</div>
+                                <div class="blue-txt">${{ round($gross_commission-$refundCommission) }}</div>
                                 <div class="normal-txt">Net Commission</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
@@ -94,21 +102,21 @@
                                 <div class="normal-txt">Refunds</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">${{ ceil($refundCommission) }}</div>
+                                <div class="blue-txt">${{ round($refundCommission) }}</div>
                                 <div class="normal-txt">Refunds Amount</div>
                             </div>
                         </div>
-                        <div class="row one-row">
+                       {{-- <div class="row one-row">
                             <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">{{ "$" . ceil($paidCommission) }}</div>
+                                <div class="blue-txt">{{ "$" . round($paidCommission) }}</div>
                                 <div class="normal-txt">Commission Paid</div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="blue-txt">
-                                    ${{ ceil($netCommission - $paidCommission) }}</div>
+                                    ${{ round($netCommission - $paidCommission) }}</div>
                                 <div class="normal-txt">Commission Due</div>
                             </div>
-                        </div>
+                        </div>--}}
                     </div>
                 </div>
             </div>
@@ -122,22 +130,11 @@
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                                 </button>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fa fa-wrench"></i></button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li><a href="#">Action</a></li>
-                                        <li><a href="#">Another action</a></li>
-                                        <li><a href="#">Something else here</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">Separated link</a></li>
-                                    </ul>
-                                </div>
                                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                             </div>
                         </div>
                         <!-- /.box-header -->
-                        <div class="box-body">
+                        <div class="box-body1">
                             <div class="row">
                                 <div class="col-md-12">
                                     <p class="text-center">
@@ -158,7 +155,7 @@
                 </div>
                 <!-- /.col -->
                 <div class="col-md-4">
-                    <div class="box box-danger">
+                    <div class="box box-success">
                         <div class="box-header with-border">
                             <h3 class="box-title">Your Referral Link</h3>
 
@@ -182,6 +179,35 @@
                                 <br />
                                 <div class="clearfix">&nbsp;</div>
                             @endforeach
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Commission Details</h3>
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body no-padding">
+                            <div class="box1">
+                                <div class="row one-row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="blue-txt">{{ "$" . round($paidCommission) }}</div>
+                                        <div class="normal-txt">Paid</div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="blue-txt">
+                                            ${{ round($netCommission - $paidCommission) }}</div>
+                                        <div class="normal-txt">Due</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -227,7 +253,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <!-- USERS LIST -->
-                            <div class="box box-danger">
+                            <div class="box box-warning">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Commissions on available products</h3>
 

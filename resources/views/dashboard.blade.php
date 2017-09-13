@@ -72,7 +72,7 @@
                                         @if($visitors->count() > 0)
                                             ${!! number_format(($grossCommission / $visitors->count()),2,'.','') !!}
                                         @else
-                                            {{ $grossCommission }}
+                                            {{ number_format($grossCommission,2,'.','') }}
                                         @endif
                                     </div>
                                     <div class="normal-txt">EPC</div>
@@ -110,7 +110,7 @@
                                             @if($totalSales > 0 && $visitors->count() > 0)
                                                 {!! round($totalSales /  $visitors->count() * 100,2) !!}%
                                             @else
-                                                0
+                                                0%
                                             @endif
                                         </div>
                                         <div class="normal-txt">Conversion Rate</div>
@@ -121,14 +121,14 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            ${{ ceil($grossCommission) }}
+                                            ${{ round($grossCommission) }}
                                         </div>
                                         <div class="normal-txt">Gross Commission</div>
 
                                     </div>
                                     <div class="col-md-3 col-sm-3">
 
-                                        <div class="blue-txt">${{ ceil($grossCommission - $refundCommission) }}</div>
+                                        <div class="blue-txt">${{ round($grossCommission - $refundCommission) }}</div>
                                         <div class="normal-txt">Net Commission</div>
 
                                     </div>
@@ -141,7 +141,7 @@
 
                                     </div>
                                     <div class="col-md-3 col-sm-3">
-                                        <div class="blue-txt">${{ ceil($refundCommission) }}</div>
+                                        <div class="blue-txt">${{ round($refundCommission) }}</div>
                                         <div class="normal-txt">Refund Amount</div>
 
                                     </div>
@@ -150,14 +150,14 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            ${{ ceil($totalPaid) }}
+                                            ${{ round($totalPaid) }}
                                         </div>
                                         <div class="normal-txt">Commission Paid</div>
 
                                     </div>
                                     <div class="col-md-3 col-sm-3">
 
-                                        <div class="blue-txt">${{ ceil($netCommission - $totalPaid) }}</div>
+                                        <div class="blue-txt">${{ round($netCommission - $totalPaid) }}</div>
                                         <div class="normal-txt">Commission Due</div>
 
                                     </div>
