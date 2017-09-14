@@ -214,7 +214,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            Webhook: <strong id="copyWebhook" style="color: #0d6aad;">{{ url('/') }}/api/stripe/callback/{{ $campaigns->key }}</strong>
+                                            <div style="padding-bottom: 40px;">
+                                                Webhook: <strong id="copyWebhook" style="color: #0d6aad;">{{ url('/') }}/api/stripe/callback/{{ $campaigns->key }}</strong>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="panel panel-default panel-info">
