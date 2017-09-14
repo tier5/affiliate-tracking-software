@@ -185,6 +185,10 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'ProductController@fetchStripePlans',
         'as' => 'fetch.stripe.plans'
     ]);
+    Route::post('refresh/customer',[
+        'uses' => 'StripeController@refreshController',
+        'as' => 'refresh.customer'
+    ]);
 });
 Route::get('affiliate/request/{affiliateKey}',[
     'uses' => 'CampaignController@affiliateRegistrationForm',

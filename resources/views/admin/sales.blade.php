@@ -113,7 +113,14 @@
                                                 <td>${{ $sale['commission'] }}</td>
                                                 <td>{{$sale['created_at']}}</td>
                                                 <td>
-                                                    {{ ($sale['status']==2)?'Refunded':'Sales' }}
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <span class="status"> {{ ($sale['status']==2)?'Refunded':'Sales' }}</span>
+                                                        </div>
+                                                       <!-- <div class="col-md-6">
+                                                            <button type="button" class="btn btn-success btn-xs refresh" data-sales_id="{{ $sale['id'] }}"><i class="fa fa-refresh fa-fw iClass"></i> </button>
+                                                        </div> -->
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-xs btn-warning refund" {{ $sale['status'] == 2?'disabled':'' }} data-sales_id="{{ $sale['id'] }}">Refund</button>
@@ -194,7 +201,33 @@
                         }
                     });
                 })
-            })
+            });
+            $('.refresh').on('click',function () {
+                var buttonClass = $(this).children();
+                var button = $(this);
+                var sales = $(this).data('sales_id');
+                $.ajax({
+                    url: "{{ route('refresh.customer') }}",
+                    type: "POST",
+                    data: {
+                        id: sales,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    beforeSend: function(){ jQuery(buttonClass).addClass('fa-spin'); },
+                    complete: function(){ jQuery(buttonClass).removeClass('fa-spin'); },
+                    success: function (data) {
+                        if (data.success) {
+                            button.parent().prev('div').children('.status').replaceWith('<span class="">'+data.data+'</span>');
+                        } else {
+                            swal({
+                                title: "Error!",
+                                text: data.message,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+            });
         });
     </script>
 @endsection

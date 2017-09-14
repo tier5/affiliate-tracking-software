@@ -98,3 +98,7 @@ Route::post('v2/check/order/url',[
     'uses' => 'ProductController@checkOrderUrlV2',
     'as' => 'check.product'
 ]);
+Route::post('stripe/callback',[
+    'uses' => 'StripeController@stripeCallBack',
+    'as' => 'stripe.callback'
+]);
