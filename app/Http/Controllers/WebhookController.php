@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Campaign;
+use App\OrderProduct;
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class WebhookController extends Controller
         try {
             $campaign = Campaign::where('key',$campaign_key)->firstOrFail();
             $customer_id = $event['data']['object']['customer'];
-            if ($campaign->test_sk != '' && $campaign->test->pk != '' && $campaign->live_sk != '' && $campaign->live_pk != ''){
+            if ($campaign->test_sk != '' && $campaign->test_pk != '' && $campaign->live_sk != '' && $campaign->live_pk != ''){
                 if($campaign->stripe_mode == 1){
                     $key = $campaign->test_sk;
                 } else {
@@ -32,7 +33,16 @@ class WebhookController extends Controller
                 }
                 $stripe = Stripe::make($key);
                 $customer = $stripe->customers()->find($customer_id);
-                return $customer['email'];
+                $myCustomer = OrderProduct::where('email',$customer['email'])->firstOrFail();
+
+                $newCustomer = new OrderProduct();
+                $newCustomer->log_id = $myCustomer->log_id;
+                $newCustomer->product_id = $myCustomer->product_id;
+                $newCustomer->email = $myCustomer->email;
+                $newCustomer->status = 1;
+                $newCustomer->save();
+
+                return 'Customer Subscription Updated';
             } else {
                 return 'Stripe is not integrated in campaign: '.$campaign->name;
             }
