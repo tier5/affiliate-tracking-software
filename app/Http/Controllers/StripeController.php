@@ -55,8 +55,4 @@ class StripeController extends Controller
             ],200);
         }
     }
-    public function stripeCallBack(Request $request)
-    {
-        Log::info($request->all());
-    }
 }
