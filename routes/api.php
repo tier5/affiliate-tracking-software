@@ -98,7 +98,7 @@ Route::post('v2/check/order/url',[
     'uses' => 'ProductController@checkOrderUrlV2',
     'as' => 'check.product'
 ]);
-Route::any('stripe/callback',[
+Route::any('stripe/callback/{campaign_id}',[
     'uses' => 'WebhookController@stripeCallBack',
     'as' => 'stripe.callback'
 ]);

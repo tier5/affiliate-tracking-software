@@ -101,6 +101,7 @@
                                         <li class="active"><a data-toggle="tab" href="#sales">Sales Script</a></li>
                                         <li><a data-toggle="tab" href="#menu1">Product & Update Script</a></li>
                                         <li><a data-toggle="tab" href="#menu2">Checkout Script</a></li>
+                                        <li><a data-toggle="tab" href="#menu3">Stripe Webhook</a></li>
                                     </ul>
                                     <div class="tab-content">
                                         {{--<div id="home" class="tab-pane fade in active">
@@ -205,6 +206,41 @@
                                                     <p> &nbsp;&nbsp;&nbsp;Affiliate.watch();</p>
                                                 <p> &lt;/script&gt;</p></strong>
                                         </div>
+                                        <div id="menu3" class="tab-pane fade">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="pull-right">
+                                                        <a title="copy to clip-board" id="thankWebhook" class="btn btn-success btn-md"><span class="glyphicon glyphicon-copy"></span> </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            Webhook: <strong id="copyWebhook" style="color: #0d6aad;">{{ url('/') }}/api/stripe/callback/{{ $campaigns->key }}</strong>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="panel panel-default panel-info">
+                                                        <div class="panel-heading">
+                                                            <div class="row">
+                                                                <div class=" col-md-10 pull-left">
+                                                                    <h4>Basic steps to follow when setting up Stripe Webhooks:</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <p><h5>1. Go your Stripe dashboard to obtain the necessary keys: test secret key, test publishable key, live secret key, and/or live publishable key.</h5></p>
+                                                                    <p><h5>2. In Stripe, navigate to API on the left hand menu.</h5></p>
+                                                                    <p><h5>3. Select API.</h5></p>
+                                                                    <p><h5>4. Select Webhooks.</h5></p>
+                                                                    <p><h5>5. Select "+ Add endpoint" and paste your unique Webhook into the settings. Make sure to select the correct Live or Test events, that you are on the latest Webhook version, and that you have it set to send all event types.</h5></p>
+                                                                    <p><h5>6. Save all settings.</h5></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -290,6 +326,11 @@
         });
         $('#thankCopy').on('click',function(){
             var url=$('#copyThank');
+            copyToClipboard(url);
+            toastr.info('Copied To Clipboard');
+        });
+        $('#thankWebhook').on('click',function(){
+            var url=$('#copyWebhook');
             copyToClipboard(url);
             toastr.info('Copied To Clipboard');
         });
