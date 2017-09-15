@@ -229,7 +229,7 @@
             var campaign = $(this).val();
             setGetParameter('campaign',campaign);
         });
-        $('.editAffiliate').on('click',function () {
+        $(document).delegate('.editAffiliate',  'click',function () {
             var name = $(this).data('name');
             var email = $(this).data('email');
             var user_id = $(this).data('aff_id');

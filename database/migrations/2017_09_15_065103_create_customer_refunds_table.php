@@ -16,7 +16,7 @@ class CreateCustomerRefundsTable extends Migration
         Schema::create('customer_refunds', function (Blueprint $table) {
             $table->increments('id');
             $table->bigInteger('campaign_id')->index()->unsigned();
-            $table->bigInteger('log_id')->index()->unsigned();
+            $table->integer('log_id')->index()->unsigned();
             $table->double('amount');
             $table->timestamps();
 
@@ -24,7 +24,7 @@ class CreateCustomerRefundsTable extends Migration
                 ->references('id')->on('campaigns')
                 ->onDelete('CASCADE');
             $table->foreign('log_id')
-                ->references('id')->on('agent_url_details')
+                ->references('id')->on('order_products')
                 ->onDelete('CASCADE');
         });
     }

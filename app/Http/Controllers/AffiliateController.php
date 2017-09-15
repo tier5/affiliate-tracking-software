@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AgentUrl;
 use App\AgentUrlDetails;
 use App\Campaign;
+use App\CustomerRefund;
 use App\Jobs\SendRegistrationSms;
 use App\OrderProduct;
 use App\paidCommission;
@@ -682,6 +683,19 @@ class AffiliateController extends Controller
             $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2)->orderBy('created_at','DESC');
             $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
             $totalSaless = OrderProduct::whereIn('log_id', $sales->pluck('id'))->count();
+            $orderObj = OrderProduct::whereIn('log_id',$sales->pluck('id'));
+            $refunds = CustomerRefund::whereIn('log_id',$orderObj->pluck('id'))->get();
+            $totalCommissionRefund = 0 ;
+            foreach ($refunds as $refund){
+                $refundLog = OrderProduct::find($refund->log_id);
+                $product = $refundLog->product;
+                if($product->method == 1){
+                    $commission = $refund->amount * ($product->commission / 100);
+                } else {
+                    $commission = $refund->amount * ($product->commission / $product->product_price);
+                }
+                $totalCommissionRefund += $commission;
+            }
             /*
              * Analytics for sold products
              */
@@ -742,8 +756,8 @@ class AffiliateController extends Controller
                 'totalSales' => $totalSaless,
                 'total_sale_price' => $totalSalePrice,
                 'gross_commission' => $grossCommission,
-                'refundCommission' => $refundCommission,
-                'refundCount' => $refundCount,
+                'refundCommission' => $totalCommissionRefund,
+                'refundCount' => count($refunds),
                 'available_products' => $availableProducts,
                 'sold_products' => $soldProducts,
                 'campaignDropDown' => $campaignDropDown,

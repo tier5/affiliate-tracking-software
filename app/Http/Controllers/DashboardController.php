@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Affiliate;
+use App\CustomerRefund;
 use App\paidCommission;
 use App\User;
 use App\AgentUrlDetails;
@@ -22,6 +23,11 @@ use Illuminate\Support\Facades\Session;
 
 class DashboardController extends Controller
 {
+    /**
+     * Affiliate & Admin Dashboard
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     */
 	public function index(Request $request)
 	{
         if (Auth::user()->role == 'admin') {
@@ -34,6 +40,11 @@ class DashboardController extends Controller
         }
 	}
 
+    /**
+     * Admin Dashboard with filter
+     * @param $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     private function adminDashboard($request) {
         if ($request->has('campaign_id') || $request->has('affiliate_id')) {
             $campaigns = collect([]);
@@ -150,6 +161,10 @@ class DashboardController extends Controller
         }
     }
 
+    /**
+     * Admin Dashboard with no filter
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     private function adminDashboardNoFilter() {
         $campaigns = Campaign::where('user_id', Auth::user()->id)->with('affiliate');
         $affiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
@@ -195,19 +210,26 @@ class DashboardController extends Controller
         ]);
     }
 
+    /**
+     * Dashboard stats analytics
+     * @param $affiliates
+     * @return array
+     */
     private function getAnalytics($affiliates) {
 	    //calculate visitor
         $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'));
         $leads = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type',  3);
         $sales = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type', 2);
-
+        $salesObj = OrderProduct::whereIn('log_id',$sales->pluck('id'));
+        $refunds = CustomerRefund::whereIn('log_id',$salesObj->pluck('id'))->get();
+        //dd($refunds->get());
         //Calculate total sales amount
         $totalSalePrice = 0;
         $grossCommission = 0;
         $refundCount = 0;
         $refundCommission = 0;
         $soldProducts = [];
-        $salesData = OrderProduct::whereIn('log_id',$sales->pluck('id'))->get();
+        $salesData = $salesObj->get();
         foreach ($salesData as $key => $order){
             $product = Product::find($order->product_id);
             if ($product->method == 1) {
@@ -244,21 +266,32 @@ class DashboardController extends Controller
             ->where('browser','LIKE','%Safari%')->count();
         $firefox = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
             ->where('browser','LIKE','%Firefox%')->count();
+        $totalCommissionRefund = 0 ;
+        foreach ($refunds as $refund){
+            $refundLog = OrderProduct::find($refund->log_id);
+            $product = $refundLog->product;
+            if($product->method == 1){
+                $commission = $refund->amount * ($product->commission / 100);
+            } else {
+                $commission = $refund->amount * ($product->commission / $product->product_price);
+            }
+            $totalCommissionRefund += $commission;
+        }
         return [
             'visitors' => $visitors,
             'leads' => $leads,
             'sales' => $sales,
             'totalSales' => $totalSales,
             'grossCommission' => $grossCommission,
-            'refundCommission' => $refundCommission,
-            'refundCount' => $refundCount,
+            'refundCommission' => $totalCommissionRefund,//$refundCommission,
+            'refundCount' => count($refunds),//$refundCount,
             'totalSalesPrice' => $totalSalePrice,
             'chrome' => $chrome,
             'opera' => $opera,
             'ie' => $ie,
             'safari' => $safari,
             'firefox' => $firefox,
-            'netCommission' => $netCommission
+            'netCommission' => $netCommission,
         ];
     }
 
@@ -291,7 +324,7 @@ class DashboardController extends Controller
             $sales = AgentUrlDetails::whereIn('affiliate_id', $affiliate->pluck('id'))->where('type', 2);
             $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->orderBy('created_at', 'DESC')->get();
 //            dd($availableProducts);
-            $totalSaless = OrderProduct::whereIn('log_id', $sales->pluck('id'))->count();
+            $totalSaless = OrderProduct::whereIn('log_id', $sales->pluck('id'));
             $paidCommission = 0;
             if(count($paidCommissionData) > 0){
                 foreach ($paidCommissionData as $data){
@@ -336,18 +369,29 @@ class DashboardController extends Controller
                 $totalSales += 1;
             }
             $netCommission = $grossCommission - $refundCommission;
-
+            $refunds = CustomerRefund::whereIn('log_id',$totalSaless->pluck('id'))->get();
+            $totalCommissionRefund = 0 ;
+            foreach ($refunds as $refund){
+                $refundLog = OrderProduct::find($refund->log_id);
+                $product = $refundLog->product;
+                if($product->method == 1){
+                    $commission = $refund->amount * ($product->commission / 100);
+                } else {
+                    $commission = $refund->amount * ($product->commission / $product->product_price);
+                }
+                $totalCommissionRefund += $commission;
+            }
             return view('affiliate.dashboard', [
                 'affiliate' => $affiliate,
                 'campaigns' => $campaigns->count(),
                 'visitors' => $visitors->count(),
                 'leads' => $leads->count(),
                 'sales' => $sales->count(),
-                'totalSales' => $totalSaless,
+                'totalSales' => $totalSaless->count(),
                 'total_sale_price' => $totalSalePrice,
                 'gross_commission' => $grossCommission,
-                'refundCommission' => $refundCommission,
-                'refundCount' => $refundCount,
+                'refundCommission' => $totalCommissionRefund,
+                'refundCount' => count($refunds),
                 'available_products' => $availableProducts,
                 'sold_products' => $soldProducts,
                 'campaignDropDown' => $campaignDropDown,
@@ -359,6 +403,11 @@ class DashboardController extends Controller
         }
     }
 
+    /**
+     * Grap data for Dashboard
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
 	public function salesData(Request $request)
     {
         try {

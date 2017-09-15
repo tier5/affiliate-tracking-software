@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Affiliate;
+use App\AgentUrlDetails;
 use App\Campaign;
 use App\CustomerRefund;
 use App\OrderProduct;
@@ -102,13 +104,15 @@ class WebhookController extends Controller
     {
         try {
             $campaign = Campaign::where('key',$campaign_key)->firstOrFail();
+            $affiliates = Affiliate::where('campaign_id',$campaign->id);
+            $logs = AgentUrlDetails::where('affiliate_id',$affiliates->pluck('id'));
             $customer_email = $event['data']['object']['receipt_email'];
-            $myCustomer = OrderProduct::where('email',$customer_email)->firstOrFail();
+            $myCustomer = OrderProduct::where('email',$customer_email)->whereIn('log_id',$logs->pluck('id'))->firstOrFail();
 
             $refunds = new CustomerRefund();
             $refunds->campaign_id = $campaign->id;
-            $refunds->log_id = $myCustomer->log_id;
-            $refunds->amount = $event['data']['object']['refunds']['data'][0]['amount'];
+            $refunds->log_id = $myCustomer->id;
+            $refunds->amount = $event['data']['object']['refunds']['data'][0]['amount'] / 100;
             $refunds->save();
 
             return 'Refund Added Successfully';

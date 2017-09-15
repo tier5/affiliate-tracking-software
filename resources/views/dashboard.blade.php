@@ -99,7 +99,7 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            {{--<a href="{{ route('view.link',['admin',Auth::user()->id,'sales',$queryString]) }}">--}}{{ $totalSales }}{{--</a>--}}
+                                            {{--<a href="{{ route('view.link',['admin',Auth::user()->id,'sales',$queryString]) }}">--}}{{ $sales->count() }}{{--</a>--}}
                                         </div>
                                         <div class="normal-txt">Sales</div>
 
@@ -107,8 +107,8 @@
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
-                                            @if($totalSales > 0 && $visitors->count() > 0)
-                                                {!! round($totalSales /  $visitors->count() * 100,2) !!}%
+                                            @if($sales->count() > 0 && $visitors->count() > 0)
+                                                {!! round($sales->count() /  $visitors->count() * 100,2) !!}%
                                             @else
                                                 0%
                                             @endif
@@ -585,7 +585,7 @@
                                         pointStrokeColor: "rgba(10,101,198,10)",
                                         pointHighlightFill: "#fff",
                                         pointHighlightStroke: "rgba(50,111,138,0.8)",
-                                        data: data.totalSales
+                                        data: data.sales
                                     }
                                 ]
                             };

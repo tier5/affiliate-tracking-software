@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Affiliate;
 use App\AgentUrlDetails;
 use App\Campaign;
+use App\CustomerRefund;
 use App\OrderProduct;
 use App\paidCommission;
 use App\PaymentHistory;
@@ -51,9 +52,22 @@ class PaymentController extends Controller
             }
             $logs = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))
                 ->where('type', 2);
-            $orderProducts = OrderProduct::whereIn('log_id', $logs->pluck('id'))
+            $orderObj = OrderProduct::whereIn('log_id', $logs->pluck('id'))
                 ->orderBy('created_at', 'DESC')
-                ->with('product')->get();
+                ->with('product');
+            $refunds = CustomerRefund::whereIn('log_id',$orderObj->pluck('id'))->get();
+            $totalCommissionRefund = 0 ;
+            foreach ($refunds as $refund){
+                $refundLog = OrderProduct::find($refund->log_id);
+                $product = $refundLog->product;
+                if($product->method == 1){
+                    $commission = $refund->amount * ($product->commission / 100);
+                } else {
+                    $commission = $refund->amount * ($product->commission / $product->product_price);
+                }
+                $totalCommissionRefund += $commission;
+            }
+            $orderProducts = $orderObj->get();
             $grossCommission = 0;
             $refundCommission = 0;
             $refundCount = 0;
@@ -72,7 +86,7 @@ class PaymentController extends Controller
                     }
                 }
             }
-            $netCommission = $grossCommission - $refundCommission;
+            $netCommission = $grossCommission - $totalCommissionRefund;
             return view('affiliate.payout',[
                 'commissions' => $finalCommission,
                 'campaignDropDown' => $campaignDropDown,
@@ -145,9 +159,22 @@ class PaymentController extends Controller
             }
             $logs = AgentUrlDetails::whereIn('affiliate_id', $affiliates->pluck('id'))
                 ->where('type', 2);
-            $orderProducts = OrderProduct::whereIn('log_id', $logs->pluck('id'))
+            $orderObj = OrderProduct::whereIn('log_id', $logs->pluck('id'))
                 ->orderBy('created_at', 'DESC')
-                ->with('product')->get();
+                ->with('product');
+            $refunds = CustomerRefund::whereIn('log_id',$orderObj->pluck('id'))->get();
+            $totalCommissionRefund = 0 ;
+            foreach ($refunds as $refund){
+                $refundLog = OrderProduct::find($refund->log_id);
+                $product = $refundLog->product;
+                if($product->method == 1){
+                    $commission = $refund->amount * ($product->commission / 100);
+                } else {
+                    $commission = $refund->amount * ($product->commission / $product->product_price);
+                }
+                $totalCommissionRefund += $commission;
+            }
+            $orderProducts = $orderObj->get();
             $grossCommission = 0;
             $refundCommission = 0;
             $refundCount = 0;
@@ -166,7 +193,7 @@ class PaymentController extends Controller
                     }
                 }
             }
-            $netCommission = $grossCommission - $refundCommission;
+            $netCommission = $grossCommission - $totalCommissionRefund;
             return view('admin.payout',[
                 'commissions' => $finalCommission,
                 'campaignDropDown' => $campaignDropDown,
