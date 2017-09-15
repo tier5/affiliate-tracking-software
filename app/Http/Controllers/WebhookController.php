@@ -13,14 +13,23 @@ class WebhookController extends Controller
 {
     public function stripeCallBack(Request $request,$campaign_key)
     {
-        if($request['type'] == 'customer.subscription.updated'){
-            $subscriptionUpdate = $this->subscriptionUpdated($request,$campaign_key);
-            Log::info($subscriptionUpdate);
+        try{
+            switch ($request['type'])
+            {
+                case 'customer.subscription.updated' :
+                    $subscriptionUpdate = $this->subscriptionUpdated($request,$campaign_key);
+                    Log::info($subscriptionUpdate);
+                    break;
+                default :
+                    Log::info($request['type'].' is not in use');
+            }
+        } catch (\Exception $exception){
+            Log::info($exception->getMessage());
         }
-        http_response_code(200); // PHP 5.4 or greater
+        http_response_code(200);
     }
     
-    public function subscriptionUpdated($event,$campaign_key)
+    private function subscriptionUpdated($event,$campaign_key)
     {
         try {
             $campaign = Campaign::where('key',$campaign_key)->firstOrFail();

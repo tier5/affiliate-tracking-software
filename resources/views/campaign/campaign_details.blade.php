@@ -230,7 +230,7 @@
                                                         <div class="panel-body">
                                                             <div class="row">
                                                                 <div class="col-md-12">
-                                                                    <p><h5>1. Go your Stripe dashboard to obtain the necessary keys: test secret key, test publishable key, live secret key, and/or live publishable key.</h5></p>
+                                                                    <p><h5>1. Go your Stripe dashboard to obtain the necessary keys: test secret key, test publishable key, live secret key and live publishable key.</h5></p>
                                                                     <p><h5>2. In Stripe, navigate to API on the left hand menu.</h5></p>
                                                                     <p><h5>3. Select API.</h5></p>
                                                                     <p><h5>4. Select Webhooks.</h5></p>
