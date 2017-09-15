@@ -24,7 +24,7 @@ class CreateCustomerRefundsTable extends Migration
                 ->references('id')->on('campaigns')
                 ->onDelete('CASCADE');
             $table->foreign('log_id')
-                ->references('id')->on('order_products')
+                ->references('id')->on('agent_url_details')
                 ->onDelete('CASCADE');
         });
     }
