@@ -572,6 +572,10 @@ class DashboardController extends Controller
         return redirect('/');
     }
 
+    /**
+     * Admin Logout
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function adminlogout(){
 	    if(Session::has('orig_user')){
 	        Auth::logout();
