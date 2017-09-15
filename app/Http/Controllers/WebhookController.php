@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Campaign;
+use App\CustomerRefund;
 use App\OrderProduct;
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -21,7 +22,7 @@ class WebhookController extends Controller
         try{
             switch ($request['type'])
             {
-                case 'customer.subscription.updated' :
+                case 'invoice.payment_succeeded' :
                     $subscriptionUpdate = $this->subscriptionUpdated($request,$campaign_key);
                     Log::info($subscriptionUpdate);
                     break;
@@ -58,7 +59,6 @@ class WebhookController extends Controller
                 $stripe = Stripe::make($key);
                 $customer = $stripe->customers()->find($customer_id);
                 $myCustomer = OrderProduct::where('email',$customer['email'])->firstOrFail();
-
                 $newCustomer = new OrderProduct();
                 $newCustomer->log_id = $myCustomer->log_id;
                 $newCustomer->product_id = $myCustomer->product_id;
@@ -67,6 +67,21 @@ class WebhookController extends Controller
                 $newCustomer->save();
 
                 return 'Customer Subscription Updated';
+
+                /*$countCustomer = OrderProduct::where('email',$customer['email'])->count();
+                if($countCustomer > 1){
+                    $newCustomer = new OrderProduct();
+                    $newCustomer->log_id = $myCustomer->log_id;
+                    $newCustomer->product_id = $myCustomer->product_id;
+                    $newCustomer->email = $myCustomer->email;
+                    $newCustomer->status = 1;
+                    $newCustomer->save();
+
+                    return 'Customer Subscription Updated';
+                } else {
+                    return 'First Subscription';
+                }*/
+
             } else {
                 return 'Stripe is not integrated in campaign: '.$campaign->name;
             }
@@ -76,33 +91,27 @@ class WebhookController extends Controller
             return $e->getMessage();
         }
     }
-    public function chargeRefunded($event,$campaign_key)
+
+    /**
+     * For Refund Events
+     * @param $event
+     * @param $campaign_key
+     * @return string
+     */
+    private function chargeRefunded($event,$campaign_key)
     {
         try {
-            Log::info($event);
             $campaign = Campaign::where('key',$campaign_key)->firstOrFail();
-            $customer_id = $event['data']['object']['customer'];
-            if ($campaign->test_sk != '' && $campaign->test_pk != '' && $campaign->live_sk != '' && $campaign->live_pk != ''){
-                if($campaign->stripe_mode == 1){
-                    $key = $campaign->test_sk;
-                } else {
-                    $key = $campaign->live_sk;
-                }
-                $stripe = Stripe::make($key);
-                $customer = $stripe->customers()->find($customer_id);
-                $myCustomer = OrderProduct::where('email',$customer['email'])->firstOrFail();
+            $customer_email = $event['data']['object']['receipt_email'];
+            $myCustomer = OrderProduct::where('email',$customer_email)->firstOrFail();
 
-                $newCustomer = new OrderProduct();
-                $newCustomer->log_id = $myCustomer->log_id;
-                $newCustomer->product_id = $myCustomer->product_id;
-                $newCustomer->email = $myCustomer->email;
-                $newCustomer->status = 1;
-                $newCustomer->save();
+            $refunds = new CustomerRefund();
+            $refunds->campaign_id = $campaign->id;
+            $refunds->log_id = $myCustomer->log_id;
+            $refunds->amount = $event['data']['object']['refunds']['data'][0]['amount'];
+            $refunds->save();
 
-                return 'Customer Subscription Updated';
-            } else {
-                return 'Stripe is not integrated in campaign: '.$campaign->name;
-            }
+            return 'Refund Added Successfully';
         } catch(\Exception $exception) {
             return $exception->getMessage();
         } catch (ModelNotFoundException $e){
