@@ -32,6 +32,10 @@ class WebhookController extends Controller
                     $refund = $this->chargeRefunded($request,$campaign_key);
                     Log::info($refund);
                     break;
+                case 'invoice.upcoming':
+                    $renew=$this->renewBilling($request,$campaign_key);
+                    Log::info($renew);
+                    break;
                 default :
                     Log::info($request['type'].' is not in use');
             }
@@ -61,12 +65,22 @@ class WebhookController extends Controller
                 $stripe = Stripe::make($key);
                 $customer = $stripe->customers()->find($customer_id);
                 $myCustomer = OrderProduct::where('email',$customer['email'])->firstOrFail();
-                $newCustomer = new OrderProduct();
-                $newCustomer->log_id = $myCustomer->log_id;
-                $newCustomer->product_id = $myCustomer->product_id;
-                $newCustomer->email = $myCustomer->email;
-                $newCustomer->status = 1;
-                $newCustomer->save();
+                $log=$myCustomer->log;
+                if(is_null($log->stripe_customer_id)) {
+                    $log->stripe_customer_id = $customer_id;
+                    $log->save();
+                }else{
+                    if($log->tracking_flag != 0){
+                        $newCustomer = new OrderProduct();
+                        $newCustomer->log_id = $myCustomer->log_id;
+                        $newCustomer->product_id = $myCustomer->product_id;
+                        $newCustomer->email = $myCustomer->email;
+                        $newCustomer->status = 1;
+                        $newCustomer->save();
+                        $log->tracking_flag = 0;
+                        $log->save();
+                    }
+                }
 
                 return 'Customer Subscription Updated';
 
@@ -119,6 +133,32 @@ class WebhookController extends Controller
         } catch(\Exception $exception) {
             return $exception->getMessage();
         } catch (ModelNotFoundException $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function renewBilling($event,$campaign_key){
+        try{
+            $campaign=Campaign::where('key',$campaign_key)->firstOrFail();
+            $customer_id = $event['data']['object']['customer'];
+            if ($campaign->test_sk != '' && $campaign->test_pk != '' && $campaign->live_sk != '' && $campaign->live_pk != '') {
+                if ($campaign->stripe_mode == 1) {
+                    $key = $campaign->test_sk;
+                } else {
+                    $key = $campaign->live_sk;
+                }
+                $stripe = Stripe::make($key);
+                $customer = $stripe->customers()->find($customer_id);
+                $myCustomer = OrderProduct::where('email', $customer['email'])->firstOrFail();
+                $log=$myCustomer->log;
+                $log->tracking_flag = 1;
+                $log->save();
+            }else{
+                return 'Stripe is not integrated in campaign: '.$campaign->name;
+            }
+        }catch(\Exception $exception){
+            $exception->getMessage();
+        }catch(ModelNotFoundException $e){
             return $e->getMessage();
         }
     }

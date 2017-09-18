@@ -68,3 +68,6 @@ Sales & Layout
 Clean Up V1.0 Stable
 	Few lists fetched by date descending order
 	Added confirmation popup window before delete a product
+
+Stripe Integration V1.5
+	Stripe integration for every billing cycle
