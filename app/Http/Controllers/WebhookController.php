@@ -121,7 +121,7 @@ class WebhookController extends Controller
             $affiliates = Affiliate::where('campaign_id',$campaign->id);
             $logs = AgentUrlDetails::where('affiliate_id',$affiliates->pluck('id'));
             $customer_email = $event['data']['object']['receipt_email'];
-            $myCustomer = OrderProduct::where('email',$customer_email)->whereIn('log_id',$logs->pluck('id'))->firstOrFail();
+            $myCustomer = OrderProduct::where('email',$customer_email)->firstOrFail();
 
             $refunds = new CustomerRefund();
             $refunds->campaign_id = $campaign->id;

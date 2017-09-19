@@ -167,7 +167,7 @@
                 var campaign = $(this).val();
                 setGetParameter('campaign',campaign);
             });
-            $('.refund').on('click',function () {
+            $(document).delegate('.refund','click',function () {
                 var order_id =  $(this).data('sales_id');
                 swal({
                     title: 'Are you sure?',
