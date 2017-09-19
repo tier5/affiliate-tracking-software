@@ -190,7 +190,6 @@
                                 <div class="col-md-12 col-xs-12">
                                     <span class="url">{{ $value->campaign->sales_url }}?affiliate_id={{ $value->key }}</span>
                                 </div>
-                                <div class="clearfix">&nbsp;</div>
                                 <div class="col-md-12 col-xs-12">
                                     <a class="btn btn-primary btn-sm  copy " style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> Copy Link</a>
                                 </div>

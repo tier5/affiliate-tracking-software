@@ -157,7 +157,7 @@
                                     </div>
                                     <div class="col-md-3 col-sm-3">
 
-                                        <div class="blue-txt">${{ round($netCommission - $totalPaid) }}</div>
+                                        <div class="blue-txt">${{ round($grossCommission - $refundCommission - $totalPaid) }}</div>
                                         <div class="normal-txt">Commission Due</div>
 
                                     </div>
