@@ -207,4 +207,17 @@ class PaymentController extends Controller
             return redirect()->back()->with('error',$e->getMessage());
         }
     }
+    public function refundDetails($id)
+    {
+        try {
+            $refunds = CustomerRefund::where('log_id',$id)->get();
+            return view('admin.refund',[
+                'refunds' => $refunds
+            ]);
+        } catch (\Exception $exception){
+            return redirect()->back()->with('error',$exception->getMessage());
+        } catch (ModelNotFoundException $e) {
+            return redirect()->back()->with('error',$e->getMessage());
+        }
+    }
 }

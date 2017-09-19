@@ -11,10 +11,12 @@ use App\OrderProduct;
 use App\paidCommission;
 use App\PaymentHistory;
 use App\Product;
+use Cartalyst\Stripe\Stripe;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Mail;
@@ -665,12 +667,37 @@ class AffiliateController extends Controller
             $log = AgentUrlDetails::findOrFail($sale->log_id);
             $affiliate = Affiliate::findOrFail($log->affiliate_id);
             $product = Product::findOrFail($sale->product_id);
-            $refunds = new CustomerRefund();
-            $refunds->campaign_id = $affiliate->campaign_id;
-            $refunds->log_id = $sale->id;
-            $refunds->amount = $product->commission;
-            $refunds->save();
-
+            $charge_id = '';
+            if ($affiliate->campaign->test_sk != '' && $affiliate->campaign->test_pk != '' && $affiliate->campaign->live_sk != '' && $affiliate->campaign->live_pk != '') {
+                if ($affiliate->campaign->stripe_mode == 1) {
+                    $key = $affiliate->campaign->test_sk;
+                } else {
+                    $key = $affiliate->campaign->live_sk;
+                }
+                $stripe = Stripe::make($key);
+                $customers = $stripe->charges()->all();
+                foreach ($customers['data'] as $customer){
+                    if($customer['receipt_email'] == $sale->email){
+                        if($product->product_price == ($customer['amount'] / 100)){
+                            $charge_id = $customer['id'];
+                        }
+                    }
+                }
+                if($charge_id != ''){
+                    $refundAction = $stripe->refunds()->create($charge_id);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Customer is not found in stripe! Please Check live or test settings'
+                    ], 200);
+                }
+            } else {
+                $refunds = new CustomerRefund();
+                $refunds->campaign_id = $affiliate->campaign_id;
+                $refunds->log_id = $sale->id;
+                $refunds->amount = $product->commission;
+                $refunds->save();
+            }
             return response()->json([
                 'success' => true,
                 'message' => 'Refunded Successfully'

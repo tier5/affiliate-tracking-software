@@ -189,6 +189,10 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'StripeController@refreshController',
         'as' => 'refresh.customer'
     ]);
+    Route::get('refund/details/{order_id}',[
+        'uses' => 'PaymentController@refundDetails',
+        'as' => 'refund.details'
+    ]);
 });
 Route::get('affiliate/request/{affiliateKey}',[
     'uses' => 'CampaignController@affiliateRegistrationForm',
