@@ -64,24 +64,20 @@ class WebhookController extends Controller
                 }
                 $stripe = Stripe::make($key);
                 $customer = $stripe->customers()->find($customer_id);
-                $myCustomer = OrderProduct::where('email',$customer['email'])->firstOrFail();
-                $log=$myCustomer->log;
-                if(is_null($log->stripe_customer_id)) {
-                    $log->stripe_customer_id = $customer_id;
-                    $log->save();
-                }else{
-                    if($log->tracking_flag != 0){
-                        $newCustomer = new OrderProduct();
-                        $newCustomer->log_id = $myCustomer->log_id;
-                        $newCustomer->product_id = $myCustomer->product_id;
-                        $newCustomer->email = $myCustomer->email;
-                        $newCustomer->status = 1;
-                        $newCustomer->save();
-                        $log->tracking_flag = 0;
-                        $log->save();
-                    }
+                $myCustomer = OrderProduct::where('email',$customer['email'])
+                    ->where('first_flag',0)->firstOrFail();
+                if($myCustomer->tracking_flag == 0){
+                    $myCustomer->customer_id = $customer_id;
+                    $myCustomer->update();
+                } else {
+                    $newCustomer = new OrderProduct();
+                    $newCustomer->log_id = $myCustomer->log_id;
+                    $newCustomer->product_id = $myCustomer->product_id;
+                    $newCustomer->email = $myCustomer->email;
+                    $newCustomer->status = 1;
+                    $newCustomer->first_flag = 1;
+                    $newCustomer->save();
                 }
-
                 return 'Customer Subscription Updated';
 
                 /*$countCustomer = OrderProduct::where('email',$customer['email'])->count();
@@ -109,7 +105,7 @@ class WebhookController extends Controller
     }
 
     /**
-     * For Refund Events
+     * For Refund Events (charge.refunded)
      * @param $event
      * @param $campaign_key
      * @return string
@@ -137,6 +133,12 @@ class WebhookController extends Controller
         }
     }
 
+    /**
+     * event for invoice.upcoming action
+     * @param $event
+     * @param $campaign_key
+     * @return string
+     */
     public function renewBilling($event,$campaign_key){
         try{
             $campaign=Campaign::where('key',$campaign_key)->firstOrFail();
@@ -149,15 +151,17 @@ class WebhookController extends Controller
                 }
                 $stripe = Stripe::make($key);
                 $customer = $stripe->customers()->find($customer_id);
-                $myCustomer = OrderProduct::where('email', $customer['email'])->firstOrFail();
-                $log=$myCustomer->log;
-                $log->tracking_flag = 1;
-                $log->save();
+                $myCustomer = OrderProduct::where('email', $customer['email'])
+                    ->where('first_flag',0)->firstOrFail();
+                $myCustomer->tracking_flag = 1;
+                $myCustomer->customer_id = $customer_id;
+                $myCustomer->update();
+                return 'Renew Notice Success';
             }else{
                 return 'Stripe is not integrated in campaign: '.$campaign->name;
             }
         }catch(\Exception $exception){
-            $exception->getMessage();
+            return $exception->getMessage();
         }catch(ModelNotFoundException $e){
             return $e->getMessage();
         }

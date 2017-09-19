@@ -678,9 +678,9 @@ class AffiliateController extends Controller
                 $customers = $stripe->charges()->all();
                 foreach ($customers['data'] as $customer){
                     if($customer['receipt_email'] == $sale->email){
-                        if($product->product_price == ($customer['amount'] / 100)){
+                       // if($product->product_price == ($customer['amount'] / 100)){
                             $charge_id = $customer['id'];
-                        }
+                       // }
                     }
                 }
                 if($charge_id != ''){
@@ -779,15 +779,22 @@ class AffiliateController extends Controller
                         $refundCommission = $refundCommission + $myCommision;
                     }
                 }
+                $refund = CustomerRefund::where('log_id',$order->id)->count();
+                if($refund > 0){
+                    $status = 2;
+                } else {
+                    $status = 1;
+                }
                 $soldProducts[$key]['name'] = $product->name;
                 $soldProducts[$key]['unit_sold'] = 1;
                 $soldProducts[$key]['total_sale_price'] = $product->product_price;
                 $soldProducts[$key]['my_commission'] = $myCommision;
-                $soldProducts[$key]['status'] = $order->status;
+                $soldProducts[$key]['status'] = $status;
                 $soldProducts[$key]['email'] = $order->log->email;
                 $soldProducts[$key]['saleEmail'] = $order->email;
                 $soldProducts[$key]['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
                 $soldProducts[$key]['campaign'] = $campaignData->name;
+                $soldProducts[$key]['id'] = $order->id;
                 $totalSalePrice += $soldProducts[$key]['total_sale_price'];
                 $totalSales += 1;
             }
