@@ -36,9 +36,6 @@ class WebhookController extends Controller
                     $renew=$this->renewBilling($request,$campaign_key);
                     Log::info($renew);
                     break;
-                case 'charge.succeeded':
-                    $charge = $this->chargeRefunded($request,$campaign_key);
-                    Log::info($charge);
                 default :
                     Log::info($request['type'].' is not in use');
             }
@@ -124,10 +121,11 @@ class WebhookController extends Controller
 
             $customer_email = $event['data']['object']['receipt_email'];
 
-            $myCustomer = OrderProduct::where('email',$customer_email)->firstOrFail();
+            $myCustomer = OrderProduct::where('email',$customer_email)
+                ->whereDate('created_at',date('Y-m-d',$event['data']['object']['created']))->firstOrFail();
             $myCustomer->status = 2;
             $myCustomer->update();
-
+            Log::info(date('Y-m-d',$event['data']['object']['created']));
             /*$refunds = new CustomerRefund();
             $refunds->campaign_id = $campaign->id;
             $refunds->log_id = $myCustomer->id;
@@ -172,19 +170,6 @@ class WebhookController extends Controller
         }catch(\Exception $exception){
             return $exception->getMessage();
         }catch(ModelNotFoundException $e){
-            return $e->getMessage();
-        }
-    }
-
-    public function chargeSuccess($event,$campaign_key)
-    {
-        try {
-            $campaign = Campaign::where('key',$campaign_key)->firstOrFail();
-            Log::info($event);
-            return 'Refund Added Successfully';
-        } catch(\Exception $exception) {
-            return $exception->getMessage();
-        } catch (ModelNotFoundException $e){
             return $e->getMessage();
         }
     }
