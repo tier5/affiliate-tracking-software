@@ -283,8 +283,8 @@ class DashboardController extends Controller
             'sales' => $sales,
             'totalSales' => $totalSales,
             'grossCommission' => $grossCommission,
-            'refundCommission' => $totalCommissionRefund,//$refundCommission,
-            'refundCount' => count($refunds),//$refundCount,
+            'refundCommission' => $refundCommission,
+            'refundCount' => $refundCount,
             'totalSalesPrice' => $totalSalePrice,
             'chrome' => $chrome,
             'opera' => $opera,
@@ -368,7 +368,7 @@ class DashboardController extends Controller
                 $soldProducts[$key]['unit_sold'] = 1;
                 $soldProducts[$key]['total_sale_price'] = $product->product_price * 1;
                 $soldProducts[$key]['my_commission'] = $myCommision;
-                $soldProducts[$key]['status'] = $status;
+                $soldProducts[$key]['status'] = $order->status;
                 $soldProducts[$key]['email'] = $order->log->email;
                 $soldProducts[$key]['salesEmail'] =$order->email;
                 $totalSalePrice += $soldProducts[$key]['total_sale_price'];
@@ -396,8 +396,8 @@ class DashboardController extends Controller
                 'totalSales' => $totalSaless->count(),
                 'total_sale_price' => $totalSalePrice,
                 'gross_commission' => $grossCommission,
-                'refundCommission' => $totalCommissionRefund,
-                'refundCount' => count($refunds),
+                'refundCommission' => $refundCommission,
+                'refundCount' => $refundCount,
                 'available_products' => $availableProducts,
                 'sold_products' => $soldProducts,
                 'campaignDropDown' => $campaignDropDown,

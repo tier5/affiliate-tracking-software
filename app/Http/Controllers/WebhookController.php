@@ -36,6 +36,9 @@ class WebhookController extends Controller
                     $renew=$this->renewBilling($request,$campaign_key);
                     Log::info($renew);
                     break;
+                case 'charge.succeeded':
+                    $charge = $this->chargeRefunded($request,$campaign_key);
+                    Log::info($charge);
                 default :
                     Log::info($request['type'].' is not in use');
             }
@@ -118,14 +121,18 @@ class WebhookController extends Controller
             $campaign = Campaign::where('key',$campaign_key)->firstOrFail();
             $affiliates = Affiliate::where('campaign_id',$campaign->id);
             $logs = AgentUrlDetails::where('affiliate_id',$affiliates->pluck('id'));
-            $customer_email = $event['data']['object']['receipt_email'];
-            $myCustomer = OrderProduct::where('email',$customer_email)->firstOrFail();
 
-            $refunds = new CustomerRefund();
+            $customer_email = $event['data']['object']['receipt_email'];
+
+            $myCustomer = OrderProduct::where('email',$customer_email)->firstOrFail();
+            $myCustomer->status = 2;
+            $myCustomer->update();
+
+            /*$refunds = new CustomerRefund();
             $refunds->campaign_id = $campaign->id;
             $refunds->log_id = $myCustomer->id;
             $refunds->amount = $event['data']['object']['refunds']['data'][0]['amount'] / 100;
-            $refunds->save();
+            $refunds->save();*/
 
             return 'Refund Added Successfully';
         } catch(\Exception $exception) {
@@ -165,6 +172,19 @@ class WebhookController extends Controller
         }catch(\Exception $exception){
             return $exception->getMessage();
         }catch(ModelNotFoundException $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function chargeSuccess($event,$campaign_key)
+    {
+        try {
+            $campaign = Campaign::where('key',$campaign_key)->firstOrFail();
+            Log::info($event);
+            return 'Refund Added Successfully';
+        } catch(\Exception $exception) {
+            return $exception->getMessage();
+        } catch (ModelNotFoundException $e){
             return $e->getMessage();
         }
     }

@@ -103,11 +103,11 @@
                                                         <div class="col-md-6">
                                                             {{ ($sale['status']==2)?'Refunded':'Sales' }}
                                                         </div>
-                                                        @if($sale['status'] == 2)
+                                                        {{--@if($sale['status'] == 2)
                                                             <div class="col-md-6">
                                                                 <a href="{{ route('refund.details',[ $sale['id']]) }}" class="btn btn-info btn-xs"><i class="fa fa-list-ol"></i> </a>
                                                             </div>
-                                                        @endif
+                                                        @endif--}}
                                                     </div>
                                                 </td>
                                             </tr>

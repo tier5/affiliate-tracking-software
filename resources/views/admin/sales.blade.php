@@ -117,11 +117,11 @@
                                                         <div class="col-md-6">
                                                             <span class="status"> {{ ($sale['status']==2)?'Refunded':'Sales' }}</span>
                                                         </div>
-                                                        @if($sale['status'] == 2)
+                                                        {{--@if($sale['status'] == 2)
                                                             <div class="col-md-6">
                                                                 <a href="{{ route('refund.details',[ $sale['id']]) }}" class="btn btn-info btn-xs"><i class="fa fa-list-ol"></i> </a>
                                                             </div>
-                                                        @endif
+                                                        @endif--}}
                                                        <!-- <div class="col-md-6">
                                                             <button type="button" class="btn btn-success btn-xs refresh" data-sales_id="{{ $sale['id'] }}"><i class="fa fa-refresh fa-fw iClass"></i> </button>
                                                         </div> -->

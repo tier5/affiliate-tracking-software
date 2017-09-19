@@ -636,7 +636,7 @@ class AffiliateController extends Controller
                 $commisonsOnly[$key]['email'] = $user_log->email;
                 $commisonsOnly[$key]['saleEmail'] = $order->email;
                 $commisonsOnly[$key]['id'] = $order->id;
-                $commisonsOnly[$key]['status'] = $status;
+                $commisonsOnly[$key]['status'] = $order->status;
                 $commisonsOnly[$key]['affiliate'] = $affiliateData->name;
                 $commisonsOnly[$key]['campaign'] = $campaignData->name;
                 $commisonsOnly[$key]['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
@@ -664,7 +664,9 @@ class AffiliateController extends Controller
     {
         try {
             $sale = OrderProduct::findOrFail($request->id);
-            $log = AgentUrlDetails::findOrFail($sale->log_id);
+            $sale->status = 2;
+            $sale->update();
+            /*$log = AgentUrlDetails::findOrFail($sale->log_id);
             $affiliate = Affiliate::findOrFail($log->affiliate_id);
             $product = Product::findOrFail($sale->product_id);
             $charge_id = '';
@@ -697,7 +699,7 @@ class AffiliateController extends Controller
                 $refunds->log_id = $sale->id;
                 $refunds->amount = $product->commission;
                 $refunds->save();
-            }
+            }*/
             return response()->json([
                 'success' => true,
                 'message' => 'Refunded Successfully'
@@ -789,7 +791,7 @@ class AffiliateController extends Controller
                 $soldProducts[$key]['unit_sold'] = 1;
                 $soldProducts[$key]['total_sale_price'] = $product->product_price;
                 $soldProducts[$key]['my_commission'] = $myCommision;
-                $soldProducts[$key]['status'] = $status;
+                $soldProducts[$key]['status'] = $order->status;
                 $soldProducts[$key]['email'] = $order->log->email;
                 $soldProducts[$key]['saleEmail'] = $order->email;
                 $soldProducts[$key]['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
@@ -908,7 +910,7 @@ class AffiliateController extends Controller
                 $soldProducts[$key]['unit_sold'] = 1;
                 $soldProducts[$key]['total_sale_price'] = $product->product_price * 1;
                 $soldProducts[$key]['my_commission'] = $myCommision;
-                $soldProducts[$key]['status'] = $status;
+                $soldProducts[$key]['status'] = $order->status;
                 $soldProducts[$key]['email'] = $order->log->email;
                 $soldProducts[$key]['saleEmail'] = $order->email;
                 $soldProducts[$key]['date'] = $order->created_at;
@@ -926,8 +928,8 @@ class AffiliateController extends Controller
                 'totalSales' => $totalSaless,
                 'total_sale_price' => $totalSalePrice,
                 'gross_commission' => $grossCommission,
-                'refundCommission' => $totalCommissionRefund,
-                'refundCount' => count($refunds),
+                'refundCommission' => $refundCommission,
+                'refundCount' => $refundCount,
                 'available_products' => $availableProducts,
                 'sold_products' => $soldProducts,
                 'campaignDropDown' => $campaignDropDown,

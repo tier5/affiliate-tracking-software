@@ -86,7 +86,7 @@ class PaymentController extends Controller
                     }
                 }
             }
-            $netCommission = $grossCommission - $totalCommissionRefund;
+            $netCommission = $grossCommission - $refundCommission;
             return view('affiliate.payout',[
                 'commissions' => $finalCommission,
                 'campaignDropDown' => $campaignDropDown,
@@ -193,7 +193,7 @@ class PaymentController extends Controller
                     }
                 }
             }
-            $netCommission = $grossCommission - $totalCommissionRefund;
+            $netCommission = $grossCommission - $refundCommission;
             return view('admin.payout',[
                 'commissions' => $finalCommission,
                 'campaignDropDown' => $campaignDropDown,
