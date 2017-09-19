@@ -358,11 +358,17 @@ class DashboardController extends Controller
                         $refundCommission = $refundCommission + $myCommision;
                     }
                 }
+                $refund = CustomerRefund::where('log_id',$order->id)->count();
+                if($refund > 0){
+                    $status = 2;
+                } else {
+                    $status = 1;
+                }
                 $soldProducts[$key]['name'] = $product->name;
                 $soldProducts[$key]['unit_sold'] = 1;
                 $soldProducts[$key]['total_sale_price'] = $product->product_price * 1;
                 $soldProducts[$key]['my_commission'] = $myCommision;
-                $soldProducts[$key]['status'] = $order->status;
+                $soldProducts[$key]['status'] = $status;
                 $soldProducts[$key]['email'] = $order->log->email;
                 $soldProducts[$key]['salesEmail'] =$order->email;
                 $totalSalePrice += $soldProducts[$key]['total_sale_price'];
