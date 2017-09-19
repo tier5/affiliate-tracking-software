@@ -462,29 +462,29 @@
                 return false;
             }
             var test_pk = $('#pk_live_edit').val();
-            if(test_pk == ''){
+            /*if(test_pk == ''){
                 $('#error_text').text('Please Enter test publishable key');
                 $('#error').show();
                 return false;
-            }
+            }*/
             var test_sk = $('#sk_test_edit').val();
-            if(test_sk == ''){
+            /*if(test_sk == ''){
                 $('#error_text').text('Please Enter test secret key');
                 $('#error').show();
                 return false;
-            }
+            }*/
             var live_pk = $('#pk_live_edit').val();
-            if(live_pk == ''){
+            /*if(live_pk == ''){
                 $('#error_text').text('Please Enter live publishable key');
                 $('#error').show();
                 return false;
-            }
+            }*/
             var live_sk = $('#sk_live_edit').val();
-            if(live_sk == ''){
+            /*if(live_sk == ''){
                 $('#error_text').text('Please Enter live secret key');
                 $('#error').show();
                 return false;
-            }
+            }*/
             var status = $("input[name='edit_approve']:checked").val();
             $.ajax({
                 url: "{{ route('edit.campaign') }}",
@@ -606,29 +606,29 @@
                 return false;
             }
             var test_pk = $('#pk_live').val();
-            if(test_pk == ''){
+            /*if(test_pk == ''){
                 $('#error_text').text('Please Enter test publishable key');
                 $('#error').show();
                 return false;
-            }
+            }*/
             var test_sk = $('#sk_test').val();
-            if(test_sk == ''){
+            /*if(test_sk == ''){
                 $('#error_text').text('Please Enter test secret key');
                 $('#error').show();
                 return false;
-            }
+            }*/
             var live_pk = $('#pk_live').val();
-            if(live_pk == ''){
+            /*if(live_pk == ''){
                 $('#error_text').text('Please Enter live publishable key');
                 $('#error').show();
                 return false;
-            }
+            }*/
             var live_sk = $('#sk_live').val();
-            if(live_sk == ''){
+            /*if(live_sk == ''){
                 $('#error_text').text('Please Enter live secret key');
                 $('#error').show();
                 return false;
-            }
+            }*/
             var approve = $('#approve').val();
             var user_id = "{{ \Auth::user()->id }}";
             var key = randomString(32);

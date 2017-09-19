@@ -31,6 +31,7 @@
                                             <th>Campaign</th>
                                             <th>Affiliate</th>
                                             <th>Refunded Amount</th>
+                                            <th>Refunded Commission</th>
                                             <th>Refunded Date</th>
                                         </tr>
                                     </thead>
@@ -40,6 +41,13 @@
                                                 <td>{{ $refund->campaign->name }}</td>
                                                 <td>{{ $refund->order->log->affiliate->user->name }}</td>
                                                 <td>${{ $refund['amount'] }}</td>
+                                                <td>
+                                                    @if($refund->order->product->method == 1)
+                                                        ${{ $refund['amount'] * $refund->order->product->commission / 100 }}
+                                                    @else
+                                                        ${{ $refund['amount'] }}
+                                                    @endif
+                                                </td>
                                                 <td>{{ date('l jS \of F Y,  h:i:s A',strtotime($refund['created_at']))  }}</td>
                                             </tr>
                                         @endforeach

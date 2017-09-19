@@ -57,7 +57,7 @@
                                             <td>Price</td>
                                             <td>Commission</td>
                                             <td>Frequency</td>
-                                            <td>Plan</td>
+                                            {{--<td>Plan</td>--}}
                                             <td>Actions</td>
                                         </tr>
                                     </thead>
@@ -66,10 +66,10 @@
                                             <tr>
                                                 <td>{{ $product->name }}</td>
                                                 <td>{{ $product->url }}</td>
-                                                <td>{{ $product->product_price }}</td>
+                                                <td>${{ $product->product_price }}</td>
                                                 <td>{{ $product->method == 1 ? $product->commission . "%" : "$" . $product->commission }}</td>
-                                                <td>{{ $product->frequency == 1 ? "One-Time" : "Reccurring" }}</td>
-                                                <td>
+                                                <td>{{ $product->frequency == 1 ? "One-Time" : "Recurring" }}</td>
+                                                {{--<td>
                                                     @php
                                                         switch($product->plan) {
                                                             case 1:
@@ -98,7 +98,7 @@
                                                                 @php
                                                         }
                                                     @endphp
-                                                </td>
+                                                </td>--}}
                                                 <td>
                                                     <div class="row" style="width: 75%; padding: 0 0 0 20px">
                                                         <button class="btn btn-primary btn-xs editProductButton" data-name="{{ $product->name }}" data-id="{{ $product->id }}" ><span class="glyphicon glyphicon-pencil"></span></button>
@@ -381,9 +381,9 @@
         $('#price_frequency').change(function(){
             var priceFrequency=$('#price_frequency').val();
             if(priceFrequency == 2) {
-                $('.plan').show();
+                //$('.plan').show();
             }else{
-                $('.plan').hide();
+                //$('.plan').hide();
                 $('.commissionPlan').prop('checked',false);
             }
         });
@@ -490,7 +490,7 @@
             } else {
                 $('#error').hide();
             }
-            if (commissionFrequency == 2) {
+            /*if (commissionFrequency == 2) {
                 if ($('#planDaily').is(':checked')) {
                     commissionPlan = $('#planDaily').val();
                 } else if ($('#planMonthly').is(':checked')) {
@@ -507,7 +507,7 @@
                 } else {
                     $('#error').hide();
                 }
-            }
+            }*/
             var campaign_id = $('#campaign_id').val();
 
             var API_URL;
@@ -648,9 +648,9 @@
                         $('#price_frequency').val(response.product.frequency);
                         if (response.product.frequency == 2) {
                             $('input[name=plan][value='+response.product.plan+']').attr('checked', true);
-                            $('.plan').show();
+                            //$('.plan').show();
                         } else {
-                            $('.plan').hide();
+                            //$('.plan').hide();
                         }
                         $('#product_id').val(response.product.id);
                         $('#error').hide();

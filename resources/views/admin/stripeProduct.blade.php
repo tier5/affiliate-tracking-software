@@ -171,7 +171,7 @@
         } else {
             $('#error1').hide();
         }
-        if (commissionFrequency == 2) {
+        /*if (commissionFrequency == 2) {
             if ($('#planDaily1').is(':checked')) {
                 commissionPlan = $('#planDaily1').val();
             } else if ($('#planMonthly1').is(':checked')) {
@@ -188,7 +188,7 @@
             } else {
                 $('#error1').hide();
             }
-        }
+        }*/
         var campaign_id = $('#campaign_id1').val();
 
         var API_URL;
@@ -271,9 +271,9 @@
     $('#price_frequency1').change(function(){
         var priceFrequency=$('#price_frequency1').val();
         if(priceFrequency == 2) {
-            $('.plan1').show();
+            //$('.plan1').show();
         }else{
-            $('.plan1').hide();
+            //$('.plan1').hide();
             $('.commissionPlan1').prop('checked',false);
         }
     });

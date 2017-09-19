@@ -291,7 +291,7 @@
                                             <td>Price</td>
                                             <td>Commission</td>
                                             <td>Frequency</td>
-                                            <td>Method</td>
+                                            {{--<td>Method</td>--}}
                                         </thead>
                                         <tbody>
                                             @foreach($available_products as $product)
@@ -301,7 +301,7 @@
                                                     <td>{{ "$" . number_format($product->product_price, 2, '.', ',') }}</td>
                                                     <td>{{ $product->method == 1 ? $product->commission  . "%" : "$" . number_format($product->commission, 2, '.', ',') }}</td>
                                                     <td>{{ $product->frequency == 1 ? "One-Time" : "Reccurring" }}</td>
-                                                    <td>
+                                                    {{--<td>
                                                     @php
                                                         switch($product->plan) {
                                                             case 1:
@@ -329,7 +329,7 @@
                                                                 {{ "NA" }}
                                                                 @php
                                                         }
-                                                    @endphp
+                                                    @endphp--}}
                                                 </tr>
                                             @endforeach
                                         </tbody>
