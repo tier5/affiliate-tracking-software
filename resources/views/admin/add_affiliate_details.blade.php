@@ -103,7 +103,7 @@
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
                                                     <div class="blue-txt">
-                                                        ${{ round($netCommission - $paidCommission) }}</div>
+                                                        ${{ round($gross_commission - $refundCommission - $paidCommission) }}</div>
                                                     <div class="normal-txt">Commission Due</div>
                                                 </div>
                                                 @if(count($affiliate) > 0)
