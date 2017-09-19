@@ -77,6 +77,8 @@ class WebhookController extends Controller
                     $newCustomer->status = 1;
                     $newCustomer->first_flag = 1;
                     $newCustomer->save();
+                    $myCustomer->tracking_flag = 0;
+                    $myCustomer->update();
                 }
                 return 'Customer Subscription Updated';
 
