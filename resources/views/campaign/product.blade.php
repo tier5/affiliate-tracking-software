@@ -497,9 +497,7 @@
             var commissionPlan = null;
             var commissionFrequency = $('#price_frequency').val();
             if(commissionFrequency == ''){
-                $('#error_text').text('Please Enter The Required Pricing Frequency');
-                $('#error').show();
-                return false;
+                commissionFrequency = 1;
             } else {
                 $('#error').hide();
             }
