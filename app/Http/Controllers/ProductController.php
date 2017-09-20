@@ -25,7 +25,7 @@ class ProductController extends Controller
             $campaign = Campaign::findOrFail($request->campaign_id);
             $campaign->product_type=$request->product_type;
             $campaign->update();
-            
+
             $response = [
                 'status' => true,
                 'message' => 'Your Product Preference Has Been Added Successfully!',
@@ -538,7 +538,9 @@ class ProductController extends Controller
                     $key = $campaign->live_sk;
                 }
                 $stripe = Stripe::make($key);
-                $plans = $stripe->plans()->all();
+                $plans = $stripe->plans()->all([
+                    'limit' => '100'
+                ]);
                 if(count($plans['data']) > 0){
                     $html = view('admin.stripeProduct',['campaign' => $campaign,'products' => $plans['data']]);
                 } else {

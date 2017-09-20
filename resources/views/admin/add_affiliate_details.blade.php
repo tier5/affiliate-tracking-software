@@ -63,7 +63,7 @@
                                                     <div class="normal-txt">Unique Clicks</div>
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
-                                                    <div class="blue-txt"> {{ $totalSales }}</div>
+                                                    <div class="blue-txt"> {{ $sales }}</div>
                                                     <div class="normal-txt">Sales</div>
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
