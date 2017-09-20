@@ -101,7 +101,7 @@
                                                 </td>--}}
                                                 <td>
                                                     <div class="row" style="width: 75%; padding: 0 0 0 20px">
-                                                        <button class="btn btn-primary btn-xs editProductButton" data-name="{{ $product->name }}" data-id="{{ $product->id }}" ><span class="glyphicon glyphicon-pencil"></span></button>
+                                                        {{-- <button class="btn btn-primary btn-xs editProductButton" data-name="{{ $product->name }}" data-id="{{ $product->id }}" ><span class="glyphicon glyphicon-pencil"></span></button> --}}
                                                         <button class="btn btn-danger btn-xs deleteProduct" data-id="{{ $product->id }}" data-title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
                                                     </div>
                                                 </td>
@@ -138,8 +138,12 @@
                     <div class="row">
                             <div class="col-md-12 col-sm-12">
                                 <ul class="nav nav-tabs">
-                                    <li class="active"><a data-toggle="tab" href="#normalPlan">Normal Plan</a></li>
-                                    <li><a data-toggle="tab" id="stripPlanFetch" href="#stripePlan">Stripe Plan</a></li>
+                                    @if($campaign->test_pk != '' && $campaign->test_sk != '' && $campaign->live_pk != '' && $campaign->live_sk != '')
+                                        <li class="active"><a data-toggle="tab" href="#normalPlan">Stripe Payment</a></li>
+                                        <li><a data-toggle="tab" id="stripPlanFetch" href="#stripePlan">Stripe Plan</a></li>
+                                    @else
+                                        <li class="active"><a data-toggle="tab" href="#normalPlan">Normal Plan</a></li>
+                                    @endif
                                 </ul>
                                 <div class="tab-content">
                                     <div id="normalPlan" class="tab-pane fade in active">
@@ -147,7 +151,12 @@
                                             <div class="panel-heading">
                                                 <div class="row">
                                                     <div class=" col-md-10 pull-left">
-                                                        <h4>Add Normal Plan</h4>
+                                                        @if($campaign->test_pk != '' && $campaign->test_sk != '' && $campaign->live_pk != '' && $campaign->live_sk != '')
+                                                            <h4>Add Stripe Payment</h4>
+                                                        @else
+                                                            <h4>Add Normal Plan</h4>
+                                                        @endif
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -197,14 +206,18 @@
                                                                 <option value="2">Dollar ( $ )</option>
                                                             </select>
                                                         </div>
-                                                        <div class="col-md-4">
-                                                            <label class="control-label">Frequency:</label>
-                                                            <select name="price_frequency" class="form-control hide-error" id="price_frequency">
-                                                                <option value="">-------Select-------</option>
-                                                                <option value="1">One-Time</option>
-                                                                <option value="2">Recurring</option>
-                                                            </select>
-                                                        </div>
+                                                        @if($campaign->test_pk != '' && $campaign->test_sk != '' && $campaign->live_pk != '' && $campaign->live_sk != '')
+                                                            <input type="hidden" id="price_frequency" name="price_frequency" value="1" />
+                                                        @else
+                                                            <div class="col-md-4">
+                                                                <label class="control-label">Frequency:</label>
+                                                                <select name="price_frequency" class="form-control hide-error" id="price_frequency">
+                                                                    <option value="">-------Select-------</option>
+                                                                    <option value="1">One-Time</option>
+                                                                    <option value="2">Recurring</option>
+                                                                </select>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                     <div class="form-group plan" style="display:none">
                                                         <label class="control-label col-md-3" for="plan">Plan :</label>

@@ -510,7 +510,7 @@ class AffiliateController extends Controller
             if ($lead->type != 2) {
                 $lead->type = 3;
             }
-            $lead->email = $request->email;
+            $lead->email = base64_decode($request->email);
             //$lead->type = 3;
             $lead->update();
             return response()->json([

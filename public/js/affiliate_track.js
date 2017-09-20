@@ -356,7 +356,7 @@ var Affiliate = Affiliate || (function(){
                 var lead_cookie = getCookie(LEAD_COOKIE_NAME);
                 if(lead_cookie == ''){
                     setCookie(LEAD_COOKIE_NAME,lead,86400,null);
-                    dataPost = 'dataId='+id+'&email='+lead;
+                    dataPost = 'dataId='+id+'&email='+window.btoa(lead);
                     Ajax.request(_callback_url + "/api/affiliate/lead","POST",dataPost,function (dataNew) {
                         console.log(dataNew.message);
                     },function () {
@@ -366,14 +366,14 @@ var Affiliate = Affiliate || (function(){
                     if(lead != lead_cookie){
                         deleteCookie(LEAD_COOKIE_NAME);
                         setCookie(LEAD_COOKIE_NAME,lead,86400,null);
-                        dataPost = 'dataId='+id+'&email='+lead;
+                        dataPost = 'dataId='+id+'&email='+window.btoa(lead);
                         Ajax.request(_callback_url + "/api/affiliate/lead","POST",dataPost,function (dataNew) {
                             console.log(dataNew.message);
                         },function () {
                             //
                         });
                     } else {
-                        console.log('same Api');
+                        console.log('same Email');
                     }
                 }
             }

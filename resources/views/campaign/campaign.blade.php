@@ -247,27 +247,37 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-2" for="pk_test">Test publishable key:</label>
+                                <label class="control-label col-md-2" for="campaign_type">Campaign Type:</label>
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control hide-error" id="pk_test" name="pk_test" placeholder="Enter test Publishable key">
+                                    <input onClick="stripePlan(1)" name="campaign_type" id="campaign_type_stripe" value="1" type="radio" /> Stripe
+                                    <input onClick="stripePlan(2)" name="campaign_type" id="campaign_type_normal" value="2" type="radio" /> Normal
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2" for="sk_test">Test Secret key:</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control hide-error" id="sk_test" name="sk_test" placeholder="Enter Test Secret key">
+                            <input type="hidden" id="selectedType" />
+                            <div class="stripe_type" style="display: none;">
+                                <div class="form-group">
+                                    <label class="control-label col-md-2" for="pk_test">Test publishable key:</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control hide-error" id="pk_test" name="pk_test" placeholder="Enter test Publishable key">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2" for="pk_live">Live publishable key:</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control hide-error" id="pk_live" name="pk_live" placeholder="Enter Live Publishable key">
+                                <div class="form-group">
+                                    <label class="control-label col-md-2" for="sk_test">Test Secret key:</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control hide-error" id="sk_test" name="sk_test" placeholder="Enter Test Secret key">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2" for="sk_live">Live Secret key:</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control hide-error" id="sk_live" name="sk_live" placeholder="Enter Live Secret key">
+                                <div class="form-group">
+                                    <label class="control-label col-md-2" for="pk_live">Live publishable key:</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control hide-error" id="pk_live" name="pk_live" placeholder="Enter Live Publishable key">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-2" for="sk_live">Live Secret key:</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control hide-error" id="sk_live" name="sk_live" placeholder="Enter Live Secret key">
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group" id="error" style="display: none; color: red;">
@@ -337,29 +347,39 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-2" for="pk_test_edit">Test publishable key:</label>
+                            <label class="control-label col-md-2" for="campaign_type_edit">Campaign Type:</label>
                             <div class="col-md-10">
-                                <input type="text" class="form-control hide-error" id="pk_test_edit" name="pk_test_edit" placeholder="Enter test Publishable key">
+                                <input onClick="stripePlanEdit(1)" name="campaign_type_edit" id="campaign_type_edit_stripe" value="1" type="radio" /> Stripe
+                                <input onClick="stripePlanEdit(2)" name="campaign_type_edit" id="campaign_type_edit_normal" value="2" type="radio" /> Normal
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-2" for="sk_test_edit">Test Secret key:</label>
-                            <div class="col-md-10">
-                                <input type="text" class="form-control hide-error" id="sk_test_edit" name="sk_test_edit" placeholder="Enter Test Secret key">
+                        <div id="stripePlanEdit" style="display: none;">
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="pk_test_edit">Test publishable key:</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="pk_test_edit" name="pk_test_edit" placeholder="Enter test Publishable key">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="sk_test_edit">Test Secret key:</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="sk_test_edit" name="sk_test_edit" placeholder="Enter Test Secret key">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="pk_live_edit">Live publishable key:</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="pk_live_edit" name="pk_live_edit" placeholder="Enter Live Publishable key">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2" for="sk_live_edit">Live Secret key:</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control hide-error" id="sk_live_edit" name="sk_live_edit" placeholder="Enter Live Secret key">
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-2" for="pk_live_edit">Live publishable key:</label>
-                            <div class="col-md-10">
-                                <input type="text" class="form-control hide-error" id="pk_live_edit" name="pk_live_edit" placeholder="Enter Live Publishable key">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-2" for="sk_live_edit">Live Secret key:</label>
-                            <div class="col-md-10">
-                                <input type="text" class="form-control hide-error" id="sk_live_edit" name="sk_live_edit" placeholder="Enter Live Secret key">
-                            </div>
-                        </div>
+                        <input type="hidden" id="stripeEdit">
                         <input id="edit_id" type="hidden">
                         <div class="form-group" id="edit_error" style="display: none; color: red;">
                             <label class="control-label col-md-2" for="edit_error">Error:</label>
@@ -381,6 +401,24 @@
 @section('script')
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script>
+        function stripePlan(value) {
+            if(value == 1){
+                $('.stripe_type').show();
+                $('#selectedType').val(1);
+            } else {
+                $('.stripe_type').hide();
+                $('#selectedType').val(2);
+            }
+        }
+        function stripePlanEdit(value) {
+            if(value == 1){
+                $('#stripePlanEdit').show();
+                $('#stripeEdit').val(1);
+            } else {
+                $('#stripePlanEdit').hide();
+                $('#stripeEdit').val(2);
+            }
+        }
         function stripeModeChange(campaign) {
             $.ajax({
                 url: "{{ route('change.stripe.mode') }}",
@@ -420,6 +458,15 @@
             var test_sk = $(this).data('test_sk');
             var live_pk = $(this).data('live_pk');
             var live_sk = $(this).data('live_sk');
+            if(test_pk != '' && test_sk != '' && live_pk != '' && live_sk != ''){
+                $('#stripeEdit').val(1);
+                $('#stripePlanEdit').show();
+                $('#campaign_type_edit_stripe').attr('checked',true);
+            } else {
+                $('#stripeEdit').val(2);
+                $('#stripePlanEdit').hide();
+                $('#campaign_type_edit_normal').attr('checked',true);
+            }
             $('#campaignNameShow').text(name);
             $('#edit_campaign_name').val(name);
             $('#edit_campaign_url').val(campaign_url);
@@ -461,30 +508,36 @@
                 $('#edit_error').show();
                 return false;
             }
-            var test_pk = $('#pk_live_edit').val();
-            /*if(test_pk == ''){
-                $('#error_text').text('Please Enter test publishable key');
-                $('#error').show();
+            var stripeEdit = $('#stripeEdit').val();
+            if(stripeEdit == ''){
+                $('#edit_error_text').text('Please Enter Campaign Type');
+                $('#edit_error').show();
                 return false;
-            }*/
+            }
+            var test_pk = $('#pk_test_edit').val();
+            if(test_pk == '' && stripeEdit == 1){
+                $('#edit_error_text').text('Please Enter test publishable key');
+                $('#edit_error').show();
+                return false;
+            }
             var test_sk = $('#sk_test_edit').val();
-            /*if(test_sk == ''){
-                $('#error_text').text('Please Enter test secret key');
-                $('#error').show();
+            if(test_sk == '' && stripeEdit == 1){
+                $('#edit_error_text').text('Please Enter test secret key');
+                $('#edit_error').show();
                 return false;
-            }*/
+            }
             var live_pk = $('#pk_live_edit').val();
-            /*if(live_pk == ''){
-                $('#error_text').text('Please Enter live publishable key');
-                $('#error').show();
+            if(live_pk == '' && stripeEdit == 1){
+                $('#edit_error_text').text('Please Enter live publishable key');
+                $('#edit_error').show();
                 return false;
-            }*/
+            }
             var live_sk = $('#sk_live_edit').val();
-            /*if(live_sk == ''){
-                $('#error_text').text('Please Enter live secret key');
-                $('#error').show();
+            if(live_sk == '' && stripeEdit == 1){
+                $('#edit_error_text').text('Please Enter live secret key');
+                $('#edit_error').show();
                 return false;
-            }*/
+            }
             var status = $("input[name='edit_approve']:checked").val();
             $.ajax({
                 url: "{{ route('edit.campaign') }}",
@@ -605,30 +658,37 @@
                 $('#error').show();
                 return false;
             }
-            var test_pk = $('#pk_live').val();
-            /*if(test_pk == ''){
+            var selectedType = $('#selectedType').val();
+            if(selectedType == ''){
+                $('#error_text').text('Please Select Campaign Type');
+                $('#error').show();
+                return false;
+            }
+
+            var test_pk = $('#pk_test').val();
+            if(test_pk == '' && selectedType == 1){
                 $('#error_text').text('Please Enter test publishable key');
                 $('#error').show();
                 return false;
-            }*/
+            }
             var test_sk = $('#sk_test').val();
-            /*if(test_sk == ''){
+            if(test_sk == '' && selectedType == 1){
                 $('#error_text').text('Please Enter test secret key');
                 $('#error').show();
                 return false;
-            }*/
+            }
             var live_pk = $('#pk_live').val();
-            /*if(live_pk == ''){
+            if(live_pk == '' && selectedType == 1){
                 $('#error_text').text('Please Enter live publishable key');
                 $('#error').show();
                 return false;
-            }*/
+            }
             var live_sk = $('#sk_live').val();
-            /*if(live_sk == ''){
+            if(live_sk == '' && selectedType == 1){
                 $('#error_text').text('Please Enter live secret key');
                 $('#error').show();
                 return false;
-            }*/
+            }
             var approve = $('#approve').val();
             var user_id = "{{ \Auth::user()->id }}";
             var key = randomString(32);

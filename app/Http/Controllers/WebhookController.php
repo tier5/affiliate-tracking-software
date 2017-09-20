@@ -125,7 +125,6 @@ class WebhookController extends Controller
                 ->whereDate('created_at',date('Y-m-d',$event['data']['object']['created']))->firstOrFail();
             $myCustomer->status = 2;
             $myCustomer->update();
-            Log::info(date('Y-m-d',$event['data']['object']['created']));
             /*$refunds = new CustomerRefund();
             $refunds->campaign_id = $campaign->id;
             $refunds->log_id = $myCustomer->id;
