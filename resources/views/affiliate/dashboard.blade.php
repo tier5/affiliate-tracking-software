@@ -328,16 +328,6 @@
                         <!-- /.box-body -->
                     </div>
                     <div class="box box-danger">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Commission Details</h3>
-
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
                         <!-- /.box-header -->
                         <div class="box-body no-padding">
                             <div class="box2">
@@ -347,7 +337,7 @@
                                         <div class="row">
                                             <div class="col-md-8 col-xs-12">
                                                 <div class="blue-txt">{{ "$" . round($paidCommission) }}</div>
-                                                <div class="normal-txt">Paid</div>
+                                                <div class="normal-txt">Commission Paid</div>
                                             </div>
                                             <div class="col-md-4">
                                                 <img src="images/09_commission_paid.png" alt="img">
@@ -362,7 +352,7 @@
                                         <div class="blue-txt">
                                             ${{ round($gross_commission - $refundCommission - $paidCommission) }}
                                         </div>
-                                        <div class="normal-txt">Due</div>
+                                        <div class="normal-txt">Commission Due</div>
                                             </div>
                                             <div class="col-md-4">
                                                 <img src="images/10_commission_due.png" alt="img">
