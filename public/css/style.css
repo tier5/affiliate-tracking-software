@@ -2,13 +2,13 @@
 
 
 
-.box1{border: 1px solid #E6EFF7; padding: 20px; text-align: center;  margin: 8px auto 25px; background: #fff;
+.box1{border: 1px solid #E6EFF7; padding: 20px; text-align: center;  margin: 8px auto 20px; background: #fff;
 box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 .box1 h2{margin: 0; padding: 0 0 136px; font-size: 32px; color: #595959;}
-.blue-txt{color: #5F88C0; font-size: 45px; font-weight: bold;}
-.normal-txt{color: #7f7f7f; font-size: 21px; font-weight: bold;}
-.one-row{padding-bottom: 30px;}
+.blue-txt{color: #378cbe; font-size: 36px; font-weight: bold;}
+.normal-txt{color: #222d32; font-size: 16px; }
+.one-row{padding-bottom: 2px;}
 .two-row{padding-bottom: 15px;}
 .spec .blue-txt {
 	font-size: 70px;
@@ -17,6 +17,10 @@ box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 .spec .normal-txt {font-size: 28px;}
 
+.box2{ padding: 20px; text-align: center;  margin: 8px auto 0px; background: #fff;
+box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+.box-title{font-weight: 600;}
 
 
 @media only screen and (max-width: 1000px){
@@ -34,20 +38,7 @@ box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 
 }
 
-.border-area{border: 2px solid #3C8DBC; min-height: 126px;
--moz-box-shadow:    inset 0 0 10px #3C8DBC;
-   -webkit-box-shadow: inset 0 0 5px #3C8DBC;
-   box-shadow:         inset 0 0 10px #3C8DBC;
 
-}
-.border-area:hover{border: 2px solid #FF7C20;
-
--moz-box-shadow:    inset 0 0 10px #FF7C1F;
-   -webkit-box-shadow: inset 0 0 5px #FF7C1F;
-   box-shadow:         inset 0 0 10px #FF7C1F;
-
-}
-.box-body{word-wrap: break-word;}
 
 
 

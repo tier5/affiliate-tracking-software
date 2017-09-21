@@ -1,0 +1,34 @@
+.border-area{
+
+	background: #f2f2f2; min-height: 129px; border-radius: 5px; padding: 20px 7px; margin-bottom: 15px;
+
+}
+/*.border-area:hover{border: 2px solid #FF7C20;
+
+-moz-box-shadow:    inset 0 0 10px #FF7C1F;
+   -webkit-box-shadow: inset 0 0 5px #FF7C1F;
+   box-shadow:         inset 0 0 10px #FF7C1F;
+
+}*/
+.box-body{word-wrap: break-word;}
+
+.border-area img{max-width: 100%;}
+.no-padding{padding: 0;}
+
+.no-margin{margin: 0;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

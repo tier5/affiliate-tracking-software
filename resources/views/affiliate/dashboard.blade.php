@@ -5,6 +5,7 @@
 @endsection
 
 @section('style')
+    <link rel="stylesheet" href="{{ url('/') }}/css/affiliate_dashboard.css">
     <style>
         .box-body1 {
             padding: 59px !important;
@@ -55,70 +56,129 @@
                         <div class="row one-row">
                             <div class="col-md-3 col-sm-3">
                             <div class="border-area">
-                                <div class="blue-txt">
-                                    @if($visitors > 0)
-                                        ${!! number_format(($gross_commission / $visitors),2,'.','') !!}
-                                    @else
-                                        ${{ number_format($visitors,2,'.','') }}
-                                    @endif
+                                <div class="row">
+                                    <div class="col-md-8 col-xs-12">
+                                    <div class="blue-txt">
+                                        @if($visitors > 0)
+                                            ${!! number_format(($gross_commission / $visitors),2,'.','') !!}
+                                        @else
+                                            ${{ number_format($visitors,2,'.','') }}
+                                        @endif
+                                    </div>
+                                    <div class="normal-txt">EPC</div>
+                                    </div>
+                                    <div class="col-md-4 col-xs-12 no-padding">
+                                        <img src="images/epc.png" alt="img">
+
+                                    </div>    
                                 </div>
-                                <div class="normal-txt">EPC</div>
                             </div>    
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
-                                <div class="blue-txt">
-                                    {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'visitor',$queryString]) }}">--}}{{ $visitors }}{{--</a>--}}
-                                </div>
-                                <div class="normal-txt">Unique Clicks</div>
+                                    <div class="row">
+                                       <div class="col-md-8 col-xs-12"> 
+                                            <div class="blue-txt">
+                                                {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'visitor',$queryString]) }}">--}}{{ $visitors }}{{--</a>--}}
+                                            </div>
+                                            <div class="normal-txt">Unique Clicks</div>
+                                        </div>
+                                        <div class="col-md-4 col-xs-12 no-padding">
+                                            <img src="images/click.png" alt="img">
+                                        </div>    
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
-                                <div class="blue-txt">
-                                    {{--<a href="{{  route('view.link',['affiliate',Auth::user()->id,'sale',$queryString]) }}"> --}}{{ $sales }}{{--</a>--}}
-                                </div>
-                                <div class="normal-txt">Sales</div>
-                                </div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-xs-12"> 
+                                        <div class="blue-txt">
+                                            {{--<a href="{{  route('view.link',['affiliate',Auth::user()->id,'sale',$queryString]) }}"> --}}{{ $sales }}{{--</a>--}}
+                                        </div>
+                                        
+                                        
+                                        <div class="normal-txt">Sales</div>
+                                        </div>
+                                        <div class="col-md-4 col-xs-12 no-padding">
+                                            <img src="images/sales.png" alt="img">
+                                        </div>
+                                        </div>
+
+                                    </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
-                                <div class="blue-txt">
-                                    @if($visitors > 0 & $sales >0)
-                                        {!! round($sales / $visitors*100,2) !!}%
-                                    @else
-                                        0%
-                                    @endif
-                                </div>
-                                <div class="normal-txt">Conversion Rate</div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-xs-12"> 
+
+                                        <div class="blue-txt">
+                                            @if($visitors > 0 & $sales >0)
+                                                {!! round($sales / $visitors*100,2) !!}%
+                                            @else
+                                                0%
+                                            @endif
+                                        </div>
+                                        <div class="normal-txt">Conversion Rate</div>
+                                        </div>
+                                        <div class="col-md-4 col-xs-12 no-padding">
+                                            <img src="images/conversion.png" alt="img">
+                                        </div>    
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row one-row">
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
-                                <div class="blue-txt">{{ "$" . round($gross_commission) }}</div>
-                                <div class="normal-txt">Gross Commission</div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-xs-12"> 
+                                        <div class="blue-txt">{{ "$" . round($gross_commission) }}</div>
+                                        <div class="normal-txt">Gross Commission</div>
+                                        </div>
+                                        <div class="col-md-4 col-xs-12 no-padding">
+                                            <img src="images/commision.png" alt="img">
+                                        </div>    
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
-                                <div class="blue-txt">${{ round($gross_commission-$refundCommission) }}</div>
-                                <div class="normal-txt">Net Commission</div>
+                                    <div class="row">
+                                      <div class="col-md-8 col-xs-12">   
+                                        <div class="blue-txt">${{ round($gross_commission-$refundCommission) }}</div>
+                                        <div class="normal-txt">Net Commission</div>
+                                      </div> 
+                                       <div class="col-md-4 col-xs-12 no-padding">
+                                            <img src="images/net-commison.png" alt="img">
+                                        </div> 
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
-                                <div class="blue-txt">
-                                    {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'refund',$queryString]) }}">--}} {{ $refundCount }}{{--</a>--}}
-                                </div>
-                                <div class="normal-txt">Refunds</div>
+                                    <div class="col-md-8 col-xs-12">
+                                    <div class="blue-txt">
+                                        {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'refund',$queryString]) }}">--}} {{ $refundCount }}{{--</a>--}}
+                                    </div>
+                                    <div class="normal-txt">Refunds</div>
+                                    </div>
+                                    <div class="col-md-4 col-xs-12 no-padding">
+                                            <img src="images/refund.png" alt="img">
+                                    </div> 
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
-                                <div class="blue-txt">${{ round($refundCommission) }}</div>
-                                <div class="normal-txt">Refunds Amount</div>
+                                    <div class="row">
+                                        <div class="col-md-8 col-xs-12">
+                                        <div class="blue-txt">${{ round($refundCommission) }}</div>
+                                        <div class="normal-txt">Refunds Amount</div>
+                                        </div>
+                                        <div class="col-md-4 col-xs-12 no-padding">
+                                            <img src="images/ammount.png" alt="img">
+                                        </div>    
+                                    </div>    
                                 </div>
                             </div>
                         </div>
@@ -168,110 +228,7 @@
                         </div>
                     </div>
                     <!-- /.box -->
-                </div>
-                <!-- /.col -->
-                <div class="col-md-4">
-                    <div class="box box-success">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Your Referral Link</h3>
-
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body ">
-                            <div class="clearfix">&nbsp;</div>
-                            @foreach ($affiliate as $key => $value)
-                                <div class="row">
-                                <div class="col-md-12 col-xs-12">
-                                    <span class="url">{{ $value->campaign->sales_url }}?affiliate_id={{ $value->key }}</span>
-                                </div>
-                                <div class="col-md-12 col-xs-12">
-                                    <a class="btn btn-primary btn-sm  copy " style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> Copy Link</a>
-                                </div>
-                                </div>
-                                <br />
-                                <div class="clearfix">&nbsp;</div>
-                            @endforeach
-                        </div>
-                        <!-- /.box-body -->
-                    </div>
-                    <div class="box box-info">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Commission Details</h3>
-
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body no-padding">
-                            <div class="box1">
-                                <div class="row one-row">
-                                    <div class="col-md-6 col-sm-6">
-                                        <div class="blue-txt">{{ "$" . round($paidCommission) }}</div>
-                                        <div class="normal-txt">Paid</div>
-                                    </div>
-                                    <div class="col-md-6 col-sm-6">
-                                        <div class="blue-txt">
-                                            ${{ round($gross_commission - $refundCommission - $paidCommission) }}</div>
-                                        <div class="normal-txt">Due</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /.box-body -->
-                    </div>
-                </div>
-                <!-- /.col -->
-            </div>
-            <!-- /.row -->
-            {{--<div class="row">
-                <div class="col-md-12">
-                    <div class="box box-success">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Payment Information</h3>
-
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body no-padding">
-                            <div class="col-md-4">
-                                <h2>Total: ${{ $netCommission }}</h2>
-                            </div>
-                            <div class="col-md-4">
-                                <h2>Paid: ${{ $paidCommission }}</h2>
-                            </div>
-                            <div class="col-md-4">
-                                <h2>Due:
-                                    ${{ round($netCommission - $paidCommission,2) }}</h2>
-                            </div>
-                        </div>
-                        <!-- /.box-body -->
-                    </div>
-                </div>
-            </div>--}}
-            <!-- Main row -->
-            <div class="row">
-                <!-- Left col -->
-                <div class="col-md-8">
-                    <!-- /.box -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <!-- USERS LIST -->
-                            <div class="box box-warning">
+                    <div class="box box-warning">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Commissions on available products</h3>
 
@@ -338,19 +295,88 @@
                                 </div>
                                 <!-- /.box-body -->
                             </div>
-                            <!--/.box -->
-                        </div>
-                        <!-- /.col -->
-                    </div>
-                    <!-- /.row -->
                 </div>
-                <!-- Right col -->
+                <!-- /.col -->
                 <div class="col-md-4">
-                    <!-- /.box -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <!-- USERS LIST -->
-                            <div class="box box-danger">
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Your Referral Link</h3>
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body ">
+                            <div class="clearfix">&nbsp;</div>
+                            @foreach ($affiliate as $key => $value)
+                                <div class="row">
+                                <div class="col-md-12 col-xs-12">
+                                    <span class="url">{{ $value->campaign->sales_url }}?affiliate_id={{ $value->key }}</span>
+                                </div>
+                                <div class="col-md-12 col-xs-12">
+                                    <a class="btn btn-primary btn-sm  copy " style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> Copy Link</a>
+                                </div>
+                                </div>
+                                <br />
+                                <div class="clearfix">&nbsp;</div>
+                            @endforeach
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Commission Details</h3>
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body no-padding">
+                            <div class="box2">
+                                <div class="row">
+                                    <div class="border-area">
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="row">
+                                            <div class="col-md-8 col-xs-12">
+                                                <div class="blue-txt">{{ "$" . round($paidCommission) }}</div>
+                                                <div class="normal-txt">Paid</div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <img src="images/09_commission_paid.png" alt="img">
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div class="border-area no-margin">
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="row">
+                                            <div class="col-md-8 col-xs-12">
+                                        <div class="blue-txt">
+                                            ${{ round($gross_commission - $refundCommission - $paidCommission) }}
+                                        </div>
+                                        <div class="normal-txt">Due</div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <img src="images/10_commission_due.png" alt="img">
+                                            </div>    
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+
+                    <div class="box box-danger">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Commissions on sold products</h3>
 
@@ -389,12 +415,172 @@
                                 </div>
                                 <!-- /.box-body -->
                             </div>
-                            <!--/.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+            {{--<div class="row">
+                <div class="col-md-12">
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Payment Information</h3>
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                </button>
+                            </div>
                         </div>
-                        <!-- /.col -->
+                        <!-- /.box-header -->
+                        <div class="box-body no-padding">
+                            <div class="col-md-4">
+                                <h2>Total: ${{ $netCommission }}</h2>
+                            </div>
+                            <div class="col-md-4">
+                                <h2>Paid: ${{ $paidCommission }}</h2>
+                            </div>
+                            <div class="col-md-4">
+                                <h2>Due:
+                                    ${{ round($netCommission - $paidCommission,2) }}</h2>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
                     </div>
+                </div>
+            </div>--}}
+            <!-- Main row -->
+            <div class="row">
+                <!-- Left col -->
+                <div class="col-md-8">
+                    <!-- /.box -->
+                    <!-- <div class="row">
+                        <div class="col-md-12">
+                          
+                            <div class="box box-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Commissions on available products</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                               
+                                <div class="box-body no-padding">
+                                    <table id="available-product" class="table table-bordered table-hover datatable">
+                                        <thead>
+                                            <td>Product Name</td>
+                                           
+                                            <td>Price</td>
+                                            <td>Commission</td>
+                                            <td>Frequency</td>
+                                            {{--<td>Method</td>--}}
+                                        </thead>
+                                        <tbody>
+                                            @foreach($available_products as $product)
+                                                <tr>
+                                                    <td>{{ $product->name }}</td>
+                                                   {{-- <td>{{ $product->url }}</td> --}}
+                                                    <td>{{ "$" . number_format($product->product_price, 2, '.', ',') }}</td>
+                                                    <td>{{ $product->method == 1 ? $product->commission  . "%" : "$" . number_format($product->commission, 2, '.', ',') }}</td>
+                                                    <td>{{ $product->frequency == 1 ? "One-Time" : "Reccurring" }}</td>
+                                                    {{--<td>
+                                                    @php
+                                                        switch($product->plan) {
+                                                            case 1:
+                                                                @endphp
+                                                                {{ "Daily" }}
+                                                                @php
+                                                                break;
+                                                            case 2:
+                                                                @endphp
+                                                                {{ "Monthly" }}
+                                                                @php
+                                                                break;
+                                                            case 3:
+                                                                @endphp
+                                                                {{ "Quarterly" }}
+                                                                @php
+                                                                break;
+                                                            case 4:
+                                                                @endphp
+                                                                {{ "Yearly" }}
+                                                                @php
+                                                                break;
+                                                            default:
+                                                                @endphp
+                                                                {{ "NA" }}
+                                                                @php
+                                                        }
+                                                    @endphp--}}
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    
+                                </div>
+                                
+                            </div>
+                        
+                        </div>
+                        
+                    </div> -->
                     <!-- /.row -->
                 </div>
+                <!-- Right col -->
+                <!-- <div class="col-md-4">
+                  
+                    <div class="row">
+                        <div class="col-md-12">
+                            
+                            <div class="box box-danger">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Commissions on sold products</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                             
+                                <div class="box-body no-padding">
+                                    <div class="table table-responsive">
+                                        <table id="sold-product" class="table table-bordered table-hover datatable">
+                                            <thead>
+                                            <td>Email</td>
+                                            <td>Product Name</td>
+                                            <td>Price</td>
+                                            <td>My Commission</td>
+                                            <td>Status</td>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($sold_products as $product)
+                                                <tr>
+                                                    <td>{{ ($product['salesEmail'] != '')?$product['salesEmail']:$product['email'] }}</td>
+                                                    <td>{{ $product['name'] }}</td>
+                                                    <td>${{ $product['total_sale_price'] }}</td>
+                                                    <td>{{ "$" . number_format($product['my_commission'], 2, '.', ',') }}</td>
+                                                    <td>{{ ($product['status'] == 2)?'Refunded':'sale' }}</td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                 
+                                </div>
+                             
+                            </div>
+                           
+                        </div>
+                        
+                    </div>
+                   
+                </div> -->
             </div>
             <!-- /.row -->
         </section>
