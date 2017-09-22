@@ -173,20 +173,12 @@ class WebhookController extends Controller
     public function renewBilling($event,$campaign_key){
         try{
             $campaign=Campaign::where('key',$campaign_key)->firstOrFail();
-            $customer_id = $event['data']['object']['customer'];
+            $charge_id = $event['data']['object']['id'];
             if ($campaign->test_sk != '' && $campaign->test_pk != '' && $campaign->live_sk != '' && $campaign->live_pk != '') {
-                if ($campaign->stripe_mode == 1) {
-                    $key = $campaign->test_sk;
-                } else {
-                    $key = $campaign->live_sk;
-                }
-                $stripe = Stripe::make($key);
-                $customer = $stripe->customers()->find($customer_id);
-                $myCustomer = OrderProduct::where('email', $customer['email'])
-                    ->where('first_flag',0)->firstOrFail();
-                $myCustomer->tracking_flag = 1;
-                $myCustomer->customer_id = $customer_id;
-                $myCustomer->update();
+                $sales = SalesDetail::where('charge_id',$charge_id)->firstOrFail();
+                $sales->type = 2;
+                $sales->update();
+
                 return 'Renew Notice Success';
             }else{
                 return 'Stripe is not integrated in campaign: '.$campaign->name;
