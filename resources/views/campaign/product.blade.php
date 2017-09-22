@@ -5,6 +5,9 @@
 @endsection
 
 @section('style')
+<style>
+    .pad-class{padding: 0 15px;}
+</style>
 
 @endsection
 
@@ -235,11 +238,15 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <div class="row pull-right">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                            <div class="pull-right pad-class">
                                                             <button type="button" class="btn btn-primary" id="add-Product" data-type="save"><i class="fa fa-floppy-o"></i> Save Product</button>
                                                             @if(isset($campaign) && $campaign->product_type == 2)
                                                                 <button type="button" class="btn btn-primary" id="add-Funnel" data-type="save_continue"><i class="fa fa-arrow-right"></i> Save &amp; Continue</button>
                                                             @endif
+                                                            </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </form>

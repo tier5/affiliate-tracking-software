@@ -70,14 +70,14 @@
                                     <div class="col-md-4 col-xs-12 no-padding">
                                         <img src="images/epc.png" alt="img">
 
-                                    </div>    
+                                    </div>
                                 </div>
-                            </div>    
+                            </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
                                     <div class="row">
-                                       <div class="col-md-8 col-xs-12"> 
+                                       <div class="col-md-8 col-xs-12">
                                             <div class="blue-txt">
                                                 {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'visitor',$queryString]) }}">--}}{{ $visitors }}{{--</a>--}}
                                             </div>
@@ -85,19 +85,19 @@
                                         </div>
                                         <div class="col-md-4 col-xs-12 no-padding">
                                             <img src="images/click.png" alt="img">
-                                        </div>    
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
                                     <div class="row">
-                                        <div class="col-md-8 col-xs-12"> 
+                                        <div class="col-md-8 col-xs-12">
                                         <div class="blue-txt">
                                             {{--<a href="{{  route('view.link',['affiliate',Auth::user()->id,'sale',$queryString]) }}"> --}}{{ $sales }}{{--</a>--}}
                                         </div>
-                                        
-                                        
+
+
                                         <div class="normal-txt">Sales</div>
                                         </div>
                                         <div class="col-md-4 col-xs-12 no-padding">
@@ -110,7 +110,7 @@
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
                                     <div class="row">
-                                        <div class="col-md-8 col-xs-12"> 
+                                        <div class="col-md-8 col-xs-12">
 
                                         <div class="blue-txt">
                                             @if($visitors > 0 & $sales >0)
@@ -123,7 +123,7 @@
                                         </div>
                                         <div class="col-md-4 col-xs-12 no-padding">
                                             <img src="images/conversion.png" alt="img">
-                                        </div>    
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -132,26 +132,26 @@
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
                                     <div class="row">
-                                        <div class="col-md-8 col-xs-12"> 
+                                        <div class="col-md-8 col-xs-12">
                                         <div class="blue-txt">{{ "$" . round($gross_commission) }}</div>
                                         <div class="normal-txt">Gross Commission</div>
                                         </div>
                                         <div class="col-md-4 col-xs-12 no-padding">
                                             <img src="images/commision.png" alt="img">
-                                        </div>    
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
                                     <div class="row">
-                                      <div class="col-md-8 col-xs-12">   
+                                      <div class="col-md-8 col-xs-12">
                                         <div class="blue-txt">${{ round($gross_commission-$refundCommission) }}</div>
                                         <div class="normal-txt">Net Commission</div>
-                                      </div> 
+                                      </div>
                                        <div class="col-md-4 col-xs-12 no-padding">
                                             <img src="images/net-commison.png" alt="img">
-                                        </div> 
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -165,7 +165,7 @@
                                     </div>
                                     <div class="col-md-4 col-xs-12 no-padding">
                                             <img src="images/refund.png" alt="img">
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
@@ -177,8 +177,8 @@
                                         </div>
                                         <div class="col-md-4 col-xs-12 no-padding">
                                             <img src="images/ammount.png" alt="img">
-                                        </div>    
-                                    </div>    
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -228,7 +228,7 @@
                         </div>
                     </div>
                     <!-- /.box -->
-                    <div class="box box-warning">
+                    <div class="box">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Commissions on available products</h3>
 
@@ -298,7 +298,7 @@
                 </div>
                 <!-- /.col -->
                 <div class="col-md-4">
-                    <div class="box box-danger">
+                    <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">Your Referral Link</h3>
 
@@ -327,7 +327,17 @@
                         </div>
                         <!-- /.box-body -->
                     </div>
-                    <div class="box box-danger">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Commission Balance</h3>
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
                         <!-- /.box-header -->
                         <div class="box-body no-padding">
                             <div class="box2">
@@ -341,7 +351,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <img src="images/09_commission_paid.png" alt="img">
-                                            </div> 
+                                            </div>
                                         </div>
                                     </div>
                                     </div>
@@ -356,7 +366,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <img src="images/10_commission_due.png" alt="img">
-                                            </div>    
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -366,7 +376,7 @@
                         <!-- /.box-body -->
                     </div>
 
-                    <div class="box box-danger">
+                    <div class="box">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Commissions on sold products</h3>
 
@@ -446,7 +456,7 @@
                     <!-- /.box -->
                     <!-- <div class="row">
                         <div class="col-md-12">
-                          
+
                             <div class="box box-warning">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Commissions on available products</h3>
@@ -458,12 +468,12 @@
                                         </button>
                                     </div>
                                 </div>
-                               
+
                                 <div class="box-body no-padding">
                                     <table id="available-product" class="table table-bordered table-hover datatable">
                                         <thead>
                                             <td>Product Name</td>
-                                           
+
                                             <td>Price</td>
                                             <td>Commission</td>
                                             <td>Frequency</td>
@@ -510,22 +520,22 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-                                    
+
                                 </div>
-                                
+
                             </div>
-                        
+
                         </div>
-                        
+
                     </div> -->
                     <!-- /.row -->
                 </div>
                 <!-- Right col -->
                 <!-- <div class="col-md-4">
-                  
+
                     <div class="row">
                         <div class="col-md-12">
-                            
+
                             <div class="box box-danger">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Commissions on sold products</h3>
@@ -537,7 +547,7 @@
                                         </button>
                                     </div>
                                 </div>
-                             
+
                                 <div class="box-body no-padding">
                                     <div class="table table-responsive">
                                         <table id="sold-product" class="table table-bordered table-hover datatable">
@@ -561,15 +571,15 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                 
+
                                 </div>
-                             
+
                             </div>
-                           
+
                         </div>
-                        
+
                     </div>
-                   
+
                 </div> -->
             </div>
             <!-- /.row -->

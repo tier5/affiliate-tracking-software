@@ -70,11 +70,11 @@
         </div>
     </div>
     <div class="form-group">
-        <div class="row pull-right">
-            <button type="button" class="btn btn-primary" id="add-Product1" data-type="save"><i class="fa fa-floppy-o"></i> Save Product</button>
-            @if(isset($campaign) && $campaign->product_type == 2)
-                <button type="button" class="btn btn-primary" id="add-Funnel1" data-type="save_continue"><i class="fa fa-arrow-right"></i> Save &amp; Continue</button>
-            @endif
+        <div class="pull-right pad-class">
+        <button type="button" class="btn btn-primary" id="add-Product1" data-type="save"><i class="fa fa-floppy-o"></i> Save Product</button>
+        @if(isset($campaign) && $campaign->product_type == 2)
+            <button type="button" class="btn btn-primary" id="add-Funnel1" data-type="save_continue"><i class="fa fa-arrow-right"></i> Save &amp; Continue</button>
+        @endif
         </div>
     </div>
 </form>
