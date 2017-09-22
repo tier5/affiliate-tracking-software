@@ -6,8 +6,11 @@ use App\Affiliate;
 use App\AgentUrlDetails;
 use App\Campaign;
 use App\CustomerRefund;
+use App\Jobs\sendPurchaseEmail;
+use App\Jobs\sendPurchaseUpdateEmail;
 use App\OrderProduct;
 use App\Product;
+use App\User;
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -199,19 +202,38 @@ class WebhookController extends Controller
                 $amount = $subscription['subscriptions']['data'][0]['plan']['amount'] / 100;
                 $product = Product::where('campaign_id',$campaign->id)
                     ->where('product_price',$amount)->firstOrFail();
+                $affiliate = Affiliate::find($log->affiliate_id);
+                $user = User::find($affiliate->user_id);
+                $user_name = $user->name;
+                $user_email = $user->email;
+                if ($product->method == 1) {
+                    $product_commission = $product->product_price * ($product->commission / 100);
+                } else {
+                    $product_commission = $product->commission;
+                }
                 if($log != ''){
                     $previousSale = OrderProduct::where('log_id',$log->id)
                         ->where('email',$email)
                         ->where('first_flag',0)->first();
                     if($previousSale != ''){
+                        $oldProductObj = Product::find($previousSale->product_id);
+
                         $previousSale->product_id = $product->id;
                         $previousSale->update();
+
+                        $oldProduct = $oldProductObj->name;
+
+                        $job = (new sendPurchaseUpdateEmail($oldProduct,$user_name,$user_email,$product->name,$amount,$product_commission,$campaign->name));
+                        $this->dispatch($job);
                     } else {
                         $order = new OrderProduct();
                         $order->log_id = $log->id;
                         $order->product_id = $product->id;
                         $order->email = $email;
                         $order->save();
+
+                        $job = (new sendPurchaseEmail($user_name,$user_email,$product->name,$amount,$product_commission,$campaign->name));
+                        $this->dispatch($job);
                     }
                     $log->type = 2;
                     $log->update();
