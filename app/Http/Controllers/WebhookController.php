@@ -7,6 +7,7 @@ use App\AgentUrlDetails;
 use App\Campaign;
 use App\CustomerRefund;
 use App\OrderProduct;
+use App\Product;
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -188,12 +189,33 @@ class WebhookController extends Controller
                 $log = AgentUrlDetails::where('email',$email)
                     ->whereIn('affiliate_id',$affiliates->pluck('id'))
                     ->orderBy('created_at','DESC')->firstOrFail();
+                if($campaign->stripe_mode == 1){
+                    $key = $campaign->test_sk;
+                } else {
+                    $key = $campaign->live_sk;
+                }
+                $stripe = Stripe::make($key);
+                $subscription = $stripe->customers()->find($customer_id);
+                $amount = $subscription['subscriptions']['data'][0]['plan'];
+                $product = Product::where('campaign_id',$campaign->id)
+                    ->where('product_price',$amount)->firstOrFail();
                 if($log != ''){
-                    if($log->type != 2){
-                        return 'new sale';
+                    $previousSale = OrderProduct::where('log_id',$log->id)
+                        ->where('email',$email)
+                        ->where('first_flag',0)->firstOrFail();
+                    if($previousSale != ''){
+                        $previousSale->product_id = $product->id;
+                        $previousSale->update();
                     } else {
-                        return 'update sale';
+                        $order = new OrderProduct();
+                        $order->log_id = $log->id;
+                        $order->product_id = $product->id;
+                        $order->email = $email;
+                        $order->save();
                     }
+                    $log->type = 2;
+                    $log->update();
+                    return 'Product Sold';
                 } else {
                     return 'Customer is not coming through any affiliate';
                 }
