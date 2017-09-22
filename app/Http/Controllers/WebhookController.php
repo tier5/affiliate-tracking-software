@@ -196,13 +196,13 @@ class WebhookController extends Controller
                 }
                 $stripe = Stripe::make($key);
                 $subscription = $stripe->customers()->find($customer_id);
-                $amount = $subscription['subscriptions']['data'][0]['plan'];
+                $amount = $subscription['subscriptions']['data'][0]['plan']['amount'] / 100;
                 $product = Product::where('campaign_id',$campaign->id)
                     ->where('product_price',$amount)->firstOrFail();
                 if($log != ''){
                     $previousSale = OrderProduct::where('log_id',$log->id)
                         ->where('email',$email)
-                        ->where('first_flag',0)->firstOrFail();
+                        ->where('first_flag',0)->first();
                     if($previousSale != ''){
                         $previousSale->product_id = $product->id;
                         $previousSale->update();
