@@ -32,6 +32,12 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="control-label col-md-2" for="upgrade_commission1">Upgrade Commission:</label>
+        <div class="col-md-10">
+            <input type="text" class="form-control hide-error" id="upgrade_commission1" name="upgrade_commission1" placeholder="Add Upgrade Commission">
+        </div>
+    </div>
+    <div class="form-group">
         <label class="control-label col-md-2" for="product_commission1">Commission Settings :</label>
         <div class="col-md-3">
             <label class="control-label">Commission:</label>
@@ -171,6 +177,12 @@
         } else {
             $('#error1').hide();
         }
+        var upgrade_commission = $('#upgrade_commission1').val();
+        if(upgrade_commission == ''){
+            $('#error_text1').text('Please Enter The Required Upgrade Commission');
+            $('#error1').show();
+            return false;
+        }
         /*if (commissionFrequency == 2) {
             if ($('#planDaily1').is(':checked')) {
                 commissionPlan = $('#planDaily1').val();
@@ -224,6 +236,7 @@
                 commissionMethod: commissionMethod,
                 commissionFrequency: commissionFrequency,
                 commissionPlan: commissionPlan,
+                upgradeCommission: upgrade_commission,
                 _token: "{{ csrf_token() }}"
             },
             statusCode: {

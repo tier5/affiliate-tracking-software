@@ -10,6 +10,7 @@ use App\Jobs\sendPurchaseEmail;
 use App\Jobs\sendPurchaseUpdateEmail;
 use App\OrderProduct;
 use App\Product;
+use App\SalesDetail;
 use App\User;
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -74,11 +75,17 @@ class WebhookController extends Controller
                 $customer = $stripe->customers()->find($customer_id);
                 $myCustomer = OrderProduct::where('email',$customer['email'])
                     ->where('first_flag',0)->firstOrFail();
+                if ($customer->product->method == 1) {
+                    $product_commission = $customer->product->product_price * ($customer->product->commission / 100);
+                } else {
+                    $product_commission = $customer->product->commission;
+                }
+
                 if($myCustomer->tracking_flag == 0){
                     $myCustomer->customer_id = $customer_id;
                     $myCustomer->update();
                 } else {
-                    $newCustomer = new OrderProduct();
+                    /*$newCustomer = new OrderProduct();
                     $newCustomer->log_id = $myCustomer->log_id;
                     $newCustomer->product_id = $myCustomer->product_id;
                     $newCustomer->email = $myCustomer->email;
@@ -86,7 +93,17 @@ class WebhookController extends Controller
                     $newCustomer->first_flag = 1;
                     $newCustomer->save();
                     $myCustomer->tracking_flag = 0;
-                    $myCustomer->update();
+                    $myCustomer->update();*/
+
+                    $salesData = new SalesDetail();
+                    $salesData->sales_id = $myCustomer->id;
+                    $salesData->product_amount = $myCustomer->product->product_price;
+                    $salesData->step_payment_amount = $myCustomer->product->product_price;
+                    $salesData->charge_id = $event['data']['object']['charge'];
+                    $salesData->type = 1;
+                    $salesData->status = 3;
+                    $salesData->commission = $product_commission;
+                    $salesData->save();
                 }
                 return 'Customer Subscription Updated';
 
@@ -221,6 +238,16 @@ class WebhookController extends Controller
                         $previousSale->product_id = $product->id;
                         $previousSale->update();
 
+                        $salesData = new SalesDetail();
+                        $salesData->sales_id = $previousSale->id;
+                        $salesData->product_amount = $product->product_price;
+                        $salesData->step_payment_amount = $event['data']['object']['amount'] / 100;
+                        $salesData->charge_id = $event['data']['object']['id'];
+                        $salesData->type = 1;
+                        $salesData->status = 2;
+                        $salesData->commission = $product->upgrade_commission;
+                        $salesData->save();
+
                         $oldProduct = $oldProductObj->name;
 
                         $job = (new sendPurchaseUpdateEmail($oldProduct,$user_name,$user_email,$product->name,$amount,$product_commission,$campaign->name));
@@ -232,12 +259,23 @@ class WebhookController extends Controller
                         $order->email = $email;
                         $order->save();
 
+                        $salesData = new SalesDetail();
+                        $salesData->sales_id = $order->id;
+                        $salesData->product_amount = $product->product_price;
+                        $salesData->step_payment_amount = $event['data']['object']['amount'] / 100;
+                        $salesData->charge_id = $event['data']['object']['id'];
+                        $salesData->type = 1;
+                        $salesData->status = 1;
+                        $salesData->commission = $product->upgrade_commission;
+                        $salesData->save();
+
                         $job = (new sendPurchaseEmail($user_name,$user_email,$product->name,$amount,$product_commission,$campaign->name));
                         $this->dispatch($job);
                     }
                     $log->type = 2;
                     $log->update();
-                    return 'Product Sold';
+
+                    return 'Product Sold from stripe';
                 } else {
                     return 'Customer is not coming through any affiliate';
                 }

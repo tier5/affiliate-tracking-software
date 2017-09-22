@@ -9,6 +9,7 @@ use App\Jobs\sendPurchaseEmail;
 use App\Jobs\sendPurchaseUpdateEmail;
 use App\OrderProduct;
 use App\Product;
+use App\SalesDetail;
 use App\User;
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Http\Request;
@@ -69,6 +70,7 @@ class ProductController extends Controller
                 $product->method = $request->commissionMethod;
                 $product->frequency = $request->commissionFrequency;
                 $product->plan = $request->commissionPlan;
+                $product->upgrade_commission = $request->upgradeCommission;
                 $product->save();
 
                 $response = [
@@ -416,6 +418,18 @@ class ProductController extends Controller
                     $job = (new sendPurchaseEmail($user_name,$user_email,$product->name,$product_price,$product_commission,$campaign->name));
                     $this->dispatch($job);
                 }
+
+                $salesData = new SalesDetail();
+                $salesData->sales_id = $order->id;
+                $salesData->product_amount = $product->product_price;
+                $salesData->step_payment_amount = $product->product_price;
+                $salesData->type = 1;
+                $salesData->status = 1;
+                $salesData->commission = $product_commission;
+                $salesData->save();
+
+                Log::info('Product sold from script');
+
                 $response = [
                     'status' => true,
                     'message' => 'Product Sold',

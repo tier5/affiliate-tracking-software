@@ -59,6 +59,9 @@
                                             <td>URL</td>
                                             <td>Price</td>
                                             <td>Commission</td>
+                                            @if($campaign->test_pk != '' && $campaign->test_sk != '' && $campaign->live_pk != '' && $campaign->live_sk != '')
+                                                <td>Upgrade Commission</td>
+                                            @endif
                                             <td>Frequency</td>
                                             {{--<td>Plan</td>--}}
                                             <td>Actions</td>
@@ -71,6 +74,9 @@
                                                 <td>{{ $product->url }}</td>
                                                 <td>${{ $product->product_price }}</td>
                                                 <td>{{ $product->method == 1 ? $product->commission . "%" : "$" . $product->commission }}</td>
+                                                @if($campaign->test_pk != '' && $campaign->test_sk != '' && $campaign->live_pk != '' && $campaign->live_sk != '')
+                                                    <td>${{ $product->upgrade_commission }}</td>
+                                                @endif
                                                 <td>{{ $product->frequency == 1 ? "One-Time" : "Recurring" }}</td>
                                                 {{--<td>
                                                     @php
@@ -193,6 +199,12 @@
                                                         <label class="control-label col-md-2" for="product_price">Product Price:</label>
                                                         <div class="col-md-10">
                                                             <input type="text" class="form-control hide-error" id="product_price" name="product_price" placeholder="Add Product Price">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2" for="upgrade_commission">Upgrade Commission:</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control hide-error" id="upgrade_commission" name="upgrade_commission" placeholder="Add Upgrade Commission">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -508,6 +520,14 @@
             } else {
                 $('#error').hide();
             }
+
+            var upgrade_commission = $('#upgrade_commission').val();
+            if(upgrade_commission == ''){
+                $('#error_text').text('Please Enter The Required Upgrade Commission');
+                $('#error').show();
+                return false;
+            }
+
             /*if (commissionFrequency == 2) {
                 if ($('#planDaily').is(':checked')) {
                     commissionPlan = $('#planDaily').val();
@@ -572,6 +592,7 @@
                     commissionMethod: commissionMethod,
                     commissionFrequency: commissionFrequency,
                     commissionPlan: commissionPlan,
+                    upgradeCommission: upgrade_commission,
                     _token: "{{ csrf_token() }}"
                 },
                 statusCode: {
