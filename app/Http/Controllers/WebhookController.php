@@ -36,6 +36,10 @@ class WebhookController extends Controller
                     $renew=$this->renewBilling($request,$campaign_key);
                     Log::info($renew);
                     break;
+                case 'charge.succeeded' :
+                    $sale = $this->chargeSuccess($request,$campaign_key);
+                    Log::info($sale);
+                    break;
                 default :
                     Log::info($request['type'].' is not in use');
             }
@@ -169,6 +173,36 @@ class WebhookController extends Controller
         }catch(\Exception $exception){
             return $exception->getMessage();
         }catch(ModelNotFoundException $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function chargeSuccess($event,$campaign_key)
+    {
+        try {
+            $campaign = Campaign::where('key',$campaign_key)->firstOrFail();
+            $customer_id = $event['data']['object']['customer'];
+            if ($campaign->test_sk != '' && $campaign->test_pk != '' && $campaign->live_sk != '' && $campaign->live_pk != ''){
+                $email = $event['data']['object']['receipt_email'];
+                $affiliates = Affiliate::where('campaign_id',$campaign->id);
+                $log = AgentUrlDetails::where('email',$email)
+                    ->whereIn('affiliate_id',$affiliates->pluck('id'))
+                    ->orderBy('created_at','DESC')->firstOrFail();
+                if($log != ''){
+                    if($log->type != 2){
+                        return 'new sale';
+                    } else {
+                        return 'update sale';
+                    }
+                } else {
+                    return 'Customer is not coming through any affiliate';
+                }
+            } else {
+                return 'Stripe is not integrated in campaign: '.$campaign->name;
+            }
+        } catch(\Exception $exception) {
+            return $exception->getMessage();
+        } catch (ModelNotFoundException $e){
             return $e->getMessage();
         }
     }

@@ -225,7 +225,7 @@
                 <!-- Left col -->
                 <div class="col-md-8">
                     <!-- MAP & BOX PANE -->
-                    <div class="box box-success">
+                    <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">Visitors IP Report</h3>
 
@@ -255,7 +255,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <!-- USERS LIST -->
-                            <div class="box box-danger">
+                            <div class="box">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Latest Affiliates</h3>
 
@@ -397,7 +397,7 @@
                 <!-- /.col -->
 
                 <div class="col-md-4">
-                    <div class="box box-default">
+                    <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">Browser Usage</h3>
 
@@ -437,7 +437,7 @@
                     <!-- /.box -->
 
                     <!-- PRODUCT LIST -->
-                    <div class="box box-primary">
+                    <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">Recently Added Products</h3>
 

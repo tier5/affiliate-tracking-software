@@ -416,7 +416,6 @@ class ProductController extends Controller
                     $job = (new sendPurchaseEmail($user_name,$user_email,$product->name,$product_price,$product_commission,$campaign->name));
                     $this->dispatch($job);
                 }
-
                 $response = [
                     'status' => true,
                     'message' => 'Product Sold',
@@ -454,21 +453,29 @@ class ProductController extends Controller
     {
         try {
             $campaign = Campaign::where('key', $request->campaign)->firstOrFail();
-            $product = Product::where('url', $request->previous_url)
-                ->where('campaign_id', $campaign->id)
-                ->firstOrFail();
-            if($product){
-                $response = [
-                    'status' => true,
-                    'message' => 'Landing page found'
-                ];
-                $responseCode = 200;
-            } else {
+            if($campaign->test_pk != '' && $campaign->test_sk != '' && $campaign->live_pk != '' && $campaign->live_sk != '') {
                 $response = [
                     'status' => false,
-                    'message' => 'Click on checkout Page',
+                    'message' => 'This is a stripe campaign',
                 ];
-                $responseCode = 406 ;
+                $responseCode = 400 ;
+            } else {
+                $product = Product::where('url', $request->previous_url)
+                    ->where('campaign_id', $campaign->id)
+                    ->firstOrFail();
+                if($product){
+                    $response = [
+                        'status' => true,
+                        'message' => 'Landing page found'
+                    ];
+                    $responseCode = 200;
+                } else {
+                    $response = [
+                        'status' => false,
+                        'message' => 'Click on checkout Page',
+                    ];
+                    $responseCode = 406 ;
+                }
             }
         } catch (ModelNotFoundException $modelNotFoundException) {
             $response = [
