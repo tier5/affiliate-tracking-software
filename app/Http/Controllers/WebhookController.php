@@ -140,22 +140,10 @@ class WebhookController extends Controller
     private function chargeRefunded($event,$campaign_key)
     {
         try {
-            $campaign = Campaign::where('key',$campaign_key)->firstOrFail();
-            $affiliates = Affiliate::where('campaign_id',$campaign->id);
-            $logs = AgentUrlDetails::where('affiliate_id',$affiliates->pluck('id'));
-
-            $customer_email = $event['data']['object']['receipt_email'];
-
-            $myCustomer = OrderProduct::where('email',$customer_email)
-                ->whereDate('created_at',date('Y-m-d',$event['data']['object']['created']))->firstOrFail();
-            $myCustomer->status = 2;
-            $myCustomer->update();
-            /*$refunds = new CustomerRefund();
-            $refunds->campaign_id = $campaign->id;
-            $refunds->log_id = $myCustomer->id;
-            $refunds->amount = $event['data']['object']['refunds']['data'][0]['amount'] / 100;
-            $refunds->save();*/
-
+            $charge_id = $event['data']['object']['id'];
+            $sales = SalesDetail::where('charge_id',$charge_id)->firstOrFail();
+            $sales->type = 2;
+            $sales->update();
             return 'Refund Added Successfully';
         } catch(\Exception $exception) {
             return $exception->getMessage();
@@ -173,12 +161,20 @@ class WebhookController extends Controller
     public function renewBilling($event,$campaign_key){
         try{
             $campaign=Campaign::where('key',$campaign_key)->firstOrFail();
-            $charge_id = $event['data']['object']['id'];
+            $customer_id = $event['data']['object']['customer'];
             if ($campaign->test_sk != '' && $campaign->test_pk != '' && $campaign->live_sk != '' && $campaign->live_pk != '') {
-                $sales = SalesDetail::where('charge_id',$charge_id)->firstOrFail();
-                $sales->type = 2;
-                $sales->update();
-
+                if ($campaign->stripe_mode == 1) {
+                    $key = $campaign->test_sk;
+                } else {
+                    $key = $campaign->live_sk;
+                }
+                $stripe = Stripe::make($key);
+                $customer = $stripe->customers()->find($customer_id);
+                $myCustomer = OrderProduct::where('email', $customer['email'])
+                    ->where('first_flag',0)->firstOrFail();
+                $myCustomer->tracking_flag = 1;
+                $myCustomer->customer_id = $customer_id;
+                $myCustomer->update();
                 return 'Renew Notice Success';
             }else{
                 return 'Stripe is not integrated in campaign: '.$campaign->name;
