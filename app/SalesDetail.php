@@ -8,6 +8,6 @@ class SalesDetail extends Model
 {
     //
     public function order(){
-        return $this->hasOne('App\OrderProduct', 'sales_id');
+        return $this->belongsTo('App\OrderProduct', 'sales_id');
     }
 }

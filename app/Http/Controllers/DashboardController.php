@@ -258,9 +258,11 @@ class DashboardController extends Controller
         $newGrossCommission = 0;
         $newRefund = 0;
         $refundCountNew = 0;
+        $newCommission = 0;
         foreach ($salesDataNew as $value){
+            $newGrossCommission = $newGrossCommission + $value->commission;
             if($value->type == 1){
-                $newGrossCommission = $newGrossCommission + $value->commission;
+                $newCommission = $newCommission + $value->commission;
             } else {
                 $newRefund = $newRefund + $value->commission;
                 $refundCountNew = $refundCountNew + 1;
@@ -352,9 +354,11 @@ class DashboardController extends Controller
             $newGrossCommission = 0;
             $newRefundCommission = 0;
             $newRefundCount = 0;
+            $newCommission = 0;
             foreach ($newSalesData as $value){
+                $newGrossCommission = $newGrossCommission + $value->commission;
                 if($value->type == 1){
-                    $newGrossCommission = $newGrossCommission + $value->commission;
+                    $newCommission = $newCommission + $value->commission;
                 } else {
                     $newRefundCommission = $newRefundCommission + $value->commission;
                     $newRefundCount = $newRefundCount + 1;

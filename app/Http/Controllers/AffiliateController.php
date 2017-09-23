@@ -878,14 +878,16 @@ class AffiliateController extends Controller
             $newRefund = 0;
             $refundCountNew = 0;
             $newSoldProduct = [];
+            $newMyCommission = 0;
             foreach ($newSalesData as $key => $value){
+                $newGrossCommission = $newGrossCommission + $value->commission;
                 if($value->type == 1){
-                    $newGrossCommission = $newGrossCommission + $value->commission;
+                    $newMyCommission = $newMyCommission + $value->commission;
                 } else {
                     $newRefund = $newRefund + $value->commission;
                     $refundCountNew = $refundCountNew + 1;
                 }
-                $newSoldProduct[$key]['campaign'] = $value->order->sales->affiliate->campaign->name;
+                $newSoldProduct[$key]['campaign'] = $value->order->log->affiliate->campaign->name;
                 $newSoldProduct[$key]['name'] = $value->order->product->name;
                 $newSoldProduct[$key]['unit_sold'] = 1;
                 $newSoldProduct[$key]['total_sale_price'] = $value->step_payment_amount;
