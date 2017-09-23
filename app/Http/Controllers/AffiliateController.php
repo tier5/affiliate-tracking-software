@@ -11,6 +11,7 @@ use App\OrderProduct;
 use App\paidCommission;
 use App\PaymentHistory;
 use App\Product;
+use App\SalesDetail;
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -38,6 +39,19 @@ class AffiliateController extends Controller
      * @param Request $request
      * @return $this|\Illuminate\Http\RedirectResponse
      */
+    
+    private $subscriptionStatus = [
+        '1' => 'Sale',
+        '2' => 'Upgrade',
+        '3' => 'Renewal'
+    ];
+    
+    private $salesStatus = [
+        '1' => 'Sale',
+        '2' => 'Refunded'
+    ];
+
+
     public function affiliateRegistration(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -606,40 +620,46 @@ class AffiliateController extends Controller
                 ->where('type', 2);
             $orderProducts = OrderProduct::whereIn('log_id', $logs->pluck('id'))
                 ->orderBy('created_at', 'DESC')
-                ->with('product')->get();
+                ->with('product', 'sales')->get();
             $commisonsOnly = [];
             $grossCommission = 0;
             $refundCommission = 0;
             $refundCount = 0;
-            foreach ($orderProducts as $key => $order) {
-                $user_log = AgentUrlDetails::find($order->log_id);
-                $logData = Affiliate::find($user_log->affiliate_id);
-                $affiliateData = User::find($logData->user_id);
-                $campaignData = Campaign::find($logData->campaign_id);
-                if ($order->product->method == 1) {
-                    $myCommision = $order->product->product_price * ($order->product->commission / 100);
-                    $grossCommission += $myCommision;
-                } else {
-                    $myCommision = $order->product->commission;
-                    $grossCommission += $myCommision;
+            foreach ($orderProducts as $keyOrder => $order) {
+                foreach ($order->sales as $key => $sales){
+                    $user_log = AgentUrlDetails::find($order->log_id);
+                    $logData = Affiliate::find($user_log->affiliate_id);
+                    $affiliateData = User::find($logData->user_id);
+                    $campaignData = Campaign::find($logData->campaign_id);
+//                    if ($order->product->method == 1) {
+//                        $myCommision = $order->product->product_price * ($order->product->commission / 100);
+//                        $grossCommission += $myCommision;
+//                    } else {
+//                        $myCommision = $order->product->commission;
+//                        $grossCommission += $myCommision;
+//                    }
+//                    $refund = CustomerRefund::where('log_id',$order->id)->count();
+//                    if($refund > 0){
+//                        $status = 2;
+//                    } else {
+//                        $status = 1;
+//                    }
+                    
+                    $commisonsOnly[$key]['name'] = $order->product->name;
+                    $commisonsOnly[$key]['unit_sold'] = 1;
+                    $commisonsOnly[$key]['sale_price'] = $order->product->product_price * 1;
+                    $commisonsOnly[$key]['commission'] = $sales->commission;
+                    $commisonsOnly[$key]['email'] = $user_log->email;
+                    $commisonsOnly[$key]['saleEmail'] = $order->email;
+                    $commisonsOnly[$key]['id'] = $sales->id;
+                    $commisonsOnly[$key]['status'] = $order->status;
+                    $commisonsOnly[$key]['affiliate'] = $affiliateData->name;
+                    $commisonsOnly[$key]['campaign'] = $campaignData->name;
+                    $commisonsOnly[$key]['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $commisonsOnly[$key]['subscriptionStatus'] = $this->subscriptionStatus[$sales->status];
+                    $commisonsOnly[$key]['transactionType'] = $this->salesStatus[$sales->type];
+                    $commisonsOnly[$key]['payment'] = $sales->step_payment_amount;
                 }
-                $refund = CustomerRefund::where('log_id',$order->id)->count();
-                if($refund > 0){
-                    $status = 2;
-                } else {
-                    $status = 1;
-                }
-                $commisonsOnly[$key]['name'] = $order->product->name;
-                $commisonsOnly[$key]['unit_sold'] = 1;
-                $commisonsOnly[$key]['sale_price'] = $order->product->product_price * 1;
-                $commisonsOnly[$key]['commission'] = $myCommision;
-                $commisonsOnly[$key]['email'] = $user_log->email;
-                $commisonsOnly[$key]['saleEmail'] = $order->email;
-                $commisonsOnly[$key]['id'] = $order->id;
-                $commisonsOnly[$key]['status'] = $order->status;
-                $commisonsOnly[$key]['affiliate'] = $affiliateData->name;
-                $commisonsOnly[$key]['campaign'] = $campaignData->name;
-                $commisonsOnly[$key]['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
             }
             $campaignsDropdown = Campaign::where('user_id', Auth::user()->id)->get();
             $affiliatesDropdown = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))
@@ -663,10 +683,13 @@ class AffiliateController extends Controller
     public function salesRefund(Request $request)
     {
         try {
-            $sale = OrderProduct::findOrFail($request->id);
+            $sales = SalesDetail::findOrFail($request->id);
+            $sales->type = 2;
+            $sales->update();
+            /*$sale = OrderProduct::findOrFail($request->id);
             $sale->status = 2;
             $sale->update();
-            /*$log = AgentUrlDetails::findOrFail($sale->log_id);
+            $log = AgentUrlDetails::findOrFail($sale->log_id);
             $affiliate = Affiliate::findOrFail($log->affiliate_id);
             $product = Product::findOrFail($sale->product_id);
             $charge_id = '';
@@ -850,6 +873,30 @@ class AffiliateController extends Controller
             $availableProducts = Product::whereIn('campaign_id', $campaigns->pluck('id'))->get();
             $totalSaless = OrderProduct::whereIn('log_id', $sales->pluck('id'))->count();
             $orderObj = OrderProduct::whereIn('log_id', $sales->pluck('id'));
+            $newSalesData = SalesDetail::whereIn('sales_id',$orderObj->pluck('id'))->get();
+            $newGrossCommission = 0;
+            $newRefund = 0;
+            $refundCountNew = 0;
+            $newSoldProduct = [];
+            foreach ($newSalesData as $key => $value){
+                if($value->type == 1){
+                    $newGrossCommission = $newGrossCommission + $value->commission;
+                } else {
+                    $newRefund = $newRefund + $value->commission;
+                    $refundCountNew = $refundCountNew + 1;
+                }
+                $newSoldProduct[$key]['campaign'] = $value->order->sales->affiliate->campaign->name;
+                $newSoldProduct[$key]['name'] = $value->order->product->name;
+                $newSoldProduct[$key]['unit_sold'] = 1;
+                $newSoldProduct[$key]['total_sale_price'] = $value->step_payment_amount;
+                $newSoldProduct[$key]['my_commission'] = $value->commission;
+                $newSoldProduct[$key]['status'] = $this->subscriptionStatus[$value->status];
+                $newSoldProduct[$key]['type'] = $this->salesStatus[$value->type];
+                $newSoldProduct[$key]['email'] = $value->order->log->email;
+                $newSoldProduct[$key]['saleEmail'] = $value->order->email;
+                $newSoldProduct[$key]['date'] = $value->created_at;
+                $newSoldProduct[$key]['id'] = $value->id;
+            }
             $refunds = CustomerRefund::whereIn('log_id', $orderObj->pluck('id'))->get();
             $totalCommissionRefund = 0;
             foreach ($refunds as $refund) {
@@ -918,7 +965,7 @@ class AffiliateController extends Controller
                 $totalSalePrice += $soldProducts[$key]['total_sale_price'];
                 $totalSales += 1;
             }
-            $netCommission = $grossCommission - $refundCommission;
+            $netCommission = $newGrossCommission - $newRefund;
             return view('admin.add_affiliate_details', [
                 'affiliate' => $affiliate,
                 'campaigns' => $campaigns->count(),
@@ -927,11 +974,11 @@ class AffiliateController extends Controller
                 'sales' => $sales->count(),
                 'totalSales' => $totalSaless,
                 'total_sale_price' => $totalSalePrice,
-                'gross_commission' => $grossCommission,
-                'refundCommission' => $refundCommission,
-                'refundCount' => $refundCount,
+                'gross_commission' => $newGrossCommission,
+                'refundCommission' => $newRefund,
+                'refundCount' => $refundCountNew,
                 'available_products' => $availableProducts,
-                'sold_products' => $soldProducts,
+                'sold_products' => $newSoldProduct,
                 'campaignDropDown' => $campaignDropDown,
                 'paidCommission' => $paidCommission,
                 'netCommission' => $netCommission,
@@ -939,7 +986,7 @@ class AffiliateController extends Controller
                 'allTraffic' => $visitors->get(),
                 'leadsOnly' => $leads->get(),
                 'salesOnly' => $sales->get(),
-                'commisonsOnly' => $soldProducts,
+                'commisonsOnly' => $newSoldProduct,
             ]);
         } catch (\Exception $exception) {
             return redirect()->back()->with('error', $exception->getMessage());

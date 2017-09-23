@@ -9,6 +9,7 @@ use App\CustomerRefund;
 use App\OrderProduct;
 use App\paidCommission;
 use App\PaymentHistory;
+use App\SalesDetail;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -55,6 +56,18 @@ class PaymentController extends Controller
             $orderObj = OrderProduct::whereIn('log_id', $logs->pluck('id'))
                 ->orderBy('created_at', 'DESC')
                 ->with('product');
+            $newSalesData = SalesDetail::whereIn('sales_id',$orderObj->pluck('id'))->get();
+            $newGrossCommission = 0;
+            $newRefund = 0;
+            $refundCountNew = 0;
+            foreach ($newSalesData as $value){
+                if($value->type == 1){
+                    $newGrossCommission = $newGrossCommission + $value->commission;
+                } else {
+                    $newRefund = $newRefund + $value->commission;
+                    $refundCountNew = $refundCountNew + 1;
+                }
+            }
             $refunds = CustomerRefund::whereIn('log_id',$orderObj->pluck('id'))->get();
             $totalCommissionRefund = 0 ;
             foreach ($refunds as $refund){
@@ -86,7 +99,7 @@ class PaymentController extends Controller
                     }
                 }
             }
-            $netCommission = $grossCommission - $refundCommission;
+            $netCommission = $newGrossCommission - $newRefund;
             return view('affiliate.payout',[
                 'commissions' => $finalCommission,
                 'campaignDropDown' => $campaignDropDown,
@@ -162,6 +175,18 @@ class PaymentController extends Controller
             $orderObj = OrderProduct::whereIn('log_id', $logs->pluck('id'))
                 ->orderBy('created_at', 'DESC')
                 ->with('product');
+            $newSalesData = SalesDetail::whereIn('sales_id',$orderObj->pluck('id'))->get();
+            $newGrossCommission = 0;
+            $newRefund = 0;
+            $refundCountNew = 0;
+            foreach ($newSalesData as $value){
+                if($value->type == 1){
+                    $newGrossCommission = $newGrossCommission + $value->commission;
+                } else {
+                    $newRefund = $newRefund + $value->commission;
+                    $refundCountNew = $refundCountNew + 1;
+                }
+            }
             $refunds = CustomerRefund::whereIn('log_id',$orderObj->pluck('id'))->get();
             $totalCommissionRefund = 0 ;
             foreach ($refunds as $refund){
@@ -193,7 +218,7 @@ class PaymentController extends Controller
                     }
                 }
             }
-            $netCommission = $grossCommission - $refundCommission;
+            $netCommission = $newGrossCommission - $newRefund;
             return view('admin.payout',[
                 'commissions' => $finalCommission,
                 'campaignDropDown' => $campaignDropDown,

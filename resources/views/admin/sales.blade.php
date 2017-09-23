@@ -95,10 +95,12 @@
                                         <th>Affiliate</th>
                                         <th>Email</th>
                                         <th>Product Name</th>
-                                        <th>Price</th>
+                                        <th>Product Price</th>
+                                        <th>Payment</th>
                                         <th>Commission</th>
                                         <th>Date</th>
                                         <th>Status</th>
+                                        <!--<th>Subscription Status</th>-->
                                         <th>Action</th>    
                                     </tr>
                                     </thead>
@@ -110,9 +112,10 @@
                                                 <td>{{ ($sale['saleEmail'] != '')?$sale['saleEmail']:$sale['email'] }}</td>
                                                 <td>{{ $sale['name'] }}</td>
                                                 <td>${{ $sale['sale_price'] }}</td>
+                                                <td>${{ $sale['payment'] }}</td>
                                                 <td>${{ $sale['commission'] }}</td>
                                                 <td>{{ $sale['created_at'] }}</td>
-                                                <td>
+<!--                                                <td>
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <span class="status"> {{ ($sale['status']==2)?'Refunded':'Sales' }}</span>
@@ -122,13 +125,14 @@
                                                                 <a href="{{ route('refund.details',[ $sale['id']]) }}" class="btn btn-info btn-xs"><i class="fa fa-list-ol"></i> </a>
                                                             </div>
                                                         @endif--}}
-                                                       <!-- <div class="col-md-6">
+                                                        <div class="col-md-6">
                                                             <button type="button" class="btn btn-success btn-xs refresh" data-sales_id="{{ $sale['id'] }}"><i class="fa fa-refresh fa-fw iClass"></i> </button>
-                                                        </div> -->
+                                                        </div> 
                                                     </div>
-                                                </td>
+                                                </td>-->
+                                                <td>{!! $sale['transactionType'] == 'Refunded'? 'Refunded' : $sale['subscriptionStatus'] !!}</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-xs btn-warning refund" {{ $sale['status'] == 2?'disabled':'' }} data-sales_id="{{ $sale['id'] }}">Refund</button>
+                                                    <button type="button" class="btn btn-xs btn-warning refund" {{ $sale['transactionType'] == 'Refunded'?'disabled':'' }} data-sales_id="{{ $sale['id'] }}">Refund</button>
                                                 </td>
                                             </tr>
                                         @endforeach

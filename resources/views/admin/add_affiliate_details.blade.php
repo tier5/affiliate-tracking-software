@@ -394,10 +394,10 @@
                                                                             <td>{{ $eachSales['name'] }}</td>
                                                                             <td>{{ "$" . number_format($eachSales['total_sale_price'], 2, '.', ',') }}</td>
                                                                             <td>{{ "$" . number_format($eachSales['my_commission'], 2, '.', ',') }}</td>
-                                                                            <td>{{ $eachSales['status'] == 1?'sale':'refund' }}</td>
+                                                                            <td>{!! $eachSales['type'] == 'Refunded'? 'Refunded' : $eachSales['status'] !!}</td>
                                                                             <td>{{ (isset($eachSales['date'])) ?  date('l jS \of F Y,  h:i:s A',strtotime($eachSales['date'])) : '' }}</td>
                                                                             <td>
-                                                                                <button type="button" class="btn btn-warning btn-xs refund" {{ $eachSales['status'] == 2?'disabled':'' }} data-sales_id="{{ $eachSales['id'] }}">Refund</button>
+                                                                                <button type="button" class="btn btn-warning btn-xs refund" {{ $eachSales['type'] == 'Refunded'?'disabled':'' }} data-sales_id="{{ $eachSales['id'] }}">Refund</button>
                                                                             </td>
                                                                         </tr>
                                                                     @empty

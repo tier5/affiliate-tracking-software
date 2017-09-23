@@ -71,3 +71,6 @@ Clean Up V1.0 Stable
 
 Stripe Integration V1.5
 	Stripe integration for every billing cycle
+
+New Sale V1.0 stable
+	Fetched all stripe payments and make all as sales and displayed into sales tab

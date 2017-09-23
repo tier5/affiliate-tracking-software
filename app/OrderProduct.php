@@ -14,4 +14,8 @@ class OrderProduct extends Model
     {
         return $this->belongsTo('App\AgentUrlDetails','log_id');
     }
+    
+    public function sales(){
+        return $this->hasMany('App\SalesDetail', 'sales_id');
+    }
 }

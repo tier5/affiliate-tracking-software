@@ -376,7 +376,7 @@
                         <!-- /.box-body -->
                     </div>
 
-                    <div class="box">
+                    {{--<div class="box">
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Commissions on sold products</h3>
 
@@ -414,7 +414,7 @@
                                     <!-- /.users-list -->
                                 </div>
                                 <!-- /.box-body -->
-                            </div>
+                            </div>--}}
                 </div>
                 <!-- /.col -->
             </div>

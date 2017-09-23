@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Affiliate;
 use App\CustomerRefund;
 use App\paidCommission;
+use App\SalesDetail;
 use App\User;
 use App\AgentUrlDetails;
 use App\Campaign;
@@ -222,6 +223,7 @@ class DashboardController extends Controller
         $sales = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))->where('type', 2);
         $salesObj = OrderProduct::whereIn('log_id',$sales->pluck('id'));
         $refunds = CustomerRefund::whereIn('log_id',$salesObj->pluck('id'))->get();
+        $salesDataNew = SalesDetail::whereIn('sales_id',$salesObj->pluck('id'))->get();
         //dd($refunds->get());
         //Calculate total sales amount
         $totalSalePrice = 0;
@@ -253,7 +255,18 @@ class DashboardController extends Controller
             $soldProducts[$key]['my_commission'] = $myCommission;
             $totalSalePrice += $soldProducts[$key]['total_sale_price'];
         }
-        $netCommission = $grossCommission - $refundCommission;
+        $newGrossCommission = 0;
+        $newRefund = 0;
+        $refundCountNew = 0;
+        foreach ($salesDataNew as $value){
+            if($value->type == 1){
+                $newGrossCommission = $newGrossCommission + $value->commission;
+            } else {
+                $newRefund = $newRefund + $value->commission;
+                $refundCountNew = $refundCountNew + 1;
+            }
+        }
+        $netCommission = $newGrossCommission - $newRefund;
         $totalSales = count($salesData);
         //Calculate Browsers
         $chrome = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'))
@@ -282,9 +295,9 @@ class DashboardController extends Controller
             'leads' => $leads,
             'sales' => $sales,
             'totalSales' => $totalSales,
-            'grossCommission' => $grossCommission,
-            'refundCommission' => $refundCommission,
-            'refundCount' => $refundCount,
+            'grossCommission' => $newGrossCommission,
+            'refundCommission' => $newRefund,
+            'refundCount' => $refundCountNew,
             'totalSalesPrice' => $totalSalePrice,
             'chrome' => $chrome,
             'opera' => $opera,
@@ -335,6 +348,18 @@ class DashboardController extends Controller
              * Analytics for sold products
              */
             $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->orderBy('created_at', 'DESC')->get();
+            $newSalesData = SalesDetail::whereIn('sales_id',$sales->pluck('id'))->get();
+            $newGrossCommission = 0;
+            $newRefundCommission = 0;
+            $newRefundCount = 0;
+            foreach ($newSalesData as $value){
+                if($value->type == 1){
+                    $newGrossCommission = $newGrossCommission + $value->commission;
+                } else {
+                    $newRefundCommission = $newRefundCommission + $value->commission;
+                    $newRefundCount = $newRefundCount + 1;
+                }
+            }
             $totalSales = 0;
             $totalSalePrice = 0;
             $grossCommission = 0;
@@ -374,7 +399,7 @@ class DashboardController extends Controller
                 $totalSalePrice += $soldProducts[$key]['total_sale_price'];
                 $totalSales += 1;
             }
-            $netCommission = $grossCommission - $refundCommission;
+            $netCommission = $newGrossCommission - $newRefundCommission;
             $refunds = CustomerRefund::whereIn('log_id',$totalSaless->pluck('id'))->get();
             $totalCommissionRefund = 0 ;
             foreach ($refunds as $refund){
@@ -395,9 +420,9 @@ class DashboardController extends Controller
                 'sales' => $sales->count(),
                 'totalSales' => $totalSaless->count(),
                 'total_sale_price' => $totalSalePrice,
-                'gross_commission' => $grossCommission,
-                'refundCommission' => $refundCommission,
-                'refundCount' => $refundCount,
+                'gross_commission' => $newGrossCommission,
+                'refundCommission' => $newRefundCommission,
+                'refundCount' => $newRefundCount,
                 'available_products' => $availableProducts,
                 'sold_products' => $soldProducts,
                 'campaignDropDown' => $campaignDropDown,
