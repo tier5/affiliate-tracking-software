@@ -379,6 +379,7 @@
                                                                         <th>CAMPAIGN</th>
                                                                         <th>EMAIL</th>
                                                                         <th>PRODUCT NAME</th>
+                                                                        <th>PRODUCT PRICE</th>
                                                                         <th>SALE PRICE</th>
                                                                         <th>COMMISSION</th>
                                                                         <th>STATUS</th>
@@ -392,6 +393,7 @@
                                                                             <td>{{ $eachSales['campaign'] }}</td>
                                                                             <td>{{ $eachSales['saleEmail'] != ''?$eachSales['saleEmail']:$eachSales['email'] }}</td>
                                                                             <td>{{ $eachSales['name'] }}</td>
+                                                                            <td>{{ "$" . number_format($eachSales['product_price'], 2, '.', ',') }}</td>
                                                                             <td>{{ "$" . number_format($eachSales['total_sale_price'], 2, '.', ',') }}</td>
                                                                             <td>{{ "$" . number_format($eachSales['my_commission'], 2, '.', ',') }}</td>
                                                                             <td>{!! $eachSales['type'] == 'Refunded'? 'Refunded' : $eachSales['status'] !!}</td>

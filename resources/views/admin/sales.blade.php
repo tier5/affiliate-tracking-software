@@ -96,7 +96,7 @@
                                         <th>Email</th>
                                         <th>Product Name</th>
                                         <th>Product Price</th>
-                                        <th>Payment</th>
+                                        <th>Sale Price</th>
                                         <th>Commission</th>
                                         <th>Date</th>
                                         <th>Status</th>

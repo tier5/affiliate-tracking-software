@@ -74,3 +74,7 @@ Stripe Integration V1.5
 
 New Sale V1.0 stable
 	Fetched all stripe payments and make all as sales and displayed into sales tab
+
+new sale V1.3 stable
+	Made relation with sales details and products
+	Rebuilt admin and affiliate sales

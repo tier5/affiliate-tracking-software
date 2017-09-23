@@ -10,4 +10,8 @@ class Product extends Model
 
         return $this->belongsTo(Campaign::class);
     }
+    
+    public function sales(){
+        return $this->hasMany(SalesDetail::class);
+    }
 }

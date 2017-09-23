@@ -83,9 +83,10 @@
                                         <th>Campaign</th>
                                         <th>Email</th>
                                         <th>Product Name</th>
-                                        <th>Price</th>
-                                        <th>Date</th>
+                                        <th>Product Price</th>
+                                        <th>Sale Price</th>
                                         <th>Commission</th>
+                                        <th>Date</th>
                                         <th>Status</th>
                                     </tr>
                                     </thead>
@@ -96,9 +97,11 @@
                                                 <td>{{ ($sale['saleEmail'] != '')?$sale['saleEmail']:$sale['email'] }}</td>
                                                 <td>{{ $sale['name'] }}</td>
                                                 <td>${{ $sale['total_sale_price'] }}</td>
-                                                <td>{{$sale['created_at']}}</td>
+                                                <td>${{ $sale['payment'] }}</td>
                                                 <td>${{ $sale['my_commission'] }}</td>
-                                                <td>
+                                                <td>{{$sale['created_at']}}</td>
+                                                <td>{!! $sale['transactionType'] == 'Refunded' ? 'Refunded' : $sale['subscriptionStatus'] !!}</td>
+<!--                                                <td>
                                                     <div class="col-md-12">
                                                         <div class="col-md-6">
                                                             {{ ($sale['status']==2)?'Refunded':'Sales' }}
@@ -109,7 +112,7 @@
                                                             </div>
                                                         @endif--}}
                                                     </div>
-                                                </td>
+                                                </td>-->
                                             </tr>
                                         @endforeach
                                     </tbody>

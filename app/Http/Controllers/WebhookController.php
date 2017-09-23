@@ -97,6 +97,7 @@ class WebhookController extends Controller
 
                     $salesData = new SalesDetail();
                     $salesData->sales_id = $myCustomer->id;
+                    $salesData->product_id = $myCustomer->product->id;
                     $salesData->product_amount = $myCustomer->product->product_price;
                     $salesData->step_payment_amount = $myCustomer->product->product_price;
                     $salesData->charge_id = $event['data']['object']['charge'];
@@ -228,6 +229,7 @@ class WebhookController extends Controller
 
                         $salesData = new SalesDetail();
                         $salesData->sales_id = $previousSale->id;
+                        $salesData->product_id = $product->id;
                         $salesData->product_amount = $product->product_price;
                         $salesData->step_payment_amount = $event['data']['object']['amount'] / 100;
                         $salesData->charge_id = $event['data']['object']['id'];
@@ -249,6 +251,7 @@ class WebhookController extends Controller
 
                         $salesData = new SalesDetail();
                         $salesData->sales_id = $order->id;
+                        $salesData->product_id = $product->id;
                         $salesData->product_amount = $product->product_price;
                         $salesData->step_payment_amount = $event['data']['object']['amount'] / 100;
                         $salesData->charge_id = $event['data']['object']['id'];
