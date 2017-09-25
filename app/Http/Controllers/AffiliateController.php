@@ -625,6 +625,7 @@ class AffiliateController extends Controller
             $grossCommission = 0;
             $refundCommission = 0;
             $refundCount = 0;
+            $newCommissionOnly = [];
             foreach ($orderProducts as $keyOrder => $order) {
                 foreach ($order->sales as $key => $sales){
                     $product = Product::find($sales->product_id);
@@ -661,13 +662,14 @@ class AffiliateController extends Controller
                     $commisonsOnly[$key]['transactionType'] = $this->salesStatus[$sales->type];
                     $commisonsOnly[$key]['payment'] = $sales->step_payment_amount;
                 }
+                $newCommissionOnly = array_push($newCommissionOnly,$commisonsOnly);
             }
             $campaignsDropdown = Campaign::where('user_id', Auth::user()->id)->get();
             $affiliatesDropdown = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))
                 ->select('user_id')->orderBy('user_id', 'DESC')
                 ->groupBy('user_id')->get();
             return view('admin.sales', [
-                'sales' => $commisonsOnly,
+                'sales' => $newCommissionOnly,
                 'affiliateDropDown' => $affiliatesDropdown,
                 'campaignDropDown' => $campaignsDropdown
             ]);
@@ -785,6 +787,7 @@ class AffiliateController extends Controller
             $refundCount = 0;
             $refundCommission = 0;
             $soldProducts = [];
+            $newSoldProduct = [];
             foreach ($orderProducts as $keyOrder => $order) {
                 foreach($order->sales as $key => $sale){
                     $product = Product::find($sale->product_id);
@@ -828,12 +831,13 @@ class AffiliateController extends Controller
                     $totalSalePrice += $soldProducts[$key]['total_sale_price'];
                     $totalSales += 1;
                 }
+                $newSoldProduct = array_push($newSoldProduct,$soldProducts)
             }
             $affiliateDropDown = Affiliate::where('user_id', Auth::user()->id)
                 ->where('approve_status', 1);
             $campaignDropDown = Campaign::whereIn('id', $affiliateDropDown->pluck('campaign_id'))->get();
             return view('affiliate.sales', [
-                'sales' => $soldProducts,
+                'sales' => $newSoldProduct,
                 'campaignDropDown' => $campaignDropDown
             ]);
         } catch (\Exception $exception) {
@@ -1324,6 +1328,7 @@ class AffiliateController extends Controller
             $grossCommission = 0;
             $refundCommission = 0;
             $refundCount = 0;
+            $newCommissionOnly = [];
             foreach ($orderProducts as $keyOrder => $order) {
                 foreach ($order->sales as $key => $sales){
                     $product = Product::find($sales->product_id);
@@ -1343,6 +1348,7 @@ class AffiliateController extends Controller
                     $commisonsOnly[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
                     $commisonsOnly[$key]['Status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
                 }
+                $newCommissionOnly = array_push($newCommissionOnly,$commisonsOnly);
             }
             /*foreach ($orderProducts as $key => $order) {
                 $user_log = AgentUrlDetails::find($order->log_id);
@@ -1365,9 +1371,9 @@ class AffiliateController extends Controller
                 $commisonsOnly[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
                 $commisonsOnly[$key]['Status'] = ($order->status == 2) ? 'Refunded' : 'Sales';
             }*/
-            Excel::create('Sales_' . date('m_d_Y'), function ($excel) use ($commisonsOnly) {
-                $excel->sheet('Sales sheet', function ($sheet) use ($commisonsOnly) {
-                    $sheet->fromArray($commisonsOnly, null, 'A1', true);
+            Excel::create('Sales_' . date('m_d_Y'), function ($excel) use ($newCommissionOnly) {
+                $excel->sheet('Sales sheet', function ($sheet) use ($newCommissionOnly) {
+                    $sheet->fromArray($newCommissionOnly, null, 'A1', true);
                 });
             })->download('xls');
         } catch (\Exception $exception) {
@@ -1404,6 +1410,7 @@ class AffiliateController extends Controller
             $refundCount = 0;
             $refundCommission = 0;
             $soldProducts = [];
+            $newCommissionOnly = [];
             foreach ($orderProducts as $keyOrder => $order) {
                 foreach ($order->sales as $key => $sales){
                     $product = Product::find($sales->product_id);
@@ -1423,6 +1430,7 @@ class AffiliateController extends Controller
                     $soldProducts[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
                     $soldProducts[$key]['Status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
                 }
+                $newCommissionOnly = array_push($newCommissionOnly,$soldProducts);
             }
             /*foreach ($orderProducts as $key => $order) {
                 $product = Product::find($order->product_id);
@@ -1452,9 +1460,9 @@ class AffiliateController extends Controller
                 $soldProducts[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
                 $soldProducts[$key]['Status'] = ($order->status == 2) ? 'Refunded' : 'Sales';
             }*/
-            Excel::create('Sales_' . date('m_d_Y'), function ($excel) use ($soldProducts) {
-                $excel->sheet('Sales sheet', function ($sheet) use ($soldProducts) {
-                    $sheet->fromArray($soldProducts, null, 'A1', true);
+            Excel::create('Sales_' . date('m_d_Y'), function ($excel) use ($newCommissionOnly) {
+                $excel->sheet('Sales sheet', function ($sheet) use ($newCommissionOnly) {
+                    $sheet->fromArray($newCommissionOnly, null, 'A1', true);
                 });
             })->download('xls');
         } catch (\Exception $exception) {
