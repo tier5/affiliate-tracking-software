@@ -39,13 +39,13 @@ class AffiliateController extends Controller
      * @param Request $request
      * @return $this|\Illuminate\Http\RedirectResponse
      */
-    
+
     private $subscriptionStatus = [
         '1' => 'Sale',
         '2' => 'Upgrade',
         '3' => 'Renewal'
     ];
-    
+
     private $salesStatus = [
         '1' => 'Sale',
         '2' => 'Refunded'
@@ -645,7 +645,7 @@ class AffiliateController extends Controller
 //                    } else {
 //                        $status = 1;
 //                    }
-                    
+
                     $commisonsOnly[$key]['name'] = $product->name;
                     $commisonsOnly[$key]['unit_sold'] = 1;
                     $commisonsOnly[$key]['sale_price'] = $product->product_price * 1;
@@ -1337,11 +1337,11 @@ class AffiliateController extends Controller
                     $commisonsOnly[$key]['Affiliate'] = $affiliateData->name;
                     $commisonsOnly[$key]['Email'] = $order->email;
                     $commisonsOnly[$key]['Product Name'] = $product->name;
-                    $commisonsOnly[$key]['Product Price'] = $product->product_price * 1;
-                    $commisonsOnly[$key]['payment'] = $sales->step_payment_amount;
-                    $commisonsOnly[$key]['commission'] = $sales->commission;
+                    $commisonsOnly[$key]['Product Price'] = '$'.$product->product_price * 1;
+                    $commisonsOnly[$key]['Sale Price'] = '$'.$sales->step_payment_amount;
+                    $commisonsOnly[$key]['Commission'] = '$'.$sales->commission;
                     $commisonsOnly[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
-                    $commisonsOnly[$key]['status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
+                    $commisonsOnly[$key]['Status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
                 }
             }
             /*foreach ($orderProducts as $key => $order) {
@@ -1417,11 +1417,11 @@ class AffiliateController extends Controller
                     $soldProducts[$key]['Affiliate'] = $affiliateData->name;
                     $soldProducts[$key]['Email'] = $order->email;
                     $soldProducts[$key]['Product Name'] = $product->name;
-                    $soldProducts[$key]['Product Price'] = $product->product_price * 1;
-                    $soldProducts[$key]['payment'] = $sales->step_payment_amount;
-                    $soldProducts[$key]['commission'] = $sales->commission;
+                    $soldProducts[$key]['Product Price'] = '$'.$product->product_price * 1;
+                    $soldProducts[$key]['Sale Price'] = '$'.$sales->step_payment_amount;
+                    $soldProducts[$key]['Commission'] = '$'.$sales->commission;
                     $soldProducts[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
-                    $soldProducts[$key]['status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
+                    $soldProducts[$key]['Status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
                 }
             }
             /*foreach ($orderProducts as $key => $order) {
