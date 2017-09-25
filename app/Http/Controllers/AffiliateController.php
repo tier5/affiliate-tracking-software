@@ -1324,7 +1324,27 @@ class AffiliateController extends Controller
             $grossCommission = 0;
             $refundCommission = 0;
             $refundCount = 0;
-            foreach ($orderProducts as $key => $order) {
+            foreach ($orderProducts as $keyOrder => $order) {
+                foreach ($order->sales as $key => $sales){
+                    $product = Product::find($sales->product_id);
+                    $user_log = AgentUrlDetails::find($order->log_id);
+                    $logData = Affiliate::find($user_log->affiliate_id);
+                    $affiliateData = User::find($logData->user_id);
+                    $campaignData = Campaign::find($logData->campaign_id);
+                    $subscriptionStatus = $this->subscriptionStatus[$sales->status];
+                    $transactionType = $this->salesStatus[$sales->type];
+                    $commisonsOnly[$key]['Campaign'] = $campaignData->name;
+                    $commisonsOnly[$key]['Affiliate'] = $affiliateData->name;
+                    $commisonsOnly[$key]['Email'] = $order->email;
+                    $commisonsOnly[$key]['Product Name'] = $product->name;
+                    $commisonsOnly[$key]['Product Price'] = $product->product_price * 1;
+                    $commisonsOnly[$key]['payment'] = $sales->step_payment_amount;
+                    $commisonsOnly[$key]['commission'] = $sales->commission;
+                    $commisonsOnly[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $commisonsOnly[$key]['status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
+                }
+            }
+            /*foreach ($orderProducts as $key => $order) {
                 $user_log = AgentUrlDetails::find($order->log_id);
                 $logData = Affiliate::find($user_log->affiliate_id);
                 $affiliateData = User::find($logData->user_id);
@@ -1344,7 +1364,7 @@ class AffiliateController extends Controller
                 $commisonsOnly[$key]['Commission'] = '$' . $myCommision;
                 $commisonsOnly[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
                 $commisonsOnly[$key]['Status'] = ($order->status == 2) ? 'Refunded' : 'Sales';
-            }
+            }*/
             Excel::create('Sales_' . date('m_d_Y'), function ($excel) use ($commisonsOnly) {
                 $excel->sheet('Sales sheet', function ($sheet) use ($commisonsOnly) {
                     $sheet->fromArray($commisonsOnly, null, 'A1', true);
@@ -1384,7 +1404,27 @@ class AffiliateController extends Controller
             $refundCount = 0;
             $refundCommission = 0;
             $soldProducts = [];
-            foreach ($orderProducts as $key => $order) {
+            foreach ($orderProducts as $keyOrder => $order) {
+                foreach ($order->sales as $key => $sales){
+                    $product = Product::find($sales->product_id);
+                    $user_log = AgentUrlDetails::find($order->log_id);
+                    $logData = Affiliate::find($user_log->affiliate_id);
+                    $affiliateData = User::find($logData->user_id);
+                    $campaignData = Campaign::find($logData->campaign_id);
+                    $subscriptionStatus = $this->subscriptionStatus[$sales->status];
+                    $transactionType = $this->salesStatus[$sales->type];
+                    $soldProducts[$key]['Campaign'] = $campaignData->name;
+                    $soldProducts[$key]['Affiliate'] = $affiliateData->name;
+                    $soldProducts[$key]['Email'] = $order->email;
+                    $soldProducts[$key]['Product Name'] = $product->name;
+                    $soldProducts[$key]['Product Price'] = $product->product_price * 1;
+                    $soldProducts[$key]['payment'] = $sales->step_payment_amount;
+                    $soldProducts[$key]['commission'] = $sales->commission;
+                    $soldProducts[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $soldProducts[$key]['status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
+                }
+            }
+            /*foreach ($orderProducts as $key => $order) {
                 $product = Product::find($order->product_id);
                 $log = AgentUrlDetails::find($order->log_id);
                 $affiliateData = Affiliate::find($log->affiliate_id);
@@ -1411,7 +1451,7 @@ class AffiliateController extends Controller
                 $soldProducts[$key]['Commission'] = '$' . $myCommision;
                 $soldProducts[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
                 $soldProducts[$key]['Status'] = ($order->status == 2) ? 'Refunded' : 'Sales';
-            }
+            }*/
             Excel::create('Sales_' . date('m_d_Y'), function ($excel) use ($soldProducts) {
                 $excel->sheet('Sales sheet', function ($sheet) use ($soldProducts) {
                     $sheet->fromArray($soldProducts, null, 'A1', true);
