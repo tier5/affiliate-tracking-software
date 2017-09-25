@@ -627,7 +627,7 @@ class AffiliateController extends Controller
             $refundCount = 0;
             $newCommissionOnly = [];
             foreach ($orderProducts as $keyOrder => $order) {
-                foreach ($order->sales as $key => $sales){
+                foreach ($order->sales as $key => $sales) {
                     $product = Product::find($sales->product_id);
                     $user_log = AgentUrlDetails::find($order->log_id);
                     $logData = Affiliate::find($user_log->affiliate_id);
@@ -647,24 +647,23 @@ class AffiliateController extends Controller
 //                        $status = 1;
 //                    }
 
-                    $commisonsOnly[$key]['name'] = $product->name;
-                    $commisonsOnly[$key]['unit_sold'] = 1;
-                    $commisonsOnly[$key]['sale_price'] = $product->product_price * 1;
-                    $commisonsOnly[$key]['commission'] = $sales->commission;
-                    $commisonsOnly[$key]['email'] = $user_log->email;
-                    $commisonsOnly[$key]['saleEmail'] = $order->email;
-                    $commisonsOnly[$key]['id'] = $sales->id;
-                    $commisonsOnly[$key]['status'] = $order->status;
-                    $commisonsOnly[$key]['affiliate'] = $affiliateData->name;
-                    $commisonsOnly[$key]['campaign'] = $campaignData->name;
-                    $commisonsOnly[$key]['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
-                    $commisonsOnly[$key]['subscriptionStatus'] = $this->subscriptionStatus[$sales->status];
-                    $commisonsOnly[$key]['transactionType'] = $this->salesStatus[$sales->type];
-                    $commisonsOnly[$key]['payment'] = $sales->step_payment_amount;
+                    $commisonsOnly['name'] = $product->name;
+                    $commisonsOnly['unit_sold'] = 1;
+                    $commisonsOnly['sale_price'] = $product->product_price * 1;
+                    $commisonsOnly['commission'] = $sales->commission;
+                    $commisonsOnly['email'] = $user_log->email;
+                    $commisonsOnly['saleEmail'] = $order->email;
+                    $commisonsOnly['id'] = $sales->id;
+                    $commisonsOnly['status'] = $order->status;
+                    $commisonsOnly['affiliate'] = $affiliateData->name;
+                    $commisonsOnly['campaign'] = $campaignData->name;
+                    $commisonsOnly['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $commisonsOnly['subscriptionStatus'] = $this->subscriptionStatus[$sales->status];
+                    $commisonsOnly['transactionType'] = $this->salesStatus[$sales->type];
+                    $commisonsOnly['payment'] = $sales->step_payment_amount;
+                    array_push($newCommissionOnly,$commisonsOnly);
                 }
-                if(count($commisonsOnly) > 0){
-                    $newCommissionOnly = array_push($newCommissionOnly,$commisonsOnly);
-                }
+                //array_push($newCommissionOnly,$arrayCommission);
             }
             $campaignsDropdown = Campaign::where('user_id', Auth::user()->id)->get();
             $affiliatesDropdown = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'))
@@ -817,24 +816,22 @@ class AffiliateController extends Controller
                     } else {
                         $status = 1;
                     }
-                    $soldProducts[$key]['name'] = $product->name;
-                    $soldProducts[$key]['unit_sold'] = 1;
-                    $soldProducts[$key]['total_sale_price'] = $product->product_price;
-                    $soldProducts[$key]['my_commission'] = $sale->commission;
-                    $soldProducts[$key]['status'] = $order->status;
-                    $soldProducts[$key]['email'] = $order->log->email;
-                    $soldProducts[$key]['saleEmail'] = $order->email;
-                    $soldProducts[$key]['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
-                    $soldProducts[$key]['campaign'] = $campaignData->name;
-                    $soldProducts[$key]['id'] = $sale->id;
-                    $soldProducts[$key]['subscriptionStatus'] = $this->subscriptionStatus[$sale->status];
-                    $soldProducts[$key]['transactionType'] = $this->salesStatus[$sale->type];
-                    $soldProducts[$key]['payment'] = $sale->step_payment_amount;
-                    $totalSalePrice += $soldProducts[$key]['total_sale_price'];
+                    $soldProducts['name'] = $product->name;
+                    $soldProducts['unit_sold'] = 1;
+                    $soldProducts['total_sale_price'] = $product->product_price;
+                    $soldProducts['my_commission'] = $sale->commission;
+                    $soldProducts['status'] = $order->status;
+                    $soldProducts['email'] = $order->log->email;
+                    $soldProducts['saleEmail'] = $order->email;
+                    $soldProducts['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $soldProducts['campaign'] = $campaignData->name;
+                    $soldProducts['id'] = $sale->id;
+                    $soldProducts['subscriptionStatus'] = $this->subscriptionStatus[$sale->status];
+                    $soldProducts['transactionType'] = $this->salesStatus[$sale->type];
+                    $soldProducts['payment'] = $sale->step_payment_amount;
+                    $totalSalePrice += $product->product_price;
                     $totalSales += 1;
-                }
-                if(count($soldProducts) > 0){
-                    $newSoldProduct = array_push($newSoldProduct,$soldProducts);
+                    array_push($newSoldProduct,$soldProducts);
                 }
             }
             $affiliateDropDown = Affiliate::where('user_id', Auth::user()->id)
@@ -1342,18 +1339,16 @@ class AffiliateController extends Controller
                     $campaignData = Campaign::find($logData->campaign_id);
                     $subscriptionStatus = $this->subscriptionStatus[$sales->status];
                     $transactionType = $this->salesStatus[$sales->type];
-                    $commisonsOnly[$key]['Campaign'] = $campaignData->name;
-                    $commisonsOnly[$key]['Affiliate'] = $affiliateData->name;
-                    $commisonsOnly[$key]['Email'] = $order->email;
-                    $commisonsOnly[$key]['Product Name'] = $product->name;
-                    $commisonsOnly[$key]['Product Price'] = '$'.$product->product_price * 1;
-                    $commisonsOnly[$key]['Sale Price'] = '$'.$sales->step_payment_amount;
-                    $commisonsOnly[$key]['Commission'] = '$'.$sales->commission;
-                    $commisonsOnly[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
-                    $commisonsOnly[$key]['Status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
-                }
-                if(count($commisonsOnly) > 0){
-                    $newCommissionOnly = array_push($newCommissionOnly,$commisonsOnly);
+                    $commisonsOnly['Campaign'] = $campaignData->name;
+                    $commisonsOnly['Affiliate'] = $affiliateData->name;
+                    $commisonsOnly['Email'] = $order->email;
+                    $commisonsOnly['Product Name'] = $product->name;
+                    $commisonsOnly['Product Price'] = '$'.$product->product_price * 1;
+                    $commisonsOnly['Sale Price'] = '$'.$sales->step_payment_amount;
+                    $commisonsOnly['Commission'] = '$'.$sales->commission;
+                    $commisonsOnly['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $commisonsOnly['Status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
+                    array_push($newCommissionOnly,$commisonsOnly);
                 }
             }
             /*foreach ($orderProducts as $key => $order) {
@@ -1426,18 +1421,16 @@ class AffiliateController extends Controller
                     $campaignData = Campaign::find($logData->campaign_id);
                     $subscriptionStatus = $this->subscriptionStatus[$sales->status];
                     $transactionType = $this->salesStatus[$sales->type];
-                    $soldProducts[$key]['Campaign'] = $campaignData->name;
-                    $soldProducts[$key]['Affiliate'] = $affiliateData->name;
-                    $soldProducts[$key]['Email'] = $order->email;
-                    $soldProducts[$key]['Product Name'] = $product->name;
-                    $soldProducts[$key]['Product Price'] = '$'.$product->product_price * 1;
-                    $soldProducts[$key]['Sale Price'] = '$'.$sales->step_payment_amount;
-                    $soldProducts[$key]['Commission'] = '$'.$sales->commission;
-                    $soldProducts[$key]['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
-                    $soldProducts[$key]['Status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
-                }
-                if(count($soldProducts) > 0){
-                    $newCommissionOnly = array_push($newCommissionOnly,$soldProducts);
+                    $soldProducts['Campaign'] = $campaignData->name;
+                    $soldProducts['Affiliate'] = $affiliateData->name;
+                    $soldProducts['Email'] = $order->email;
+                    $soldProducts['Product Name'] = $product->name;
+                    $soldProducts['Product Price'] = '$'.$product->product_price * 1;
+                    $soldProducts['Sale Price'] = '$'.$sales->step_payment_amount;
+                    $soldProducts['Commission'] = '$'.$sales->commission;
+                    $soldProducts['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $soldProducts['Status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
+                    array_push($newCommissionOnly,$soldProducts);
                 }
             }
             /*foreach ($orderProducts as $key => $order) {
