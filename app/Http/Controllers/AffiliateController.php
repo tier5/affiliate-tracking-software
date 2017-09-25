@@ -657,7 +657,7 @@ class AffiliateController extends Controller
                     $commisonsOnly['status'] = $order->status;
                     $commisonsOnly['affiliate'] = $affiliateData->name;
                     $commisonsOnly['campaign'] = $campaignData->name;
-                    $commisonsOnly['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $commisonsOnly['created_at'] = date("F j, Y, g:i a", strtotime($sales->created_at));
                     $commisonsOnly['subscriptionStatus'] = $this->subscriptionStatus[$sales->status];
                     $commisonsOnly['transactionType'] = $this->salesStatus[$sales->type];
                     $commisonsOnly['payment'] = $sales->step_payment_amount;
@@ -823,7 +823,7 @@ class AffiliateController extends Controller
                     $soldProducts['status'] = $order->status;
                     $soldProducts['email'] = $order->log->email;
                     $soldProducts['saleEmail'] = $order->email;
-                    $soldProducts['created_at'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $soldProducts['created_at'] = date("F j, Y, g:i a", strtotime($sale->created_at));
                     $soldProducts['campaign'] = $campaignData->name;
                     $soldProducts['id'] = $sale->id;
                     $soldProducts['subscriptionStatus'] = $this->subscriptionStatus[$sale->status];
@@ -1346,7 +1346,7 @@ class AffiliateController extends Controller
                     $commisonsOnly['Product Price'] = '$'.$product->product_price * 1;
                     $commisonsOnly['Sale Price'] = '$'.$sales->step_payment_amount;
                     $commisonsOnly['Commission'] = '$'.$sales->commission;
-                    $commisonsOnly['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $commisonsOnly['Date'] = date("F j, Y, g:i a", strtotime($sales->created_at));
                     $commisonsOnly['Status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
                     array_push($newCommissionOnly,$commisonsOnly);
                 }
@@ -1428,7 +1428,7 @@ class AffiliateController extends Controller
                     $soldProducts['Product Price'] = '$'.$product->product_price * 1;
                     $soldProducts['Sale Price'] = '$'.$sales->step_payment_amount;
                     $soldProducts['Commission'] = '$'.$sales->commission;
-                    $soldProducts['Date'] = date("F j, Y, g:i a", strtotime($order->created_at));
+                    $soldProducts['Date'] = date("F j, Y, g:i a", strtotime($sales->created_at));
                     $soldProducts['Status'] = $transactionType == 'Refunded'? 'Refunded' : $subscriptionStatus;
                     array_push($newCommissionOnly,$soldProducts);
                 }

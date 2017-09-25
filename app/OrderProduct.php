@@ -16,6 +16,6 @@ class OrderProduct extends Model
     }
     
     public function sales(){
-        return $this->hasMany('App\SalesDetail', 'sales_id');
+        return $this->hasMany('App\SalesDetail', 'sales_id')->orderBy('created_at','DESC');
     }
 }
