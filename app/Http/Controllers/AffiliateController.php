@@ -831,7 +831,7 @@ class AffiliateController extends Controller
                     $totalSalePrice += $soldProducts[$key]['total_sale_price'];
                     $totalSales += 1;
                 }
-                $newSoldProduct = array_push($newSoldProduct,$soldProducts)
+                $newSoldProduct = array_push($newSoldProduct,$soldProducts);
             }
             $affiliateDropDown = Affiliate::where('user_id', Auth::user()->id)
                 ->where('approve_status', 1);
