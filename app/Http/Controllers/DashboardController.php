@@ -350,7 +350,7 @@ class DashboardController extends Controller
              * Analytics for sold products
              */
             $orderProducts = OrderProduct::whereIn('log_id', $sales->pluck('id'))->with('log')->orderBy('created_at', 'DESC')->get();
-            $newSalesData = SalesDetail::whereIn('sales_id',$sales->pluck('id'))->get();
+            $newSalesData = SalesDetail::whereIn('sales_id',$totalSaless->pluck('id'))->get();
             $newGrossCommission = 0;
             $newRefundCommission = 0;
             $newRefundCount = 0;
