@@ -51,7 +51,7 @@
                                                 <div class="col-md-3 col-sm-3">
                                                     <div class="blue-txt">
                                                         @if($visitors > 0)
-                                                            ${!! number_format(($gross_commission /  $visitors),2,'.','') !!}
+                                                            ${!! number_format((($gross_commission-$refundCommission) /  $visitors),2,'.','') !!}
                                                         @else
                                                             {{ number_format($visitors,2,'.','') }}
                                                         @endif

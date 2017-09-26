@@ -660,9 +660,9 @@
                                     },*/
                                     {
                                         label: "Sales",
-                                        fillColor: "rgba(236, 240, 245, 1)",
+                                        fillColor: "rgba(236, 240, 245, 0.8)",
                                         strokeColor: "rgba(236, 240, 245, 1)",
-                                        pointColor: "rgba(236, 240, 245, 1)",
+                                        pointColor: "rgba(236, 240, 245, 0.8)",
                                         pointStrokeColor: "rgba(10,101,198,10)",
                                         pointHighlightFill: "#fff",
                                         pointHighlightStroke: "rgba(50,111,138,0.8)",
