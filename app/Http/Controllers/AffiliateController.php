@@ -35,23 +35,29 @@ use Maatwebsite\Excel\Facades\Excel;
 class AffiliateController extends Controller
 {
     /**
-     * For Register a affiliate
-     * @param Request $request
-     * @return $this|\Illuminate\Http\RedirectResponse
+     * Global Subscription status array
+     * @var array
      */
-
     private $subscriptionStatus = [
         '1' => 'Sale',
         '2' => 'Upgrade',
         '3' => 'Renewal'
     ];
 
+    /**
+     * Global Sales Status array
+     * @var array
+     */
     private $salesStatus = [
         '1' => 'Sale',
         '2' => 'Refunded'
     ];
 
-
+    /**
+     * For Register a affiliate
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
     public function affiliateRegistration(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1001,6 +1007,7 @@ class AffiliateController extends Controller
                 'leadsOnly' => $leads->get(),
                 'salesOnly' => $sales->get(),
                 'commisonsOnly' => $newSoldProduct,
+                'newSalesCount' => count($newSalesData)
             ]);
         } catch (\Exception $exception) {
             return redirect()->back()->with('error', $exception->getMessage());

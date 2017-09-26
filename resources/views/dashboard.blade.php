@@ -101,7 +101,7 @@
                                         <div class="blue-txt">
                                             {{--<a href="{{ route('view.link',['admin',Auth::user()->id,'sales',$queryString]) }}">--}}{{ $sales->count() }}{{--</a>--}}
                                         </div>
-                                        <div class="normal-txt">Sales</div>
+                                        <div class="normal-txt">Customers</div>
 
                                     </div>
                                     <div class="col-md-3 col-sm-3">
@@ -118,18 +118,26 @@
                                     </div>
                                 </div>
                                 <div class="row two-row">
-                                    <div class="col-md-3 col-sm-3">
+                                    {{--<div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">
                                             ${{ round($grossCommission) }}
                                         </div>
                                         <div class="normal-txt">Gross Commission</div>
 
-                                    </div>
+                                    </div>--}}
                                     <div class="col-md-3 col-sm-3">
 
                                         <div class="blue-txt">${{ round($grossCommission - $refundCommission) }}</div>
                                         <div class="normal-txt">Net Commission</div>
+
+                                    </div>
+                                    <div class="col-md-3 col-sm-3">
+
+                                        <div class="blue-txt">
+                                            {{ $newSalesCount }}
+                                        </div>
+                                        <div class="normal-txt">Sales</div>
 
                                     </div>
                                     <div class="col-md-3 col-sm-3">
@@ -549,20 +557,20 @@
                                 datasets: [
                                     {
                                         label: "Visitors",
-                                        fillColor: "rgba(90, 231, 218, 0.3)",
-                                        strokeColor: "rgba(90, 231, 218, 1)",
-                                        pointColor: "rgba(50,111,138,0.8)",
+                                        fillColor: "rgba(191, 191, 191, 1)",
+                                        strokeColor: "rgba(196, 194, 194, 1)",
+                                        pointColor: "rgba(191, 191, 191, 1)",
                                         pointStrokeColor: "rgba(10,101,198,10)",
                                         pointHighlightFill: "#fff",
-                                        pointHighlightStroke: "rgba(50,111,138,0.8)",
+                                        pointHighlightStroke: "rgba(0,0,0,0.8)",
                                         data: data.visitors
                                     },
                                     {
                                         label: "Leads",
                                         fillColor: "rgba(60,141,188,0.4)",
-                                        strokeColor: "rgba(60,141,188,1)",
-                                        pointColor: "#3b8bba",
-                                        pointStrokeColor: "rgba(60,141,188,1)",
+                                        strokeColor: "rgba(196,194,194,1)",
+                                        pointColor: "rgba(60,141,188,0.4)",
+                                        pointStrokeColor: "rgba(1,141,188,1)",
                                         pointHighlightFill: "#fff",
                                         pointHighlightStroke: "rgba(60,141,188,1)",
                                         data: data.leads
@@ -579,9 +587,9 @@
                                     },*/
                                     {
                                         label: "Sales",
-                                        fillColor: "rgba(30, 831, 518, 0.3)",
-                                        strokeColor: "rgba(30, 831, 518, 1)",
-                                        pointColor: "rgba(50,111,138,0.8)",
+                                        fillColor: "rgba(236, 240, 245, 1)",
+                                        strokeColor: "rgba(236, 240, 245, 1)",
+                                        pointColor: "rgba(236, 240, 245, 1)",
                                         pointStrokeColor: "rgba(10,101,198,10)",
                                         pointHighlightFill: "#fff",
                                         pointHighlightStroke: "rgba(50,111,138,0.8)",

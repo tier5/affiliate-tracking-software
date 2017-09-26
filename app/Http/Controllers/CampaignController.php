@@ -12,11 +12,21 @@ use Illuminate\Support\Facades\Mail;
 
 class CampaignController extends Controller
 {
+    /**
+     * Get Campaign Page
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function getCampaign()
     {
         $campaign = Campaign::where('user_id',Auth()->user()->id)->paginate(25);
         return view('campaign.campaign',['campaigns' => $campaign]);
     }
+
+    /**
+     * Create Campaign Section
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function createCampaign(Request $request)
     {
         try{
@@ -53,6 +63,12 @@ class CampaignController extends Controller
             ],200);
         }
     }
+
+    /**
+     * Delete Campaign Section
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deleteCampaign(Request $request)
     {
         try{
@@ -69,6 +85,12 @@ class CampaignController extends Controller
             ],500);
         }
     }
+
+    /**
+     * Edit Campaign Section
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function editCampaign(Request $request)
     {
         try{
@@ -93,6 +115,12 @@ class CampaignController extends Controller
             ],500);
         }
     }
+
+    /**
+     * Campaign Details Section
+     * @param $key
+     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function detailsCampaign($key)
     {
         try{
@@ -108,10 +136,21 @@ class CampaignController extends Controller
         }
     }
 
+    /**
+     * Get Affiliate Registration form
+     * @param $affiliateKey
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function affiliateRegistrationForm($affiliateKey){
         $campaign = Campaign::where('key',$affiliateKey)->with('user')->first();
         return view('affiliate.registration',['campaign' => $campaign]);
     }
+
+    /**
+     * For Add affiliate section
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function addAffiliate(Request $request)
     {
         try{
@@ -148,6 +187,12 @@ class CampaignController extends Controller
             ],500);
         }
     }
+
+    /**
+     * For Affiliate Approval Section
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function approveAffiliate(Request $request)
     {
         try{
@@ -178,6 +223,12 @@ class CampaignController extends Controller
             ],500);
         }
     }
+
+    /**
+     * For Affiliate Delete Section
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deleteAffiliate(Request $request)
     {
         try{
@@ -194,6 +245,12 @@ class CampaignController extends Controller
             ],500);
         }
     }
+
+    /**
+     * Get products for campaign
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function campaignProduct($id)
     {
         try{
@@ -204,6 +261,12 @@ class CampaignController extends Controller
             return redirect()->back()->with('error',$exception->getMessage());
         }
     }
+
+    /**
+     * Toggle Stripe live and test mode
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function changeStripeMode(Request $request)
     {
         try{

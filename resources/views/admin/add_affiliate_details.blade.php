@@ -64,7 +64,7 @@
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
                                                     <div class="blue-txt"> {{ $sales }}</div>
-                                                    <div class="normal-txt">Sales</div>
+                                                    <div class="normal-txt">Customers</div>
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
                                                     <div class="blue-txt">
@@ -78,14 +78,18 @@
                                                 </div>
                                             </div>
                                             <div class="row one-row">
-                                                <div class="col-md-3 col-sm-3">
+                                                {{--<div class="col-md-3 col-sm-3">
                                                     <div class="blue-txt">{{ "$" . round($gross_commission) }}</div>
                                                     <div class="normal-txt">Gross Commission</div>
-                                                </div>
+                                                </div>--}}
                                                 <div class="col-md-3 col-sm-3">
                                                     <div class="blue-txt">
                                                         ${{ round($gross_commission-$refundCommission) }}</div>
                                                     <div class="normal-txt">Net Commission</div>
+                                                </div>
+                                                <div class="col-md-3 col-sm-3">
+                                                    <div class="blue-txt">{{ $newSalesCount }}</div>
+                                                    <div class="normal-txt">Sales</div>
                                                 </div>
                                                 <div class="col-md-3 col-sm-3">
                                                     <div class="blue-txt">{{ $refundCount }}</div>

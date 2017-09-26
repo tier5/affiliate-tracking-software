@@ -15,7 +15,10 @@ use Illuminate\Http\Request;
 
 class AgencyController extends Controller
 {
-
+    /**
+     * old (Not in use)
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function addAffiliate()
     {
         $user = Auth::user();
@@ -27,6 +30,12 @@ class AgencyController extends Controller
         ];
         return view('agency.addAffiliate',compact('result'));
     }
+
+    /**
+     * not in use
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
     public function addAgency(Request $request){
 
         
@@ -72,6 +81,9 @@ class AgencyController extends Controller
 
     }
 
+    /**
+     * Not in Use
+     */
     public function all()
     {
     	try {
@@ -91,6 +103,10 @@ class AgencyController extends Controller
     	}
     }
 
+    /**
+     * Not in use
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show()
     {
     	$user = Auth::user();
@@ -101,17 +117,32 @@ class AgencyController extends Controller
         return view('layouts/dashboard',compact('result'));
     }
 
+    /**
+     * Not in use
+     * @param $id
+     */
     public function disable($id)
     {
     	// turn off agency and businesses
 
     	// pause agency and business subscriptions
     }
+
+    /**
+     * Not in use
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function getSettings()
     {
         $url = AgentUrl::where('user_id',Auth::user()->id)->get();
         return view('agency.settings',['url'=>$url]);
     }
+
+    /**
+     * Not in use
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function registerUrl(Request $request)
     {
         $parse = parse_url($request->url);
@@ -132,11 +163,21 @@ class AgencyController extends Controller
 
     }
 
+    /**
+     * Not in use
+     * @param $affiliateId
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showAffiliate($affiliateId){
         $affiliate=Affiliate::findOrFail($affiliateId);
         return view('agency.affiliates.affiliate',compact('affiliate'));
     }
 
+    /**
+     * Affiliate Dashboard (not in use)
+     * @param $affiliateKey
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function affiliateDashboard($affiliateKey){
         $affiliate=Affiliate::where('affiliate_key',$affiliateKey)->first();
         if(!is_null($affiliate)){
@@ -144,6 +185,11 @@ class AgencyController extends Controller
         }
     }
 
+    /**
+     * Generate Random string
+     * @param $length
+     * @return string
+     */
     public static function generateRandomString($length) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);

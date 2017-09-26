@@ -18,6 +18,10 @@ use Illuminate\Support\Facades\Input;
 
 class PaymentController extends Controller
 {
+    /**
+     * Affiliate Payout section
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function affiliatePayout()
     {
         try{
@@ -114,6 +118,11 @@ class PaymentController extends Controller
             return redirect()->back()->with('error',$e->getMessage());
         }
     }
+
+    /**
+     * Admin Payout section
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function adminPayout()
     {
         try {
@@ -236,6 +245,12 @@ class PaymentController extends Controller
             return redirect()->back()->with('error',$e->getMessage());
         }
     }
+
+    /**
+     * Refund Details
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function refundDetails($id)
     {
         try {

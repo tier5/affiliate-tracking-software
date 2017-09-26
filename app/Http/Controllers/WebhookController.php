@@ -159,7 +159,8 @@ class WebhookController extends Controller
      * @param $campaign_key
      * @return string
      */
-    public function renewBilling($event,$campaign_key){
+    public function renewBilling($event,$campaign_key)
+    {
         try{
             $campaign=Campaign::where('key',$campaign_key)->firstOrFail();
             $customer_id = $event['data']['object']['customer'];
@@ -187,6 +188,12 @@ class WebhookController extends Controller
         }
     }
 
+    /**
+     * Event for charge.succeeded action
+     * @param $event
+     * @param $campaign_key
+     * @return string
+     */
     public function chargeSuccess($event,$campaign_key)
     {
         try {

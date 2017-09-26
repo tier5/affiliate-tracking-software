@@ -155,7 +155,8 @@ class DashboardController extends Controller
                 'affiliatesDropdown' => $affiliatesDropdown,
                 'campaignsDropdown' => $campaignsDropdown,
                 'netCommission' => isset($data['netCommission'])?$data['netCommission']:'0',
-                'totalPaid' => $totalCommission
+                'totalPaid' => $totalCommission,
+                'newSalesCount' => $data['newSalesCount']
             ]);
         } else {
             return $this->adminDashboardNoFilter();
@@ -207,7 +208,8 @@ class DashboardController extends Controller
             'affiliatesDropdown' => $affiliatesDropdown,
             'campaignsDropdown' => $campaignsDropdown,
             'netCommission' => $data['netCommission'],
-            'totalPaid' => $totalCommission
+            'totalPaid' => $totalCommission,
+            'newSalesCount' => $data['newSalesCount']
         ]);
     }
 
@@ -307,6 +309,7 @@ class DashboardController extends Controller
             'safari' => $safari,
             'firefox' => $firefox,
             'netCommission' => $netCommission,
+            'newSalesCount' => count($salesDataNew)
         ];
     }
 
@@ -431,7 +434,8 @@ class DashboardController extends Controller
                 'sold_products' => $soldProducts,
                 'campaignDropDown' => $campaignDropDown,
                 'paidCommission' => $paidCommission,
-                'netCommission' => $netCommission
+                'netCommission' => $netCommission,
+                'newSalesCount' => count($newSalesData)
             ]);
         } catch (\Exception $exception){
             return redirect()->back()->with('error',$exception->getMessage());
