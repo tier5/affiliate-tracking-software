@@ -6,8 +6,8 @@
 box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 .box1 h2{margin: 0; padding: 0 0 136px; font-size: 32px; color: #595959;}
-.blue-txt{color: #378cbe; font-size: 36px; font-weight: bold;}
-.normal-txt{color: #222d32; font-size: 16px; }
+.blue-txt{color: #378cbe; font-size: 30px; font-weight: bold;}
+.normal-txt{color: #222d32; font-size: 12px; }
 .one-row{padding-bottom: 2px;}
 .two-row{padding-bottom: 15px;}
 .spec .blue-txt {
@@ -19,6 +19,13 @@ box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 
 .box2{ padding: 20px; text-align: center;  margin: 8px auto 0px; background: #fff;
 box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+.box2 .border-area{
+    min-height: 110px;
+}
+.box2 .border-area img{
+	width: 50px;
+	margin: auto;
 }
 .box-title{font-weight: 600;}
 
@@ -37,15 +44,3 @@ box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-

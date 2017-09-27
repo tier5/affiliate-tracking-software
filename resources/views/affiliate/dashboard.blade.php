@@ -211,7 +211,7 @@
             </div>
             <!-- /.row -->
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-7">
                     <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">Monthly Recap Report</h3>
@@ -310,7 +310,7 @@
                             </div>
                 </div>
                 <!-- /.col -->
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">Your Referral Link</h3>
@@ -355,34 +355,38 @@
                         <div class="box-body no-padding">
                             <div class="box2">
                                 <div class="row">
-                                    <div class="border-area">
-                                    <div class="col-md-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-md-8 col-xs-12">
-                                                <div class="blue-txt">{{ "$" . round($paidCommission) }}</div>
-                                                <div class="normal-txt">Commission Paid</div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <img src="images/09_commission_paid.png" alt="img">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    </div>
-                                    <div class="border-area no-margin">
-                                    <div class="col-md-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-md-8 col-xs-12">
-                                        <div class="blue-txt">
-                                            ${{ round($gross_commission - $refundCommission - $paidCommission) }}
-                                        </div>
-                                        <div class="normal-txt">Commission Due</div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <img src="images/10_commission_due.png" alt="img">
+                                    <div class="col-md-6">
+                                        <div class="border-area">
+                                            <div class="row">
+                                                <div class="col-md-8 col-xs-12">
+                                                    <div class="blue-txt">{{ "$" . round($paidCommission) }}</div>
+                                                    <div class="normal-txt">Commission Paid</div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="row">
+                                                        <img src="images/09_commission_paid.png" alt="img" class='img-responsive'>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="col-md-6">
+                                        <div class="border-area">
+                                            <div class="row">
+                                                <div class="col-md-8 col-xs-12">
+                                            <div class="blue-txt">
+                                                ${{ round($gross_commission - $refundCommission - $paidCommission) }}
+                                            </div>
+                                            <div class="normal-txt">Commission Due</div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="row">
+                                                        <img src="images/10_commission_due.png" alt="img" class='img-responsive'>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
