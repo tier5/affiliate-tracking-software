@@ -1,0 +1,80 @@
+Agents V1.0 Stable Release
+    make agents and affiliate basic logins
+Script V1.0 stable Release
+    implement Affiliate tracking script 
+Agents V2.0 Stable Release
+    Show Affiliates Section Modified With Affiliate Dashboard Being Added.
+Affiliate Registration V1.0 Stable Released	
+    Campaign And Affiliate Registration Added.
+Bugfixes V1.0 Stable Released
+    Campaign Bugs Fixed 
+    Logout Bug Fix
+    Registration Redirection To Dashboard.
+    Default Page Set To Login.
+Sales V1.0
+    Make Sales Tracking Script
+Product V1.0 Stable Released
+	Addded downgrade and upgrade url to product section
+
+Config V1.0 Stable Released
+	Added .htaccess_local 
+
+Product V1.1 Stable Released
+	Removed downgrade url 
+
+sales script V1.6 stable
+	Bug Fix in sales script
+sales script V1.7 stable
+	Fix script for sales
+sales script V1.8 stable
+	change url
+added logos
+	added icons and logos to all pages.
+
+Affiliate V1.8 Stable Released
+	Fixed affiliate statistics
+sales V1.0
+	Implement Sales Script
+changes V1.0
+	add sales url
+Modify Tracking script V1.0
+	Modify script log lead and sales track new way
+Sales & Affiliate menu V1.0
+	Create sales menu
+	Create Affiliate menu
+	Change Dashboard Stats
+Sales & Affiliate menu V2.0
+	Export Sales
+	Login to affiliate from admin
+
+Tracking Script V3.0 Stable Released
+	Fix issue with click event on page
+
+Tracking Script V3.1 Stable Released
+        Fix issue with click event for button and anchor and query selector element
+
+Sales & Affiliate menu V2.1
+	Affiliate Menu full functional
+	Sales menu full functional
+
+Sales & Affiliate menu V3.1
+	Added View For Sales,Unique Counts,Refunds(Filter Not Completed)
+Sales & Affiliate menu V3.2
+        Edit stats 
+	Add Payout menu
+Sales & Layout
+	Export Issues Fixed and Filter added.
+
+Clean Up V1.0 Stable
+	Few lists fetched by date descending order
+	Added confirmation popup window before delete a product
+
+Stripe Integration V1.5
+	Stripe integration for every billing cycle
+
+New Sale V1.0 stable
+	Fetched all stripe payments and make all as sales and displayed into sales tab
+
+new sale V1.3 stable
+	Made relation with sales details and products
+	Rebuilt admin and affiliate sales

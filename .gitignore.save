@@ -1,0 +1,16 @@
+.buildpath
+.project
+/nbproject
+.idea
+/info.php
+/.DS_Store
+/vendor
+.env
+/node_modules
+/bower_components
+composer.lock
+.phpintel/
+.phpstorm.meta.php
+_ide_helper.php
+/.ide-helper
+
