@@ -1,6 +1,6 @@
 var Affiliate = Affiliate || (function(){
 
-        var _callback_url = 'https://affiliatemarketingpromotions.com';
+        var _callback_url = 'https://www.affiliatemarketingpromotions.com';
 //        var _callback_url = 'http://affiliate.reviewvelocity.local';
 //         var _callback_url = 'http://localhost/reviewvelocity/public';
 
