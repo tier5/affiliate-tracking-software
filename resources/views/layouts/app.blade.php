@@ -8,8 +8,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Inter Web Leads</title>
-    <link href="{{url('/')}}/fav.png" rel="shortcut icon">
+    <title>Affiliate Marketing Promotions</title>
+    <link href="{{url('/')}}/fav.ico" rel="shortcut icon">
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 

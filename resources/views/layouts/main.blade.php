@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Inter Web Leads | @yield('title')</title>
+    <title>Affiliate Marketing Promotions | @yield('title')</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link href="{{url('/')}}/fav.png" rel="shortcut icon">
+    <link href="{{url('/')}}/fav.ico" rel="shortcut icon">
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="{{ url('/') }}/admin/bootstrap/css/bootstrap.min.css">
     <!-- Font Awesome -->
@@ -58,7 +58,7 @@
     <!-- Content Wrapper. Contains page content -->
     @yield('content')
     <footer class="main-footer">
-        <strong>Copyright &copy; {{ date('Y') }} <a href="//interwebleads.com">Inter Web Leads</a>.</strong> All rights
+        <strong>Copyright &copy; {{ date('Y') }} <a href="https://tier5.us">Tier5 LLC</a>.</strong> All rights
         reserved.
     </footer>
 

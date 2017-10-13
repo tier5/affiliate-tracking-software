@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Register</title>
-    <link href="{{url('/')}}/fav.png" rel="shortcut icon">
+    <link href="{{url('/')}}/fav.ico" rel="shortcut icon">
     <!--Registration Form CSS-->
     <link href="{{url('/')}}/css/affiliateRegister.css" rel="stylesheet" type="text/css">
     <!-- Bootstrap 3.3.6 -->

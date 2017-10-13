@@ -1,18 +1,18 @@
 var Affiliate = Affiliate || (function(){
 
-        var _callback_url = 'https://www.interwebleads.com';
+        var _callback_url = 'https://affiliatemarketingpromotions.com';
 //        var _callback_url = 'http://affiliate.reviewvelocity.local';
 //         var _callback_url = 'http://localhost/reviewvelocity/public';
 
-        var COOKIE_NAME = 'ats_affiliate';
+        var COOKIE_NAME = 'amp_affiliate';
 
-        var LEAD_COOKIE_NAME = 'ats_lead';
+        var LEAD_COOKIE_NAME = 'amp_lead';
 
-        var COOKIE_LOG_ID = 'ats_log_id';
+        var COOKIE_LOG_ID = 'amp_log_id';
 
-        var COOKIE_PRODUCT_URL = 'ats_product_url';
+        var COOKIE_PRODUCT_URL = 'amp_product_url';
 
-        var COOKIE_PRODUCT = 'ats_product';
+        var COOKIE_PRODUCT = 'amp_product';
 
         var _proxy = null;
 
