@@ -200,16 +200,20 @@ class WebhookController extends Controller
             $campaign = Campaign::where('key',$campaign_key)->firstOrFail();
             $customer_id = $event['data']['object']['customer'];
             if ($campaign->test_sk != '' && $campaign->test_pk != '' && $campaign->live_sk != '' && $campaign->live_pk != ''){
-                $email = $event['data']['object']['receipt_email'];
-                $affiliates = Affiliate::where('campaign_id',$campaign->id);
-                $log = AgentUrlDetails::where('email',$email)
-                    ->whereIn('affiliate_id',$affiliates->pluck('id'))
-                    ->orderBy('created_at','DESC')->firstOrFail();
                 if($campaign->stripe_mode == 1){
                     $key = $campaign->test_sk;
                 } else {
                     $key = $campaign->live_sk;
                 }
+                $stripe = Stripe::make($key);
+                $customer = $stripe->customers()->find($customer_id);
+//                $email = $event['data']['object']['receipt_email'];
+                $email = $customer['email'];
+                $affiliates = Affiliate::where('campaign_id',$campaign->id);
+                $log = AgentUrlDetails::where('email',$email)
+                    ->whereIn('affiliate_id',$affiliates->pluck('id'))
+                    ->orderBy('created_at','DESC')->firstOrFail();
+                
                 $stripe = Stripe::make($key);
                 $subscription = $stripe->customers()->find($customer_id);
                 $amount = $subscription['subscriptions']['data'][0]['plan']['amount'] / 100;
