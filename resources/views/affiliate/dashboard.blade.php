@@ -55,29 +55,29 @@
                     <div class="box1">
                         <div class="row one-row">
                             <div class="col-md-3 col-sm-3">
-                            <div class="border-area">
-                                <div class="row">
-                                    <div class="col-md-8 col-xs-12">
-                                    <div class="blue-txt">
-                                        @if($visitors > 0)
-                                            ${!! number_format(( ($gross_commission - $refundCommission) / $visitors),2,'.','') !!}
-                                        @else
-                                            ${{ number_format($visitors,2,'.','') }}
-                                        @endif
-                                    </div>
-                                    <div class="normal-txt">EPC</div>
-                                    </div>
-                                    <div class="col-md-4 col-xs-12 no-padding">
-                                        <img src="images/epc.png" alt="img">
+                                <div class="border-area">
+                                    <div class="row">
+                                        <div class="col-md-8 col-xs-12">
+                                            <div class="blue-txt">s
+                                                @if($visitors > 0)
+                                                    ${!! number_format(( ($gross_commission - $refundCommission) / $visitors),2,'.','') !!}
+                                                @else
+                                                    ${{ number_format($visitors,2,'.','') }}
+                                                @endif
+                                            </div>
+                                            <div class="normal-txt">EPC</div>
+                                        </div>
+                                        <div class="col-md-4 col-xs-12 no-padding">
+                                            <img src="images/epc.png" alt="img">
 
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
                                     <div class="row">
-                                       <div class="col-md-8 col-xs-12">
+                                        <div class="col-md-8 col-xs-12">
                                             <div class="blue-txt">
                                                 {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'visitor',$queryString]) }}">--}}{{ $visitors }}{{--</a>--}}
                                             </div>
@@ -93,33 +93,33 @@
                                 <div class="border-area">
                                     <div class="row">
                                         <div class="col-md-8 col-xs-12">
-                                        <div class="blue-txt">
-                                            {{--<a href="{{  route('view.link',['affiliate',Auth::user()->id,'sale',$queryString]) }}"> --}}{{ $sales }}{{--</a>--}}
-                                        </div>
+                                            <div class="blue-txt">
+                                                {{--<a href="{{  route('view.link',['affiliate',Auth::user()->id,'sale',$queryString]) }}"> --}}{{ $sales }}{{--</a>--}}
+                                            </div>
 
 
-                                        <div class="normal-txt">Customers</div>
+                                            <div class="normal-txt">Customers</div>
                                         </div>
                                         <div class="col-md-4 col-xs-12 no-padding">
                                             <img src="images/sales.png" alt="img">
                                         </div>
-                                        </div>
-
                                     </div>
+
+                                </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
                                     <div class="row">
                                         <div class="col-md-8 col-xs-12">
 
-                                        <div class="blue-txt">
-                                            @if($visitors > 0 & $sales >0)
-                                                {!! round($sales / $visitors*100,2) !!}%
-                                            @else
-                                                0%
-                                            @endif
-                                        </div>
-                                        <div class="normal-txt">Conversion Rate</div>
+                                            <div class="blue-txt">
+                                                @if($visitors > 0 & $sales >0)
+                                                    {!! round($sales / $visitors*100,2) !!}%
+                                                @else
+                                                    0%
+                                                @endif
+                                            </div>
+                                            <div class="normal-txt">Conversion Rate</div>
                                         </div>
                                         <div class="col-md-4 col-xs-12 no-padding">
                                             <img src="images/conversion.png" alt="img">
@@ -129,27 +129,28 @@
                             </div>
                         </div>
                         <div class="row one-row">
-                           {{-- <div class="col-md-3 col-sm-3">
-                                <div class="border-area">
-                                    <div class="row">
-                                        <div class="col-md-8 col-xs-12">
-                                        <div class="blue-txt">{{ "$" . round($gross_commission) }}</div>
-                                        <div class="normal-txt">Gross Commission</div>
-                                        </div>
-                                        <div class="col-md-4 col-xs-12 no-padding">
-                                            <img src="images/commision.png" alt="img">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>--}}
+                            {{-- <div class="col-md-3 col-sm-3">
+                                 <div class="border-area">
+                                     <div class="row">
+                                         <div class="col-md-8 col-xs-12">
+                                         <div class="blue-txt">{{ "$" . round($gross_commission) }}</div>
+                                         <div class="normal-txt">Gross Commission</div>
+                                         </div>
+                                         <div class="col-md-4 col-xs-12 no-padding">
+                                             <img src="images/commision.png" alt="img">
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>--}}
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
                                     <div class="row">
-                                      <div class="col-md-8 col-xs-12">
-                                        <div class="blue-txt">${{ round($gross_commission-$refundCommission) }}</div>
-                                        <div class="normal-txt">Net Commission</div>
-                                      </div>
-                                       <div class="col-md-4 col-xs-12 no-padding">
+                                        <div class="col-md-8 col-xs-12">
+                                            <div class="blue-txt">
+                                                ${{ round($gross_commission-$refundCommission) }}</div>
+                                            <div class="normal-txt">Net Commission</div>
+                                        </div>
+                                        <div class="col-md-4 col-xs-12 no-padding">
                                             <img src="images/net-commison.png" alt="img">
                                         </div>
                                     </div>
@@ -171,13 +172,13 @@
                             <div class="col-md-3 col-sm-3">
                                 <div class="border-area">
                                     <div class="col-md-8 col-xs-12">
-                                    <div class="blue-txt">
-                                        {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'refund',$queryString]) }}">--}} {{ $refundCount }}{{--</a>--}}
-                                    </div>
-                                    <div class="normal-txt">Refunds</div>
+                                        <div class="blue-txt">
+                                            {{--<a href="{{ route('view.link',['affiliate',Auth::user()->id,'refund',$queryString]) }}">--}} {{ $refundCount }}{{--</a>--}}
+                                        </div>
+                                        <div class="normal-txt">Refunds</div>
                                     </div>
                                     <div class="col-md-4 col-xs-12 no-padding">
-                                            <img src="images/refund.png" alt="img">
+                                        <img src="images/refund.png" alt="img">
                                     </div>
                                 </div>
                             </div>
@@ -185,8 +186,8 @@
                                 <div class="border-area">
                                     <div class="row">
                                         <div class="col-md-8 col-xs-12">
-                                        <div class="blue-txt">${{ round($refundCommission) }}</div>
-                                        <div class="normal-txt">Refunds Amount</div>
+                                            <div class="blue-txt">${{ round($refundCommission) }}</div>
+                                            <div class="normal-txt">Refunds Amount</div>
                                         </div>
                                         <div class="col-md-4 col-xs-12 no-padding">
                                             <img src="images/ammount.png" alt="img">
@@ -195,17 +196,17 @@
                                 </div>
                             </div>
                         </div>
-                       {{-- <div class="row one-row">
-                            <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">{{ "$" . round($paidCommission) }}</div>
-                                <div class="normal-txt">Commission Paid</div>
-                            </div>
-                            <div class="col-md-3 col-sm-3">
-                                <div class="blue-txt">
-                                    ${{ round($netCommission - $paidCommission) }}</div>
-                                <div class="normal-txt">Commission Due</div>
-                            </div>
-                        </div>--}}
+                        {{-- <div class="row one-row">
+                             <div class="col-md-3 col-sm-3">
+                                 <div class="blue-txt">{{ "$" . round($paidCommission) }}</div>
+                                 <div class="normal-txt">Commission Paid</div>
+                             </div>
+                             <div class="col-md-3 col-sm-3">
+                                 <div class="blue-txt">
+                                     ${{ round($netCommission - $paidCommission) }}</div>
+                                 <div class="normal-txt">Commission Due</div>
+                             </div>
+                         </div>--}}
                     </div>
                 </div>
             </div>
@@ -217,9 +218,11 @@
                             <h3 class="box-title">Monthly Recap Report</h3>
 
                             <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i>
                                 </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                            class="fa fa-times"></i></button>
                             </div>
                         </div>
                         <!-- /.box-header -->
@@ -242,72 +245,74 @@
                     </div>
                     <!-- /.box -->
                     <div class="box">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">Commissions on available products</h3>
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Commissions on available products</h3>
 
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- /.box-header -->
-                                <div class="box-body no-padding">
-                                    <table id="available-product" class="table table-bordered table-hover datatable">
-                                        <thead>
-                                            <td>Product Name</td>
-                                            <!-- <td>Product URL</td> -->
-                                            <td>Price</td>
-                                            <td>Commission</td>
-                                            <td>Frequency</td>
-                                            {{--<td>Method</td>--}}
-                                        </thead>
-                                        <tbody>
-                                            @foreach($available_products as $product)
-                                                <tr>
-                                                    <td>{{ $product->name }}</td>
-                                                   {{-- <td>{{ $product->url }}</td> --}}
-                                                    <td>{{ "$" . number_format($product->product_price, 2, '.', ',') }}</td>
-                                                    <td>{{ $product->method == 1 ? $product->commission  . "%" : "$" . number_format($product->commission, 2, '.', ',') }}</td>
-                                                    <td>{{ $product->frequency == 1 ? "One-Time" : "Reccurring" }}</td>
-                                                    {{--<td>
-                                                    @php
-                                                        switch($product->plan) {
-                                                            case 1:
-                                                                @endphp
-                                                                {{ "Daily" }}
-                                                                @php
-                                                                break;
-                                                            case 2:
-                                                                @endphp
-                                                                {{ "Monthly" }}
-                                                                @php
-                                                                break;
-                                                            case 3:
-                                                                @endphp
-                                                                {{ "Quarterly" }}
-                                                                @php
-                                                                break;
-                                                            case 4:
-                                                                @endphp
-                                                                {{ "Yearly" }}
-                                                                @php
-                                                                break;
-                                                            default:
-                                                                @endphp
-                                                                {{ "NA" }}
-                                                                @php
-                                                        }
-                                                    @endphp--}}
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                    <!-- /.users-list -->
-                                </div>
-                                <!-- /.box-body -->
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                            class="fa fa-times"></i>
+                                </button>
                             </div>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body no-padding">
+                            <table id="available-product" class="table table-bordered table-hover datatable">
+                                <thead>
+                                <td>Product Name</td>
+                                <!-- <td>Product URL</td> -->
+                                <td>Price</td>
+                                <td>Commission</td>
+                                <td>Frequency</td>
+                                {{--<td>Method</td>--}}
+                                </thead>
+                                <tbody>
+                                @foreach($available_products as $product)
+                                    <tr>
+                                        <td>{{ $product->name }}</td>
+                                        {{-- <td>{{ $product->url }}</td> --}}
+                                        <td>{{ "$" . number_format($product->product_price, 2, '.', ',') }}</td>
+                                        <td>{{ $product->method == 1 ? $product->commission  . "%" : "$" . number_format($product->commission, 2, '.', ',') }}</td>
+                                        <td>{{ $product->frequency == 1 ? "One-Time" : "Reccurring" }}</td>
+                                        {{--<td>
+                                        @php
+                                            switch($product->plan) {
+                                                case 1:
+                                                    @endphp
+                                                    {{ "Daily" }}
+                                                    @php
+                                                    break;
+                                                case 2:
+                                                    @endphp
+                                                    {{ "Monthly" }}
+                                                    @php
+                                                    break;
+                                                case 3:
+                                                    @endphp
+                                                    {{ "Quarterly" }}
+                                                    @php
+                                                    break;
+                                                case 4:
+                                                    @endphp
+                                                    {{ "Yearly" }}
+                                                    @php
+                                                    break;
+                                                default:
+                                                    @endphp
+                                                    {{ "NA" }}
+                                                    @php
+                                            }
+                                        @endphp--}}
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                            <!-- /.users-list -->
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
                 </div>
                 <!-- /.col -->
                 <div class="col-md-5">
@@ -316,9 +321,11 @@
                             <h3 class="box-title">Your Referral Link</h3>
 
                             <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i>
                                 </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                            class="fa fa-times"></i>
                                 </button>
                             </div>
                         </div>
@@ -327,14 +334,16 @@
                             <div class="clearfix">&nbsp;</div>
                             @foreach ($affiliate as $key => $value)
                                 <div class="row">
-                                <div class="col-md-12 col-xs-12">
-                                    <span class="url">{{ $value->campaign->sales_url }}?affiliate_id={{ $value->key }}</span>
+                                    <div class="col-md-12 col-xs-12">
+                                        <span class="url">{{ $value->campaign->sales_url }}
+                                            ?affiliate_id={{ $value->key }}</span>
+                                    </div>
+                                    <div class="col-md-12 col-xs-12">
+                                        <a class="btn btn-primary btn-sm  copy " style="cursor:pointer"><i
+                                                    class="fa fa-copy fa-fw"></i> Copy Link</a>
+                                    </div>
                                 </div>
-                                <div class="col-md-12 col-xs-12">
-                                    <a class="btn btn-primary btn-sm  copy " style="cursor:pointer"><i class="fa fa-copy fa-fw"></i> Copy Link</a>
-                                </div>
-                                </div>
-                                <br />
+                                <br/>
                                 <div class="clearfix">&nbsp;</div>
                             @endforeach
                         </div>
@@ -345,9 +354,11 @@
                             <h3 class="box-title">Commission Balance</h3>
 
                             <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i>
                                 </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                            class="fa fa-times"></i>
                                 </button>
                             </div>
                         </div>
@@ -364,7 +375,8 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="row">
-                                                        <img src="images/09_commission_paid.png" alt="img" class='img-responsive'>
+                                                        <img src="images/09_commission_paid.png" alt="img"
+                                                             class='img-responsive'>
                                                     </div>
                                                 </div>
                                             </div>
@@ -374,14 +386,15 @@
                                         <div class="border-area">
                                             <div class="row">
                                                 <div class="col-md-8 col-xs-12">
-                                            <div class="blue-txt">
-                                                ${{ round($gross_commission - $refundCommission - $paidCommission) }}
-                                            </div>
-                                            <div class="normal-txt">Commission Due</div>
+                                                    <div class="blue-txt">
+                                                        ${{ round($gross_commission - $refundCommission - $paidCommission) }}
+                                                    </div>
+                                                    <div class="normal-txt">Commission Due</div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="row">
-                                                        <img src="images/10_commission_due.png" alt="img" class='img-responsive'>
+                                                        <img src="images/10_commission_due.png" alt="img"
+                                                             class='img-responsive'>
                                                     </div>
                                                 </div>
                                             </div>
@@ -436,42 +449,42 @@
                 <!-- /.col -->
             </div>
             <!-- /.row -->
-            {{--<div class="row">
-                <div class="col-md-12">
-                    <div class="box box-success">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">Payment Information</h3>
+        {{--<div class="row">
+            <div class="col-md-12">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Payment Information</h3>
 
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
-                                </button>
-                            </div>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                            </button>
                         </div>
-                        <!-- /.box-header -->
-                        <div class="box-body no-padding">
-                            <div class="col-md-4">
-                                <h2>Total: ${{ $netCommission }}</h2>
-                            </div>
-                            <div class="col-md-4">
-                                <h2>Paid: ${{ $paidCommission }}</h2>
-                            </div>
-                            <div class="col-md-4">
-                                <h2>Due:
-                                    ${{ round($netCommission - $paidCommission,2) }}</h2>
-                            </div>
-                        </div>
-                        <!-- /.box-body -->
                     </div>
+                    <!-- /.box-header -->
+                    <div class="box-body no-padding">
+                        <div class="col-md-4">
+                            <h2>Total: ${{ $netCommission }}</h2>
+                        </div>
+                        <div class="col-md-4">
+                            <h2>Paid: ${{ $paidCommission }}</h2>
+                        </div>
+                        <div class="col-md-4">
+                            <h2>Due:
+                                ${{ round($netCommission - $paidCommission,2) }}</h2>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
                 </div>
-            </div>--}}
-            <!-- Main row -->
+            </div>
+        </div>--}}
+        <!-- Main row -->
             <div class="row">
                 <!-- Left col -->
                 <div class="col-md-8">
                     <!-- /.box -->
-                    <!-- <div class="row">
+                <!-- <div class="row">
                         <div class="col-md-12">
 
                             <div class="box box-warning">
@@ -495,13 +508,13 @@
                                             <td>Commission</td>
                                             <td>Frequency</td>
                                             {{--<td>Method</td>--}}
-                                        </thead>
-                                        <tbody>
-                                            @foreach($available_products as $product)
-                                                <tr>
-                                                    <td>{{ $product->name }}</td>
+                        </thead>
+                        <tbody>
+@foreach($available_products as $product)
+                    <tr>
+                        <td>{{ $product->name }}</td>
                                                    {{-- <td>{{ $product->url }}</td> --}}
-                                                    <td>{{ "$" . number_format($product->product_price, 2, '.', ',') }}</td>
+                            <td>{{ "$" . number_format($product->product_price, 2, '.', ',') }}</td>
                                                     <td>{{ $product->method == 1 ? $product->commission  . "%" : "$" . number_format($product->commission, 2, '.', ',') }}</td>
                                                     <td>{{ $product->frequency == 1 ? "One-Time" : "Reccurring" }}</td>
                                                     {{--<td>
@@ -533,22 +546,22 @@
                                                                 @php
                                                         }
                                                     @endphp--}}
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                            </tr>
+@endforeach
+                        </tbody>
+                    </table>
 
-                                </div>
+                </div>
 
-                            </div>
+            </div>
 
-                        </div>
+        </div>
 
-                    </div> -->
+    </div> -->
                     <!-- /.row -->
                 </div>
                 <!-- Right col -->
-                <!-- <div class="col-md-4">
+            <!-- <div class="col-md-4">
 
                     <div class="row">
                         <div class="col-md-12">
@@ -577,27 +590,27 @@
                                             </thead>
                                             <tbody>
                                             @foreach($sold_products as $product)
-                                                <tr>
-                                                    <td>{{ ($product['salesEmail'] != '')?$product['salesEmail']:$product['email'] }}</td>
+                <tr>
+                    <td>{{ ($product['salesEmail'] != '')?$product['salesEmail']:$product['email'] }}</td>
                                                     <td>{{ $product['name'] }}</td>
                                                     <td>${{ $product['total_sale_price'] }}</td>
                                                     <td>{{ "$" . number_format($product['my_commission'], 2, '.', ',') }}</td>
                                                     <td>{{ ($product['status'] == 2)?'Refunded':'sale' }}</td>
                                                 </tr>
                                             @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
+                    </tbody>
+                </table>
+            </div>
 
-                                </div>
+        </div>
 
-                            </div>
+    </div>
 
-                        </div>
+</div>
 
-                    </div>
+</div>
 
-                </div> -->
+</div> -->
             </div>
             <!-- /.row -->
         </section>
@@ -606,12 +619,16 @@
 
 @section('script')
     <script src="{{ url('/') }}/admin/dist/js/pages/dashboard2.js"></script>
-    <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyC2mKnuJAEplo1wkuweW0MSnaAs-zSyD_Y"></script>
-    <script type="text/javascript" src="{{ url('/') }}/js/ipmapper.js"></script>
-    <script type="text/javascript">
-        $(function(){
+        
+    <script type="text/javascript"
+            src="https://maps.google.com/maps/api/js?key=AIzaSyC2mKnuJAEplo1wkuweW0MSnaAs-zSyD_Y"></script>
+        
+    <script type="text/javascript" src="{{ url('/') }}/js/ipmapper.js"></script>
+        
+    <script type="text/javascript">
+        $(function () {
             'use strict';
-            try{
+            try {
                 // Month Chart
                 var id = '{{ \Auth::user()->id }}';
                 $.ajax({
@@ -653,15 +670,15 @@
                                         data: data.leads
                                     },
                                     /*{
-                                        label: "Customers",
-                                        fillColor: "rgb(210, 214, 222)",
-                                        strokeColor: "rgb(210, 214, 222)",
-                                        pointColor: "rgb(210, 214, 222)",
-                                        pointStrokeColor: "#c1c7d1",
-                                        pointHighlightFill: "#fff",
-                                        pointHighlightStroke: "rgb(220,220,220)",
-                                        data: data.sales
-                                    },*/
+                                     label: "Customers",
+                                     fillColor: "rgb(210, 214, 222)",
+                                     strokeColor: "rgb(210, 214, 222)",
+                                     pointColor: "rgb(210, 214, 222)",
+                                     pointStrokeColor: "#c1c7d1",
+                                     pointHighlightFill: "#fff",
+                                     pointHighlightStroke: "rgb(220,220,220)",
+                                     data: data.sales
+                                     },*/
                                     {
                                         label: "Sales",
                                         fillColor: "rgba(236, 240, 245, 0.8)",
@@ -721,11 +738,11 @@
                         }
                     }
                 });
-            } catch(e){
+            } catch (e) {
                 console.log(e)
             }
         });
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.fn.dataTable.ext.errMode = 'none';
             $('.datatable').DataTable({
                 "paging": true,
@@ -744,14 +761,14 @@
                 $temp.remove();
             };
 
-            $('.copy').on('click',function(){
-                var url=$(this).parent().prev().children('.url');
+            $('.copy').on('click', function () {
+                var url = $(this).parent().prev().children('.url');
                 copyToClipboard(url);
                 toastr.info('Copied To Clipboard');
             });
-            $('.filter').on('change',function () {
+            $('.filter').on('change', function () {
                 var campaign = $(this).val();
-                setGetParameter('campaign',campaign);
+                setGetParameter('campaign', campaign);
             });
         });
     </script>

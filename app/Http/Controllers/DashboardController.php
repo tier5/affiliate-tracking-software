@@ -213,6 +213,59 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function ipInformation(Request $request)
+    {
+        try {
+            $campaigns = null;
+            if ($request->user_type == 'affiliate') {
+                if($request->campaign > 0){
+                    $affiliates = Affiliate::where('user_id', $request->id)
+                        ->where('approve_status', 1)
+                        ->where('campaign_id',$request->campaign)->get();
+                    $campaigns = Campaign::where('id',$request->campaign);
+                } else {
+                    $affiliates = Affiliate::where('user_id', $request->id)->where('approve_status', 1)->get();
+                    $campaigns = Campaign::whereIn('id',$affiliates->pluck('campaign_id'));
+                }
+            } else {
+                if ($request->has('campaign_id') || $request->has('affiliate_id')) {
+                    if ($request->input('campaign_id') > 0 && $request->input('affiliate_id') <= 0) {
+                        $campaigns = Campaign::where('id', $request->input('campaign_id'))
+                            ->where('user_id', $request->id)
+                            ->with('affiliate');
+                        $affiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
+                    } else if ($request->input('campaign_id') <= 0 && $request->input('affiliate_id') > 0) {
+                        $campaigns = Campaign::where('user_id', $request->id)->with('affiliate');
+                        $affiliates = Affiliate::where('user_id', $request->input('affiliate_id'));
+                    } else if ($request->input('campaign_id') > 0 && $request->input('affiliate_id') > 0) {
+                        $campaigns = Campaign::where('id', $request->input('campaign_id'))
+                            ->where('user_id', $request->id)
+                            ->with('affiliate');
+                        $affiliates = Affiliate::where('user_id', $request->input('affiliate_id'));
+                    } else {
+                        $campaigns = Campaign::where('user_id', $request->id)
+                            ->with('affiliate');
+                        $affiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
+                    }
+                } else {
+                    $campaigns = Campaign::where('user_id', $request->id)
+                        ->with('affiliate');
+                    $affiliates = Affiliate::whereIn('campaign_id', $campaigns->pluck('id'));
+                }
+            }
+            $visitors = AgentUrlDetails::whereIn('affiliate_id',$affiliates->pluck('id'));
+            return response()->json([
+                'success' => true,
+                'ipAddress' => $visitors->pluck('ip'),
+            ],200);
+        } catch (\Exception $e){
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ],500);
+        }
+    }
+
     /**
      * Dashboard stats analytics
      * @param $affiliates

@@ -518,6 +518,46 @@
     <script type="text/javascript" src="{{ url('/') }}/js/ipmapper.js"></script>
         
     <script type="text/javascript">
+        $(window).bind("load", function() {
+            var id = '{{ \Auth::user()->id }}';
+            IPMapper.initializeMap("world-map-markers");
+            $.ajax({
+                url: "{{ route('ip.information') }}",
+                type: "POST",
+                data: {
+                    id: id,
+                    campaign_id: "{{ request()->input('campaign_id') }}",
+                    affiliate_id: "{{ request()->input('affiliate_id') }}",
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (data) {
+                    if (data.success) {
+                        var ipArray = data.ipAddress;
+                        var ipArrayLength = ipArray.length;
+                        var deduction = 10;
+                        var deductedArray = ipArrayLength - deduction;
+                        IPMapper.addIPArray(ipArray.splice(deductedArray));
+                        plotFunction(ipArray, deduction, deductedArray);
+                    }
+                }
+            });
+        });
+
+        function plotFunction(ipArray, deduction, deductedArray){
+            console.log(deductedArray);
+            var counter = 0;
+            setInterval(function() {
+                counter++;
+                var newDeductedArray = deductedArray - (deduction*counter);
+                //console.log(counter);
+                console.log(newDeductedArray);
+                if( newDeductedArray !=0 ) {
+                    IPMapper.addIPArray(ipArray.splice(newDeductedArray));
+                    //console.log("Message after every 5 seconds");
+                }
+            }, 5000);
+        }
+
         $(function () {
             $('#user').DataTable({
                 "paging": true,
@@ -531,10 +571,6 @@
         $(function () {
             'use strict';
             try {
-                //Ip plot Google Map
-                var ip = JSON.parse('{{ $visitors->pluck('ip') }}'.replace(/&quot;/g, '"'));
-                IPMapper.initializeMap("world-map-markers");
-                IPMapper.addIPArray(ip);
                 // Month Chart
                 var id = '{{ \Auth::user()->id }}';
                 $.ajax({

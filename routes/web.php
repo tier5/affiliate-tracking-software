@@ -193,6 +193,10 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'PaymentController@refundDetails',
         'as' => 'refund.details'
     ]);
+    Route::post('ip-information',[
+        'uses' => 'DashboardController@ipInformation',
+        'as' => 'ip.information'
+    ]);
 });
 Route::get('affiliate/request/{affiliateKey}',[
     'uses' => 'CampaignController@affiliateRegistrationForm',
