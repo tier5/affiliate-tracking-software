@@ -102,3 +102,14 @@ Route::any('stripe/callback/{campaign_id}',[
     'uses' => 'WebhookController@stripeCallBack',
     'as' => 'stripe.callback'
 ]);
+
+Route::group(['prefix' => 'v1'],function() {
+  Route::post('post-subscriber',[
+    'uses'  => 'WebhookController@createUserByEmail',
+    'as'    => 'createUserByEmail'
+  ]);
+  Route::post('delete-subscriber',[
+    'uses'  => 'WebhookController@deleteUserByEmail',
+    'as'    => 'deleteUserByEmail'
+  ]);
+});
