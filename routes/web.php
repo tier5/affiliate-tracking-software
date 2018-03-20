@@ -13,7 +13,10 @@
 use Illuminate\Http\Request;
 
 
-Route::get('/', 'Auth\LoginController@showLoginForm');
+Route::get('/', function(){
+  return view('blank-page');
+});
+// Route::get('/', 'Auth\LoginController@showLoginForm');
 
 Auth::routes();
 
@@ -56,7 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('affiliate/{affiliateKey}',[
         'uses' => 'AgencyController@affiliateDashboard',
         'as' => 'agency.affiliateDashboard'
-    
+
     ]);
     Route::get('campaign',[
         'uses' => 'CampaignController@getCampaign',
@@ -227,4 +230,3 @@ Route::get('admin/logout',[
     'uses' => 'DashboardController@adminlogout',
     'as' => 'admin.logout'
 ]);
-
